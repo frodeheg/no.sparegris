@@ -1,0 +1,28 @@
+{
+  "id": "no.sparegris",
+  "version": "1.0.0",
+  "compatibility": ">=5.0.0",
+  "sdk": 3,
+  "platforms": [
+    "local"
+  ],
+  "name": {
+    "en": "Piggy Bank"
+  },
+  "description": {
+    "en": "Keep the electricity bill down by controling when to use power"
+  },
+  "category": [
+    "energy"
+  ],
+  "permissions": [],
+  "images": {
+    "small": "/assets/images/small.png",
+    "large": "/assets/images/large.png",
+    "xlarge": "/assets/images/xlarge.png"
+  },
+  "author": {
+    "name": "Frode Heggelund",
+    "email": "frode.heggelund@gmail.com"
+  }
+}
