@@ -1,0 +1,35 @@
+{
+  "title": {
+    "en": "Unable to limit power"
+  },
+  "titleFormatted": {
+    "en": "Could not reduce power usage. Turn off [[excessPower]] Watts immediately or the power-tariff for next month will be increased."
+  },
+  "hint": {
+    "en": "Use this condition as a last resort to limit energy. Reccomended to alert all users that power usage must be reduced / turn off all devices."
+  },
+  "args": [
+    {
+      "type": "number",
+      "name": "excessPower",
+      "placeholder": {
+        "en": "excessPower"
+      },
+      "min": 1,
+      "max": 100000,
+      "step": 1
+    }
+  ],
+  "tokens": [
+    {
+      "type": "number",
+      "name": "excess-power",
+      "title": {
+        "en": "Excess Power"
+      },
+      "example": {
+        "en": "The amount of power that is above the power threshold"
+      }
+    }
+  ]
+}

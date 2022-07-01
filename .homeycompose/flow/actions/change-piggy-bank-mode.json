@@ -1,0 +1,43 @@
+{
+  "title": {
+    "en": "Change Piggy Bank mode"
+  },
+  "titleFormatted": {
+    "en": "Set the Piggy Bank operation mode to [[mode]]"
+  },
+  "hint": {
+    "en": "Allows you to switch between holiday mode and normal operation"
+  },
+  "args": [
+    {
+      "type": "dropdown",
+      "name": "mode",
+      "values": [
+        {
+          "id": "mode-normal",
+          "label": {
+            "en": "Normal"
+          }
+        },
+        {
+          "id": "mode-holiday",
+          "label": {
+            "en": "Holiday"
+          }
+        },
+        {
+          "id": "mode-powersave",
+          "label": {
+            "en": "Powersave"
+          }
+        },
+        {
+          "id": "mode-boost",
+          "label": {
+            "en": "Boost"
+          }
+        }
+      ]
+    }
+  ]
+}

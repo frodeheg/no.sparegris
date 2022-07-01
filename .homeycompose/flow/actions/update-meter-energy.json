@@ -1,0 +1,22 @@
+{
+  "title": {
+    "en": "Update PiggyBank with the total energy used"
+  },
+  "titleFormatted": {
+    "en": "Set the total energy used to [[TotalEnergyUsage]] kWh"
+  },
+  "hint": {
+    "en": "Attach the total energy usage output of your energy meter to this action card in order to enable the app"
+  },
+  "args": [
+    {
+      "type": "number",
+      "name": "TotalEnergyUsage",
+      "placeholder": {
+        "en": "Connect to energy meter total energy usage"
+      },
+      "min": 0,
+      "step": 0.01
+    }
+  ]
+}

@@ -1,3 +1,173 @@
 {
-  "_comment": "This file is generated. Please edit .homeycompose/app.json instead."
+  "_comment": "This file is generated. Please edit .homeycompose/app.json instead.",
+  "id": "no.sparegris",
+  "permissions": [
+    "homey:manager:api"
+  ],
+  "version": "1.0.0",
+  "compatibility": ">=5.0.0",
+  "sdk": 3,
+  "platforms": [
+    "local"
+  ],
+  "name": {
+    "en": "Piggy Bank",
+    "no": "Sparegris"
+  },
+  "description": {
+    "en": "Save money by controlling when to use energy",
+    "no": "Spar penger ved å flytte strømforbruket"
+  },
+  "category": [
+    "energy"
+  ],
+  "images": {
+    "small": "/assets/images/small.png",
+    "large": "/assets/images/large.png",
+    "xlarge": "/assets/images/xlarge.png"
+  },
+  "contributing": {
+    "donate": {
+      "githubSponsors": {
+        "username": "frodeheg"
+      }
+    }
+  },
+  "author": {
+    "name": "Frode Heggelund",
+    "email": "frode.heggelund@gmail.com"
+  },
+  "flow": {
+    "triggers": [
+      {
+        "title": {
+          "en": "Unable to limit power"
+        },
+        "titleFormatted": {
+          "en": "Could not reduce power usage. Turn off [[excessPower]] Watts immediately or the power-tariff for next month will be increased."
+        },
+        "hint": {
+          "en": "Use this condition as a last resort to limit energy. Reccomended to alert all users that power usage must be reduced / turn off all devices."
+        },
+        "args": [
+          {
+            "type": "number",
+            "name": "excessPower",
+            "placeholder": {
+              "en": "excessPower"
+            },
+            "min": 1,
+            "max": 100000,
+            "step": 1
+          }
+        ],
+        "tokens": [
+          {
+            "type": "number",
+            "name": "excess-power",
+            "title": {
+              "en": "Excess Power"
+            },
+            "example": {
+              "en": "The amount of power that is above the power threshold"
+            }
+          }
+        ],
+        "id": "unable-to-limit-power"
+      }
+    ],
+    "actions": [
+      {
+        "title": {
+          "en": "Change Piggy Bank mode"
+        },
+        "titleFormatted": {
+          "en": "Set the Piggy Bank operation mode to [[mode]]"
+        },
+        "hint": {
+          "en": "Allows you to switch between holiday mode and normal operation"
+        },
+        "args": [
+          {
+            "type": "dropdown",
+            "name": "mode",
+            "values": [
+              {
+                "id": "mode-normal",
+                "label": {
+                  "en": "Normal"
+                }
+              },
+              {
+                "id": "mode-holiday",
+                "label": {
+                  "en": "Holiday"
+                }
+              },
+              {
+                "id": "mode-powersave",
+                "label": {
+                  "en": "Powersave"
+                }
+              },
+              {
+                "id": "mode-boost",
+                "label": {
+                  "en": "Boost"
+                }
+              }
+            ]
+          }
+        ],
+        "id": "change-piggy-bank-mode"
+      },
+      {
+        "title": {
+          "en": "Update PiggyBank with the total energy used"
+        },
+        "titleFormatted": {
+          "en": "Set the total energy used to [[TotalEnergyUsage]] kWh"
+        },
+        "hint": {
+          "en": "Attach the total energy usage output of your energy meter to this action card in order to enable the app"
+        },
+        "args": [
+          {
+            "type": "number",
+            "name": "TotalEnergyUsage",
+            "placeholder": {
+              "en": "Connect to energy meter total energy usage"
+            },
+            "min": 0,
+            "step": 0.01
+          }
+        ],
+        "id": "update-meter-energy"
+      },
+      {
+        "title": {
+          "en": "Update PiggyBank with new Power usage"
+        },
+        "titleFormatted": {
+          "en": "Set the current power to [[CurrentPower]] W"
+        },
+        "hint": {
+          "en": "Attach the current power usage output of your energy meter to this action card in order to enable the app"
+        },
+        "args": [
+          {
+            "type": "number",
+            "name": "CurrentPower",
+            "placeholder": {
+              "en": "Connect to energy meter current power usage"
+            },
+            "min": 0,
+            "max": 100000,
+            "step": 1
+          }
+        ],
+        "id": "update-meter-power"
+      }
+    ]
+  }
 }

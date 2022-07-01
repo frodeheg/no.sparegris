@@ -1,5 +1,8 @@
 {
   "id": "no.sparegris",
+  "permissions": [
+    "homey:manager:api"
+  ],
   "version": "1.0.0",
   "compatibility": ">=5.0.0",
   "sdk": 3,
@@ -7,19 +10,27 @@
     "local"
   ],
   "name": {
-    "en": "Piggy Bank"
+    "en": "Piggy Bank",
+    "no": "Sparegris"
   },
   "description": {
-    "en": "Keep the electricity bill down by controling when to use power"
+    "en": "Save money by controlling when to use energy",
+    "no": "Spar penger ved å flytte strømforbruket"
   },
   "category": [
     "energy"
   ],
-  "permissions": [],
   "images": {
     "small": "/assets/images/small.png",
     "large": "/assets/images/large.png",
     "xlarge": "/assets/images/xlarge.png"
+  },
+  "contributing": {
+    "donate": {
+      "githubSponsors": {
+        "username": "frodeheg"
+      }
+    }
   },
   "author": {
     "name": "Frode Heggelund",

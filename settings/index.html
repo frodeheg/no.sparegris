@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <!-- The '/homey.js' script must be included in your settings view to work -->
+    <script type="text/javascript" src="/homey.js" data-origin="settings"></script>
+  </head>
+
+
+  <body>
+    <h1 data-i18n="settings.title">Settings</h1>
+    <p data-i18n="settings.subtitle">Subtitle</p>
+
+
+  <!-- Tabs -->
+  <div class="tab">
+    <button class="tablinks" onclick="changeTab(event, 'globalPage')" id="globalTab"><span
+        data-i18n="settings.tab.global">Global</span></button>
+    <button class="tablinks" onclick="changeTab(event, 'normalPage')" id="normalTab"><span
+        data-i18n="settings.tab.normal">Normal</span></button>
+    <button class="tablinks" onclick="changeTab(event, 'holidayPage')" id="holidayTab"><span
+        data-i18n="settings.tab.holiday">Holiday</span></button>
+    <button class="tablinks" onclick="changeTab(event, 'powerSavePage')" id="powerSaveTab"><span
+        data-i18n="settings.tab.powersave">PowerSave</span></button>
+    <button class="tablinks" onclick="changeTab(event, 'boostPage')" id="boostTab"><span
+        data-i18n="settings.tab.boost">Boost</span></button>
+  </div>
+
+  <!-- Global page -->
+  <div id="globalPage" class="tabcontent">
+    <fieldset>
+        <legend>Global settings</legend>
+          <div class="field row">
+            <label for="minTemp" data-i18n="settings.minTemp">Absolute minimum temperature</label>
+            <input id="minTemp" type="text" value="" /> (overrides power group if below this temperature)
+          </div>
+          TBD: List devices that the app is allowed to control
+    </fieldset>
+  </div>
+  <!-- Global page end -->
+  
+  <!-- Normal page -->
+  <div id="normalPage" class="tabcontent">
+    <fieldset>
+        <legend>Normal operation</legend>
+          <div class="field row">
+            <label for="maxPower" data-i18n="settings.maxPower">Max power target</label>
+            <input id="maxPower" type="text" value="" />
+        </div>
+        <div class="field row">
+            <label for="safetyPower" data-i18n="settings.safetyPower">Safety limit</label>
+            <input id="safetyPower" type="text" value="" /> (allows)
+        </div>
+    </fieldset>
+    <fieldset>
+      <legend>Daytime</legend>
+      <div class="field row">
+        <label for="dayStart">Daytime starts at</label>
+        <input id="dayStart" type="text" value="" />
+      </div>
+      List devices with "on" priorities and temperature+offstate
+    </fieldset>
+    <fieldset>
+      <legend>Nighttime</legend>
+      <div class="field row">
+        <label for="nightStart">Nighttime starts at</label>
+        <input id="nightStart" type="text" value="" />
+      </div>
+      List devices with "on" priorities and temperature+offstate
+    </fieldset>
+  </div>
+  <!-- Normal page end -->
+
+  <!-- Holiday page -->
+  <div id="holidayPage" class="tabcontent">
+    Holiday
+  </div>
+  <!-- Holiday page end -->
+  
+  <!-- PowerSave page -->
+  <div id="powerSavePage" class="tabcontent">
+    PowerSave
+  </div>
+  <!-- PowerSave page end -->
+  
+  <!-- Boost page -->
+  <div id="boostPage" class="tabcontent">
+    Boost
+  </div>
+  <!-- Boost page end -->
+  
+
+    <button id="save" class="right">Save changes</button>
+
+    <script type="text/javascript">
+      // a method named 'onHomeyReady' must be present in your code
+      function onHomeyReady(Homey) {
+        var maxPowerElement = document.getElementById("maxPower");
+        var passwordElement = document.getElementById("password");
+        var saveElement = document.getElementById("save");
+
+        Homey.get("maxPower", function (err, maxPower) {
+          if (err) return Homey.alert(err);
+          maxPowerElement.value = maxPower;
+        });
+
+        Homey.get("password", function (err, password) {
+          if (err) return Homey.alert(err);
+          passwordElement.value = password;
+        });
+
+        saveElement.addEventListener("click", function (e) {
+          Homey.set("maxPower", maxPowerElement.value, function (err) {
+            if (err) return Homey.alert(err);
+          });
+          Homey.set("password", passwordElement.value, function (err) {
+            if (err) return Homey.alert(err);
+          });
+        });
+
+        // Tell Homey we're ready to be displayed
+        Homey.ready();
+      }
+
+      // -- Tab control -- //
+      function changeTab(evt, tabPage) {
+        var i, tabcontent, tablinks;
+
+        // Get all elements with class="tabcontent" and hide them
+        tabcontent = document.getElementsByClassName("tabcontent");
+        for (i = 0; i < tabcontent.length; i++) {
+          tabcontent[i].style.display = "none";
+        }
+
+        // Get all elements with class="tablinks" and remove the class "active"
+        tablinks = document.getElementsByClassName("tablinks");
+        for (i = 0; i < tablinks.length; i++) {
+          tablinks[i].className = tablinks[i].className.replace(" active", "");
+        }
+
+        // Show the current tab, and add an "active" class to the button that opened the tab
+        document.getElementById(tabPage).style.display = "block";
+        evt.currentTarget.className += " active";
+
+        /*if (tabPage == 'logPage') {
+          // Refresh the log data
+          Homey.get('logLevel', function (err, logLevel) {
+            if (err) logLevel = 1; //Homey.alert(err);
+            logLevelElement.value = logLevel;
+          });
+
+          Homey.get('diagLog', function (err, diagLog) {
+            if (err) diagLog = ""; //Homey.alert(err);
+            diagLogElement.value = diagLog;
+          });
+
+          // Make the log text area fill the page
+          diagLogElement.setAttribute('cols', diagLogElement.parentElement.clientWidth / 8);
+          diagLogElement.style.height = (window.innerHeight - diagLogElement.offsetTop - 40) + 'px';
+        }*/
+      };
+
+      // Hide all tabs except one:
+      changeTab(false, 'globalPage');
+
+    </script>
+  </body>
+</html>

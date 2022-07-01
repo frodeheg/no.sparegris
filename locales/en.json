@@ -1,1 +1,7 @@
-{}
+{
+  "settings": {
+    "title": "PiggyBank Settings",
+    "subtitle": "Power settings",
+    "maxPower": "Maximum power"
+  }
+}
