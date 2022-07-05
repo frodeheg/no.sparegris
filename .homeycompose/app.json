@@ -6,6 +6,8 @@
   "version": "1.0.0",
   "compatibility": ">=5.0.0",
   "sdk": 3,
+  "source": "https://github.com/frodeheg/no.sparegris",
+  "brandColor": "#FF00FF",
   "platforms": [
     "local"
   ],
@@ -18,7 +20,8 @@
     "no": "Spar penger ved å flytte strømforbruket"
   },
   "category": [
-    "energy"
+    "energy",
+    "tools"
   ],
   "images": {
     "small": "/assets/images/small.png",
@@ -35,5 +38,23 @@
   "author": {
     "name": "Frode Heggelund",
     "email": "frode.heggelund@gmail.com"
+  },
+  "contributors": {
+    "developers": [
+      {
+        "name": "Frode Heggelund",
+        "email": "frode.heggelund@gmail.com"
+      },
+      {
+        "name": "Pixy.org",
+        "what": "Artwork",
+        "url": "https://pixy.org"
+      }
+    ],
+    "translators": [
+      {
+        "name": "Frode Heggelund"
+      }
+    ]
   }
 }
