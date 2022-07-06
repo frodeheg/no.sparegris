@@ -29,6 +29,11 @@ class PiggyBank extends Homey.App {
     this.__reserved_energy = 0
     this.mutex = new Mutex();
 
+    this.api = new HomeyAPIApp({
+      homey: this.homey,
+    });
+
+
     // Check that settings has been updated
     const maxPower = this.homey.settings.get('maxPower')
     if (isNaN(maxPower)) {
@@ -37,6 +42,9 @@ class PiggyBank extends Homey.App {
 
     // Create list of devices
     this.__deviceList = await this.createDeviceList();
+    this.homey.settings.set('deviceList', this.__deviceList);
+
+    this.log("settings was set to: " + String(this.homey.settings.get('deviceList')))
 
     // Enable action cards
     const cardActionEnergyUpdate = this.homey.flow.getActionCard('update-meter-energy') // Remove?
@@ -84,18 +92,22 @@ class PiggyBank extends Homey.App {
    * Create a list of relevant devices
    */
   async createDeviceList() {
-    const api = new HomeyAPIApp({
-      homey: this.homey,
-    });
-    const devices = await api.devices.getDevices();
+    const devices = await this.api.devices.getDevices();
 
     var relevantDevices = [];
 
     // Loop all devices
     for(var device of Object.values(devices)) {
       // Relevant Devices must have onoff capability
-      if (!device.capabilities.includes("onoff")) {
-        //this.log("ignoring: " + device.name)
+      // Unfortunately some devices like the Sensibo heat pump controller invented their own onoff capability
+      // so the actual name of the onoff capability must be recorded
+      var onoff_cap = device.capabilities.includes("onoff") ? "onoff" : device.capabilities.find(cap => { if (cap.includes("onoff")) { return cap;}});
+      if (onoff_cap === undefined) {
+        this.log("ignoring: " + device.name)
+        if (device.name == "Varmepumpe") {
+          this.log("Capabilities ======");
+          this.log(String(device.capabilities));
+        }
         continue;
       }
       // Priority 1 devices has class = thermostat & heater - capabilities ['target_temperature' + 'measure_temperature']
@@ -107,11 +119,17 @@ class PiggyBank extends Homey.App {
       // Filter out irrelevant devices (preferably done by settings in the future)
       var isRelevant = (priority > 0) ? true : false;
 
-      if (isRelevant) {
-        this.log("Device: " + String(priority) + " " + device.name + " " + device.class)
-        var relevantDevice = { "device": device, "priority": priority }
-        relevantDevices.push(relevantDevice)
-      }
+      this.log("Device: " + String(priority) + " " + device.id + " " + device.name + " " + device.class)
+      var relevantDevice = {
+        deviceId: device.id,
+        priority: (priority > 0) ? 1 : 0,
+        name: device.name,
+        room: device.zoneName,
+        image: device.iconObj.url,
+        onoff_cap: onoff_cap,
+        use: isRelevant
+      };
+      relevantDevices.push(relevantDevice)
     }
     // Turn device on
     return relevantDevices
@@ -182,14 +200,16 @@ class PiggyBank extends Homey.App {
     this.__current_power = newPower;
     this.__estimated_end_usage = this.__accum_energy + newPower*remaining_time/(1000*60*60);
 
-    this.log("onPowerUpdate: "
-      + String(newPower) + "W, "
-      + String(this.__accum_energy.toFixed(2)) + " Wh (Estimated end: " 
-      + String(this.__estimated_end_usage.toFixed(2)) + ")")
-
     // Check if power can be increased or reduced
     const maxPower = this.homey.settings.get('maxPower')
-    this.log("Jadda: " + String(maxPower) + ", " + String(this.__accum_energy) + ", " + String(this.__reserved_energy) + ", " + String(newPower))
+
+    this.log("onPowerUpdate: "
+      + "Using: " + String(newPower) + "W, "
+      + "Accum: " + String(this.__accum_energy.toFixed(2)) + " Wh, "
+      + "Limit: " + String(maxPower) + " Wh, "
+      + "Reserved: " + String(this.__reserved_energy) + "W, "
+      + "(Estimated end: " + String(this.__estimated_end_usage.toFixed(2)) + ")")
+
     var power_diff = ((maxPower - this.__accum_energy - this.__reserved_energy) * (1000*60*60) / remaining_time) - newPower;
     if (power_diff < 0) {
       this.onAbovePowerLimit(-power_diff)
@@ -219,8 +239,8 @@ class PiggyBank extends Homey.App {
 
     var numDevices = this.__deviceList.length;
     for (var idx = 0; idx < numDevices; idx++) {
-      const device = this.__deviceList[idx].device;
-      const isOn = await (!device.capabilities.includes("onoff")) ? undefined : device.capabilitiesObj['onoff'].value;
+      const device = await this.api.devices.getDevice({id: this.__deviceList[idx].deviceId });
+      const isOn = await (this.__deviceList[idx].onoff_cap === undefined) ? undefined : device.capabilitiesObj[this.__deviceList[idx].onoff_cap].value;
       //await device.setCapabilityValue({ capabilityId: 'onoff', value: true }); 
       //"measure_power"
       this.log("Num: " + String(idx) + " on: " + String(isOn))
@@ -233,10 +253,11 @@ class PiggyBank extends Homey.App {
    */
   async onAbovePowerLimit(lessPower) {
     this.log("Must reduce power usage by " + String(lessPower) + "W")
+    this.homey.notifications.createNotification({excerpt: "The power must be reduced by " + String(lessPower) + " W immediately or the hourly limit will be breached"})
   }
 
 
-}
+} // class
 
 module.exports = PiggyBank;
 

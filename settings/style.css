@@ -1,0 +1,105 @@
+body {
+    font-size: 100%;
+    background-color: powderblue;
+    overflow: auto;
+}
+
+h1 {
+    font-size: 2.3em;
+    font-weight: bold;
+    color: rgb(0, 137, 250);
+}
+
+h3 {
+  font-size: 1.0em;
+  font-weight: bold;
+  color: rgb(0, 137, 250);
+}
+
+p {
+  font-size: 0.8em;
+  color: gray;
+}
+
+/* Style the tab */
+.tab {
+    overflow: hidden;
+    border: 2px solid #ccc;
+    background-color: #f1f1f1;
+  }
+  
+  /* Style the buttons that are used to open the tab content */
+  .tab button {
+    background-color: inherit;
+    float: left;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    padding: 5px 6px;
+    transition: 0.3s;
+  }
+  
+  /* Change background color of buttons on hover */
+  .tab button:hover {
+    font-weight: bold;
+    background-color: #ddd;
+  }
+  
+  /* Create an active/current tablink class */
+  .tab button.active {
+    background-color: #ccc;
+    font-weight: bold;
+    font-size: 1em;
+}
+  
+  /* Style the tab content */
+  .tabcontent {
+    display: none;
+    padding: 6px 12px;
+    border: 2px solid #ccc;
+    border-top: none;
+  }
+  
+  .settings_table {
+    width: 100%;
+    border:0
+  }
+
+  .settings_row_name {
+    width: 40%;
+  }
+
+  .settings_row_input {
+    width: 60%;
+  }
+
+.device-list {
+    width:100%;
+    margin:0px;
+    padding:0px;
+    gap:100px;
+}
+    
+.device-list img {
+    float:left;
+    margin:0px;
+    padding:0px;
+}
+    
+.device-list p,h3 {
+    padding: 0;
+    margin:0px;
+    padding:0px;
+}
+
+.device-list input:disabled {
+  margin:0px;
+  padding:0px;
+  filter: grayscale(100%); 
+  opacity: 0.4;
+}
+
+.device-list input:enabled {
+  margin:0px;
+  padding:0px;
+}
