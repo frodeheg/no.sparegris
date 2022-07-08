@@ -8,7 +8,7 @@
   "compatibility": ">=5.0.0",
   "sdk": 3,
   "source": "https://github.com/frodeheg/no.sparegris",
-  "brandColor": "#FF00FF",
+  "brandColor": "#ff00ff",
   "platforms": [
     "local"
   ],

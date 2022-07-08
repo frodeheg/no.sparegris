@@ -6,36 +6,57 @@
     <script type="text/javascript" src="/homey.js" data-origin="settings"></script>
     <link href="style.css" rel="stylesheet" type="text/css">
     <script type="text/javascript">
-      var deviceList = [
-        { name:"DeviceName 1", room: "Stue",    id: "xxx", image: "https://as2.ftcdn.net/v2/jpg/02/49/76/93/1000_F_249769389_7su5tYXOvcjcehNCcWTwcjnHvSMkLocJ.jpg", use: true, priority: 0 },
-        { name:"DeviceName 2", room: "Kjøkken", id: "dx",  image: "https://as2.ftcdn.net/v2/jpg/02/49/76/93/1000_F_249769389_7su5tYXOvcjcehNCcWTwcjnHvSMkLocJ.jpg", use: true, priority: 1 },
-        { name:"DeviceName 3", room: "Bad",     id: "dx",  image: "https://as2.ftcdn.net/v2/jpg/02/49/76/93/1000_F_249769389_7su5tYXOvcjcehNCcWTwcjnHvSMkLocJ.jpg", use: true, priority: 0 }
+
+      const KEEP = -1;
+      const ALWAYS_OFF = 0;
+      const ALWAYS_ON = 1;
+      const CONTROLLED = 2;
+
+      var deviceList = {
+        id_a: { name:"DeviceName 1", room: "Stue",    image: "https://as2.ftcdn.net/v2/jpg/02/49/76/93/1000_F_249769389_7su5tYXOvcjcehNCcWTwcjnHvSMkLocJ.jpg", use: true, priority: 0 },
+        id_b: { name:"DeviceName 2", room: "Kjøkken", image: "https://as2.ftcdn.net/v2/jpg/02/49/76/93/1000_F_249769389_7su5tYXOvcjcehNCcWTwcjnHvSMkLocJ.jpg", use: true, priority: 1 },
+        id_c: { name:"DeviceName 3", room: "Bad",     image: "https://as2.ftcdn.net/v2/jpg/02/49/76/93/1000_F_249769389_7su5tYXOvcjcehNCcWTwcjnHvSMkLocJ.jpg", use: true, priority: 0 }
+      }
+      var modeList = [
+        // Normal
+        [ { id: "id_a", operation: CONTROLLED, minTemp: 20, maxTemp: 24 },
+          { id: "id_b", operation: ALWAYS_OFF, minTemp:  8, maxTemp: 15 },
+          { id: "id_c", operation: CONTROLLED, minTemp: 10, maxTemp: 20 }
+        ],
+        [], // Night
+        [], // Holiday
+        []  // Boost
       ]
-      var modeList = [[], [], [], []]
+      var maxPowerList = [
+        2000, // Normal
+        2000, // Night
+        2000, // Holiday
+        2000  // Boost
+      ]
+      var currentMode = 0; // Normal
 
       var operatingModes = [
         { name:"App Disabled", value: 0 },
         { name:"Normal", value: 1 },
-        { name:"Away", value: 2 },
-        { name:"PowerSave", value: 3 },
+        { name:"Night", value: 2 },
+        { name:"Holiday", value: 3 },
         { name:"Boost", value: 4 }
       ]
 
       function generateEnableList(listName, priority) {
         var list = document.getElementById(listName);
         var gen_list = "<table class=device-list>";
-        for (var i = 0; i < deviceList.length; i++) {
-          if (deviceList[i].priority != priority)
+        for (var key in deviceList) {
+          var device = deviceList[key];
+          if (device.priority != priority)
             continue;
-          var upenabled  = (i==0) ? 'disabled' : '';
-          var dwnenabled = (i==deviceList.length-1) ? 'disabled' : '';
-          var enabledImg = deviceList[i].use ? "enabled.png" : "disabled.png"
+          var enabledImg = device.use ? "enabled.png" : "disabled.png"
           gen_list +=
             '<tr>' +
-            '  <td><img src="' + deviceList[i].image + '" alt="icon" width="auto" height="30"></td>' +
-            '  <td><input type="image" width="40" height="20" src="' + enabledImg + '" onclick="toggleEnableDevice(event, ' + String(i) + ')" id="enableDevice' + String(i) + '"></td>' +
-            '  <td><h3>' + deviceList[i].name + '</h3></td>' +
-            '  <td><p>' + deviceList[i].room + '</p></td>' +
+            '  <td><img src="' + device.image + '" alt="icon" width="auto" height="30"></td>' +
+            '  <td><input type="image" width="40" height="20" src="' + enabledImg + '" onclick="toggleEnableDevice(event, \'' + String(key) + '\')" id="enableDevice' + String(key) + '"></td>' +
+            '  <td><h3>' + device.name + '</h3></td>' +
+            '  <td><p>' + device.room + '</p></td>' +
             '</tr>';
         }
         gen_list += "</table>";
@@ -59,8 +80,7 @@
       }
 
       function generatePriorityList(listNum) {
-        var listName = "priorityList" + String(listNum);
-        var list = document.getElementById(listName);
+        var list = document.getElementById("priorityList");
         var gen_list =
           '<table class=device-list>' +
             '<tr>' +
@@ -69,24 +89,57 @@
               '<th align="left" >Priority</th>' +
             '</tr>';
         for (var i = 0; i < modeList[listNum].length; i++) {
+          var device = deviceList[modeList[listNum][i].id];
           var upenabled  = (i==0) ? 'disabled' : '';
           var dwnenabled = (i==modeList[listNum].length-1) ? 'disabled' : '';
-          var enabledImg = modeList[listNum][i].use ? "enabled.png" : "disabled.png"
           gen_list +=
             '<tr>' +
-              '<td rowspan="2"><img src="' + modeList[listNum][i].image + '" alt="icon" width="auto" height="50"></td>' +
-              '<td><h3>' + modeList[listNum][i].name + '</h3></td>' +
-              '<td><p>' + modeList[listNum][i].room + '</p></td>' +
+              '<td rowspan="2"><img src="' + device.image + '" alt="icon" width="auto" height="50"></td>' +
+              '<td><h3>' + device.name + '</h3></td>' +
+              '<td><p>' + device.room + '</p></td>' +
               '<td rowspan="2"><input ' + upenabled + ' type="image" width="40" height="20" src="up_arrow.png" onclick="moveDevice(event, ' + String(listNum) + ', ' + String(i) + ',-1)" id="moveDeviceUp' + String(i) + '"/><br>' +
                   '<input ' + dwnenabled + ' type="image" width="40" height="20" src="down_arrow.png" onclick="moveDevice(event, ' + String(listNum) + ', ' + String(i) + ',+1)" id="moveDeviceDown' + String(i) + '"/></td>' +
             '</tr>' +
             '<tr>' +
-              '<td colspan = 2>Power: xxxxxxx Temp: xxxxxx</td>' +
+              '<td colspan = 2>' +
+                  '<div class="imgButtonText" id="deviceStateButton' + String(i) + '" onclick="updateState(this, ' + String(listNum) + ', ' + String(i) + ')">N/A</div>' +
+                '<input type="number" id="mintemp' + String(i) + '" min=0 max=90 size="1" onchange="setValue(this,' + String(listNum) + ',' + String(i) + ',\'minTemp\')" value="' + String(modeList[listNum][i].minTemp) + '">-' +
+                '<input type="number" id="maxtemp' + String(i) + '" min=0 max=90 size="1" onchange="setValue(this,' + String(listNum) + ',' + String(i) + ',\'maxTemp\')" value="' + String(modeList[listNum][i].maxTemp) + '">°C' +
+                '</td>' +
             '</tr>';
         }
         gen_list += "</table>";
         list.innerHTML = gen_list;
+
+        // Refresh states on list elements
+        for (var i = 0; i < modeList[listNum].length; i++) {
+          updateState(document.getElementById('deviceStateButton' + String(i)), listNum, i, KEEP);
+        }
       }
+
+      function updateState(button, listNum, device_id, newstate = undefined) {
+        if (newstate == undefined) {
+          newstate = (modeList[listNum][device_id].operation + 1) % 3;
+        } else if (newstate == KEEP) {
+          newstate = modeList[listNum][device_id].operation;
+        }
+        modeList[listNum][device_id].operation = newstate;
+        switch (modeList[listNum][device_id].operation) {
+          case ALWAYS_OFF:
+            button.innerHTML='Always off';
+            button.style.backgroundImage = 'radial-gradient(white, lightgray, gray)';
+            break;
+          case ALWAYS_ON:
+            button.innerHTML='Always on';
+            button.style.backgroundImage = 'radial-gradient(white, rgb(255, 150, 150), red)';
+            break;
+          case CONTROLLED:
+            button.innerHTML='Controlled';
+            button.style.backgroundImage = 'radial-gradient(white, rgb(150, 255, 150), green)';
+            break;
+        }
+      }
+
       function moveDevice(event, listNum, device_id, delta) {
         if ((device_id + delta < 0) || (device_id + delta >= modeList[listNum].length)) {
           return;
@@ -96,6 +149,31 @@
         modeList[listNum][device_id] = temp2;
         modeList[listNum][device_id + delta] = temp1;
         generatePriorityList(listNum);
+      }
+
+      function toggle(source, id) {
+        var element = document.getElementById(id);
+
+        var visible = (element.style.display != "") && (element.style.display != "none");
+        if (visible) {
+          element.style.display = 'none';
+          source.style.cursor = "zoom-in";
+        } else {
+          element.style.display = 'block';
+          source.style.cursor = "zoom-out";
+        }
+      }
+
+      function setValue(object, listNum, device_id, subject) {
+        if(object.value != ""){
+          if(parseInt(object.value) < parseInt(object.min)){
+            object.value = object.min;
+          }
+          if(parseInt(object.value) > parseInt(object.max)){
+            object.value = object.max;
+          }
+          modeList[listNum][device_id][subject] = object.value
+        }
       }
     </script>
   </head>
@@ -107,132 +185,102 @@
     <p data-i18n="settings.subtitle">Subtitle</p>
 
 
-  <!-- Tabs -->
-  <div class="tab">
-    <button class="tablinks" onclick="changeTab(event, 'globalPage')" id="globalTab"><span
-        data-i18n="settings.tab.global">Global</span></button>
-    <button class="tablinks" onclick="changeTab(event, 'normalPage', 0)" id="normalTab"><span
-        data-i18n="settings.tab.normal">Normal</span></button>
-    <button class="tablinks" onclick="changeTab(event, 'holidayPage', 1)" id="holidayTab"><span
-        data-i18n="settings.tab.holiday">Holiday</span></button>
-    <button class="tablinks" onclick="changeTab(event, 'powerSavePage', 2)" id="powerSaveTab"><span
-        data-i18n="settings.tab.powersave">PowerSave</span></button>
-    <button class="tablinks" onclick="changeTab(event, 'boostPage', 3)" id="boostTab"><span
-        data-i18n="settings.tab.boost">Boost</span></button>
-  </div>
+    <!-- Tabs -->
+    <div class="tab">
+      <button class="tablinks" onclick="changeTab(event, 'globalPage')" id="globalTab"><span
+          data-i18n="settings.tab.global">Global</span></button>
+      <button class="tablinks" onclick="changeTab(event, 'priorityPage', 0)" id="normalTab"><span
+          data-i18n="settings.tab.normal">Normal</span></button>
+      <button class="tablinks" onclick="changeTab(event, 'priorityPage', 1)" id="nightTab"><span
+          data-i18n="settings.tab.night">Night</span></button>
+      <button class="tablinks" onclick="changeTab(event, 'priorityPage', 2)" id="holidayTab"><span
+          data-i18n="settings.tab.holiday">Holiday</span></button>
+      <button class="tablinks" onclick="changeTab(event, 'priorityPage', 3)" id="boostTab"><span
+          data-i18n="settings.tab.boost">Boost</span></button>
+    </div>
 
-  <!-- Global page -->
-  <div id="globalPage" class="tabcontent">
-    <fieldset>
-        <legend>Global settings</legend>
-          <div class="field row">
-            <table class="settings_table">
-              <tr>
-                <td class="settings_row_name"><label for="operatingMode" data-i18n="settings.operatingMode">Operating Mode</label>:</td>
-                <td class="settings_row_input">
-                  <select id="operatingMode">
-                    <option value="0" selected>App Disabled</option>
-                  </select>
-                </td>
-              </tr>
-            </table>
-            <p data-i18n="settings.operatingModeHint">Note: To avoid conflicting settings you should disable all flows trying to operate the devices selected below before activating this app.</p>
-            <p data-i18n="settings.operatingModeHint">Hint: You can use flow cards to change operating mode</p>
-            <table class="settings_table">
-              <tr>
-                <td class="settings_row_name"><label for="safetyPower" data-i18n="settings.safetyPower">Reserved power:</label></td>
-                <td class="settings_row_input"><input id="safetyPower" type="number" min="0" max="100000" value="500" size="10">W</td>
-              </tr>
-            </table>
-            <p data-i18n="settings.safetyPowerHint">Avoid failing the power target by reserving power to uncontrollable devices.</p>
-            <p data-i18n="settings.safetyPowerHint2">Hint: You can use flow cards to change the reserved power during the day. It is reccomended to reserve more power when making dinner.</p>
-        </div>
-    </fieldset>
-    <fieldset>
-      <legend for="highPriDevices" data-i18n="settings.highPriDevices">Controllable devices</legend>
-      <p data-i18n="settings.deviceListHint">Only selected devices can be controlled by the app.</p>
-      <span id="highPriDevices">Please wait for list of devices to be generated...</span>
-      <legend for="lowPriDevices" data-i18n="settings.lowPriDevices"><hr></legend>
-      <span id="lowPriDevices">Please wait for list of devices to be generated...</span>
-    </fieldset>
-  </div>
-<!-- Global page end -->
-  
-  <!-- Normal page -->
-  <div id="normalPage" class="tabcontent">
-    <fieldset>
-        <legend>Normal operation</legend>
-            <table class="settings_table">
-              <tr>
-                <td class="settings_row_name"><label for="maxPower" data-i18n="settings.maxPower">Max power target:</label></td>
-                <td class="settings_row_input">
-                  <select id ="maxPower">
-                    <option value="2000">Trinn 1 - 0-2 kW </option>
-                    <option value="5000" selected>Trinn 2 - 2-5 kW </option>
-                    <option value="10000">Trinn 3 - 5-10 kW </option>
-                    <option valse="15000">Trinn 4 - 10-15 kW </option>
-                    <option value="20000">Trinn 5 - 15-20 kW </option>
-                    <option value="25000">Trinn 6 - 20-25 kW </option>
-                    <option value="50000">Trinn 7 - 25-50 kW </option>
-                    <option value="75000">Trinn 8 - 50-75 kW </option>
-                    <option value="100000">Trinn 9 - 75-100 kW </option>
-                    <option value="inf">Trinn 10 - 100+ kW </option>
-                  </select>
-              </tr>
-            </table>
-          </fieldset>
-    <fieldset>
-      <legend>Daytime</legend>
-        <table class="settings_table">
-          <tr>
-            <td class="settings_row_name"><label for="dayStart">Daytime starts at</label></td>
-            <td class="settings_row_input"><input id="dayStart" type="time" value="08:00" /></td>
-          </tr>
-        </table>
-        <p data-i18n="settings.priorityList">Prioritize devices according to preferences. Devices at the top  are less likely to be turned off.</p>
-        <span id="priorityList0">Please wait for list of devices to be generated...</span>
+    <!-- Global page -->
+    <div id="globalPage" class="tabcontent">
+      <fieldset>
+          <legend>Global settings</legend>
+            <div class="field row">
+              <table class="settings_table">
+                <tr>
+                  <td class="settings_row_name"><label for="operatingMode" data-i18n="settings.operatingMode">Operating Mode</label>:</td>
+                  <td class="settings_row_input">
+                    <select id="operatingMode">
+                      <option value="0" selected>App Disabled</option>
+                    </select>
+                    <div class="hintButton" onclick="toggle(this,'hint1');toggle(this,'hint2');return false;">i</div></td>
+                </tr>
+              </table>
+              <p id="hint1" class="hint" data-i18n="settings.operatingModeHint">Note: To avoid conflicting settings you should disable all flows trying to operate the devices selected below before activating this app.</p>
+              <p id="hint2" class="hint" data-i18n="settings.operatingModeHint">Hint: You can use flow cards to change operating mode</p>
+              <table class="settings_table">
+                <tr>
+                  <td class="settings_row_name"><label for="safetyPower" data-i18n="settings.safetyPower">Reserved power:</label></td>
+                  <td class="settings_row_input"><input id="safetyPower" type="number" min="0" max="100000" value="500" size="10">W 
+                  <div class="hintButton" onclick="toggle(this,'hint3');toggle(this,'hint4');return false;">i</div></td>
+                </tr>
+              </table>
+              <p id="hint3" class="hint" data-i18n="settings.safetyPowerHint">Avoid failing the power target by reserving power to uncontrollable devices.</p>
+              <p id="hint4" class="hint" data-i18n="settings.safetyPowerHint2">Hint: You can use flow cards to change the reserved power during the day. It is reccomended to reserve more power before making dinner.</p>
+          </div>
       </fieldset>
-    <fieldset>
-      <legend>Nighttime</legend>
-        <table class="settings_table">
-          <tr>
-            <td class="settings_row_name"><label for="nightStart">Nighttime starts at</label></td>
-            <td class="settings_row_input"><input id="nightStart" type="time" value="22:00" /></td>
-          </tr>
-          <tr>
-            <td></td>
-            <td>List devices with "on" priorities and temperature+offstate</td>
-          </tr>
-        </table>
-    </fieldset>
-  </div>
-  <!-- Normal page end -->
-
-  <!-- Holiday page -->
-  <div id="holidayPage" class="tabcontent">
-    Holiday
-  </div>
-  <!-- Holiday page end -->
-
-  <!-- PowerSave page -->
-  <div id="powerSavePage" class="tabcontent">
-    PowerSave
-  </div>
-  <!-- PowerSave page end -->
-
-  <!-- Boost page -->
-  <div id="boostPage" class="tabcontent">
-    Boost
-  </div>
-  <!-- Boost page end -->
+      <fieldset>
+        <legend for="highPriDevices" data-i18n="settings.highPriDevices">Controllable devices 
+          <div class="hintButton" onclick="toggle(this,'hintcd1');toggle(this,'hintcd2');return false;">i</div></legend>
+        <p id="hintcd1" class="hint" data-i18n="settings.deviceListHint">Only selected devices can be controlled by the app.</p>
+        <p id="hintcd2" class="hint" data-i18n="settings.deviceListHint">Hint: For best battery lifetime please ensure powerful chargers such as car chargers are set to a power that complies as close as possible with the Power targets. Excessive charging power will result in high on/off switch rate.</p>
+        <span id="highPriDevices">Please wait for list of devices to be generated...</span>
+        <legend for="lowPriDevices" data-i18n="settings.lowPriDevices"><hr></legend>
+        <span id="lowPriDevices">Please wait for list of devices to be generated...</span>
+      </fieldset>
+    </div>
+    <!-- Global page end -->
+    
+    <!-- Priority page -->
+    <div id="priorityPage" class="tabcontent">
+      <fieldset>
+          <legend>Power settings</legend>
+              <table class="settings_table">
+                <tr>
+                  <td class="settings_row_name"><label for="maxPower" data-i18n="settings.maxPower">Max limit:</label></td>
+                  <td class="settings_row_input">
+                    <select id ="maxPower" onchange="maxPowerList[currentMode]=this.value">
+                      <option value="2000">Trinn 1 - 0-2 kW </option>
+                      <option value="5000" selected>Trinn 2 - 2-5 kW </option>
+                      <option value="10000">Trinn 3 - 5-10 kW </option>
+                      <option valse="15000">Trinn 4 - 10-15 kW </option>
+                      <option value="20000">Trinn 5 - 15-20 kW </option>
+                      <option value="25000">Trinn 6 - 20-25 kW </option>
+                      <option value="50000">Trinn 7 - 25-50 kW </option>
+                      <option value="75000">Trinn 8 - 50-75 kW </option>
+                      <option value="100000">Trinn 9 - 75-100 kW </option>
+                      <option value="inf">Trinn 10 - 100+ kW </option>
+                    </select>
+                </tr>
+              </table>
+            </fieldset>
+      <fieldset>
+        <legend>Priorities
+          <div class="hintButton" onclick="toggle(this,'hint6');toggle(this,'hint7');toggle(this,'hint8');return false;">i</div>
+        </legend>
+          <p id="hint6" class="hint" data-i18n="settings.priorityList">Note that the thermostats of the devices are never changed by this app. This app only control the on/off capability.</p>
+          <p id="hint7" class="hint" data-i18n="settings.priorityList">Devices at the top are less likely to be turned off.</p>
+          <p id="hint8" class="hint" data-i18n="settings.priorityList">If a termostat of a controllable device falls outside the temperature limits then this device will act as always on and jump to the top of the priority list until the temperature is within the acceptable range.</p>
+          <span id="priorityList">Please wait for list of devices to be generated...</span>
+        </fieldset>
+    </div>
+    <!-- Priority page end -->
 
     <button id="save" class="right">Save changes</button>
 
     <script type="text/javascript">
       // a method named 'onHomeyReady' must be present in your code
       function onHomeyReady(Homey) {
-        var maxPowerElement = document.getElementById("maxPower");
         var saveElement = document.getElementById("save");
+        var operatingModeElement = document.getElementById("operatingMode");
 
         Homey.get("deviceList", function (err, myDevices) {
           if (err) return Homey.alert(err);
@@ -241,15 +289,28 @@
           generateEnableList('highPriDevices', 1);
           generateEnableList('lowPriDevices', 0);
         })
-        Homey.get("maxPower", function (err, maxPower) {
+        Homey.get("modeList", function (err, myModeList) {
+          modeList = myModeList;
+        })
+        Homey.get("maxPowerList", function (err, maxPower) {
           if (err) return Homey.alert(err);
-          maxPowerElement.value = maxPower;
+          maxPowerList = maxPower;
         });
 
         saveElement.addEventListener("click", function (e) {
-          Homey.set("maxPower", maxPowerElement.value, function (err) {
+          Homey.set("deviceList", deviceList, function (err) {
             if (err) return Homey.alert(err);
           });
+          Homey.set("modeList", modeList, function (err) {
+            if (err) return Homey.alert(err);
+          });
+          Homey.set("maxPowerList", maxPowerList, function (err) {
+            if (err) return Homey.alert(err);
+          });
+          Homey.set("operatingMode", operatingModeElement.value, function (err) {
+            if (err) return Homey.alert(err);
+          });
+          Homey.alert(Homey.__("settings.alert.settingssaved"));
         });
 
         // Hide all tabs except one:
@@ -265,15 +326,27 @@
         var i, tabcontent, tablinks;
 
         // update the deviceLists in the tab
-        if ((modeId >= 0) && (modeId < operatingModes.length)) {
-          modeList[modeId] = []
-          for (var i = 0; i < deviceList.length; i++) {
-            if (deviceList[i].use) {
-              modeList[modeId].push(deviceList[i])
+        if ((modeId >= 0) && (modeId < modeList.length)) {
+          var up_to_date_elements = {};
+          // First remove devices that are no longer in use.
+          for (i = modeList[modeId].length-1; i >= 0 ; i--) {
+            if (!deviceList[modeList[modeId][i].id].use) {
+              modeList[modeId].splice(i, 1);
+            } else {
+              up_to_date_elements[modeList[modeId][i].id] = true;
+            }
+          }
+          // Add new devices
+          for (key in deviceList) {
+            if (deviceList[key].use && !(key in up_to_date_elements)) {
+              modeList[modeId].push({ id: key, operation: CONTROLLED, minTemp: 15, maxTemp: 28 });
             }
           }
           generatePriorityList(modeId);
         }
+
+        currentMode = modeId;
+        document.getElementById("maxPower").value = maxPowerList[modeId];
 
         // Get all elements with class="tabcontent" and hide them
         tabcontent = document.getElementsByClassName("tabcontent");
@@ -313,10 +386,10 @@
 
       // For testing only -
       // Remove when used on homey
-      changeTab(false, 'globalPage');
+      /*changeTab(false, 'globalPage');
       generateEnableList('highPriDevices', 1);
       generateEnableList('lowPriDevices', 0);
-      updateOperatingModes(0);
+      updateOperatingModes(0);*/
     </script>
   </body>
 </html>

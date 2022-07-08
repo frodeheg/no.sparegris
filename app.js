@@ -94,7 +94,7 @@ class PiggyBank extends Homey.App {
   async createDeviceList() {
     const devices = await this.api.devices.getDevices();
 
-    var relevantDevices = [];
+    var relevantDevices = {};
 
     // Loop all devices
     for(var device of Object.values(devices)) {
@@ -116,20 +116,26 @@ class PiggyBank extends Homey.App {
         (device.capabilities.includes("measure_temperature")?1:0) +
         ((device.class == "thermostat" || device.class == "heater")?1:0);
 
-      // Filter out irrelevant devices (preferably done by settings in the future)
-      var isRelevant = (priority > 0) ? true : false;
+      // Filter out irrelevant devices (check old device list if possible)
+      var useDevice = false;
+      var oldDeviceList = this.homey.settings.get('deviceList');
+      if (device.id in oldDeviceList) {
+        useDevice = oldDeviceList[device.id].use;
+      } else {
+        // Never seen before device, set usage based on priority
+        useDevice = (priority > 0) ? true : false;
+      }
 
       this.log("Device: " + String(priority) + " " + device.id + " " + device.name + " " + device.class)
       var relevantDevice = {
-        deviceId: device.id,
         priority: (priority > 0) ? 1 : 0,
         name: device.name,
         room: device.zoneName,
         image: device.iconObj.url,
         onoff_cap: onoff_cap,
-        use: isRelevant
+        use: useDevice
       };
-      relevantDevices.push(relevantDevice)
+      relevantDevices[device.id] = relevantDevice;
     }
     // Turn device on
     return relevantDevices
