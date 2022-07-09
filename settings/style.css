@@ -117,6 +117,8 @@ p {
     float:left;
     margin:0px;
     padding:0px;
+    width:25px;
+    height:auto;
 }
     
 .device-list p,h3 {
@@ -142,9 +144,17 @@ p {
   display: inline-block;
   text-align:center;
   font-weight: bold;
-  font-size: 3vw;
-  width: 100px;
+  font-size: 10px;
+  width: 70px;
   border: 1px solid black;
   border-radius: 15px;
   background-image: radial-gradient(white, rgb(150, 255, 150), green);
+}
+
+#operatingMode {
+  width:120px;
+}
+
+#safetyPower {
+  width:90px;
 }

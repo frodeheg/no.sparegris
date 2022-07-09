@@ -33,7 +33,8 @@
         2000, // Holiday
         2000  // Boost
       ]
-      var currentMode = 0; // Normal
+      var currentOperatingMode = 0;
+      var currentModeTab = 0; // Normal
 
       var operatingModes = [
         { name:"App Disabled", value: 0 },
@@ -53,7 +54,7 @@
           var enabledImg = device.use ? "enabled.png" : "disabled.png"
           gen_list +=
             '<tr>' +
-            '  <td><img src="' + device.image + '" alt="icon" width="auto" height="30"></td>' +
+            '  <td><img src="' + device.image + '" alt="icon"></td>' +
             '  <td><input type="image" width="40" height="20" src="' + enabledImg + '" onclick="toggleEnableDevice(event, \'' + String(key) + '\')" id="enableDevice' + String(key) + '"></td>' +
             '  <td><h3>' + device.name + '</h3></td>' +
             '  <td><p>' + device.room + '</p></td>' +
@@ -184,6 +185,7 @@
     <h1 data-i18n="settings.title">Settings</h1>
     <p data-i18n="settings.subtitle">Subtitle</p>
 
+    <div data-i18n="settings.loadingText" id="loadingText">Loading...</div>
 
     <!-- Tabs -->
     <div class="tab">
@@ -247,7 +249,7 @@
                 <tr>
                   <td class="settings_row_name"><label for="maxPower" data-i18n="settings.maxPower">Max limit:</label></td>
                   <td class="settings_row_input">
-                    <select id ="maxPower" onchange="maxPowerList[currentMode]=this.value">
+                    <select id ="maxPower" onchange="maxPowerList[currentModeTab]=this.value">
                       <option value="2000">Trinn 1 - 0-2 kW </option>
                       <option value="5000" selected>Trinn 2 - 2-5 kW </option>
                       <option value="10000">Trinn 3 - 5-10 kW </option>
@@ -277,6 +279,28 @@
     <button id="save" class="right">Save changes</button>
 
     <script type="text/javascript">
+      var operatingModeLoaded = false;
+      var maxPowerListLoaded = false;
+      var deviceListLoaded = false;
+      var modeListLoaded = false;
+      // Called whenever things has been loaded
+      function checkLoadingDone() {
+        var loadElement = document.getElementById("loadingText");
+        if (maxPowerListLoaded && deviceListLoaded && modeListLoaded && operatingModeLoaded) {
+          // Update device enable list:
+          generateEnableList('highPriDevices', 1);
+          generateEnableList('lowPriDevices', 0);
+
+          // Hide all tabs except one:
+          changeTab(false, 'globalPage');
+          updateOperatingModes(currentOperatingMode);
+          loadElement.style.display = "none";
+        } else {
+          loadElement.innerHTML="Loading state: " + String(maxPowerListLoaded) + " " + String(deviceListLoaded) + " " + String(modeListLoaded) + String(operatingModeLoaded);
+        }
+        
+      }
+
       // a method named 'onHomeyReady' must be present in your code
       function onHomeyReady(Homey) {
         var saveElement = document.getElementById("save");
@@ -285,16 +309,42 @@
         Homey.get("deviceList", function (err, myDevices) {
           if (err) return Homey.alert(err);
           deviceList = myDevices;
-          // Update device enable list:
-          generateEnableList('highPriDevices', 1);
-          generateEnableList('lowPriDevices', 0);
+          deviceListLoaded = true;
+          checkLoadingDone();
         })
         Homey.get("modeList", function (err, myModeList) {
-          modeList = myModeList;
+          if (err) return Homey.alert(err);
+          if (Array.isArray(myModeList)) {
+            modeList = myModeList;
+          } else {
+            // First time called
+            modeList = [
+              [], // Normal
+              [], // Night
+              [], // Holiday
+              []  // Boost
+            ]
+          }
+          modeListLoaded = true;
+          checkLoadingDone();
         })
         Homey.get("maxPowerList", function (err, maxPower) {
           if (err) return Homey.alert(err);
-          maxPowerList = maxPower;
+          if (Array.isArray(maxPower)) {
+            maxPowerList = maxPower;
+          } // else use defaults set from the top (this is the first time)
+          maxPowerListLoaded = true;
+          checkLoadingDone();
+        });
+        Homey.get("operatingMode", function (err, operatingMode) {
+          if (err) return Homey.alert(err);
+          if (operatingMode != NaN) {
+            currentOperatingMode = operatingMode;
+          } else {
+            currentOperatingMode = 0;
+          }
+          operatingModeLoaded = true;
+          checkLoadingDone();
         });
 
         saveElement.addEventListener("click", function (e) {
@@ -313,10 +363,6 @@
           Homey.alert(Homey.__("settings.alert.settingssaved"));
         });
 
-        // Hide all tabs except one:
-        changeTab(false, 'globalPage');
-        updateOperatingModes(0);
-
         // Tell Homey we're ready to be displayed
         Homey.ready();
       }
@@ -326,7 +372,7 @@
         var i, tabcontent, tablinks;
 
         // update the deviceLists in the tab
-        if ((modeId >= 0) && (modeId < modeList.length)) {
+        if ((modeId != undefined) && (modeId >= 0) && (modeId < modeList.length)) {
           var up_to_date_elements = {};
           // First remove devices that are no longer in use.
           for (i = modeList[modeId].length-1; i >= 0 ; i--) {
@@ -343,10 +389,9 @@
             }
           }
           generatePriorityList(modeId);
+          currentModeTab = modeId;
+          document.getElementById("maxPower").value = maxPowerList[modeId];
         }
-
-        currentMode = modeId;
-        document.getElementById("maxPower").value = maxPowerList[modeId];
 
         // Get all elements with class="tabcontent" and hide them
         tabcontent = document.getElementsByClassName("tabcontent");

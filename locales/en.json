@@ -2,6 +2,9 @@
   "settings": {
     "title": "PiggyBank Settings",
     "subtitle": "Power settings",
-    "maxPower": "Maximum power"
+    "maxPower": "Maximum power",
+    "alert": {
+      "settingssaved": "Your changes have been saved."
+    }
   }
 }
