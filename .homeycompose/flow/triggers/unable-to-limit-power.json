@@ -1,19 +1,23 @@
 {
   "title": {
-    "en": "Unable to limit power"
+    "en": "Unable to limit power",
+    "no": "Klarer ikke å begrense strømforbruket"
   },
   "titleFormatted": {
-    "en": "Could not reduce power usage. Turn off [[excessPower]] Watts immediately or the power-tariff for next month will be increased."
+    "en": "Could not reduce power usage. Turn off [[excessPower]] Watts immediately or the power-tariff for next month will be increased.",
+    "no": "Klarer ikke å begrense strømforbruket. Slå av [[excessPower]] Watt umiddelbart ellers vil effekt-tariffen for neste måned øke."
   },
   "hint": {
-    "en": "Use this condition as a last resort to limit energy. Reccomended to alert all users that power usage must be reduced / turn off all devices."
+    "en": "Use this condition as a last resort to limit energy. Reccomended to alert all users that power usage must be reduced / turn off all devices.",
+    "no": "Brukes som en siste utvei for å begrense energiforbruk. Det er anbefalt å sende en melding til alle som forbruker ukontrollerbar strøm om å begrense forbruket umiddelbart."
   },
   "args": [
     {
       "type": "number",
       "name": "excessPower",
       "placeholder": {
-        "en": "excessPower"
+        "en": "Excess Power",
+        "no": "Overskytende effekt"
       },
       "min": 1,
       "max": 100000,
@@ -25,10 +29,12 @@
       "type": "number",
       "name": "excess-power",
       "title": {
-        "en": "Excess Power"
+        "en": "Excess Power",
+        "no": "Overskytende effekt"
       },
       "example": {
-        "en": "The amount of power that is above the power threshold"
+        "en": "The amount of Watt that exceeds the power threshold",
+        "no": "Antall Watt som overskyter effekttaket"
       }
     }
   ]

@@ -2,7 +2,53 @@
   "settings": {
     "title": "PiggyBank Settings",
     "subtitle": "Power settings",
-    "maxPower": "Maximum power",
+    "loadingText": "Please wait while devices are being loaded... (approx. 1.5 seconds per 10 devices you have)...",
+    "tab": {
+      "global": "Global",
+      "normal": "Normal",
+      "night": "Night",
+      "holiday": "Holiday",
+      "boost": "Boost"
+    },
+    "global": {
+      "settings": "Global Settings",
+      "operatingMode" : "Operating Mode",
+      "operatingModeHint1": "Note: To avoid conflicting settings you should disable all flows trying to operate the devices selected below before activating this app.",
+      "operatingModeHint2": "Hint: You can use flow cards to change operating mode.",
+      "errorMargin" : "Error Margin",
+      "errorMarginHint1" : "Ensure that you always end up a bit below the effect tariff.",
+      "errorMarginHint2" : "Hint: This give you room for a minor overuse another day as the tariff is based on a 3 day average.",
+      "safetyPower" : "Reserved power",
+      "safetyPowerHint1" : "Avoid failing the power target by reserving power to uncontrollable devices.",
+      "safetyPowerHint2" : "Hint: You can use flow cards to change the reserved power during the day. It is reccomended to reserve more power before making dinner.",
+      "controllableDevices": "Controllable devices",
+      "deviceListHint1" : "Only selected devices can be controlled by the app.",
+      "deviceListHint2" : "Hint: For best battery lifetime please ensure powerful chargers such as car chargers are set to a power that complies as close as possible with the Power targets. Excessive charging power will result in high on/off switch rate."
+      },
+    "mode" : {
+      "powerSettings": "Power settings",
+      "maxPower": "Max limit",
+      "powerLimit1" : "Step 1 - 0-2 kW",
+      "powerLimit2" : "Step 2 - 2-5 kW",
+      "powerLimit3" : "Step 3 - 5-10 kW",
+      "powerLimit4" : "Step 4 - 10-15 kW",
+      "powerLimit5" : "Step 5 - 15-20 kW",
+      "powerLimit6" : "Step 6 - 20-25 kW",
+      "powerLimit7" : "Step 7 - 25-50 kW",
+      "powerLimit8" : "Step 8 - 50-75 kW",
+      "powerLimit9" : "Step 9 - 75-100 kW",
+      "powerLimit10" : "Step 10 - 100+ kW",
+      "priorities" : "Priorities",
+      "priorityHint1": "Note that the thermostats of the devices are never changed by this app. This app only control the on/off capability.",
+      "priorityHint2": "Devices at the top are less likely to be turned off.",
+      "priorityHint3": "If a termostat of a controllable device falls outside the temperature limits then this device will act as always on and jump to the top of the priority list until the temperature is within the acceptable range.",
+      "controlled": "Controlled",
+      "alwaysOn": "Always On",
+      "alwaysOff": "Always Off",
+      "device": "Device",
+      "priority": "Priority"
+    },
+    "saveButton": "Save changes",
     "alert": {
       "settingssaved": "Your changes have been saved."
     }

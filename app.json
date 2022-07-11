@@ -58,24 +58,34 @@
       }
     ]
   },
+  "api": {
+    "requestDeviceListRefresh": {
+      "method": "GET",
+      "path": "/requestDeviceListRefresh"
+    }
+  },
   "flow": {
     "triggers": [
       {
         "title": {
-          "en": "Unable to limit power"
+          "en": "Unable to limit power",
+          "no": "Klarer ikke å begrense strømforbruket"
         },
         "titleFormatted": {
-          "en": "Could not reduce power usage. Turn off [[excessPower]] Watts immediately or the power-tariff for next month will be increased."
+          "en": "Could not reduce power usage. Turn off [[excessPower]] Watts immediately or the power-tariff for next month will be increased.",
+          "no": "Klarer ikke å begrense strømforbruket. Slå av [[excessPower]] Watt umiddelbart ellers vil effekt-tariffen for neste måned øke."
         },
         "hint": {
-          "en": "Use this condition as a last resort to limit energy. Reccomended to alert all users that power usage must be reduced / turn off all devices."
+          "en": "Use this condition as a last resort to limit energy. Reccomended to alert all users that power usage must be reduced / turn off all devices.",
+          "no": "Brukes som en siste utvei for å begrense energiforbruk. Det er anbefalt å sende en melding til alle som forbruker ukontrollerbar strøm om å begrense forbruket umiddelbart."
         },
         "args": [
           {
             "type": "number",
             "name": "excessPower",
             "placeholder": {
-              "en": "excessPower"
+              "en": "Excess Power",
+              "no": "Overskytende effekt"
             },
             "min": 1,
             "max": 100000,
@@ -87,10 +97,12 @@
             "type": "number",
             "name": "excess-power",
             "title": {
-              "en": "Excess Power"
+              "en": "Excess Power",
+              "no": "Overskytende effekt"
             },
             "example": {
-              "en": "The amount of power that is above the power threshold"
+              "en": "The amount of Watt that exceeds the power threshold",
+              "no": "Antall Watt som overskyter effekttaket"
             }
           }
         ],
@@ -100,13 +112,16 @@
     "actions": [
       {
         "title": {
-          "en": "Change Piggy Bank mode"
+          "en": "Change Piggy Bank mode",
+          "no": "Endre Sparegris modus"
         },
         "titleFormatted": {
-          "en": "Set the Piggy Bank operation mode to [[mode]]"
+          "en": "Set the Piggy Bank operation mode to [[mode]]",
+          "no": "Sett Sparegris operasjonsmodus til [[mode]]"
         },
         "hint": {
-          "en": "Allows you to switch between holiday mode and normal operation"
+          "en": "Allows you to switch between holiday mode and normal operation",
+          "no": "Tillater deg å bytte mellom ferie, natt og normal modus"
         },
         "args": [
           {
@@ -116,25 +131,29 @@
               {
                 "id": "mode-normal",
                 "label": {
-                  "en": "Normal"
+                  "en": "Normal",
+                  "no": "Normal"
+                }
+              },
+              {
+                "id": "mode-night",
+                "label": {
+                  "en": "Night",
+                  "no": "Natt"
                 }
               },
               {
                 "id": "mode-holiday",
                 "label": {
-                  "en": "Holiday"
-                }
-              },
-              {
-                "id": "mode-powersave",
-                "label": {
-                  "en": "Powersave"
+                  "en": "Holiday",
+                  "no": "Ferie"
                 }
               },
               {
                 "id": "mode-boost",
                 "label": {
-                  "en": "Boost"
+                  "en": "Boost",
+                  "no": "Boost"
                 }
               }
             ]
@@ -144,20 +163,55 @@
       },
       {
         "title": {
-          "en": "Update PiggyBank with the total energy used"
+          "en": "Change Reserved Power",
+          "no": "Endre reservert effekt"
         },
         "titleFormatted": {
-          "en": "Set the total energy used to [[TotalEnergyUsage]] kWh"
+          "en": "Set the reserved power to [[reserved]]",
+          "no": "Sett reservert effekt til [[reserved]]"
         },
         "hint": {
-          "en": "Attach the total energy usage output of your energy meter to this action card in order to enable the app"
+          "en": "Allows you to reserve power for uncontrollable devices, such as when making dinner",
+          "no": "Tillater deg å reservere effekt for ukontrollerbare enheter, for eksempel til middagslaging"
+        },
+        "args": [
+          {
+            "type": "number",
+            "min": 0,
+            "max": 100000,
+            "placeholder": {
+              "en": "Number of Watts",
+              "no": "Antall Watt"
+            },
+            "title": {
+              "en": "Reserved power",
+              "no": "Reservert effekt"
+            },
+            "name": "reserved"
+          }
+        ],
+        "id": "change-piggy-bank-safety-power"
+      },
+      {
+        "title": {
+          "en": "Update PiggyBank with the total energy used",
+          "no": "Oppdater Sparegris med totalt energiforbruk"
+        },
+        "titleFormatted": {
+          "en": "Set the total energy used to [[TotalEnergyUsage]] kWh",
+          "no": "Sett totalt energiforbruk til [[TotalEnergyUsage]] kWh"
+        },
+        "hint": {
+          "en": "Attach the total energy usage output of your energy meter to this action card in order to enable the app",
+          "no": "Koble total energiforbruk fra strømmåleren din til dette kortet for å få appen til å virke"
         },
         "args": [
           {
             "type": "number",
             "name": "TotalEnergyUsage",
             "placeholder": {
-              "en": "Connect to energy meter total energy usage"
+              "en": "Connect to energy meter total energy usage",
+              "no": "Koble til strømmålerens avlesning for totalt energiforbruk"
             },
             "min": 0,
             "step": 0.01
@@ -167,20 +221,24 @@
       },
       {
         "title": {
-          "en": "Update PiggyBank with new Power usage"
+          "en": "Update PiggyBank with new Power usage",
+          "no": "Oppdater Sparegris med nåværende effektbruk"
         },
         "titleFormatted": {
-          "en": "Set the current power to [[CurrentPower]] W"
+          "en": "Set the current power to [[CurrentPower]] W",
+          "no": "Endre nåværende effektbruk til [[CurrentPower]] W"
         },
         "hint": {
-          "en": "Attach the current power usage output of your energy meter to this action card in order to enable the app"
+          "en": "Attach the current power usage output of your energy meter to this action card in order to enable the app",
+          "no": "Denne appen vil ikke virke med mindre du sender strømmålerens avlesning av nåværende effektbruk til denne appen"
         },
         "args": [
           {
             "type": "number",
             "name": "CurrentPower",
             "placeholder": {
-              "en": "Connect to energy meter current power usage"
+              "en": "Connect to energy meter current power usage",
+              "no": "Koble til strømmålerens avlesning av nåværende effektbruk"
             },
             "min": 0,
             "max": 100000,

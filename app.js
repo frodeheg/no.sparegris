@@ -5,6 +5,11 @@ const Mutex = require('async-mutex').Mutex;
 const { HomeyAPIApp } = require('homey-api');
 const { stringify } = require('querystring');
 
+// Operation for controlled devices
+const ALWAYS_OFF = 0;
+const ALWAYS_ON = 1;
+const CONTROLLED = 2;
+
 class PiggyBank extends Homey.App {
 
   /**
@@ -27,6 +32,8 @@ class PiggyBank extends Homey.App {
     this.__current_power_time = undefined
     this.__accum_energy = undefined
     this.__reserved_energy = 0
+    this.__last_power_off_time = new Date();
+    this.__last_power_on_time = new Date();
     this.mutex = new Mutex();
 
     this.api = new HomeyAPIApp({
@@ -41,7 +48,7 @@ class PiggyBank extends Homey.App {
     }
 
     // Create list of devices
-    this.__deviceList = await this.createDeviceList();
+    await this.createDeviceList();
     this.homey.settings.set('deviceList', this.__deviceList);
 
     this.log("settings was set to: " + String(this.homey.settings.get('deviceList')))
@@ -59,6 +66,10 @@ class PiggyBank extends Homey.App {
     const cardActionModeUpdate = this.homey.flow.getActionCard('change-piggy-bank-mode')
     cardActionModeUpdate.registerRunListener(async (args) => {
       this.onModeUpdate(args.mode);
+    })
+    const cardActionSafetyPowerUpdate = this.homey.flow.getActionCard('change-piggy-bank-safety-power')
+    cardActionSafetyPowerUpdate.registerRunListener(async (args) => {
+      this.onSafetyPowerUpdate(args.mode);
     })
 
     // Monitor energy usage every 5 minute:
@@ -98,9 +109,10 @@ class PiggyBank extends Homey.App {
 
     // Loop all devices
     for(var device of Object.values(devices)) {
-      // Relevant Devices must have onoff capability
-      // Unfortunately some devices like the Sensibo heat pump controller invented their own onoff capability
-      // so the actual name of the onoff capability must be recorded
+      // Relevant Devices must have an onoff capability
+      // Unfortunately some devices like the SensiboSky heat pump controller invented their own onoff capability
+      // so unless specially handled the capability might not be detected. The generic detection mechanism below
+      // has only been tested on SensiboSky devices so there might be problems with other devices with custom onoff capabilities
       var onoff_cap = device.capabilities.includes("onoff") ? "onoff" : device.capabilities.find(cap => { if (cap.includes("onoff")) { return cap;}});
       if (onoff_cap === undefined) {
         this.log("ignoring: " + device.name)
@@ -138,7 +150,8 @@ class PiggyBank extends Homey.App {
       relevantDevices[device.id] = relevantDevice;
     }
     // Turn device on
-    return relevantDevices
+    this.__deviceList = relevantDevices;
+    return;
   }
 
 
@@ -207,20 +220,30 @@ class PiggyBank extends Homey.App {
     this.__estimated_end_usage = this.__accum_energy + newPower*remaining_time/(1000*60*60);
 
     // Check if power can be increased or reduced
-    const maxPower = this.homey.settings.get('maxPower')
+    const errorMargin = this.homey.settings.get('errorMargin') ? (parseInt(this.homey.settings.get('errorMargin'))/100.) : 1.;
+    const trueMaxPower = this.homey.settings.get('maxPower');
+    const errorMarginWatts = trueMaxPower * errorMargin;
+    const maxPower = trueMaxPower - errorMarginWatts;
+    const safetyPower = this.homey.settings.get("safetyPower");
 
     this.log("onPowerUpdate: "
       + "Using: " + String(newPower) + "W, "
       + "Accum: " + String(this.__accum_energy.toFixed(2)) + " Wh, "
       + "Limit: " + String(maxPower) + " Wh, "
-      + "Reserved: " + String(this.__reserved_energy) + "W, "
+      + "Reserved: " + String(Math.ceil(this.__reserved_energy + safetyPower)) + "W, "
       + "(Estimated end: " + String(this.__estimated_end_usage.toFixed(2)) + ")")
 
-    var power_diff = ((maxPower - this.__accum_energy - this.__reserved_energy) * (1000*60*60) / remaining_time) - newPower;
+    // Do not attempt to control any devices if the app is disabled
+    if (this.homey.settings.get("operatingMode") == 0) { // App is disabled
+        return;
+    }
+
+    // Try to control devices if the power is outside of the preferred bounds
+    var power_diff = ((maxPower - this.__accum_energy - this.__reserved_energy) * (1000*60*60) / remaining_time) - newPower - safetyPower;
     if (power_diff < 0) {
       this.onAbovePowerLimit(-power_diff)
     } else if (power_diff > 0) {
-      this.onBelowPowerLimit(power_diff)
+      this.onBelowPowerLimit(power_diff, errorMarginWatts)
     }
   }
 
@@ -229,7 +252,21 @@ class PiggyBank extends Homey.App {
    * onModeUpdate is called whenever the operation mode is changed
    */
   async onModeUpdate(newMode) {
-    this.log("The current mode changed to: " + String(newMode))
+    this.log("Changing the current mode to: " + String(newMode));
+    this.homey.set("operatingMode", newMode, function (err) {
+      if (err) return this.homey.alert(err);
+    });
+  }
+
+
+  /**
+   * onSafetyPowerUpdate is called whenever the safety power is changed
+   */
+   async onSafetyPowerUpdate(newVal) {
+    this.log("Changing the current safety power to: " + String(newVal));
+    this.homey.set("safetyPower", newVal, function (err) {
+      if (err) return this.homey.alert(err);
+    });
   }
 
 
@@ -237,29 +274,103 @@ class PiggyBank extends Homey.App {
    * onBelowPowerLimit is called whenever power changed and we're allowed to use more power
    */
   async onBelowPowerLimit(morePower) {
-    this.log("Can use " + String(morePower) + "W more power")
-
-//    this.log("hmmm devicelist")
-//    await this.__deviceList[0].device.setCapabilityValue({ capabilityId: 'onoff', value: true }); 
-//    this.log("jadda")
-
-    var numDevices = this.__deviceList.length;
-    for (var idx = 0; idx < numDevices; idx++) {
-      const device = await this.api.devices.getDevice({id: this.__deviceList[idx].deviceId });
-      const isOn = await (this.__deviceList[idx].onoff_cap === undefined) ? undefined : device.capabilitiesObj[this.__deviceList[idx].onoff_cap].value;
-      //await device.setCapabilityValue({ capabilityId: 'onoff', value: true }); 
-      //"measure_power"
-      this.log("Num: " + String(idx) + " on: " + String(isOn))
+    morePower = Math.round(morePower);
+    // If power was turned _OFF_ within the last 5 minutes then abort turning on anything
+    // This is to avoid excessive on/off cycles of high power devices such as electric car chargers
+    this.__last_power_on_time = new Date();
+    var time_since_poweroff = this.__last_power_on_time - this.__last_power_off_time;
+    if (time_since_poweroff < 5*60*1000) {
+      this.log("Could use " + String(morePower) + " W more power but was aborted due to recent turn off activity. Remaining wait = " + String((5*60*1000-time_since_poweroff)/1000) + " s");
+      return;
+    } else {
+      this.log("Can use " + String(morePower) + "W more power")
     }
+
+    var modeList = this.homey.settings.get('modeList');
+    var currentMode = this.homey.settings.get('operatingMode');
+    var currentModeList = modeList[currentMode-1];
+    var numDevices = currentModeList.length;
+    // Turn on devices from top down in the priority list
+    // Only turn on one device at the time
+    for (var idx = 0; idx < numDevices; idx++) {
+      const deviceId = currentModeList[idx].id;
+      const device = await this.api.devices.getDevice({id: deviceId });
+      const isOn = await (this.__deviceList[deviceId].onoff_cap === undefined) ? undefined : device.capabilitiesObj[this.__deviceList[deviceId].onoff_cap].value;
+      var wantOn = false;
+      // Check if the on state complies with the settings
+      switch (currentModeList[idx].operation) {
+        case CONTROLLED:
+        case ALWAYS_ON:
+          wantOn = true;
+          break;
+        case ALWAYS_OFF:
+          wantOn = false;
+          break;
+      }
+      if (wantOn && !isOn) {
+        // Turn on
+        const deviceName = this.__deviceList[deviceId].name;
+        this.log("Turning on device: " + deviceName)
+        device.setCapabilityValue({ capabilityId: this.__deviceList[deviceId].onoff_cap, value: true });
+        return;
+      } // ignore case !wantOn && isOn
+      //"measure_power"
+      //this.log("Num: " + String(idx) + " on: " + String(isOn) + "    | " + deviceName + " op: " + String(currentMode) + " " + String(wantOn))
+    }
+    // If this point was reached then all devices are on and still below power limit
   }
 
 
   /**
    * onReducePower is called whenever power changed and we use too much
    */
-  async onAbovePowerLimit(lessPower) {
-    this.log("Must reduce power usage by " + String(lessPower) + "W")
-    this.homey.notifications.createNotification({excerpt: "The power must be reduced by " + String(lessPower) + " W immediately or the hourly limit will be breached"})
+  async onAbovePowerLimit(lessPower, errorMarginWatts) {
+    lessPower = Math.ceil(lessPower);
+
+    // Do not care whether devices was just recently turned on
+    this.__last_power_off_time = new Date();
+
+    var modeList = this.homey.settings.get('modeList');
+    var currentMode = this.homey.settings.get('operatingMode');
+    var currentModeList = modeList[currentMode-1];
+    var numDevices = currentModeList.length;
+    // Turn off devices from bottom and up in the priority list
+    // Only turn off one device at the time
+    var numForcedOnDevices = 0;
+    for (var idx = numDevices-1; idx >= 0; idx--) {
+      const deviceId = currentModeList[idx].id;
+      const device = await this.api.devices.getDevice({id: deviceId });
+      const isOn = await (this.__deviceList[deviceId].onoff_cap === undefined) ? undefined : device.capabilitiesObj[this.__deviceList[deviceId].onoff_cap].value;
+      var wantOff = false;
+      // Check if the on state complies with the settings
+      switch (currentModeList[idx].operation) {
+        case CONTROLLED:
+        case ALWAYS_OFF:
+          wantOff = true;
+          break;
+        case ALWAYS_ON:
+          wantOff = false;
+          break;
+      }
+      if (wantOff && isOn) {
+        // Turn off
+        const deviceName = this.__deviceList[deviceId].name;
+        this.log("Turning off device: " + deviceName)
+        device.setCapabilityValue({ capabilityId: this.__deviceList[deviceId].onoff_cap, value: false });
+        return;
+      } else if (!wantOff && isOn) {
+        numForcedOnDevices++;
+      }
+      //"measure_power"
+      //this.log("Num: " + String(idx) + " on: " + String(isOn) + "    | " + deviceName + " op: " + String(currentMode) + " " + String(wantOn))
+    }
+
+    // If this point was reached then all devices are off and still above power limit
+    this.log("Failed to reduce power usage by " + String(lessPower) + "W (number of forced on devices: " + String(numForcedOnDevices) + ")");
+    // Alert the user, but not if first hour since app was started or we are within the error margin
+    var firstHourEver = this.__reserved_energy > 0;
+    if (!firstHourEver && (lessPower > errorMarginWatts))
+      this.homey.notifications.createNotification({excerpt: "Alert: The power must be reduced by " + String(lessPower) + " W immediately or the hourly limit will be breached"})
   }
 
 

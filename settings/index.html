@@ -7,6 +7,12 @@
     <link href="style.css" rel="stylesheet" type="text/css">
     <script type="text/javascript">
 
+      var deviceText = "settings.mode.device";
+      var priorityText = "settings.mode.priority";
+      var alwaysOnText = "settings.mode.alwaysOn";
+      var alwaysOffText = "settings.mode.alwaysOff";
+      var controlledText = "settings.mode.controlled";
+
       const KEEP = -1;
       const ALWAYS_OFF = 0;
       const ALWAYS_ON = 1;
@@ -34,6 +40,8 @@
         2000  // Boost
       ]
       var currentOperatingMode = 0;
+      var currentErrorMargin = 5;
+      var currentSafetyPower = 500;
       var currentModeTab = 0; // Normal
 
       var operatingModes = [
@@ -51,7 +59,7 @@
           var device = deviceList[key];
           if (device.priority != priority)
             continue;
-          var enabledImg = device.use ? "enabled.png" : "disabled.png"
+          var enabledImg = device.use ? "enabled.png" : "disabled.png";
           gen_list +=
             '<tr>' +
             '  <td><img src="' + device.image + '" alt="icon"></td>' +
@@ -75,7 +83,7 @@
         var options = '';
         for (var i = 0; i < operatingModes.length; i++) {
           options += '<option value="' + operatingModes[i].value + '" ' 
-            + ((selectedMode===i) ? 'selected' : '') + '>' + operatingModes[i].name + '</option>';
+            + ((selectedMode==i) ? 'selected' : '') + '>' + operatingModes[i].name + '</option>';
         }
         list.innerHTML = options;
       }
@@ -86,8 +94,8 @@
           '<table class=device-list>' +
             '<tr>' +
               '<th>&nbsp;</th>' +
-              '<th align="left" colspan="2">Device</th>' +
-              '<th align="left" >Priority</th>' +
+              '<th align="left" colspan="2">' + deviceText + '</th>' +
+              '<th align="left">' + priorityText + '</th>' +
             '</tr>';
         for (var i = 0; i < modeList[listNum].length; i++) {
           var device = deviceList[modeList[listNum][i].id];
@@ -127,15 +135,15 @@
         modeList[listNum][device_id].operation = newstate;
         switch (modeList[listNum][device_id].operation) {
           case ALWAYS_OFF:
-            button.innerHTML='Always off';
+            button.innerHTML=alwaysOffText;
             button.style.backgroundImage = 'radial-gradient(white, lightgray, gray)';
             break;
           case ALWAYS_ON:
-            button.innerHTML='Always on';
+            button.innerHTML=alwaysOnText;
             button.style.backgroundImage = 'radial-gradient(white, rgb(255, 150, 150), red)';
             break;
           case CONTROLLED:
-            button.innerHTML='Controlled';
+            button.innerHTML=controlledText;
             button.style.backgroundImage = 'radial-gradient(white, rgb(150, 255, 150), green)';
             break;
         }
@@ -182,33 +190,33 @@
 
   <body>
 
-    <h1 data-i18n="settings.title">Settings</h1>
-    <p data-i18n="settings.subtitle">Subtitle</p>
+    <h1 data-i18n="settings.title">.title</h1>
+    <p data-i18n="settings.subtitle">.subtitle</p>
 
-    <div data-i18n="settings.loadingText" id="loadingText">Loading...</div>
+    <div data-i18n="settings.loadingText" id="loadingText">loadingText</div>
 
     <!-- Tabs -->
-    <div class="tab">
+    <div id="tab_selector" class="tab">
       <button class="tablinks" onclick="changeTab(event, 'globalPage')" id="globalTab"><span
-          data-i18n="settings.tab.global">Global</span></button>
+          data-i18n="settings.tab.global">tab.global</span></button>
       <button class="tablinks" onclick="changeTab(event, 'priorityPage', 0)" id="normalTab"><span
-          data-i18n="settings.tab.normal">Normal</span></button>
+          data-i18n="settings.tab.normal">tab.normal</span></button>
       <button class="tablinks" onclick="changeTab(event, 'priorityPage', 1)" id="nightTab"><span
-          data-i18n="settings.tab.night">Night</span></button>
+          data-i18n="settings.tab.night">tab.night</span></button>
       <button class="tablinks" onclick="changeTab(event, 'priorityPage', 2)" id="holidayTab"><span
-          data-i18n="settings.tab.holiday">Holiday</span></button>
+          data-i18n="settings.tab.holiday">tab.holiday</span></button>
       <button class="tablinks" onclick="changeTab(event, 'priorityPage', 3)" id="boostTab"><span
-          data-i18n="settings.tab.boost">Boost</span></button>
+          data-i18n="settings.tab.boost">tab.boost</span></button>
     </div>
 
     <!-- Global page -->
     <div id="globalPage" class="tabcontent">
       <fieldset>
-          <legend>Global settings</legend>
+          <legend data-i18n="settings.global.settings">global.settings</legend>
             <div class="field row">
               <table class="settings_table">
                 <tr>
-                  <td class="settings_row_name"><label for="operatingMode" data-i18n="settings.operatingMode">Operating Mode</label>:</td>
+                  <td class="settings_row_name"><label for="operatingMode" data-i18n="settings.global.operatingMode">global.operatingMode</label>:</td>
                   <td class="settings_row_input">
                     <select id="operatingMode">
                       <option value="0" selected>App Disabled</option>
@@ -216,77 +224,90 @@
                     <div class="hintButton" onclick="toggle(this,'hint1');toggle(this,'hint2');return false;">i</div></td>
                 </tr>
               </table>
-              <p id="hint1" class="hint" data-i18n="settings.operatingModeHint">Note: To avoid conflicting settings you should disable all flows trying to operate the devices selected below before activating this app.</p>
-              <p id="hint2" class="hint" data-i18n="settings.operatingModeHint">Hint: You can use flow cards to change operating mode</p>
+              <p id="hint1" class="hint" data-i18n="settings.global.operatingModeHint1">global.operatingModeHint1</p>
+              <p id="hint2" class="hint" data-i18n="settings.global.operatingModeHint2">global.operatingModeHint2</p>
+
               <table class="settings_table">
                 <tr>
-                  <td class="settings_row_name"><label for="safetyPower" data-i18n="settings.safetyPower">Reserved power:</label></td>
+                  <td class="settings_row_name"><label for="errorMargin" data-i18n="settings.global.errorMargin">global.errorMargin</label>:</td>
+                  <td class="settings_row_input"><input id="errorMargin" type="number" min="0" max="30" value="5" size="10">% 
+                  <div class="hintButton" onclick="toggle(this,'hintEm1');toggle(this,'hintEm2');return false;">i</div></td>
+                </tr>
+              </table>
+              <p id="hintEm1" class="hint" data-i18n="settings.global.errorMarginHint1">global.errorMarginHint1</p>
+              <p id="hintEm2" class="hint" data-i18n="settings.global.errorMarginHint2">global.errorMarginHint2</p>
+
+              <table class="settings_table">
+                <tr>
+                  <td class="settings_row_name"><label for="safetyPower" data-i18n="settings.global.safetyPower">global.safetyPower</label>:</td>
                   <td class="settings_row_input"><input id="safetyPower" type="number" min="0" max="100000" value="500" size="10">W 
                   <div class="hintButton" onclick="toggle(this,'hint3');toggle(this,'hint4');return false;">i</div></td>
                 </tr>
               </table>
-              <p id="hint3" class="hint" data-i18n="settings.safetyPowerHint">Avoid failing the power target by reserving power to uncontrollable devices.</p>
-              <p id="hint4" class="hint" data-i18n="settings.safetyPowerHint2">Hint: You can use flow cards to change the reserved power during the day. It is reccomended to reserve more power before making dinner.</p>
+              <p id="hint3" class="hint" data-i18n="settings.global.safetyPowerHint1">global.safetyPowerHint1</p>
+              <p id="hint4" class="hint" data-i18n="settings.global.safetyPowerHint2">global.safetyPowerHint2</p>
           </div>
       </fieldset>
       <fieldset>
-        <legend for="highPriDevices" data-i18n="settings.highPriDevices">Controllable devices 
+        <legend for="highPriDevices"><div class="blockHeader" data-i18n="settings.global.controllableDevices">global.controllableDevices</div> 
           <div class="hintButton" onclick="toggle(this,'hintcd1');toggle(this,'hintcd2');return false;">i</div></legend>
-        <p id="hintcd1" class="hint" data-i18n="settings.deviceListHint">Only selected devices can be controlled by the app.</p>
-        <p id="hintcd2" class="hint" data-i18n="settings.deviceListHint">Hint: For best battery lifetime please ensure powerful chargers such as car chargers are set to a power that complies as close as possible with the Power targets. Excessive charging power will result in high on/off switch rate.</p>
-        <span id="highPriDevices">Please wait for list of devices to be generated...</span>
+        <p id="hintcd1" class="hint" data-i18n="settings.global.deviceListHint1">global.deviceListHint1</p>
+        <p id="hintcd2" class="hint" data-i18n="settings.global.deviceListHint2">global.deviceListHint2</p>
+        <span id="highPriDevices">High Priority devices should be listed here, if not it is a bug</span>
         <legend for="lowPriDevices" data-i18n="settings.lowPriDevices"><hr></legend>
-        <span id="lowPriDevices">Please wait for list of devices to be generated...</span>
+        <span id="lowPriDevices">Low Priority devices should be listed here, if not it is a bug</span>
       </fieldset>
     </div>
     <!-- Global page end -->
     
-    <!-- Priority page -->
+    <!-- Mode specific page -->
     <div id="priorityPage" class="tabcontent">
       <fieldset>
-          <legend>Power settings</legend>
+          <legend data-i18n="settings.mode.powerSettings">mode.powerSettings</legend>
               <table class="settings_table">
                 <tr>
-                  <td class="settings_row_name"><label for="maxPower" data-i18n="settings.maxPower">Max limit:</label></td>
+                  <td class="settings_row_name"><label for="maxPower" data-i18n="settings.mode.maxPower">mode.maxPower</label>:</td>
                   <td class="settings_row_input">
                     <select id ="maxPower" onchange="maxPowerList[currentModeTab]=this.value">
-                      <option value="2000">Trinn 1 - 0-2 kW </option>
-                      <option value="5000" selected>Trinn 2 - 2-5 kW </option>
-                      <option value="10000">Trinn 3 - 5-10 kW </option>
-                      <option valse="15000">Trinn 4 - 10-15 kW </option>
-                      <option value="20000">Trinn 5 - 15-20 kW </option>
-                      <option value="25000">Trinn 6 - 20-25 kW </option>
-                      <option value="50000">Trinn 7 - 25-50 kW </option>
-                      <option value="75000">Trinn 8 - 50-75 kW </option>
-                      <option value="100000">Trinn 9 - 75-100 kW </option>
-                      <option value="inf">Trinn 10 - 100+ kW </option>
+                      <option value="2000" data-i18n="settings.mode.powerLimit1">mode.powerLimit1</option>
+                      <option value="5000" data-i18n="settings.mode.powerLimit2" selected>mode.powerLimit2</option>
+                      <option value="10000" data-i18n="settings.mode.powerLimit3">mode.powerLimit3</option>
+                      <option valse="15000" data-i18n="settings.mode.powerLimit4">mode.powerLimit4</option>
+                      <option value="20000" data-i18n="settings.mode.powerLimit5">mode.powerLimit5</option>
+                      <option value="25000" data-i18n="settings.mode.powerLimit6">mode.powerLimit6</option>
+                      <option value="50000" data-i18n="settings.mode.powerLimit7">mode.powerLimit7</option>
+                      <option value="75000" data-i18n="settings.mode.powerLimit8">mode.powerLimit8</option>
+                      <option value="100000" data-i18n="settings.mode.powerLimit9">mode.powerLimit9</option>
+                      <option value="inf" data-i18n="settings.mode.powerLimit10">mode.powerLimit10</option>
                     </select>
                 </tr>
               </table>
             </fieldset>
       <fieldset>
-        <legend>Priorities
+        <legend><div class="blockHeader" data-i18n="settings.mode.priorities">mode.priorities</div> 
           <div class="hintButton" onclick="toggle(this,'hint6');toggle(this,'hint7');toggle(this,'hint8');return false;">i</div>
         </legend>
-          <p id="hint6" class="hint" data-i18n="settings.priorityList">Note that the thermostats of the devices are never changed by this app. This app only control the on/off capability.</p>
-          <p id="hint7" class="hint" data-i18n="settings.priorityList">Devices at the top are less likely to be turned off.</p>
-          <p id="hint8" class="hint" data-i18n="settings.priorityList">If a termostat of a controllable device falls outside the temperature limits then this device will act as always on and jump to the top of the priority list until the temperature is within the acceptable range.</p>
-          <span id="priorityList">Please wait for list of devices to be generated...</span>
+          <p id="hint6" class="hint" data-i18n="settings.mode.priorityHint1">mode.priorityHint1</p>
+          <p id="hint7" class="hint" data-i18n="settings.mode.priorityHint2">mode.priorityHint2</p>
+          <p id="hint8" class="hint" data-i18n="settings.mode.priorityHint3">mode.priorityHint3</p>
+          <span id="priorityList">List of devices should have been generated here, if you see this text it is a bug...</span>
         </fieldset>
     </div>
-    <!-- Priority page end -->
+    <!-- Mode specific page end -->
 
-    <button id="save" class="right">Save changes</button>
+    <button id="save" class="right" data-i18n="settings.saveButton">.saveButton</button>
 
     <script type="text/javascript">
       var operatingModeLoaded = false;
+      var errorMarginLoaded = false;
+      var safetyPowerLoaded = false;
       var maxPowerListLoaded = false;
       var deviceListLoaded = false;
       var modeListLoaded = false;
       // Called whenever things has been loaded
       function checkLoadingDone() {
         var loadElement = document.getElementById("loadingText");
-        if (maxPowerListLoaded && deviceListLoaded && modeListLoaded && operatingModeLoaded) {
+        if (maxPowerListLoaded && deviceListLoaded && modeListLoaded && operatingModeLoaded && errorMarginLoaded && safetyPowerLoaded) {
           // Update device enable list:
           generateEnableList('highPriDevices', 1);
           generateEnableList('lowPriDevices', 0);
@@ -295,8 +316,18 @@
           changeTab(false, 'globalPage');
           updateOperatingModes(currentOperatingMode);
           loadElement.style.display = "none";
-        } else {
-          loadElement.innerHTML="Loading state: " + String(maxPowerListLoaded) + " " + String(deviceListLoaded) + " " + String(modeListLoaded) + String(operatingModeLoaded);
+          document.getElementById("tab_selector").style.display = "inline-block";
+          document.getElementById("save").style.display = "inline-block";
+          document.getElementById("errorMargin").value = currentErrorMargin;
+          document.getElementById("safetyPower").value = currentSafetyPower;
+        /*} else {
+          loadElement.innerHTML="Loading state: " 
+            + String(maxPowerListLoaded) + " " 
+            + String(deviceListLoaded) + " " 
+            + String(modeListLoaded) + " "
+            + String(operatingModeLoaded) + " "
+            + String(errorMarginLoaded) + " "
+            + String(safetyPowerLoaded);*/
         }
         
       }
@@ -305,13 +336,26 @@
       function onHomeyReady(Homey) {
         var saveElement = document.getElementById("save");
         var operatingModeElement = document.getElementById("operatingMode");
+        var errorMarginElement = document.getElementById("errorMargin");
+        var safetyPowerElement = document.getElementById("safetyPower");
 
-        Homey.get("deviceList", function (err, myDevices) {
-          if (err) return Homey.alert(err);
-          deviceList = myDevices;
-          deviceListLoaded = true;
-          checkLoadingDone();
-        })
+        deviceText   = Homey.__(deviceText);
+        priorityText = Homey.__(priorityText);
+        alwaysOnText = Homey.__(alwaysOnText);
+        alwaysOffText = Homey.__(alwaysOffText);
+        controlledText = Homey.__(controlledText);
+
+
+        Homey.api("GET", "/requestDeviceListRefresh", {}, function(err, result) {
+            if (err) return Homey.alert(err);
+            Homey.get("deviceList", function (err, myDevices) {
+            if (err) return Homey.alert(err);
+              deviceList = myDevices;
+              deviceListLoaded = true;
+              checkLoadingDone();
+            })
+          });
+
         Homey.get("modeList", function (err, myModeList) {
           if (err) return Homey.alert(err);
           if (Array.isArray(myModeList)) {
@@ -338,12 +382,32 @@
         });
         Homey.get("operatingMode", function (err, operatingMode) {
           if (err) return Homey.alert(err);
-          if (operatingMode != NaN) {
+          if (operatingMode !== null) {
             currentOperatingMode = operatingMode;
           } else {
             currentOperatingMode = 0;
           }
           operatingModeLoaded = true;
+          checkLoadingDone();
+        });
+        Homey.get("errorMargin", function (err, errorMargin) {
+          if (err) return Homey.alert(err);
+          if (errorMargin !== null) {
+            currentErrorMargin = errorMargin;
+          } else {
+            currentErrorMargin = 5;
+          }
+          errorMarginLoaded = true;
+          checkLoadingDone();
+        });
+        Homey.get("safetyPower", function (err, safetyPower) {
+          if (err) return Homey.alert(err);
+          if (safetyPower !== null) {
+            currentSafetyPower = safetyPower;
+          } else {
+            currentSafetyPower = 500;
+          }
+          safetyPowerLoaded = true;
           checkLoadingDone();
         });
 
@@ -358,6 +422,12 @@
             if (err) return Homey.alert(err);
           });
           Homey.set("operatingMode", operatingModeElement.value, function (err) {
+            if (err) return Homey.alert(err);
+          });
+          Homey.set("errorMargin", errorMarginElement.value, function (err) {
+            if (err) return Homey.alert(err);
+          });
+          Homey.set("safetyPower", safetyPowerElement.value, function (err) {
             if (err) return Homey.alert(err);
           });
           Homey.alert(Homey.__("settings.alert.settingssaved"));
@@ -431,10 +501,16 @@
 
       // For testing only -
       // Remove when used on homey
-      /*changeTab(false, 'globalPage');
-      generateEnableList('highPriDevices', 1);
-      generateEnableList('lowPriDevices', 0);
-      updateOperatingModes(0);*/
+      /*if (navigator.userAgent == "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:101.0) Gecko/20100101 Firefox/101.0") {
+        // Not homey, but debug mode
+        maxPowerListLoaded = true;
+        deviceListLoaded = true;
+        modeListLoaded = true;
+        operatingModeLoaded = true;
+        errorMarginLoaded = true;
+        safetyPowerLoaded = true;
+        checkLoadingDone();
+      }*/
     </script>
   </body>
 </html>

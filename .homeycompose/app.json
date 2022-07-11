@@ -56,5 +56,11 @@
         "name": "Frode Heggelund"
       }
     ]
+  },
+  "api": {
+    "requestDeviceListRefresh": {
+      "method": "GET",
+      "path": "/requestDeviceListRefresh"
+    }
   }
 }

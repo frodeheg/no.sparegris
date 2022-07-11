@@ -1,0 +1,30 @@
+{
+  "title": {
+    "en": "Change Reserved Power",
+    "no": "Endre reservert effekt"
+  },
+  "titleFormatted": {
+    "en": "Set the reserved power to [[reserved]]",
+    "no": "Sett reservert effekt til [[reserved]]"
+  },
+  "hint": {
+    "en": "Allows you to reserve power for uncontrollable devices, such as when making dinner",
+    "no": "Tillater deg å reservere effekt for ukontrollerbare enheter, for eksempel til middagslaging"
+  },
+  "args": [
+    {
+      "type": "number",
+      "min": 0,
+      "max": 100000,
+      "placeholder": {
+        "en": "Number of Watts",
+        "no": "Antall Watt"
+      },
+      "title": {
+        "en": "Reserved power",
+        "no": "Reservert effekt"
+      },
+      "name": "reserved"
+    }
+  ]
+}

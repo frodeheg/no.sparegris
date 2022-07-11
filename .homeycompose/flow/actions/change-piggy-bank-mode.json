@@ -1,12 +1,15 @@
 {
   "title": {
-    "en": "Change Piggy Bank mode"
+    "en": "Change Piggy Bank mode",
+    "no": "Endre Sparegris modus"
   },
   "titleFormatted": {
-    "en": "Set the Piggy Bank operation mode to [[mode]]"
+    "en": "Set the Piggy Bank operation mode to [[mode]]",
+    "no": "Sett Sparegris operasjonsmodus til [[mode]]"
   },
   "hint": {
-    "en": "Allows you to switch between holiday mode and normal operation"
+    "en": "Allows you to switch between holiday mode and normal operation",
+    "no": "Tillater deg å bytte mellom ferie, natt og normal modus"
   },
   "args": [
     {
@@ -16,25 +19,29 @@
         {
           "id": "mode-normal",
           "label": {
-            "en": "Normal"
+            "en": "Normal",
+            "no": "Normal"
+          }
+        },
+        {
+          "id": "mode-night",
+          "label": {
+            "en": "Night",
+            "no": "Natt"
           }
         },
         {
           "id": "mode-holiday",
           "label": {
-            "en": "Holiday"
-          }
-        },
-        {
-          "id": "mode-powersave",
-          "label": {
-            "en": "Powersave"
+            "en": "Holiday",
+            "no": "Ferie"
           }
         },
         {
           "id": "mode-boost",
           "label": {
-            "en": "Boost"
+            "en": "Boost",
+            "no": "Boost"
           }
         }
       ]

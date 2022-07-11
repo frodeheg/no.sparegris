@@ -1,19 +1,23 @@
 {
   "title": {
-    "en": "Update PiggyBank with the total energy used"
+    "en": "Update PiggyBank with the total energy used",
+    "no": "Oppdater Sparegris med totalt energiforbruk"
   },
   "titleFormatted": {
-    "en": "Set the total energy used to [[TotalEnergyUsage]] kWh"
+    "en": "Set the total energy used to [[TotalEnergyUsage]] kWh",
+    "no": "Sett totalt energiforbruk til [[TotalEnergyUsage]] kWh"
   },
   "hint": {
-    "en": "Attach the total energy usage output of your energy meter to this action card in order to enable the app"
+    "en": "Attach the total energy usage output of your energy meter to this action card in order to enable the app",
+    "no": "Koble total energiforbruk fra strømmåleren din til dette kortet for å få appen til å virke"
   },
   "args": [
     {
       "type": "number",
       "name": "TotalEnergyUsage",
       "placeholder": {
-        "en": "Connect to energy meter total energy usage"
+        "en": "Connect to energy meter total energy usage",
+        "no": "Koble til strømmålerens avlesning for totalt energiforbruk"
       },
       "min": 0,
       "step": 0.01

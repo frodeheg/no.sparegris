@@ -1,0 +1,56 @@
+{
+  "settings": {
+    "title": "Sparegris Innstillinger",
+    "subtitle": "Strømforbruk",
+    "loadingText": "Vennligst vent mens enhetene lastes... (rundt 1.5 sekunder per 10 enheter du har)...",
+    "tab": {
+      "global": "Global",
+      "normal": "Normal",
+      "night": "Natt",
+      "holiday": "Ferie",
+      "boost": "Boost"
+    },
+    "global": {
+      "settings": "Global Innstillinger",
+      "operatingMode" : "Driftsmodus",
+      "operatingModeHint1": "Merk: For å unngå motstridende innstillinger bør du deaktivere alle flyter som prøver å betjene enhetene valgt nedenfor før appen aktiveres.",
+      "operatingModeHint2": "Hint: Du kan bruke flytkort for å endre driftsmodus.",
+      "errorMargin" : "Feilmargin",
+      "errorMarginHint1" : "Sørger for at du alltid ender opp på et nivå under effekttariffen.",
+      "errorMarginHint2" : "Hint: Dette gir deg rom for en mindre overskridelse en annen dag ettersom tariffer regnes av snittet av effekttoppen i 3 dager.",
+      "safetyPower" : "Reservert effekt",
+      "safetyPowerHint1" : "Unngå å feile strømmålet ved å reservere strøm til ukontrollerbare enheter.",
+      "safetyPowerHint2" : "Hint: Du kan bruke flytkort for å endre den reserverte effekten over tid. Det anbefales å reservere mer strøm før du lager middag.",
+      "controllableDevices": "Kontrollerbare enheter",
+      "deviceListHint1" : "Bare valgte enheter kan kontrolleres av appen.",
+      "deviceListHint2" : "Tips: For best mulig batterilevetid, sørg for at kraftige ladere som billadere er satt til en effekt som samsvarer så nært som mulig med effektmålene. Overdreven ladekraft vil resultere i hyppig av/på slåing."
+    },
+    "mode" : {
+      "powerSettings": "Strøminnstillinger",
+      "maxPower": "Maks strømforbruk",
+      "powerLimit1" : "Trinn 1 - 0-2 kW",
+      "powerLimit2" : "Trinn 2 - 2-5 kW",
+      "powerLimit3" : "Trinn 3 - 5-10 kW",
+      "powerLimit4" : "Trinn 4 - 10-15 kW",
+      "powerLimit5" : "Trinn 5 - 15-20 kW",
+      "powerLimit6" : "Trinn 6 - 20-25 kW",
+      "powerLimit7" : "Trinn 7 - 25-50 kW",
+      "powerLimit8" : "Trinn 8 - 50-75 kW",
+      "powerLimit9" : "Trinn 9 - 75-100 kW",
+      "powerLimit10" : "Trinn 10 - 100+ kW",
+      "priorities" : "Prioriteringer",
+      "priorityHint1": "Merk at termostatene til enhetene aldri endres av denne appen. Denne appen kontrollerer bare av/på-funksjonen.",
+      "priorityHint2": "Det er mindre sannsynlig at enheter på toppen av listen blir slått av.",
+      "priorityHint3": "Hvis en termostat til en kontrollerbar enhet faller utenfor temperaturgrensene, vil denne enheten fungere som alltid på og hoppe til toppen av prioritetslisten til temperaturen er innenfor det akseptable området.",
+      "controlled": "Styrt",
+      "alwaysOn": "Alltid på",
+      "alwaysOff": "Alltid av",
+      "device": "Enhet",
+      "priority": "Prioritet"
+    },
+    "saveButton": "Lagre Endringer",
+    "alert": {
+      "settingssaved": "Endringene har blitt lagret."
+    }
+  }
+}
