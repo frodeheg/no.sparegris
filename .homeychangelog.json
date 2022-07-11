@@ -1,5 +1,8 @@
 {
   "0.0.1": {
     "en": "First working version with power limiting features only."
+  },
+  "0.0.2": {
+    "en": "Fixed readout of max power in app"
   }
 }
