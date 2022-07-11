@@ -42,8 +42,8 @@ class PiggyBank extends Homey.App {
 
 
     // Check that settings has been updated
-    const maxPower = this.homey.settings.get('maxPower')
-    if (isNaN(maxPower)) {
+    const maxPower = this.homey.settings.get('maxPowerList')
+    if (typeof maxPower == "undefined") {
       throw("Please configure the app before continuing");
     }
 
@@ -221,7 +221,9 @@ class PiggyBank extends Homey.App {
 
     // Check if power can be increased or reduced
     const errorMargin = this.homey.settings.get('errorMargin') ? (parseInt(this.homey.settings.get('errorMargin'))/100.) : 1.;
-    const trueMaxPower = this.homey.settings.get('maxPower');
+    const maxPowerList = this.homey.settings.get('maxPowerList');
+    var currentMode = this.homey.settings.get('operatingMode');
+    const trueMaxPower = maxPowerList[currentMode];
     const errorMarginWatts = trueMaxPower * errorMargin;
     const maxPower = trueMaxPower - errorMarginWatts;
     const safetyPower = this.homey.settings.get("safetyPower");
