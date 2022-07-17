@@ -17,28 +17,35 @@
       "name": "mode",
       "values": [
         {
-          "id": "mode-normal",
+          "id": "0",
+          "label": {
+            "en": "App Disabled",
+            "no": "App Inaktiv"
+          }
+        },
+        {
+          "id": "1",
           "label": {
             "en": "Normal",
             "no": "Normal"
           }
         },
         {
-          "id": "mode-night",
+          "id": "2",
           "label": {
             "en": "Night",
             "no": "Natt"
           }
         },
         {
-          "id": "mode-holiday",
+          "id": "3",
           "label": {
             "en": "Holiday",
             "no": "Ferie"
           }
         },
         {
-          "id": "mode-boost",
+          "id": "4",
           "label": {
             "en": "Boost",
             "no": "Boost"

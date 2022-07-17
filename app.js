@@ -35,8 +35,8 @@ class PiggyBank extends Homey.App {
     this.__last_power_off_time = new Date();
     this.__last_power_on_time = new Date();
     this.mutex = new Mutex();
-
-    this.api = new HomeyAPIApp({
+    this.elPriceApi = this.homey.api.getApiApp('no.almli.utilitycost');
+    this.homeyApi = new HomeyAPIApp({
       homey: this.homey,
     });
 
@@ -66,6 +66,10 @@ class PiggyBank extends Homey.App {
     const cardActionModeUpdate = this.homey.flow.getActionCard('change-piggy-bank-mode')
     cardActionModeUpdate.registerRunListener(async (args) => {
       this.onModeUpdate(args.mode);
+    })
+    const cardActionPriceUpdate = this.homey.flow.getActionCard('change-piggy-bank-price-point')
+    cardActionPriceUpdate.registerRunListener(async (args) => {
+      this.onPriceUpdate(args.mode);
     })
     const cardActionSafetyPowerUpdate = this.homey.flow.getActionCard('change-piggy-bank-safety-power')
     cardActionSafetyPowerUpdate.registerRunListener(async (args) => {
@@ -103,7 +107,7 @@ class PiggyBank extends Homey.App {
    * Create a list of relevant devices
    */
   async createDeviceList() {
-    const devices = await this.api.devices.getDevices();
+    const devices = await this.homeyApi.devices.getDevices();
 
     var relevantDevices = {};
 
@@ -255,7 +259,18 @@ class PiggyBank extends Homey.App {
    */
   async onModeUpdate(newMode) {
     this.log("Changing the current mode to: " + String(newMode));
-    this.homey.set("operatingMode", newMode, function (err) {
+    this.homey.settings.set("operatingMode", newMode, function (err) {
+      if (err) return this.homey.alert(err);
+    });
+  }
+
+
+  /**
+   * onPriceUpdate is called whenever the price point is changed
+   */
+   async onPriceUpdate(newMode) {
+    this.log("Changing the current price point to: " + String(newMode));
+    this.homey.settings.set("pricePoint", newMode, function (err) {
       if (err) return this.homey.alert(err);
     });
   }
@@ -266,7 +281,7 @@ class PiggyBank extends Homey.App {
    */
    async onSafetyPowerUpdate(newVal) {
     this.log("Changing the current safety power to: " + String(newVal));
-    this.homey.set("safetyPower", newVal, function (err) {
+    this.homey.settings.set("safetyPower", newVal, function (err) {
       if (err) return this.homey.alert(err);
     });
   }
@@ -296,7 +311,7 @@ class PiggyBank extends Homey.App {
     // Only turn on one device at the time
     for (var idx = 0; idx < numDevices; idx++) {
       const deviceId = currentModeList[idx].id;
-      const device = await this.api.devices.getDevice({id: deviceId });
+      const device = await this.homeyApi.devices.getDevice({id: deviceId });
       const isOn = await (this.__deviceList[deviceId].onoff_cap === undefined) ? undefined : device.capabilitiesObj[this.__deviceList[deviceId].onoff_cap].value;
       var wantOn = false;
       // Check if the on state complies with the settings
@@ -341,7 +356,7 @@ class PiggyBank extends Homey.App {
     var numForcedOnDevices = 0;
     for (var idx = numDevices-1; idx >= 0; idx--) {
       const deviceId = currentModeList[idx].id;
-      const device = await this.api.devices.getDevice({id: deviceId });
+      const device = await this.homeyApi.devices.getDevice({id: deviceId });
       const isOn = await (this.__deviceList[deviceId].onoff_cap === undefined) ? undefined : device.capabilitiesObj[this.__deviceList[deviceId].onoff_cap].value;
       var wantOff = false;
       // Check if the on state complies with the settings
@@ -375,6 +390,38 @@ class PiggyBank extends Homey.App {
       this.homey.notifications.createNotification({excerpt: "Alert: The power must be reduced by " + String(lessPower) + " W immediately or the hourly limit will be breached"})
   }
 
+  /*********************************************************************************************************
+   * EXTERNAL API's
+   *********************************************************************************************************/
+  /*async _checkApi() {
+    try {
+      const isInstalled = await this.elPriceApi.getInstalled();
+      const version = await this.elPriceApi.getVersion();
+      if (isInstalled && !!version) {
+        const split = version.split('.');
+        let apiOk = (Number(split[0]) >= 1 && Number(split[1]) >= 4);
+        this.log(`Electricity price api version ${version} installed${apiOk ? ' and version is ok' : ', but wrong version'}`, split);
+        return apiOk;
+      } else {
+        this.log(`Electricity price api not installed`);
+      }
+    } catch (err) {
+      this.log(`Failed checking electricity price API: ${err.message}`);
+    }
+    return false;
+  }
+
+  async fetchPrices() {
+    if (await this._checkApi()) {
+      try {
+        return await this.elPriceApi.get('/prices');
+      } catch (err) {
+        this.log('Electricity price api failed: ', err);
+      }
+    } else {
+      // Can not fetch prices
+    }
+  }*/
 
 } // class
 

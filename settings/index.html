@@ -7,16 +7,31 @@
     <link href="style.css" rel="stylesheet" type="text/css">
     <script type="text/javascript">
 
+      // Text strings that must be fetched from homey
+      var deltaText = "settings.price.delta";
+      var actionText = "settings.price.action";
       var deviceText = "settings.mode.device";
+      var turnOnText = "settings.price.turnOn";
+      var turnOffText = "settings.price.turnOff";
+      var minTempText = "settings.frost.minTemp";
       var priorityText = "settings.mode.priority";
       var alwaysOnText = "settings.mode.alwaysOn";
+      var priceLowText = "settings.price.actionLow";
       var alwaysOffText = "settings.mode.alwaysOff";
+      var priceHighText = "settings.price.actionHigh";
+      var deltaTempText = "settings.price.deltaTemp";
+      var targetTempText = "settings.mode.targetTemp";
       var controlledText = "settings.mode.controlled";
+      var priceNormalText = "settings.price.actionNormal";
 
       const KEEP = -1;
       const ALWAYS_OFF = 0;
       const ALWAYS_ON = 1;
       const CONTROLLED = 2;
+
+      const TURN_ON = 0;
+      const TURN_OFF = 1;
+      const DELTA_TEMP = 2;
 
       var deviceList = {
         id_a: { name:"DeviceName 1", room: "Stue",    image: "https://as2.ftcdn.net/v2/jpg/02/49/76/93/1000_F_249769389_7su5tYXOvcjcehNCcWTwcjnHvSMkLocJ.jpg", use: true, priority: 0 },
@@ -25,31 +40,46 @@
       }
       var modeList = [
         // Normal
-        [ { id: "id_a", operation: CONTROLLED, minTemp: 20, maxTemp: 24 },
-          { id: "id_b", operation: ALWAYS_OFF, minTemp:  8, maxTemp: 15 },
-          { id: "id_c", operation: CONTROLLED, minTemp: 10, maxTemp: 20 }
+        [ { id: "id_a", operation: CONTROLLED, targetTemp: 24 },
+          { id: "id_b", operation: ALWAYS_OFF, targetTemp: 15 },
+          { id: "id_c", operation: CONTROLLED, targetTemp: 20 }
         ],
         [], // Night
         [], // Holiday
         []  // Boost
       ]
+      var frostList = []
+      var priceList = [ [], [], [] ]
       var maxPowerList = [
         2000, // Normal
         2000, // Night
         2000, // Holiday
         2000  // Boost
       ]
+      var currentPriceMode = 1; // From Flow
+      var currentPricePoint = 1; // Normal
       var currentOperatingMode = 0; // Disabled
       var currentErrorMargin = 5;
       var currentSafetyPower = 500;
       var currentModeTab = 0; // Normal
 
       var operatingModes = [
-        { name:"App Disabled", value: 0 },
-        { name:"Normal", value: 1 },
-        { name:"Night", value: 2 },
-        { name:"Holiday", value: 3 },
-        { name:"Boost", value: 4 }
+        { name:"settings.opMode.disabled", value: 0 },
+        { name:"settings.opMode.normal", value: 1 },
+        { name:"settings.opMode.night", value: 2 },
+        { name:"settings.opMode.holiday", value: 3 },
+        { name:"settings.opMode.boost", value: 4 }
+      ]
+
+      var priceModes = [
+        { name:"settings.price.mode.disabled", value: 0 },
+        { name:"settings.price.mode.flow", value: 1 },
+        { name:"settings.price.mode.internal", value: 2 },
+      ]
+      var pricePoints = [
+        { name:"settings.pricetab.cheap", value: 0 },
+        { name:"settings.pricetab.normal", value: 1 },
+        { name:"settings.pricetab.expensive", value: 2 },
       ]
 
       function generateEnableList(listName, priority) {
@@ -88,14 +118,100 @@
         list.innerHTML = options;
       }
 
+      function updatePriceModes(selectedMode) {
+        var list = document.getElementById("priceMode");
+        var options = '';
+        for (var i = 0; i < priceModes.length; i++) {
+          options += '<option value="' + priceModes[i].value + '" ' 
+            + ((selectedMode==i) ? 'selected' : '') + '>' + priceModes[i].name + '</option>';
+        }
+        list.innerHTML = options;
+      }
+
+      function updatePricePoints(selectedPoint) {
+        var list = document.getElementById("pricePoint");
+        var options = '';
+        for (var i = 0; i < pricePoints.length; i++) {
+          options += '<option value="' + pricePoints[i].value + '" ' 
+            + ((selectedPoint==i) ? 'selected' : '') + '>' + pricePoints[i].name + '</option>';
+        }
+        list.innerHTML = options;
+      }
+
+      function generateFrostList() {
+        var list = document.getElementById("frostList");
+        var gen_list =
+          '<table class="device-list">' +
+            '<tr>' +
+              '<th>&nbsp;</th>' +
+              '<th align="left" colspan="2">' + minTempText + '</th>' +
+            '</tr>';
+        for (var i = 0; i < frostList.length; i++) {
+          var device = deviceList[frostList[i].id];
+          gen_list +=
+            '<tr>' +
+              '<td><img src="' + device.image + '" alt="icon" width="auto" height="50"></td>' +
+              '<td><h3>' + device.name + '</h3>' +
+                '<p>' + device.room + '</p></td>' +
+              '<td>' +
+                '<input type="number" id="minTemp' + String(i) + '" min=0 max=90 size="1" onchange="setMinTemp(this, ' + String(i) + ')" value="' + String(frostList[i].minTemp) + '">°C' +
+                '</td>' +
+            '</tr>';
+        }
+        gen_list += "</table>";
+        list.innerHTML = gen_list;
+      }
+
+      function generatePriceList(tabPage) {
+        // Generate page
+        var legendText = "";
+        switch (tabPage) {
+          case 0: legendText = priceLowText; break;
+          case 1: legendText = priceNormalText; break;
+          case 2: legendText = priceHighText; break;
+        }
+        var priceTabText =
+          '<fieldset>' +
+            '<legend>' + legendText + '</legend>' +
+            '<table class="device-list">' +
+              '<tr>' +
+              '<th>&nbsp;</th>' +
+              '<th align="left">' + deviceText + '</th>' +
+              '<th align="left">' + actionText + '</th>' +
+              '<th align="left">' + deltaText + '</th>' +
+            '</tr>';
+        for (var i = 0; i < priceList[tabPage].length; i++) {
+          var device = deviceList[priceList[tabPage][i].id];
+          priceTabText +=
+            '<tr>' +
+              '<td><img src="' + device.image + '" alt="icon" width="auto" height="50"></td>' +
+              '<td><h3>' + device.name + '</h3>' +
+                '<p>' + device.room + '</p></td>' +
+              '<td><div class="imgButtonText" id="priceActionButton' + String(i) + '" onclick="updatePriceAction(this, ' + String(tabPage) + ', ' + String(i) + ')">N/A</div></td>' +
+              '<td>' +
+                '<input type="number" id="deltaTemp' + String(i) + '" min=-30 max=30 size="1" onchange="setDeltaTemp(this, ' + String(tabPage) + ', ' + String(i) + ')" value="' + String(priceList[tabPage][i].delta) + '">°C' +
+                '</td>' +
+            '</tr>';
+        }
+        priceTabText +=
+            '</table>' +
+          '</fieldset>';
+        document.getElementById("priceList").innerHTML = priceTabText;
+
+        // Refresh states on list elements
+        for (var i = 0; i < priceList[tabPage].length; i++) {
+          updatePriceAction(document.getElementById('priceActionButton' + String(i)), tabPage, i, KEEP);
+        }
+      }
+
       function generatePriorityList(listNum) {
         var list = document.getElementById("priorityList");
         var gen_list =
           '<table class=device-list>' +
             '<tr>' +
-              '<th>&nbsp;</th>' +
-              '<th align="left" colspan="2">' + deviceText + '</th>' +
-              '<th align="left">' + priorityText + '</th>' +
+              '<th colspan="3" align="left">' + priorityText + '</th>' +
+              '<th align="left">' + deviceText + '</th>' +
+              '<th align="left">' + targetTempText + '</th>' +
             '</tr>';
         for (var i = 0; i < modeList[listNum].length; i++) {
           var device = deviceList[modeList[listNum][i].id];
@@ -103,18 +219,15 @@
           var dwnenabled = (i==modeList[listNum].length-1) ? 'disabled' : '';
           gen_list +=
             '<tr>' +
-              '<td rowspan="2"><img src="' + device.image + '" alt="icon" width="auto" height="50"></td>' +
-              '<td><h3>' + device.name + '</h3></td>' +
-              '<td><p>' + device.room + '</p></td>' +
-              '<td rowspan="2"><input ' + upenabled + ' type="image" width="40" height="20" src="up_arrow.png" onclick="moveDevice(event, ' + String(listNum) + ', ' + String(i) + ',-1)" id="moveDeviceUp' + String(i) + '"/><br>' +
-                  '<input ' + dwnenabled + ' type="image" width="40" height="20" src="down_arrow.png" onclick="moveDevice(event, ' + String(listNum) + ', ' + String(i) + ',+1)" id="moveDeviceDown' + String(i) + '"/></td>' +
-            '</tr>' +
-            '<tr>' +
-              '<td colspan = 2>' +
-                  '<div class="imgButtonText" id="deviceStateButton' + String(i) + '" onclick="updateState(this, ' + String(listNum) + ', ' + String(i) + ')">N/A</div>' +
-                '<input type="number" id="mintemp' + String(i) + '" min=0 max=90 size="1" onchange="setValue(this,' + String(listNum) + ',' + String(i) + ',\'minTemp\')" value="' + String(modeList[listNum][i].minTemp) + '">-' +
-                '<input type="number" id="maxtemp' + String(i) + '" min=0 max=90 size="1" onchange="setValue(this,' + String(listNum) + ',' + String(i) + ',\'maxTemp\')" value="' + String(modeList[listNum][i].maxTemp) + '">°C' +
-                '</td>' +
+              '<td><input ' + upenabled + ' type="image" width="40" height="15" src="up_arrow.png" onclick="moveDevice(event, ' + String(listNum) + ', ' + String(i) + ',-1)" id="moveDeviceUp' + String(i) + '"/><br>' +
+                  '<input ' + dwnenabled + ' type="image" width="40" height="15" src="down_arrow.png" onclick="moveDevice(event, ' + String(listNum) + ', ' + String(i) + ',+1)" id="moveDeviceDown' + String(i) + '"/></td>' +
+              '<td><img src="' + device.image + '" alt="icon" width="auto" height="50"></td>' +
+              '<td><div class="imgButtonText" id="deviceStateButton' + String(i) + '" onclick="updateState(this, ' + String(listNum) + ', ' + String(i) + ')">N/A</div></td>' +
+              '<td><h3>' + device.name + '</h3>' +
+                  '<p>' + device.room + '</p></td>' +
+                  '<td>' +
+                    '<input type="number" id="targetTemp' + String(i) + '" min=0 max=90 size="1" onchange="setTargetTemp(this,' + String(listNum) + ',' + String(i) + ')" value="' + String(modeList[listNum][i].targetTemp) + '">°C' +
+                    '</td>' +
             '</tr>';
         }
         gen_list += "</table>";
@@ -123,6 +236,33 @@
         // Refresh states on list elements
         for (var i = 0; i < modeList[listNum].length; i++) {
           updateState(document.getElementById('deviceStateButton' + String(i)), listNum, i, KEEP);
+        }
+      }
+
+      function updatePriceAction(button, pricePoint, device_id, newstate = undefined) {
+        if (newstate == undefined) {
+          newstate = (priceList[pricePoint][device_id].operation + 1) % 3;
+        } else if (newstate == KEEP) {
+          newstate = priceList[pricePoint][device_id].operation;
+        }
+        priceList[pricePoint][device_id].operation = newstate;
+        var deltaTempInput =  document.getElementById('deltaTemp' + String(device_id));
+        switch (priceList[pricePoint][device_id].operation) {
+          case TURN_OFF:
+            button.innerHTML=turnOffText;
+            button.style.backgroundImage = 'radial-gradient(white, lightgray, gray)';
+            deltaTempInput.disabled = true;
+            break;
+          case TURN_ON:
+            button.innerHTML=turnOnText;
+            button.style.backgroundImage = 'radial-gradient(white, rgb(255, 255, 150), orange)';
+            deltaTempInput.disabled = true;
+            break;
+          case DELTA_TEMP:
+            button.innerHTML=deltaTempText;
+            button.style.backgroundImage = 'radial-gradient(white, rgb(150, 255, 150), green)';
+            deltaTempInput.disabled = false;
+            break;
         }
       }
 
@@ -160,7 +300,7 @@
         generatePriorityList(listNum);
       }
 
-      function toggle(source, id) {
+      function toggle(source, id, type = 'block') {
         var element = document.getElementById(id);
 
         var visible = (element.style.display != "") && (element.style.display != "none");
@@ -168,12 +308,12 @@
           element.style.display = 'none';
           source.style.cursor = "zoom-in";
         } else {
-          element.style.display = 'block';
+          element.style.display = type;
           source.style.cursor = "zoom-out";
         }
       }
 
-      function setValue(object, listNum, device_id, subject) {
+      function setMinTemp(object, device_id) {
         if(object.value != ""){
           if(parseInt(object.value) < parseInt(object.min)){
             object.value = object.min;
@@ -181,7 +321,31 @@
           if(parseInt(object.value) > parseInt(object.max)){
             object.value = object.max;
           }
-          modeList[listNum][device_id][subject] = object.value
+          frostList[device_id]['minTemp'] = object.value
+        }
+      }
+
+      function setDeltaTemp(object, price_point, device_id) {
+        if(object.value != ""){
+          if(parseInt(object.value) < parseInt(object.min)){
+            object.value = object.min;
+          }
+          if(parseInt(object.value) > parseInt(object.max)){
+            object.value = object.max;
+          }
+          priceList[price_point][device_id]['delta'] = object.value
+        }
+      }
+
+      function setTargetTemp(object, listNum, device_id) {
+        if(object.value != ""){
+          if(parseInt(object.value) < parseInt(object.min)){
+            object.value = object.min;
+          }
+          if(parseInt(object.value) > parseInt(object.max)){
+            object.value = object.max;
+          }
+          modeList[listNum][device_id]['targetTemp'] = object.value
         }
       }
     </script>
@@ -196,57 +360,64 @@
     <div data-i18n="settings.loadingText" id="loadingText">loadingText</div>
 
     <!-- Tabs -->
-    <div id="tab_selector" class="tab">
-      <button class="tablinks" onclick="changeTab(event, 'globalPage')" id="globalTab"><span
-          data-i18n="settings.tab.global">tab.global</span></button>
-      <button class="tablinks" onclick="changeTab(event, 'priorityPage', 0)" id="normalTab"><span
-          data-i18n="settings.tab.normal">tab.normal</span></button>
-      <button class="tablinks" onclick="changeTab(event, 'priorityPage', 1)" id="nightTab"><span
-          data-i18n="settings.tab.night">tab.night</span></button>
-      <button class="tablinks" onclick="changeTab(event, 'priorityPage', 2)" id="holidayTab"><span
-          data-i18n="settings.tab.holiday">tab.holiday</span></button>
-      <button class="tablinks" onclick="changeTab(event, 'priorityPage', 3)" id="boostTab"><span
-          data-i18n="settings.tab.boost">tab.boost</span></button>
-    </div>
+    <table id="tab_selector" class="tab">
+      <tr>
+        <td class="tablinks" onclick="changeTab(event, 'globalPage')" id="globalTab">
+          <span data-i18n="settings.tab.global">tab.global</span></td>
+        <td class="tablinks" onclick="changeTab(event, 'pricePage')" id="priceTab">
+          <span data-i18n="settings.tab.price">tab.price</span></td>
+        <td class="tablinks" onclick="changeTab(event, 'frostPage')" id="frostTab">
+          <span data-i18n="settings.tab.frost">tab.frost</span></td>
+        <td>&nbsp;</td>
+      </tr>
+      <tr>
+        <td class="tablinks" onclick="changeTab(event, 'priorityPage', 0)" id="normalTab">
+          <span data-i18n="settings.tab.normal">tab.normal</span></td>
+        <td class="tablinks" onclick="changeTab(event, 'priorityPage', 1)" id="nightTab">
+          <span data-i18n="settings.tab.night">tab.night</span></td>
+        <td class="tablinks" onclick="changeTab(event, 'priorityPage', 2)" id="holidayTab">
+          <span data-i18n="settings.tab.holiday">tab.holiday</span></td>
+        <td class="tablinks" onclick="changeTab(event, 'priorityPage', 3)" id="boostTab">
+          <span data-i18n="settings.tab.boost">tab.boost</span></td>
+      </tr>
+    </table>
 
     <!-- Global page -->
     <div id="globalPage" class="tabcontent">
       <fieldset>
-          <legend data-i18n="settings.global.settings">global.settings</legend>
-            <div class="field row">
-              <table class="settings_table">
-                <tr>
-                  <td class="settings_row_name"><label for="operatingMode" data-i18n="settings.global.operatingMode">global.operatingMode</label>:</td>
-                  <td class="settings_row_input">
-                    <select id="operatingMode">
-                      <option value="0" selected>App Disabled</option>
-                    </select>
-                    <div class="hintButton" onclick="toggle(this,'hint1');toggle(this,'hint2');return false;">i</div></td>
-                </tr>
-              </table>
-              <p id="hint1" class="hint" data-i18n="settings.global.operatingModeHint1">global.operatingModeHint1</p>
-              <p id="hint2" class="hint" data-i18n="settings.global.operatingModeHint2">global.operatingModeHint2</p>
+        <legend data-i18n="settings.global.settings">global.settings</legend>
+        <table class="settings_table">
+          <tr>
+            <td class="settings_row_name"><label for="operatingMode" data-i18n="settings.global.operatingMode">global.operatingMode</label>:</td>
+            <td class="settings_row_input">
+              <select id="operatingMode">
+                <option value="0" selected>App Disabled</option>
+              </select>
+              <div class="hintButton" onclick="toggle(this,'hint1');toggle(this,'hint2');return false;">i</div></td>
+          </tr>
+        </table>
+        <p id="hint1" class="hint" data-i18n="settings.global.operatingModeHint1">global.operatingModeHint1</p>
+        <p id="hint2" class="hint" data-i18n="settings.global.operatingModeHint2">global.operatingModeHint2</p>
 
-              <table class="settings_table">
-                <tr>
-                  <td class="settings_row_name"><label for="errorMargin" data-i18n="settings.global.errorMargin">global.errorMargin</label>:</td>
-                  <td class="settings_row_input"><input id="errorMargin" type="number" min="0" max="30" value="5" size="10">% 
-                  <div class="hintButton" onclick="toggle(this,'hintEm1');toggle(this,'hintEm2');return false;">i</div></td>
-                </tr>
-              </table>
-              <p id="hintEm1" class="hint" data-i18n="settings.global.errorMarginHint1">global.errorMarginHint1</p>
-              <p id="hintEm2" class="hint" data-i18n="settings.global.errorMarginHint2">global.errorMarginHint2</p>
+        <table class="settings_table">
+          <tr>
+            <td class="settings_row_name"><label for="errorMargin" data-i18n="settings.global.errorMargin">global.errorMargin</label>:</td>
+            <td class="settings_row_input"><input id="errorMargin" type="number" min="0" max="30" value="5" size="10">% 
+            <div class="hintButton" onclick="toggle(this,'hintEm1');toggle(this,'hintEm2');return false;">i</div></td>
+          </tr>
+        </table>
+        <p id="hintEm1" class="hint" data-i18n="settings.global.errorMarginHint1">global.errorMarginHint1</p>
+        <p id="hintEm2" class="hint" data-i18n="settings.global.errorMarginHint2">global.errorMarginHint2</p>
 
-              <table class="settings_table">
-                <tr>
-                  <td class="settings_row_name"><label for="safetyPower" data-i18n="settings.global.safetyPower">global.safetyPower</label>:</td>
-                  <td class="settings_row_input"><input id="safetyPower" type="number" min="0" max="100000" value="500" size="10">W 
-                  <div class="hintButton" onclick="toggle(this,'hint3');toggle(this,'hint4');return false;">i</div></td>
-                </tr>
-              </table>
-              <p id="hint3" class="hint" data-i18n="settings.global.safetyPowerHint1">global.safetyPowerHint1</p>
-              <p id="hint4" class="hint" data-i18n="settings.global.safetyPowerHint2">global.safetyPowerHint2</p>
-          </div>
+        <table class="settings_table">
+          <tr>
+            <td class="settings_row_name"><label for="safetyPower" data-i18n="settings.global.safetyPower">global.safetyPower</label>:</td>
+            <td class="settings_row_input"><input id="safetyPower" type="number" min="0" max="100000" value="500" size="10">W 
+            <div class="hintButton" onclick="toggle(this,'hint3');toggle(this,'hint4');return false;">i</div></td>
+          </tr>
+        </table>
+        <p id="hint3" class="hint" data-i18n="settings.global.safetyPowerHint1">global.safetyPowerHint1</p>
+        <p id="hint4" class="hint" data-i18n="settings.global.safetyPowerHint2">global.safetyPowerHint2</p>
       </fieldset>
       <fieldset>
         <legend for="highPriDevices"><div class="blockHeader" data-i18n="settings.global.controllableDevices">global.controllableDevices</div> 
@@ -260,38 +431,131 @@
     </div>
     <!-- Global page end -->
     
+    <!-- Price page -->
+    <div id="pricePage" class="tabcontent">
+      <div data-i18n="settings.price.notifier" style="color:red;font-weight: bold;">price.notifier</div>
+      <fieldset>
+        <legend data-i18n="settings.price.header">price.header</legend>
+        <table class="settings_table">
+          <tr>
+            <td class="settings_row_name"><label for="priceMode" data-i18n="settings.price.priceMode">price.priceMode</label>:</td>
+            <td class="settings_row_input">
+              <select id="priceMode" disabled>
+                <option value="0" selected>Price control disabled</option>
+              </select>
+              <div class="hintButton" onclick="toggle(this,'hintp1');return false;">i</div></td>
+          </tr>
+        </table>
+        <p id="hintp1" class="hint" data-i18n="settings.price.priceHint1">price.priceHint1</p>
+        <p id="errp1" class="error" data-i18n="settings.price.priceErr1">price.priceErr1</p>
+        <table class="settings_table">
+          <tr>
+            <td class="settings_row_name"><label for="pricePoint" data-i18n="settings.price.pricePoint">price.pricePoint</label>:</td>
+            <td class="settings_row_input">
+              <select id="pricePoint">
+                <option value="0" selected>Price point disabled</option>
+              </select>
+              <div class="hintButton" onclick="toggle(this,'hintpp');return false;">i</div></td>
+          </tr>
+        </table>
+        <p id="hintpp" class="hint" data-i18n="settings.price.pricePointHint">price.pricePointHint</p>
+      </fieldset>
+      <fieldset>
+        <legend data-i18n="settings.price.internal.header">price.internal.header</legend>
+        <table class="settings_table">
+          <tr>
+            <td class="settings_row_name"><label for="averageTime" data-i18n="settings.price.internal.averageTime">price.internal.averageTime</label>:</td>
+            <td class="settings_row_input">
+              <select id="averageTime" disabled>
+                <option value="1" data-i18n="settings.price.internal.day1">price.internal.day1</option>
+                <option value="2" data-i18n="settings.price.internal.day2" selected>price.internal.day2</option>
+                <option value="4" data-i18n="settings.price.internal.day4">price.internal.day4</option>
+                <option value="7" data-i18n="settings.price.internal.day7">price.internal.day7</option>
+                <option value="30" data-i18n="settings.price.internal.day30">price.internal.day30</option>
+              </select>
+              <div class="hintButton" onclick="toggle(this,'averageTimeHint');return false;">i</div></td>
+          </tr>
+        </table>
+        <p id="averageTimeHint" class="hint" data-i18n="settings.price.internal.averageTimeHint">price.internal.averageTimeHint</p>
+        <table class="settings_table">
+          <tr>
+            <td class="settings_row_name"><label for="futurePriceModifier" data-i18n="settings.price.internal.futurePriceModifier">price.internal.futurePriceModifier</label>:</td>
+            <td class="settings_row_input">
+              <select id="futurePriceModifier" disabled>
+                <option value="1" data-i18n="settings.price.internal.hour1">price.internal.hour1</option>
+                <option value="2" data-i18n="settings.price.internal.hour2" selected>price.internal.hour2</option>
+                <option value="3" data-i18n="settings.price.internal.hour3">price.internal.hour3</option>
+                <option value="4" data-i18n="settings.price.internal.hour4">price.internal.hour4</option>
+              </select>
+              <div class="hintButton" onclick="toggle(this,'futurePriceModifierHint');toggle(this,'futurePriceModifierHint2','inline-block');toggle(this,'futurePriceModifierHint4','inline-block');return false;">i</div></td>
+          </tr>
+        </table>
+        <p id="futurePriceModifierHint" class="hint" data-i18n="settings.price.internal.futurePriceModifierHint">price.internal.futurePriceModifierHint</p>
+        <p id="futurePriceModifierHint2" class="math"><span class='locked'>
+            <sup><u data-i18n="settings.price.internal.futurePriceModifierHint2">min(price_in_x_hours(i))</u></sup>
+            <sub data-i18n="settings.price.internal.futurePriceModifierHint3">price_now</sub></span></p>
+        <p id="futurePriceModifierHint4" class="hint" data-i18n="settings.price.internal.futurePriceModifierHint4">for all i &isin; [1, n]</p>
+
+        <table id="sub_tab_selector" class="tab">
+          <tr>
+            <td class="subtablinks" onclick="changePriceTab(event, 0)" id="subTabCheap">
+              <span data-i18n="settings.pricetab.cheap">pricetab.cheap</span></td>
+            <td class="subtablinks" onclick="changePriceTab(event, 1)" id="subTabNormal">
+              <span data-i18n="settings.pricetab.normal">pricetab.normal</span></td>
+            <td class="subtablinks" onclick="changePriceTab(event, 2)" id="subTabExpensive">
+              <span data-i18n="settings.pricetab.expensive">pricetab.expensive</span></td>
+            <td>&nbsp;</td>
+          </tr>
+        </table>
+        <span id="priceList">List of devices should have been generated here, if you see this text it is a bug...</span>
+      </fieldset>
+    </div>
+    <!-- Price page end -->
+
+    <!-- Frost page -->
+    <div id="frostPage" class="tabcontent">
+      <fieldset>
+        <legend><div class="blockHeader" data-i18n="settings.frost.header">frost.header</div> 
+          <div class="hintButton" onclick="toggle(this,'frostHint');return false;">i</div>
+        </legend>
+        <p id="frostHint" class="hint" data-i18n="settings.frost.frostHint">frost.frostHint</p>
+        <span id="frostList">List of devices should have been generated here, if you see this text it is a bug...</span>
+      </fieldset>
+    </div>
+    <!-- Frost page end -->
+
     <!-- Mode specific page -->
     <div id="priorityPage" class="tabcontent">
       <fieldset>
-          <legend data-i18n="settings.mode.powerSettings">mode.powerSettings</legend>
-              <table class="settings_table">
-                <tr>
-                  <td class="settings_row_name"><label for="maxPower" data-i18n="settings.mode.maxPower">mode.maxPower</label>:</td>
-                  <td class="settings_row_input">
-                    <select id ="maxPower" onchange="maxPowerList[currentModeTab]=this.value">
-                      <option value="2000" data-i18n="settings.mode.powerLimit1">mode.powerLimit1</option>
-                      <option value="5000" data-i18n="settings.mode.powerLimit2" selected>mode.powerLimit2</option>
-                      <option value="10000" data-i18n="settings.mode.powerLimit3">mode.powerLimit3</option>
-                      <option valse="15000" data-i18n="settings.mode.powerLimit4">mode.powerLimit4</option>
-                      <option value="20000" data-i18n="settings.mode.powerLimit5">mode.powerLimit5</option>
-                      <option value="25000" data-i18n="settings.mode.powerLimit6">mode.powerLimit6</option>
-                      <option value="50000" data-i18n="settings.mode.powerLimit7">mode.powerLimit7</option>
-                      <option value="75000" data-i18n="settings.mode.powerLimit8">mode.powerLimit8</option>
-                      <option value="100000" data-i18n="settings.mode.powerLimit9">mode.powerLimit9</option>
-                      <option value="inf" data-i18n="settings.mode.powerLimit10">mode.powerLimit10</option>
-                    </select>
-                </tr>
-              </table>
-            </fieldset>
+        <legend data-i18n="settings.mode.powerSettings">mode.powerSettings</legend>
+        <table class="settings_table">
+          <tr>
+            <td class="settings_row_name"><label for="maxPower" data-i18n="settings.mode.maxPower">mode.maxPower</label>:</td>
+            <td class="settings_row_input">
+              <select id ="maxPower" onchange="maxPowerList[currentModeTab]=this.value">
+                <option value="2000" data-i18n="settings.mode.powerLimit1">mode.powerLimit1</option>
+                <option value="5000" data-i18n="settings.mode.powerLimit2" selected>mode.powerLimit2</option>
+                <option value="10000" data-i18n="settings.mode.powerLimit3">mode.powerLimit3</option>
+                <option valse="15000" data-i18n="settings.mode.powerLimit4">mode.powerLimit4</option>
+                <option value="20000" data-i18n="settings.mode.powerLimit5">mode.powerLimit5</option>
+                <option value="25000" data-i18n="settings.mode.powerLimit6">mode.powerLimit6</option>
+                <option value="50000" data-i18n="settings.mode.powerLimit7">mode.powerLimit7</option>
+                <option value="75000" data-i18n="settings.mode.powerLimit8">mode.powerLimit8</option>
+                <option value="100000" data-i18n="settings.mode.powerLimit9">mode.powerLimit9</option>
+                <option value="inf" data-i18n="settings.mode.powerLimit10">mode.powerLimit10</option>
+              </select>
+          </tr>
+        </table>
+      </fieldset>
       <fieldset>
         <legend><div class="blockHeader" data-i18n="settings.mode.priorities">mode.priorities</div> 
           <div class="hintButton" onclick="toggle(this,'hint6');toggle(this,'hint7');toggle(this,'hint8');return false;">i</div>
         </legend>
-          <p id="hint6" class="hint" data-i18n="settings.mode.priorityHint1">mode.priorityHint1</p>
-          <p id="hint7" class="hint" data-i18n="settings.mode.priorityHint2">mode.priorityHint2</p>
-          <p id="hint8" class="hint" data-i18n="settings.mode.priorityHint3">mode.priorityHint3</p>
-          <span id="priorityList">List of devices should have been generated here, if you see this text it is a bug...</span>
-        </fieldset>
+        <p id="hint6" class="hint" data-i18n="settings.mode.priorityHint1">mode.priorityHint1</p>
+        <p id="hint7" class="hint" data-i18n="settings.mode.priorityHint2">mode.priorityHint2</p>
+        <p id="hint8" class="hint" data-i18n="settings.mode.priorityHint3">mode.priorityHint3</p>
+        <span id="priorityList">List of devices should have been generated here, if you see this text it is a bug...</span>
+      </fieldset>
     </div>
     <!-- Mode specific page end -->
 
@@ -304,10 +568,23 @@
       var maxPowerListLoaded = false;
       var deviceListLoaded = false;
       var modeListLoaded = false;
+      var priceModeLoaded = false;
+      var pricePointLoaded = false;
+      var priceListLoaded = false;
+      var frostListLoaded = false;
       // Called whenever things has been loaded
       function checkLoadingDone() {
         var loadElement = document.getElementById("loadingText");
-        if (maxPowerListLoaded && deviceListLoaded && modeListLoaded && operatingModeLoaded && errorMarginLoaded && safetyPowerLoaded) {
+        if (maxPowerListLoaded
+          && deviceListLoaded
+          && modeListLoaded
+          && operatingModeLoaded
+          && errorMarginLoaded
+          && safetyPowerLoaded
+          && priceModeLoaded
+          && pricePointLoaded
+          && priceListLoaded
+          && frostListLoaded) {
           // Update device enable list:
           generateEnableList('highPriDevices', 1);
           generateEnableList('lowPriDevices', 0);
@@ -315,21 +592,15 @@
           // Hide all tabs except one:
           changeTab(false, 'globalPage');
           updateOperatingModes(currentOperatingMode);
+          updatePriceModes(currentPriceMode);
+          updatePricePoints(currentPricePoint);
           loadElement.style.display = "none";
           document.getElementById("tab_selector").style.display = "inline-block";
           document.getElementById("save").style.display = "inline-block";
           document.getElementById("errorMargin").value = currentErrorMargin;
           document.getElementById("safetyPower").value = currentSafetyPower;
-        /*} else {
-          loadElement.innerHTML="Loading state: " 
-            + String(maxPowerListLoaded) + " " 
-            + String(deviceListLoaded) + " " 
-            + String(modeListLoaded) + " "
-            + String(operatingModeLoaded) + " "
-            + String(errorMarginLoaded) + " "
-            + String(safetyPowerLoaded);*/
+          document.getElementById("pricePoint").value = currentPricePoint;
         }
-        
       }
 
       // a method named 'onHomeyReady' must be present in your code
@@ -338,12 +609,35 @@
         var operatingModeElement = document.getElementById("operatingMode");
         var errorMarginElement = document.getElementById("errorMargin");
         var safetyPowerElement = document.getElementById("safetyPower");
+        var priceModeElement = document.getElementById("priceMode");
+        var pricePointElement = document.getElementById("pricePoint");
 
-        deviceText   = Homey.__(deviceText);
+        // Fetch translation strings from Homey
+        deltaText = Homey.__(deltaText);
+        actionText = Homey.__(actionText);
+        deviceText = Homey.__(deviceText);
+        turnOnText = Homey.__(turnOnText);
+        turnOffText = Homey.__(turnOffText);
+        minTempText = Homey.__(minTempText);
         priorityText = Homey.__(priorityText);
         alwaysOnText = Homey.__(alwaysOnText);
+        priceLowText = Homey.__(priceLowText);
+        deltaTempText = Homey.__(deltaTempText);
         alwaysOffText = Homey.__(alwaysOffText);
+        priceHighText = Homey.__(priceHighText);
+        targetTempText = Homey.__(targetTempText);
         controlledText = Homey.__(controlledText);
+        priceNormalText = Homey.__(priceNormalText);
+
+        for (var i = 0; i < operatingModes.length; i++) {
+          operatingModes[i].name = Homey.__(operatingModes[i].name);
+        }
+        for (var i = 0; i < priceModes.length; i++) {
+          priceModes[i].name = Homey.__(priceModes[i].name);
+        }
+        for (var i = 0; i < pricePoints.length; i++) {
+          pricePoints[i].name = Homey.__(pricePoints[i].name);
+        }
 
 
         Homey.api("GET", "/requestDeviceListRefresh", {}, function(err, result) {
@@ -372,6 +666,22 @@
           modeListLoaded = true;
           checkLoadingDone();
         })
+        Homey.get("frostList", function (err, myFrostList) {
+          if (err) return Homey.alert(err);
+          if (Array.isArray(myFrostList)) {
+            frostList = myFrostList;
+          } // else use defaults set from the top (this is the first time)
+          frostListLoaded = true;
+          checkLoadingDone();
+        });
+        Homey.get("priceList", function (err, myPriceList) {
+          if (err) return Homey.alert(err);
+          if (Array.isArray(myPriceList)) {
+            priceList = myPriceList;
+          } // else use defaults set from the top (this is the first time)
+          priceListLoaded = true;
+          checkLoadingDone();
+        });
         Homey.get("maxPowerList", function (err, maxPower) {
           if (err) return Homey.alert(err);
           if (Array.isArray(maxPower)) {
@@ -388,6 +698,26 @@
             currentOperatingMode = 0;
           }
           operatingModeLoaded = true;
+          checkLoadingDone();
+        });
+        Homey.get("priceMode", function (err, priceMode) {
+          if (err) return Homey.alert(err);
+          if (priceMode !== null) {
+            currentPriceMode = priceMode;
+          } else {
+            currentPriceMode = 0;
+          }
+          priceModeLoaded = true;
+          checkLoadingDone();
+        });
+        Homey.get("pricePoint", function (err, pricePoint) {
+          if (err) return Homey.alert(err);
+          if (pricePoint !== null) {
+            currentPricePoint = pricePoint;
+          } else {
+            currentPricePoint = 1; // Set to normal as default
+          }
+          pricePointLoaded = true;
           checkLoadingDone();
         });
         Homey.get("errorMargin", function (err, errorMargin) {
@@ -418,12 +748,24 @@
           Homey.set("modeList", modeList, function (err) {
             if (err) return Homey.alert(err);
           });
+          Homey.set("frostList", frostList, function(err) {
+            if (err) return Homey.alert(err);
+          })
           Homey.set("maxPowerList", maxPowerList, function (err) {
             if (err) return Homey.alert(err);
           });
           Homey.set("operatingMode", operatingModeElement.value, function (err) {
             if (err) return Homey.alert(err);
           });
+          Homey.set("priceMode", priceModeElement.value, function (err) {
+            if (err) return Homey.alert(err);
+          });
+          Homey.set("pricePoint", pricePointElement.value, function (err) {
+            if (err) return Homey.alert(err);
+          });
+          Homey.set("priceList", priceList, function (err) {
+            if (err) return Homey.alert(err);
+          })
           Homey.set("errorMargin", errorMarginElement.value, function (err) {
             if (err) return Homey.alert(err);
           });
@@ -437,11 +779,68 @@
         Homey.ready();
       }
 
+      // -- Price Tab control -- //
+      function changePriceTab(evt, tabPage) {
+        // Update device list:
+        var up_to_date_elements = {};
+        // Remove devices that are no longer in use.
+        for (i = priceList[tabPage].length-1; i >= 0; i--) {
+          if (!deviceList[priceList[tabPage][i].id].use) {
+            priceList[tabPage].splice(i, 1);
+          } else {
+            up_to_date_elements[priceList[tabPage][i].id] = true;
+          }
+        }
+        // Add new devices
+        var new_delta = (tabPage == 0 ? 3 : (tabPage == 1 ? 0 : -5))
+        for (key in deviceList) {
+          if (deviceList[key].use && !(key in up_to_date_elements)) {
+            priceList[tabPage].push({ id: key, delta: new_delta, operation: DELTA_TEMP })
+          }
+        }
+        generatePriceList(tabPage);
+
+        // Get all elements with class="subtablinks" and remove the class "active"
+        tablinks = document.getElementsByClassName("subtablinks");
+        for (i = 0; i < tablinks.length; i++) {
+          tablinks[i].className = tablinks[i].className.replace(" active", "");
+        }
+
+        // Show the current tab, and add an "active" class to the button that opened the tab
+        if (evt) evt.currentTarget.className += " active";
+
+      }
+
       // -- Tab control -- //
       function changeTab(evt, tabPage, modeId = undefined) {
         var i, tabcontent, tablinks;
 
-        // update the deviceLists in the tab
+        // Update devicelist for Frost Page
+        if (tabPage == 'frostPage') {
+          var up_to_date_elements = {};
+          // Remove devices that are no longer in use.
+          for (i = frostList.length-1; i >= 0; i--) {
+            if (!deviceList[frostList[i].id].use) {
+              frostList.splice(i, 1);
+            } else {
+              up_to_date_elements[frostList[i].id] = true;
+            }
+          }
+          // Add new devices
+          for (key in deviceList) {
+            if (deviceList[key].use && !(key in up_to_date_elements)) {
+              frostList.push({ id: key, minTemp: 5 })
+            }
+          }
+          generateFrostList();
+        }
+
+        // Update price page in case it has not been updated before
+        if (tabPage == 'pricePage') {
+          changePriceTab(evt, 1);
+        }
+
+        // Update the deviceLists for Mode lists
         if ((modeId != undefined) && (modeId >= 0) && (modeId < modeList.length)) {
           var up_to_date_elements = {};
           // First remove devices that are no longer in use.
@@ -455,7 +854,7 @@
           // Add new devices
           for (key in deviceList) {
             if (deviceList[key].use && !(key in up_to_date_elements)) {
-              modeList[modeId].push({ id: key, operation: CONTROLLED, minTemp: 15, maxTemp: 28 });
+              modeList[modeId].push({ id: key, operation: CONTROLLED, targetTemp: 28 });
             }
           }
           generatePriorityList(modeId);
@@ -501,16 +900,20 @@
 
       // For testing only -
       // Remove when used on homey
-      /*if (navigator.userAgent == "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:101.0) Gecko/20100101 Firefox/101.0") {
+      if (navigator.userAgent == "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:101.0) Gecko/20100101 Firefox/101.0") {
         // Not homey, but debug mode
         maxPowerListLoaded = true;
         deviceListLoaded = true;
         modeListLoaded = true;
+        frostListLoaded = true;
         operatingModeLoaded = true;
+        priceModeLoaded = true;
+        pricePointLoaded = true;
+        priceListLoaded = true;
         errorMarginLoaded = true;
         safetyPowerLoaded = true;
         checkLoadingDone();
-      }*/
+      }
     </script>
   </body>
 </html>

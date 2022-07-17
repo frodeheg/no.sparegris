@@ -1,0 +1,34 @@
+{
+  "name": {
+    "en": "Piggy Bank Insights",
+    "no": "Sparegris Innsikt"
+  },
+  "class": "other",
+  "capabilities": [
+    "meter_power",
+    "alarm_generic",
+    "measure_power"
+  ],
+  "platforms": [
+    "local"
+  ],
+  "connectivity": [],
+  "images": {
+    "small": "{{driverAssetsPath}}/images/small.png",
+    "large": "{{driverAssetsPath}}/images/large.png",
+    "xlarge": "{{driverAssetsPath}}/images/xlarge.png"
+  },
+  "pair": [
+    {
+      "id": "list_my_devices",
+      "template": "list_devices",
+      "navigation": {
+        "next": "add_my_devices"
+      }
+    },
+    {
+      "id": "add_my_devices",
+      "template": "add_devices"
+    }
+  ]
+}

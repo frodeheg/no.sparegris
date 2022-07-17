@@ -5,6 +5,21 @@
     "loadingText": "Please wait while devices are being loaded... (approx. 1.5 seconds per 10 devices you have)...",
     "tab": {
       "global": "Global",
+      "price": "Price",
+      "normal": "Normal",
+      "frost": "Frost",
+      "night": "Night",
+      "holiday": "Holiday",
+      "boost": "Boost"
+    },
+    "pricetab": {
+      "cheap": "Cheap",
+      "normal": "Normal",
+      "expensive": "Expensive"
+    },
+    "opMode": {
+      "disabled": "App Disalbed",
+      "price": "Price",
       "normal": "Normal",
       "night": "Night",
       "holiday": "Holiday",
@@ -24,7 +39,63 @@
       "controllableDevices": "Controllable devices",
       "deviceListHint1" : "Only selected devices can be controlled by the app.",
       "deviceListHint2" : "Hint: For best battery lifetime please ensure powerful chargers such as car chargers are set to a power that complies as close as possible with the Power targets. Excessive charging power will result in high on/off switch rate."
+    },
+    "price": {
+      "header": "Price control",
+      "notifier": "This mode is under development and has been partially deactivated. You may control this from flows meanwhile.",
+      "priceMode": "Mode",
+      "mode": {
+        "disabled": "Disabled",
+        "flow": "From Flow",
+        "internal": "Internal control"
       },
+      "actionLow": "Actions when price is low",
+      "actionHigh": "Actions when price is normal",
+      "actionNormal": "Actions when price is high",
+      "priceHint1": "Price control allows you to control devices based on the electricity price. If this is not used then the app will only control max power.",
+      "priceErr1": "Note! You have to install the app no.almli.utilitycost in order to use the internal price control. The prices are fetched seamlessly, flow cards are not necessary.",
+      "pricePoint": "Price point",
+      "pricePointHint": "The behaviour of each price point is defined below. Price points can be changed by using flows.",
+      "action": "Action",
+      "delta": "Delta",
+      "deltaTemp": "Change temp",
+      "turnOn": "Turn on",
+      "turnOff": "Turn off",
+      "internal": {
+        "header": "Internal control",
+        "averageTime": "Running Average Time",
+        "averageTimeHint": "Once every hour calculate a running average of the electricity price over the specified time period.",
+        "day1": "One day",
+        "day2": "Two days",
+        "day4": "Four days",
+        "day7": "A week",
+        "day30": "A month",
+        "futurePriceModifier": "Future Price Limit",
+        "futurePriceModifierHint": "A future lower price will increase the current acceptable price. A future higher price will decrease the current acceptable price. The bigger price difference the more impact. The modifier is:",
+        "futurePriceModifierHint2": "min(price_in_x_hours(i))",
+        "futurePriceModifierHint3": "price_now",
+        "futurePriceModifierHint4": "for all i &isin; [1, number_of_hours]",
+        "hour1": "En time",
+        "hour2": "To timer",
+        "hour3": "Tre timer",
+        "hour4": "Fire timer",
+        "penaltyPerOffHour": "Økning",
+
+
+
+        "internalHint1": ["Intern styring av strømprisen regner prisen som høy/lav basert på følgende algoritme:<br>*",
+                         "<ul><li>running_average = running_average * (1-new_weight) + new_price * new_weight | once every hour",
+                         "<li>max_price = running_average * pow(1 + hourly_penalty, num_hours_blocked) * max_modifier | once every hour",
+                         "<li>price_is_low = running_average < low_threshold",
+                         "<li>price_is_high = running_average > high_threshold",
+                         "<li>price_is_normal = (price_is_low is false) and (price_is_high is false)"]
+      }
+    },
+    "frost": {
+      "header": "Frost Control",
+      "minTemp": "Minimum temperature per device",
+      "frostHint": "If the temperature for one unit falls below the minimum allowed temperature then the unit will be turned on independent of any other power control."
+    },
     "mode" : {
       "powerSettings": "Power settings",
       "maxPower": "Max limit",
@@ -46,7 +117,8 @@
       "alwaysOn": "Always On",
       "alwaysOff": "Always Off",
       "device": "Device",
-      "priority": "Priority"
+      "priority": "Priority",
+      "targetTemp": "Target"
     },
     "saveButton": "Save changes",
     "alert": {

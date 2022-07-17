@@ -1,7 +1,8 @@
 {
   "id": "no.sparegris",
   "permissions": [
-    "homey:manager:api"
+    "homey:manager:api",
+    "homey:app:no.almli.utilitycost"
   ],
   "version": "0.0.2",
   "compatibility": ">=5.0.0",

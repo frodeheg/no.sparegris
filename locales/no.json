@@ -5,6 +5,21 @@
     "loadingText": "Vennligst vent mens enhetene lastes... (rundt 1.5 sekunder per 10 enheter du har)...",
     "tab": {
       "global": "Global",
+      "price": "Pris",
+      "frost": "Frost",
+      "normal": "Normal",
+      "night": "Natt",
+      "holiday": "Ferie",
+      "boost": "Boost"
+    },
+    "pricetab": {
+      "cheap": "Billig",
+      "normal": "Normal",
+      "expensive": "Dyrt"
+    },
+    "opMode": {
+      "disabled": "Avslått",
+      "price": "Pris",
       "normal": "Normal",
       "night": "Natt",
       "holiday": "Ferie",
@@ -24,6 +39,56 @@
       "controllableDevices": "Kontrollerbare enheter",
       "deviceListHint1" : "Bare valgte enheter kan kontrolleres av appen.",
       "deviceListHint2" : "Tips: For best mulig batterilevetid, sørg for at kraftige ladere som billadere er satt til en effekt som samsvarer så nært som mulig med effektmålene. Overdreven ladekraft vil resultere i hyppig av/på slåing."
+    },
+    "price": {
+      "header": "Priskontroll",
+      "notifier": "Denne modusen er under utvikling og er derfor delvis deaktivert. I mellomtiden kan du kontrollere pris gjennom flows.",
+      "priceMode": "Modus",
+      "mode": {
+        "disabled": "Priskontroll deaktivert",
+        "flow": "Fra flytkort",
+        "internal": "Intern Styring"
+      },
+      "actionLow": "Handling når strømprisen blir lav",
+      "actionHigh": "Handling når strømprisen blir normal",
+      "actionNormal": "Handling når strømprisen blir høy",
+      "priceHint1": "Priskontroll lar deg styre enheter basert på strømprisen. Dersom dette ikke benyttes vil appen bare styre maks effekt.",
+      "priceErr1": "NB! Du må installere appen no.almli.utilitycost for å bruke den interne priskontrollen. Strømprisen hentes sømløst uten å benytte flytkort.",
+      "pricePoint": "Prispunkt",
+      "pricePointHint": "Oppførsel for hvert prispunkt kan endres nedenfor. Man kan bytte mellom ulike prispunkt ved hjelp av flows.",
+      "action": "Handling",
+      "delta": "Delta",
+      "deltaTemp": "Endre temp",
+      "turnOn": "Slå på",
+      "turnOff": "Slå av",
+      "internal": {
+        "header": "Internstyring",
+        "averageTime": "Flytende Snittpris Intervall",
+        "averageTimeHint": "En gang i timen oppdateres et flytende snitt på strømprisen basert på det gitte intervallet.",
+        "day1": "En dag",
+        "day2": "To dager",
+        "day4": "Fire dager",
+        "day7": "En uke",
+        "day30": "En måned",
+        "futurePriceModifier": "Fremtidig prishensyn",
+        "futurePriceModifierHint": "En fremtidig lavere pris vil øke nåværende akseptabel pris. En fremtidig høyere pris vil redusere nåværende akseptabel pris. Dess større prisforskjell dess større påvirkning. Modifikatoren er:",
+        "futurePriceModifierHint2": "min(pris_om_x_timer(i))",
+        "futurePriceModifierHint3": "price_nå",
+        "futurePriceModifierHint4": "for alle i &isin; [1, antall_timer]",
+        "hour1": "En time",
+        "hour2": "To timer",
+        "hour3": "Tre timer",
+        "hour4": "Fire timer",
+
+
+
+        "internalHint1": ["Intern styring av strømprisen regner prisen som høy/lav basert på følgende algoritme:<br>*"]
+      }
+    },
+    "frost": {
+      "header": "Frostsikring",
+      "minTemp": "Minste temperatur per enhet",
+      "frostHint": "Dersom temperaturen for en enhet faller under minste tillatte temperatur så vil denne enheten slås på uavhengig av øvrig strømstyring."
     },
     "mode" : {
       "powerSettings": "Strøminnstillinger",
@@ -46,7 +111,8 @@
       "alwaysOn": "Alltid på",
       "alwaysOff": "Alltid av",
       "device": "Enhet",
-      "priority": "Prioritet"
+      "priority": "Prioritet",
+      "targetTemp": "Målverdi"
     },
     "saveButton": "Lagre Endringer",
     "alert": {

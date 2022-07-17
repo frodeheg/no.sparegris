@@ -2,7 +2,8 @@
   "_comment": "This file is generated. Please edit .homeycompose/app.json instead.",
   "id": "no.sparegris",
   "permissions": [
-    "homey:manager:api"
+    "homey:manager:api",
+    "homey:app:no.almli.utilitycost"
   ],
   "version": "0.0.2",
   "compatibility": ">=5.0.0",
@@ -129,28 +130,35 @@
             "name": "mode",
             "values": [
               {
-                "id": "mode-normal",
+                "id": "0",
+                "label": {
+                  "en": "App Disabled",
+                  "no": "App Inaktiv"
+                }
+              },
+              {
+                "id": "1",
                 "label": {
                   "en": "Normal",
                   "no": "Normal"
                 }
               },
               {
-                "id": "mode-night",
+                "id": "2",
                 "label": {
                   "en": "Night",
                   "no": "Natt"
                 }
               },
               {
-                "id": "mode-holiday",
+                "id": "3",
                 "label": {
                   "en": "Holiday",
                   "no": "Ferie"
                 }
               },
               {
-                "id": "mode-boost",
+                "id": "4",
                 "label": {
                   "en": "Boost",
                   "no": "Boost"
@@ -160,6 +168,50 @@
           }
         ],
         "id": "change-piggy-bank-mode"
+      },
+      {
+        "title": {
+          "en": "Change Piggy Bank Price Point",
+          "no": "Endre Sparegris Prispunkt"
+        },
+        "titleFormatted": {
+          "en": "Set the Piggy Bank price point to [[mode]]",
+          "no": "Sett Sparegris prispunkt til [[mode]]"
+        },
+        "hint": {
+          "en": "Inform Piggy Bank whether the price on electricity is high or low",
+          "no": "Informerer Sparegris om prisen på strøm er høy eller lav"
+        },
+        "args": [
+          {
+            "type": "dropdown",
+            "name": "mode",
+            "values": [
+              {
+                "id": "0",
+                "label": {
+                  "en": "Low price",
+                  "no": "Lav pris"
+                }
+              },
+              {
+                "id": "1",
+                "label": {
+                  "en": "Normal price",
+                  "no": "Normal pris"
+                }
+              },
+              {
+                "id": "2",
+                "label": {
+                  "en": "High price",
+                  "no": "Høy pris"
+                }
+              }
+            ]
+          }
+        ],
+        "id": "change-piggy-bank-price-point"
       },
       {
         "title": {
@@ -248,5 +300,42 @@
         "id": "update-meter-power"
       }
     ]
-  }
+  },
+  "drivers": [
+    {
+      "name": {
+        "en": "Piggy Bank Insights",
+        "no": "Sparegris Innsikt"
+      },
+      "class": "other",
+      "capabilities": [
+        "meter_power",
+        "alarm_generic",
+        "measure_power"
+      ],
+      "platforms": [
+        "local"
+      ],
+      "connectivity": [],
+      "images": {
+        "small": "/drivers/piggy-bank-insights/assets/images/small.png",
+        "large": "/drivers/piggy-bank-insights/assets/images/large.png",
+        "xlarge": "/drivers/piggy-bank-insights/assets/images/xlarge.png"
+      },
+      "pair": [
+        {
+          "id": "list_my_devices",
+          "template": "list_devices",
+          "navigation": {
+            "next": "add_my_devices"
+          }
+        },
+        {
+          "id": "add_my_devices",
+          "template": "add_devices"
+        }
+      ],
+      "id": "piggy-bank-insights"
+    }
+  ]
 }
