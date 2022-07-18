@@ -5,10 +5,14 @@ const Mutex = require('async-mutex').Mutex;
 const { HomeyAPIApp } = require('homey-api');
 const { stringify } = require('querystring');
 
-// Operation for controlled devices
+// Operations for controlled devices
 const ALWAYS_OFF = 0;
 const ALWAYS_ON = 1;
 const CONTROLLED = 2;
+
+const TURN_ON = 0;
+const TURN_OFF = 1;
+const DELTA_TEMP = 2;
 
 class PiggyBank extends Homey.App {
 
@@ -67,9 +71,9 @@ class PiggyBank extends Homey.App {
     cardActionModeUpdate.registerRunListener(async (args) => {
       this.onModeUpdate(args.mode);
     })
-    const cardActionPriceUpdate = this.homey.flow.getActionCard('change-piggy-bank-price-point')
-    cardActionPriceUpdate.registerRunListener(async (args) => {
-      this.onPriceUpdate(args.mode);
+    const cardActionPricePointUpdate = this.homey.flow.getActionCard('change-piggy-bank-price-point')
+    cardActionPricePointUpdate.registerRunListener(async (args) => {
+      this.onPricePointUpdate(args.mode);
     })
     const cardActionSafetyPowerUpdate = this.homey.flow.getActionCard('change-piggy-bank-safety-power')
     cardActionSafetyPowerUpdate.registerRunListener(async (args) => {
@@ -143,17 +147,19 @@ class PiggyBank extends Homey.App {
       }
 
       this.log("Device: " + String(priority) + " " + device.id + " " + device.name + " " + device.class)
+      var thermostat_cap = device.capabilities.includes("target_temperature")
+        && device.capabilities.includes("measure_temperature");
       var relevantDevice = {
         priority: (priority > 0) ? 1 : 0,
         name: device.name,
         room: device.zoneName,
         image: device.iconObj.url,
         onoff_cap: onoff_cap,
+        thermostat_cap: thermostat_cap,
         use: useDevice
       };
       relevantDevices[device.id] = relevantDevice;
     }
-    // Turn device on
     this.__deviceList = relevantDevices;
     return;
   }
@@ -227,7 +233,7 @@ class PiggyBank extends Homey.App {
     const errorMargin = this.homey.settings.get('errorMargin') ? (parseInt(this.homey.settings.get('errorMargin'))/100.) : 1.;
     const maxPowerList = this.homey.settings.get('maxPowerList');
     var currentMode = this.homey.settings.get('operatingMode');
-    const trueMaxPower = maxPowerList[currentMode];
+    const trueMaxPower = maxPowerList[currentMode-1];
     const errorMarginWatts = trueMaxPower * errorMargin;
     const maxPower = trueMaxPower - errorMarginWatts;
     const safetyPower = this.homey.settings.get("safetyPower");
@@ -266,13 +272,51 @@ class PiggyBank extends Homey.App {
 
 
   /**
-   * onPriceUpdate is called whenever the price point is changed
+   * onPricePointUpdate is called whenever the price point is changed
    */
-   async onPriceUpdate(newMode) {
+  async onPricePointUpdate(newMode) {
+    var oldPricePoint = this.homey.settings.get("pricePoint");
+    if (newMode == oldPricePoint) {
+      return;
+    }
     this.log("Changing the current price point to: " + String(newMode));
     this.homey.settings.set("pricePoint", newMode, function (err) {
       if (err) return this.homey.alert(err);
     });
+
+    var modeList = this.homey.settings.get('modeList');
+    var currentMode = this.homey.settings.get('operatingMode');
+    var currentModeList = modeList[currentMode-1];
+
+    // Go through all actions for this new mode;
+    var actionLists = this.homey.settings.get("priceList");
+    var currentActions = actionLists[newMode];
+    for (var i = 0; i < currentActions.length; i++) {
+      const deviceId = currentActions[i].id;
+      const device = await this.homeyApi.devices.getDevice({id: deviceId });
+      switch (currentActions[i].operation) {
+        case TURN_ON:
+          device.setCapabilityValue({ capabilityId: this.__deviceList[deviceId].onoff_cap, value: true });
+          currentActions[i].action_taken = true;
+          break;
+        case TURN_OFF:
+          device.setCapabilityValue({ capabilityId: this.__deviceList[deviceId].onoff_cap, value: false });
+          currentActions[i].action_taken = true;
+          break;
+        case DELTA_TEMP:
+          const modeIdx = findModeIdx(deviceId);
+          const old_temp = currentModeList[modeIdx].targetTemp;
+          const delta_temp = currentActions[i].delta;
+          const new_temp = old_temp + delta_temp;
+          const isOn = await (this.__deviceList[deviceId].onoff_cap === undefined) ? undefined : device.capabilitiesObj[this.__deviceList[deviceId].onoff_cap].value;
+          if (!isOn) {
+            // Turn on the device first
+            await device.setCapabilityValue({ capabilityId: this.__deviceList[deviceId].onoff_cap, value: true });
+          }
+          device.setCapabilityValue({ capabilityId: "target_temperature", value: new_temp });
+          break;
+      }
+    }
   }
 
 
@@ -388,6 +432,19 @@ class PiggyBank extends Homey.App {
     var firstHourEver = this.__reserved_energy > 0;
     if (!firstHourEver && (lessPower > errorMarginWatts))
       this.homey.notifications.createNotification({excerpt: "Alert: The power must be reduced by " + String(lessPower) + " W immediately or the hourly limit will be breached"})
+  }
+
+
+  async findModeIdx(deviceId) {
+    var modeList = this.homey.settings.get('modeList');
+    var currentMode = this.homey.settings.get('operatingMode');
+    var currentModeList = modeList[currentMode-1];
+    for (var i = 0; i < currentModeList.length; i++) {
+      if (currentModeList[i].id == deviceId) {
+        return i;
+      }
+    }
+    return null; // Nothing found
   }
 
   /*********************************************************************************************************

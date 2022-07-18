@@ -34,9 +34,9 @@
       const DELTA_TEMP = 2;
 
       var deviceList = {
-        id_a: { name:"DeviceName 1", room: "Stue",    image: "https://as2.ftcdn.net/v2/jpg/02/49/76/93/1000_F_249769389_7su5tYXOvcjcehNCcWTwcjnHvSMkLocJ.jpg", use: true, priority: 0 },
-        id_b: { name:"DeviceName 2", room: "Kjøkken", image: "https://as2.ftcdn.net/v2/jpg/02/49/76/93/1000_F_249769389_7su5tYXOvcjcehNCcWTwcjnHvSMkLocJ.jpg", use: true, priority: 1 },
-        id_c: { name:"DeviceName 3", room: "Bad",     image: "https://as2.ftcdn.net/v2/jpg/02/49/76/93/1000_F_249769389_7su5tYXOvcjcehNCcWTwcjnHvSMkLocJ.jpg", use: true, priority: 0 }
+        id_a: { name:"DeviceName 1", room: "Stue",    image: "https://as2.ftcdn.net/v2/jpg/02/49/76/93/1000_F_249769389_7su5tYXOvcjcehNCcWTwcjnHvSMkLocJ.jpg", use: true, priority: 0, thermostat_cap: true },
+        id_b: { name:"DeviceName 2", room: "Kjøkken", image: "https://as2.ftcdn.net/v2/jpg/02/49/76/93/1000_F_249769389_7su5tYXOvcjcehNCcWTwcjnHvSMkLocJ.jpg", use: true, priority: 1, thermostat_cap: true },
+        id_c: { name:"DeviceName 3", room: "Bad",     image: "https://as2.ftcdn.net/v2/jpg/02/49/76/93/1000_F_249769389_7su5tYXOvcjcehNCcWTwcjnHvSMkLocJ.jpg", use: true, priority: 0, thermostat_cap: false }
       }
       var modeList = [
         // Normal
@@ -148,14 +148,13 @@
             '</tr>';
         for (var i = 0; i < frostList.length; i++) {
           var device = deviceList[frostList[i].id];
+          var frost_temp_input = device.thermostat_cap ? '<input type="number" id="minTemp' + String(i) + '" min=0 max=90 size="1" onchange="setMinTemp(this, ' + String(i) + ')" value="' + String(frostList[i].minTemp) + '">°C' : '-';
           gen_list +=
             '<tr>' +
               '<td><img src="' + device.image + '" alt="icon" width="auto" height="50"></td>' +
               '<td><h3>' + device.name + '</h3>' +
                 '<p>' + device.room + '</p></td>' +
-              '<td>' +
-                '<input type="number" id="minTemp' + String(i) + '" min=0 max=90 size="1" onchange="setMinTemp(this, ' + String(i) + ')" value="' + String(frostList[i].minTemp) + '">°C' +
-                '</td>' +
+              '<td>' + frost_temp_input + '</td>' +
             '</tr>';
         }
         gen_list += "</table>";
@@ -182,15 +181,14 @@
             '</tr>';
         for (var i = 0; i < priceList[tabPage].length; i++) {
           var device = deviceList[priceList[tabPage][i].id];
+          var price_temp_input = device.thermostat_cap ? '<input type="number" id="deltaTemp' + String(i) + '" min=-30 max=30 size="1" onchange="setDeltaTemp(this, ' + String(tabPage) + ', ' + String(i) + ')" value="' + String(priceList[tabPage][i].delta) + '">°C' : '-';
           priceTabText +=
             '<tr>' +
               '<td><img src="' + device.image + '" alt="icon" width="auto" height="50"></td>' +
               '<td><h3>' + device.name + '</h3>' +
                 '<p>' + device.room + '</p></td>' +
               '<td><div class="imgButtonText" id="priceActionButton' + String(i) + '" onclick="updatePriceAction(this, ' + String(tabPage) + ', ' + String(i) + ')">N/A</div></td>' +
-              '<td>' +
-                '<input type="number" id="deltaTemp' + String(i) + '" min=-30 max=30 size="1" onchange="setDeltaTemp(this, ' + String(tabPage) + ', ' + String(i) + ')" value="' + String(priceList[tabPage][i].delta) + '">°C' +
-                '</td>' +
+              '<td>' + price_temp_input + '</td>' +
             '</tr>';
         }
         priceTabText +=
@@ -217,6 +215,7 @@
           var device = deviceList[modeList[listNum][i].id];
           var upenabled  = (i==0) ? 'disabled' : '';
           var dwnenabled = (i==modeList[listNum].length-1) ? 'disabled' : '';
+          var target_temp_input = device.thermostat_cap ? '<input type="number" id="targetTemp' + String(i) + '" min=0 max=90 size="1" onchange="setTargetTemp(this,' + String(listNum) + ',' + String(i) + ')" value="' + String(modeList[listNum][i].targetTemp) + '">°C' : '-';
           gen_list +=
             '<tr>' +
               '<td><input ' + upenabled + ' type="image" width="40" height="15" src="up_arrow.png" onclick="moveDevice(event, ' + String(listNum) + ', ' + String(i) + ',-1)" id="moveDeviceUp' + String(i) + '"/><br>' +
@@ -225,9 +224,7 @@
               '<td><div class="imgButtonText" id="deviceStateButton' + String(i) + '" onclick="updateState(this, ' + String(listNum) + ', ' + String(i) + ')">N/A</div></td>' +
               '<td><h3>' + device.name + '</h3>' +
                   '<p>' + device.room + '</p></td>' +
-                  '<td>' +
-                    '<input type="number" id="targetTemp' + String(i) + '" min=0 max=90 size="1" onchange="setTargetTemp(this,' + String(listNum) + ',' + String(i) + ')" value="' + String(modeList[listNum][i].targetTemp) + '">°C' +
-                    '</td>' +
+                  '<td>' + target_temp_input + '</td>' +
             '</tr>';
         }
         gen_list += "</table>";
@@ -245,23 +242,27 @@
         } else if (newstate == KEEP) {
           newstate = priceList[pricePoint][device_id].operation;
         }
+        var device = deviceList[priceList[pricePoint][device_id].id];
+        if (!device.thermostat_cap && newstate == DELTA_TEMP) {
+          newstate = TURN_ON;
+        }
         priceList[pricePoint][device_id].operation = newstate;
         var deltaTempInput =  document.getElementById('deltaTemp' + String(device_id));
         switch (priceList[pricePoint][device_id].operation) {
           case TURN_OFF:
             button.innerHTML=turnOffText;
             button.style.backgroundImage = 'radial-gradient(white, lightgray, gray)';
-            deltaTempInput.disabled = true;
+            if (deltaTempInput) deltaTempInput.disabled = true;
             break;
           case TURN_ON:
             button.innerHTML=turnOnText;
             button.style.backgroundImage = 'radial-gradient(white, rgb(255, 255, 150), orange)';
-            deltaTempInput.disabled = true;
+            if (deltaTempInput) deltaTempInput.disabled = true;
             break;
           case DELTA_TEMP:
             button.innerHTML=deltaTempText;
             button.style.backgroundImage = 'radial-gradient(white, rgb(150, 255, 150), green)';
-            deltaTempInput.disabled = false;
+            if (deltaTempInput) deltaTempInput.disabled = false;
             break;
         }
       }
