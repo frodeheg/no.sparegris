@@ -4,5 +4,8 @@
   },
   "0.0.2": {
     "en": "Fixed readout of max power in app"
+  },
+  "0.1.0": {
+    "en": "First working version with temperature set points"
   }
 }
