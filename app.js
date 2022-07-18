@@ -304,7 +304,7 @@ class PiggyBank extends Homey.App {
           currentActions[i].action_taken = true;
           break;
         case DELTA_TEMP:
-          const modeIdx = findModeIdx(deviceId);
+          const modeIdx = this.findModeIdx(deviceId);
           const old_temp = currentModeList[modeIdx].targetTemp;
           const delta_temp = currentActions[i].delta;
           const new_temp = old_temp + delta_temp;
