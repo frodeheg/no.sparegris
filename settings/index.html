@@ -38,6 +38,7 @@
         id_b: { name:"DeviceName 2", room: "Kjøkken", image: "https://as2.ftcdn.net/v2/jpg/02/49/76/93/1000_F_249769389_7su5tYXOvcjcehNCcWTwcjnHvSMkLocJ.jpg", use: true, priority: 1, thermostat_cap: true },
         id_c: { name:"DeviceName 3", room: "Bad",     image: "https://as2.ftcdn.net/v2/jpg/02/49/76/93/1000_F_249769389_7su5tYXOvcjcehNCcWTwcjnHvSMkLocJ.jpg", use: true, priority: 0, thermostat_cap: false }
       }
+      // The modelist is not indexed by id because it uses the index to sort the list
       var modeList = [
         // Normal
         [ { id: "id_a", operation: CONTROLLED, targetTemp: 24 },
@@ -48,8 +49,8 @@
         [], // Holiday
         []  // Boost
       ]
-      var frostList = []
-      var priceList = [ [], [], [] ]
+      var frostList = {} // Indexed by deviceId
+      var priceActionList = [ {}, {}, {} ] // Indexed by deviceId
       var maxPowerList = [
         2000, // Normal
         2000, // Night
@@ -146,9 +147,9 @@
               '<th>&nbsp;</th>' +
               '<th align="left" colspan="2">' + minTempText + '</th>' +
             '</tr>';
-        for (var i = 0; i < frostList.length; i++) {
-          var device = deviceList[frostList[i].id];
-          var frost_temp_input = device.thermostat_cap ? '<input type="number" id="minTemp' + String(i) + '" min=0 max=90 size="1" onchange="setMinTemp(this, ' + String(i) + ')" value="' + String(frostList[i].minTemp) + '">°C' : '-';
+        for (var deviceId in frostList) {
+          var device = deviceList[deviceId];
+          var frost_temp_input = device.thermostat_cap ? '<input type="number" id="minTemp' + String(deviceId) + '" min=0 max=90 size="1" onchange="setFrostTemp(this, \'' + String(deviceId) + '\')" value="' + String(frostList[deviceId].minTemp) + '">°C' : '-';
           gen_list +=
             '<tr>' +
               '<td><img src="' + device.image + '" alt="icon" width="auto" height="50"></td>' +
@@ -161,7 +162,7 @@
         list.innerHTML = gen_list;
       }
 
-      function generatePriceList(tabPage) {
+      function generatePriceActionList(tabPage) {
         // Generate page
         var legendText = "";
         switch (tabPage) {
@@ -179,26 +180,26 @@
               '<th align="left">' + actionText + '</th>' +
               '<th align="left">' + deltaText + '</th>' +
             '</tr>';
-        for (var i = 0; i < priceList[tabPage].length; i++) {
-          var device = deviceList[priceList[tabPage][i].id];
-          var price_temp_input = device.thermostat_cap ? '<input type="number" id="deltaTemp' + String(i) + '" min=-30 max=30 size="1" onchange="setDeltaTemp(this, ' + String(tabPage) + ', ' + String(i) + ')" value="' + String(priceList[tabPage][i].delta) + '">°C' : '-';
+        for (var deviceId in priceActionList[tabPage]) {
+          var device = deviceList[deviceId];
+          var price_temp_input = device.thermostat_cap ? '<input type="number" id="deltaTemp' + String(deviceId) + '" min=-30 max=30 size="1" onchange="setDeltaTemp(this, ' + String(tabPage) + ', \'' + String(deviceId) + '\')" value="' + String(priceActionList[tabPage][deviceId].delta) + '">°C' : '-';
           priceTabText +=
             '<tr>' +
               '<td><img src="' + device.image + '" alt="icon" width="auto" height="50"></td>' +
               '<td><h3>' + device.name + '</h3>' +
                 '<p>' + device.room + '</p></td>' +
-              '<td><div class="imgButtonText" id="priceActionButton' + String(i) + '" onclick="updatePriceAction(this, ' + String(tabPage) + ', ' + String(i) + ')">N/A</div></td>' +
+              '<td><div class="imgButtonText" id="priceActionButton' + String(deviceId) + '" onclick="updatePriceAction(this, ' + String(tabPage) + ', \'' + String(deviceId) + '\')">N/A</div></td>' +
               '<td>' + price_temp_input + '</td>' +
             '</tr>';
         }
         priceTabText +=
             '</table>' +
           '</fieldset>';
-        document.getElementById("priceList").innerHTML = priceTabText;
+        document.getElementById("priceActionList").innerHTML = priceTabText;
 
         // Refresh states on list elements
-        for (var i = 0; i < priceList[tabPage].length; i++) {
-          updatePriceAction(document.getElementById('priceActionButton' + String(i)), tabPage, i, KEEP);
+        for (var deviceId in priceActionList[tabPage]) {
+          updatePriceAction(document.getElementById('priceActionButton' + String(deviceId)), tabPage, deviceId, KEEP);
         }
       }
 
@@ -238,17 +239,17 @@
 
       function updatePriceAction(button, pricePoint, device_id, newstate = undefined) {
         if (newstate == undefined) {
-          newstate = (priceList[pricePoint][device_id].operation + 1) % 3;
+          newstate = (priceActionList[pricePoint][device_id].operation + 1) % 3;
         } else if (newstate == KEEP) {
-          newstate = priceList[pricePoint][device_id].operation;
+          newstate = priceActionList[pricePoint][device_id].operation;
         }
-        var device = deviceList[priceList[pricePoint][device_id].id];
+        var device = deviceList[device_id];
         if (!device.thermostat_cap && newstate == DELTA_TEMP) {
           newstate = TURN_ON;
         }
-        priceList[pricePoint][device_id].operation = newstate;
+        priceActionList[pricePoint][device_id].operation = newstate;
         var deltaTempInput =  document.getElementById('deltaTemp' + String(device_id));
-        switch (priceList[pricePoint][device_id].operation) {
+        switch (priceActionList[pricePoint][device_id].operation) {
           case TURN_OFF:
             button.innerHTML=turnOffText;
             button.style.backgroundImage = 'radial-gradient(white, lightgray, gray)';
@@ -314,7 +315,7 @@
         }
       }
 
-      function setMinTemp(object, device_id) {
+      function setFrostTemp(object, device_id) {
         if(object.value != ""){
           if(parseInt(object.value) < parseInt(object.min)){
             object.value = object.min;
@@ -326,7 +327,7 @@
         }
       }
 
-      function setDeltaTemp(object, price_point, device_id) {
+      function setDeltaTemp(object, price_point, deviceId) {
         if(object.value != ""){
           if(parseInt(object.value) < parseInt(object.min)){
             object.value = object.min;
@@ -334,7 +335,7 @@
           if(parseInt(object.value) > parseInt(object.max)){
             object.value = object.max;
           }
-          priceList[price_point][device_id]['delta'] = object.value
+          priceActionList[price_point][deviceId]['delta'] = object.value
         }
       }
 
@@ -357,6 +358,7 @@
 
     <h1 data-i18n="settings.title">.title</h1>
     <p data-i18n="settings.subtitle">.subtitle</p>
+    <p id="debug">debug</p>
 
     <div data-i18n="settings.loadingText" id="loadingText">loadingText</div>
 
@@ -508,7 +510,7 @@
             <td>&nbsp;</td>
           </tr>
         </table>
-        <span id="priceList">List of devices should have been generated here, if you see this text it is a bug...</span>
+        <span id="priceActionList">List of devices should have been generated here, if you see this text it is a bug...</span>
       </fieldset>
     </div>
     <!-- Price page end -->
@@ -571,7 +573,7 @@
       var modeListLoaded = false;
       var priceModeLoaded = false;
       var pricePointLoaded = false;
-      var priceListLoaded = false;
+      var priceActionListLoaded = false;
       var frostListLoaded = false;
       // Called whenever things has been loaded
       function checkLoadingDone() {
@@ -584,7 +586,7 @@
           && safetyPowerLoaded
           && priceModeLoaded
           && pricePointLoaded
-          && priceListLoaded
+          && priceActionListLoaded
           && frostListLoaded) {
           // Update device enable list:
           generateEnableList('highPriDevices', 1);
@@ -669,18 +671,18 @@
         })
         Homey.get("frostList", function (err, myFrostList) {
           if (err) return Homey.alert(err);
-          if (Array.isArray(myFrostList)) {
+          if (myFrostList !== null) {
             frostList = myFrostList;
           } // else use defaults set from the top (this is the first time)
           frostListLoaded = true;
           checkLoadingDone();
         });
-        Homey.get("priceList", function (err, myPriceList) {
+        Homey.get("priceActionList", function (err, mypriceActionList) {
           if (err) return Homey.alert(err);
-          if (Array.isArray(myPriceList)) {
-            priceList = myPriceList;
+          if (mypriceActionList !== null) {
+            priceActionList = mypriceActionList;
           } // else use defaults set from the top (this is the first time)
-          priceListLoaded = true;
+          priceActionListLoaded = true;
           checkLoadingDone();
         });
         Homey.get("maxPowerList", function (err, maxPower) {
@@ -764,7 +766,7 @@
           Homey.set("pricePoint", pricePointElement.value, function (err) {
             if (err) return Homey.alert(err);
           });
-          Homey.set("priceList", priceList, function (err) {
+          Homey.set("priceActionList", priceActionList, function (err) {
             if (err) return Homey.alert(err);
           })
           Homey.set("errorMargin", errorMarginElement.value, function (err) {
@@ -783,23 +785,20 @@
       // -- Price Tab control -- //
       function changePriceTab(evt, tabPage) {
         // Update device list:
-        var up_to_date_elements = {};
         // Remove devices that are no longer in use.
-        for (i = priceList[tabPage].length-1; i >= 0; i--) {
-          if (!deviceList[priceList[tabPage][i].id].use) {
-            priceList[tabPage].splice(i, 1);
-          } else {
-            up_to_date_elements[priceList[tabPage][i].id] = true;
+        for (deviceId in priceActionList[tabPage]) {
+          if (!deviceList[deviceId].use) {
+            delete priceActionList[tabPage][deviceId];
           }
         }
         // Add new devices
         var new_delta = (tabPage == 0 ? 3 : (tabPage == 1 ? 0 : -5))
         for (key in deviceList) {
-          if (deviceList[key].use && !(key in up_to_date_elements)) {
-            priceList[tabPage].push({ id: key, delta: new_delta, operation: DELTA_TEMP })
+          if (deviceList[key].use && !(key in priceActionList[tabPage])) {
+            priceActionList[tabPage][key] = { delta: new_delta, operation: DELTA_TEMP }
           }
         }
-        generatePriceList(tabPage);
+        generatePriceActionList(tabPage);
 
         // Get all elements with class="subtablinks" and remove the class "active"
         tablinks = document.getElementsByClassName("subtablinks");
@@ -809,7 +808,6 @@
 
         // Show the current tab, and add an "active" class to the button that opened the tab
         if (evt) evt.currentTarget.className += " active";
-
       }
 
       // -- Tab control -- //
@@ -818,19 +816,16 @@
 
         // Update devicelist for Frost Page
         if (tabPage == 'frostPage') {
-          var up_to_date_elements = {};
           // Remove devices that are no longer in use.
-          for (i = frostList.length-1; i >= 0; i--) {
-            if (!deviceList[frostList[i].id].use) {
-              frostList.splice(i, 1);
-            } else {
-              up_to_date_elements[frostList[i].id] = true;
+          for (deviceId in frostList) {
+            if (!deviceList[deviceId].use) {
+              delete frostList[deviceId];
             }
           }
           // Add new devices
           for (key in deviceList) {
-            if (deviceList[key].use && !(key in up_to_date_elements)) {
-              frostList.push({ id: key, minTemp: 5 })
+            if (deviceList[key].use && !(key in frostList)) {
+              frostList[key] = { minTemp: 5 }
             }
           }
           generateFrostList();
@@ -910,7 +905,7 @@
         operatingModeLoaded = true;
         priceModeLoaded = true;
         pricePointLoaded = true;
-        priceListLoaded = true;
+        priceActionListLoaded = true;
         errorMarginLoaded = true;
         safetyPowerLoaded = true;
         checkLoadingDone();

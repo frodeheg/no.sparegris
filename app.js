@@ -1,9 +1,21 @@
 'use strict';
 
+// NOTES:
+// * As the Zigbee implementation of Homey is extremely poor when it comes to recovering after a reboot,
+//   this app will prevent sending commands to other devices using the Homey api for the first 15 minutes
+//   after the app was started unless the commands was user initiated (e.g. by using the setup).
+//   This will ensure that the Zigbee driver is not interrupted during the recovery process and as such
+//   has a higher get enough time to recover after a reboot.
+//   (yes, it has been tested that the Zigbee driver does not recover unless this measure is taken)
+// TODO
+
+
 const Homey = require('homey');
 const Mutex = require('async-mutex').Mutex;
 const { HomeyAPIApp } = require('homey-api');
 const { stringify } = require('querystring');
+
+const WAIT_TIME_TO_POWER_ON_AFTER_POWEROFF = 5*60*1000;
 
 // Operations for controlled devices
 const ALWAYS_OFF = 0;
@@ -44,7 +56,6 @@ class PiggyBank extends Homey.App {
       homey: this.homey,
     });
 
-
     // Check that settings has been updated
     const maxPower = this.homey.settings.get('maxPowerList')
     if (typeof maxPower == "undefined") {
@@ -54,8 +65,6 @@ class PiggyBank extends Homey.App {
     // Create list of devices
     await this.createDeviceList();
     this.homey.settings.set('deviceList', this.__deviceList);
-
-    this.log("settings was set to: " + String(this.homey.settings.get('deviceList')))
 
     // Enable action cards
     const cardActionEnergyUpdate = this.homey.flow.getActionCard('update-meter-energy') // Remove?
@@ -164,6 +173,67 @@ class PiggyBank extends Homey.App {
     return;
   }
 
+
+  /**
+   * Changes the state of a device.
+   * The state cannot always be changed, as a priority of states follows.
+   * - Below frost-guard results in always on and highest priority
+   * - Device always off from mode
+   * - Device turns off from price action
+   * - Device always on from mode
+   * - Device turns off due to power control
+   * - Device turns on from price action
+   * - Device turns on due to power control
+   */
+  async changeDeviceState(deviceId, newState, modelist_idx = undefined) {
+
+    const promise_device = this.homeyApi.devices.getDevice({id: deviceId });
+    const actionLists = this.homey.settings.get("priceActionList");
+    const actionListIdx = this.homey.settings.get("pricePoint");
+    const currentAction = actionLists[actionListIdx][deviceId]; // Action state: .operation
+    const modeLists = this.homey.settings.get('modeList');
+    const currentMode = this.homey.settings.get('operatingMode');
+    const currentModeList = modeLists[currentMode-1];
+    const currentModeIdx = (modelist_idx === undefined) ? this.findModeIdx(deviceId) : modelist_idx;
+    const currentModeState = currentModeList[currentModeIdx].operation; // Mode state
+
+    const device = await promise_device;
+    const frostList = this.homey.settings.get("frostList");
+    const frostGuardActive = this.__deviceList[deviceId].thermostat_cap 
+      ? (device.capabilitiesObj["measure_temperature"].value < frostList[deviceId].minTemp) : false;
+
+    const isOn = (this.__deviceList[deviceId].onoff_cap === undefined) ? undefined : device.capabilitiesObj[this.__deviceList[deviceId].onoff_cap].value;
+    const newStateOn =
+      frostGuardActive
+      || (newState === TURN_ON  && currentModeState !== ALWAYS_OFF && currentAction.operation !== TURN_OFF)
+      || (newState === TURN_OFF && currentModeState === ALWAYS_ON  && currentAction.operation !== TURN_OFF);
+    
+    if (newStateOn && !isOn) {
+      // Turn on
+      const deviceName = this.__deviceList[deviceId].name;
+      this.log("Turning on device: " + deviceName)
+      return device.setCapabilityValue({ capabilityId: this.__deviceList[deviceId].onoff_cap, value: true })
+        .then(() => {
+          // In case the device has a delayed temperature change action then change the temperature
+          if (currentAction.delayTempChange) {
+            currentAction.delayTempChange = false;
+            return device.setCapabilityValue({ capabilityId: "target_temperature", value: currentAction.delayTempValue });
+          }
+        })
+        .then(() => newState === TURN_ON)
+        .catch(error => { throw error });
+    } // ignore case !wantOn && isOn
+
+    if (!newStateOn && isOn) {
+      // Turn off
+      const deviceName = this.__deviceList[deviceId].name;
+      this.log("Turning off device: " + deviceName)
+      return device.setCapabilityValue({ capabilityId: this.__deviceList[deviceId].onoff_cap, value: false })
+        .then(() => newState === TURN_OFF)
+        .catch(error => { throw error });
+    }
+    return new Promise((resolve) => { resolve(newStateOn == (newState == TURN_ON)) });
+  }
 
   /**
    * onNewHour runs whenever a new hour starts
@@ -289,31 +359,31 @@ class PiggyBank extends Homey.App {
     var currentModeList = modeList[currentMode-1];
 
     // Go through all actions for this new mode;
-    var actionLists = this.homey.settings.get("priceList");
+    var actionLists = this.homey.settings.get("priceActionList");
     var currentActions = actionLists[newMode];
-    for (var i = 0; i < currentActions.length; i++) {
-      const deviceId = currentActions[i].id;
+    for (var deviceId in currentActions) {
       const device = await this.homeyApi.devices.getDevice({id: deviceId });
-      switch (currentActions[i].operation) {
+      switch (currentActions[deviceId].operation) {
         case TURN_ON:
-          device.setCapabilityValue({ capabilityId: this.__deviceList[deviceId].onoff_cap, value: true });
-          currentActions[i].action_taken = true;
+          changeDeviceState(deviceId, TURN_ON)
           break;
         case TURN_OFF:
-          device.setCapabilityValue({ capabilityId: this.__deviceList[deviceId].onoff_cap, value: false });
-          currentActions[i].action_taken = true;
+          changeDeviceState(deviceId, TURN_OFF)
           break;
         case DELTA_TEMP:
           const modeIdx = this.findModeIdx(deviceId);
-          const old_temp = currentModeList[modeIdx].targetTemp;
-          const delta_temp = currentActions[i].delta;
+          const old_temp = parseInt(currentModeList[modeIdx].targetTemp);
+          const delta_temp = parseInt(currentActions[deviceId].delta);
           const new_temp = old_temp + delta_temp;
           const isOn = await (this.__deviceList[deviceId].onoff_cap === undefined) ? undefined : device.capabilitiesObj[this.__deviceList[deviceId].onoff_cap].value;
-          if (!isOn) {
-            // Turn on the device first
-            await device.setCapabilityValue({ capabilityId: this.__deviceList[deviceId].onoff_cap, value: true });
+          if (isOn) {
+            currentActions[deviceId].delayTempChange = false;
+            device.setCapabilityValue({ capabilityId: "target_temperature", value: new_temp });
+          } else {
+            // Delay the action until the device turns on
+            currentActions[deviceId].delayTempChange = true;
+            currentActions[deviceId].delayTempValue = new_temp;
           }
-          device.setCapabilityValue({ capabilityId: "target_temperature", value: new_temp });
           break;
       }
     }
@@ -340,9 +410,9 @@ class PiggyBank extends Homey.App {
     // This is to avoid excessive on/off cycles of high power devices such as electric car chargers
     this.__last_power_on_time = new Date();
     var time_since_poweroff = this.__last_power_on_time - this.__last_power_off_time;
-    if (time_since_poweroff < 5*60*1000) {
+    if (time_since_poweroff < WAIT_TIME_TO_POWER_ON_AFTER_POWEROFF) {
       this.log("Could use " + String(morePower) + " W more power but was aborted due to recent turn off activity. Remaining wait = " + String((5*60*1000-time_since_poweroff)/1000) + " s");
-      return;
+      return new Promise((resolve) => { resolve(); });
     } else {
       this.log("Can use " + String(morePower) + "W more power")
     }
@@ -355,30 +425,24 @@ class PiggyBank extends Homey.App {
     // Only turn on one device at the time
     for (var idx = 0; idx < numDevices; idx++) {
       const deviceId = currentModeList[idx].id;
-      const device = await this.homeyApi.devices.getDevice({id: deviceId });
-      const isOn = await (this.__deviceList[deviceId].onoff_cap === undefined) ? undefined : device.capabilitiesObj[this.__deviceList[deviceId].onoff_cap].value;
-      var wantOn = false;
       // Check if the on state complies with the settings
       switch (currentModeList[idx].operation) {
         case CONTROLLED:
         case ALWAYS_ON:
-          wantOn = true;
+          // Always on is overridden by price actions
+          if (await this.changeDeviceState(deviceId, TURN_ON, idx)) {
+            return new Promise((resolve) => { resolve(); });
+          } // else try to modify another device
           break;
         case ALWAYS_OFF:
-          wantOn = false;
+          // Keep off / let it be on if it has been overridden by a user
           break;
       }
-      if (wantOn && !isOn) {
-        // Turn on
-        const deviceName = this.__deviceList[deviceId].name;
-        this.log("Turning on device: " + deviceName)
-        device.setCapabilityValue({ capabilityId: this.__deviceList[deviceId].onoff_cap, value: true });
-        return;
-      } // ignore case !wantOn && isOn
       //"measure_power"
       //this.log("Num: " + String(idx) + " on: " + String(isOn) + "    | " + deviceName + " op: " + String(currentMode) + " " + String(wantOn))
     }
     // If this point was reached then all devices are on and still below power limit
+    return new Promise().resolve();
   }
 
 
@@ -400,26 +464,11 @@ class PiggyBank extends Homey.App {
     var numForcedOnDevices = 0;
     for (var idx = numDevices-1; idx >= 0; idx--) {
       const deviceId = currentModeList[idx].id;
-      const device = await this.homeyApi.devices.getDevice({id: deviceId });
-      const isOn = await (this.__deviceList[deviceId].onoff_cap === undefined) ? undefined : device.capabilitiesObj[this.__deviceList[deviceId].onoff_cap].value;
-      var wantOff = false;
-      // Check if the on state complies with the settings
-      switch (currentModeList[idx].operation) {
-        case CONTROLLED:
-        case ALWAYS_OFF:
-          wantOff = true;
-          break;
-        case ALWAYS_ON:
-          wantOff = false;
-          break;
-      }
-      if (wantOff && isOn) {
-        // Turn off
-        const deviceName = this.__deviceList[deviceId].name;
-        this.log("Turning off device: " + deviceName)
-        device.setCapabilityValue({ capabilityId: this.__deviceList[deviceId].onoff_cap, value: false });
-        return;
-      } else if (!wantOff && isOn) {
+      // Try to turn the device off regardless, it might be blocked by the state
+      if (await this.changeDeviceState(deviceId, TURN_OFF, idx)) {
+        // Sucessfully Turned off
+        return new Promise((resolve) => { resolve(); });
+      } else {
         numForcedOnDevices++;
       }
       //"measure_power"
@@ -427,15 +476,17 @@ class PiggyBank extends Homey.App {
     }
 
     // If this point was reached then all devices are off and still above power limit
-    this.log("Failed to reduce power usage by " + String(lessPower) + "W (number of forced on devices: " + String(numForcedOnDevices) + ")");
+    const errorString = "Failed to reduce power usage by " + String(lessPower) + "W (number of forced on devices: " + String(numForcedOnDevices) + ")";
+    this.log(errorString);
     // Alert the user, but not if first hour since app was started or we are within the error margin
     var firstHourEver = this.__reserved_energy > 0;
     if (!firstHourEver && (lessPower > errorMarginWatts))
       this.homey.notifications.createNotification({excerpt: "Alert: The power must be reduced by " + String(lessPower) + " W immediately or the hourly limit will be breached"})
+    return new Promise(() => { throw new Error(errorString); });
   }
 
 
-  async findModeIdx(deviceId) {
+  findModeIdx(deviceId) {
     var modeList = this.homey.settings.get('modeList');
     var currentMode = this.homey.settings.get('operatingMode');
     var currentModeList = modeList[currentMode-1];
