@@ -16,5 +16,8 @@
   },
   "0.1.3": {
     "en": "Fixed a bug in the on/off function"
+  },
+  "0.1.4": {
+    "en": "Fixed broken promise + added debug code"
   }
 }
