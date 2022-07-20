@@ -198,7 +198,8 @@ class PiggyBank extends Homey.App {
     const currentModeIdx = (modelist_idx === undefined) ? this.findModeIdx(deviceId) : modelist_idx;
     const currentModeState = parseInt(currentModeList[currentModeIdx].operation); // Mode state
 
-    const device = await promise_device;
+    const device = await promise_device
+      .catch(err => {this.log("Ooops, " + String(err)); throw("OOOps, "+String(err))});
     const frostList = this.homey.settings.get("frostList");
     const frostGuardActive = this.__deviceList[deviceId].thermostat_cap 
       ? (device.capabilitiesObj["measure_temperature"].value < frostList[deviceId].minTemp) : false;
@@ -444,7 +445,7 @@ class PiggyBank extends Homey.App {
       //this.log("Num: " + String(idx) + " on: " + String(isOn) + "    | " + deviceName + " op: " + String(currentMode) + " " + String(wantOn))
     }
     // If this point was reached then all devices are on and still below power limit
-    return new Promise().resolve();
+    return new Promise((resolve) => { resolve(); });
   }
 
 
