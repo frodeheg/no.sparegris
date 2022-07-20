@@ -10,5 +10,8 @@
   },
   "0.1.1": {
     "en": "Fixed crash when setting temperature"
+  },
+  "0.1.2": {
+    "en": "Added support for frost guard and cleaned up the on/off control"
   }
 }
