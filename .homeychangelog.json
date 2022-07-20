@@ -13,5 +13,8 @@
   },
   "0.1.2": {
     "en": "Added support for frost guard and cleaned up the on/off control"
+  },
+  "0.1.3": {
+    "en": "Fixed a bug in the on/off function"
   }
 }
