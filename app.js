@@ -191,11 +191,12 @@ class PiggyBank extends Homey.App {
     const actionLists = this.homey.settings.get("priceActionList");
     const actionListIdx = this.homey.settings.get("pricePoint");
     const currentAction = actionLists[actionListIdx][deviceId]; // Action state: .operation
+    const currentActionOp = parseInt(currentAction.operation);
     const modeLists = this.homey.settings.get('modeList');
     const currentMode = this.homey.settings.get('operatingMode');
     const currentModeList = modeLists[currentMode-1];
     const currentModeIdx = (modelist_idx === undefined) ? this.findModeIdx(deviceId) : modelist_idx;
-    const currentModeState = currentModeList[currentModeIdx].operation; // Mode state
+    const currentModeState = parseInt(currentModeList[currentModeIdx].operation); // Mode state
 
     const device = await promise_device;
     const frostList = this.homey.settings.get("frostList");
@@ -205,10 +206,10 @@ class PiggyBank extends Homey.App {
     const isOn = (this.__deviceList[deviceId].onoff_cap === undefined) ? undefined : device.capabilitiesObj[this.__deviceList[deviceId].onoff_cap].value;
     const newStateOn =
       frostGuardActive
-      || (newState === TURN_ON  && currentModeState !== ALWAYS_OFF && currentAction.operation !== TURN_OFF)
-      || (newState === TURN_OFF && currentModeState === ALWAYS_ON  && currentAction.operation !== TURN_OFF);
+      || (newState === TURN_ON  && currentModeState !== ALWAYS_OFF && currentActionOp !== TURN_OFF)
+      || (newState === TURN_OFF && currentModeState === ALWAYS_ON  && currentActionOp !== TURN_OFF);
     
-    if (newStateOn && !isOn) {
+      if (newStateOn && !isOn) {
       // Turn on
       const deviceName = this.__deviceList[deviceId].name;
       this.log("Turning on device: " + deviceName)
@@ -232,7 +233,8 @@ class PiggyBank extends Homey.App {
         .then(() => newState === TURN_OFF)
         .catch(error => { throw error });
     }
-    return new Promise((resolve) => { resolve(newStateOn == (newState == TURN_ON)) });
+    // Nothing happened
+    return new Promise((resolve) => { resolve(false) });
   }
 
   /**
