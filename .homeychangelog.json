@@ -19,5 +19,8 @@
   },
   "0.1.4": {
     "en": "Fixed broken promise + added debug code"
+  },
+  "0.2.0": {
+    "en": "Added readouts of state to the piggybank insights device."
   }
 }
