@@ -4,7 +4,7 @@
     "homey:manager:api",
     "homey:app:no.almli.utilitycost"
   ],
-  "version": "0.2.0",
+  "version": "0.2.1",
   "compatibility": ">=5.0.0",
   "sdk": 3,
   "source": "https://github.com/frodeheg/no.sparegris",

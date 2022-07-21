@@ -22,5 +22,8 @@
   },
   "0.2.0": {
     "en": "Added readouts of state to the piggybank insights device."
+  },
+  "0.2.1": {
+    "en": "Added user warning to the device settings"
   }
 }
