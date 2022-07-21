@@ -1,0 +1,15 @@
+[
+    {
+        "id": "Informer",
+        "type": "label",
+        "label": {
+            "en": "Click for more info",
+            "no": "Klikk for mer informasjon"
+        },
+        "value": "",
+        "hint": {
+            "en": "YOU ARE AT THE WRONG PLACE! This device can not be configured. Please use the app settings instead.",
+            "no": "DU ER PÅ FEIL PLASS! Denne enheten kan ikke konfigureres. Vennligst bruk app-innstillinger istedenfor."
+        }
+        }
+]
