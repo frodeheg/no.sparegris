@@ -1,0 +1,20 @@
+{
+    "type": "boolean",
+    "title": {
+        "en": "Mode",
+        "no": "Driftsmodus"
+    },
+    "getable": true,
+    "setable": false,
+    "uiComponent": null,
+    "uiQuickAction": false,
+    "insightsTitleTrue": {
+      "en": "Changed to Normal mode",
+      "no": "Endret til Normal modus"
+    },
+    "insights": true,
+    "insightsTitleFalse": {
+      "en": "Changed to Normal mode",
+      "no": "Endret til Normal modus"
+    }
+}

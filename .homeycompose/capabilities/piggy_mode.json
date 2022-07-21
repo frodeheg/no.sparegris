@@ -1,0 +1,49 @@
+{
+    "type": "enum",
+    "title": {
+        "en": "Mode",
+        "no": "Driftsmodus"
+    },
+    "getable": true,
+    "setable": false,
+    "values": [
+      {
+        "id": "0",
+        "title": {
+          "en": "Disabled",
+          "no": "Avslått"
+        }
+      },
+      {
+        "id": "1",
+        "title": {
+          "en": "Normal",
+          "no": "Normal"
+        }
+      },
+      {
+        "id": "2",
+        "title": {
+          "en": "Night",
+          "no": "Natt"
+        }
+      },
+      {
+        "id": "3",
+        "title": {
+          "en": "Holiday",
+          "no": "Ferie"
+        }
+      },
+      {
+        "id": "4",
+        "title": {
+          "en": "Boost",
+          "no": "Boost"
+        }
+      }
+    ],
+    "icon": "/assets/mode.svg",
+    "uiComponent": "sensor",
+    "uiQuickAction": false
+  }

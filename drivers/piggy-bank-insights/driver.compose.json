@@ -5,10 +5,58 @@
   },
   "class": "other",
   "capabilities": [
-    "meter_power",
-    "alarm_generic",
-    "measure_power"
+    "meter_power.estimated",
+    "meter_power.last_hour",
+    "alarm_generic.overshoot",
+    "piggy_mode",
+    "piggy_price",
+    "piggy_mode_disabled",
+    "piggy_mode_normal",
+    "piggy_mode_night",
+    "piggy_mode_holiday",
+    "piggy_mode_boost",
+    "piggy_price_low",
+    "piggy_price_normal",
+    "piggy_price_expensive"
   ],
+  "capabilitiesOptions": {
+    "alarm_generic.overshoot": {
+      "title": {
+        "en": "Unable to maintain power limit!",
+        "no": "Klarer ikke å garantere forbrukstaket!"
+      },
+      "insightsTitleTrue": {
+        "en": "Unable to maintain power limit!",
+        "no": "Klarer ikke å garantere forbrukstaket!"
+      },
+      "insightsTitleFalse": {
+        "en": "Power limit once again within reach",
+        "no": "Forbrukstaket er nå innenfor rekkevidde"
+      }
+    },
+    "meter_power.estimated": {
+      "units": {
+        "en": "Wh",
+        "no": "Wh"
+      },
+      "title": {
+        "en": "Estimated usage this hour",
+        "no": "Estimert timeforbruk"
+      },
+      "approximated": true
+    },
+    "meter_power.last_hour": {
+      "units": {
+        "en": "Wh",
+        "no": "Wh"
+      },
+      "title": {
+        "en": "Last hour usage",
+        "no": "Forbruk forrige time"
+      },
+      "approximated": true
+    }
+  },
   "platforms": [
     "local"
   ],

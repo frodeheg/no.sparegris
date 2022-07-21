@@ -1,0 +1,35 @@
+{
+    "type": "enum",
+    "title": {
+        "en": "Price point",
+        "no": "Prispunkt"
+    },
+    "getable": true,
+    "setable": false,
+    "values": [
+      {
+        "id": "0",
+        "title": {
+          "en": "Cheap",
+          "no": "Billig"
+        }
+      },
+      {
+        "id": "1",
+        "title": {
+          "en": "Normal",
+          "no": "Normal"
+        }
+      },
+      {
+        "id": "2",
+        "title": {
+          "en": "Expensive",
+          "no": "Dyrt"
+        }
+      }
+    ],
+    "icon": "/assets/price.svg",
+    "uiComponent": "sensor",
+    "uiQuickAction": false
+  }

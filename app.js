@@ -50,6 +50,9 @@ class PiggyBank extends Homey.App {
     this.__reserved_energy = 0
     this.__last_power_off_time = new Date();
     this.__last_power_on_time = new Date();
+    this.__power_last_hour = undefined;
+    this.__power_estimated = undefined;
+    this.__alarm_overshoot = false;
     this.mutex = new Mutex();
     this.elPriceApi = this.homey.api.getApiApp('no.almli.utilitycost');
     this.homeyApi = new HomeyAPIApp({
@@ -90,7 +93,7 @@ class PiggyBank extends Homey.App {
     })
 
     // Monitor energy usage every 5 minute:
-    await this.onNewHour()
+    await this.onNewHour() // The function distinguish between being called at a new hour and at app-init
     await this.onMonitor()
     this.__intervalID = setInterval(() => {
       this.onMonitor()
@@ -259,6 +262,7 @@ class PiggyBank extends Homey.App {
       const energy_used = this.__current_power * lapsed_time / (1000*60*60);
       this.__accum_energy += energy_used;
       this.__reserved_energy = 0;
+      this.__power_last_hour = this.__accum_energy;
       this.log("Hour finalized: " + String(this.__accum_energy) + " Wh");
     }
     this.__current_power_time = now;
@@ -300,7 +304,7 @@ class PiggyBank extends Homey.App {
     }
     this.__current_power_time = now;
     this.__current_power = newPower;
-    this.__estimated_end_usage = this.__accum_energy + newPower*remaining_time/(1000*60*60);
+    this.__power_estimated = this.__accum_energy + newPower*remaining_time/(1000*60*60);
 
     // Check if power can be increased or reduced
     const errorMargin = this.homey.settings.get('errorMargin') ? (parseInt(this.homey.settings.get('errorMargin'))/100.) : 1.;
@@ -316,7 +320,7 @@ class PiggyBank extends Homey.App {
       + "Accum: " + String(this.__accum_energy.toFixed(2)) + " Wh, "
       + "Limit: " + String(maxPower) + " Wh, "
       + "Reserved: " + String(Math.ceil(this.__reserved_energy + safetyPower)) + "W, "
-      + "(Estimated end: " + String(this.__estimated_end_usage.toFixed(2)) + ")")
+      + "(Estimated end: " + String(this.__power_estimated.toFixed(2)) + ")")
 
     // Do not attempt to control any devices if the app is disabled
     if (this.homey.settings.get("operatingMode") == 0) { // App is disabled
@@ -409,6 +413,9 @@ class PiggyBank extends Homey.App {
    */
   async onBelowPowerLimit(morePower) {
     morePower = Math.round(morePower);
+    // Reset the power alarm as we now have sufficient power available
+    this.__alarm_overshoot = false;
+
     // If power was turned _OFF_ within the last 5 minutes then abort turning on anything
     // This is to avoid excessive on/off cycles of high power devices such as electric car chargers
     this.__last_power_on_time = new Date();
@@ -484,6 +491,7 @@ class PiggyBank extends Homey.App {
     // Alert the user, but not if first hour since app was started or we are within the error margin
     var firstHourEver = this.__reserved_energy > 0;
     if (!firstHourEver && (lessPower > errorMarginWatts))
+      this.__alarm_overshoot = true;
       this.homey.notifications.createNotification({excerpt: "Alert: The power must be reduced by " + String(lessPower) + " W immediately or the hourly limit will be breached"})
     return new Promise(() => { throw new Error(errorString); });
   }
@@ -501,7 +509,23 @@ class PiggyBank extends Homey.App {
     return null; // Nothing found
   }
 
+
   /*********************************************************************************************************
+   * DEVICE API's
+   *********************************************************************************************************/
+   getState() {
+    return {
+      power_last_hour: parseInt(this.__power_last_hour),
+      power_estimated: parseInt(this.__power_estimated.toFixed(2)),
+      price_point:     this.homey.settings.get("pricePoint"),
+      operating_mode:  this.homey.settings.get('operatingMode'),
+      alarm_overshoot: this.__alarm_overshoot
+    };
+   }
+
+
+
+   /*********************************************************************************************************
    * EXTERNAL API's
    *********************************************************************************************************/
   /*async _checkApi() {
@@ -537,370 +561,3 @@ class PiggyBank extends Homey.App {
 } // class
 
 module.exports = PiggyBank;
-
-/*
-[ { "device":
-    { "id":"33fa2e27-a8cb-4e65-87f8-13545305101a",
-      "name":"Varmekabler Stue",
-      "driverUri":"homey:app:no.thermofloor",
-      "driverId":"Z-TRM3",
-      "zone":"9eb2975d-49ea-4033-8db0-105a3e982117",
-      "zoneName":"Stue",
-      "icon":null,
-      "iconObj":
-        { "id":"c79d8f5496a2a2d7a1767d70adca9fd3",
-          "url":"/icon/c79d8f5496a2a2d7a1767d70adca9fd3/icon.svg"},
-      "iconOverride":null,
-      "settings":
-        { "zw_node_id":"21",
-          "zw_manufacturer_id":"411",
-          "zw_product_type_id":"3",
-          "zw_product_id":"515",
-          "zw_secure":"⨯",
-          "zw_battery":"⨯",
-          "zw_device_class_basic":"BASIC_TYPE_ROUTING_SLAVE",
-          "zw_device_class_generic":"GENERIC_TYPE_THERMOSTAT",
-          "zw_device_class_specific":"SPECIFIC_TYPE_THERMOSTAT_GENERAL_V2",
-          "zw_firmware_id":"771",
-          "zw_application_version":"4",
-          "zw_application_sub_version":"0",
-          "zw_hardware_version":"3",
-          "zw_wakeup_interval":0,
-          "zw_wakeup_enabled":false,
-          "zw_application_version_1":"4",
-          "zw_application_sub_version_1":"0",
-          "zw_group_1":"1.1",
-          "zw_group_2":"",
-          "zw_group_3":"",
-          "zw_group_4":"",
-          "zw_group_5":"",
-          "operation_mode":"0",
-          "HEAT_setpoint":100,
-          "Temperature_display":"0",
-          "Button_brightness_dimmed":50,
-          "Button_brightness_active":100,
-          "Display_brightness_dimmed":50,
-          "Display_brightness_active":100,
-          "Temperature_report_interval":300,
-          "Temperature_report_threshold":10,
-          "Meter_report_interval":90,
-          "Meter_report_threshold":10,
-          "Temperature_thermostat":"internal",
-          "Sensor_mode":"1",
-          "Floor_sensor_type":"0",
-          "Temperature_control_hysteresis_DIFF_I":5,
-          "Floor_minimum_temperature_limit_FLo":50,
-          "Floor_maximum_temperature_limit_FHi":400,
-          "Air_minimum_temperature_limit_ALo":50,
-          "Air_maximum_temperature_limit_AHi":400,
-          "Internal_sensor_calibration":0,
-          "Floor_sensor_calibration":0,
-          "External_sensor_calibration":0,
-          "zw_configuration_value":""},
-      "settingsObj":true,
-      "class":"thermostat",
-      "energy":null,
-      "energyObj":
-        { "W":0.09,
-          "batteries":null,
-          "cumulative":null,
-          "generator":null},
-      "virtualClass":null,
-      "capabilities":
-        [ "measure_temperature",
-          "measure_temperature.internal",
-          "measure_temperature.external",
-          "measure_temperature.floor",
-          "thermostat_mode_single",
-          "thermostat_state",
-          "onoff",
-          "measure_power",
-          "measure_voltage",
-          "meter_power",
-          "target_temperature",
-          "button.reset_meter"],
-      "capabilitiesObj":
-        { "measure_temperature":
-            { "value":26.2,
-              "lastUpdated":"2022-06-24T10:50:30.181Z",
-              "type":"number",
-              "getable":true,
-              "setable":false,
-              "title":"temperature",
-              "desc":"Temperatur i grader Celsius (°C)",
-              "units":"°C",
-              "decimals":2,
-              "chartType":"spline",
-              "id":"measure_temperature",
-              "options":{"title":"temperature"}},
-          "measure_temperature.internal":
-            { "value":26.2,
-              "lastUpdated":"2022-06-24T10:50:30.187Z",
-              "type":"number",
-              "getable":true,
-              "setable":false,
-              "title":"internal temperature",
-              "desc":"Temperatur i grader Celsius (°C)",
-              "units":"°C",
-              "decimals":2,
-              "chartType":"spline",
-              "id":"measure_temperature.internal",
-              "options":{"title":"internal temperature"}},
-          "measure_temperature.external":
-            { "value":0,
-              "lastUpdated":"2022-06-24T08:55:29.671Z",
-              "type":"number",
-              "getable":true,
-              "setable":false,
-              "title":"external temperature",
-              "desc":"Temperatur i grader Celsius (°C)",
-              "units":"°C",
-              "decimals":2,
-              "chartType":"spline",
-              "id":"measure_temperature.external",
-              "options":{"title":"external temperature"}},
-          "measure_temperature.floor":
-            { "value":22.6,
-              "lastUpdated":"2022-06-24T10:05:30.100Z",
-              "type":"number",
-              "getable":true,
-              "setable":false,
-              "title":"floor temperature",
-              "desc":"Temperatur i grader Celsius (°C)",
-              "units":"°C",
-              "decimals":2,
-              "chartType":"spline",
-              "id":"measure_temperature.floor",
-              "options":{"title":"floor temperature"}},
-          "thermostat_mode_single":
-            { "value":"Off",
-              "lastUpdated":"2022-06-24T10:00:43.752Z",
-              "type":"enum",
-              "getable":true,
-              "setable":true,
-              "title":"Thermostat mode",
-              "desc":"Mode of the thermostat",
-              "units":null,
-              "values":[{"id":"Heat","title":"Heating"},{"id":"Off","title":"Off"}],
-              "id":"thermostat_mode_single",
-              "options":{}},
-          "thermostat_state":{
-            "value":false,
-            "lastUpdated":"2022-06-24T02:56:54.302Z",
-            "type":"boolean",
-            "getable":true,
-            "setable":false,
-            "title":"Heating",
-            "desc":"State of the thermostat",
-            "units":null,
-            "iconObj":{
-              "id":"2b11a93d77f014679e78fc46222143c7",
-              "url":"/icon/2b11a93d77f014679e78fc46222143c7/icon.svg"},
-            "id":"thermostat_state",
-            "options":{
-              "greyout":true,
-              "titleTrue":{"en":"Active","nl":"Actief"},
-              "titleFalse":{"en":"Idle","nl":"Uit"}},
-            "titleTrue":"Active",
-            "titleFalse":"Idle"},
-          "onoff":{
-            "value":false,
-            "lastUpdated":"2022-06-24T10:00:43.556Z",
-            "type":"boolean",
-            "getable":true,
-            "setable":true,
-            "title":"Slått på",
-            "desc":null,
-            "units":null,
-            "id":"onoff",
-            "options":{
-              "titleTrue":{"en":"mode `Heating`","nl":"modus `Verwarmen`"},
-              "titleFalse":{"en":"mode `Off`","nl":"modus `Off`"},
-              "insightsTitleTrue":{"en":"Thermostat mode `Heating` activated","nl":"Thermostat modus `Verwarmen` ingeschakeld"},
-              "insightsTitleFalse":{"en":"Thermostat mode `Off` activated","nl":"Thermostat modus `Uit` ingeschakeld"}},
-            "titleTrue":"mode `Heating`",
-            "titleFalse":"mode `Off`"},
-          "measure_power":{
-            "value":0.09,
-            "lastUpdated":"2022-06-24T10:53:30.144Z",
-            "type":"number",
-            "getable":true,
-            "setable":false,
-            "title":"Effekt",
-            "desc":"Effekt i watt (W)",
-            "units":"W",
-            "decimals":2,
-            "chartType":"stepLine",
-            "id":"measure_power",
-            "options":{"approximated":true}},
-          "measure_voltage":{
-            "value":235.1,
-            "lastUpdated":"2022-06-24T10:53:30.168Z",
-            "type":"number",
-            "getable":true,
-            "setable":false,
-            "title":"Spenning",
-            "desc":"Spenning (V)",
-            "units":"V",
-            "decimals":2,
-            "chartType":"stepLine",
-            "id":"measure_voltage",
-            "options":{}},
-          "meter_power":{
-            "value":955.9,
-            "lastUpdated":"2022-06-24T02:54:57.284Z",
-            "type":"number",
-            "getable":true,
-            "setable":false,
-            "title":"Energi",
-            "desc":"Energiforbruk i kilowattimer (kWh)",
-            "units":"kWh",
-            "decimals":2,
-            "chartType":"spline",
-            "id":"meter_power",
-            "options":{}}
-          "target_temperature":{
-            "value":null,
-            "lastUpdated":"2022-06-24T10:00:43.137Z",
-            "type":"number",
-            "getable":true,
-            "setable":true,
-            "title":"Ønsket temperatur",
-            "desc":null,
-            "units":"°C",
-            "decimals":2,
-            "min":5,
-            "max":40,
-            "step":0.5,
-            "chartType":"stepLine",
-            "id":"target_temperature",
-            "options":{"min":5,"max":40,"step":0.5}},
-          "button.reset_meter":{
-            "value":null,
-            "lastUpdated":null,
-            "type":"boolean",
-            "getable":false,
-            "setable":true,
-            "title":"Reset power meter"
-            "desc":"Reset the accumulated power usage (kWh), note that this can not be reversed.",
-            "units":null,
-            "id":"button.reset_meter",
-            "options":{
-              "maintenanceAction":true,
-              "title":{"en":"Reset power meter","nl":"Stel stroomverbuik opnieuw in"},
-              "desc":{
-                "en":"Reset the accumulated power usage (kWh), note that this can not be reversed.",
-                "nl":"Stel geaccumuleerde stroomverbruik (kWh) opnieuw in, dit kan niet worden teruggedraaid."
-              }
-            }
-          }
-        },
-      "flags":["zwave","zwaveRoot"],
-      "ui":{
-        "quickAction":"onoff",
-        "components":[
-          {"id":"thermostat","capabilities":["measure_temperature","target_temperature"]},
-          {"id":"toggle","capabilities":["onoff"]},
-          {"id":"picker","capabilities":["thermostat_mode_single"]},
-          {"id":"sensor","capabilities":["measure_temperature.internal","measure_temperature.external","measure_temperature.floor","thermostat_state","measure_power","measure_voltage","meter_power"]}],
-        "componentsStartAt":0},
-      "uiIndicator":null,
-      "ready":true,
-      "available":true,
-      "repair":false,
-      "unpair":true,
-      "unavailableMessage":null,
-      "images":[],
-      "insights":[
-        {"uri":"homey:device:33fa2e27-a8cb-4e65-87f8-13545305101a",
-        "id":"measure_temperature",
-        "type":"number",
-        "title":"temperature",
-        "titleTrue":null,
-        "titleFalse":null,
-        "units":"°C",
-        "decimals":2},
-        {"uri":"homey:device:33fa2e27-a8cb-4e65-87f8-13545305101a",
-        "id":"measure_temperature.internal",
-        "type":"number",
-        "title":"internal temperature",
-        "titleTrue":null,
-        "titleFalse":null,
-        "units":"°C",
-        "decimals":2},
-        {"uri":"homey:device:33fa2e27-a8cb-4e65-87f8-13545305101a",
-        "id":"measure_temperature.external",
-        "type":"number",
-        "title":"external temperature",
-        "titleTrue":null,
-        "titleFalse":null,
-        "units":"°C",
-        "decimals":2},
-        {"uri":"homey:device:33fa2e27-a8cb-4e65-87f8-13545305101a",
-        "id":"measure_temperature.floor",
-        "type":"number",
-        "title":"floor temperature",
-        "titleTrue":null,
-        "titleFalse":null,
-        "units":"°C",
-        "decimals":2},
-        {"uri":"homey:device:33fa2e27-a8cb-4e65-87f8-13545305101a",
-        "id":"thermostat_state",
-        "type":"boolean",
-        "title":"Heating",
-        "titleTrue":"Heating active",
-        "titleFalse":"Heating idle",
-        "units":null,
-        "decimals":null},
-        {"uri":"homey:device:33fa2e27-a8cb-4e65-87f8-13545305101a",
-        "id":"onoff",
-        "type":"boolean",
-        "title":"Slått på",
-        "titleTrue":"Thermostat mode `Heating` activated",
-        "titleFalse":"Thermostat mode `Off` activated",
-        "units":null,
-        "decimals":null},
-        {"uri":"homey:device:33fa2e27-a8cb-4e65-87f8-13545305101a",
-        "id":"measure_power",
-        "type":"number",
-        "title":"Effekt",
-        "titleTrue":null,
-        "titleFalse":null,
-        "units":"W",
-        "decimals":2},
-        {"uri":"homey:device:33fa2e27-a8cb-4e65-87f8-13545305101a",
-        "id":"measure_voltage",
-        "type":"number",
-        "title":"Spenning",
-        "titleTrue":null,
-        "titleFalse":null,
-        "units":"V",
-        "decimals":2},
-        {"uri":"homey:device:33fa2e27-a8cb-4e65-87f8-13545305101a",
-        "id":"meter_power",
-        "type":"number",
-        "title":"Energi",
-        "titleTrue":null,
-        "titleFalse":null,
-        "units":"kWh",
-        "decimals":2},
-        {"uri":"homey:device:33fa2e27-a8cb-4e65-87f8-13545305101a",
-        "id":"target_temperature",
-        "type":"number",
-        "title":"Ønsket temperatur",
-        "titleTrue":null,
-        "titleFalse":null,
-        "units":"°C",
-        "decimals":2},
-        {"uri":"homey:device:33fa2e27-a8cb-4e65-87f8-13545305101a",
-        "id":"energy_power",
-        "type":"number",
-        "title":"Strømbruk",
-        "units":"W",
-        "decimals":2}],
-      "color":"#cc3333",
-      "data":{"token":"5e586ca7-b39b-4a8f-a510-729a498a4adf"}
-    },
-    "priority":3
-  },
-*/
