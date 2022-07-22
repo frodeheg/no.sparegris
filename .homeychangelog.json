@@ -28,5 +28,8 @@
   },
   "0.2.2": {
     "en": "Initial support for zones (not complete)"
+  },
+  "0.3.0": {
+    "en": "Zone control finalized"
   }
 }
