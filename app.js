@@ -272,10 +272,11 @@ class PiggyBank extends Homey.App {
       ? (device.capabilitiesObj["measure_temperature"].value < frostList[deviceId].minTemp) : false;
 
     const isOn = (this.__deviceList[deviceId].onoff_cap === undefined) ? undefined : device.capabilitiesObj[this.__deviceList[deviceId].onoff_cap].value;
+    const active_zones = this.homey.settings.get('zones');
     const newStateOn =
       frostGuardActive
       || (currentActionOp !== TURN_OFF
-        &&  !this.__deviceList[deviceId].memberOf.some((z) => (active_zones.includes(z) && !active_zones[z].enabled))
+        &&  !this.__deviceList[deviceId].memberOf.some((z) => (Array.isArray(active_zones) && active_zones.includes(z) && !active_zones[z].enabled))
         && ((newState === TURN_ON  && currentModeState !== ALWAYS_OFF) || (newState === TURN_OFF && currentModeState === ALWAYS_ON)));
     
       if (newStateOn && !isOn) {
