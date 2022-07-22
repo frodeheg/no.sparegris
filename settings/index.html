@@ -384,14 +384,14 @@
 
 
   <body>
-
+    <!-- 
     <h1 data-i18n="settings.title">.title</h1>
     <p data-i18n="settings.subtitle">.subtitle</p>
-
+    -->
     <div data-i18n="settings.loadingText" id="loadingText">loadingText</div>
 
     <!-- Tabs -->
-    <table id="tab_selector" class="tab">
+    <table width="100%" id="tab_selector" class="tab">
       <tr>
         <td class="tablinks" onclick="changeTab(event, 'globalPage')" id="globalTab">
           <span data-i18n="settings.tab.global">tab.global</span></td>
@@ -465,9 +465,9 @@
     
     <!-- Price page -->
     <div id="pricePage" class="tabcontent">
-      <div data-i18n="settings.price.notifier" style="color:red;font-weight: bold;">price.notifier</div>
       <fieldset>
         <legend data-i18n="settings.price.header">price.header</legend>
+        <span style="display: none">
         <table class="settings_table">
           <tr>
             <td class="settings_row_name"><label for="priceMode" data-i18n="settings.price.priceMode">price.priceMode</label>:</td>
@@ -480,6 +480,7 @@
         </table>
         <p id="hintp1" class="hint" data-i18n="settings.price.priceHint1">price.priceHint1</p>
         <p id="errp1" class="error" data-i18n="settings.price.priceErr1">price.priceErr1</p>
+        </span>
         <table class="settings_table">
           <tr>
             <td class="settings_row_name"><label for="pricePoint" data-i18n="settings.price.pricePoint">price.pricePoint</label>:</td>
@@ -491,7 +492,20 @@
           </tr>
         </table>
         <p id="hintpp" class="hint" data-i18n="settings.price.pricePointHint">price.pricePointHint</p>
+
+        <table width="100%" id="sub_tab_selector" class="tab">
+          <tr>
+            <td width="30%" class="subtablinks" onclick="changePriceTab(event, 0)" id="subTabCheap">
+              <span data-i18n="settings.pricetab.cheap">pricetab.cheap</span></td>
+            <td width="30%" class="subtablinks" onclick="changePriceTab(event, 1)" id="subTabNormal">
+              <span data-i18n="settings.pricetab.normal">pricetab.normal</span></td>
+            <td width="30%" class="subtablinks" onclick="changePriceTab(event, 2)" id="subTabExpensive">
+              <span data-i18n="settings.pricetab.expensive">pricetab.expensive</span></td>
+          </tr>
+        </table>
+        <span id="priceActionList">List of devices should have been generated here, if you see this text it is a bug...</span>
       </fieldset>
+      <span style="display: none">
       <fieldset>
         <legend data-i18n="settings.price.internal.header">price.internal.header</legend>
         <table class="settings_table">
@@ -527,20 +541,8 @@
             <sup><u data-i18n="settings.price.internal.futurePriceModifierHint2">min(price_in_x_hours(i))</u></sup>
             <sub data-i18n="settings.price.internal.futurePriceModifierHint3">price_now</sub></span></p>
         <p id="futurePriceModifierHint4" class="hint" data-i18n="settings.price.internal.futurePriceModifierHint4">for all i &isin; [1, n]</p>
-
-        <table id="sub_tab_selector" class="tab">
-          <tr>
-            <td class="subtablinks" onclick="changePriceTab(event, 0)" id="subTabCheap">
-              <span data-i18n="settings.pricetab.cheap">pricetab.cheap</span></td>
-            <td class="subtablinks" onclick="changePriceTab(event, 1)" id="subTabNormal">
-              <span data-i18n="settings.pricetab.normal">pricetab.normal</span></td>
-            <td class="subtablinks" onclick="changePriceTab(event, 2)" id="subTabExpensive">
-              <span data-i18n="settings.pricetab.expensive">pricetab.expensive</span></td>
-            <td>&nbsp;</td>
-          </tr>
-        </table>
-        <span id="priceActionList">List of devices should have been generated here, if you see this text it is a bug...</span>
       </fieldset>
+      </span>
     </div>
     <!-- Price page end -->
 

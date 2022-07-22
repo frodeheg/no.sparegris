@@ -84,7 +84,6 @@ p {
     cursor: pointer;
     padding: 0px 10px;
     line-height: 30px;
-    max-width: 60px;
     min-width: 50px;
     height: 30px;
     transition: 0.3s;

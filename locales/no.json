@@ -2,7 +2,7 @@
   "settings": {
     "title": "Sparegris Innstillinger",
     "subtitle": "Strømforbruk",
-    "loadingText": "Vennligst vent mens enhetene lastes... (rundt 1.5 sekunder per 10 enheter du har)...",
+    "loadingText": "Vennligst vent mens enhetene lastes... (rundt 1 sekund per 10 enheter du har)...",
     "tab": {
       "global": "Global",
       "price": "Pris",
@@ -43,7 +43,6 @@
     },
     "price": {
       "header": "Priskontroll",
-      "notifier": "Denne modusen er under utvikling og er derfor delvis deaktivert. I mellomtiden kan du kontrollere pris gjennom flows.",
       "priceMode": "Modus",
       "mode": {
         "disabled": "Priskontroll deaktivert",

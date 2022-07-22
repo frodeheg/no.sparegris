@@ -2,7 +2,7 @@
   "settings": {
     "title": "PiggyBank Settings",
     "subtitle": "Power settings",
-    "loadingText": "Please wait while devices are being loaded... (approx. 1.5 seconds per 10 devices you have)...",
+    "loadingText": "Please wait while devices are being loaded... (approx. 1 second per 10 devices you have)...",
     "tab": {
       "global": "Global",
       "price": "Price",
@@ -43,7 +43,6 @@
     },
     "price": {
       "header": "Price control",
-      "notifier": "This mode is under development and has been partially deactivated. You may control this from flows meanwhile.",
       "priceMode": "Mode",
       "mode": {
         "disabled": "Disabled",
