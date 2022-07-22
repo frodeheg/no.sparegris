@@ -31,5 +31,8 @@
   },
   "0.3.0": {
     "en": "Zone control finalized"
+  },
+  "0.3.1": {
+    "en": "Fixed a crash when zones was involved"
   }
 }
