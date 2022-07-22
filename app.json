@@ -363,8 +363,8 @@
       "capabilitiesOptions": {
         "alarm_generic.overshoot": {
           "title": {
-            "en": "Unable to maintain power limit!",
-            "no": "Klarer ikke å garantere forbrukstaket!"
+            "en": "Power limit about to breach!",
+            "no": "Forbrukstaket blir brutt!"
           },
           "insightsTitleTrue": {
             "en": "Unable to maintain power limit!",
