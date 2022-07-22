@@ -25,5 +25,8 @@
   },
   "0.2.1": {
     "en": "Added user warning to the device settings"
+  },
+  "0.2.2": {
+    "en": "Initial support for zones (not complete)"
   }
 }
