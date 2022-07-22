@@ -175,10 +175,16 @@
             '</tr>';
         for (zone in zoneList) {
           if (zoneList[zone].enabled === false) {
+            var num_affected_devices = 0;
+            for (deviceId in deviceList) {
+              if (deviceList[deviceId].use && deviceList[deviceId].memberOf.includes(zone)) {
+                num_affected_devices++;
+              }
+            }
             gen_list +=
               "<tr>" +
                 "<td>" + zoneList[zone].name + "</td>" +
-                "<td>TBD</td>" +
+                "<td>" + String(num_affected_devices) + "</td>" +
               "</tr>";
           } // else the zone has been enabled again
         }
