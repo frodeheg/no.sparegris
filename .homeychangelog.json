@@ -40,5 +40,8 @@
   },
   "0.4.1": {
     "en": "Cleaned up setup interface"
+  },
+  "0.4.2": {
+    "en": "Various cleanups in the control panel"
   }
 }
