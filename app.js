@@ -53,6 +53,8 @@ class PiggyBank extends Homey.App {
     this.__power_last_hour = undefined;
     this.__power_estimated = undefined;
     this.__alarm_overshoot = false;
+    this.__free_capacity = 0;
+    this.__num_off_devices = 0;
     this.mutex = new Mutex();
     this.elPriceApi = this.homey.api.getApiApp('no.almli.utilitycost');
     this.homeyApi = new HomeyAPIApp({
@@ -291,7 +293,7 @@ class PiggyBank extends Homey.App {
             return device.setCapabilityValue({ capabilityId: "target_temperature", value: currentAction.delayTempValue });
           }
         })
-        .then(() => [newState === TURN_ON, false])
+        .then(() => { this.__num_off_devices--; return [newState === TURN_ON, false] })
         .catch(error => Promise.reject(error));
     } // ignore case !wantOn && isOn
 
@@ -300,7 +302,7 @@ class PiggyBank extends Homey.App {
       const deviceName = this.__deviceList[deviceId].name;
       this.log("Turning off device: " + deviceName)
       return device.setCapabilityValue({ capabilityId: this.__deviceList[deviceId].onoff_cap, value: false })
-        .then(() => [newState === TURN_OFF, false])
+        .then(() => { this.__num_off_devices++; return [newState === TURN_OFF, false] })
         .catch(error => Promise.reject(error));
     }
     // Nothing happened
@@ -396,6 +398,7 @@ class PiggyBank extends Homey.App {
 
     // Try to control devices if the power is outside of the preferred bounds
     var power_diff = ((maxPower - this.__accum_energy - this.__reserved_energy) * (1000*60*60) / remaining_time) - newPower - safetyPower;
+    this.__free_capacity = power_diff
     var promise;
     if (power_diff < 0) {
       promise = this.onAbovePowerLimit(-power_diff)
@@ -579,6 +582,7 @@ class PiggyBank extends Homey.App {
       //this.log("Num: " + String(idx) + " on: " + String(isOn) + "    | " + deviceName + " op: " + String(currentMode) + " " + String(wantOn))
     }
     // If this point was reached then all devices are on and still below power limit
+    this.__num_off_devices = 0; // Reset the off counter in case it was incorrect
     return Promise.resolve();
   }
 
@@ -626,6 +630,7 @@ class PiggyBank extends Homey.App {
       this.__alarm_overshoot = true;
       this.homey.notifications.createNotification({excerpt: "Alert: The power must be reduced by " + String(lessPower) + " W immediately or the hourly limit will be breached"})
     }
+    this.__num_off_devices = Object.keys(this.homey.settings.get("frostList")).length; // Reset off counter in case it was wrong
     return Promise.reject(new Error(errorString));
   }
 
@@ -652,7 +657,11 @@ class PiggyBank extends Homey.App {
       power_estimated: parseInt(this.__power_estimated.toFixed(2)),
       price_point:     this.homey.settings.get("pricePoint"),
       operating_mode:  this.homey.settings.get('operatingMode'),
-      alarm_overshoot: this.__alarm_overshoot
+      alarm_overshoot: this.__alarm_overshoot,
+      free_capacity:   this.__free_capacity,
+      num_devices:     Object.keys(this.homey.settings.get("frostList")).length,
+      num_devices_off: this.__num_off_devices,
+
     };
    }
 

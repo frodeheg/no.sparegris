@@ -74,6 +74,11 @@ class MyDevice extends Device {
     }
     this.setCapabilityValue('alarm_generic.overshoot', piggy_state.alarm_overshoot);
 
+    this.setCapabilityValue('measure_power.free_capacity', Math.round(piggy_state.free_capacity));
+    var percentageOn = Math.round(100 * (piggy_state.num_devices - piggy_state.num_devices_off) / piggy_state.num_devices);
+    percentageOn = (percentageOn < 0) ? 0 : (percentageOn > 100) ? 100 : percentageOn;
+    this.setCapabilityValue('piggy_devices_on', percentageOn);
+
     // Set Price point capability + update timeline using boolean workaround capabilities
     var prev_price_point = await this.getStoreValue('piggy_price');
     this.setCapabilityValue('piggy_price', piggy_state.price_point);

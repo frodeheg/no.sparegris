@@ -348,6 +348,7 @@
       "capabilities": [
         "meter_power.estimated",
         "meter_power.last_hour",
+        "measure_power.free_capacity",
         "alarm_generic.overshoot",
         "piggy_mode",
         "piggy_price",
@@ -358,7 +359,8 @@
         "piggy_mode_boost",
         "piggy_price_low",
         "piggy_price_normal",
-        "piggy_price_expensive"
+        "piggy_price_expensive",
+        "piggy_devices_on"
       ],
       "capabilitiesOptions": {
         "alarm_generic.overshoot": {
@@ -383,6 +385,13 @@
           "title": {
             "en": "Estimated usage this hour",
             "no": "Estimert timeforbruk"
+          },
+          "approximated": true
+        },
+        "measure_power.free_capacity": {
+          "title": {
+            "en": "Free capacity",
+            "no": "Tilgjengelig kapasitet"
           },
           "approximated": true
         },
@@ -426,19 +435,40 @@
           "id": "Informer",
           "type": "label",
           "label": {
-            "en": "Click for more info",
-            "no": "Klikk for mer informasjon"
+            "en": "Use the app settings",
+            "no": "Bruk appens instillinger"
           },
           "value": "",
           "hint": {
-            "en": "YOU ARE AT THE WRONG PLACE! This device can not be configured. Please use the app settings instead.",
-            "no": "DU ER PÅ FEIL PLASS! Denne enheten kan ikke konfigureres. Vennligst bruk app-innstillinger istedenfor."
+            "en": "This device is just a window into the app. In order to access the full control panel please use the app settings instead.",
+            "no": "Denne enheten er bare et vindu inn i appen. Vennligst bruk app-innstillinger for å få full tilgang til hele kontrollpanelet."
           }
         }
       ]
     }
   ],
   "capabilities": {
+    "piggy_devices_on": {
+      "type": "number",
+      "title": {
+        "en": "Power State",
+        "no": "Forbrukstilstand"
+      },
+      "units": {
+        "en": "%"
+      },
+      "insights": true,
+      "desc": {
+        "en": "Number of controllable enabled devices in percent (%)",
+        "no": "Antall kontrollerbare påslåtte enheter i (%)"
+      },
+      "chartType": "spline",
+      "decimals": 0,
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor",
+      "icon": "/assets/percent.svg"
+    },
     "piggy_mode": {
       "type": "enum",
       "title": {

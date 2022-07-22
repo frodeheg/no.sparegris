@@ -7,6 +7,7 @@
   "capabilities": [
     "meter_power.estimated",
     "meter_power.last_hour",
+    "measure_power.free_capacity",
     "alarm_generic.overshoot",
     "piggy_mode",
     "piggy_price",
@@ -17,7 +18,8 @@
     "piggy_mode_boost",
     "piggy_price_low",
     "piggy_price_normal",
-    "piggy_price_expensive"
+    "piggy_price_expensive",
+    "piggy_devices_on"
   ],
   "capabilitiesOptions": {
     "alarm_generic.overshoot": {
@@ -42,6 +44,13 @@
       "title": {
         "en": "Estimated usage this hour",
         "no": "Estimert timeforbruk"
+      },
+      "approximated": true
+    },
+    "measure_power.free_capacity": {
+      "title": {
+        "en": "Free capacity",
+        "no": "Tilgjengelig kapasitet"
       },
       "approximated": true
     },
