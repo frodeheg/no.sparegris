@@ -1,8 +1,7 @@
-Save money by moving power consumption
+Save money by moving power consumption.
 
-This app has been created to handle energy pricing with the following variables:
-* Power tariff based on max power from last month
-* Electricity prices per hour
+The main purpose of this app is to limit the maximum power usage per hour so you don't breach your desired power tariff in Norway. Among other features you may also use it as a price and situation dependent heating controller or car charger controller.
+Please contact the developer if you want support added for other countries.
 
 Instructions:
 - Install the app
