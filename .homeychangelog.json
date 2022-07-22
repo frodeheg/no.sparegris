@@ -34,5 +34,8 @@
   },
   "0.3.1": {
     "en": "Fixed a crash when zones was involved"
+  },
+  "0.4.0": {
+    "en": "Added two capabilities to the insights device: Show available power and House efficiency"
   }
 }
