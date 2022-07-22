@@ -14,16 +14,18 @@ Bruksanvisning:
   - Velg prioriteringer av enheter
 - Lagre
 - Spar over 1000 kroner i året på effekttariffen.
+- Eksperimenter med innstillingene og flytkort i henhold til anbefalingene under for å få mest mulig ut av appen.
 
 Viktig:
-- Alle enheter som kontrolleres av appen må ikke slås på av andre flows, ellers oppstår konflikter og målverdi for effekttariff kan feile.
-- Øvrige ting som temperatur, lysstyrke, max wattstyrke etc. kan styres utenfor appen.
+- Alle enheter som kontrolleres av appen må ikke slås på av andre kilder, ellers oppstår konflikter og målverdi for effekttariff kan feile.
+- Dersom flytkort for prispunkt benyttes bør heller ikke temperatur endres av andre kilder.
+- Øvrige ting som lysstyrke, max wattstyrke etc. kan styres utenfor appen.
 
 Anbefalinger:
-- Bruk flows til å endre mellom modus normal / natt på relevante tidspunkt.
-- Bruk flows til å øke reservert strømforbruk ved starten av den timen du normalt lager middag.
-- Bruk flows for å redusere reservert strømforbruk når du normalt er ferdig med å lage middag.
-- Bruk flows til å sørge for at du får beskjed når appen har detektert et stort strømforbruk før timeslutt som du manuelt må stoppe for å oppnå effekttariffen.
-
-
-Hvis appen lykkes vil du spare store beløp over tid.
+- Sett opp flytkort for å endre mellom modus normal/natt/etc. på relevante tidspunkt.
+- Sett opp flytkort for å informere appen når strømmen er dyr / billig
+- Sett opp temperaturinnstillinger for ulike modus og prispunkt for optimal varmestyring
+- Sett opp flytkort for å slå av soner når du lufter.
+- Sett opp flytkort for å øke reservert strømforbruk ved starten av den timen du normalt lager middag.
+- Sett opp flytkort for å redusere reservert strømforbruk når du normalt er ferdig med å lage middag.
+- Sett opp flytkort for å sørge for at du får beskjed når appen har detektert et stort ukontrollerbart strømforbruk før timeslutt som du manuelt må stoppe for å oppnå effekttariffen.

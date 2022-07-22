@@ -13,6 +13,7 @@
 const Homey = require('homey');
 const Mutex = require('async-mutex').Mutex;
 const { HomeyAPIApp } = require('homey-api');
+const { resolve } = require('path');
 
 const WAIT_TIME_TO_POWER_ON_AFTER_POWEROFF = 5*60*1000;
 
@@ -88,7 +89,7 @@ class PiggyBank extends Homey.App {
     })
     const cardActionSafetyPowerUpdate = this.homey.flow.getActionCard('change-piggy-bank-safety-power')
     cardActionSafetyPowerUpdate.registerRunListener(async (args) => {
-      this.onSafetyPowerUpdate(args.mode);
+      this.onSafetyPowerUpdate(args.reserved);
     })
     const cardZoneUpdate = this.homey.flow.getActionCard('change-zone-active')
     cardZoneUpdate.registerArgumentAutocompleteListener(
@@ -131,7 +132,6 @@ class PiggyBank extends Homey.App {
         }
       }
     }
-    this.log(JSON.stringify(active_zones));
 
     // Generate zone list to return
     var results = [];
@@ -203,6 +203,15 @@ class PiggyBank extends Homey.App {
         useDevice = (priority > 0) ? true : false;
       }
 
+      // Find which zones the device are within:
+      const zones = await this.homeyApi.zones.getZones();
+      var zoneId = device.zone;
+      var memberOfZones = [];
+      while (zoneId !== null) {
+        memberOfZones.push(zoneId);
+        zoneId = zones[zoneId].parent;
+      }
+  
       this.log("Device: " + String(priority) + " " + device.id + " " + device.name + " " + device.class)
       var thermostat_cap = device.capabilities.includes("target_temperature")
         && device.capabilities.includes("measure_temperature");
@@ -211,6 +220,7 @@ class PiggyBank extends Homey.App {
         name: device.name,
         room: device.zoneName,
         roomId: device.zone,
+        memberOf: memberOfZones,
         image: device.iconObj.url,
         onoff_cap: onoff_cap,
         thermostat_cap: thermostat_cap,
@@ -225,8 +235,9 @@ class PiggyBank extends Homey.App {
 
   /**
    * Changes the state of a device.
-   * The state cannot always be changed, as a priority of states follows.
+   * The state cannot always be changed. The priority of states are as follows:
    * - Below frost-guard results in always on and highest priority
+   * - If a zone is off then no devices will be on for devices in the zone
    * - Device always off from mode
    * - Device turns off from price action
    * - Device always on from mode
@@ -249,6 +260,11 @@ class PiggyBank extends Homey.App {
     const currentModeIdx = (modelist_idx === undefined) ? this.findModeIdx(deviceId) : modelist_idx;
     const currentModeState = parseInt(currentModeList[currentModeIdx].operation); // Mode state
 
+    // Do not attempt to control any devices if the app is disabled
+    if (currentMode == 0) { // App is disabled
+      return Promise.resolve();
+    }
+    
     const device = await promise_device
       .catch(err => {this.log("Ooops, " + String(err)); throw("OOOps, "+String(err))});
     const frostList = this.homey.settings.get("frostList");
@@ -258,8 +274,9 @@ class PiggyBank extends Homey.App {
     const isOn = (this.__deviceList[deviceId].onoff_cap === undefined) ? undefined : device.capabilitiesObj[this.__deviceList[deviceId].onoff_cap].value;
     const newStateOn =
       frostGuardActive
-      || (newState === TURN_ON  && currentModeState !== ALWAYS_OFF && currentActionOp !== TURN_OFF)
-      || (newState === TURN_OFF && currentModeState === ALWAYS_ON  && currentActionOp !== TURN_OFF);
+      || (currentActionOp !== TURN_OFF
+        &&  !this.__deviceList[deviceId].memberOf.some((z) => (active_zones.includes(z) && !active_zones[z].enabled))
+        && ((newState === TURN_ON  && currentModeState !== ALWAYS_OFF) || (newState === TURN_OFF && currentModeState === ALWAYS_ON)));
     
       if (newStateOn && !isOn) {
       // Turn on
@@ -337,7 +354,8 @@ class PiggyBank extends Homey.App {
    */
   async onPowerUpdate(newPower) {
     if (isNaN(newPower)) {
-      return
+      // If newPower is invalid just ignore it
+      return Promise.resolve()
     }
     var now = new Date();
     var remaining_time = this.timeToNextHour(now);
@@ -372,16 +390,20 @@ class PiggyBank extends Homey.App {
 
     // Do not attempt to control any devices if the app is disabled
     if (this.homey.settings.get("operatingMode") == 0) { // App is disabled
-        return;
+        return Promise.resolve();
     }
 
     // Try to control devices if the power is outside of the preferred bounds
     var power_diff = ((maxPower - this.__accum_energy - this.__reserved_energy) * (1000*60*60) / remaining_time) - newPower - safetyPower;
+    var promise;
     if (power_diff < 0) {
-      this.onAbovePowerLimit(-power_diff)
+      promise = this.onAbovePowerLimit(-power_diff)
+      .catch(() => resolve()); // Ignore failures
     } else if (power_diff > 0) {
-      this.onBelowPowerLimit(power_diff, errorMarginWatts)
+      promise = this.onBelowPowerLimit(power_diff, errorMarginWatts)
+      .catch(() => resolve()); // Ignore failures
     }
+    return promise;
   }
 
 
@@ -400,7 +422,37 @@ class PiggyBank extends Homey.App {
    * onZoneUpdate is called whenever a zone is turned on/off
    */
   async onZoneUpdate(zone, enabled) {
-    this.log("Changing zone " + zone.name + "(ID: " + zone.id + ") to " + String(enabled));
+    this.log("Changing zone " + zone.name + " (ID: " + zone.id + ") to " + String(enabled));
+    var active_zones = this.homey.settings.get('zones');
+    if (active_zones === null) {
+      active_zones = {};
+    }
+    active_zones[zone.id] = {
+      "name": zone.name,
+      "enabled": enabled
+    }
+    this.homey.settings.set('zones', active_zones);
+
+    // Go through all controllable devices 
+    const zones = await this.homeyApi.zones.getZones();
+    var promises = [];
+    for (const deviceId in this.__deviceList) {
+      if (this.__deviceList[deviceId].use
+        && this.__deviceList[deviceId].memberOf.includes(zone.id)) {
+        promises.push(this.changeDeviceState(deviceId, enabled ? TURN_ON : TURN_OFF));
+      }
+    }
+
+    // Resolve if the devices was turned on/off correctly
+    return Promise.all(promises)
+    .then((values) => {
+      var all_ok = true;
+      for (var i = 0; i < values.length; i++) {
+        all_ok &&= values[i][0];
+      }
+      return Promise.resolve(all_ok);
+    })
+    .catch((error) => Promise.reject(error));
   }
 
 
@@ -429,10 +481,10 @@ class PiggyBank extends Homey.App {
       const device = await this.homeyApi.devices.getDevice({id: deviceId });
       switch (currentActions[deviceId].operation) {
         case TURN_ON:
-          promises.push(changeDeviceState(deviceId, TURN_ON));
+          promises.push(this.changeDeviceState(deviceId, TURN_ON));
           break;
         case TURN_OFF:
-          promises.push(changeDeviceState(deviceId, TURN_OFF));
+          promises.push(this.changeDeviceState(deviceId, TURN_OFF));
           break;
         case DELTA_TEMP:
           const modeIdx = this.findModeIdx(deviceId);
@@ -531,7 +583,7 @@ class PiggyBank extends Homey.App {
 
 
   /**
-   * onReducePower is called whenever power changed and we use too much
+   * onAbovePowerLimit is called whenever power changed and we can use more power
    */
   async onAbovePowerLimit(lessPower, errorMarginWatts) {
     lessPower = Math.ceil(lessPower);
@@ -554,7 +606,7 @@ class PiggyBank extends Homey.App {
         if (success && !noChange) {
           // Sucessfully Turned off
           return Promise.resolve();
-        } else {
+        } else if (!success) {
           numForcedOnDevices++;
         }
       } catch (err) {
@@ -567,11 +619,12 @@ class PiggyBank extends Homey.App {
     // If this point was reached then all devices are off and still above power limit
     const errorString = "Failed to reduce power usage by " + String(lessPower) + "W (number of forced on devices: " + String(numForcedOnDevices) + ")";
     this.log(errorString);
-    // Alert the user, but not if first hour since app was started or we are within the error margin
+    // Alert the user, but not if first hour since app was started or we are within the error margin. Only send one alert before it has been resolved
     var firstHourEver = this.__reserved_energy > 0;
-    if (!firstHourEver && (lessPower > errorMarginWatts))
+    if (!firstHourEver && (lessPower > errorMarginWatts) && !this.__alarm_overshoot) {
       this.__alarm_overshoot = true;
       this.homey.notifications.createNotification({excerpt: "Alert: The power must be reduced by " + String(lessPower) + " W immediately or the hourly limit will be breached"})
+    }
     return Promise.reject(new Error(errorString));
   }
 

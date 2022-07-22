@@ -23,6 +23,8 @@
       var targetTempText = "settings.mode.targetTemp";
       var controlledText = "settings.mode.controlled";
       var priceNormalText = "settings.price.actionNormal";
+      var zoneNameText = "settings.zone.zoneName";
+      var zoneNumText = "settings.zone.zoneNum";
 
       const KEEP = -1;
       const ALWAYS_OFF = 0;
@@ -50,6 +52,7 @@
         []  // Boost
       ]
       var frostList = {} // Indexed by deviceId
+      var zoneList = {} // Indexed by zone-id
       var priceActionList = [ {}, {}, {} ] // Indexed by deviceId
       var maxPowerList = [
         2000, // Normal
@@ -160,6 +163,32 @@
         }
         gen_list += "</table>";
         list.innerHTML = gen_list;
+      }
+
+      function generateZoneList() {
+        var list = document.getElementById("zoneList");
+        var gen_list =
+          '<table width="100%">' +
+            '<tr>' +
+              '<th style="text-align:left" width="60%">' + zoneNameText + '</th>' +
+              '<th style="text-align:left" width="40%">' + zoneNumText + '</th>' +
+            '</tr>';
+        for (zone in zoneList) {
+          if (zoneList[zone].enabled === false) {
+            gen_list +=
+              "<tr>" +
+                "<td>" + zoneList[zone].name + "</td>" +
+                "<td>TBD</td>" +
+              "</tr>";
+          } // else the zone has been enabled again
+        }
+        gen_list += '</table>';
+        list.innerHTML = gen_list;
+      }
+
+      function clearZones() {
+        zoneList = {};
+        generateZoneList();
       }
 
       function generatePriceActionList(tabPage) {
@@ -536,13 +565,7 @@
         <p id="zoneHint" class="hint" data-i18n="settings.zone.zoneHint">zone.zoneHint</p>
         <p id="zoneHint2" class="hint" data-i18n="settings.zone.zoneHint2">zone.zoneHint</p>
         <span data-i18n="settings.zone.zonesOff">zone.zonesOff</span>:
-        <table width="100%">
-          <tr>
-            <th style="text-align:left" width="60%" data-i18n="settings.zone.zoneName">zone.zoneName</th>
-            <th style="text-align:left" width="40%" data-i18n="settings.zone.zoneNum">zone.zoneNum</th>
-          </tr>
-          <span id="zoneList">Zones should have been filled in here, if you see this text it is a bug</span>
-        </table>
+        <span id="zoneList">Zones should have been filled in here, if you see this text it is a bug</span>
         <button id="clear" class="right" data-i18n="settings.zone.zonesClear" onclick="clearZones();return false;">zone.zonesClear</button>
       </fieldset>
     </div>
@@ -596,6 +619,7 @@
       var pricePointLoaded = false;
       var priceActionListLoaded = false;
       var frostListLoaded = false;
+      var zoneListLoaded = false;
       // Called whenever things has been loaded
       function checkLoadingDone() {
         var loadElement = document.getElementById("loadingText");
@@ -608,7 +632,8 @@
           && priceModeLoaded
           && pricePointLoaded
           && priceActionListLoaded
-          && frostListLoaded) {
+          && frostListLoaded
+          && zoneListLoaded) {
           // Update device enable list:
           generateEnableList('highPriDevices', 1);
           generateEnableList('lowPriDevices', 0);
@@ -652,6 +677,9 @@
         targetTempText = Homey.__(targetTempText);
         controlledText = Homey.__(controlledText);
         priceNormalText = Homey.__(priceNormalText);
+        zoneNameText = Homey.__(zoneNameText);
+        zoneNumText = Homey.__(zoneNumText);
+
 
         for (var i = 0; i < operatingModes.length; i++) {
           operatingModes[i].name = Homey.__(operatingModes[i].name);
@@ -698,6 +726,14 @@
           frostListLoaded = true;
           checkLoadingDone();
         });
+        Homey.get("zones", function (err, myZoneList) {
+          if (err) return Homey.alert(err);
+          if (myZoneList !== null) {
+            zoneList = myZoneList;
+          } // else use defaults set from the top
+          zoneListLoaded = true;
+          checkLoadingDone();
+        })
         Homey.get("priceActionList", function (err, mypriceActionList) {
           if (err) return Homey.alert(err);
           if (mypriceActionList !== null) {
@@ -773,6 +809,9 @@
             if (err) return Homey.alert(err);
           });
           Homey.set("frostList", frostList, function(err) {
+            if (err) return Homey.alert(err);
+          })
+          Homey.set("zones", zoneList, function(err) {
             if (err) return Homey.alert(err);
           })
           Homey.set("maxPowerList", maxPowerList, function (err) {
@@ -852,6 +891,11 @@
           generateFrostList();
         }
 
+        // Update zone list for Zone Page
+        if (tabPage == 'zonePage') {
+          generateZoneList();
+        }
+
         // Update price page in case it has not been updated before
         if (tabPage == 'pricePage') {
           changePriceTab(evt, 1);
@@ -923,6 +967,7 @@
         deviceListLoaded = true;
         modeListLoaded = true;
         frostListLoaded = true;
+        zoneListLoaded = true;
         operatingModeLoaded = true;
         priceModeLoaded = true;
         pricePointLoaded = true;
