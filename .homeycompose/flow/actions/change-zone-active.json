@@ -1,0 +1,36 @@
+{
+  "title": {
+    "en": "Enable/disable zones",
+    "no": "Slå av/på sone"
+  },
+  "titleFormatted": {
+    "en": "Change zone enabled for [[zone]] to [[enabled]]",
+    "no": "Endre sone [[zone]] aktiv til [[enabled]]"
+  },
+  "hint": {
+    "en": "Allows you to turn on/off devices in zones e.g. in connection with ventilation",
+    "no": "Tillater deg å slå av/på enheter i soner f.eks. i forbindelse med lufting"
+  },
+  "args": [
+    {
+      "type": "autocomplete",
+      "name": "zone",
+      "title": {
+        "en": "Zone name",
+        "no": "Sone navn"
+      },
+      "placeholder": {
+        "en": "Name of the zone as defined in Homey",
+        "no": "Navn på sone som definert i Homey"
+      }
+    },
+    {
+      "type": "checkbox",
+      "name": "enabled",
+      "title": {
+        "en": "Enabled",
+        "no": "Påslått"
+      }
+    }
+  ]
+}

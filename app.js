@@ -13,7 +13,6 @@
 const Homey = require('homey');
 const Mutex = require('async-mutex').Mutex;
 const { HomeyAPIApp } = require('homey-api');
-const { stringify } = require('querystring');
 
 const WAIT_TIME_TO_POWER_ON_AFTER_POWEROFF = 5*60*1000;
 
@@ -62,7 +61,7 @@ class PiggyBank extends Homey.App {
     // Check that settings has been updated
     const maxPower = this.homey.settings.get('maxPowerList')
     if (typeof maxPower == "undefined") {
-      throw("Please configure the app before continuing");
+      return Promise.reject(new Error("Please configure the app before continuing"));
     }
 
     // Create list of devices
@@ -91,6 +90,13 @@ class PiggyBank extends Homey.App {
     cardActionSafetyPowerUpdate.registerRunListener(async (args) => {
       this.onSafetyPowerUpdate(args.mode);
     })
+    const cardZoneUpdate = this.homey.flow.getActionCard('change-zone-active')
+    cardZoneUpdate.registerArgumentAutocompleteListener(
+      "zone",
+      async (query, args) => this.generateZoneList(query, args));
+    cardZoneUpdate.registerRunListener(async (args) => {
+      this.onZoneUpdate(args.zone, args.enabled);
+    })
 
     // Monitor energy usage every 5 minute:
     await this.onNewHour() // The function distinguish between being called at a new hour and at app-init
@@ -100,8 +106,47 @@ class PiggyBank extends Homey.App {
     }, 1000*60*5)
     
     this.log('PiggyBank has been initialized');
+    return Promise.resolve();
   }
 
+
+  /**
+   * Warning: homey does not report any errors if this function crashes, so make sure it doesn't crash
+   */
+  async generateZoneList(query, args) {
+    // Count how many devices there are in every zone
+    const zones = await this.homeyApi.zones.getZones();// devices.getDevices();
+    //{"id":"9919ee1e-ffbc-480b-bc4b-77fb047e9e68","name":"Hjem","order":1,"parent":null,"active":false,"activeLastUpdated":null,"icon":"home"}
+    var active_zones = {}
+    for (const deviceId in this.__deviceList) {
+      if (this.__deviceList[deviceId].use) {
+        var zoneId = this.__deviceList[deviceId].roomId;
+        while (zoneId !== null) {
+          if (zoneId in active_zones) {
+            active_zones[zoneId] += 1;
+          } else {
+            active_zones[zoneId] = 1
+          }
+          zoneId = zones[zoneId].parent;
+        }
+      }
+    }
+    this.log(JSON.stringify(active_zones));
+
+    // Generate zone list to return
+    var results = [];
+    for (const zoneId in active_zones) {
+      const room = {
+        name: zones[zoneId].name,
+        description: this.homey.__("settings.zone.zoneNum") + ": " + String(active_zones[zoneId]),
+        id: zoneId
+      }
+      results.push(room);
+    }
+    return results.filter((result) => {
+      return result.name.toLowerCase().includes(query.toLowerCase());
+    });
+  }
 
   /**
    * onUninit() is called when the app is destroyed
@@ -165,6 +210,7 @@ class PiggyBank extends Homey.App {
         priority: (priority > 0) ? 1 : 0,
         name: device.name,
         room: device.zoneName,
+        roomId: device.zone,
         image: device.iconObj.url,
         onoff_cap: onoff_cap,
         thermostat_cap: thermostat_cap,
@@ -187,6 +233,8 @@ class PiggyBank extends Homey.App {
    * - Device turns off due to power control
    * - Device turns on from price action
    * - Device turns on due to power control
+   * @return [success, noChange] - success means that the result is as requested, noChange indicate if the result was already as requested
+   * @throw error in case of failure
    */
   async changeDeviceState(deviceId, newState, modelist_idx = undefined) {
 
@@ -225,8 +273,8 @@ class PiggyBank extends Homey.App {
             return device.setCapabilityValue({ capabilityId: "target_temperature", value: currentAction.delayTempValue });
           }
         })
-        .then(() => newState === TURN_ON)
-        .catch(error => { throw error });
+        .then(() => [newState === TURN_ON, false])
+        .catch(error => Promise.reject(error));
     } // ignore case !wantOn && isOn
 
     if (!newStateOn && isOn) {
@@ -234,11 +282,11 @@ class PiggyBank extends Homey.App {
       const deviceName = this.__deviceList[deviceId].name;
       this.log("Turning off device: " + deviceName)
       return device.setCapabilityValue({ capabilityId: this.__deviceList[deviceId].onoff_cap, value: false })
-        .then(() => newState === TURN_OFF)
-        .catch(error => { throw error });
+        .then(() => [newState === TURN_OFF, false])
+        .catch(error => Promise.reject(error));
     }
     // Nothing happened
-    return new Promise((resolve) => { resolve(false) });
+    return Promise.resolve([newStateOn === (newState === TURN_ON), isOn === (newState === TURN_ON)]);
   }
 
   /**
@@ -349,6 +397,14 @@ class PiggyBank extends Homey.App {
 
 
   /**
+   * onZoneUpdate is called whenever a zone is turned on/off
+   */
+  async onZoneUpdate(zone, enabled) {
+    this.log("Changing zone " + zone.name + "(ID: " + zone.id + ") to " + String(enabled));
+  }
+
+
+  /**
    * onPricePointUpdate is called whenever the price point is changed
    */
   async onPricePointUpdate(newMode) {
@@ -368,14 +424,15 @@ class PiggyBank extends Homey.App {
     // Go through all actions for this new mode;
     var actionLists = this.homey.settings.get("priceActionList");
     var currentActions = actionLists[newMode];
+    var promises = [];
     for (var deviceId in currentActions) {
       const device = await this.homeyApi.devices.getDevice({id: deviceId });
       switch (currentActions[deviceId].operation) {
         case TURN_ON:
-          changeDeviceState(deviceId, TURN_ON)
+          promises.push(changeDeviceState(deviceId, TURN_ON));
           break;
         case TURN_OFF:
-          changeDeviceState(deviceId, TURN_OFF)
+          promises.push(changeDeviceState(deviceId, TURN_OFF));
           break;
         case DELTA_TEMP:
           const modeIdx = this.findModeIdx(deviceId);
@@ -385,15 +442,27 @@ class PiggyBank extends Homey.App {
           const isOn = await (this.__deviceList[deviceId].onoff_cap === undefined) ? undefined : device.capabilitiesObj[this.__deviceList[deviceId].onoff_cap].value;
           if (isOn) {
             currentActions[deviceId].delayTempChange = false;
-            device.setCapabilityValue({ capabilityId: "target_temperature", value: new_temp });
+            promises.push(device.setCapabilityValue({ capabilityId: "target_temperature", value: new_temp })
+              .then(() => [true, false])
+              .catch((error) => Promise.reject(error)));
           } else {
             // Delay the action until the device turns on
             currentActions[deviceId].delayTempChange = true;
             currentActions[deviceId].delayTempValue = new_temp;
+            promises.push(Promise.resolve([true, false]));
           }
           break;
       }
     }
+    return Promise.all(promises)
+      .then((values) => {
+        var all_ok = true;
+        for (var i = 0; i < values.length; i++) {
+          all_ok &&= values[i][0];
+        }
+        return Promise.resolve(all_ok);
+      })
+      .catch((error) => Promise.reject(error));
   }
 
 
@@ -422,7 +491,7 @@ class PiggyBank extends Homey.App {
     var time_since_poweroff = this.__last_power_on_time - this.__last_power_off_time;
     if (time_since_poweroff < WAIT_TIME_TO_POWER_ON_AFTER_POWEROFF) {
       this.log("Could use " + String(morePower) + " W more power but was aborted due to recent turn off activity. Remaining wait = " + String((5*60*1000-time_since_poweroff)/1000) + " s");
-      return new Promise((resolve) => { resolve(); });
+      return Promise.resolve();
     } else {
       this.log("Can use " + String(morePower) + "W more power")
     }
@@ -440,9 +509,14 @@ class PiggyBank extends Homey.App {
         case CONTROLLED:
         case ALWAYS_ON:
           // Always on is overridden by price actions
-          if (await this.changeDeviceState(deviceId, TURN_ON, idx)) {
-            return new Promise((resolve) => { resolve(); });
-          } // else try to modify another device
+          try {
+            const [success, noChange] = await this.changeDeviceState(deviceId, TURN_ON, idx);
+            if (success && !noChange) {
+              return Promise.resolve();
+            } // else try to modify another device
+          } catch (err) {
+            return Promise.reject(err);
+          }
           break;
         case ALWAYS_OFF:
           // Keep off / let it be on if it has been overridden by a user
@@ -452,7 +526,7 @@ class PiggyBank extends Homey.App {
       //this.log("Num: " + String(idx) + " on: " + String(isOn) + "    | " + deviceName + " op: " + String(currentMode) + " " + String(wantOn))
     }
     // If this point was reached then all devices are on and still below power limit
-    return new Promise((resolve) => { resolve(); });
+    return Promise.resolve();
   }
 
 
@@ -475,11 +549,16 @@ class PiggyBank extends Homey.App {
     for (var idx = numDevices-1; idx >= 0; idx--) {
       const deviceId = currentModeList[idx].id;
       // Try to turn the device off regardless, it might be blocked by the state
-      if (await this.changeDeviceState(deviceId, TURN_OFF, idx)) {
-        // Sucessfully Turned off
-        return new Promise((resolve) => { resolve(); });
-      } else {
-        numForcedOnDevices++;
+      try {
+        const [success, noChange] = await this.changeDeviceState(deviceId, TURN_OFF, idx);
+        if (success && !noChange) {
+          // Sucessfully Turned off
+          return Promise.resolve();
+        } else {
+          numForcedOnDevices++;
+        }
+      } catch (err) {
+        return Promise.reject(err);
       }
       //"measure_power"
       //this.log("Num: " + String(idx) + " on: " + String(isOn) + "    | " + deviceName + " op: " + String(currentMode) + " " + String(wantOn))
@@ -493,7 +572,7 @@ class PiggyBank extends Homey.App {
     if (!firstHourEver && (lessPower > errorMarginWatts))
       this.__alarm_overshoot = true;
       this.homey.notifications.createNotification({excerpt: "Alert: The power must be reduced by " + String(lessPower) + " W immediately or the hourly limit will be breached"})
-    return new Promise(() => { throw new Error(errorString); });
+    return Promise.reject(new Error(errorString));
   }
 
 

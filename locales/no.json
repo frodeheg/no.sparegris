@@ -7,6 +7,7 @@
       "global": "Global",
       "price": "Pris",
       "frost": "Frost",
+      "zone": "Soner",
       "normal": "Normal",
       "night": "Natt",
       "holiday": "Ferie",
@@ -89,6 +90,15 @@
       "header": "Frostsikring",
       "minTemp": "Minste temperatur per enhet",
       "frostHint": "Dersom temperaturen for en enhet faller under minste tillatte temperatur så vil denne enheten slås på uavhengig av øvrig strømstyring."
+    },
+    "zone": {
+      "header": "Soneinnstillinger",
+      "zoneHint": "Hensikten med soner er å slå av alle enheter som varmer/kjøler en sone dersom man lufter. Du trenger ikke å bry deg om soner dersom du ikke har dør/vindussensorer.",
+      "zoneHint2": "Du må bruke flytkort for å slå soner av og på igjen.",
+      "zonesOff": "Følgende soner har blitt slått av",
+      "zonesClear": "Reset alle soner",
+      "zoneName": "Sone",
+      "zoneNum": "Antall enheter påvirket"
     },
     "mode" : {
       "powerSettings": "Strøminnstillinger",

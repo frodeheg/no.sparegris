@@ -6,8 +6,9 @@
     "tab": {
       "global": "Global",
       "price": "Price",
-      "normal": "Normal",
       "frost": "Frost",
+      "zone": "Zones",
+      "normal": "Normal",
       "night": "Night",
       "holiday": "Holiday",
       "boost": "Boost"
@@ -95,6 +96,15 @@
       "header": "Frost Control",
       "minTemp": "Minimum temperature per device",
       "frostHint": "If the temperature for one unit falls below the minimum allowed temperature then the unit will be turned on independent of any other power control."
+    },
+    "zone": {
+      "header": "Zone Control",
+      "zoneHint": "The purpose of zones is to completely disable all heating/cooling sources in a zone if doors or windows are open. You don't have to care about zones if you do not have door and window sensors.",
+      "zoneHint2": "You have to use flows to turn zones off and on again.",
+      "zonesOff": "The following zones has been forced off",
+      "zonesClear": "Clear all zones",
+      "zoneName": "Sone",
+      "zoneNum": "Antall enheter påvirket"
     },
     "mode" : {
       "powerSettings": "Power settings",

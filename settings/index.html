@@ -358,7 +358,6 @@
 
     <h1 data-i18n="settings.title">.title</h1>
     <p data-i18n="settings.subtitle">.subtitle</p>
-    <p id="debug">debug</p>
 
     <div data-i18n="settings.loadingText" id="loadingText">loadingText</div>
 
@@ -371,7 +370,8 @@
           <span data-i18n="settings.tab.price">tab.price</span></td>
         <td class="tablinks" onclick="changeTab(event, 'frostPage')" id="frostTab">
           <span data-i18n="settings.tab.frost">tab.frost</span></td>
-        <td>&nbsp;</td>
+        <td class="tablinks" onclick="changeTab(event, 'zonePage')" id="zoneTab">
+          <span data-i18n="settings.tab.zone">tab.zone</span></td>
       </tr>
       <tr>
         <td class="tablinks" onclick="changeTab(event, 'priorityPage', 0)" id="normalTab">
@@ -526,6 +526,27 @@
       </fieldset>
     </div>
     <!-- Frost page end -->
+
+    <!-- Zone page -->
+    <div id="zonePage" class="tabcontent">
+      <fieldset>
+        <legend><div class="blockHeader" data-i18n="settings.zone.header">zone.header</div> 
+          <div class="hintButton" onclick="toggle(this,'zoneHint');toggle(this,'zoneHint2');return false;">i</div>
+        </legend>
+        <p id="zoneHint" class="hint" data-i18n="settings.zone.zoneHint">zone.zoneHint</p>
+        <p id="zoneHint2" class="hint" data-i18n="settings.zone.zoneHint2">zone.zoneHint</p>
+        <span data-i18n="settings.zone.zonesOff">zone.zonesOff</span>:
+        <table width="100%">
+          <tr>
+            <th style="text-align:left" width="60%" data-i18n="settings.zone.zoneName">zone.zoneName</th>
+            <th style="text-align:left" width="40%" data-i18n="settings.zone.zoneNum">zone.zoneNum</th>
+          </tr>
+          <span id="zoneList">Zones should have been filled in here, if you see this text it is a bug</span>
+        </table>
+        <button id="clear" class="right" data-i18n="settings.zone.zonesClear" onclick="clearZones();return false;">zone.zonesClear</button>
+      </fieldset>
+    </div>
+    <!-- Zone page end -->
 
     <!-- Mode specific page -->
     <div id="priorityPage" class="tabcontent">
