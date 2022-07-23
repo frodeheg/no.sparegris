@@ -412,7 +412,7 @@ class PiggyBank extends Homey.App {
     let powerDiff = (((maxPower - this.__accum_energy - this.__reserved_energy) * (1000 * 60 * 60)) / remainingTime) - newPower - safetyPower;
     const mainFuse = this.homey.settings.get('mainFuse'); // Amps
     const maxDrain = Math.round(1.732050808 * 230 * mainFuse);
-    const maxFreeDrain = (isNumber(maxDrain) ? maxDrain : (trueMaxPower * 10)) - newPower;
+    const maxFreeDrain = ((isNumber(maxDrain) && (maxDrain > trueMaxPower)) ? maxDrain : (trueMaxPower * 10)) - newPower;
     if (powerDiff > maxFreeDrain) {
       powerDiff = maxFreeDrain;
     }

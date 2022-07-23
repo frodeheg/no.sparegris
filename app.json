@@ -118,11 +118,11 @@
         },
         "titleFormatted": {
           "en": "Set the Piggy Bank operation mode to [[mode]]",
-          "no": "Sett Sparegris operasjonsmodus til [[mode]]"
+          "no": "Sett Sparegris driftsmodus til [[mode]]"
         },
         "hint": {
-          "en": "Allows you to switch between holiday mode and normal operation",
-          "no": "Tillater deg å bytte mellom ferie, natt og normal modus"
+          "en": "Allows you to switch between night, normal and other operation modes",
+          "no": "Lar deg bytte mellom natt, normal og andre driftsmoduser"
         },
         "args": [
           {
@@ -153,15 +153,15 @@
               {
                 "id": "3",
                 "label": {
-                  "en": "Holiday",
-                  "no": "Ferie"
+                  "en": "Away",
+                  "no": "Bortreist"
                 }
               },
               {
                 "id": "4",
                 "label": {
-                  "en": "Boost",
-                  "no": "Boost"
+                  "en": "Custom",
+                  "no": "Egendefinert"
                 }
               }
             ]
@@ -357,7 +357,7 @@
         "piggy_mode_normal",
         "piggy_mode_night",
         "piggy_mode_holiday",
-        "piggy_mode_boost",
+        "piggy_mode_custom",
         "piggy_price_low",
         "piggy_price_normal",
         "piggy_price_expensive",
@@ -517,15 +517,15 @@
         {
           "id": "3",
           "title": {
-            "en": "Holiday",
-            "no": "Ferie"
+            "en": "Away",
+            "no": "Borte"
           }
         },
         {
           "id": "4",
           "title": {
-            "en": "Boost",
-            "no": "Boost"
+            "en": "Custom",
+            "no": "Egen"
           }
         }
       ],
@@ -533,7 +533,7 @@
       "uiComponent": "sensor",
       "uiQuickAction": false
     },
-    "piggy_mode_boost": {
+    "piggy_mode_custom": {
       "type": "boolean",
       "title": {
         "en": "Mode",
@@ -544,13 +544,13 @@
       "uiComponent": null,
       "uiQuickAction": false,
       "insightsTitleTrue": {
-        "en": "Changed to Boost mode",
-        "no": "Endret til Boost modus"
+        "en": "Changed to Custom mode",
+        "no": "Endret til Egendefinert modus"
       },
       "insights": true,
       "insightsTitleFalse": {
-        "en": "Changed to Boost mode",
-        "no": "Endret til Boost modus"
+        "en": "Changed to Custom mode",
+        "no": "Endret til Egendefinert modus"
       }
     },
     "piggy_mode_disabled": {
@@ -584,13 +584,13 @@
       "uiComponent": null,
       "uiQuickAction": false,
       "insightsTitleTrue": {
-        "en": "Changed to Holiday mode",
-        "no": "Endret til Feriemodus"
+        "en": "Changed to Away mode",
+        "no": "Endret til Bortreist modus"
       },
       "insights": true,
       "insightsTitleFalse": {
-        "en": "Changed to Holiday mode",
-        "no": "Endret til Feriemodus"
+        "en": "Changed to Away mode",
+        "no": "Endret til Bortreist modus"
       }
     },
     "piggy_mode_night": {

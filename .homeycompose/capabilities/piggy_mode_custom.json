@@ -9,12 +9,12 @@
     "uiComponent": null,
     "uiQuickAction": false,
     "insightsTitleTrue": {
-      "en": "Changed to Boost mode",
-      "no": "Endret til Boost modus"
+      "en": "Changed to Custom mode",
+      "no": "Endret til Egendefinert modus"
     },
     "insights": true,
     "insightsTitleFalse": {
-      "en": "Changed to Boost mode",
-      "no": "Endret til Boost modus"
+      "en": "Changed to Custom mode",
+      "no": "Endret til Egendefinert modus"
     }
 }

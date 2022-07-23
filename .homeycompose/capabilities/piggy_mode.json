@@ -31,15 +31,15 @@
       {
         "id": "3",
         "title": {
-          "en": "Holiday",
-          "no": "Ferie"
+          "en": "Away",
+          "no": "Borte"
         }
       },
       {
         "id": "4",
         "title": {
-          "en": "Boost",
-          "no": "Boost"
+          "en": "Custom",
+          "no": "Egen"
         }
       }
     ],

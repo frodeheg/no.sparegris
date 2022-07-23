@@ -9,12 +9,12 @@
     "uiComponent": null,
     "uiQuickAction": false,
     "insightsTitleTrue": {
-      "en": "Changed to Holiday mode",
-      "no": "Endret til Feriemodus"
+      "en": "Changed to Away mode",
+      "no": "Endret til Bortreist modus"
     },
     "insights": true,
     "insightsTitleFalse": {
-      "en": "Changed to Holiday mode",
-      "no": "Endret til Feriemodus"
+      "en": "Changed to Away mode",
+      "no": "Endret til Bortreist modus"
     }
 }

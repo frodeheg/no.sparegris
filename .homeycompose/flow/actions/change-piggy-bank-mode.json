@@ -5,11 +5,11 @@
   },
   "titleFormatted": {
     "en": "Set the Piggy Bank operation mode to [[mode]]",
-    "no": "Sett Sparegris operasjonsmodus til [[mode]]"
+    "no": "Sett Sparegris driftsmodus til [[mode]]"
   },
   "hint": {
-    "en": "Allows you to switch between holiday mode and normal operation",
-    "no": "Tillater deg å bytte mellom ferie, natt og normal modus"
+    "en": "Allows you to switch between night, normal and other operation modes",
+    "no": "Lar deg bytte mellom natt, normal og andre driftsmoduser"
   },
   "args": [
     {
@@ -40,15 +40,15 @@
         {
           "id": "3",
           "label": {
-            "en": "Holiday",
-            "no": "Ferie"
+            "en": "Away",
+            "no": "Bortreist"
           }
         },
         {
           "id": "4",
           "label": {
-            "en": "Boost",
-            "no": "Boost"
+            "en": "Custom",
+            "no": "Egendefinert"
           }
         }
       ]

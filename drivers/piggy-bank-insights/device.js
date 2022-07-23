@@ -105,7 +105,7 @@ class MyDevice extends Device {
         case '1': this.toggleCapability('piggy_mode_normal'); break;
         case '2': this.toggleCapability('piggy_mode_night'); break;
         case '3': this.toggleCapability('piggy_mode_holiday'); break;
-        case '4': this.toggleCapability('piggy_mode_boost'); break;
+        case '4': this.toggleCapability('piggy_mode_custom'); break;
         default: /* Broken input should not happen */ break;
       }
     }

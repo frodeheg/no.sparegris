@@ -10,8 +10,8 @@
       "zone": "Soner",
       "normal": "Normal",
       "night": "Natt",
-      "holiday": "Ferie",
-      "boost": "Boost"
+      "holiday": "Borte",
+      "custom": "Egen"
     },
     "pricetab": {
       "cheap": "Billig",
@@ -23,8 +23,8 @@
       "price": "Pris",
       "normal": "Normal",
       "night": "Natt",
-      "holiday": "Ferie",
-      "boost": "Boost"
+      "holiday": "Borte",
+      "custom": "Egen"
     },
     "global": {
       "settings": "Global Innstillinger",

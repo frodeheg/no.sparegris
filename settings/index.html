@@ -49,8 +49,8 @@
           { id: "id_c", operation: CONTROLLED, targetTemp: 20 }
         ],
         [], // Night
-        [], // Holiday
-        []  // Boost
+        [], // Away
+        []  // Custom
       ]
       var frostList = {} // Indexed by deviceId
       var zoneList = {} // Indexed by zone-id
@@ -58,8 +58,8 @@
       var maxPowerList = [
         2000, // Normal
         2000, // Night
-        2000, // Holiday
-        2000  // Boost
+        2000, // Away
+        2000  // Custom
       ]
       var currentPriceMode = 1; // From Flow
       var currentPricePoint = 1; // Normal
@@ -74,7 +74,7 @@
         { name:"settings.opMode.normal", value: 1 },
         { name:"settings.opMode.night", value: 2 },
         { name:"settings.opMode.holiday", value: 3 },
-        { name:"settings.opMode.boost", value: 4 }
+        { name:"settings.opMode.custom", value: 4 }
       ]
 
       var priceModes = [
@@ -417,8 +417,8 @@
           <span data-i18n="settings.tab.night">tab.night</span></td>
         <td class="tablinks" onclick="changeTab(event, 'priorityPage', 2)" id="holidayTab">
           <span data-i18n="settings.tab.holiday">tab.holiday</span></td>
-        <td class="tablinks" onclick="changeTab(event, 'priorityPage', 3)" id="boostTab">
-          <span data-i18n="settings.tab.boost">tab.boost</span></td>
+        <td class="tablinks" onclick="changeTab(event, 'priorityPage', 3)" id="customTab">
+          <span data-i18n="settings.tab.custom">tab.custom</span></td>
       </tr>
     </table>
 
@@ -736,7 +736,7 @@
               [], // Normal
               [], // Night
               [], // Holiday
-              []  // Boost
+              []  // Custom
             ]
           }
           modeListLoaded = true;

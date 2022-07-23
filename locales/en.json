@@ -10,8 +10,8 @@
       "zone": "Zones",
       "normal": "Normal",
       "night": "Night",
-      "holiday": "Holiday",
-      "boost": "Boost"
+      "holiday": "Away",
+      "custom": "Custom"
     },
     "pricetab": {
       "cheap": "Cheap",
@@ -23,8 +23,8 @@
       "price": "Price",
       "normal": "Normal",
       "night": "Night",
-      "holiday": "Holiday",
-      "boost": "Boost"
+      "holiday": "Away",
+      "custom": "Custom"
     },
     "global": {
       "settings": "Global Settings",
