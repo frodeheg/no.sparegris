@@ -52,5 +52,8 @@
   },
   "0.5.2": {
     "en": "Minor changes with no effect"
+  },
+  "0.5.3": {
+    "en": "Fixed the zone capability as zones was not properly turned off + fixed the efficiency capability as the off count was incorrect in some cases"
   }
 }
