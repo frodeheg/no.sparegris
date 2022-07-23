@@ -125,7 +125,8 @@
     },
     "saveButton": "Lagre Endringer",
     "alert": {
-      "settingssaved": "Endringene har blitt lagret."
+      "settingssaved": "Endringene har blitt lagret.",
+      "leavepage": "Er du sikker på at du vil forlate siden?"
     }
   },
   "newdevice" : {

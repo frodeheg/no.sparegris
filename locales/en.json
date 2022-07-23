@@ -131,7 +131,8 @@
     },
     "saveButton": "Save changes",
     "alert": {
-      "settingssaved": "Your changes have been saved."
+      "settingssaved": "Your changes have been saved.",
+      "leavepage": "Do you want to leave this page?"
     }
   },
   "newdevice" : {

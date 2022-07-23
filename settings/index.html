@@ -23,6 +23,7 @@
       var targetTempText = "settings.mode.targetTemp";
       var controlledText = "settings.mode.controlled";
       var priceNormalText = "settings.price.actionNormal";
+      var leavePageText = "settings.alert.leavepage";
       var zoneNameText = "settings.zone.zoneName";
       var zoneNumText = "settings.zone.zoneNum";
 
@@ -389,7 +390,7 @@
   </head>
 
 
-  <body>
+  <body onbeforeunload="HandleOnClose(event)">
     <!-- 
     <h1 data-i18n="settings.title">.title</h1>
     <p data-i18n="settings.subtitle">.subtitle</p>
@@ -685,6 +686,7 @@
         targetTempText = Homey.__(targetTempText);
         controlledText = Homey.__(controlledText);
         priceNormalText = Homey.__(priceNormalText);
+        leavePageText = Homey.__(leavePageText);
         zoneNameText = Homey.__(zoneNameText);
         zoneNumText = Homey.__(zoneNumText);
 
@@ -965,11 +967,12 @@
         }*/
       };
 
-      // Hide all tabs except one:
-
+      function HandleOnClose(evt) {
+        evt.returnValue = false
+      }
       // For testing only -
       // Remove when used on homey
-      if (navigator.userAgent == "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:101.0) Gecko/20100101 Firefox/101.0") {
+      /*if (navigator.userAgent == "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:101.0) Gecko/20100101 Firefox/101.0") {
         // Not homey, but debug mode
         maxPowerListLoaded = true;
         deviceListLoaded = true;
@@ -983,7 +986,7 @@
         errorMarginLoaded = true;
         safetyPowerLoaded = true;
         checkLoadingDone();
-      }
+      }*/
     </script>
   </body>
 </html>
