@@ -58,5 +58,8 @@
   },
   "0.5.4": {
     "en": "Added Configurable Main Fuse in App Settings to limit maximum power drawn"
+  },
+  "0.5.5": {
+    "en": "Minor fix if the main fuse is not set correctly + renamed some modes to be more generic"
   }
 }
