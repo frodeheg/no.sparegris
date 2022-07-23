@@ -55,5 +55,8 @@
   },
   "0.5.3": {
     "en": "Fixed the zone capability as zones was not properly turned off + fixed the efficiency capability as the off count was incorrect in some cases"
+  },
+  "0.5.4": {
+    "en": "Added Configurable Main Fuse in App Settings to limit maximum power drawn"
   }
 }
