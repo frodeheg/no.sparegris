@@ -1,8 +1,10 @@
+/* eslint-disable no-nested-ternary */
+
 'use strict';
 
 const { Device } = require('homey');
 
-const POLL_INTERVAL = 1000*60*1; // Poll the app once every minute
+const POLL_INTERVAL = 1000 * 60 * 1; // Poll the app once every minute
 
 class MyDevice extends Device {
 
@@ -15,8 +17,8 @@ class MyDevice extends Device {
 
     // Every minute check if the state has changed:
     this.intervalID = setInterval(() => {
-      this.updateState()
-    }, POLL_INTERVAL)
+      this.updateState();
+    }, POLL_INTERVAL);
   }
 
   /**
@@ -54,9 +56,9 @@ class MyDevice extends Device {
     this.log('MyDevice has been deleted');
     // Make sure the interval is cleared if it was started, otherwise it will continue to
     // trigger but on an unknown device.
-    if (this.intervalID != undefined) {
-      clearInterval(this.intervalID)
-      this.intervalID = undefined
+    if (this.intervalID !== undefined) {
+      clearInterval(this.intervalID);
+      this.intervalID = undefined;
     }
   }
 
@@ -64,54 +66,57 @@ class MyDevice extends Device {
    * Polls all the state from the app and updates the device
    */
   async updateState() {
-    const piggy_state = this.homey.app.getState();
-    //this.log("Updating state: " + JSON.stringify(piggy_state));
-    if (piggy_state.power_last_hour !== undefined) {
-      this.setCapabilityValue('meter_power.last_hour', piggy_state.power_last_hour);
+    const piggyState = this.homey.app.getState();
+    // this.log("Updating state: " + JSON.stringify(piggyState));
+    if (piggyState.power_last_hour !== undefined) {
+      this.setCapabilityValue('meter_power.last_hour', piggyState.power_last_hour);
     }
-    if (piggy_state.power_estimated !== undefined) {
-      this.setCapabilityValue('meter_power.estimated', piggy_state.power_estimated);
+    if (piggyState.power_estimated !== undefined) {
+      this.setCapabilityValue('meter_power.estimated', piggyState.power_estimated);
     }
-    this.setCapabilityValue('alarm_generic.overshoot', piggy_state.alarm_overshoot);
+    this.setCapabilityValue('alarm_generic.overshoot', piggyState.alarm_overshoot);
 
-    this.setCapabilityValue('measure_power.free_capacity', Math.round(piggy_state.free_capacity));
-    var percentageOn = Math.round(100 * (piggy_state.num_devices - piggy_state.num_devices_off) / piggy_state.num_devices);
+    this.setCapabilityValue('measure_power.free_capacity', Math.round(piggyState.free_capacity));
+    this.setCapabilityValue('measure_power.reserved_power', piggyState.safety_power);
+    let percentageOn = Math.round((100 * (piggyState.num_devices - piggyState.num_devices_off)) / piggyState.num_devices);
     percentageOn = (percentageOn < 0) ? 0 : (percentageOn > 100) ? 100 : percentageOn;
     this.setCapabilityValue('piggy_devices_on', percentageOn);
 
     // Set Price point capability + update timeline using boolean workaround capabilities
-    var prev_price_point = await this.getStoreValue('piggy_price');
-    this.setCapabilityValue('piggy_price', piggy_state.price_point);
-    if (piggy_state.price_point !== prev_price_point) {
-      this.setStoreValue('piggy_price', piggy_state.price_point);
-      switch(piggy_state.price_point) {
-        case "0": this.toggleCapability("piggy_price_low"); break;
-        case "1": this.toggleCapability("piggy_price_normal"); break;
-        case "2": this.toggleCapability("piggy_price_expensive"); break;
+    const prevPricePoint = await this.getStoreValue('piggy_price');
+    this.setCapabilityValue('piggy_price', piggyState.price_point);
+    if (piggyState.price_point !== prevPricePoint) {
+      this.setStoreValue('piggy_price', piggyState.price_point);
+      switch (piggyState.price_point) {
+        case '0': this.toggleCapability('piggy_price_low'); break;
+        case '1': this.toggleCapability('piggy_price_normal'); break;
+        case '2': this.toggleCapability('piggy_price_expensive'); break;
+        default: /* Broken input should not happen */ break;
       }
     }
 
     // Set Mode capability + update timeline using boolean workaround capabilities
-    var prev_mode = await this.getStoreValue('piggy_mode');
-    this.setCapabilityValue('piggy_mode', piggy_state.operating_mode);
-    if (piggy_state.operating_mode !== prev_mode) {
-      this.setStoreValue('piggy_mode', piggy_state.operating_mode);
-      switch(piggy_state.operating_mode) {
-        case "0": this.toggleCapability("piggy_mode_disabled"); break;
-        case "1": this.toggleCapability("piggy_mode_normal"); break;
-        case "2": this.toggleCapability("piggy_mode_night"); break;
-        case "3": this.toggleCapability("piggy_mode_holiday"); break;
-        case "4": this.toggleCapability("piggy_mode_boost"); break;
+    const prevMode = await this.getStoreValue('piggy_mode');
+    this.setCapabilityValue('piggy_mode', piggyState.operating_mode);
+    if (piggyState.operating_mode !== prevMode) {
+      this.setStoreValue('piggy_mode', piggyState.operating_mode);
+      switch (piggyState.operating_mode) {
+        case '0': this.toggleCapability('piggy_mode_disabled'); break;
+        case '1': this.toggleCapability('piggy_mode_normal'); break;
+        case '2': this.toggleCapability('piggy_mode_night'); break;
+        case '3': this.toggleCapability('piggy_mode_holiday'); break;
+        case '4': this.toggleCapability('piggy_mode_boost'); break;
+        default: /* Broken input should not happen */ break;
       }
     }
   }
 
   /**
    * Used to overcome the fact that Homey does not support enums in the timeline
-   * @param {*} capabilityName 
+   * @param {*} capabilityName
    */
   toggleCapability(capabilityName) {
-    var capValue = this.getStoreValue(capabilityName);
+    let capValue = this.getStoreValue(capabilityName);
     if (typeof capValue !== 'boolean') {
       capValue = false;
     }

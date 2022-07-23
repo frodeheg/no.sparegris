@@ -115,7 +115,7 @@
       "priorities" : "Prioriteringer",
       "priorityHint1": "Ved overforbruk av strøm begynner appen å skru av enheter fra bunnen av listen. Enheter på toppen av listen blir de siste til å bli slått av.",
       "priorityHint2": "Når ønsket effekt-tariff er oppnådd vil appen starte å skru på enheter igjen.",
-      "priorityHint3": "Dersom noen enheter har blitt skrudd av vil det minimum gå 10 minutter før appen forsøker å skru på noe igjen for å unngå overdreven veksling.",
+      "priorityHint3": "Dersom noen enheter har blitt skrudd av vil det minimum gå 5 minutter før appen forsøker å skru på noe igjen for å unngå overdreven veksling.",
       "controlled": "Styrt",
       "alwaysOn": "Alltid på",
       "alwaysOff": "Alltid av",
@@ -127,5 +127,9 @@
     "alert": {
       "settingssaved": "Endringene har blitt lagret."
     }
+  },
+  "newdevice" : {
+    "info": "Denne enheten vil gi deg innblikk i hva som skjer når appen styrer strømmen. Det er ikke nødvendig å installere denne enheten for å få appen til å fungere.",
+    "info2": "Ettersom enheten bare fungerer som et vindu inn i appen kan du derfor ikke konfigurere hva som skjer gjennom denne enhetens innstillinger. Du kan bare konfigurere hva som skjer gjennom appens innstillinger."
   }
 }
