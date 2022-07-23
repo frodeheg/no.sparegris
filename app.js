@@ -75,7 +75,7 @@ class PiggyBank extends Homey.App {
     this.homey.settings.set('deviceList', this.__deviceList);
 
     // Enable action cards
-    const cardActionEnergyUpdate = this.homey.flow.getActionCard('update-meter-energy'); // Remove?
+    const cardActionEnergyUpdate = this.homey.flow.getActionCard('update-meter-energy'); // Marked as deprecated so nobody will see it yet
     cardActionEnergyUpdate.registerRunListener(async args => {
       const newTotal = args.TotalEnergyUsage;
       this.log(`Total energy changed to: ${String(newTotal)}`);
@@ -105,12 +105,12 @@ class PiggyBank extends Homey.App {
       this.onZoneUpdate(args.zone, args.enabled);
     });
 
-    // Monitor energy usage every 5 minute:
     await this.onNewHour(); // The function distinguish between being called at a new hour and at app-init
-    await this.onMonitor();
+    // TBD: Monitor energy usage every 5 minute
+    /* await this.onMonitor();
     this.__intervalID = setInterval(() => {
       this.onMonitor();
-    }, 1000 * 60 * 5);
+    }, 1000 * 60 * 5); */
 
     this.log('PiggyBank has been initialized');
     return Promise.resolve();
@@ -351,6 +351,7 @@ class PiggyBank extends Homey.App {
    */
   async onMonitor() {
     this.log('onMonitor()');
+    // TBD additional monitoring will be added here later
   }
 
   /**

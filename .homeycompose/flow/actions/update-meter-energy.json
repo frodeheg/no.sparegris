@@ -3,6 +3,7 @@
     "en": "Update PiggyBank with the total energy used",
     "no": "Oppdater Sparegris med totalt energiforbruk"
   },
+  "deprecated": true,
   "titleFormatted": {
     "en": "Set the total energy used to [[TotalEnergyUsage]] kWh",
     "no": "Sett totalt energiforbruk til [[TotalEnergyUsage]] kWh"
