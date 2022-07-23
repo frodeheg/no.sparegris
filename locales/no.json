@@ -37,6 +37,8 @@
       "safetyPower" : "Reservert effekt",
       "safetyPowerHint1" : "Unngå å feile strømmålet ved å reservere strøm til ukontrollerbare enheter.",
       "safetyPowerHint2" : "Hint: Du kan bruke flytkort for å endre den reserverte effekten over tid. Det anbefales å reservere mer strøm før du lager middag.",
+      "mainFuse" : "Hovedsikring",
+      "mainFuseHint" : "Hovdedsikringen har betydning for hva som regnes ut som maks tilgjengelig effekt. Appen vil ikke la deg bruke mer effekt enn det hovedsikringen tillater.",
       "controllableDevices": "Kontrollerbare enheter",
       "deviceListHint1" : "Bare valgte enheter kan kontrolleres av appen.",
       "deviceListHint2" : "Tips: For best mulig batterilevetid, sørg for at kraftige ladere som billadere er satt til en effekt som samsvarer så nært som mulig med effektmålene. Overdreven ladekraft vil resultere i hyppig av/på slåing."

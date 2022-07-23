@@ -37,6 +37,8 @@
       "safetyPower" : "Reserved power",
       "safetyPowerHint1" : "Avoid failing the power target by reserving power to uncontrollable devices.",
       "safetyPowerHint2" : "Hint: You can use flow cards to change the reserved power during the day. It is reccomended to reserve more power before making dinner.",
+      "mainFuse" : "Main fuse",
+      "mainFuseHint" : "The main fuse is important for what is calculated as the maximum available power. The app will not let you use more power than the main fuse allows.",
       "controllableDevices": "Controllable devices",
       "deviceListHint1" : "Only selected devices can be controlled by the app.",
       "deviceListHint2" : "Hint: For best battery lifetime please ensure powerful chargers such as car chargers are set to a power that complies as close as possible with the Power targets. Excessive charging power will result in high on/off switch rate."

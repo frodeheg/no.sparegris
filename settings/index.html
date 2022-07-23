@@ -66,6 +66,7 @@
       var currentOperatingMode = 0; // Disabled
       var currentErrorMargin = 5;
       var currentSafetyPower = 500;
+      var currentMainFuse = 63;
       var currentModeTab = 0; // Normal
 
       var operatingModes = [
@@ -457,6 +458,15 @@
         </table>
         <p id="hint3" class="hint" data-i18n="settings.global.safetyPowerHint1">global.safetyPowerHint1</p>
         <p id="hint4" class="hint" data-i18n="settings.global.safetyPowerHint2">global.safetyPowerHint2</p>
+
+        <table class="settings_table">
+          <tr>
+            <td class="settings_row_name"><label for="mainFuse" data-i18n="settings.global.mainFuse">global.mainFuse</label>:</td>
+            <td class="settings_row_input"><input id="mainFuse" type="number" min="0" max="100000" value="63" size="10">A 
+            <div class="hintButton" onclick="toggle(this,'mainFuseHint');return false;">i</div></td>
+          </tr>
+        </table>
+        <p id="mainFuseHint" class="hint" data-i18n="settings.global.mainFuseHint">global.mainFuseHint</p>
       </fieldset>
       <fieldset>
         <legend for="highPriDevices"><div class="blockHeader" data-i18n="settings.global.controllableDevices">global.controllableDevices</div> 
@@ -629,6 +639,7 @@
       var priceActionListLoaded = false;
       var frostListLoaded = false;
       var zoneListLoaded = false;
+      var mainFuseLoaded = false;
       // Called whenever things has been loaded
       function checkLoadingDone() {
         var loadElement = document.getElementById("loadingText");
@@ -642,7 +653,8 @@
           && pricePointLoaded
           && priceActionListLoaded
           && frostListLoaded
-          && zoneListLoaded) {
+          && zoneListLoaded
+          && mainFuseLoaded) {
           // Update device enable list:
           generateEnableList('highPriDevices', 1);
           generateEnableList('lowPriDevices', 0);
@@ -658,6 +670,7 @@
           document.getElementById("errorMargin").value = currentErrorMargin;
           document.getElementById("safetyPower").value = currentSafetyPower;
           document.getElementById("pricePoint").value = currentPricePoint;
+          document.getElementById("mainFuse").value = currentMainFuse;
         }
       }
 
@@ -669,6 +682,7 @@
         var safetyPowerElement = document.getElementById("safetyPower");
         var priceModeElement = document.getElementById("priceMode");
         var pricePointElement = document.getElementById("pricePoint");
+        var mainFuseElement = document.getElementById("mainFuse");
 
         // Fetch translation strings from Homey
         deltaText = Homey.__(deltaText);
@@ -810,6 +824,16 @@
           safetyPowerLoaded = true;
           checkLoadingDone();
         });
+        Homey.get("mainFuse", function (err, mainFuse) {
+          if (err) return Homey.alert(err);
+          if (mainFuse !== null) {
+            currentMainFuse = mainFuse;
+          } else {
+            currentMainFuse = 63; // 63 Amps is the most common main fuse in Norway
+          }
+          mainFuseLoaded = true;
+          checkLoadingDone();
+        });
 
         saveElement.addEventListener("click", function (e) {
           Homey.set("deviceList", deviceList, function (err) {
@@ -843,6 +867,9 @@
             if (err) return Homey.alert(err);
           });
           Homey.set("safetyPower", safetyPowerElement.value, function (err) {
+            if (err) return Homey.alert(err);
+          });
+          Homey.set("mainFuse", mainFuseElement.value, function (err) {
             if (err) return Homey.alert(err);
           });
           Homey.alert(Homey.__("settings.alert.settingssaved"));
@@ -982,6 +1009,7 @@
         priceActionListLoaded = true;
         errorMarginLoaded = true;
         safetyPowerLoaded = true;
+        mainFuseLoaded = true;
         checkLoadingDone();
       }*/
     </script>

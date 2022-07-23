@@ -29,6 +29,16 @@ const TURN_ON = 0;
 const TURN_OFF = 1;
 const DELTA_TEMP = 2;
 
+/**
+ * Helper functions
+ */
+function isNumber(value) {
+  return typeof value === 'number' && Number.isFinite(value);
+}
+
+/**
+ * PiggyBank Class definition
+ */
 class PiggyBank extends Homey.App {
 
   /**
@@ -399,12 +409,14 @@ class PiggyBank extends Homey.App {
     }
 
     // Try to control devices if the power is outside of the preferred bounds
-    const powerDiff = (((maxPower - this.__accum_energy - this.__reserved_energy) * (1000 * 60 * 60)) / remainingTime) - newPower - safetyPower;
-    if (powerDiff > 10 * trueMaxPower) {
-      this.__free_capacity = 10 * trueMaxPower;
-    } else {
-      this.__free_capacity = powerDiff;
+    let powerDiff = (((maxPower - this.__accum_energy - this.__reserved_energy) * (1000 * 60 * 60)) / remainingTime) - newPower - safetyPower;
+    const mainFuse = this.homey.settings.get('mainFuse'); // Amps
+    const maxDrain = Math.round(1.732050808 * 230 * mainFuse);
+    const maxFreeDrain = (isNumber(maxDrain) ? maxDrain : (trueMaxPower * 10)) - newPower;
+    if (powerDiff > maxFreeDrain) {
+      powerDiff = maxFreeDrain;
     }
+    this.__free_capacity = powerDiff;
     let promise;
     if (powerDiff < 0) {
       promise = this.onAbovePowerLimit(-powerDiff)
