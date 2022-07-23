@@ -277,7 +277,7 @@ class PiggyBank extends Homey.App {
     const activeZones = this.homey.settings.get('zones');
     const newStateOn = frostGuardActive
       || (currentActionOp !== TURN_OFF
-        && !this.__deviceList[deviceId].memberOf.some(z => (Array.isArray(activeZones) && activeZones.includes(z) && !activeZones[z].enabled))
+        && !this.__deviceList[deviceId].memberOf.some(z => (activeZones.hasOwnProperty(z) && !activeZones[z].enabled))
         && ((newState === TURN_ON && currentModeState !== ALWAYS_OFF) || (newState === TURN_OFF && currentModeState === ALWAYS_ON)));
 
     if (newStateOn && !isOn) {
@@ -555,6 +555,7 @@ class PiggyBank extends Homey.App {
     const numDevices = currentModeList.length;
     // Turn on devices from top down in the priority list
     // Only turn on one device at the time
+    let numForcedOffDevices = 0;
     for (let idx = 0; idx < numDevices; idx++) {
       const deviceId = currentModeList[idx].id;
       // Check if the on state complies with the settings
@@ -565,8 +566,12 @@ class PiggyBank extends Homey.App {
           try {
             const [success, noChange] = await this.changeDeviceState(deviceId, TURN_ON, idx);
             if (success && !noChange) {
+              // Sucessfully Turned on
               return Promise.resolve();
             } // else try to modify another device
+            if (!success) {
+              numForcedOffDevices++;
+            }
           } catch (err) {
             return Promise.reject(err);
           }
@@ -579,7 +584,7 @@ class PiggyBank extends Homey.App {
       }
     }
     // If this point was reached then all devices are on and still below power limit
-    this.__num_off_devices = 0; // Reset the off counter in case it was incorrect
+    this.__num_off_devices = numForcedOffDevices; // Reset the off counter in case it was incorrect
     return Promise.resolve();
   }
 
@@ -625,7 +630,7 @@ class PiggyBank extends Homey.App {
       this.__alarm_overshoot = true;
       this.homey.notifications.createNotification({ excerpt: `Alert: The power must be reduced by ${String(lessPower)} W immediately or the hourly limit will be breached` });
     }
-    this.__num_off_devices = Object.keys(this.homey.settings.get('frostList')).length; // Reset off counter in case it was wrong
+    this.__num_off_devices = Object.keys(this.homey.settings.get('frostList')).length - numForcedOnDevices; // Reset off counter in case it was wrong
     return Promise.reject(new Error(errorString));
   }
 
