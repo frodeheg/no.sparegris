@@ -390,7 +390,7 @@
   </head>
 
 
-  <body onbeforeunload="HandleOnClose(event)">
+  <body>
     <!-- 
     <h1 data-i18n="settings.title">.title</h1>
     <p data-i18n="settings.subtitle">.subtitle</p>
@@ -967,9 +967,6 @@
         }*/
       };
 
-      function HandleOnClose(evt) {
-        evt.returnValue = false
-      }
       // For testing only -
       // Remove when used on homey
       /*if (navigator.userAgent == "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:101.0) Gecko/20100101 Firefox/101.0") {
