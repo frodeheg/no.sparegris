@@ -67,5 +67,8 @@
   },
   "0.5.7": {
     "en": "Fixed a bug when setting a new poll interval"
+  },
+  "0.5.8": {
+    "en": "Fixed a crash in case of restart"
   }
 }
