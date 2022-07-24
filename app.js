@@ -234,7 +234,7 @@ class PiggyBank extends Homey.App {
         room: device.zoneName,
         roomId: device.zone,
         memberOf: memberOfZones,
-        image: device.iconObj.url,
+        image: device.iconObj == null ? null : device.iconObj.url,
         onoff_cap: onoffCap,
         thermostat_cap: thermostatCap,
         use: useDevice
