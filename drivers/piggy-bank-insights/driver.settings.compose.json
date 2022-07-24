@@ -1,15 +1,34 @@
 [
-    {
-        "id": "Informer",
-        "type": "label",
-        "label": {
-            "en": "Use the app settings",
-            "no": "Bruk appens instillinger"
-        },
-        "value": "",
-        "hint": {
-            "en": "This device is just a window into the app. In order to access the full control panel please use the app settings instead.",
-            "no": "Denne enheten er bare et vindu inn i appen. Vennligst bruk app-innstillinger for å få full tilgang til hele kontrollpanelet."
-        }
-        }
+  {
+    "id": "refreshRate",
+    "type": "number",
+    "label": {
+      "en": "Refresh rate",
+      "no": "Oppdateringshastighet"
+    },
+    "value": 60,
+    "min": 5,
+    "max": 60,
+    "units": {
+      "en": "seconds",
+      "no": "sekunder"
+    },
+    "hint": {
+      "en": "Number of seconds between every time to fetch fresh data from the app.",
+      "no": "Antall sekunder mellom hver gang det skal hentes oppdaterte tall fra appen."
+    }
+  },
+  {
+    "id": "Informer",
+    "type": "label",
+    "label": {
+      "en": "Other settings",
+      "no": "Andre instillinger"
+    },
+    "value": "See app settings",
+    "hint": {
+      "en": "This device is just a window into the app. In order to access the full control panel please use the app settings instead.",
+      "no": "Denne enheten er bare et vindu inn i appen. Vennligst bruk app-innstillinger for å få full tilgang til hele kontrollpanelet."
+    }
+  }
 ]
