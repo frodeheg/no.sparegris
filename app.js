@@ -664,7 +664,7 @@ class PiggyBank extends Homey.App {
   getState() {
     return {
       power_last_hour: parseInt(this.__power_last_hour, 10),
-      power_estimated: parseInt(this.__power_estimated.toFixed(2), 10),
+      power_estimated: this.__power_estimated === undefined ? undefined : parseInt(this.__power_estimated.toFixed(2), 10),
       price_point: this.homey.settings.get('pricePoint'),
       operating_mode: this.homey.settings.get('operatingMode'),
       alarm_overshoot: this.__alarm_overshoot,

@@ -28,8 +28,10 @@ class MyDevice extends Device {
   setPollIntervalTime(newTime) {
     let myTime = +newTime; // Convert to number in case it is not
     if (typeof myTime !== 'number' || myTime < 5 || myTime > 60) {
+      this.log(`New poll time '${myTime}' was rejected`);
       myTime = DEFAULT_POLL_INTERVAL;
     }
+    this.log(`New poll time is: ${myTime}`);
     this.__pollIntervalTime = myTime * 1000; // Change from seconds to ms
   }
 
@@ -49,8 +51,8 @@ class MyDevice extends Device {
    * @returns {Promise<string|void>} return a custom message that will be displayed
    */
   async onSettings({ oldSettings, newSettings, changedKeys }) {
-    this.log('MyDevice settings where changed');
-    if ('refreshRate' in changedKeys) {
+    this.log(`MyDevice settings where changed: ${JSON.stringify(changedKeys)}`);
+    if (changedKeys.includes('refreshRate')) {
       this.setPollIntervalTime(newSettings['refreshRate']);
       // The new setting will be applied after next refresh
     }
