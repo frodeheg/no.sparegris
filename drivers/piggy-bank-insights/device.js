@@ -56,6 +56,15 @@ class MyDevice extends Device {
       this.setPollIntervalTime(newSettings['refreshRate']);
       // The new setting will be applied after next refresh
     }
+    if (changedKeys.includes('debugCap')) {
+      if (newSettings['debugCap'] === true) {
+        if (this.hasCapability('piggy_num_failures') === false) {
+          this.addCapability('piggy_num_failures');
+        } else if (this.hasCapability('piggy_num_failures') === true) {
+          this.removeCapability('piggy_num_failures');
+        }
+      }
+    }
   }
 
   /**
@@ -128,6 +137,21 @@ class MyDevice extends Device {
           default: /* Broken input should not happen */ break;
         }
       }
+
+      // Debug capabilities, so only update if they exist
+      if (this.hasCapability('piggy_num_failures') === true) {
+        this.setCapabilityValue('piggy_num_failures', piggyState.num_fail_on + piggyState.num_fail_off + piggyState.num_fail_temp);
+      }
+
+      // Other things to report:
+      // * 4: Average power used in every mode
+      // * 3: Average power used in every price pointupdateupdate
+      //      low_energy_energy_avg
+      //      norm_energy_energy_avg
+      //      high_energy_energy_avg
+      // * 3: Average price per price point
+      // * 1: Average power moved to lower price points
+      // * 1: Money spent by moving between price points
     } finally {
       this.intervalID = setTimeout(() => this.updateState(), this.__pollIntervalTime);
     }

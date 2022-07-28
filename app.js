@@ -29,6 +29,11 @@ const TURN_ON = 0;
 const TURN_OFF = 1;
 const DELTA_TEMP = 2;
 
+// Price points
+const PP_LOW = 0;
+const PP_NORM = 1;
+const PP_HIGH = 2;
+
 /**
  * Helper functions
  */
@@ -73,6 +78,7 @@ class PiggyBank extends Homey.App {
     this.homeyApi = new HomeyAPIApp({
       homey: this.homey
     });
+    this.statsInit();
 
     // Check that settings has been updated
     const maxPower = this.homey.settings.get('maxPowerList');
@@ -175,6 +181,7 @@ class PiggyBank extends Homey.App {
     if (this.__newHourID !== undefined) {
       clearTimeout(this.__newHourID);
     }
+    this.statsUnInit();
     this.log('PiggyBank has been uninitialized');
   }
 
@@ -237,7 +244,8 @@ class PiggyBank extends Homey.App {
         image: device.iconObj == null ? null : device.iconObj.url,
         onoff_cap: onoffCap,
         thermostat_cap: thermostatCap,
-        use: useDevice
+        use: useDevice,
+        nComError: 0 // Number of communication errors since last time it worked - Used to depriorotize devices so we don't get stuck in an infinite retry loop
       };
       relevantDevices[device.id] = relevantDevice;
     }
@@ -275,10 +283,14 @@ class PiggyBank extends Homey.App {
       return Promise.resolve();
     }
 
-    const device = await promiseDevice
-      .catch(err => {
-        this.log(`Ooops, ${String(err)}`); throw (err);
-      });
+    let device;
+    try {
+      device = await promiseDevice;
+    } catch (err) {
+      this.log(`Device not found? ${String(err)}`);
+      this.__deviceList[deviceId].nComError += 10; // Big error so wait more until retry than smaller errors
+      return Promise.resolve([false, false]); // The unhandled device is solved by the later nComError handling
+    }
     const frostList = this.homey.settings.get('frostList');
     const frostGuardActive = this.__deviceList[deviceId].thermostat_cap
       ? (device.capabilitiesObj['measure_temperature'].value < frostList[deviceId].minTemp) : false;
@@ -296,17 +308,22 @@ class PiggyBank extends Homey.App {
       this.log(`Turning on device: ${deviceName}`);
       return device.setCapabilityValue({ capabilityId: this.__deviceList[deviceId].onoff_cap, value: true })
         .then(() => {
+          this.__deviceList[deviceId].nComError = 0;
           // In case the device has a delayed temperature change action then change the temperature
           if (currentAction.delayTempChange) {
-            currentAction.delayTempChange = false;
             return device.setCapabilityValue({ capabilityId: 'target_temperature', value: currentAction.delayTempValue });
           }
           return Promise.resolve();
         })
         .then(() => {
+          currentAction.delayTempChange = false;
           this.__num_off_devices--; return [newState === TURN_ON, false];
         })
-        .catch(error => Promise.reject(error));
+        .catch(error => {
+          this.statsCountFailedTurnOn();
+          this.__deviceList[deviceId].nComError += 1;
+          return Promise.resolve([false, false]); // The unresolved part is solved by the later nComError handling
+        });
     } // ignore case !wantOn && isOn
 
     if (!newStateOn && isOn) {
@@ -315,9 +332,14 @@ class PiggyBank extends Homey.App {
       this.log(`Turning off device: ${deviceName}`);
       return device.setCapabilityValue({ capabilityId: this.__deviceList[deviceId].onoff_cap, value: false })
         .then(() => {
+          this.__deviceList[deviceId].nComError = 0;
           this.__num_off_devices++; return [newState === TURN_OFF, false];
         })
-        .catch(error => Promise.reject(error));
+        .catch(error => {
+          this.statsCountFailedTurnOff();
+          this.__deviceList[deviceId].nComError += 1;
+          return Promise.resolve([false, false]); // The unresolved part is solved by the later nComError handling
+        });
     }
     // Nothing happened
     return Promise.resolve([newStateOn === (newState === TURN_ON), isOn === (newState === TURN_ON)]);
@@ -344,6 +366,10 @@ class PiggyBank extends Homey.App {
       const energyUsed = (this.__current_power * lapsedTime) / (1000 * 60 * 60);
       this.__accum_energy += energyUsed;
       this.__reserved_energy = 0;
+      if (this.__power_last_hour !== undefined) {
+        // The first time the data is not for a full hour, so skip adding to statistics
+        this.statsSetLastHourEnergy(this.__accum_energy);
+      }
       this.__power_last_hour = this.__accum_energy;
       this.log(`Hour finalized: ${String(this.__accum_energy)} Wh`);
     }
@@ -469,7 +495,7 @@ class PiggyBank extends Homey.App {
         }
         return Promise.resolve(allOk);
       })
-      .catch(error => Promise.reject(error));
+      .catch(error => Promise.reject(new Error(`Unknown error: ${error}`))); // Should never happen
   }
 
   /**
@@ -477,6 +503,7 @@ class PiggyBank extends Homey.App {
    */
   async onPricePointUpdate(newMode) {
     const oldPricePoint = this.homey.settings.get('pricePoint');
+    this.statsSetLastHourPricePoint(oldPricePoint);
     if (newMode === oldPricePoint) {
       return Promise.resolve();
     }
@@ -492,7 +519,14 @@ class PiggyBank extends Homey.App {
     const currentActions = actionLists[newMode];
     const promises = [];
     for (const deviceId in currentActions) {
-      const device = await this.homeyApi.devices.getDevice({ id: deviceId });
+      let device;
+      try {
+        device = await this.homeyApi.devices.getDevice({ id: deviceId });
+      } catch (error) {
+        this.__deviceList[deviceId].nComError += 10; // Big error so wait more until retry than smaller errors
+        promises.push(Promise.resolve([false, false])); // The unhandled device is solved by the later nComError handling
+        continue; // Skip this device
+      }
       switch (currentActions[deviceId].operation) {
         case TURN_ON:
           promises.push(this.changeDeviceState(deviceId, TURN_ON));
@@ -507,10 +541,17 @@ class PiggyBank extends Homey.App {
           const newTemp = oldTemp + deltaTemp;
           const isOn = await (this.__deviceList[deviceId].onoff_cap === undefined) ? undefined : device.capabilitiesObj[this.__deviceList[deviceId].onoff_cap].value;
           if (isOn) {
-            currentActions[deviceId].delayTempChange = false;
             promises.push(device.setCapabilityValue({ capabilityId: 'target_temperature', value: newTemp })
-              .then(() => [true, false])
-              .catch(error => Promise.reject(error)));
+              .then(() => {
+                currentActions[deviceId].delayTempChange = false;
+                this.__deviceList[deviceId].nComError = 0;
+                return Promise.resolve([true, false]);
+              }).catch(error => {
+                this.statsCountFailedTempChange();
+                currentActions[deviceId].delayTempChange = true;
+                this.__deviceList[deviceId].nComError += 1;
+                return Promise.resolve([false, false]); // The unresolved part is solved by the later nComError handling
+              }));
           } else {
             // Delay the action until the device turns on
             currentActions[deviceId].delayTempChange = true;
@@ -532,7 +573,7 @@ class PiggyBank extends Homey.App {
         }
         return Promise.resolve(allOk);
       })
-      .catch(error => Promise.reject(error));
+      .catch(error => Promise.reject(new Error(`Unknown error: ${error}`)));
   }
 
   /**
@@ -565,13 +606,18 @@ class PiggyBank extends Homey.App {
     const currentMode = this.homey.settings.get('operatingMode');
     const currentModeList = modeList[currentMode - 1];
     const numDevices = currentModeList.length;
+    const reorderedModeList = [...currentModeList]; // Make sure all devices with communication errors are handled last (e.g. in case nothing else was possible)
+    reorderedModeList.sort((a, b) => { // Err last
+      return this.__deviceList[a.id].nComError
+        - this.__deviceList[b.id].nComError;
+    });
     // Turn on devices from top down in the priority list
     // Only turn on one device at the time
     let numForcedOffDevices = 0;
     for (let idx = 0; idx < numDevices; idx++) {
-      const deviceId = currentModeList[idx].id;
+      const deviceId = reorderedModeList[idx].id;
       // Check if the on state complies with the settings
-      switch (currentModeList[idx].operation) {
+      switch (reorderedModeList[idx].operation) {
         case CONTROLLED:
         case ALWAYS_ON:
           // Always on is overridden by price actions
@@ -585,7 +631,7 @@ class PiggyBank extends Homey.App {
               numForcedOffDevices++;
             }
           } catch (err) {
-            return Promise.reject(err);
+            return Promise.reject(new Error(`Unknown error: ${err}`));
           }
           break;
         case ALWAYS_OFF:
@@ -613,11 +659,16 @@ class PiggyBank extends Homey.App {
     const currentMode = this.homey.settings.get('operatingMode');
     const currentModeList = modeList[currentMode - 1];
     const numDevices = currentModeList.length;
+    const reorderedModeList = [...currentModeList]; // Make sure all devices with communication errors are handled last (e.g. in case nothing else was possible)
+    reorderedModeList.sort((a, b) => { // Err first
+      return this.__deviceList[b.id].nComError
+        - this.__deviceList[a.id].nComError;
+    });
     // Turn off devices from bottom and up in the priority list
     // Only turn off one device at the time
     let numForcedOnDevices = 0;
     for (let idx = numDevices - 1; idx >= 0; idx--) {
-      const deviceId = currentModeList[idx].id;
+      const deviceId = reorderedModeList[idx].id;
       // Try to turn the device off regardless, it might be blocked by the state
       try {
         const [success, noChange] = await this.changeDeviceState(deviceId, TURN_OFF, idx);
@@ -629,7 +680,7 @@ class PiggyBank extends Homey.App {
           numForcedOnDevices++;
         }
       } catch (err) {
-        return Promise.reject(err);
+        return Promise.reject(new Error(`Unknown error: ${err}`));
       }
     }
 
@@ -659,6 +710,109 @@ class PiggyBank extends Homey.App {
   }
 
   /** ****************************************************************************************************
+   * Statistics
+   ** ****************************************************************************************************
+   * Tracked date:
+   * - Power last hour
+   * - Price last hour
+   * - Price point last hour
+   * - Number of failed temp settings
+   * - Number of failed turn on's
+   * - Number of failed turn off's
+   * Output data:
+   * - Number of hours with low/high/normal price => Percentage in each mode
+   * - Average power for low/hih/normal price => Power moved from high to low price
+   * - Average Price for low/high/normal => Money saved moving power
+   */
+
+  /**
+   * Reset stats - called on app init
+   */
+  statsInit() {
+    this.__stats_failed_turn_on = 0;
+    this.__stats_failed_turn_off = 0;
+    this.__stats_failed_temp_change = 0;
+    this.__statsIntervalID = undefined;
+    this.__stats_energy = undefined;
+    this.__stats_price = undefined;
+    this.__stats_price_point = undefined;
+    this.__stats_low_energy = undefined;
+    this.__stats_norm_energy = undefined;
+    this.__stats_high_energy = undefined;
+    await this.statsNewHour();
+  }
+
+  /**
+   * Deinitializes the stats
+   */
+  statsUnInit() {
+    if (this.__statsIntervalID !== undefined) {
+      clearInterval(this.__statsIntervalID);
+    }
+  }
+
+  /**
+   * Various statistic counting functions
+   */
+  statsCountFailedTurnOn() {
+    this.__stats_failed_turn_on += 1;
+  }
+
+  statsCountFailedTurnOff() {
+    this.__stats_failed_turn_off += 1;
+  }
+
+  statsCountFailedTempChange() {
+    this.__stats_failed_temp_change += 1;
+  }
+
+  statsSetLastHourEnergy(energy) {
+    this.__stats_energy_time = new Date();
+    this.__stats_energy = energy;
+  }
+
+  statsSetLastHourPrice(price) {
+    this.__stats_price_time = new Date();
+    this.__stats_price = price;
+  }
+
+  statsSetLastHourPricePoint(pp) {
+    this.__starts_price_point_time = new Date();
+    this.__stats_price_point = pp;
+  }
+
+  statsNewHour() {
+    const now = new Date();
+
+    // Check that all new stats has been reported
+    const timeSinceEnergy = this.__stats_energy_time - now;
+    const timeSincePrice = this.__stats_price_time - now;
+    const tenMinutes = 10 * 60 * 1000;
+    if ((timeSinceEnergy > tenMinutes)
+      || (timeSincePrice > tenMinutes)) {
+      return;
+    }
+
+    let pricePointLastHour;
+    const timeSincePricePoint = this.__starts_price_point_time - now;
+    if (timeSincePricePoint > tenMinutes) {
+      pricePointLastHour = this.__stats_price_point;
+    } else {
+      pricePointLastHour = +this.homey.settings.get('pricePoint');
+    }
+    switch (pricePointLastHour) {
+      case PP_LOW: this.__stats_low_energy = (this.__stats_low_energy === undefined) ? this.__stats_energy : ((this.__stats_low_energy * 99 + this.__stats_energy) / 100); break;
+      case PP_NORM: this.__stats_norm_energy = (this.__stats_norm_energy === undefined) ? this.__stats_energy : ((this.__stats_norm_energy * 99 + this.__stats_energy) / 100); break;
+      case PP_HIGH: this.__stats_high_energy = (this.__stats_high_energy === undefined) ? this.__stats_energy : ((this.__stats_high_energy * 99 + this.__stats_energy) / 100); break;
+      default:
+    }
+
+    // Start timer to start exactly 5 minutes after the next hour starts
+    const timeToNextTrigger = this.timeToNextHour(now) + 5 * 60 * 1000;
+    this.__statsIntervalID = setTimeout(() => this.statsNewHour(), timeToNextTrigger);
+  }
+
+  /** ****************************************************************************************************
    *  DEVICE API's
    ** **************************************************************************************************** */
   getState() {
@@ -671,7 +825,13 @@ class PiggyBank extends Homey.App {
       free_capacity: this.__free_capacity,
       num_devices: Object.keys(this.homey.settings.get('frostList')).length,
       num_devices_off: this.__num_off_devices,
-      safety_power: parseInt(this.homey.settings.get('safetyPower'), 10)
+      safety_power: parseInt(this.homey.settings.get('safetyPower'), 10),
+      num_fail_on: this.__stats_failed_turn_on,
+      num_fail_off: this.__stats_failed_turn_off,
+      num_fail_temp: this.__stats_failed_temp_change,
+      low_energy_energy_avg: this.__stats_low_energy,
+      norm_energy_energy_avg: this.__stats_norm_energy,
+      high_energy_energy_avg: this.__stats_high_energy
     };
   }
 

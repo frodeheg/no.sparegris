@@ -19,6 +19,15 @@
     }
   },
   {
+    "id": "debugCap",
+    "type": "checkbox",
+    "label": {
+      "en": "Show debug capabilities",
+      "no": "Vis debug informasjon"
+    },
+    "value": false
+  },
+  {
     "id": "Informer",
     "type": "label",
     "label": {
