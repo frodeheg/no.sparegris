@@ -739,7 +739,7 @@ class PiggyBank extends Homey.App {
     this.__stats_low_energy = undefined;
     this.__stats_norm_energy = undefined;
     this.__stats_high_energy = undefined;
-    await this.statsNewHour();
+    this.statsNewHour();
   }
 
   /**
