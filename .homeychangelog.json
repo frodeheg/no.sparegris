@@ -70,5 +70,8 @@
   },
   "0.5.8": {
     "en": "Fixed a crash in case of restart"
+  },
+  "0.5.9": {
+    "en": "Added debug capability and improved error handling for failed signals"
   }
 }
