@@ -82,5 +82,8 @@
   },
   "0.5.12": {
     "en": "Added community forum link"
+  },
+  "0.5.13": {
+    "en": "Fixed a bug that prevented new debug capabilities to show up if debug was already enabled in previous app version."
   }
 }
