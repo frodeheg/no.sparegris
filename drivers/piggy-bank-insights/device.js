@@ -12,13 +12,29 @@ class MyDevice extends Device {
    * onInit is called when the device is initialized.
    */
   async onInit() {
-    this.homey.app.updateLog('MyDevice has been initialized', 1);
     this.intervalID = undefined;
 
     // Fetch poll interval and set up timer
     const settings = this.getSettings();
     this.setPollIntervalTime(settings['refreshRate']);
     this.intervalID = setTimeout(() => this.updateState(), this.__pollIntervalTime);
+    updateCapabilities(settings);
+    this.homey.app.updateLog('MyDevice has been initialized', 1);
+  }
+
+  /**
+   * Update which capabilities to show
+   */
+  updateCapabilities(settings) {
+    if (settings['debugCap'] === true) {
+      if (this.hasCapability('piggy_num_failures') === false) {
+        this.addCapability('piggy_num_failures');
+      }
+    } else if (settings['debugCap'] === false) {
+      if (this.hasCapability('piggy_num_failures') === true) {
+        this.removeCapability('piggy_num_failures');
+      }
+    }
   }
 
   /**
@@ -57,15 +73,7 @@ class MyDevice extends Device {
       // The new setting will be applied after next refresh
     }
     if (changedKeys.includes('debugCap')) {
-      if (newSettings['debugCap'] === true) {
-        if (this.hasCapability('piggy_num_failures') === false) {
-          this.addCapability('piggy_num_failures');
-        }
-      } else if (newSettings['debugCap'] === false) {
-        if (this.hasCapability('piggy_num_failures') === true) {
-          this.removeCapability('piggy_num_failures');
-        }
-      }
+      updateCapabilities(newSettings);
     }
   }
 
