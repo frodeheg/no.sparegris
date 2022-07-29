@@ -7,6 +7,7 @@
   "version": "0.5.11",
   "compatibility": ">=5.0.0",
   "sdk": 3,
+  "homeyCommunityTopicId": 66677,
   "source": "https://github.com/frodeheg/no.sparegris",
   "brandColor": "#ff00ff",
   "platforms": [
