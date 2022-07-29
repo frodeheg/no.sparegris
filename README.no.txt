@@ -14,6 +14,7 @@ Bruksanvisning:
 - Lagre
 - Spar over 1000 kroner i året på effekttariffen.
 - Eksperimenter med innstillingene og flytkort i henhold til anbefalingene under for å få mest mulig ut av appen.
+- Installer enheten "sparegris innsikt" dersom du er interessert  i statistikk (ikke påkrevd)
 
 Viktig:
 - Alle enheter som kontrolleres av appen må ikke slås på av andre kilder, ellers oppstår konflikter og målverdi for effekttariff kan feile.
