@@ -79,5 +79,8 @@
   },
   "0.5.11": {
     "en": "Added logging"
+  },
+  "0.5.12": {
+    "en": "Added community forum link"
   }
 }
