@@ -14,11 +14,18 @@
 // TODO
 
 const Homey = require('homey');
+const nodemailer = require('nodemailer');
+const { Log } = require('homey-log');
 const { Mutex } = require('async-mutex');
 const { HomeyAPIApp } = require('homey-api');
 const { resolve } = require('path');
 
 const WAIT_TIME_TO_POWER_ON_AFTER_POWEROFF = 5 * 60 * 1000;
+
+// Logging classes
+const LOG_ERROR = 0;
+const LOG_INFO = 1;
+const LOG_DEBUG = 2;
 
 // Operations for controlled devices
 const ALWAYS_OFF = 0;
@@ -60,6 +67,7 @@ class PiggyBank extends Homey.App {
    * onInit is called when the app is initialized.
    */
   async onInit() {
+    this.logInit();
     this.__intervalID = undefined;
     this.__newHourID = undefined;
     this.__current_power = undefined;
@@ -94,7 +102,7 @@ class PiggyBank extends Homey.App {
     const cardActionEnergyUpdate = this.homey.flow.getActionCard('update-meter-energy'); // Marked as deprecated so nobody will see it yet
     cardActionEnergyUpdate.registerRunListener(async args => {
       const newTotal = args.TotalEnergyUsage;
-      this.log(`Total energy changed to: ${String(newTotal)}`);
+      this.updateLog(`Total energy changed to: ${String(newTotal)}`, LOG_INFO);
     });
     const cardActionPowerUpdate = this.homey.flow.getActionCard('update-meter-power');
     cardActionPowerUpdate.registerRunListener(async args => {
@@ -128,7 +136,7 @@ class PiggyBank extends Homey.App {
       this.onMonitor();
     }, 1000 * 60 * 5); */
 
-    this.log('PiggyBank has been initialized');
+    this.updateLog('PiggyBank has been initialized', LOG_INFO);
     return Promise.resolve();
   }
 
@@ -182,7 +190,7 @@ class PiggyBank extends Homey.App {
       clearTimeout(this.__newHourID);
     }
     this.statsUnInit();
-    this.log('PiggyBank has been uninitialized');
+    this.updateLog('PiggyBank has been uninitialized', LOG_INFO);
   }
 
   /**
@@ -201,10 +209,10 @@ class PiggyBank extends Homey.App {
       // has only been tested on SensiboSky devices so there might be problems with other devices with custom onoff capabilities
       const onoffCap = device.capabilities.includes('onoff') ? 'onoff' : device.capabilities.find(cap => cap.includes('onoff'));
       if (onoffCap === undefined) {
-        this.log(`ignoring: ${device.name}`);
+        this.updateLog(`ignoring: ${device.name}`, LOG_DEBUG);
         if (device.name === 'Varmepumpe') {
-          this.log('Capabilities ======');
-          this.log(String(device.capabilities));
+          this.updateLog('Capabilities ======', LOG_DEBUG);
+          this.updateLog(String(device.capabilities), LOG_DEBUG);
         }
         continue;
       }
@@ -232,7 +240,7 @@ class PiggyBank extends Homey.App {
         zoneId = zones[zoneId].parent;
       }
 
-      this.log(`Device: ${String(priority)} ${device.id} ${device.name} ${device.class}`);
+      this.updateLog(`Device: ${String(priority)} ${device.id} ${device.name} ${device.class}`, LOG_DEBUG);
       const thermostatCap = device.capabilities.includes('target_temperature')
         && device.capabilities.includes('measure_temperature');
       const relevantDevice = {
@@ -287,7 +295,7 @@ class PiggyBank extends Homey.App {
     try {
       device = await promiseDevice;
     } catch (err) {
-      this.log(`Device not found? ${String(err)}`);
+      this.updateLog(`Device not found? ${String(err)}`, LOG_ERROR);
       this.__deviceList[deviceId].nComError += 10; // Big error so wait more until retry than smaller errors
       return Promise.resolve([false, false]); // The unhandled device is solved by the later nComError handling
     }
@@ -305,7 +313,7 @@ class PiggyBank extends Homey.App {
     if (newStateOn && !isOn) {
       // Turn on
       const deviceName = this.__deviceList[deviceId].name;
-      this.log(`Turning on device: ${deviceName}`);
+      this.updateLog(`Turning on device: ${deviceName}`, LOG_INFO);
       return device.setCapabilityValue({ capabilityId: this.__deviceList[deviceId].onoff_cap, value: true })
         .then(() => {
           this.__deviceList[deviceId].nComError = 0;
@@ -322,6 +330,7 @@ class PiggyBank extends Homey.App {
         .catch(error => {
           this.statsCountFailedTurnOn();
           this.__deviceList[deviceId].nComError += 1;
+          this.updateLog(`Failed to turn on/set temperature for device ${deviceName}, will retry later`, LOG_ERROR);
           return Promise.resolve([false, false]); // The unresolved part is solved by the later nComError handling
         });
     } // ignore case !wantOn && isOn
@@ -329,7 +338,7 @@ class PiggyBank extends Homey.App {
     if (!newStateOn && isOn) {
       // Turn off
       const deviceName = this.__deviceList[deviceId].name;
-      this.log(`Turning off device: ${deviceName}`);
+      this.updateLog(`Turning off device: ${deviceName}`, LOG_INFO);
       return device.setCapabilityValue({ capabilityId: this.__deviceList[deviceId].onoff_cap, value: false })
         .then(() => {
           this.__deviceList[deviceId].nComError = 0;
@@ -338,6 +347,7 @@ class PiggyBank extends Homey.App {
         .catch(error => {
           this.statsCountFailedTurnOff();
           this.__deviceList[deviceId].nComError += 1;
+          this.updateLog(`Failed to turn off device ${deviceName}, will try to turn off other devices instead.`, LOG_ERROR);
           return Promise.resolve([false, false]); // The unresolved part is solved by the later nComError handling
         });
     }
@@ -371,7 +381,7 @@ class PiggyBank extends Homey.App {
         this.statsSetLastHourEnergy(this.__accum_energy);
       }
       this.__power_last_hour = this.__accum_energy;
-      this.log(`Hour finalized: ${String(this.__accum_energy)} Wh`);
+      this.updateLog(`Hour finalized: ${String(this.__accum_energy)} Wh`, LOG_INFO);
     }
     this.__current_power_time = now;
     this.__accum_energy = 0;
@@ -379,14 +389,14 @@ class PiggyBank extends Homey.App {
     // Start timer to start exactly when a new hour starts
     const timeToNextTrigger = this.timeToNextHour(now);
     this.__newHourID = setTimeout(() => this.onNewHour(), timeToNextTrigger);
-    this.log(`New hour in ${String(timeToNextTrigger)} ms (now is: ${String(now)})`);
+    this.updateLog(`New hour in ${String(timeToNextTrigger)} ms (now is: ${String(now)})`, LOG_DEBUG);
   }
 
   /**
    * onMonitor runs regurarly to monitor the actual power usage
    */
   async onMonitor() {
-    this.log('onMonitor()');
+    this.updateLog('onMonitor()', LOG_DEBUG);
     // TBD additional monitoring will be added here later
   }
 
@@ -422,12 +432,12 @@ class PiggyBank extends Homey.App {
     const maxPower = trueMaxPower - errorMarginWatts;
     const safetyPower = this.homey.settings.get('safetyPower');
 
-    this.log(`${'onPowerUpdate: '
+    this.updateLog(`${'onPowerUpdate: '
       + 'Using: '}${String(newPower)}W, `
       + `Accum: ${String(this.__accum_energy.toFixed(2))} Wh, `
       + `Limit: ${String(maxPower)} Wh, `
       + `Reserved: ${String(Math.ceil(this.__reserved_energy + safetyPower))}W, `
-      + `(Estimated end: ${String(this.__power_estimated.toFixed(2))})`);
+      + `(Estimated end: ${String(this.__power_estimated.toFixed(2))})`, LOG_DEBUG);
 
     // Do not attempt to control any devices if the app is disabled
     if (this.homey.settings.get('operatingMode') === 0) { // App is disabled
@@ -458,7 +468,7 @@ class PiggyBank extends Homey.App {
    * onModeUpdate is called whenever the operation mode is changed
    */
   async onModeUpdate(newMode) {
-    this.log(`Changing the current mode to: ${String(newMode)}`);
+    this.updateLog(`Changing the current mode to: ${String(newMode)}`, LOG_INFO);
     this.homey.settings.set('operatingMode', newMode);
   }
 
@@ -466,7 +476,7 @@ class PiggyBank extends Homey.App {
    * onZoneUpdate is called whenever a zone is turned on/off
    */
   async onZoneUpdate(zone, enabled) {
-    this.log(`Changing zone ${zone.name} (ID: ${zone.id}) to ${String(enabled)}`);
+    this.updateLog(`Changing zone ${zone.name} (ID: ${zone.id}) to ${String(enabled)}`, LOG_INFO);
     let activeZones = this.homey.settings.get('zones');
     if (activeZones === null) {
       activeZones = {};
@@ -507,7 +517,7 @@ class PiggyBank extends Homey.App {
     if (newMode === oldPricePoint) {
       return Promise.resolve();
     }
-    this.log(`Changing the current price point to: ${String(newMode)}`);
+    this.updateLog(`Changing the current price point to: ${String(newMode)}`, LOG_INFO);
     this.homey.settings.set('pricePoint', newMode);
 
     const modeList = this.homey.settings.get('modeList');
@@ -580,7 +590,7 @@ class PiggyBank extends Homey.App {
    * onSafetyPowerUpdate is called whenever the safety power is changed
    */
   async onSafetyPowerUpdate(newVal) {
-    this.log(`Changing the current safety power to: ${String(newVal)}`);
+    this.updateLog(`Changing the current safety power to: ${String(newVal)}`, LOG_INFO);
     this.homey.settings.set('safetyPower', newVal);
   }
 
@@ -597,10 +607,11 @@ class PiggyBank extends Homey.App {
     this.__last_power_on_time = new Date();
     const timeSincePowerOff = this.__last_power_on_time - this.__last_power_off_time;
     if (timeSincePowerOff < WAIT_TIME_TO_POWER_ON_AFTER_POWEROFF) {
-      this.log(`Could use ${String(morePower)} W more power but was aborted due to recent turn off activity. Remaining wait = ${String((5 * 60 * 1000 - timeSincePowerOff) / 1000)} s`);
+      this.updateLog(`Could use ${String(morePower)} W more power but was aborted due to recent turn off activity. Remaining wait = ${String((5 * 60 * 1000 - timeSincePowerOff) / 1000)} s`,
+        LOG_DEBUG);
       return Promise.resolve();
     }
-    this.log(`Can use ${String(morePower)}W more power`);
+    this.updateLog(`Can use ${String(morePower)}W more power`, LOG_DEBUG);
 
     const modeList = this.homey.settings.get('modeList');
     const currentMode = this.homey.settings.get('operatingMode');
@@ -686,7 +697,7 @@ class PiggyBank extends Homey.App {
 
     // If this point was reached then all devices are off and still above power limit
     const errorString = `Failed to reduce power usage by ${String(lessPower)}W (number of forced on devices: ${String(numForcedOnDevices)})`;
-    this.log(errorString);
+    this.updateLog(errorString, LOG_ERROR);
     // Alert the user, but not if first hour since app was started or we are within the error margin. Only send one alert before it has been resolved
     const firstHourEver = this.__reserved_energy > 0;
     if (!firstHourEver && (lessPower > errorMarginWatts) && !this.__alarm_overshoot) {
@@ -810,6 +821,145 @@ class PiggyBank extends Homey.App {
     // Start timer to start exactly 5 minutes after the next hour starts
     const timeToNextTrigger = this.timeToNextHour(now) + 5 * 60 * 1000;
     this.__statsIntervalID = setTimeout(() => this.statsNewHour(), timeToNextTrigger);
+  }
+
+  /** ****************************************************************************************************
+   *  LOGGING
+   ** **************************************************************************************************** */
+
+  logInit() {
+    this.homeyLog = new Log({ homey: this.homey });
+    // Reset logging
+    this.homey.settings.set('diagLog', '');
+    this.homey.settings.set('sendLog', '');
+
+    // When sendLog is clicked, send the log
+    this.homey.settings.on('set', setting => {
+      if (setting === 'diagLog') return;
+      this.log(`Setting "${setting}" has changed`);
+      const diagLog = this.homey.settings.get('diagLog');
+      const sendLog = this.homey.settings.get('sendLog');
+      if (setting === 'sendLog' && (sendLog === 'send') && (diagLog !== '')) {
+        this.sendLog();
+      }
+    });
+  }
+
+  updateLog(newMessage, ignoreSetting = LOG_INFO) {
+    let logLevel = this.homey.settings.get('logLevel');
+    if (!logLevel || logLevel === '') {
+      logLevel = 1;
+    }
+    if (ignoreSetting > logLevel) {
+      return;
+    }
+
+    this.log(newMessage);
+
+    let oldText = this.homey.settings.get('diagLog') || '';
+    if (oldText.length > 10000) {
+      // Remove the first 5000 characters.
+      oldText = oldText.substring(5000);
+      const n = oldText.indexOf('\n');
+      if (n >= 0) {
+        // Remove up to and including the first \n so the log starts on a whole line
+        oldText = oldText.substring(n + 1);
+      }
+    }
+
+    const nowTime = new Date(Date.now());
+
+    if (oldText.length === 0) {
+      oldText = 'Log ID: ';
+      oldText += nowTime.toJSON();
+      oldText += '\r\n';
+      oldText += 'App version ';
+      oldText += Homey.manifest.version;
+      oldText += '\r\n\r\n';
+      this.logLastTime = nowTime;
+    }
+
+    if (this.logLastTime === undefined) {
+      this.logLastTime = nowTime;
+    }
+
+    // const dt = new Date(nowTime.getTime() - this.logLastTime.getTime());
+    this.logLastTime = nowTime;
+
+    oldText += '+';
+    oldText += nowTime.getHours();
+    oldText += ':';
+    oldText += nowTime.getMinutes();
+    oldText += ':';
+    oldText += nowTime.getSeconds();
+    oldText += '.';
+
+    const milliSeconds = nowTime.getMilliseconds().toString();
+    if (milliSeconds.length === 2) {
+      oldText += '0';
+    } else if (milliSeconds.length === 1) {
+      oldText += '00';
+    }
+
+    oldText += milliSeconds;
+    oldText += ': ';
+    oldText += newMessage;
+    oldText += '\r\n';
+
+    this.homey.settings.set('diagLog', oldText);
+    this.homeyLog.setExtra({
+      diagLog: this.homey.settings.get('diagLog')
+    });
+    this.homey.settings.set('sendLog', '');
+  }
+
+  async sendLog() {
+    let tries = 5;
+
+    while (tries-- > 0) {
+      try {
+        this.updateLog('Sending log', LOG_ERROR);
+        // create reusable transporter object using the default SMTP transport
+        const transporter = nodemailer.createTransport(
+          {
+            host: Homey.env.MAIL_HOST, // Homey.env.MAIL_HOST,
+            port: 587,
+            ignoreTLS: false,
+            secure: false, // true for 465, false for other ports
+            auth:
+            {
+              user: Homey.env.MAIL_USER, // generated ethereal user
+              pass: Homey.env.MAIL_SECRET // generated ethereal password
+            },
+            tls:
+            {
+              // do not fail on invalid certs
+              rejectUnauthorized: false
+            }
+          }
+        );
+
+        // send mail with defined transport object
+        const info = await transporter.sendMail(
+          {
+            from: `"Homey User" <${Homey.env.MAIL_USER}>`, // sender address
+            to: Homey.env.MAIL_RECIPIENT, // list of receivers
+            subject: 'Sector Alarm log', // Subject line
+            text: this.homey.settings.get('diagLog'), // plain text body
+          },
+        );
+
+        this.updateLog(`Message sent: ${info.messageId}`, LOG_INFO);
+
+        // Preview only available when sending through an Ethereal account
+        this.log('Preview URL: ', nodemailer.getTestMessageUrl(info));
+        return '';
+      } catch (err) {
+        this.updateLog(`Send log error: ${err.stack}`, LOG_ERROR);
+      }
+    }
+    this.updateLog('Send log FAILED', LOG_ERROR);
+    return '';
   }
 
   /** ****************************************************************************************************

@@ -8,7 +8,7 @@ class MyDriver extends Driver {
    * onInit is called when the driver is initialized.
    */
   async onInit() {
-    this.log('Piggy Bank Insights has been initialized');
+    this.homey.app.updateLog('Piggy Bank Insights has been initialized', 1);
   }
 
   /**

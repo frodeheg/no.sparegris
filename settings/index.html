@@ -467,6 +467,7 @@
           </tr>
         </table>
         <p id="mainFuseHint" class="hint" data-i18n="settings.global.mainFuseHint">global.mainFuseHint</p>
+        <a href="#ShowLog" data-i18n="settings.log.show" onclick="changeTab(event, 'logPage');return false;">log.show</a>
       </fieldset>
       <fieldset>
         <legend for="highPriDevices"><div class="blockHeader" data-i18n="settings.global.controllableDevices">global.controllableDevices</div> 
@@ -480,6 +481,26 @@
     </div>
     <!-- Global page end -->
     
+    <!-- Log page -->
+    <div id="logPage" class="tabcontent">
+      <fieldset>
+        <legend data-i18n="settings.log.header">log.header</legend>
+          <label for="logLevel"><span data-i18n="settings.log.level">log.level</span>:</label>
+          <select id="logLevel">
+            <option value=0 data-i18n="settings.log.error">log.error</option>
+            <option value=1 data-i18n="settings.log.basic">log.basic</option>
+            <option value=2 data-i18n="settings.log.full">log.full</option>
+          </select>
+          <p>
+            <button id="clearLog"><span data-i18n="settings.ClearLog"></span>Clear</button>
+            <button id="sendLog"><span data-i18n="settings.SendLog"></span>Send</button>
+          </p>
+            <textarea id="diagLog"></textarea>
+          <a href="#ExitLog" data-i18n="settings.log.exit" onclick="changeTab(event, 'globalPage');return false;">log.exit</a>
+      </fieldset>
+    </div>
+    <!-- Log page end -->
+
     <!-- Price page -->
     <div id="pricePage" class="tabcontent">
       <fieldset>
@@ -628,6 +649,14 @@
     <button id="save" class="right" data-i18n="settings.saveButton">.saveButton</button>
 
     <script type="text/javascript">
+
+      // -- Log page -- //
+      var diagLogElement = document.getElementById('diagLog');
+      var logLevelElement = document.getElementById('logLevel');
+      var clearLogElement = document.getElementById('clearLog');
+      var sendLogElement = document.getElementById('sendLog');
+
+      // Load control
       var operatingModeLoaded = false;
       var errorMarginLoaded = false;
       var safetyPowerLoaded = false;
@@ -640,6 +669,7 @@
       var frostListLoaded = false;
       var zoneListLoaded = false;
       var mainFuseLoaded = false;
+
       // Called whenever things has been loaded
       function checkLoadingDone() {
         var loadElement = document.getElementById("loadingText");
@@ -875,6 +905,45 @@
           Homey.alert(Homey.__("settings.alert.settingssaved"));
         });
 
+        // -- Log page -- //
+        Homey.on('settings.set', function () {
+          Homey.get('logLevel', function (err, logLevel) {
+            if (err) logLevel = 1; //Homey.alert(err);
+            if (!logLevel || logLevel === ''){
+              logLevel = 1;
+            }
+            logLevelElement.value = logLevel;
+          });
+
+          Homey.get('diagLog', function (err, diagLog) {
+            if (err) diagLog = ""; //Homey.alert(err);
+            diagLogElement.value = diagLog;
+          });
+        });
+
+        logLevelElement.addEventListener('change', function (e) {
+          Homey.set('logLevel', logLevelElement.value, function (err) {
+            //if (err) return Homey.alert(err);
+          });
+        });
+
+        clearLogElement.addEventListener('click', function (e) {
+          Homey.set('diagLog', "", function (err) {
+            //if (err) return Homey.alert(err);
+          });
+          diagLogElement.value = "";
+        });
+
+        sendLogElement.addEventListener('click', function (e) {
+          Homey.confirm("Send the log contents to the developer?", null, function (e, ok) {
+            if (ok) {
+              Homey.set('sendLog', "send", function (err) {
+                //if (err) return Homey.alert(err);
+              });
+            }
+          });
+        });
+
         // Tell Homey we're ready to be displayed
         Homey.ready();
       }
@@ -976,22 +1045,22 @@
         document.getElementById(tabPage).style.display = "block";
         if (evt) evt.currentTarget.className += " active";
 
-        /*if (tabPage == 'logPage') {
+        if (tabPage == 'logPage') {
           // Refresh the log data
-          Homey.get('logLevel', function (err, logLevel) {
+          /*Homey.get('logLevel', function (err, logLevel) {
             if (err) logLevel = 1; //Homey.alert(err);
             logLevelElement.value = logLevel;
           });
 
           Homey.get('diagLog', function (err, diagLog) {
-            if (err) diagLog = ""; //Homey.alert(err);
+            if (err) diagLog = "Error fetching log"; //Homey.alert(err);
             diagLogElement.value = diagLog;
-          });
+          });*/
 
           // Make the log text area fill the page
-          diagLogElement.setAttribute('cols', diagLogElement.parentElement.clientWidth / 8);
-          diagLogElement.style.height = (window.innerHeight - diagLogElement.offsetTop - 40) + 'px';
-        }*/
+          diagLogElement.setAttribute('cols', (diagLogElement.parentElement.clientWidth-20) / 8);
+          diagLogElement.style.height = (window.innerHeight - diagLogElement.offsetTop - 120) + 'px';
+        }
       };
 
       // For testing only -

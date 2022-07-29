@@ -129,6 +129,15 @@
     "alert": {
       "settingssaved": "Endringene har blitt lagret.",
       "leavepage": "Er du sikker på at du vil forlate siden?"
+    },
+    "log": {
+      "show": "Vis logg",
+      "header": "Logg",
+      "exit": "Tilbake",
+      "level": "Vis hendelser",
+      "error": "Bare feil",
+      "basic": "Basisinformasjon",
+      "full": "All informasjon"
     }
   },
   "newdevice" : {

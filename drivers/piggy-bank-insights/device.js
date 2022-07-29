@@ -12,7 +12,7 @@ class MyDevice extends Device {
    * onInit is called when the device is initialized.
    */
   async onInit() {
-    this.log('MyDevice has been initialized');
+    this.homey.app.updateLog('MyDevice has been initialized', 1);
     this.intervalID = undefined;
 
     // Fetch poll interval and set up timer
@@ -28,10 +28,10 @@ class MyDevice extends Device {
   setPollIntervalTime(newTime) {
     let myTime = +newTime; // Convert to number in case it is not
     if (typeof myTime !== 'number' || myTime < 5 || myTime > 60) {
-      this.log(`New poll time '${myTime}' was rejected`);
+      this.homey.app.updateLog(`New poll time '${myTime}' was rejected`, 0);
       myTime = DEFAULT_POLL_INTERVAL;
     }
-    this.log(`New poll time is: ${myTime}`);
+    this.homey.app.updateLog(`New poll time is: ${myTime}`, 1);
     this.__pollIntervalTime = myTime * 1000; // Change from seconds to ms
   }
 
@@ -39,7 +39,7 @@ class MyDevice extends Device {
    * onAdded is called when the user adds the device, called just after pairing.
    */
   async onAdded() {
-    this.log('MyDevice has been added');
+    this.homey.app.updateLog('MyDevice has been added', 1);
   }
 
   /**
@@ -51,7 +51,7 @@ class MyDevice extends Device {
    * @returns {Promise<string|void>} return a custom message that will be displayed
    */
   async onSettings({ oldSettings, newSettings, changedKeys }) {
-    this.log(`MyDevice settings where changed: ${JSON.stringify(changedKeys)}`);
+    this.homey.app.updateLog(`MyDevice settings where changed: ${JSON.stringify(changedKeys)}`, 1);
     if (changedKeys.includes('refreshRate')) {
       this.setPollIntervalTime(newSettings['refreshRate']);
       // The new setting will be applied after next refresh
@@ -60,7 +60,9 @@ class MyDevice extends Device {
       if (newSettings['debugCap'] === true) {
         if (this.hasCapability('piggy_num_failures') === false) {
           this.addCapability('piggy_num_failures');
-        } else if (this.hasCapability('piggy_num_failures') === true) {
+        }
+      } else if (newSettings['debugCap'] === false) {
+        if (this.hasCapability('piggy_num_failures') === true) {
           this.removeCapability('piggy_num_failures');
         }
       }
@@ -73,14 +75,14 @@ class MyDevice extends Device {
    * @param {string} name The new name
    */
   async onRenamed(name) {
-    this.log('MyDevice was renamed');
+    this.homey.app.updateLog('MyDevice was renamed', 1);
   }
 
   /**
    * onDeleted is called when the user deleted the device.
    */
   async onDeleted() {
-    this.log('MyDevice has been deleted');
+    this.homey.app.updateLog('MyDevice has been deleted', 1);
     // Make sure the interval is cleared if it was started, otherwise it will continue to
     // trigger but on an unknown device.
     if (this.intervalID !== undefined) {
@@ -95,7 +97,7 @@ class MyDevice extends Device {
   async updateState() {
     try {
       const piggyState = this.homey.app.getState();
-      // this.log("Updating state: " + JSON.stringify(piggyState));
+      // this.homey.app.updateLog("Updating state: " + JSON.stringify(piggyState), 1);
       if (piggyState.power_last_hour !== undefined) {
         this.setCapabilityValue('meter_power.last_hour', piggyState.power_last_hour);
       }

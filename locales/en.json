@@ -135,6 +135,15 @@
     "alert": {
       "settingssaved": "Your changes have been saved.",
       "leavepage": "Do you want to leave this page?"
+    },
+    "log": {
+      "show": "Show log",
+      "header": "Log",
+      "exit": "Exit log",
+      "level": "Log level",
+      "error": "Errors Only",
+      "basic": "Basic Information",
+      "full": "All Information"
     }
   },
   "newdevice" : {
