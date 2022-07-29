@@ -18,7 +18,7 @@ class MyDevice extends Device {
     const settings = this.getSettings();
     this.setPollIntervalTime(settings['refreshRate']);
     this.intervalID = setTimeout(() => this.updateState(), this.__pollIntervalTime);
-    updateCapabilities(settings);
+    this.updateCapabilities(settings);
     this.homey.app.updateLog('MyDevice has been initialized', 1);
   }
 
@@ -73,7 +73,7 @@ class MyDevice extends Device {
       // The new setting will be applied after next refresh
     }
     if (changedKeys.includes('debugCap')) {
-      updateCapabilities(newSettings);
+      this.updateCapabilities(newSettings);
     }
   }
 
