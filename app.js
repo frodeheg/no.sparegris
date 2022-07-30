@@ -224,7 +224,7 @@ class PiggyBank extends Homey.App {
       // Filter out irrelevant devices (check old device list if possible)
       let useDevice = false;
       const oldDeviceList = this.homey.settings.get('deviceList');
-      if (device.id in oldDeviceList) {
+      if (oldDeviceList !== null && device.id in oldDeviceList) {
         useDevice = oldDeviceList[device.id].use;
       } else {
         // Never seen before device, set usage based on priority
@@ -944,7 +944,7 @@ class PiggyBank extends Homey.App {
           {
             from: `"Homey User" <${Homey.env.MAIL_USER}>`, // sender address
             to: Homey.env.MAIL_RECIPIENT, // list of receivers
-            subject: 'Sector Alarm log', // Subject line
+            subject: 'Sparegris log', // Subject line
             text: this.homey.settings.get('diagLog'), // plain text body
           },
         );
