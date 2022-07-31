@@ -7,6 +7,9 @@
   "capabilities": [
     "meter_power.estimated",
     "meter_power.last_hour",
+    "meter_power.last_day",
+    "meter_power.last_month",
+    "meter_power.month_estimate",
     "measure_power.free_capacity",
     "alarm_generic.overshoot",
     "piggy_mode",
@@ -70,6 +73,72 @@
       "title": {
         "en": "Last hour usage",
         "no": "Forbruk forrige time"
+      },
+      "approximated": true
+    },
+    "meter_power.last_day": {
+      "units": {
+        "en": "Wh",
+        "no": "Wh"
+      },
+      "title": {
+        "en": "Max hourly usage yesterday",
+        "no": "Maks timeforbruk i går"
+      },
+      "approximated": true
+    },
+    "meter_power.last_month": {
+      "units": {
+        "en": "Wh",
+        "no": "Wh"
+      },
+      "title": {
+        "en": "Last month tariff guide",
+        "no": "Forrige måneds tariffguide"
+      },
+      "approximated": true
+    },
+    "meter_power.month_estimate": {
+      "units": {
+        "en": "Wh",
+        "no": "Wh"
+      },
+      "title": {
+        "en": "Tariff guide this month",
+        "no": "Tariffguide denne måneden"
+      },
+      "approximated": true
+    },
+    "meter_power.low_energy_avg": {
+      "units": {
+        "en": "Wh",
+        "no": "Wh"
+      },
+      "title": {
+        "en": "Average Power for low price hours",
+        "no": "Snitt Energibruk for billige timer"
+      },
+      "approximated": true
+    },
+    "meter_power.norm_energy_avg": {
+      "units": {
+        "en": "Wh",
+        "no": "Wh"
+      },
+      "title": {
+        "en": "Average Power for normal price hours",
+        "no": "Snitt Energibruk for normale timer"
+      },
+      "approximated": true
+    },
+    "meter_power.high_energy_avg": {
+      "units": {
+        "en": "Wh",
+        "no": "Wh"
+      },
+      "title": {
+        "en": "Average Power for expensive price hours",
+        "no": "Snitt Energibruk for dyre timer"
       },
       "approximated": true
     }

@@ -19,10 +19,19 @@
     }
   },
   {
+    "id": "extendedCap",
+    "type": "checkbox",
+    "label": {
+      "en": "Show extended information",
+      "no": "Vis utvidet informasjon"
+    },
+    "value": false
+  },
+  {
     "id": "debugCap",
     "type": "checkbox",
     "label": {
-      "en": "Show debug capabilities",
+      "en": "Show debug information",
       "no": "Vis debug informasjon"
     },
     "value": false

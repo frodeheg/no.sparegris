@@ -1,11 +1,11 @@
 {
   "title": {
-    "en": "Update PiggyBank with new Power usage",
-    "no": "Oppdater Sparegris med nåværende effektbruk"
+    "en": "Send active power to PiggyBank",
+    "no": "Send aktiv effekt til Sparegris"
   },
   "titleFormatted": {
-    "en": "Set the current power to [[CurrentPower]] W",
-    "no": "Endre nåværende effektbruk til [[CurrentPower]] W"
+    "en": "Set the power to [[CurrentPower]] W",
+    "no": "Endre effektbruk til [[CurrentPower]] W"
   },
   "hint": {
     "en": "Attach the current power usage output of your energy meter to this action card in order to enable the app",
@@ -16,8 +16,8 @@
       "type": "number",
       "name": "CurrentPower",
       "placeholder": {
-        "en": "Connect to energy meter current power usage",
-        "no": "Koble til strømmålerens avlesning av nåværende effektbruk"
+        "en": "Current Power from Energy meter",
+        "no": "Nåværende effektbruk fra Strømmåleren"
       },
       "min": 0,
       "max": 100000,

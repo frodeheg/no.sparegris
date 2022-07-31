@@ -26,13 +26,54 @@ class MyDevice extends Device {
    * Update which capabilities to show
    */
   updateCapabilities(settings) {
+    // New normal capabilities in version 0.5.15
+    if (this.hasCapability('meter_power.last_day') === false) {
+      this.addCapability('meter_power.last_day');
+    }
+    if (this.hasCapability('meter_power.last_month') === false) {
+      this.addCapability('meter_power.last_month');
+    }
+    if (this.hasCapability('meter_power.month_estimate') === false) {
+      this.addCapability('meter_power.month_estimate');
+    }
+
+    // New extended capabilities
+    if (settings['extendedCap'] === true) {
+      if (this.hasCapability('meter_power.low_energy_avg') === false) {
+        this.addCapability('meter_power.low_energy_avg');
+      }
+      if (this.hasCapability('meter_power.norm_energy_avg') === false) {
+        this.addCapability('meter_power.norm_energy_avg');
+      }
+      if (this.hasCapability('meter_power.high_energy_avg') === false) {
+        this.addCapability('meter_power.high_energy_avg');
+      }
+    } else if (settings['extendedCap'] === false) {
+      if (this.hasCapability('meter_power.low_energy_avg') === true) {
+        this.removeCapability('meter_power.low_energy_avg');
+      }
+      if (this.hasCapability('meter_power.norm_energy_avg') === true) {
+        this.removeCapability('meter_power.norm_energy_avg');
+      }
+      if (this.hasCapability('meter_power.high_energy_avg') === true) {
+        this.removeCapability('meter_power.high_energy_avg');
+      }
+    }
+
+    // New debug capabilities
     if (settings['debugCap'] === true) {
       if (this.hasCapability('piggy_num_failures') === false) {
         this.addCapability('piggy_num_failures');
       }
+      if (this.hasCapability('piggy_num_restarts') === false) {
+        this.addCapability('piggy_num_restarts');
+      }
     } else if (settings['debugCap'] === false) {
       if (this.hasCapability('piggy_num_failures') === true) {
         this.removeCapability('piggy_num_failures');
+      }
+      if (this.hasCapability('piggy_num_restarts') === true) {
+        this.removeCapability('piggy_num_restarts');
       }
     }
   }
@@ -72,7 +113,7 @@ class MyDevice extends Device {
       this.setPollIntervalTime(newSettings['refreshRate']);
       // The new setting will be applied after next refresh
     }
-    if (changedKeys.includes('debugCap')) {
+    if (changedKeys.includes('debugCap') || changedKeys.includes('extendedCap')) {
       this.updateCapabilities(newSettings);
     }
   }
@@ -106,10 +147,10 @@ class MyDevice extends Device {
     try {
       const piggyState = this.homey.app.getState();
       // this.homey.app.updateLog("Updating state: " + JSON.stringify(piggyState), 1);
-      if (piggyState.power_last_hour !== undefined) {
+      if (piggyState.power_last_hour) {
         this.setCapabilityValue('meter_power.last_hour', piggyState.power_last_hour);
       }
-      if (piggyState.power_estimated !== undefined) {
+      if (piggyState.power_estimated) {
         this.setCapabilityValue('meter_power.estimated', piggyState.power_estimated);
       }
       this.setCapabilityValue('alarm_generic.overshoot', piggyState.alarm_overshoot);
@@ -148,9 +189,33 @@ class MyDevice extends Device {
         }
       }
 
+      if (piggyState.power_yesterday) {
+        this.setCapabilityValue('meter_power.last_day', piggyState.power_yesterday);
+      }
+      if (piggyState.power_last_month) {
+        this.setCapabilityValue('meter_power.last_month', piggyState.power_last_month);
+      }
+      if (piggyState.power_average) {
+        this.setCapabilityValue('meter_power.month_estimate', piggyState.power_average);
+      }
+
       // Debug capabilities, so only update if they exist
       if (this.hasCapability('piggy_num_failures') === true) {
         this.setCapabilityValue('piggy_num_failures', piggyState.num_fail_on + piggyState.num_fail_off + piggyState.num_fail_temp);
+      }
+      if (this.hasCapability('piggy_num_restarts') === true) {
+        this.setCapabilityValue('piggy_num_restarts', piggyState.num_restarts);
+      }
+
+      // Extended capabilities so only update if they exist
+      if (this.hasCapability('meter_power.low_energy_avg') === true && piggyState.low_price_energy_avg) {
+        this.setCapabilityValue('meter_power.low_energy_avg', piggyState.low_price_energy_avg);
+      }
+      if (this.hasCapability('meter_power.norm_energy_avg') === true && piggyState.norm_price_energy_avg) {
+        this.setCapabilityValue('meter_power.norm_energy_avg', piggyState.norm_price_energy_avg);
+      }
+      if (this.hasCapability('meter_power.high_energy_avg') === true && piggyState.high_price_energy_avg) {
+        this.setCapabilityValue('meter_power.high_energy_avg', piggyState.high_price_energy_avg);
       }
 
       // Other things to report:

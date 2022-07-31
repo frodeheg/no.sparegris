@@ -1,0 +1,21 @@
+{
+  "type": "number",
+  "title": {
+    "en": "Number restarts this month",
+    "no": "Antall omstarter denne måneden"
+  },
+  "units": {
+    "en": ""
+  },
+  "insights": true,
+  "desc": {
+    "en": "Number of times the app was restarted due to power loss, new updates or other reasons. This reduces the power target reliability",
+    "no": "Antall ganger appen ble restartet på grunn av strømbrudd, nye oppdateringer eller andre grunner. Dette reduserer påliteligheten til å nå tariffmålet"
+  },
+  "chartType": "spline",
+  "decimals": 0,
+  "getable": true,
+  "setable": false,
+  "uiComponent": "sensor",
+  "icon": "/assets/power.svg"
+}

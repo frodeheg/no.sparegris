@@ -1,3 +1,4 @@
+/* eslint-disable no-prototype-builtins */
 /* eslint-disable guard-for-in */
 /* eslint-disable no-restricted-syntax */
 /* eslint comma-dangle: ["error", "never"] */
@@ -61,6 +62,15 @@ class PiggyBank extends Homey.App {
     - inputTime.getMinutes() * 60 * 1000
     - inputTime.getSeconds() * 1000
     - inputTime.getMilliseconds();
+  }
+
+  /**
+   * Rounds a time object to nearest hour
+   */
+  roundToNearestHour(date) {
+    date.setMinutes(date.getMinutes() + 30);
+    date.setMinutes(0, 0, 0);
+    return date;
   }
 
   /**
@@ -361,35 +371,37 @@ class PiggyBank extends Homey.App {
    */
   async onNewHour() {
     const now = new Date();
-    if (this.__current_power === undefined) {
-      // First hour after app was started
-      // Reserve energy for the time we have no data on
-      let maxPower = this.homey.settings.get('maxPower');
-      if (maxPower === undefined) {
-        maxPower = 5000;
+    try {
+      if (this.__current_power === undefined) {
+        // First hour after app was started
+        // Reserve energy for the time we have no data on
+        let maxPower = this.homey.settings.get('maxPower');
+        if (maxPower === undefined) {
+          maxPower = 5000;
+        }
+        const lapsedTime = 1000 * 60 * 60 - this.timeToNextHour(now);
+        this.__reserved_energy = (maxPower * lapsedTime) / (1000 * 60 * 60);
+      } else {
+        // Add up last part of previous hour
+        const lapsedTime = now - this.__current_power_time;
+        const energyUsed = (this.__current_power * lapsedTime) / (1000 * 60 * 60);
+        this.__accum_energy += energyUsed;
+        this.__reserved_energy = 0;
+        if (this.__power_last_hour !== undefined) {
+          // The first time the data is not for a full hour, so skip adding to statistics
+          this.statsSetLastHourEnergy(this.__accum_energy);
+        }
+        this.__power_last_hour = this.__accum_energy;
+        this.updateLog(`Hour finalized: ${String(this.__accum_energy)} Wh`, LOG_INFO);
       }
-      const lapsedTime = 1000 * 60 * 60 - this.timeToNextHour(now);
-      this.__reserved_energy = (maxPower * lapsedTime) / (1000 * 60 * 60);
-    } else {
-      // Add up last part of previous hour
-      const lapsedTime = now - this.__current_power_time;
-      const energyUsed = (this.__current_power * lapsedTime) / (1000 * 60 * 60);
-      this.__accum_energy += energyUsed;
-      this.__reserved_energy = 0;
-      if (this.__power_last_hour !== undefined) {
-        // The first time the data is not for a full hour, so skip adding to statistics
-        this.statsSetLastHourEnergy(this.__accum_energy);
-      }
-      this.__power_last_hour = this.__accum_energy;
-      this.updateLog(`Hour finalized: ${String(this.__accum_energy)} Wh`, LOG_INFO);
+      this.__current_power_time = now;
+      this.__accum_energy = 0;
+    } finally {
+      // Start timer to start exactly when a new hour starts
+      const timeToNextTrigger = this.timeToNextHour(now);
+      this.__newHourID = setTimeout(() => this.onNewHour(), timeToNextTrigger);
+      this.updateLog(`New hour in ${String(timeToNextTrigger)} ms (now is: ${String(now)})`, LOG_DEBUG);
     }
-    this.__current_power_time = now;
-    this.__accum_energy = 0;
-
-    // Start timer to start exactly when a new hour starts
-    const timeToNextTrigger = this.timeToNextHour(now);
-    this.__newHourID = setTimeout(() => this.onNewHour(), timeToNextTrigger);
-    this.updateLog(`New hour in ${String(timeToNextTrigger)} ms (now is: ${String(now)})`, LOG_DEBUG);
   }
 
   /**
@@ -740,16 +752,31 @@ class PiggyBank extends Homey.App {
    * Reset stats - called on app init
    */
   statsInit() {
-    this.__stats_failed_turn_on = 0;
-    this.__stats_failed_turn_off = 0;
-    this.__stats_failed_temp_change = 0;
+    this.__stats_failed_turn_on = +this.homey.settings.get('stats_failed_turn_on') | 0;
+    this.__stats_failed_turn_off = +this.homey.settings.get('stats_failed_turn_off') | 0;
+    this.__stats_failed_temp_change = +this.homey.settings.get('stats_failed_temp_change') | 0;
     this.__statsIntervalID = undefined;
     this.__stats_energy = undefined;
     this.__stats_price = undefined;
     this.__stats_price_point = undefined;
-    this.__stats_low_energy = undefined;
-    this.__stats_norm_energy = undefined;
-    this.__stats_high_energy = undefined;
+    this.__stats_low_energy = this.homey.settings.get('stats_low_energy');
+    this.__stats_norm_energy = this.homey.settings.get('stats_norm_energy');
+    this.__stats_high_energy = this.homey.settings.get('stats_high_energy');
+    this.__stats_last_day_max = undefined;
+    this.__stats_tmp_max_power_today = this.homey.settings.get('stats_tmp_max_power_today'); // Todo: reject if the time is too far away
+    this.__stats_this_month_maxes = this.homey.settings.get('stats_this_month_maxes'); // Todo: reject if the time is too far away
+    if (!Array.isArray(this.__stats_this_month_maxes)) {
+      this.__stats_this_month_maxes = [];
+    }
+    this.__stats_this_month_average = this.homey.settings.get('stats_this_month_average');
+    this.__stats_last_month_max = this.homey.settings.get('stats_last_month_max');
+    this.__stats_app_restarts = this.homey.settings.get('stats_app_restarts'); // Reset every month
+    if (this.__stats_app_restarts === null) {
+      this.__stats_app_restarts = 0;
+    } else {
+      this.__stats_app_restarts = +this.__stats_app_restarts + 1;
+    }
+    this.homey.settings.set('stats_app_restarts', this.__stats_app_restarts);
     this.statsNewHour();
   }
 
@@ -767,19 +794,63 @@ class PiggyBank extends Homey.App {
    */
   statsCountFailedTurnOn() {
     this.__stats_failed_turn_on += 1;
+    this.homey.settings.set('stats_failed_turn_on', this.__stats_failed_turn_on);
   }
 
   statsCountFailedTurnOff() {
     this.__stats_failed_turn_off += 1;
+    this.homey.settings.set('stats_failed_turn_off', this.__stats_failed_turn_off);
   }
 
   statsCountFailedTempChange() {
     this.__stats_failed_temp_change += 1;
+    this.homey.settings.set('stats_failed_temp_change', this.__stats_failed_temp_change);
+  }
+
+  statsSetLastMonthPower(energy) {
+    this.__stats_last_month_max = energy;
+    this.homey.settings.set('stats_last_month_max', this.__stats_last_month_max);
+  }
+
+  statsSetLastDayMaxEnergy(energy) {
+    this.__stats_last_day_time = this.roundToNearestHour(new Date());
+    this.__stats_last_day_max = energy;
+
+    // Keep largest 3 days:
+    this.__stats_this_month_maxes.push(energy);
+    this.__stats_this_month_maxes.sort((a, b) => b - a);
+    if (this.__stats_this_month_maxes.length > 3) {
+      this.__stats_this_month_maxes.pop();
+    }
+    this.__stats_this_month_average = this.__stats_this_month_maxes.reduce((a, b) => a + b, 0) / this.__stats_this_month_maxes.length;
+    // On new month:
+    const dayOfMonth = this.__stats_last_day_time.getDate();
+    if (dayOfMonth === 0) {
+      this.statsSetLastMonthPower(this.__stats_this_month_average);
+      this.__stats_this_month_maxes = [];
+      this.__stats_app_restarts = 0;
+      this.homey.settings.set('stats_app_restarts', 0);
+    }
+    this.homey.settings.set('stats_this_month_maxes', this.__stats_this_month_maxes);
+    this.homey.settings.set('stats_this_month_average', this.__stats_this_month_average);
   }
 
   statsSetLastHourEnergy(energy) {
-    this.__stats_energy_time = new Date();
+    this.__stats_energy_time = this.roundToNearestHour(new Date());
     this.__stats_energy = energy;
+
+    // Find todays max
+    if (this.__stats_tmp_max_power_today === null || energy > +this.__stats_tmp_max_power_today) {
+      this.__stats_tmp_max_power_today = energy;
+    }
+
+    // If new day has begun
+    if (this.__stats_energy_time.getHours() === 0) {
+      this.statsSetLastDayMaxEnergy(this.__stats_tmp_max_power_today);
+      this.__stats_tmp_max_power_today = 0;
+    }
+
+    this.homey.settings.set('stats_tmp_max_power_today', this.__stats_tmp_max_power_today);
   }
 
   statsSetLastHourPrice(price) {
@@ -812,9 +883,18 @@ class PiggyBank extends Homey.App {
       pricePointLastHour = +this.homey.settings.get('pricePoint');
     }
     switch (pricePointLastHour) {
-      case PP_LOW: this.__stats_low_energy = (this.__stats_low_energy === undefined) ? this.__stats_energy : ((this.__stats_low_energy * 99 + this.__stats_energy) / 100); break;
-      case PP_NORM: this.__stats_norm_energy = (this.__stats_norm_energy === undefined) ? this.__stats_energy : ((this.__stats_norm_energy * 99 + this.__stats_energy) / 100); break;
-      case PP_HIGH: this.__stats_high_energy = (this.__stats_high_energy === undefined) ? this.__stats_energy : ((this.__stats_high_energy * 99 + this.__stats_energy) / 100); break;
+      case PP_LOW:
+        this.__stats_low_energy = (this.__stats_low_energy === null) ? this.__stats_energy : ((+this.__stats_low_energy * 99 + this.__stats_energy) / 100);
+        this.homey.settings.set('stats_low_energy', this.__stats_low_energy);
+        break;
+      case PP_NORM:
+        this.__stats_norm_energy = (this.__stats_norm_energy === null) ? this.__stats_energy : ((+this.__stats_norm_energy * 99 + this.__stats_energy) / 100);
+        this.homey.settings.set('stats_norm_energy', this.__stats_norm_energy);
+        break;
+      case PP_HIGH:
+        this.__stats_high_energy = (this.__stats_high_energy === null) ? this.__stats_energy : ((+this.__stats_high_energy * 99 + this.__stats_energy) / 100);
+        this.homey.settings.set('stats_high_energy', this.__stats_high_energy);
+        break;
       default:
     }
 
@@ -836,7 +916,6 @@ class PiggyBank extends Homey.App {
     // When sendLog is clicked, send the log
     this.homey.settings.on('set', setting => {
       if (setting === 'diagLog') return;
-      this.log(`Setting "${setting}" has changed`);
       const diagLog = this.homey.settings.get('diagLog');
       const sendLog = this.homey.settings.get('sendLog');
       if (setting === 'sendLog' && (sendLog === 'send') && (diagLog !== '')) {
@@ -946,7 +1025,7 @@ class PiggyBank extends Homey.App {
             to: Homey.env.MAIL_RECIPIENT, // list of receivers
             subject: 'Sparegris log', // Subject line
             text: this.homey.settings.get('diagLog'), // plain text body
-          },
+          }
         );
 
         this.updateLog(`Message sent: ${info.messageId}`, LOG_INFO);
@@ -966,6 +1045,10 @@ class PiggyBank extends Homey.App {
    *  DEVICE API's
    ** **************************************************************************************************** */
   getState() {
+    let listOfUsedDevices = this.homey.settings.get('frostList');
+    if (listOfUsedDevices === null) {
+      listOfUsedDevices = {};
+    }
     return {
       power_last_hour: parseInt(this.__power_last_hour, 10),
       power_estimated: this.__power_estimated === undefined ? undefined : parseInt(this.__power_estimated.toFixed(2), 10),
@@ -973,15 +1056,19 @@ class PiggyBank extends Homey.App {
       operating_mode: this.homey.settings.get('operatingMode'),
       alarm_overshoot: this.__alarm_overshoot,
       free_capacity: this.__free_capacity,
-      num_devices: Object.keys(this.homey.settings.get('frostList')).length,
+      num_devices: Object.keys(listOfUsedDevices).length,
       num_devices_off: this.__num_off_devices,
       safety_power: parseInt(this.homey.settings.get('safetyPower'), 10),
       num_fail_on: this.__stats_failed_turn_on,
       num_fail_off: this.__stats_failed_turn_off,
       num_fail_temp: this.__stats_failed_temp_change,
-      low_energy_energy_avg: this.__stats_low_energy,
-      norm_energy_energy_avg: this.__stats_norm_energy,
-      high_energy_energy_avg: this.__stats_high_energy
+      low_price_energy_avg: this.__stats_low_energy,
+      norm_price_energy_avg: this.__stats_norm_energy,
+      high_price_energy_avg: this.__stats_high_energy,
+      power_yesterday: this.__stats_last_day_max,
+      power_average: this.__stats_this_month_average,
+      power_last_month: this.__stats_last_month_max,
+      num_restarts: this.__stats_app_restarts
     };
   }
 

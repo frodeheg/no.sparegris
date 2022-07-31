@@ -312,12 +312,12 @@
       },
       {
         "title": {
-          "en": "Update PiggyBank with new Power usage",
-          "no": "Oppdater Sparegris med nåværende effektbruk"
+          "en": "Send active power to PiggyBank",
+          "no": "Send aktiv effekt til Sparegris"
         },
         "titleFormatted": {
-          "en": "Set the current power to [[CurrentPower]] W",
-          "no": "Endre nåværende effektbruk til [[CurrentPower]] W"
+          "en": "Set the power to [[CurrentPower]] W",
+          "no": "Endre effektbruk til [[CurrentPower]] W"
         },
         "hint": {
           "en": "Attach the current power usage output of your energy meter to this action card in order to enable the app",
@@ -328,8 +328,8 @@
             "type": "number",
             "name": "CurrentPower",
             "placeholder": {
-              "en": "Connect to energy meter current power usage",
-              "no": "Koble til strømmålerens avlesning av nåværende effektbruk"
+              "en": "Current Power from Energy meter",
+              "no": "Nåværende effektbruk fra Strømmåleren"
             },
             "min": 0,
             "max": 100000,
@@ -350,6 +350,9 @@
       "capabilities": [
         "meter_power.estimated",
         "meter_power.last_hour",
+        "meter_power.last_day",
+        "meter_power.last_month",
+        "meter_power.month_estimate",
         "measure_power.free_capacity",
         "alarm_generic.overshoot",
         "piggy_mode",
@@ -415,6 +418,72 @@
             "no": "Forbruk forrige time"
           },
           "approximated": true
+        },
+        "meter_power.last_day": {
+          "units": {
+            "en": "Wh",
+            "no": "Wh"
+          },
+          "title": {
+            "en": "Max hourly usage yesterday",
+            "no": "Maks timeforbruk i går"
+          },
+          "approximated": true
+        },
+        "meter_power.last_month": {
+          "units": {
+            "en": "Wh",
+            "no": "Wh"
+          },
+          "title": {
+            "en": "Last month tariff guide",
+            "no": "Forrige måneds tariffguide"
+          },
+          "approximated": true
+        },
+        "meter_power.month_estimate": {
+          "units": {
+            "en": "Wh",
+            "no": "Wh"
+          },
+          "title": {
+            "en": "Tariff guide this month",
+            "no": "Tariffguide denne måneden"
+          },
+          "approximated": true
+        },
+        "meter_power.low_energy_avg": {
+          "units": {
+            "en": "Wh",
+            "no": "Wh"
+          },
+          "title": {
+            "en": "Average Power for low price hours",
+            "no": "Snitt Energibruk for billige timer"
+          },
+          "approximated": true
+        },
+        "meter_power.norm_energy_avg": {
+          "units": {
+            "en": "Wh",
+            "no": "Wh"
+          },
+          "title": {
+            "en": "Average Power for normal price hours",
+            "no": "Snitt Energibruk for normale timer"
+          },
+          "approximated": true
+        },
+        "meter_power.high_energy_avg": {
+          "units": {
+            "en": "Wh",
+            "no": "Wh"
+          },
+          "title": {
+            "en": "Average Power for expensive price hours",
+            "no": "Snitt Energibruk for dyre timer"
+          },
+          "approximated": true
         }
       },
       "platforms": [
@@ -467,10 +536,19 @@
           }
         },
         {
+          "id": "extendedCap",
+          "type": "checkbox",
+          "label": {
+            "en": "Show extended information",
+            "no": "Vis utvidet informasjon"
+          },
+          "value": false
+        },
+        {
           "id": "debugCap",
           "type": "checkbox",
           "label": {
-            "en": "Show debug capabilities",
+            "en": "Show debug information",
             "no": "Vis debug informasjon"
           },
           "value": false
@@ -675,6 +753,27 @@
       "desc": {
         "en": "Number of attempts to turn devices on/off or change temperature that failed",
         "no": "Antall forsøk på å slå enheter av/på eller endre temperaturen som feilet"
+      },
+      "chartType": "spline",
+      "decimals": 0,
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor",
+      "icon": "/assets/power.svg"
+    },
+    "piggy_num_restarts": {
+      "type": "number",
+      "title": {
+        "en": "Number restarts this month",
+        "no": "Antall omstarter denne måneden"
+      },
+      "units": {
+        "en": ""
+      },
+      "insights": true,
+      "desc": {
+        "en": "Number of times the app was restarted due to power loss, new updates or other reasons. This reduces the power target reliability",
+        "no": "Antall ganger appen ble restartet på grunn av strømbrudd, nye oppdateringer eller andre grunner. Dette reduserer påliteligheten til å nå tariffmålet"
       },
       "chartType": "spline",
       "decimals": 0,
