@@ -88,5 +88,8 @@
   },
   "0.5.14": {
     "en": "Fixed crash in previous version"
+  },
+  "0.5.15": {
+    "en": "Added new capabilities"
   }
 }
