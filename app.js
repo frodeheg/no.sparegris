@@ -480,8 +480,13 @@ class PiggyBank extends Homey.App {
    * onModeUpdate is called whenever the operation mode is changed
    */
   async onModeUpdate(newMode) {
+    const oldMode = this.homey.settings.get('operatingMode');
+    if (newMode === oldMode) {
+      return Promise.resolve();
+    }
     this.updateLog(`Changing the current mode to: ${String(newMode)}`, LOG_INFO);
     this.homey.settings.set('operatingMode', newMode);
+    return this.refreshAllDevices();
   }
 
   /**
@@ -531,71 +536,7 @@ class PiggyBank extends Homey.App {
     }
     this.updateLog(`Changing the current price point to: ${String(newMode)}`, LOG_INFO);
     this.homey.settings.set('pricePoint', newMode);
-
-    const modeList = this.homey.settings.get('modeList');
-    const currentMode = this.homey.settings.get('operatingMode');
-    const currentModeList = modeList[currentMode - 1];
-
-    // Go through all actions for this new mode;
-    const actionLists = this.homey.settings.get('priceActionList');
-    const currentActions = actionLists[newMode];
-    const promises = [];
-    for (const deviceId in currentActions) {
-      let device;
-      try {
-        device = await this.homeyApi.devices.getDevice({ id: deviceId });
-      } catch (error) {
-        this.__deviceList[deviceId].nComError += 10; // Big error so wait more until retry than smaller errors
-        promises.push(Promise.resolve([false, false])); // The unhandled device is solved by the later nComError handling
-        continue; // Skip this device
-      }
-      switch (currentActions[deviceId].operation) {
-        case TURN_ON:
-          promises.push(this.changeDeviceState(deviceId, TURN_ON));
-          break;
-        case TURN_OFF:
-          promises.push(this.changeDeviceState(deviceId, TURN_OFF));
-          break;
-        case DELTA_TEMP: {
-          const modeIdx = this.findModeIdx(deviceId);
-          const oldTemp = parseInt(currentModeList[modeIdx].targetTemp, 10);
-          const deltaTemp = parseInt(currentActions[deviceId].delta, 10);
-          const newTemp = oldTemp + deltaTemp;
-          const isOn = await (this.__deviceList[deviceId].onoff_cap === undefined) ? undefined : device.capabilitiesObj[this.__deviceList[deviceId].onoff_cap].value;
-          if (isOn) {
-            promises.push(device.setCapabilityValue({ capabilityId: 'target_temperature', value: newTemp })
-              .then(() => {
-                currentActions[deviceId].delayTempChange = false;
-                this.__deviceList[deviceId].nComError = 0;
-                return Promise.resolve([true, false]);
-              }).catch(error => {
-                this.statsCountFailedTempChange();
-                currentActions[deviceId].delayTempChange = true;
-                this.__deviceList[deviceId].nComError += 1;
-                return Promise.resolve([false, false]); // The unresolved part is solved by the later nComError handling
-              }));
-          } else {
-            // Delay the action until the device turns on
-            currentActions[deviceId].delayTempChange = true;
-            currentActions[deviceId].delayTempValue = newTemp;
-            promises.push(Promise.resolve([true, false]));
-          }
-        }
-          break;
-        default:
-          promises.push(Promise.reject(new Error('Invalid Action')));
-          break;
-      }
-    }
-    return Promise.all(promises)
-      .then(values => {
-        let allOk = true;
-        for (let i = 0; i < values.length; i++) {
-          allOk &&= values[i][0];
-        }
-        return Promise.resolve(allOk);
-      })
-      .catch(error => Promise.reject(new Error(`Unknown error: ${error}`)));
+    return this.refreshAllDevices();
   }
 
   /**
@@ -730,6 +671,74 @@ class PiggyBank extends Homey.App {
       }
     }
     return null; // Nothing found
+  }
+
+  async refreshAllDevices() {
+    const modeList = this.homey.settings.get('modeList');
+    const currentMode = this.homey.settings.get('operatingMode');
+    const currentModeList = modeList[currentMode - 1];
+    const currentPricePoint = this.homey.settings.get('pricePoint');
+
+    // Go through all actions for this new mode;
+    const actionLists = this.homey.settings.get('priceActionList');
+    const currentActions = actionLists[currentPricePoint];
+    const promises = [];
+    for (const deviceId in currentActions) {
+      let device;
+      try {
+        device = await this.homeyApi.devices.getDevice({ id: deviceId });
+      } catch (error) {
+        this.__deviceList[deviceId].nComError += 10; // Big error so wait more until retry than smaller errors
+        promises.push(Promise.resolve([false, false])); // The unhandled device is solved by the later nComError handling
+        continue; // Skip this device
+      }
+      switch (currentActions[deviceId].operation) {
+        case TURN_ON:
+          promises.push(this.changeDeviceState(deviceId, TURN_ON));
+          break;
+        case TURN_OFF:
+          promises.push(this.changeDeviceState(deviceId, TURN_OFF));
+          break;
+        case DELTA_TEMP: {
+          const modeIdx = this.findModeIdx(deviceId);
+          const oldTemp = parseInt(currentModeList[modeIdx].targetTemp, 10);
+          const deltaTemp = parseInt(currentActions[deviceId].delta, 10);
+          const newTemp = oldTemp + deltaTemp;
+          const isOn = await (this.__deviceList[deviceId].onoff_cap === undefined) ? undefined : device.capabilitiesObj[this.__deviceList[deviceId].onoff_cap].value;
+          if (isOn) {
+            promises.push(device.setCapabilityValue({ capabilityId: 'target_temperature', value: newTemp })
+              .then(() => {
+                currentActions[deviceId].delayTempChange = false;
+                this.__deviceList[deviceId].nComError = 0;
+                return Promise.resolve([true, false]);
+              }).catch(error => {
+                this.statsCountFailedTempChange();
+                currentActions[deviceId].delayTempChange = true;
+                this.__deviceList[deviceId].nComError += 1;
+                return Promise.resolve([false, false]); // The unresolved part is solved by the later nComError handling
+              }));
+          } else {
+            // Delay the action until the device turns on
+            currentActions[deviceId].delayTempChange = true;
+            currentActions[deviceId].delayTempValue = newTemp;
+            promises.push(Promise.resolve([true, false]));
+          }
+        }
+          break;
+        default:
+          promises.push(Promise.reject(new Error('Invalid Action')));
+          break;
+      }
+    }
+    return Promise.all(promises)
+      .then(values => {
+        let allOk = true;
+        for (let i = 0; i < values.length; i++) {
+          allOk &&= values[i][0];
+        }
+        return Promise.resolve(allOk);
+      })
+      .catch(error => Promise.reject(new Error(`Unknown error: ${error}`)));
   }
 
   /** ****************************************************************************************************
@@ -1024,7 +1033,7 @@ class PiggyBank extends Homey.App {
             from: `"Homey User" <${Homey.env.MAIL_USER}>`, // sender address
             to: Homey.env.MAIL_RECIPIENT, // list of receivers
             subject: 'Sparegris log', // Subject line
-            text: this.homey.settings.get('diagLog'), // plain text body
+            text: this.homey.settings.get('diagLog') // plain text body
           }
         );
 
