@@ -91,5 +91,8 @@
   },
   "0.5.15": {
     "en": "Added new capabilities"
+  },
+  "0.5.16": {
+    "en": "Fixed bug where temperature was not set correctly on mode updates"
   }
 }
