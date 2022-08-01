@@ -97,5 +97,8 @@
   },
   "0.5.17": {
     "en": "Fixed a bug that prevented statistics from being reported"
+  },
+  "0.5.18": {
+    "en": "Minor translation issues + help text and fixed a bug where statistics was not calculated."
   }
 }
