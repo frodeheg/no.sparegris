@@ -846,6 +846,7 @@ class PiggyBank extends Homey.App {
 
   statsSetLastHourEnergy(energy) {
     this.__stats_energy_time = this.roundToNearestHour(new Date());
+    this.log(`Stats last energy set to: ${this.__stats_energy_time}`);
     this.__stats_energy = energy;
 
     // Find todays max
@@ -864,6 +865,7 @@ class PiggyBank extends Homey.App {
 
   statsSetLastHourPrice(price) {
     this.__stats_price_time = new Date();
+    this.updateLog(`Stats price set to: ${this.__stats_price_time}`);
     this.__stats_price = price;
   }
 
@@ -874,42 +876,47 @@ class PiggyBank extends Homey.App {
 
   statsNewHour() {
     const now = new Date();
-
-    // Check that all new stats has been reported
-    const timeSinceEnergy = this.__stats_energy_time - now;
-    const timeSincePrice = this.__stats_price_time - now;
     const tenMinutes = 10 * 60 * 1000;
-    if ((timeSinceEnergy > tenMinutes)
-      || (timeSincePrice > tenMinutes)) {
-      return;
-    }
 
-    let pricePointLastHour;
-    const timeSincePricePoint = this.__starts_price_point_time - now;
-    if (timeSincePricePoint > tenMinutes) {
-      pricePointLastHour = this.__stats_price_point;
-    } else {
-      pricePointLastHour = +this.homey.settings.get('pricePoint');
-    }
-    switch (pricePointLastHour) {
-      case PP_LOW:
-        this.__stats_low_energy = (this.__stats_low_energy === null) ? this.__stats_energy : ((+this.__stats_low_energy * 99 + this.__stats_energy) / 100);
-        this.homey.settings.set('stats_low_energy', this.__stats_low_energy);
-        break;
-      case PP_NORM:
-        this.__stats_norm_energy = (this.__stats_norm_energy === null) ? this.__stats_energy : ((+this.__stats_norm_energy * 99 + this.__stats_energy) / 100);
-        this.homey.settings.set('stats_norm_energy', this.__stats_norm_energy);
-        break;
-      case PP_HIGH:
-        this.__stats_high_energy = (this.__stats_high_energy === null) ? this.__stats_energy : ((+this.__stats_high_energy * 99 + this.__stats_energy) / 100);
-        this.homey.settings.set('stats_high_energy', this.__stats_high_energy);
-        break;
-      default:
-    }
+    try {
+      // Energy based statistics
+      const timeSinceEnergy = this.__stats_energy_time - now;
+      if (timeSinceEnergy < tenMinutes) {
+        // Only register statistics if reported for the current hour
+        let pricePointLastHour;
+        const timeSincePricePoint = this.__starts_price_point_time - now;
+        if (timeSincePricePoint > tenMinutes) {
+          pricePointLastHour = this.__stats_price_point;
+        } else {
+          pricePointLastHour = +this.homey.settings.get('pricePoint');
+        }
+        switch (pricePointLastHour) {
+          case PP_LOW:
+            this.__stats_low_energy = (this.__stats_low_energy === null) ? this.__stats_energy : ((+this.__stats_low_energy * 99 + this.__stats_energy) / 100);
+            this.homey.settings.set('stats_low_energy', this.__stats_low_energy);
+            break;
+          case PP_NORM:
+            this.__stats_norm_energy = (this.__stats_norm_energy === null) ? this.__stats_energy : ((+this.__stats_norm_energy * 99 + this.__stats_energy) / 100);
+            this.homey.settings.set('stats_norm_energy', this.__stats_norm_energy);
+            break;
+          case PP_HIGH:
+            this.__stats_high_energy = (this.__stats_high_energy === null) ? this.__stats_energy : ((+this.__stats_high_energy * 99 + this.__stats_energy) / 100);
+            this.homey.settings.set('stats_high_energy', this.__stats_high_energy);
+            break;
+          default:
+        }
+      }
 
-    // Start timer to start exactly 5 minutes after the next hour starts
-    const timeToNextTrigger = this.timeToNextHour(now) + 5 * 60 * 1000;
-    this.__statsIntervalID = setTimeout(() => this.statsNewHour(), timeToNextTrigger);
+      // Price statistics
+      const timeSincePrice = this.__stats_price_time - now;
+      if (timeSincePrice < tenMinutes) {
+        // Nothing yet
+      }
+    } finally {
+      // Start timer to start exactly 5 minutes after the next hour starts
+      const timeToNextTrigger = this.timeToNextHour(now) + 5 * 60 * 1000;
+      this.__statsIntervalID = setTimeout(() => this.statsNewHour(), timeToNextTrigger);
+    }
   }
 
   /** ****************************************************************************************************

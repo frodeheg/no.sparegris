@@ -5,7 +5,7 @@ Det gjøres oppmerksom på at appen fortsatt er under utvikling så det blir sat
 
 Bruksanvisning:
 - Installer appen
-- Gå inn på Apper / Sparegirs / Konfigurer app
+- Gå inn på Apper / Sparegris / Konfigurer app
 - Velg enheter som appen skal kontrollere
 - Set Modus til Normal
 - Gå til fane "Normal"
@@ -28,4 +28,5 @@ Anbefalinger:
 - Sett opp flytkort for å slå av soner når du lufter.
 - Sett opp flytkort for å øke reservert strømforbruk ved starten av den timen du normalt lager middag.
 - Sett opp flytkort for å redusere reservert strømforbruk når du normalt er ferdig med å lage middag.
+- Sett opp flytkort for å slå av relevante soner når du lufter eller det er sterkt solskinn
 - Sett opp flytkort for å sørge for at du får beskjed når appen har detektert et stort ukontrollerbart strømforbruk før timeslutt som du manuelt må stoppe for å oppnå effekttariffen.

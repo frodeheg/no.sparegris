@@ -28,4 +28,5 @@ Recommendations:
 - Use flows to turn off zones when a room is ventilated.
 - Use flows to increase reserved power consumption at the start of the hour you normally cook dinner.
 - Use flows to reduce reserved power consumption when you have normally finished making dinner.
+- Use flows to switch off relevant zones when you ventilate or there is strong sunshine.
 - Use flows to ensure that you are notified when the app has detected a large uncontrollable power consumption before the end of the hour, which you must manually stop to meet the power tariff.
