@@ -103,5 +103,8 @@
   },
   "0.5.19": {
     "en": "Fixed minor typo in the stats calculation that reset some stats every hour"
+  },
+  "0.5.20": {
+    "en": "The devices will now be refreshed with new temperatures when the settings are being changed"
   }
 }
