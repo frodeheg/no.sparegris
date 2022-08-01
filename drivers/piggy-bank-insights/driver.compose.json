@@ -28,8 +28,8 @@
   "capabilitiesOptions": {
     "alarm_generic.overshoot": {
       "title": {
-        "en": "Power limit about to breach!",
-        "no": "Forbrukstaket blir brutt!"
+        "en": "Manual powerdown required!",
+        "no": "Manuall nedstegning påkrevd!"
       },
       "insightsTitleTrue": {
         "en": "Unable to maintain power limit!",
