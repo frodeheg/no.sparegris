@@ -94,5 +94,8 @@
   },
   "0.5.16": {
     "en": "Fixed bug where temperature was not set correctly on mode updates"
+  },
+  "0.5.17": {
+    "en": "Fixed a bug that prevented statistics from being reported"
   }
 }
