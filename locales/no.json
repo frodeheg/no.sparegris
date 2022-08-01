@@ -52,8 +52,8 @@
         "internal": "Intern Styring"
       },
       "actionLow": "Handling når strømprisen blir lav",
-      "actionHigh": "Handling når strømprisen blir normal",
-      "actionNormal": "Handling når strømprisen blir høy",
+      "actionHigh": "Handling når strømprisen blir høy",
+      "actionNormal": "Handling når strømprisen blir normal",
       "priceHint1": "Priskontroll lar deg styre enheter basert på strømprisen. Dersom dette ikke benyttes vil appen bare styre maks effekt.",
       "priceErr1": "NB! Du må installere appen no.almli.utilitycost for å bruke den interne priskontrollen. Strømprisen hentes sømløst uten å benytte flytkort.",
       "pricePoint": "Prispunkt",

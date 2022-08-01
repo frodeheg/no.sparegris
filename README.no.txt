@@ -12,6 +12,7 @@ Bruksanvisning:
   - Velg målverdi for effekttariff
   - Velg prioriteringer av enheter
 - Lagre
+- Sett opp flytkort for å sende nåværende effektbruk fra strømmåleren til denne appen
 - Spar over 1000 kroner i året på effekttariffen.
 - Eksperimenter med innstillingene og flytkort i henhold til anbefalingene under for å få mest mulig ut av appen.
 - Installer enheten "sparegris innsikt" dersom du er interessert  i statistikk (ikke påkrevd)

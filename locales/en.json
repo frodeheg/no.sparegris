@@ -52,8 +52,8 @@
         "internal": "Internal control"
       },
       "actionLow": "Actions when price is low",
-      "actionHigh": "Actions when price is normal",
-      "actionNormal": "Actions when price is high",
+      "actionHigh": "Actions when price is high",
+      "actionNormal": "Actions when price is normal",
       "priceHint1": "Price control allows you to control devices based on the electricity price. If this is not used then the app will only control max power.",
       "priceErr1": "Note! You have to install the app no.almli.utilitycost in order to use the internal price control. The prices are fetched seamlessly, flow cards are not necessary.",
       "pricePoint": "Price point",

@@ -12,6 +12,7 @@ Instructions:
   - Select target value for power tariff
   - Select device priorities
 - Click save
+- Add a flow card to send the current power from the power-meter to this app
 - Save over 1000 NOK a year on the power tariff. (in Norway)
 - Experiment with the settings and flows and follow the recommendations below to get the most out of the app.
 - Install the piggy bank insights device if you're interested in statistics (this is optional)

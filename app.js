@@ -146,6 +146,10 @@ class PiggyBank extends Homey.App {
       this.onMonitor();
     }, 1000 * 60 * 5); */
 
+    /*const aaa = await this.fetchPrices();
+    this.log('EL-PRICES: -----------------');
+    this.log(JSON.stringify(aaa));*/
+
     this.updateLog('PiggyBank has been initialized', LOG_INFO);
     return Promise.resolve();
   }
@@ -892,15 +896,15 @@ class PiggyBank extends Homey.App {
         }
         switch (pricePointLastHour) {
           case PP_LOW:
-            this.__stats_low_energy = (this.__stats_low_energy === null) ? this.__stats_energy : ((+this.__stats_low_energy * 99 + this.__stats_energy) / 100);
+            this.__stats_low_energy = (this.__stats_low_energy) ? this.__stats_energy : ((+this.__stats_low_energy * 99 + this.__stats_energy) / 100);
             this.homey.settings.set('stats_low_energy', this.__stats_low_energy);
             break;
           case PP_NORM:
-            this.__stats_norm_energy = (this.__stats_norm_energy === null) ? this.__stats_energy : ((+this.__stats_norm_energy * 99 + this.__stats_energy) / 100);
+            this.__stats_norm_energy = (this.__stats_norm_energy) ? this.__stats_energy : ((+this.__stats_norm_energy * 99 + this.__stats_energy) / 100);
             this.homey.settings.set('stats_norm_energy', this.__stats_norm_energy);
             break;
           case PP_HIGH:
-            this.__stats_high_energy = (this.__stats_high_energy === null) ? this.__stats_energy : ((+this.__stats_high_energy * 99 + this.__stats_energy) / 100);
+            this.__stats_high_energy = (this.__stats_high_energy) ? this.__stats_energy : ((+this.__stats_high_energy * 99 + this.__stats_energy) / 100);
             this.homey.settings.set('stats_high_energy', this.__stats_high_energy);
             break;
           default:
@@ -1091,20 +1095,19 @@ class PiggyBank extends Homey.App {
   /** ****************************************************************************************************
    *  EXTERNAL API's
    ** **************************************************************************************************** */
-  /* async _checkApi() {
+  async _checkApi() {
     try {
       const isInstalled = await this.elPriceApi.getInstalled();
       const version = await this.elPriceApi.getVersion();
       if (isInstalled && !!version) {
         const split = version.split('.');
-        let apiOk = (Number(split[0]) >= 1 && Number(split[1]) >= 4);
-        this.log(`Electricity price api version ${version} installed${apiOk ? ' and version is ok' : ', but wrong version'}`, split);
+        const apiOk = (Number(split[0]) >= 1 && Number(split[1]) >= 4);
+        this.updateLog(`Electricity price api version ${version} installed${apiOk ? ' and version is ok' : ', but wrong version'}`);
         return apiOk;
-      } else {
-        this.log(`Electricity price api not installed`);
       }
+      this.updateLog('Electricity price api not installed');
     } catch (err) {
-      this.log(`Failed checking electricity price API: ${err.message}`);
+      this.updateLog(`Failed checking electricity price API: ${err.message}`);
     }
     return false;
   }
@@ -1114,12 +1117,12 @@ class PiggyBank extends Homey.App {
       try {
         return await this.elPriceApi.get('/prices');
       } catch (err) {
-        this.log('Electricity price api failed: ', err);
+        this.updateLog(`Electricity price api failed: ${err.message}`);
       }
     } else {
       // Can not fetch prices
     }
-  } */
+  }
 
 } // class
 
