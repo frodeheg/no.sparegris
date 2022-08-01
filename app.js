@@ -332,13 +332,15 @@ class PiggyBank extends Homey.App {
         .then(() => {
           this.__deviceList[deviceId].nComError = 0;
           // In case the device has a delayed temperature change action then change the temperature
-          if (currentAction.delayTempChange) {
-            return device.setCapabilityValue({ capabilityId: 'target_temperature', value: currentAction.delayTempValue });
+          if (device.capabilities.includes('target_temperature')) {
+            const modeTemp = parseInt(currentModeList[currentModeIdx].targetTemp, 10);
+            const deltaTemp = (currentAction.operation === DELTA_TEMP) ? parseInt(currentAction.delta, 10) : 0;
+            const newTemp = modeTemp + deltaTemp;
+            return device.setCapabilityValue({ capabilityId: 'target_temperature', value: newTemp });
           }
           return Promise.resolve();
         })
         .then(() => {
-          currentAction.delayTempChange = false;
           this.__num_off_devices--; return [newState === TURN_ON, false];
         })
         .catch(error => {
@@ -705,26 +707,22 @@ class PiggyBank extends Homey.App {
           break;
         case DELTA_TEMP: {
           const modeIdx = this.findModeIdx(deviceId);
-          const oldTemp = parseInt(currentModeList[modeIdx].targetTemp, 10);
+          const modeTemp = parseInt(currentModeList[modeIdx].targetTemp, 10);
           const deltaTemp = parseInt(currentActions[deviceId].delta, 10);
-          const newTemp = oldTemp + deltaTemp;
+          const newTemp = modeTemp + deltaTemp;
           const isOn = await (this.__deviceList[deviceId].onoff_cap === undefined) ? undefined : device.capabilitiesObj[this.__deviceList[deviceId].onoff_cap].value;
           if (isOn) {
             promises.push(device.setCapabilityValue({ capabilityId: 'target_temperature', value: newTemp })
               .then(() => {
-                currentActions[deviceId].delayTempChange = false;
                 this.__deviceList[deviceId].nComError = 0;
                 return Promise.resolve([true, false]);
               }).catch(error => {
                 this.statsCountFailedTempChange();
-                currentActions[deviceId].delayTempChange = true;
                 this.__deviceList[deviceId].nComError += 1;
                 return Promise.resolve([false, false]); // The unresolved part is solved by the later nComError handling
               }));
           } else {
-            // Delay the action until the device turns on
-            currentActions[deviceId].delayTempChange = true;
-            currentActions[deviceId].delayTempValue = newTemp;
+            // The action will be retried when the device turns on
             promises.push(Promise.resolve([true, false]));
           }
         }
