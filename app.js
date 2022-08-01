@@ -139,6 +139,15 @@ class PiggyBank extends Homey.App {
       this.onZoneUpdate(args.zone, args.enabled);
     });
 
+    this.homey.settings.on('set', setting => {
+      const doRefresh = this.homey.settings.get('settingsSaved');
+      if ((setting === 'settingsSaved') && (doRefresh === 'true')) {
+        this.updateLog('Settings saved, refreshing all devices.', LOG_INFO);
+        this.refreshAllDevices();
+      }
+      this.homey.settings.set('settingsSaved', '');
+    });
+
     await this.onNewHour(); // The function distinguish between being called at a new hour and at app-init
     // TBD: Monitor energy usage every 5 minute
     /* await this.onMonitor();
@@ -335,7 +344,7 @@ class PiggyBank extends Homey.App {
           if (device.capabilities.includes('target_temperature')) {
             const modeTemp = parseInt(currentModeList[currentModeIdx].targetTemp, 10);
             const deltaTemp = (currentAction.operation === DELTA_TEMP) ? parseInt(currentAction.delta, 10) : 0;
-            const newTemp = modeTemp + deltaTemp;
+            const newTemp = frostGuardActive ? frostList[deviceId].minTemp : (modeTemp + deltaTemp);
             return device.setCapabilityValue({ capabilityId: 'target_temperature', value: newTemp });
           }
           return Promise.resolve();
@@ -867,7 +876,7 @@ class PiggyBank extends Homey.App {
 
   statsSetLastHourPrice(price) {
     this.__stats_price_time = new Date();
-    this.updateLog(`Stats price set to: ${this.__stats_price_time}`);
+    this.updateLog(`Stats price set to: ${this.__stats_price_time}`, LOG_INFO);
     this.__stats_price = price;
   }
 
@@ -1100,12 +1109,12 @@ class PiggyBank extends Homey.App {
       if (isInstalled && !!version) {
         const split = version.split('.');
         const apiOk = (Number(split[0]) >= 1 && Number(split[1]) >= 4);
-        this.updateLog(`Electricity price api version ${version} installed${apiOk ? ' and version is ok' : ', but wrong version'}`);
+        this.updateLog(`Electricity price api version ${version} installed${apiOk ? ' and version is ok' : ', but wrong version'}`, LOG_INFO);
         return apiOk;
       }
-      this.updateLog('Electricity price api not installed');
+      this.updateLog('Electricity price api not installed', LOG_ERROR);
     } catch (err) {
-      this.updateLog(`Failed checking electricity price API: ${err.message}`);
+      this.updateLog(`Failed checking electricity price API: ${err.message}`, LOG_ERROR);
     }
     return false;
   }
@@ -1115,7 +1124,7 @@ class PiggyBank extends Homey.App {
       try {
         return await this.elPriceApi.get('/prices');
       } catch (err) {
-        this.updateLog(`Electricity price api failed: ${err.message}`);
+        this.updateLog(`Electricity price api failed: ${err.message}`, LOG_ERROR);
       }
     } else {
       // Can not fetch prices
