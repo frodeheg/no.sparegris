@@ -100,5 +100,8 @@
   },
   "0.5.18": {
     "en": "Minor translation issues + help text and fixed a bug where statistics was not calculated."
+  },
+  "0.5.19": {
+    "en": "Fixed minor typo in the stats calculation that reset some stats every hour"
   }
 }
