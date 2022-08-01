@@ -896,15 +896,15 @@ class PiggyBank extends Homey.App {
         }
         switch (pricePointLastHour) {
           case PP_LOW:
-            this.__stats_low_energy = (this.__stats_low_energy) ? this.__stats_energy : ((+this.__stats_low_energy * 99 + this.__stats_energy) / 100);
+            this.__stats_low_energy = (!this.__stats_low_energy) ? this.__stats_energy : ((+this.__stats_low_energy * 99 + this.__stats_energy) / 100);
             this.homey.settings.set('stats_low_energy', this.__stats_low_energy);
             break;
           case PP_NORM:
-            this.__stats_norm_energy = (this.__stats_norm_energy) ? this.__stats_energy : ((+this.__stats_norm_energy * 99 + this.__stats_energy) / 100);
+            this.__stats_norm_energy = (!this.__stats_norm_energy) ? this.__stats_energy : ((+this.__stats_norm_energy * 99 + this.__stats_energy) / 100);
             this.homey.settings.set('stats_norm_energy', this.__stats_norm_energy);
             break;
           case PP_HIGH:
-            this.__stats_high_energy = (this.__stats_high_energy) ? this.__stats_energy : ((+this.__stats_high_energy * 99 + this.__stats_energy) / 100);
+            this.__stats_high_energy = (!this.__stats_high_energy) ? this.__stats_energy : ((+this.__stats_high_energy * 99 + this.__stats_energy) / 100);
             this.homey.settings.set('stats_high_energy', this.__stats_high_energy);
             break;
           default:
