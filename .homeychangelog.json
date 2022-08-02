@@ -106,5 +106,8 @@
   },
   "0.5.20": {
     "en": "The devices will now be refreshed with new temperatures when the settings are being changed"
+  },
+  "0.5.21": {
+    "en": "Significant stability improvements"
   }
 }
