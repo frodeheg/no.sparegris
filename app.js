@@ -12,10 +12,11 @@
 //   This will ensure that the Zigbee driver is not interrupted during the recovery process and as such
 //   has a higher get enough time to recover after a reboot.
 //   (yes, it has been tested that the Zigbee driver does not recover unless this measure is taken)
-// TODO
+let preventZigbee = false;
 
 const Homey = require('homey');
 const nodemailer = require('nodemailer');
+const os = require('node:os');
 const { Log } = require('homey-log');
 const { Mutex } = require('async-mutex');
 const { HomeyAPIApp } = require('homey-api');
@@ -41,6 +42,13 @@ const DELTA_TEMP = 2;
 const PP_LOW = 0;
 const PP_NORM = 1;
 const PP_HIGH = 2;
+
+// Modes
+const MODE_DISABLED = 0;
+const MODE_NORMAL = 1;
+const MODE_NIGHT = 2;
+const MODE_AWAY = 3;
+const MODE_CUSTOM = 4;
 
 /**
  * Helper functions
@@ -74,9 +82,53 @@ class PiggyBank extends Homey.App {
   }
 
   /**
+   * Validates the settings
+   */
+  validateSettings() {
+    // this.log('Validating settings.');
+    // this.log(`maxPowerList: ${JSON.stringify(this.homey.settings.get('maxPowerList'))}`);
+    // this.log(`frostList: ${JSON.stringify(this.homey.settings.get('frostList'))}`);
+    // this.log(`modeList: ${JSON.stringify(this.homey.settings.get('modeList'))}`);
+    // this.log(`priceActionList: ${JSON.stringify(this.homey.settings.get('priceActionList'))}`);
+    try {
+      if (this.homey.settings.get('maxPowerList') === null) return false;
+      const frostList = this.homey.settings.get('frostList');
+      const numControlledDevices = Object.keys(frostList).length;
+      if (numControlledDevices === 0) return false;
+      const modeList = this.homey.settings.get('modeList');
+      const actionList = this.homey.settings.get('priceActionList');
+      if (modeList.length !== 4
+        || actionList.length !== 3) return false;
+      if (modeList[0].length !== numControlledDevices
+        || modeList[1].length !== numControlledDevices
+        || modeList[2].length !== numControlledDevices
+        || modeList[3].length !== numControlledDevices
+        || Object.keys(actionList[0]).length !== numControlledDevices
+        || Object.keys(actionList[1]).length !== numControlledDevices
+        || Object.keys(actionList[2]).length !== numControlledDevices) return false;
+    } catch (err) {
+      return false;
+    }
+    return true;
+  }
+
+  /**
    * onInit is called when the app is initialized.
    */
   async onInit() {
+    // this.log('OnInit');
+    // // In case of debug
+    // if (this.homey.app.manifest.id === 'no.sparegris2') {
+    //   this.log('===== DEBUG MODE =====');
+    //   const settings = this.homey.settings.getKeys();
+    //   this.log(`Settings being deleted: ${JSON.stringify(settings)}`);
+    //   for (let i = 0; i < settings.length; i++) {
+    //     this.homey.settings.unset(settings[i]);
+    //   }
+    // }
+    // this.log(`modeList: ${JSON.stringify(this.homey.settings.get('modeList'))}`);
+    // this.log(`priceActionList: ${JSON.stringify(this.homey.settings.get('priceActionList'))}`);
+    // this.log(`frostList: ${JSON.stringify(this.homey.settings.get('frostList'))}`);
     this.logInit();
     this.__intervalID = undefined;
     this.__newHourID = undefined;
@@ -96,13 +148,24 @@ class PiggyBank extends Homey.App {
     this.homeyApi = new HomeyAPIApp({
       homey: this.homey
     });
+
+    // See comment at the top of the file why zigbee is prevented
+    const timeToPreventZigbee = Math.min(15 * 60 - os.uptime(), 15 * 60);
+    if (timeToPreventZigbee > 0) {
+      preventZigbee = true;
+      this.homey.settings.set('preventZigbee', true);
+      this.updateLog(`Homey reboot detected. Delaying device control by ${timeToPreventZigbee} seconds to improve Zigbee recovery.`, LOG_ERROR);
+      setTimeout(() => {
+        this.updateLog('Device constrol is once again enabled.', LOG_INFO);
+        preventZigbee = false;
+        this.homey.settings.unset('preventZigbee');
+      }, timeToPreventZigbee * 1000);
+    }
+
     this.statsInit();
 
     // Check that settings has been updated
-    const maxPower = this.homey.settings.get('maxPowerList');
-    if (typeof maxPower === 'undefined') {
-      return Promise.reject(new Error('Please configure the app before continuing'));
-    }
+    this.app_is_configured = this.validateSettings();
 
     // Create list of devices
     await this.createDeviceList();
@@ -116,36 +179,65 @@ class PiggyBank extends Homey.App {
     });
     const cardActionPowerUpdate = this.homey.flow.getActionCard('update-meter-power');
     cardActionPowerUpdate.registerRunListener(async args => {
-      this.onPowerUpdate(args.CurrentPower);
+      if (preventZigbee) return Promise.reject(new Error(this.homey.__('warnings.homeyReboot')));
+      if (!this.app_is_configured) return Promise.reject(new Error(this.homey.__('warnings.notConfigured')));
+      if (+this.homey.settings.get('operatingMode') === MODE_DISABLED) return Promise.reject(new Error(this.homey.__('warnings.notEnabled')));
+      return this.onPowerUpdate(args.CurrentPower);
     });
     const cardActionModeUpdate = this.homey.flow.getActionCard('change-piggy-bank-mode');
     cardActionModeUpdate.registerRunListener(async args => {
-      this.onModeUpdate(args.mode);
+      if (preventZigbee) return Promise.reject(new Error(this.homey.__('warnings.homeyReboot')));
+      if (!this.app_is_configured) return Promise.reject(new Error(this.homey.__('warnings.notConfigured')));
+      return this.onModeUpdate(+args.mode);
     });
     const cardActionPricePointUpdate = this.homey.flow.getActionCard('change-piggy-bank-price-point');
     cardActionPricePointUpdate.registerRunListener(async args => {
-      this.onPricePointUpdate(args.mode);
+      if (preventZigbee) return Promise.reject(new Error(this.homey.__('warnings.homeyReboot')));
+      if (!this.app_is_configured) return Promise.reject(new Error(this.homey.__('warnings.notConfigured')));
+      if (+this.homey.settings.get('operatingMode') === MODE_DISABLED) return Promise.reject(new Error(this.homey.__('warnings.notEnabled')));
+      return this.onPricePointUpdate(args.mode);
     });
     const cardActionSafetyPowerUpdate = this.homey.flow.getActionCard('change-piggy-bank-safety-power');
     cardActionSafetyPowerUpdate.registerRunListener(async args => {
-      this.onSafetyPowerUpdate(args.reserved);
+      if (preventZigbee) return Promise.reject(new Error(this.homey.__('warnings.homeyReboot')));
+      if (!this.app_is_configured) return Promise.reject(new Error(this.homey.__('warnings.notConfigured')));
+      if (+this.homey.settings.get('operatingMode') === MODE_DISABLED) return Promise.reject(new Error(this.homey.__('warnings.notEnabled')));
+      return this.onSafetyPowerUpdate(args.reserved);
     });
     const cardZoneUpdate = this.homey.flow.getActionCard('change-zone-active');
     cardZoneUpdate.registerArgumentAutocompleteListener(
       'zone',
-      async (query, args) => this.generateZoneList(query, args)
+      async (query, args) => {
+        if (preventZigbee) return Promise.reject(new Error(this.homey.__('warnings.homeyReboot')));
+        if (!this.app_is_configured) return Promise.reject(new Error(this.homey.__('warnings.notConfigured')));
+        if (+this.homey.settings.get('operatingMode') === MODE_DISABLED) return Promise.reject(new Error(this.homey.__('warnings.notEnabled')));
+        return this.generateZoneList(query, args);
+      }
     );
     cardZoneUpdate.registerRunListener(async args => {
-      this.onZoneUpdate(args.zone, args.enabled);
+      if (preventZigbee) return Promise.reject(new Error(this.homey.__('warnings.homeyReboot')));
+      if (!this.app_is_configured) return Promise.reject(new Error(this.homey.__('warnings.notConfigured')));
+      if (+this.homey.settings.get('operatingMode') === MODE_DISABLED) return Promise.reject(new Error(this.homey.__('warnings.notEnabled')));
+      return this.onZoneUpdate(args.zone, args.enabled);
     });
 
     this.homey.settings.on('set', setting => {
       const doRefresh = this.homey.settings.get('settingsSaved');
       if ((setting === 'settingsSaved') && (doRefresh === 'true')) {
         this.updateLog('Settings saved, refreshing all devices.', LOG_INFO);
-        this.refreshAllDevices();
+        this.app_is_configured = this.validateSettings();
+        if (!this.app_is_configured) {
+          throw (new Error('This should never happen, please contact the developer and the bug will be fixed'));
+        }
+
+        const currentMode = +this.homey.settings.get('operatingMode');
+        if (!preventZigbee && currentMode !== MODE_DISABLED) {
+          this.refreshAllDevices();
+        }
+        this.homey.settings.set('settingsSaved', '');
+        // The callback only returns on error so notify success with failure
+        throw (new Error(this.homey.__('settings.alert.settingssaved')));
       }
-      this.homey.settings.set('settingsSaved', '');
     });
 
     await this.onNewHour(); // The function distinguish between being called at a new hour and at app-init
@@ -155,9 +247,9 @@ class PiggyBank extends Homey.App {
       this.onMonitor();
     }, 1000 * 60 * 5); */
 
-    /*const aaa = await this.fetchPrices();
+    /* const aaa = await this.fetchPrices();
     this.log('EL-PRICES: -----------------');
-    this.log(JSON.stringify(aaa));*/
+    this.log(JSON.stringify(aaa)); */
 
     this.updateLog('PiggyBank has been initialized', LOG_INFO);
     return Promise.resolve();
@@ -304,7 +396,7 @@ class PiggyBank extends Homey.App {
     const currentAction = actionLists[actionListIdx][deviceId]; // Action state: .operation
     const currentActionOp = parseInt(currentAction.operation, 10);
     const modeLists = this.homey.settings.get('modeList');
-    const currentMode = this.homey.settings.get('operatingMode');
+    const currentMode = +this.homey.settings.get('operatingMode');
     const currentModeList = modeLists[currentMode - 1];
     const currentModeIdx = (modelistIdx === undefined) ? this.findModeIdx(deviceId) : modelistIdx;
     const currentModeState = parseInt(currentModeList[currentModeIdx].operation, 10); // Mode state
@@ -429,10 +521,11 @@ class PiggyBank extends Homey.App {
 
   /**
    * onPowerUpdate is the action called whenever the power is updated from the power meter
+   * Must never be called when operatingMode is set to Disabled
    */
   async onPowerUpdate(newPower) {
     if (Number.isNaN(newPower)) {
-      // If newPower is invalid just ignore it
+      // If newPower is invalid or app is not configured just ignore it
       return Promise.resolve();
     }
     const now = new Date();
@@ -453,7 +546,7 @@ class PiggyBank extends Homey.App {
     // Check if power can be increased or reduced
     const errorMargin = this.homey.settings.get('errorMargin') ? (parseInt(this.homey.settings.get('errorMargin'), 10) / 100) : 1;
     const maxPowerList = this.homey.settings.get('maxPowerList');
-    const currentMode = this.homey.settings.get('operatingMode');
+    const currentMode = +this.homey.settings.get('operatingMode');
     const trueMaxPower = maxPowerList[currentMode - 1];
     const errorMarginWatts = trueMaxPower * errorMargin;
     const maxPower = trueMaxPower - errorMarginWatts;
@@ -465,11 +558,6 @@ class PiggyBank extends Homey.App {
       + `Limit: ${String(maxPower)} Wh, `
       + `Reserved: ${String(Math.ceil(this.__reserved_energy + safetyPower))}W, `
       + `(Estimated end: ${String(this.__power_estimated.toFixed(2))})`, LOG_DEBUG);
-
-    // Do not attempt to control any devices if the app is disabled
-    if (this.homey.settings.get('operatingMode') === 0) { // App is disabled
-      return Promise.resolve();
-    }
 
     // Try to control devices if the power is outside of the preferred bounds
     let powerDiff = (((maxPower - this.__accum_energy - this.__reserved_energy) * (1000 * 60 * 60)) / remainingTime) - newPower - safetyPower;
@@ -495,12 +583,15 @@ class PiggyBank extends Homey.App {
    * onModeUpdate is called whenever the operation mode is changed
    */
   async onModeUpdate(newMode) {
-    const oldMode = this.homey.settings.get('operatingMode');
+    const oldMode = +this.homey.settings.get('operatingMode');
     if (newMode === oldMode) {
       return Promise.resolve();
     }
     this.updateLog(`Changing the current mode to: ${String(newMode)}`, LOG_INFO);
     this.homey.settings.set('operatingMode', newMode);
+    if (newMode === MODE_DISABLED) {
+      return Promise.resolve([true, true]);
+    }
     return this.refreshAllDevices();
   }
 
@@ -582,7 +673,7 @@ class PiggyBank extends Homey.App {
     this.updateLog(`Can use ${String(morePower)}W more power`, LOG_DEBUG);
 
     const modeList = this.homey.settings.get('modeList');
-    const currentMode = this.homey.settings.get('operatingMode');
+    const currentMode = +this.homey.settings.get('operatingMode');
     const currentModeList = modeList[currentMode - 1];
     const numDevices = currentModeList.length;
     const reorderedModeList = [...currentModeList]; // Make sure all devices with communication errors are handled last (e.g. in case nothing else was possible)
@@ -635,7 +726,7 @@ class PiggyBank extends Homey.App {
     this.__last_power_off_time = new Date();
 
     const modeList = this.homey.settings.get('modeList');
-    const currentMode = this.homey.settings.get('operatingMode');
+    const currentMode = +this.homey.settings.get('operatingMode');
     const currentModeList = modeList[currentMode - 1];
     const numDevices = currentModeList.length;
     const reorderedModeList = [...currentModeList]; // Make sure all devices with communication errors are handled last (e.g. in case nothing else was possible)
@@ -678,7 +769,7 @@ class PiggyBank extends Homey.App {
 
   findModeIdx(deviceId) {
     const modeList = this.homey.settings.get('modeList');
-    const currentMode = this.homey.settings.get('operatingMode');
+    const currentMode = +this.homey.settings.get('operatingMode');
     const currentModeList = modeList[currentMode - 1];
     for (let i = 0; i < currentModeList.length; i++) {
       if (currentModeList[i].id === deviceId) {
@@ -690,7 +781,7 @@ class PiggyBank extends Homey.App {
 
   async refreshAllDevices() {
     const modeList = this.homey.settings.get('modeList');
-    const currentMode = this.homey.settings.get('operatingMode');
+    const currentMode = +this.homey.settings.get('operatingMode');
     const currentModeList = modeList[currentMode - 1];
     const currentPricePoint = this.homey.settings.get('pricePoint');
 
@@ -749,7 +840,7 @@ class PiggyBank extends Homey.App {
         }
         return Promise.resolve(allOk);
       })
-      .catch(error => Promise.reject(new Error(`Unknown error: ${error}`)));
+      .catch(error => Promise.reject(error));
   }
 
   /** ****************************************************************************************************
@@ -857,7 +948,7 @@ class PiggyBank extends Homey.App {
 
   statsSetLastHourEnergy(energy) {
     this.__stats_energy_time = this.roundToNearestHour(new Date());
-    this.log(`Stats last energy set to: ${this.__stats_energy_time}`);
+    this.updateLog(`Stats last energy time: ${this.__stats_energy_time}`, LOG_INFO);
     this.__stats_energy = energy;
 
     // Find todays max
@@ -976,41 +1067,18 @@ class PiggyBank extends Homey.App {
     const nowTime = new Date(Date.now());
 
     if (oldText.length === 0) {
-      oldText = 'Log ID: ';
-      oldText += nowTime.toJSON();
-      oldText += '\r\n';
-      oldText += 'App version ';
-      oldText += Homey.manifest.version;
-      oldText += '\r\n\r\n';
-      this.logLastTime = nowTime;
+      oldText = `Log ID: ${nowTime.toJSON()}\r\n`;
+      oldText += `App version ${Homey.manifest.version}\r\n\r\n`;
     }
 
-    if (this.logLastTime === undefined) {
-      this.logLastTime = nowTime;
+    let milliText = nowTime.getMilliseconds().toString();
+    if (milliText.length === 2) {
+      milliText = `0${milliText}`;
+    } else if (milliText.length === 1) {
+      milliText = `00${milliText}`;
     }
 
-    // const dt = new Date(nowTime.getTime() - this.logLastTime.getTime());
-    this.logLastTime = nowTime;
-
-    oldText += '+';
-    oldText += nowTime.getHours();
-    oldText += ':';
-    oldText += nowTime.getMinutes();
-    oldText += ':';
-    oldText += nowTime.getSeconds();
-    oldText += '.';
-
-    const milliSeconds = nowTime.getMilliseconds().toString();
-    if (milliSeconds.length === 2) {
-      oldText += '0';
-    } else if (milliSeconds.length === 1) {
-      oldText += '00';
-    }
-
-    oldText += milliSeconds;
-    oldText += ': ';
-    oldText += newMessage;
-    oldText += '\r\n';
+    oldText += `+${nowTime.getHours()}:${nowTime.getMinutes()}:${nowTime.getSeconds()}.${milliText}: ${newMessage}\r\n`;
 
     this.homey.settings.set('diagLog', oldText);
     this.homeyLog.setExtra({
@@ -1080,7 +1148,7 @@ class PiggyBank extends Homey.App {
       power_last_hour: parseInt(this.__power_last_hour, 10),
       power_estimated: this.__power_estimated === undefined ? undefined : parseInt(this.__power_estimated.toFixed(2), 10),
       price_point: this.homey.settings.get('pricePoint'),
-      operating_mode: this.homey.settings.get('operatingMode'),
+      operating_mode: +this.homey.settings.get('operatingMode'),
       alarm_overshoot: this.__alarm_overshoot,
       free_capacity: this.__free_capacity,
       num_devices: Object.keys(listOfUsedDevices).length,
@@ -1126,9 +1194,9 @@ class PiggyBank extends Homey.App {
       } catch (err) {
         this.updateLog(`Electricity price api failed: ${err.message}`, LOG_ERROR);
       }
-    } else {
-      // Can not fetch prices
     }
+    // Can not fetch prices
+    return {};
   }
 
 } // class

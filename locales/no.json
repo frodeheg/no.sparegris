@@ -143,5 +143,11 @@
   "newdevice" : {
     "info": "Denne enheten vil gi deg innblikk i hva som skjer når appen styrer strømmen. Det er ikke nødvendig å installere denne enheten for å få appen til å fungere.",
     "info2": "Ettersom enheten bare fungerer som et vindu inn i appen kan du derfor ikke konfigurere hva som skjer gjennom denne enhetens innstillinger. Du kan bare konfigurere hva som skjer gjennom appens innstillinger."
+  },
+  "warnings" : {
+    "notConfigured": "Appen har ikke blitt konfigurert riktig enda, vennligst gå til innstillinger for appen og lagre ditt ønskede oppsett.",
+    "homeyReboot": "Appen er deaktivert i 15 minutter etter at et strømbrudd har blitt detektert fordi Homey gjenopprettes",
+    "notEnabled": "Appen har ikke blitt aktivert enda, gå til appens innstillinger og aktiver appen først",
+    "noDevices": "Vennligst velg minst en enhet som skal bli styrt av appen"
   }
 }

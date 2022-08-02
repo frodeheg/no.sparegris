@@ -865,47 +865,31 @@
           checkLoadingDone();
         });
 
+        // Callback function does only return on failure unfortunately
+        const errFunc = (err) => { Homey.alert(err.message) }
         saveElement.addEventListener("click", function (e) {
-          Homey.set("deviceList", deviceList, function (err) {
-            if (err) return Homey.alert(err);
-          });
-          Homey.set("modeList", modeList, function (err) {
-            if (err) return Homey.alert(err);
-          });
-          Homey.set("frostList", frostList, function(err) {
-            if (err) return Homey.alert(err);
-          })
-          Homey.set("zones", zoneList, function(err) {
-            if (err) return Homey.alert(err);
-          })
-          Homey.set("maxPowerList", maxPowerList, function (err) {
-            if (err) return Homey.alert(err);
-          });
-          Homey.set("operatingMode", operatingModeElement.value, function (err) {
-            if (err) return Homey.alert(err);
-          });
-          Homey.set("priceMode", priceModeElement.value, function (err) {
-            if (err) return Homey.alert(err);
-          });
-          Homey.set("pricePoint", pricePointElement.value, function (err) {
-            if (err) return Homey.alert(err);
-          });
-          Homey.set("priceActionList", priceActionList, function (err) {
-            if (err) return Homey.alert(err);
-          })
-          Homey.set("errorMargin", errorMarginElement.value, function (err) {
-            if (err) return Homey.alert(err);
-          });
-          Homey.set("safetyPower", safetyPowerElement.value, function (err) {
-            if (err) return Homey.alert(err);
-          });
-          Homey.set("mainFuse", mainFuseElement.value, function (err) {
-            if (err) return Homey.alert(err);
-          });
-          Homey.set("settingsSaved", "true", function (err) {
-            if (err) return Homey.alert(err);
-          });
-          Homey.alert(Homey.__("settings.alert.settingssaved"));
+          // Make sure all settings are up to date:
+          refreshModeLists(); // It's a pitty but the user did not even visit these pages. Probably they will do later
+          refreshFrostList(); // It's a pitty but the user did not even visit these pages. Probably they will do later
+          refreshPriceActionList(); // It's a pitty but the user did not even visit these pages. Probably they will do later
+          if (Object.keys(frostList).length === 0) {
+            Homey.alert(Homey.__('warnings.noDevices'))
+          } else {
+            Homey.set("deviceList", deviceList, errFunc);
+            Homey.set("modeList", modeList, errFunc);
+            Homey.set("frostList", frostList, errFunc);
+            Homey.set("zones", zoneList, errFunc);
+            Homey.set("maxPowerList", maxPowerList, errFunc);
+            Homey.set("operatingMode", operatingModeElement.value, errFunc);
+            Homey.set("priceMode", priceModeElement.value, errFunc);
+            Homey.set("pricePoint", pricePointElement.value, errFunc);
+            Homey.set("priceActionList", priceActionList, errFunc);
+            Homey.set("errorMargin", errorMarginElement.value, errFunc);
+            Homey.set("safetyPower", safetyPowerElement.value, errFunc);
+            Homey.set("mainFuse", mainFuseElement.value, errFunc);
+            Homey.set("settingsSaved", "", errFunc); // On settings is only called if the settings actually changed
+            Homey.set("settingsSaved", "true", errFunc); // This one will throw the message settings.alert.settingssaved on success
+          }
         });
 
         // -- Log page -- //
@@ -951,22 +935,28 @@
         Homey.ready();
       }
 
+      function refreshPriceActionList() {
+        for (var tabPage = 0; tabPage < 3; tabPage++) {
+          // Remove devices that are no longer in use.
+          for (var deviceId in priceActionList[tabPage]) {
+            if (!deviceList[deviceId].use) {
+              delete priceActionList[tabPage][deviceId];
+            }
+          }
+          // Add new devices
+          var new_delta = (tabPage == 0 ? 3 : (tabPage == 1 ? 0 : -5))
+          for (var key in deviceList) {
+            if (deviceList[key].use && !(key in priceActionList[tabPage])) {
+              priceActionList[tabPage][key] = { delta: new_delta, operation: DELTA_TEMP }
+            }
+          }
+        }
+      }
+
       // -- Price Tab control -- //
       function changePriceTab(evt, tabPage) {
         // Update device list:
-        // Remove devices that are no longer in use.
-        for (deviceId in priceActionList[tabPage]) {
-          if (!deviceList[deviceId].use) {
-            delete priceActionList[tabPage][deviceId];
-          }
-        }
-        // Add new devices
-        var new_delta = (tabPage == 0 ? 3 : (tabPage == 1 ? 0 : -5))
-        for (key in deviceList) {
-          if (deviceList[key].use && !(key in priceActionList[tabPage])) {
-            priceActionList[tabPage][key] = { delta: new_delta, operation: DELTA_TEMP }
-          }
-        }
+        refreshPriceActionList();
         generatePriceActionList(tabPage);
 
         // Get all elements with class="subtablinks" and remove the class "active"
@@ -979,24 +969,48 @@
         if (evt) evt.currentTarget.className += " active";
       }
 
-      // -- Tab control -- //
+      function refreshModeLists() {
+        for (var modeId = 0; modeId < modeList.length; modeId++) {
+          var up_to_date_elements = {};
+          // First remove devices that are no longer in use.
+          for (var i = modeList[modeId].length-1; i >= 0 ; i--) {
+            if (!deviceList[modeList[modeId][i].id].use) {
+              modeList[modeId].splice(i, 1);
+            } else {
+              up_to_date_elements[modeList[modeId][i].id] = true;
+            }
+          }
+          // Add new devices
+          for (var key in deviceList) {
+            if (deviceList[key].use && !(key in up_to_date_elements)) {
+              modeList[modeId].push({ id: key, operation: CONTROLLED, targetTemp: 28 });
+            }
+          }
+        }
+      }
+
+      function refreshFrostList() {
+        // Remove devices that are no longer in use.
+        for (var deviceId in frostList) {
+          if (!deviceList[deviceId].use) {
+            delete frostList[deviceId];
+          }
+        }
+        // Add new devices
+        for (var key in deviceList) {
+          if (deviceList[key].use && !(key in frostList)) {
+            frostList[key] = { minTemp: 5 }
+          }
+        }
+      }
+
+        // -- Tab control -- //
       function changeTab(evt, tabPage, modeId = undefined) {
         var i, tabcontent, tablinks;
 
         // Update devicelist for Frost Page
         if (tabPage == 'frostPage') {
-          // Remove devices that are no longer in use.
-          for (deviceId in frostList) {
-            if (!deviceList[deviceId].use) {
-              delete frostList[deviceId];
-            }
-          }
-          // Add new devices
-          for (key in deviceList) {
-            if (deviceList[key].use && !(key in frostList)) {
-              frostList[key] = { minTemp: 5 }
-            }
-          }
+          refreshFrostList();
           generateFrostList();
         }
 
@@ -1009,24 +1023,10 @@
         if (tabPage == 'pricePage') {
           changePriceTab(evt, 1);
         }
-
-        // Update the deviceLists for Mode lists
-        if ((modeId != undefined) && (modeId >= 0) && (modeId < modeList.length)) {
-          var up_to_date_elements = {};
-          // First remove devices that are no longer in use.
-          for (i = modeList[modeId].length-1; i >= 0 ; i--) {
-            if (!deviceList[modeList[modeId][i].id].use) {
-              modeList[modeId].splice(i, 1);
-            } else {
-              up_to_date_elements[modeList[modeId][i].id] = true;
-            }
-          }
-          // Add new devices
-          for (key in deviceList) {
-            if (deviceList[key].use && !(key in up_to_date_elements)) {
-              modeList[modeId].push({ id: key, operation: CONTROLLED, targetTemp: 28 });
-            }
-          }
+        
+        // Refresh the mode lists
+        if (tabPage == 'priorityPage') {
+          refreshModeLists();
           generatePriorityList(modeId);
           currentModeTab = modeId;
           document.getElementById("maxPower").value = maxPowerList[modeId];

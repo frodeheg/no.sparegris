@@ -78,8 +78,8 @@
           "no": "Klarer ikke å begrense strømforbruket. Slå av [[excessPower]] Watt umiddelbart ellers vil effekt-tariffen for neste måned øke."
         },
         "hint": {
-          "en": "Use this condition as a last resort to limit energy. Reccomended to alert all users that power usage must be reduced / turn off all devices.",
-          "no": "Brukes som en siste utvei for å begrense energiforbruk. Det er anbefalt å sende en melding til alle som forbruker ukontrollerbar strøm om å begrense forbruket umiddelbart."
+          "en": "Use this condition as a last resort to limit energy. If the app turned off every controllable device the user can be alerted to do a manual powerdown if this was not enough.",
+          "no": "Brukes som en siste utvei for å begrense energiforbruk. Dersom appen har slått av alt kan en melding sendes ut om å redusere forbruket manuelt dersom dette ikke var tilstrekkelig."
         },
         "args": [
           {
@@ -371,8 +371,8 @@
       "capabilitiesOptions": {
         "alarm_generic.overshoot": {
           "title": {
-            "en": "Power limit about to breach!",
-            "no": "Forbrukstaket blir brutt!"
+            "en": "Manual powerdown required!",
+            "no": "Manuall nedstegning påkrevd!"
           },
           "insightsTitleTrue": {
             "en": "Unable to maintain power limit!",

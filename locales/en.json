@@ -149,5 +149,11 @@
   "newdevice" : {
     "info": "This device will give you insight into what happens when the app controls the flow. There is no need to install this device to make the app work.",
     "info2": "As the device only works as a window into the app, you cannot therefore configure what happens through this device's settings. You can only configure what happens through the app's settings."
+  },
+  "warnings" : {
+    "notConfigured": "The App has not been configured properly yet, please go to the app settings page and save your preferred configuration",
+    "homeyReboot": "The App is disabled for 15 minutes after a power loss was detected to help Homey to recover.",
+    "notEnabled": "The App has not been activated yet. Please enter the app settings to activate the app.",
+    "noDevices": "Please select at least one device to be controlled"
   }
 }
