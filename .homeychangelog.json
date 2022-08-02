@@ -112,5 +112,8 @@
   },
   "0.5.22": {
     "en": "Fixed an error displaying the mode capability"
+  },
+  "0.5.23": {
+    "en": "Capability value fix when setting mode"
   }
 }
