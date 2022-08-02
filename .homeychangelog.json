@@ -109,5 +109,8 @@
   },
   "0.5.21": {
     "en": "Significant stability improvements"
+  },
+  "0.5.22": {
+    "en": "Fixed an error displaying the mode capability"
   }
 }
