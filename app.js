@@ -117,16 +117,18 @@ class PiggyBank extends Homey.App {
    * onInit is called when the app is initialized.
    */
   async onInit() {
-    // this.log('OnInit');
+    /* DEBUG_BEGIN
+    this.log('OnInit');
     // // In case of debug
-    // if (this.homey.app.manifest.id === 'no.sparegris2') {
-    //   this.log('===== DEBUG MODE =====');
-    //   const settings = this.homey.settings.getKeys();
-    //   this.log(`Settings being deleted: ${JSON.stringify(settings)}`);
-    //   for (let i = 0; i < settings.length; i++) {
-    //     this.homey.settings.unset(settings[i]);
-    //   }
-    // }
+    if (this.homey.app.manifest.id === 'no.sparegris2') {
+      this.log('===== DEBUG MODE =====');
+      const settings = this.homey.settings.getKeys();
+      this.log(`Settings being deleted: ${JSON.stringify(settings)}`);
+      for (let i = 0; i < settings.length; i++) {
+        this.homey.settings.unset(settings[i]);
+      }
+    }
+    DEBUG_END */
     // this.log(`modeList: ${JSON.stringify(this.homey.settings.get('modeList'))}`);
     // this.log(`priceActionList: ${JSON.stringify(this.homey.settings.get('priceActionList'))}`);
     // this.log(`frostList: ${JSON.stringify(this.homey.settings.get('frostList'))}`);

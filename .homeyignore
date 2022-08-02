@@ -1,1 +1,3 @@
 sources/*
+/app.js.bak
+/.homeycompose/app.json.bak
