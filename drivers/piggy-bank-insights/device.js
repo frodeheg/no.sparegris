@@ -178,13 +178,13 @@ class MyDevice extends Device {
       const prevMode = await this.getStoreValue('piggy_mode');
       this.setCapabilityValue('piggy_mode', String(piggyState.operating_mode));
       if (+piggyState.operating_mode !== +prevMode) {
-        this.setStoreValue('piggy_mode', piggyState.operating_mode);
-        switch (piggyState.operating_mode) {
-          case '0': this.toggleCapability('piggy_mode_disabled'); break;
-          case '1': this.toggleCapability('piggy_mode_normal'); break;
-          case '2': this.toggleCapability('piggy_mode_night'); break;
-          case '3': this.toggleCapability('piggy_mode_holiday'); break;
-          case '4': this.toggleCapability('piggy_mode_custom'); break;
+        this.setStoreValue('piggy_mode', +piggyState.operating_mode);
+        switch (+piggyState.operating_mode) {
+          case 0: this.toggleCapability('piggy_mode_disabled'); break;
+          case 1: this.toggleCapability('piggy_mode_normal'); break;
+          case 2: this.toggleCapability('piggy_mode_night'); break;
+          case 3: this.toggleCapability('piggy_mode_holiday'); break;
+          case 4: this.toggleCapability('piggy_mode_custom'); break;
           default: /* Broken input should not happen */ break;
         }
       }
