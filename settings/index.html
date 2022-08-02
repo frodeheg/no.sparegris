@@ -807,7 +807,7 @@
         Homey.get("operatingMode", function (err, operatingMode) {
           if (err) return Homey.alert(err);
           if (operatingMode !== null) {
-            currentOperatingMode = operatingMode;
+            currentOperatingMode = +operatingMode;
           } else {
             currentOperatingMode = 0;
           }
@@ -868,6 +868,7 @@
         // Callback function does only return on failure unfortunately
         const errFunc = (err) => { Homey.alert(err.message) }
         saveElement.addEventListener("click", function (e) {
+          Homey.alert(Homey.__('warnings.savingWait'));
           // Make sure all settings are up to date:
           refreshModeLists(); // It's a pitty but the user did not even visit these pages. Probably they will do later
           refreshFrostList(); // It's a pitty but the user did not even visit these pages. Probably they will do later

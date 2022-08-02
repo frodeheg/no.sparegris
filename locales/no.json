@@ -19,8 +19,7 @@
       "expensive": "Dyrt"
     },
     "opMode": {
-      "disabled": "Avslått",
-      "price": "Pris",
+      "disabled": "Deaktivert",
       "normal": "Normal",
       "night": "Natt",
       "holiday": "Borte",
@@ -148,6 +147,7 @@
     "notConfigured": "Appen har ikke blitt konfigurert riktig enda, vennligst gå til innstillinger for appen og lagre ditt ønskede oppsett.",
     "homeyReboot": "Appen er deaktivert i 15 minutter etter at et strømbrudd har blitt detektert fordi Homey gjenopprettes",
     "notEnabled": "Appen har ikke blitt aktivert enda, gå til appens innstillinger og aktiver appen først",
-    "noDevices": "Vennligst velg minst en enhet som skal bli styrt av appen"
+    "noDevices": "Vennligst velg minst en enhet som skal bli styrt av appen",
+    "savingWait": "Lagrer, vennligst vent..."
   }
 }

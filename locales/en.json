@@ -19,8 +19,7 @@
       "expensive": "Expensive"
     },
     "opMode": {
-      "disabled": "App Disalbed",
-      "price": "Price",
+      "disabled": "App Disabled",
       "normal": "Normal",
       "night": "Night",
       "holiday": "Away",
@@ -154,6 +153,7 @@
     "notConfigured": "The App has not been configured properly yet, please go to the app settings page and save your preferred configuration",
     "homeyReboot": "The App is disabled for 15 minutes after a power loss was detected to help Homey to recover.",
     "notEnabled": "The App has not been activated yet. Please enter the app settings to activate the app.",
-    "noDevices": "Please select at least one device to be controlled"
+    "noDevices": "Please select at least one device to be controlled",
+    "savingWait": "Saving, please wait..."
   }
 }
