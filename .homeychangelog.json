@@ -115,5 +115,8 @@
   },
   "0.5.23": {
     "en": "Capability value fix when setting mode"
+  },
+  "0.5.24": {
+    "en": "Removed crash when user has not completed setup process. + added notice when settings are being saved."
   }
 }
