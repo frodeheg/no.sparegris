@@ -176,8 +176,8 @@ class MyDevice extends Device {
 
       // Set Mode capability + update timeline using boolean workaround capabilities
       const prevMode = await this.getStoreValue('piggy_mode');
-      this.setCapabilityValue('piggy_mode', piggyState.operating_mode);
-      if (piggyState.operating_mode !== prevMode) {
+      this.setCapabilityValue('piggy_mode', String(piggyState.operating_mode));
+      if (+piggyState.operating_mode !== +prevMode) {
         this.setStoreValue('piggy_mode', piggyState.operating_mode);
         switch (piggyState.operating_mode) {
           case '0': this.toggleCapability('piggy_mode_disabled'); break;
