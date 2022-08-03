@@ -352,6 +352,18 @@
         }
       }
 
+      function setMaxPower(object) {
+        if(object.value != ""){
+          if(parseInt(object.value) < parseInt(object.min)){
+            object.value = object.min;
+          }
+          if(parseInt(object.value) > parseInt(object.max)){
+            object.value = object.max;
+          }
+          maxPowerList[currentModeTab]=object.value;
+        }
+      }
+
       function setFrostTemp(object, device_id) {
         if(object.value != ""){
           if(parseInt(object.value) < parseInt(object.min)){
@@ -618,19 +630,7 @@
         <table class="settings_table">
           <tr>
             <td class="settings_row_name"><label for="maxPower" data-i18n="settings.mode.maxPower">mode.maxPower</label>:</td>
-            <td class="settings_row_input">
-              <select id ="maxPower" onchange="maxPowerList[currentModeTab]=this.value">
-                <option value="2000" data-i18n="settings.mode.powerLimit1">mode.powerLimit1</option>
-                <option value="5000" data-i18n="settings.mode.powerLimit2" selected>mode.powerLimit2</option>
-                <option value="10000" data-i18n="settings.mode.powerLimit3">mode.powerLimit3</option>
-                <option valse="15000" data-i18n="settings.mode.powerLimit4">mode.powerLimit4</option>
-                <option value="20000" data-i18n="settings.mode.powerLimit5">mode.powerLimit5</option>
-                <option value="25000" data-i18n="settings.mode.powerLimit6">mode.powerLimit6</option>
-                <option value="50000" data-i18n="settings.mode.powerLimit7">mode.powerLimit7</option>
-                <option value="75000" data-i18n="settings.mode.powerLimit8">mode.powerLimit8</option>
-                <option value="100000" data-i18n="settings.mode.powerLimit9">mode.powerLimit9</option>
-                <option value="inf" data-i18n="settings.mode.powerLimit10">mode.powerLimit10</option>
-              </select>
+            <td class="settings_row_input"><input id="maxPower" onchange="setMaxPower(this)" type="number" min="1000" max="100000" value="500" size="10">Wh</td>
           </tr>
         </table>
       </fieldset>
