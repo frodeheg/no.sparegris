@@ -118,5 +118,8 @@
   },
   "0.5.24": {
     "en": "Removed crash when user has not completed setup process. + added notice when settings are being saved."
+  },
+  "0.6.0": {
+    "en": "Added support to fetch energy prices from the app no.almli.utilitycost and use it to control price points internally + new statistics for savings + improved translations"
   }
 }
