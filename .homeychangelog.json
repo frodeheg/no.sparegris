@@ -133,5 +133,8 @@
   },
   "0.6.4": {
     "en": "Added 'Remember to save' hint in settings page"
+  },
+  "0.6.5": {
+    "en": "Cosmetic changes only (position and visibility of Remember to save hint)"
   }
 }
