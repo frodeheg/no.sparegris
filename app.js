@@ -123,8 +123,6 @@ class PiggyBank extends Homey.App {
     // // In case of debug
     if (this.homey.app.manifest.id === 'no.sparegris2') {
       this.log('===== DEBUG MODE =====');
-      const showMe = this.homey.settings.get('futurePriceOptions');
-      this.log(`Future: ${JSON.stringify(showMe)}`);
       // const settings = this.homey.settings.getKeys();
       // this.log(`Settings being deleted: ${JSON.stringify(settings)}`);
       // for (let i = 0; i < settings.length; i++) {
@@ -154,6 +152,13 @@ class PiggyBank extends Homey.App {
     this.homeyApi = new HomeyAPIApp({
       homey: this.homey
     });
+    // All elements of current_state will have the following:
+    //  nComError: Number of communication errors since last time it worked - Used to depriorotize devices so we don't get stuck in an infinite retry loop
+    //  isOn: If the device should be on
+    //  temp: The temperature of the device
+    //  ongoing: true if the state has not been confirmed yet
+    // Need to be refreshed whenever the device list is created
+    this.__current_state = {};
 
     // See comment at the top of the file why zigbee is prevented
     const timeToPreventZigbee = Math.min(15 * 60 - os.uptime(), 15 * 60);
@@ -369,14 +374,24 @@ class PiggyBank extends Homey.App {
         image: device.iconObj == null ? null : device.iconObj.url,
         onoff_cap: onoffCap,
         thermostat_cap: thermostatCap,
-        use: useDevice,
-        nComError: 0 // Number of communication errors since last time it worked - Used to depriorotize devices so we don't get stuck in an infinite retry loop
+        use: useDevice
       };
       relevantDevices[device.id] = relevantDevice;
     }
     this.__deviceList = relevantDevices;
 
     this.homey.settings.set('deviceList', this.__deviceList);
+
+    // Refresh current state:
+    this.__current_state = {};
+    for (const deviceId in relevantDevices) {
+      this.__current_state[deviceId] = {
+        nComError: 0,
+        isOn: undefined,
+        temp: undefined,
+        ongoing: false
+      };
+    }
 
     // This shouldn't be done here but is needed as the ApiError must be sent to the setup page
     let futurePriceOptions = this.homey.settings.get('futurePriceOptions');
@@ -421,7 +436,7 @@ class PiggyBank extends Homey.App {
       device = await promiseDevice;
     } catch (err) {
       this.updateLog(`Device not found? ${String(err)}`, LOG_ERROR);
-      this.__deviceList[deviceId].nComError += 10; // Big error so wait more until retry than smaller errors
+      this.__current_state[deviceId].nComError += 10; // Big error so wait more until retry than smaller errors
       return Promise.resolve([false, false]); // The unhandled device is solved by the later nComError handling
     }
     const frostList = this.homey.settings.get('frostList');
@@ -439,24 +454,30 @@ class PiggyBank extends Homey.App {
       // Turn on
       const deviceName = this.__deviceList[deviceId].name;
       this.updateLog(`Turning on device: ${deviceName}`, LOG_INFO);
+      this.__current_state[deviceId].isOn = true;
+      this.__current_state[deviceId].ongoing = true;
       return device.setCapabilityValue({ capabilityId: this.__deviceList[deviceId].onoff_cap, value: true })
         .then(() => {
-          this.__deviceList[deviceId].nComError = 0;
+          this.__current_state[deviceId].nComError = 0;
           // In case the device has a delayed temperature change action then change the temperature
           if (device.capabilities.includes('target_temperature')) {
             const modeTemp = parseInt(currentModeList[currentModeIdx].targetTemp, 10);
             const deltaTemp = (currentAction.operation === DELTA_TEMP) ? parseInt(currentAction.delta, 10) : 0;
             const newTemp = frostGuardActive ? frostList[deviceId].minTemp : (modeTemp + deltaTemp);
+            this.__current_state[deviceId].temp = newTemp;
             return device.setCapabilityValue({ capabilityId: 'target_temperature', value: newTemp });
           }
+          this.__current_state[deviceId].ongoing = false;
           return Promise.resolve();
         })
         .then(() => {
+          this.__current_state[deviceId].ongoing = false;
           this.__num_off_devices--; return [newState === TURN_ON, false];
         })
         .catch(error => {
           this.statsCountFailedTurnOn();
-          this.__deviceList[deviceId].nComError += 1;
+          this.__current_state[deviceId].ongoing = undefined;
+          this.__current_state[deviceId].nComError += 1;
           this.updateLog(`Failed to turn on/set temperature for device ${deviceName}, will retry later`, LOG_ERROR);
           return Promise.resolve([false, false]); // The unresolved part is solved by the later nComError handling
         });
@@ -466,14 +487,18 @@ class PiggyBank extends Homey.App {
       // Turn off
       const deviceName = this.__deviceList[deviceId].name;
       this.updateLog(`Turning off device: ${deviceName}`, LOG_INFO);
+      this.__current_state[deviceId].ongoing = true;
+      this.__current_state[deviceId].isOn = false;
       return device.setCapabilityValue({ capabilityId: this.__deviceList[deviceId].onoff_cap, value: false })
         .then(() => {
-          this.__deviceList[deviceId].nComError = 0;
+          this.__current_state[deviceId].nComError = 0;
+          this.__current_state[deviceId].ongoing = false;
           this.__num_off_devices++; return [newState === TURN_OFF, false];
         })
         .catch(error => {
+          this.__current_state[deviceId].ongoing = undefined;
           this.statsCountFailedTurnOff();
-          this.__deviceList[deviceId].nComError += 1;
+          this.__current_state[deviceId].nComError += 1;
           this.updateLog(`Failed to turn off device ${deviceName}, will try to turn off other devices instead.`, LOG_ERROR);
           return Promise.resolve([false, false]); // The unresolved part is solved by the later nComError handling
         });
@@ -691,8 +716,8 @@ class PiggyBank extends Homey.App {
     const numDevices = currentModeList.length;
     const reorderedModeList = [...currentModeList]; // Make sure all devices with communication errors are handled last (e.g. in case nothing else was possible)
     reorderedModeList.sort((a, b) => { // Err last
-      return this.__deviceList[a.id].nComError
-        - this.__deviceList[b.id].nComError;
+      return this.__current_state[a.id].nComError
+        - this.__current_state[b.id].nComError;
     });
     // Turn on devices from top down in the priority list
     // Only turn on one device at the time
@@ -744,8 +769,8 @@ class PiggyBank extends Homey.App {
     const numDevices = currentModeList.length;
     const reorderedModeList = [...currentModeList]; // Make sure all devices with communication errors are handled last (e.g. in case nothing else was possible)
     reorderedModeList.sort((a, b) => { // Err first
-      return this.__deviceList[b.id].nComError
-        - this.__deviceList[a.id].nComError;
+      return this.__current_state[b.id].nComError
+        - this.__current_state[a.id].nComError;
     });
     // Turn off devices from bottom and up in the priority list
     // Only turn off one device at the time
@@ -807,7 +832,7 @@ class PiggyBank extends Homey.App {
       try {
         device = await this.homeyApi.devices.getDevice({ id: deviceId });
       } catch (error) {
-        this.__deviceList[deviceId].nComError += 10; // Big error so wait more until retry than smaller errors
+        this.__current_state[deviceId].nComError += 10; // Big error so wait more until retry than smaller errors
         promises.push(Promise.resolve([false, false])); // The unhandled device is solved by the later nComError handling
         continue; // Skip this device
       }
@@ -825,13 +850,17 @@ class PiggyBank extends Homey.App {
           const newTemp = modeTemp + deltaTemp;
           const isOn = await (this.__deviceList[deviceId].onoff_cap === undefined) ? undefined : device.capabilitiesObj[this.__deviceList[deviceId].onoff_cap].value;
           if (isOn) {
+            this.__current_state[deviceId].ongoing = true;
+            this.__current_state[deviceId].temp = newTemp;
             promises.push(device.setCapabilityValue({ capabilityId: 'target_temperature', value: newTemp })
               .then(() => {
-                this.__deviceList[deviceId].nComError = 0;
+                this.__current_state[deviceId].nComError = 0;
+                this.__current_state[deviceId].ongoing = false;
                 return Promise.resolve([true, false]);
               }).catch(error => {
                 this.statsCountFailedTempChange();
-                this.__deviceList[deviceId].nComError += 1;
+                this.__current_state[deviceId].nComError += 1;
+                this.__current_state[deviceId].ongoing = undefined;
                 return Promise.resolve([false, false]); // The unresolved part is solved by the later nComError handling
               }));
           } else {
@@ -1093,23 +1122,41 @@ class PiggyBank extends Homey.App {
     // Reset logging
     this.homey.settings.set('diagLog', '');
     this.homey.settings.set('sendLog', '');
+    this.homey.settings.set('showState', '');
 
     // When sendLog is clicked, send the log
     this.homey.settings.on('set', setting => {
       if (setting === 'diagLog') return;
       const diagLog = this.homey.settings.get('diagLog');
       const sendLog = this.homey.settings.get('sendLog');
+      const showState = this.homey.settings.get('showState');
       if (setting === 'sendLog' && (sendLog === 'send') && (diagLog !== '')) {
         this.sendLog();
+      }
+      if (setting === 'showState' && (showState === '1')) {
+        const LOG_ALL = LOG_ERROR; // Send as ERROR just to make it visible regardless
+        const frostList = this.homey.settings.get('frostList');
+        const numControlledDevices = Object.keys(frostList).length;
+        this.updateLog('========== INTERNAL STATE ==========', LOG_ALL);
+        this.updateLog(`Number of devices under control: ${numControlledDevices}`, LOG_ALL);
+        this.updateLog('Device ID                                | Is On      | Temperature | Com errors | Ongoing', LOG_ALL);
+        for (const deviceId in frostList) {
+          if (!(deviceId in this.__deviceList) || this.__deviceList[deviceId].use === false) continue;
+          const {
+            temp, isOn, numerr, ongoing
+          } = this.__current_state[deviceId];
+          this.updateLog(`${String(deviceId).padEnd(40, '.')} | ${String(isOn).padEnd(10, ' ')} | ${
+            String(temp).padStart(11)} | ${String(numerr).padStart(10)} | ${String(ongoing).padEnd(5, '.')}`, LOG_ALL);
+        }
+        this.updateLog('======== INTERNAL STATE END ========', LOG_ALL);
+        this.homey.settings.set('showState', '');
       }
     });
   }
 
   updateLog(newMessage, ignoreSetting = LOG_INFO) {
-    let logLevel = this.homey.settings.get('logLevel');
-    if (!logLevel || logLevel === '') {
-      logLevel = 1;
-    }
+    let logLevel = +this.homey.settings.get('logLevel');
+    if (!Number.isInteger(logLevel)) logLevel = 0;
     if (ignoreSetting > logLevel) {
       return;
     }

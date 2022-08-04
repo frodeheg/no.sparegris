@@ -436,7 +436,7 @@
     </table>
 
     <!-- Important information is shown here -->
-    <div data-i18n="settings.warnings.rememberToSave" id="rememberToSave">Remember to save</div>
+    <div data-i18n="warnings.rememberToSave" id="rememberToSave">Remember to save</div>
 
     <!-- Global page -->
     <div id="globalPage" class="tabcontent">
@@ -508,8 +508,9 @@
             <option value=2 data-i18n="settings.log.full">log.full</option>
           </select>
           <p>
-            <button id="clearLog"><span data-i18n="settings.ClearLog"></span>Clear</button>
-            <button id="sendLog"><span data-i18n="settings.SendLog"></span>Send</button>
+            <button id="showState" data-i18n="settings.log.showState">log.showState</button>
+            <button id="clearLog" data-i18n="settings.log.clearLog">log.clearLog</button>
+            <button id="sendLog" data-i18n="settings.log.sendLog">log.sendLog</button>
           </p>
             <textarea id="diagLog"></textarea>
           <a href="#ExitLog" data-i18n="settings.log.exit" onclick="changeTab(event, 'globalPage');return false;">log.exit</a>
@@ -690,6 +691,7 @@
       // -- Log page -- //
       var diagLogElement = document.getElementById('diagLog');
       var logLevelElement = document.getElementById('logLevel');
+      var showStateElement = document.getElementById('showState');
       var clearLogElement = document.getElementById('clearLog');
       var sendLogElement = document.getElementById('sendLog');
 
@@ -913,6 +915,16 @@
           mainFuseLoaded = true;
           checkLoadingDone();
         });
+        // Refresh log data
+        Homey.get('logLevel', function (err, logLevel) {
+          if (err || !Number.isInteger(+logLevel)) logLevel = 0;
+          logLevelElement.value = logLevel;
+        });
+        Homey.get('diagLog', function (err, diagLog) {
+          if (err) diagLog = "Error fetching log";
+          diagLogElement.value = diagLog;
+        });
+        // Refresh price data
         Homey.get("futurePriceOptions", function (err, options) {
           if (err) return Homey.alert(err);
           if (options) {
@@ -931,8 +943,14 @@
           checkLoadingDone();
         });
 
-        // Callback function does only return on failure unfortunately
-        const errFunc = (err) => { Homey.alert(err.message) }
+        // This error function is a bit deciving because it only returns err on success
+        // And this err is that all settings was saved successfully
+        const errFunc = (err) => { 
+          if (err) {
+            rememberToSaveElement.style.display = 'none';
+            Homey.alert(err.message);
+          }
+        }
         saveElement.addEventListener("click", function (e) {
           Homey.alert(Homey.__('warnings.savingWait'));
           try {
@@ -967,28 +985,27 @@
           }
           catch (err) {
             Homey.alert(Homey.__('warnings.savingFailed'));
-            rememberToSaveElement.style.display = 'none';
           }
         });
 
         // -- Log page -- //
-        Homey.on('settings.set', function () {
-          Homey.get('logLevel', function (err, logLevel) {
-            if (err) logLevel = 1; //Homey.alert(err);
-            if (!logLevel || logLevel === ''){
-              logLevel = 1;
-            }
-            logLevelElement.value = logLevel;
-          });
-
-          Homey.get('diagLog', function (err, diagLog) {
-            if (err) diagLog = ""; //Homey.alert(err);
-            diagLogElement.value = diagLog;
-          });
+        Homey.on('settings.set', function (setting) {
+          if (setting === 'diagLog') {
+            Homey.get('diagLog', function (err, diagLog) {
+              if (err) diagLog = ""; //Homey.alert(err);
+              diagLogElement.value = diagLog;
+            });
+          }
         });
 
         logLevelElement.addEventListener('change', function (e) {
           Homey.set('logLevel', logLevelElement.value, function (err) {
+            //if (err) return Homey.alert(err);
+          });
+        });
+
+        showStateElement.addEventListener('click', function (e) {
+          Homey.set('showState', "1", function (err) {
             //if (err) return Homey.alert(err);
           });
         });
@@ -1128,17 +1145,6 @@
         if (evt) evt.currentTarget.className += " active";
 
         if (tabPage == 'logPage') {
-          // Refresh the log data
-          /*Homey.get('logLevel', function (err, logLevel) {
-            if (err) logLevel = 1; //Homey.alert(err);
-            logLevelElement.value = logLevel;
-          });
-
-          Homey.get('diagLog', function (err, diagLog) {
-            if (err) diagLog = "Error fetching log"; //Homey.alert(err);
-            diagLogElement.value = diagLog;
-          });*/
-
           // Make the log text area fill the page
           diagLogElement.setAttribute('cols', (diagLogElement.parentElement.clientWidth-20) / 8);
           diagLogElement.style.height = (window.innerHeight - diagLogElement.offsetTop - 120) + 'px';

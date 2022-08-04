@@ -232,6 +232,11 @@ class MyDevice extends Device {
       this.setCapabilityValue('piggy_mode', String(piggyState.operating_mode));
       if (+piggyState.operating_mode !== +prevMode) {
         this.setStoreValue('piggy_mode', +piggyState.operating_mode);
+        if (+piggyState.operating_mode === 0) {
+          this.setUnavailable(this.homey.__('warnings.appDisabled'));
+        } else {
+          this.setAvailable();
+        }
         switch (+piggyState.operating_mode) {
           case 0: this.toggleCapability('piggy_mode_disabled'); break;
           case 1: this.toggleCapability('piggy_mode_normal'); break;

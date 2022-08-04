@@ -129,8 +129,11 @@
       "level": "Vis hendelser",
       "error": "Bare feil",
       "basic": "Basisinformasjon",
-      "full": "All informasjon"
-    }
+      "full": "All informasjon",
+      "clearLog": "Tøm",
+      "sendLog": "Send",
+      "showState": "Status"
+}
   },
   "newdevice" : {
     "info": "Denne enheten vil gi deg innblikk i hva som skjer når appen styrer strømmen. Det er ikke nødvendig å installere denne enheten for å få appen til å fungere.",
@@ -145,6 +148,7 @@
     "savingFailed": "Klarte ikke å lagre! Dette skal ikke skje, vennligst meld ifra til utvikleren så feilen kan bli fikset.",
     "noPriceApi": "Du må installere appen 'no.almli.utilitycost' for få strømpriser til å virke",
     "internalPP": "For å sette prispunkt med flows må du først deaktivere den interne prisstyringen fra appens innstillinger",
-    "rememberToSave": "Husk å lagre!"
+    "rememberToSave": "Husk å lagre!",
+    "appDisabled": "Appens operasjonsmodus er satt til deaktivert. Du kan aktivere appen ved å gå inn i appens innstillinger eller gjennom en flow."
   }
 }
