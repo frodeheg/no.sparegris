@@ -264,7 +264,7 @@ class MyDevice extends Device {
       if (this.hasCapability('piggy_money.savings_all_time_power_part') === true && piggyState.savings_all_time_power_part) {
         this.setCapabilityValue('piggy_money.savings_all_time_power_part', piggyState.savings_all_time_power_part);
       }
-      if (this.hasCapability('piggy_money.savings_all_time_total') === true && piggyState.savings_all_time_use && piggyState.savings_all_time_power_part) {
+      if (this.hasCapability('piggy_money.savings_all_time_total') === true && piggyState.savings_all_time_use || piggyState.savings_all_time_power_part) {
         this.setCapabilityValue('piggy_money.savings_all_time_total', piggyState.savings_all_time_use + piggyState.savings_all_time_power_part);
       }
 

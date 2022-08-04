@@ -1094,7 +1094,7 @@ class PiggyBank extends Homey.App {
         if (this.toLocalTime(this.__stats_price_time).getHours() === 0
           && this.__stats_n_hours_today > 0) {
           // Accumulate and reset dayliy stats:
-          this.__stats_cost_if_smooth = this.__stats_accum_use_today * (this.__stats_accum_price_today / this.__stats_n_hours_today);
+          this.__stats_cost_if_smooth = (this.__stats_accum_use_today * (this.__stats_accum_price_today / this.__stats_n_hours_today)) / 1000;
           this.__stats_savings_yesterday = this.__stats_cost_if_smooth - this.__stats_actual_cost;
           if (Number.isFinite(this.__stats_savings_yesterday)) {
             this.__stats_savings_all_time_use += this.__stats_savings_yesterday;
@@ -1139,13 +1139,13 @@ class PiggyBank extends Homey.App {
         const numControlledDevices = Object.keys(frostList).length;
         this.updateLog('========== INTERNAL STATE ==========', LOG_ALL);
         this.updateLog(`Number of devices under control: ${numControlledDevices}`, LOG_ALL);
-        this.updateLog('Device Name          | Location        | Is On      | Temperature | Com errors | Ongoing', LOG_ALL);
+        this.updateLog('Device Name               | Location        | Is On      | Temperature | Com errors | Ongoing', LOG_ALL);
         for (const deviceId in frostList) {
           if (!(deviceId in this.__deviceList) || this.__deviceList[deviceId].use === false) continue;
           const { name, room } = this.__deviceList[deviceId];
           const { isOn, numerr } = this.__current_state[deviceId];
           const { temp, ongoing } = this.__current_state[deviceId];
-          this.updateLog(`${String(name).padEnd(20)} | ${String(room).padEnd(15)} | ${String(isOn).padEnd(10)} | ${
+          this.updateLog(`${String(name).padEnd(25)} | ${String(room).padEnd(15)} | ${String(isOn).padEnd(10)} | ${
             String(temp).padStart(11)} | ${String(numerr).padStart(10)} | ${String(ongoing).padEnd(5)}`, LOG_ALL);
         }
         this.updateLog('======== INTERNAL STATE END ========', LOG_ALL);
