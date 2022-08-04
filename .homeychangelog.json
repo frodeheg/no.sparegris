@@ -124,5 +124,8 @@
   },
   "0.6.1": {
     "en": "Fixed a bug displaying price point in the device + fixed an invalid reference in app settings"
+  },
+  "0.6.2": {
+    "en": "Changed some units so iẗ́'s possible to compare with insights"
   }
 }
