@@ -145,5 +145,8 @@
   },
   "0.6.8": {
     "en": "Minor logging fix"
+  },
+  "0.6.9": {
+    "en": "Fixed the experimental feature money saved as it was 1000 times higher than expected"
   }
 }
