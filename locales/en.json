@@ -83,9 +83,9 @@
         "hour2": "To timer",
         "hour3": "Tre timer",
         "hour4": "Fire timer",
-        "lowPriceFactor": "Low Price:",
+        "lowPriceModifier": "Low Price:",
         "lowPriceModifierHint": "If the current price falls x% below the acceptable price then the price point will be set to Low.",
-        "highPriceFactor": "High Price:",
+        "highPriceModifier": "High Price:",
         "highPriceModifierHint": "If the current price rises x% above the acceptable price then the price point will be set to High."
       }
     },

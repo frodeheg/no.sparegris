@@ -83,9 +83,9 @@
         "hour2": "To timer",
         "hour3": "Tre timer",
         "hour4": "Fire timer",
-        "lowPriceFactor": "Lav Pris:",
+        "lowPriceModifier": "Lav Pris:",
         "lowPriceModifierHint": "Dersom den gjeldende timeprisen faller x% under den akseptable strømprisen blir prispunkt satt til Lavt",
-        "highPriceFactor": "Høy Pris:",
+        "highPriceModifier": "Høy Pris:",
         "highPriceModifierHint": "Dersom den gjeldende timeprisen kommer x% over den akseptable strømprisen blir prispunkt satt til Høyt"
       }
     },

@@ -204,13 +204,13 @@ class MyDevice extends Device {
 
       // Set Price point capability + update timeline using boolean workaround capabilities
       const prevPricePoint = await this.getStoreValue('piggy_price');
-      this.setCapabilityValue('piggy_price', piggyState.price_point);
-      if (piggyState.price_point !== prevPricePoint) {
+      this.setCapabilityValue('piggy_price', String(piggyState.price_point));
+      if (+piggyState.price_point !== +prevPricePoint) {
         this.setStoreValue('piggy_price', piggyState.price_point);
-        switch (piggyState.price_point) {
-          case '0': this.toggleCapability('piggy_price_low'); break;
-          case '1': this.toggleCapability('piggy_price_normal'); break;
-          case '2': this.toggleCapability('piggy_price_expensive'); break;
+        switch (+piggyState.price_point) {
+          case 0: this.toggleCapability('piggy_price_low'); break;
+          case 1: this.toggleCapability('piggy_price_normal'); break;
+          case 2: this.toggleCapability('piggy_price_expensive'); break;
           default: /* Broken input should not happen */ break;
         }
       }

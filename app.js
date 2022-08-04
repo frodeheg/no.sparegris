@@ -125,11 +125,11 @@ class PiggyBank extends Homey.App {
       this.log('===== DEBUG MODE =====');
       const showMe = this.homey.settings.get('futurePriceOptions');
       this.log(`Future: ${JSON.stringify(showMe)}`);
-      const settings = this.homey.settings.getKeys();
-      this.log(`Settings being deleted: ${JSON.stringify(settings)}`);
-      for (let i = 0; i < settings.length; i++) {
-        this.homey.settings.unset(settings[i]);
-      }
+      // const settings = this.homey.settings.getKeys();
+      // this.log(`Settings being deleted: ${JSON.stringify(settings)}`);
+      // for (let i = 0; i < settings.length; i++) {
+      //   this.homey.settings.unset(settings[i]);
+      // }
     }
     DEBUG_END */
     // this.log(`modeList: ${JSON.stringify(this.homey.settings.get('modeList'))}`);
@@ -1207,7 +1207,6 @@ class PiggyBank extends Homey.App {
     if (listOfUsedDevices === null) {
       listOfUsedDevices = {};
     }
-    this.log(`getstate: ${this.__stats_savings_all_time_use} ${this.__stats_savings_all_time_power_part}`);
     return {
       power_last_hour: parseInt(this.__power_last_hour, 10),
       power_estimated: this.__power_estimated === undefined ? undefined : parseInt(this.__power_estimated.toFixed(2), 10),
