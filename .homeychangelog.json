@@ -142,5 +142,8 @@
   },
   "0.6.7": {
     "en": "Cosmetic changes to logging"
+  },
+  "0.6.8": {
+    "en": "Minor logging fix"
   }
 }
