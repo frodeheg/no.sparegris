@@ -143,6 +143,7 @@
     "noDevices": "Please select at least one device to be controlled",
     "savingWait": "Saving, please wait...",
     "savingFailed": "Failed to save, This should not happen, please notify the developer so this can be fixed",
-    "noPriceApi": "You have to install the app 'no.almli.utilitycost' to get the electricity prices to work"
+    "noPriceApi": "You have to install the app 'no.almli.utilitycost' to get the electricity prices to work",
+    "internalPP": "In order to set price points with flows you have to disable the internal price control first in the app setup"
   }
 }

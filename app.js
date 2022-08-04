@@ -200,6 +200,7 @@ class PiggyBank extends Homey.App {
       if (preventZigbee) return Promise.reject(new Error(this.homey.__('warnings.homeyReboot')));
       if (!this.app_is_configured) return Promise.reject(new Error(this.homey.__('warnings.notConfigured')));
       if (+this.homey.settings.get('operatingMode') === MODE_DISABLED) return Promise.reject(new Error(this.homey.__('warnings.notEnabled')));
+      if (+this.homey.settings.get('priceMode') === 1) return Promise.reject(new Error(this.homey.__('warnings.internalPP')));
       return this.onPricePointUpdate(args.mode);
     });
     const cardActionSafetyPowerUpdate = this.homey.flow.getActionCard('change-piggy-bank-safety-power');

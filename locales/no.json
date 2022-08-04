@@ -143,6 +143,7 @@
     "noDevices": "Vennligst velg minst en enhet som skal bli styrt av appen",
     "savingWait": "Lagrer, vennligst vent...",
     "savingFailed": "Klarte ikke å lagre! Dette skal ikke skje, vennligst meld ifra til utvikleren så feilen kan bli fikset.",
-    "noPriceApi": "Du må installere appen 'no.almli.utilitycost' for få strømpriser til å virke"
+    "noPriceApi": "Du må installere appen 'no.almli.utilitycost' for få strømpriser til å virke",
+    "internalPP": "For å sette prispunkt med flows må du først deaktivere den interne prisstyringen fra appens innstillinger"
   }
 }
