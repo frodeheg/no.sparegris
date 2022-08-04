@@ -23,9 +23,60 @@
     "piggy_price_normal",
     "piggy_price_expensive",
     "measure_power.reserved_power",
-    "piggy_devices_on"
+    "piggy_devices_on",
+    "piggy_money.savings_all_time_use",
+    "piggy_money.savings_all_time_power_part",
+    "piggy_money.savings_all_time_total"
   ],
   "capabilitiesOptions": {
+    "piggy_money.savings_all_time_use": {
+      "title": {
+        "en": "Money saved utility joint",
+        "no": "Penger spart bruksledd"
+      }
+    },
+    "piggy_money.savings_all_time_power_part": {
+      "title": {
+        "en": "Money saved power joint",
+        "no": "Penger spart effektledd"
+      }
+    },
+    "piggy_money.savings_all_time_total": {
+      "title": {
+        "en": "Money saved in total",
+        "no": "Penger spart totalt"
+      }
+    },
+    "piggy_money.average_price": {
+      "title": {
+        "en": "Moving average price",
+        "no": "Glidende snittpris"
+      }
+    },
+    "piggy_money.current_price": {
+      "title": {
+        "en": "Current price",
+        "no": "Gjeldende pris"
+      }
+    },
+    "piggy_money.acceptable_price": {
+      "title": {
+        "en": "Acceptable price",
+        "no": "Akseptabel pris"
+      }
+    },
+    "piggy_money.low_price_limit": {
+      "title": {
+        "en": "Low price limit",
+        "no": "Grense for lav pris"
+      }
+    },
+    "piggy_money.high_price_limit": {
+      "title": {
+        "en": "High price limit",
+        "no": "Grense for høy pris"
+      }
+    },
     "alarm_generic.overshoot": {
       "title": {
         "en": "Manual powerdown required!",

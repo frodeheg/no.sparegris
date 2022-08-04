@@ -37,6 +37,17 @@ class MyDevice extends Device {
       this.addCapability('meter_power.month_estimate');
     }
 
+    // New normal capabilities in version 1.0
+    if (this.hasCapability('piggy_money.savings_all_time_use') === false) {
+      this.addCapability('piggy_money.savings_all_time_use');
+    }
+    if (this.hasCapability('piggy_money.savings_all_time_power_part') === false) {
+      this.addCapability('piggy_money.savings_all_time_power_part');
+    }
+    if (this.hasCapability('piggy_money.savings_all_time_total') === false) {
+      this.addCapability('piggy_money.savings_all_time_total');
+    }
+
     // New extended capabilities
     if (settings['extendedCap'] === true) {
       if (this.hasCapability('meter_power.low_energy_avg') === false) {
@@ -48,6 +59,21 @@ class MyDevice extends Device {
       if (this.hasCapability('meter_power.high_energy_avg') === false) {
         this.addCapability('meter_power.high_energy_avg');
       }
+      if (this.hasCapability('piggy_money.average_price') === false) {
+        this.addCapability('piggy_money.average_price');
+      }
+      if (this.hasCapability('piggy_money.current_price') === false) {
+        this.addCapability('piggy_money.current_price');
+      }
+      if (this.hasCapability('piggy_money.acceptable_price') === false) {
+        this.addCapability('piggy_money.acceptable_price');
+      }
+      if (this.hasCapability('piggy_money.low_price_limit') === false) {
+        this.addCapability('piggy_money.low_price_limit');
+      }
+      if (this.hasCapability('piggy_money.high_price_limit') === false) {
+        this.addCapability('piggy_money.high_price_limit');
+      }
     } else if (settings['extendedCap'] === false) {
       if (this.hasCapability('meter_power.low_energy_avg') === true) {
         this.removeCapability('meter_power.low_energy_avg');
@@ -57,6 +83,21 @@ class MyDevice extends Device {
       }
       if (this.hasCapability('meter_power.high_energy_avg') === true) {
         this.removeCapability('meter_power.high_energy_avg');
+      }
+      if (this.hasCapability('piggy_money.average_price') === true) {
+        this.removeCapability('piggy_money.average_price');
+      }
+      if (this.hasCapability('piggy_money.current_price') === true) {
+        this.removeCapability('piggy_money.current_price');
+      }
+      if (this.hasCapability('piggy_money.acceptable_price') === true) {
+        this.removeCapability('piggy_money.acceptable_price');
+      }
+      if (this.hasCapability('piggy_money.low_price_limit') === true) {
+        this.removeCapability('piggy_money.low_price_limit');
+      }
+      if (this.hasCapability('piggy_money.high_price_limit') === true) {
+        this.removeCapability('piggy_money.high_price_limit');
       }
     }
 
@@ -198,6 +239,15 @@ class MyDevice extends Device {
       if (piggyState.power_average) {
         this.setCapabilityValue('meter_power.month_estimate', piggyState.power_average);
       }
+      if (piggyState.savings_all_time_use) {
+        this.setCapabilityValue('piggy_money.savings_all_time_use', piggyState.savings_all_time_use);
+      }
+      if (piggyState.savings_all_time_power_part) {
+        this.setCapabilityValue('piggy_money.savings_all_time_power_part', piggyState.savings_all_time_power_part);
+      }
+      if (piggyState.savings_all_time_use && piggyState.savings_all_time_power_part) {
+        this.setCapabilityValue('piggy_money.savings_all_time_total', piggyState.savings_all_time_use + piggyState.savings_all_time_power_part);
+      }
 
       // Debug capabilities, so only update if they exist
       if (this.hasCapability('piggy_num_failures') === true) {
@@ -216,6 +266,21 @@ class MyDevice extends Device {
       }
       if (this.hasCapability('meter_power.high_energy_avg') === true && piggyState.high_price_energy_avg) {
         this.setCapabilityValue('meter_power.high_energy_avg', piggyState.high_price_energy_avg);
+      }
+      if (this.hasCapability('piggy_money.average_price') === true && piggyState.average_price) {
+        this.setCapabilityValue('piggy_money.average_price', piggyState.average_price);
+      }
+      if (this.hasCapability('piggy_money.current_price') === true && piggyState.current_price) {
+        this.setCapabilityValue('piggy_money.current_price', piggyState.current_price);
+      }
+      if (this.hasCapability('piggy_money.acceptable_price') === true && piggyState.acceptable_price) {
+        this.setCapabilityValue('piggy_money.acceptable_price', piggyState.acceptable_price);
+      }
+      if (this.hasCapability('piggy_money.low_price_limit') === true && piggyState.low_price_limit) {
+        this.setCapabilityValue('piggy_money.low_price_limit', piggyState.low_price_limit);
+      }
+      if (this.hasCapability('piggy_money.high_price_limit') === true && piggyState.high_price_limit) {
+        this.setCapabilityValue('piggy_money.high_price_limit', piggyState.high_price_limit);
       }
 
       // Other things to report:

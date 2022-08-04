@@ -255,8 +255,8 @@
           "no": "Endre sone [[zone]] aktiv til [[enabled]]"
         },
         "hint": {
-          "en": "Allows you to turn on/off devices in zones e.g. in connection with ventilation",
-          "no": "Tillater deg å slå av/på enheter i soner f.eks. i forbindelse med lufting"
+          "en": "Allows you to turn on/off devices in zones e.g. in connection with ventilation. If the app is disabled the zone list may be empty.",
+          "no": "Tillater deg å slå av/på enheter i soner f.eks. i forbindelse med lufting. Dersom appen er deaktivert kan sone-listen være tom."
         },
         "args": [
           {
@@ -366,9 +366,60 @@
         "piggy_price_normal",
         "piggy_price_expensive",
         "measure_power.reserved_power",
-        "piggy_devices_on"
+        "piggy_devices_on",
+        "piggy_money.savings_all_time_use",
+        "piggy_money.savings_all_time_power_part",
+        "piggy_money.savings_all_time_total"
       ],
       "capabilitiesOptions": {
+        "piggy_money.savings_all_time_use": {
+          "title": {
+            "en": "Money saved utility joint",
+            "no": "Penger spart bruksledd"
+          }
+        },
+        "piggy_money.savings_all_time_power_part": {
+          "title": {
+            "en": "Money saved power joint",
+            "no": "Penger spart effektledd"
+          }
+        },
+        "piggy_money.savings_all_time_total": {
+          "title": {
+            "en": "Money saved in total",
+            "no": "Penger spart totalt"
+          }
+        },
+        "piggy_money.average_price": {
+          "title": {
+            "en": "Moving average price",
+            "no": "Glidende snittpris"
+          }
+        },
+        "piggy_money.current_price": {
+          "title": {
+            "en": "Current price",
+            "no": "Gjeldende pris"
+          }
+        },
+        "piggy_money.acceptable_price": {
+          "title": {
+            "en": "Acceptable price",
+            "no": "Akseptabel pris"
+          }
+        },
+        "piggy_money.low_price_limit": {
+          "title": {
+            "en": "Low price limit",
+            "no": "Grense for lav pris"
+          }
+        },
+        "piggy_money.high_price_limit": {
+          "title": {
+            "en": "High price limit",
+            "no": "Grense for høy pris"
+          }
+        },
         "alarm_generic.overshoot": {
           "title": {
             "en": "Manual powerdown required!",
@@ -604,7 +655,7 @@
           "id": "0",
           "title": {
             "en": "Disabled",
-            "no": "Avslått"
+            "no": "Deaktivert"
           }
         },
         {
@@ -739,6 +790,24 @@
         "en": "Changed to Normal mode",
         "no": "Endret til Normal modus"
       }
+    },
+    "piggy_money": {
+      "type": "number",
+      "title": {
+        "en": "Money",
+        "no": "Penger"
+      },
+      "units": {
+        "en": "NOK",
+        "no": "Kr"
+      },
+      "insights": true,
+      "chartType": "spline",
+      "decimals": 2,
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor",
+      "icon": "/assets/money.svg"
     },
     "piggy_num_failures": {
       "type": "number",

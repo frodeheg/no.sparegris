@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 /* eslint-disable no-prototype-builtins */
 /* eslint-disable guard-for-in */
 /* eslint-disable no-restricted-syntax */
@@ -122,6 +123,8 @@ class PiggyBank extends Homey.App {
     // // In case of debug
     if (this.homey.app.manifest.id === 'no.sparegris2') {
       this.log('===== DEBUG MODE =====');
+      const showMe = this.homey.settings.get('futurePriceOptions');
+      this.log(`Future: ${JSON.stringify(showMe)}`);
       const settings = this.homey.settings.getKeys();
       this.log(`Settings being deleted: ${JSON.stringify(settings)}`);
       for (let i = 0; i < settings.length; i++) {
@@ -146,8 +149,8 @@ class PiggyBank extends Homey.App {
     this.__alarm_overshoot = false;
     this.__free_capacity = 0;
     this.__num_off_devices = 0;
+    this.__current_prices = [];
     this.mutex = new Mutex();
-    this.elPriceApi = this.homey.api.getApiApp('no.almli.utilitycost');
     this.homeyApi = new HomeyAPIApp({
       homey: this.homey
     });
@@ -172,7 +175,6 @@ class PiggyBank extends Homey.App {
 
     // Create list of devices
     await this.createDeviceList();
-    this.homey.settings.set('deviceList', this.__deviceList);
 
     // Enable action cards
     const cardActionEnergyUpdate = this.homey.flow.getActionCard('update-meter-energy'); // Marked as deprecated so nobody will see it yet
@@ -249,10 +251,6 @@ class PiggyBank extends Homey.App {
     this.__intervalID = setInterval(() => {
       this.onMonitor();
     }, 1000 * 60 * 5); */
-
-    /* const aaa = await this.fetchPrices();
-    this.log('EL-PRICES: -----------------');
-    this.log(JSON.stringify(aaa)); */
 
     this.updateLog('PiggyBank has been initialized', LOG_INFO);
     return Promise.resolve();
@@ -376,6 +374,14 @@ class PiggyBank extends Homey.App {
       relevantDevices[device.id] = relevantDevice;
     }
     this.__deviceList = relevantDevices;
+
+    this.homey.settings.set('deviceList', this.__deviceList);
+
+    // This shouldn't be done here but is needed as the ApiError must be sent to the setup page
+    let futurePriceOptions = this.homey.settings.get('futurePriceOptions');
+    if (!futurePriceOptions) futurePriceOptions = {};
+    futurePriceOptions.ApiError = !(await this._checkApi());
+    this.homey.settings.set('futurePriceOptions', futurePriceOptions);
   }
 
   /**
@@ -506,6 +512,9 @@ class PiggyBank extends Homey.App {
       }
       this.__current_power_time = now;
       this.__accum_energy = 0;
+      if (+this.homey.settings.get('operatingMode') !== MODE_DISABLED) {
+        this.doPriceCalculations();
+      }
     } finally {
       // Start timer to start exactly when a new hour starts
       const timeToNextTrigger = this.timeToNextHour(now);
@@ -638,9 +647,9 @@ class PiggyBank extends Homey.App {
    * onPricePointUpdate is called whenever the price point is changed
    */
   async onPricePointUpdate(newMode) {
-    const oldPricePoint = this.homey.settings.get('pricePoint');
+    const oldPricePoint = +this.homey.settings.get('pricePoint');
     this.statsSetLastHourPricePoint(oldPricePoint);
-    if (newMode === oldPricePoint) {
+    if (+newMode === +oldPricePoint) {
       return Promise.resolve();
     }
     this.updateLog(`Changing the current price point to: ${String(newMode)}`, LOG_INFO);
@@ -847,6 +856,18 @@ class PiggyBank extends Homey.App {
   }
 
   /** ****************************************************************************************************
+   * HomeyTime
+   ** ****************************************************************************************************
+   * Handling of insane localtime implementation for Homey.
+   * Do NOT use this for anything other than display as it offset the UTC time!!!
+   */
+  toLocalTime(homeyTime) {
+    const tz = this.homey.clock.getTimezone();
+    const localTime = new Date(new Date().toLocaleString('en-US', { timeZone: tz }));
+    return localTime;
+  }
+
+  /** ****************************************************************************************************
    * Statistics
    ** ****************************************************************************************************
    * Tracked date:
@@ -879,6 +900,16 @@ class PiggyBank extends Homey.App {
     this.__stats_last_day_max = undefined;
     this.__stats_tmp_max_power_today = this.homey.settings.get('stats_tmp_max_power_today'); // Todo: reject if the time is too far away
     this.__stats_this_month_maxes = this.homey.settings.get('stats_this_month_maxes'); // Todo: reject if the time is too far away
+
+    this.__stats_cost_if_smooth = undefined;
+    this.__stats_savings_yesterday = undefined;
+    this.__stats_savings_all_time_use = +this.homey.settings.get('stats_savings_all_time_use') || 0;
+    this.__stats_savings_all_time_power_part = +this.homey.settings.get('stats_savings_all_time_power_part') || 0;
+    this.__stats_n_hours_today = 0;
+    this.__stats_accum_price_today = 0;
+    this.__stats_accum_use_today = 0;
+    this.__stats_actual_cost = 0;
+
     if (!Array.isArray(this.__stats_this_month_maxes)) {
       this.__stats_this_month_maxes = [];
     }
@@ -921,9 +952,18 @@ class PiggyBank extends Homey.App {
     this.homey.settings.set('stats_failed_temp_change', this.__stats_failed_temp_change);
   }
 
+  // Must only be called once every month
   statsSetLastMonthPower(energy) {
     this.__stats_last_month_max = energy;
     this.homey.settings.set('stats_last_month_max', this.__stats_last_month_max);
+
+    // Add savings for power tariff, always assume one step down
+    const tariffTable = this.fetchTariffTable();
+    const tariffIndex = this.findTariffIndex(tariffTable, energy);
+    if (tariffIndex < tariffTable.length - 1) {
+      this.__stats_savings_all_time_power_part += tariffTable[tariffIndex + 1].price - tariffTable[tariffIndex].price;
+      this.homey.settings.set('stats_savings_all_time_power_part', this.__stats_savings_all_time_power_part);
+    } // else max tariff, nothing saved
   }
 
   statsSetLastDayMaxEnergy(energy) {
@@ -938,7 +978,7 @@ class PiggyBank extends Homey.App {
     }
     this.__stats_this_month_average = this.__stats_this_month_maxes.reduce((a, b) => a + b, 0) / this.__stats_this_month_maxes.length;
     // On new month:
-    const dayOfMonth = this.__stats_last_day_time.getDate();
+    const dayOfMonth = this.toLocalTime(this.__stats_last_day_time).getDate();
     if (dayOfMonth === 0) {
       this.statsSetLastMonthPower(this.__stats_this_month_average);
       this.__stats_this_month_maxes = [];
@@ -960,7 +1000,7 @@ class PiggyBank extends Homey.App {
     }
 
     // If new day has begun
-    if (this.__stats_energy_time.getHours() === 0) {
+    if (this.toLocalTime(this.__stats_energy_time).getHours() === 0) {
       this.statsSetLastDayMaxEnergy(this.__stats_tmp_max_power_today);
       this.__stats_tmp_max_power_today = 0;
     }
@@ -970,7 +1010,7 @@ class PiggyBank extends Homey.App {
 
   statsSetLastHourPrice(price) {
     this.__stats_price_time = new Date();
-    this.updateLog(`Stats price set to: ${this.__stats_price_time}`, LOG_INFO);
+    this.updateLog(`Stats price set to: ${this.__stats_price}`, LOG_INFO);
     this.__stats_price = price;
   }
 
@@ -1014,8 +1054,27 @@ class PiggyBank extends Homey.App {
 
       // Price statistics
       const timeSincePrice = this.__stats_price_time - now;
-      if (timeSincePrice < tenMinutes) {
-        // Nothing yet
+      if (timeSincePrice < tenMinutes && this.__stats_price && this.__stats_energy) {
+        // Calculate how much money has been saved today
+        this.__stats_n_hours_today++;
+        this.__stats_accum_price_today += this.__stats_price;
+        this.__stats_accum_use_today += this.__stats_energy;
+        this.__stats_actual_cost += (this.__stats_price * this.__stats_energy) / 1000;
+        // If new day
+        if (this.toLocalTime(this.__stats_price_time).getHours() === 0
+          && this.__stats_n_hours_today > 0) {
+          // Accumulate and reset dayliy stats:
+          this.__stats_cost_if_smooth = this.__stats_accum_use_today * (this.__stats_accum_price_today / this.__stats_n_hours_today);
+          this.__stats_savings_yesterday = this.__stats_cost_if_smooth - this.__stats_actual_cost;
+          if (Number.isFinite(this.__stats_savings_yesterday)) {
+            this.__stats_savings_all_time_use += this.__stats_savings_yesterday;
+            this.homey.settings.set('stats_savings_all_time_use', this.__stats_savings_all_time_use);
+          }
+          this.__stats_n_hours_today = 0;
+          this.__stats_accum_price_today = 0;
+          this.__stats_accum_use_today = 0;
+          this.__stats_actual_cost = 0;
+        }
       }
     } finally {
       // Start timer to start exactly 5 minutes after the next hour starts
@@ -1147,6 +1206,7 @@ class PiggyBank extends Homey.App {
     if (listOfUsedDevices === null) {
       listOfUsedDevices = {};
     }
+    this.log(`getstate: ${this.__stats_savings_all_time_use} ${this.__stats_savings_all_time_power_part}`);
     return {
       power_last_hour: parseInt(this.__power_last_hour, 10),
       power_estimated: this.__power_estimated === undefined ? undefined : parseInt(this.__power_estimated.toFixed(2), 10),
@@ -1166,15 +1226,25 @@ class PiggyBank extends Homey.App {
       power_yesterday: this.__stats_last_day_max,
       power_average: this.__stats_this_month_average,
       power_last_month: this.__stats_last_month_max,
-      num_restarts: this.__stats_app_restarts
+      num_restarts: this.__stats_app_restarts,
+
+      average_price: this.__average_price,
+      current_price: this.__current_prices[0],
+      acceptable_price: this.__acceptable_price,
+      low_price_limit: this.__low_price_limit,
+      high_price_limit: this.__high_price_limit,
+      savings_yesterday: this.__stats_savings_yesterday,
+      savings_all_time_use: this.__stats_savings_all_time_use,
+      savings_all_time_power_part: this.__stats_savings_all_time_power_part
     };
   }
 
   /** ****************************************************************************************************
-   *  EXTERNAL API's
+   *  Price Handling
    ** **************************************************************************************************** */
   async _checkApi() {
     try {
+      this.elPriceApi = this.homey.api.getApiApp('no.almli.utilitycost');
       const isInstalled = await this.elPriceApi.getInstalled();
       const version = await this.elPriceApi.getVersion();
       if (isInstalled && !!version) {
@@ -1190,16 +1260,123 @@ class PiggyBank extends Homey.App {
     return false;
   }
 
-  async fetchPrices() {
-    if (await this._checkApi()) {
-      try {
-        return await this.elPriceApi.get('/prices');
-      } catch (err) {
-        this.updateLog(`Electricity price api failed: ${err.message}`, LOG_ERROR);
+  /**
+   * currentPrices - assumes that the api check has already been done
+   * @returns an array where the first price is always the current hour
+   */
+  async currentPrices() {
+    try {
+      const nowSeconds = new Date().getTime() / 1000;
+      const futurePrices = await this.elPriceApi.get('/prices');
+      if (!futurePrices || !Array.isArray(futurePrices)) {
+        return [];
+      }
+      const pricesOnly = [];
+      for (let i = 0; i < futurePrices.length; i++) {
+        if ((nowSeconds - 3600) < (futurePrices[i].time)) {
+          pricesOnly.push(futurePrices[i].price);
+        }
+      }
+      return pricesOnly;
+    } catch (err) {
+      this.updateLog(`Electricity price api failed: ${err.message}`, LOG_ERROR);
+      return [];
+    }
+  }
+
+  /**
+   * Called once every hour (and when app starts)
+   */
+  async doPriceCalculations() {
+    // Abort if prices are not available
+    if (!await this._checkApi()) return Promise.reject(new Error(this.homey.__('warnings.noPriceApi')));
+
+    if (this.__current_prices) {
+      this.__last_hour_price = this.__current_prices[0];
+    } else {
+      this.__last_hour_price = undefined;
+    }
+    this.__current_prices = await this.currentPrices();
+
+    this.statsSetLastHourPrice(this.__last_hour_price);
+
+    // === Calculate price point if state is internal and have future prices ===
+    const futurePriceOptions = this.homey.settings.get('futurePriceOptions');
+    if (this.__current_prices.length < 2
+      || +this.homey.settings.get('priceMode') !== 1) {
+      return Promise.resolve();
+    }
+    if (!this.app_is_configured
+      || typeof (+futurePriceOptions.futurePriceFactor) !== 'number'
+      || !Number.isInteger(+futurePriceOptions.futurePriceModifier)
+      || !Number.isInteger(+futurePriceOptions.lowPriceModifier)
+      || !Number.isInteger(+futurePriceOptions.highPriceModifier)) {
+      return Promise.reject(new Error(this.homey.__('warnings.notConfigured')));
+    }
+    let hoursInInterval = +futurePriceOptions.averageTime * 24;
+    if (!Number.isInteger(hoursInInterval) || hoursInInterval === 0) {
+      hoursInInterval = 48; // Should not happen but check anyways
+    }
+    // Calculate average price
+    if ((typeof (+this.__average_price) !== 'number') || !Number.isFinite(this.__average_price)) {
+      this.__average_price = this.__current_prices[0]; // First time called
+    } else {
+      this.__average_price = (this.__average_price * (hoursInInterval - 1) + this.__current_prices[0]) / hoursInInterval;
+    }
+    // Calculate acceptable price
+    let futureMinPriceTime = +futurePriceOptions.futurePriceModifier;
+    if (!Number.isInteger(futureMinPriceTime) || futureMinPriceTime < 1 || futureMinPriceTime >= this.__current_prices.length) {
+      futureMinPriceTime = this.__current_prices.length - 1; // Should not happen but check anyways
+    }
+    let futureMinPrice = Infinity;
+    for (let i = 1; i <= futureMinPriceTime; i++) {
+      if (this.__current_prices[i] < futureMinPrice) {
+        futureMinPrice = this.__current_prices[i];
       }
     }
-    // Can not fetch prices
-    return {};
+    this.__acceptable_price = this.__average_price * ((futureMinPrice / this.__current_prices[0]) ** (+futurePriceOptions.futurePriceFactor));
+    // Calculate min/max limits
+    this.__low_price_limit = this.__acceptable_price * (+futurePriceOptions.lowPriceModifier / 100 + 1);
+    this.__high_price_limit = this.__acceptable_price * (+futurePriceOptions.highPriceModifier / 100 + 1);
+
+    // Trigger new Price points
+    const mode = (this.__current_prices[0] < this.__low_price_limit) ? PP_LOW
+      : (this.__current_prices[0] > this.__high_price_limit) ? PP_HIGH
+        : PP_NORM;
+    if (!preventZigbee) {
+      return this.onPricePointUpdate(mode);
+    }
+    return Promise.resolve();
+  }
+
+  fetchTariffTable() {
+    // TBD, just return tensio table for now:
+    return [
+      { limit: 2000, price: 73 },
+      { limit: 5000, price: 128 },
+      { limit: 10000, price: 219 },
+      { limit: 15000, price: 323 },
+      { limit: 20000, price: 426 },
+      { limit: 25000, price: 530 },
+      { limit: 50000, price: 911 },
+      { limit: 75000, price: 1430 },
+      { limit: 100000, price: 1950 },
+      { limit: 150000, price: 2816 },
+      { limit: 200000, price: 3855 },
+      { limit: 300000, price: 5586 },
+      { limit: 400000, price: 7665 },
+      { limit: 500000, price: 9743 },
+      { limit: Infinity, price: 11821 }
+    ];
+  }
+
+  findTariffIndex(tariffTable, energy) {
+    for (let i = 0; i < tariffTable.length; i++) {
+      if (energy < tariffTable[i].limit) {
+        return i;
+      }
+    }
+    return tariffTable.length - 1;
   }
 
 } // class

@@ -1,0 +1,19 @@
+  {
+    "type": "number",
+    "title": {
+        "en": "Money",
+        "no": "Penger"
+    },
+    "units": {
+      "en": "NOK",
+      "no": "Kr"
+    },
+    "insights": true,
+    "chartType": "spline",
+    "decimals": 2,
+    "getable": true,
+    "setable": false,
+    "uiComponent": "sensor",
+
+    "icon": "/assets/money.svg"
+  }

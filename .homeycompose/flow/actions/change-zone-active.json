@@ -8,8 +8,8 @@
     "no": "Endre sone [[zone]] aktiv til [[enabled]]"
   },
   "hint": {
-    "en": "Allows you to turn on/off devices in zones e.g. in connection with ventilation",
-    "no": "Tillater deg å slå av/på enheter i soner f.eks. i forbindelse med lufting"
+    "en": "Allows you to turn on/off devices in zones e.g. in connection with ventilation. If the app is disabled the zone list may be empty.",
+    "no": "Tillater deg å slå av/på enheter i soner f.eks. i forbindelse med lufting. Dersom appen er deaktivert kan sone-listen være tom."
   },
   "args": [
     {

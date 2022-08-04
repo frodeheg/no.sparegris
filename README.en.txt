@@ -1,4 +1,4 @@
-Save money by moving power consumption.
+Limit the power tariff, move power consumption and save money.
 
 The main purpose of this app is to limit the maximum power usage per hour so you don't breach your desired power tariff in Norway. Among other features, you may also use it as a price and situation-dependent heating controller or car charger controller.
 Please contact the developer if you want support added for other countries.

@@ -1,4 +1,4 @@
-Spar penger ved å flytte strømforbruket.
+Begrens effekttariffen, flytt strømforbruket og spar penger.
 
 Hovedmålet med denne appen er å begrense maksimalt strømforbruk per time slik at man holder seg innenfor ønsket effekttariff i Norge. Forøvrig kan man også bruke appen som en pris og situasjonsavhengig kontroller for oppvarming og/eller lading av bil.
 Det gjøres oppmerksom på at appen fortsatt er under utvikling så det blir satt pris på om enhver feil blir meldt ifra i forumet så det kan utbedres så snart som mulig.

@@ -46,14 +46,13 @@
       "header": "Priskontroll",
       "priceMode": "Modus",
       "mode": {
-        "disabled": "Priskontroll deaktivert",
         "flow": "Fra flytkort",
         "internal": "Intern Styring"
       },
       "actionLow": "Handling når strømprisen blir lav",
       "actionHigh": "Handling når strømprisen blir høy",
       "actionNormal": "Handling når strømprisen blir normal",
-      "priceHint1": "Priskontroll lar deg styre enheter basert på strømprisen. Dersom dette ikke benyttes vil appen bare styre maks effekt.",
+      "priceHint1": "Modus lar deg velge om du skal fore appen med prispunkt manuelt via flows eller om det skal gjøres automatisk. Dersom ingen av delene benyttes vil appen bare styre maks effekt.",
       "priceErr1": "NB! Du må installere appen no.almli.utilitycost for å bruke den interne priskontrollen. Strømprisen hentes sømløst uten å benytte flytkort.",
       "pricePoint": "Prispunkt",
       "pricePointHint": "Oppførsel for hvert prispunkt kan endres nedenfor. Man kan bytte mellom ulike prispunkt ved hjelp av flows.",
@@ -63,27 +62,31 @@
       "turnOn": "Slå på",
       "turnOff": "Slå av",
       "internal": {
-        "header": "Internstyring",
-        "averageTime": "Flytende Snittpris Intervall",
-        "averageTimeHint": "En gang i timen oppdateres et flytende snitt på strømprisen basert på det gitte intervallet.",
+        "averageTime": "Glidende Snittpris Intervall",
+        "averageTimeHint": "En gang i timen oppdateres et glidende snitt på strømprisen basert på det gitte intervallet. Formelen er:",
+        "averageTimeHint2": "snittpris",
+        "averageTimeHint3": "gammel_snittpris * (antall_timer_i_intervallet-1) + ny_pris",
+        "averageTimeHint4": "antall_timer_i_intervallet",
         "day1": "En dag",
         "day2": "To dager",
         "day4": "Fire dager",
         "day7": "En uke",
         "day30": "En måned",
-        "futurePriceModifier": "Fremtidig prishensyn",
-        "futurePriceModifierHint": "En fremtidig lavere pris vil øke nåværende akseptabel pris. En fremtidig høyere pris vil redusere nåværende akseptabel pris. Dess større prisforskjell dess større påvirkning. Modifikatoren er:",
-        "futurePriceModifierHint2": "min(pris_om_x_timer(i))",
+        "futurePriceModifier": "Fremtidig prisintervall",
+        "futurePriceFactor": "Fremtidig prisfaktor",
+        "futurePriceModifierHint": "En fremtidig lavere pris vil øke nåværende akseptabel pris. En fremtidig høyere pris vil redusere nåværende akseptabel pris. Dess større prisforskjell dess større påvirkning. Formelen er:",
+        "futurePriceModifierHint1": "akseptabel_pris = snittpris * (",
+        "futurePriceModifierHint2": "min(pris_i_intervall)",
         "futurePriceModifierHint3": "price_nå",
-        "futurePriceModifierHint4": "for alle i &isin; [1, antall_timer]",
+        "futurePriceModifierHint4": ") ^ fremtidig_prisfaktor",
         "hour1": "En time",
         "hour2": "To timer",
         "hour3": "Tre timer",
         "hour4": "Fire timer",
-
-
-
-        "internalHint1": ["Intern styring av strømprisen regner prisen som høy/lav basert på følgende algoritme:<br>*"]
+        "lowPriceFactor": "Lav Pris:",
+        "lowPriceModifierHint": "Dersom den gjeldende timeprisen faller x% under den akseptable strømprisen blir prispunkt satt til Lavt",
+        "highPriceFactor": "Høy Pris:",
+        "highPriceModifierHint": "Dersom den gjeldende timeprisen kommer x% over den akseptable strømprisen blir prispunkt satt til Høyt"
       }
     },
     "frost": {
@@ -138,6 +141,8 @@
     "homeyReboot": "Appen er deaktivert i 15 minutter etter at et strømbrudd har blitt detektert fordi Homey gjenopprettes",
     "notEnabled": "Appen har ikke blitt aktivert enda, gå til appens innstillinger og aktiver appen først",
     "noDevices": "Vennligst velg minst en enhet som skal bli styrt av appen",
-    "savingWait": "Lagrer, vennligst vent..."
+    "savingWait": "Lagrer, vennligst vent...",
+    "savingFailed": "Klarte ikke å lagre! Dette skal ikke skje, vennligst meld ifra til utvikleren så feilen kan bli fikset.",
+    "noPriceApi": "Du må installere appen 'no.almli.utilitycost' for få strømpriser til å virke"
   }
 }

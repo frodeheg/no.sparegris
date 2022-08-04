@@ -46,14 +46,13 @@
       "header": "Price control",
       "priceMode": "Mode",
       "mode": {
-        "disabled": "Disabled",
         "flow": "From Flow",
         "internal": "Internal control"
       },
       "actionLow": "Actions when price is low",
       "actionHigh": "Actions when price is high",
       "actionNormal": "Actions when price is normal",
-      "priceHint1": "Price control allows you to control devices based on the electricity price. If this is not used then the app will only control max power.",
+      "priceHint1": "The Mode allows you to choose whether to feed the app with manually crafted price points or if the price points should be set automatically. If neither is used then the app will only control max power.",
       "priceErr1": "Note! You have to install the app no.almli.utilitycost in order to use the internal price control. The prices are fetched seamlessly, flow cards are not necessary.",
       "pricePoint": "Price point",
       "pricePointHint": "The behaviour of each price point is defined below. Price points can be changed by using flows.",
@@ -63,33 +62,31 @@
       "turnOn": "Turn on",
       "turnOff": "Turn off",
       "internal": {
-        "header": "Internal control",
-        "averageTime": "Running Average Time",
-        "averageTimeHint": "Once every hour calculate a running average of the electricity price over the specified time period.",
+        "averageTime": "Moving Average Interval",
+        "averageTimeHint": "Once every hour calculate a moving average of the electricity price over the specified time period. The formula is as follows:",
+        "averageTimeHint2": "average_price",
+        "averageTimeHint3": "old_average *(num_hours_in_interval-1) + new_price",
+        "averageTimeHint4": "num_hours_in_interval",
         "day1": "One day",
         "day2": "Two days",
         "day4": "Four days",
         "day7": "A week",
         "day30": "A month",
-        "futurePriceModifier": "Future Price Limit",
+        "futurePriceModifier": "Future Price Interval",
+        "futurePriceFactor": "Future Price Factor",
         "futurePriceModifierHint": "A future lower price will increase the current acceptable price. A future higher price will decrease the current acceptable price. The bigger price difference the more impact. The modifier is:",
-        "futurePriceModifierHint2": "min(price_in_x_hours(i))",
+        "futurePriceModifierHint1": "acceptable_price = average_price * (",
+        "futurePriceModifierHint2": "min(price_in_interval)",
         "futurePriceModifierHint3": "price_now",
-        "futurePriceModifierHint4": "for all i &isin; [1, number_of_hours]",
+        "futurePriceModifierHint4": ") ^ future_price_factor",
         "hour1": "En time",
         "hour2": "To timer",
         "hour3": "Tre timer",
         "hour4": "Fire timer",
-        "penaltyPerOffHour": "Økning",
-
-
-
-        "internalHint1": ["Intern styring av strømprisen regner prisen som høy/lav basert på følgende algoritme:<br>*",
-                         "<ul><li>running_average = running_average * (1-new_weight) + new_price * new_weight | once every hour",
-                         "<li>max_price = running_average * pow(1 + hourly_penalty, num_hours_blocked) * max_modifier | once every hour",
-                         "<li>price_is_low = running_average < low_threshold",
-                         "<li>price_is_high = running_average > high_threshold",
-                         "<li>price_is_normal = (price_is_low is false) and (price_is_high is false)"]
+        "lowPriceFactor": "Low Price:",
+        "lowPriceModifierHint": "If the current price falls x% below the acceptable price then the price point will be set to Low.",
+        "highPriceFactor": "High Price:",
+        "highPriceModifierHint": "If the current price rises x% above the acceptable price then the price point will be set to High."
       }
     },
     "frost": {
@@ -144,6 +141,8 @@
     "homeyReboot": "The App is disabled for 15 minutes after a power loss was detected to help Homey to recover.",
     "notEnabled": "The App has not been activated yet. Please enter the app settings to activate the app.",
     "noDevices": "Please select at least one device to be controlled",
-    "savingWait": "Saving, please wait..."
+    "savingWait": "Saving, please wait...",
+    "savingFailed": "Failed to save, This should not happen, please notify the developer so this can be fixed",
+    "noPriceApi": "You have to install the app 'no.almli.utilitycost' to get the electricity prices to work"
   }
 }

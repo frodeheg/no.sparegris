@@ -61,12 +61,13 @@
         2000, // Away
         2000  // Custom
       ]
-      var currentPriceMode = 1; // From Flow
+      var currentPriceMode = 0; // From Flow
       var currentPricePoint = 1; // Normal
       var currentOperatingMode = 0; // Disabled
       var currentErrorMargin = 5;
       var currentSafetyPower = 500;
       var currentMainFuse = 63;
+      var futurePriceOptions = {ApiError:true};
       var currentModeTab = 0; // Normal
 
       var operatingModes = [
@@ -77,11 +78,6 @@
         { name:"settings.opMode.custom", value: 4 }
       ]
 
-      var priceModes = [
-        { name:"settings.price.mode.disabled", value: 0 },
-        { name:"settings.price.mode.flow", value: 1 },
-        { name:"settings.price.mode.internal", value: 2 },
-      ]
       var pricePoints = [
         { name:"settings.pricetab.cheap", value: 0 },
         { name:"settings.pricetab.normal", value: 1 },
@@ -120,16 +116,6 @@
         for (var i = 0; i < operatingModes.length; i++) {
           options += '<option value="' + operatingModes[i].value + '" ' 
             + ((selectedMode==i) ? 'selected' : '') + '>' + operatingModes[i].name + '</option>';
-        }
-        list.innerHTML = options;
-      }
-
-      function updatePriceModes(selectedMode) {
-        var list = document.getElementById("priceMode");
-        var options = '';
-        for (var i = 0; i < priceModes.length; i++) {
-          options += '<option value="' + priceModes[i].value + '" ' 
-            + ((selectedMode==i) ? 'selected' : '') + '>' + priceModes[i].name + '</option>';
         }
         list.innerHTML = options;
       }
@@ -339,6 +325,16 @@
         generatePriorityList(listNum);
       }
 
+      function checkPriceMode(source) {
+        var priceControl = document.getElementById('priceControl');
+        if (source.value == "1") {
+          // Internal use
+          priceControl.style.display = 'block';
+        } else {
+          priceControl.style.display = 'none';
+        }
+      }
+
       function toggle(source, id, type = 'block') {
         var element = document.getElementById(id);
 
@@ -517,20 +513,6 @@
     <div id="pricePage" class="tabcontent">
       <fieldset>
         <legend data-i18n="settings.price.header">price.header</legend>
-        <span style="display: none">
-        <table class="settings_table">
-          <tr>
-            <td class="settings_row_name"><label for="priceMode" data-i18n="settings.price.priceMode">price.priceMode</label>:</td>
-            <td class="settings_row_input">
-              <select id="priceMode" disabled>
-                <option value="0" selected>Price control disabled</option>
-              </select>
-              <div class="hintButton" onclick="toggle(this,'hintp1');return false;">i</div></td>
-          </tr>
-        </table>
-        <p id="hintp1" class="hint" data-i18n="settings.price.priceHint1">price.priceHint1</p>
-        <p id="errp1" class="error" data-i18n="settings.price.priceErr1">price.priceErr1</p>
-        </span>
         <table class="settings_table">
           <tr>
             <td class="settings_row_name"><label for="pricePoint" data-i18n="settings.price.pricePoint">price.pricePoint</label>:</td>
@@ -542,6 +524,91 @@
           </tr>
         </table>
         <p id="hintpp" class="hint" data-i18n="settings.price.pricePointHint">price.pricePointHint</p>
+
+        <table class="settings_table">
+          <tr>
+            <td class="settings_row_name"><label for="priceMode" data-i18n="settings.price.priceMode">price.priceMode</label>:</td>
+            <td class="settings_row_input">
+              <select id="priceMode" onchange="checkPriceMode(this)">
+                <option value="0" data-i18n="settings.price.mode.flow" selected>From flows</option>
+                <option value="1" data-i18n="settings.price.mode.internal">Internally</option>
+              </select>
+              <div class="hintButton" onclick="toggle(this,'hintp1');return false;">i</div></td>
+          </tr>
+        </table>
+        <p id="hintp1" class="hint" data-i18n="settings.price.priceHint1">price.priceHint1</p>
+
+        <span id="priceControl" style="display: none">
+          <p id="errp1" class="error" data-i18n="settings.price.priceErr1">price.priceErr1</p>
+
+          <table class="settings_table">
+            <tr>
+              <td class="settings_row_name"><label for="averageTime" data-i18n="settings.price.internal.averageTime">price.internal.averageTime</label>:</td>
+              <td class="settings_row_input">
+                <select id="averageTime">
+                  <option value="1" data-i18n="settings.price.internal.day1">price.internal.day1</option>
+                  <option value="2" data-i18n="settings.price.internal.day2" selected>price.internal.day2</option>
+                  <option value="4" data-i18n="settings.price.internal.day4">price.internal.day4</option>
+                  <option value="7" data-i18n="settings.price.internal.day7">price.internal.day7</option>
+                  <option value="30" data-i18n="settings.price.internal.day30">price.internal.day30</option>
+                </select>
+                <div class="hintButton" onclick="toggle(this,'averageTimeHint');toggle(this,'averageTimeHint2');return false;">i</div></td>
+            </tr>
+          </table>
+          <p id="averageTimeHint" class="hint" data-i18n="settings.price.internal.averageTimeHint">price.internal.averageTimeHint</p>
+          <p id="averageTimeHint2" class="math"><span data-i18n="settings.price.internal.averageTimeHint2">average_price</span>=<span class='locked'>
+            <sup><u data-i18n="settings.price.internal.averageTimeHint3">old_average *(num_hours_in_interval-1) + new_price</u></sup>
+            <sub data-i18n="settings.price.internal.averageTimeHint4">num_hours_in_interval</sub></span></p>
+
+          <table class="settings_table">
+            <tr>
+              <td class="settings_row_name"><label for="futurePriceModifier" data-i18n="settings.price.internal.futurePriceModifier">price.internal.futurePriceModifier</label>:</td>
+              <td class="settings_row_input">
+                <select id="futurePriceModifier">
+                  <option value="1" data-i18n="settings.price.internal.hour1">price.internal.hour1</option>
+                  <option value="2" data-i18n="settings.price.internal.hour2" selected>price.internal.hour2</option>
+                  <option value="3" data-i18n="settings.price.internal.hour3">price.internal.hour3</option>
+                  <option value="4" data-i18n="settings.price.internal.hour4">price.internal.hour4</option>
+                </select>
+                <div class="hintButton" onclick="toggle(this,'futurePriceModifierHint');toggle(this,'futurePriceModifierHint1','inline-block');toggle(this,'futurePriceModifierHint2','inline-block');toggle(this,'futurePriceModifierHint4','inline-block');return false;">i</div></td>
+            </tr>
+          </table>
+          <table class="settings_table">
+            <tr>
+              <td class="settings_row_name"><label for="futurePriceFactor" data-i18n="settings.price.internal.futurePriceFactor">price.internal.futurePriceFactor</label>:</td>
+              <td class="settings_row_input">
+                <input id="futurePriceFactor" type="number" size="10" min="0" max="5" step="0.1" value="1.5">
+                <div class="hintButton" onclick="toggle(this,'futurePriceModifierHint');toggle(this,'futurePriceModifierHint1','inline-block');toggle(this,'futurePriceModifierHint2','inline-block');toggle(this,'futurePriceModifierHint4','inline-block');return false;">i</div></td>
+            </tr>
+          </table>
+          <p id="futurePriceModifierHint" class="hint" data-i18n="settings.price.internal.futurePriceModifierHint">price.internal.futurePriceModifierHint</p>
+          <p id="futurePriceModifierHint1" class="hint" data-i18n="settings.price.internal.futurePriceModifierHint1">acceptable_price = average_price * (</p>
+          <p id="futurePriceModifierHint2" class="math">
+            <span class='locked'>
+              <sup><u data-i18n="settings.price.internal.futurePriceModifierHint2">min(price_in_interval)</u></sup>
+              <sub data-i18n="settings.price.internal.futurePriceModifierHint3">price_now</sub></span></p>
+          <p id="futurePriceModifierHint4" class="hint" data-i18n="settings.price.internal.futurePriceModifierHint4">) ^ future_price_factor</p>
+
+          <table class="settings_table">
+            <tr>
+              <td class="settings_row_name"><label for="lowPriceModifier" data-i18n="settings.price.internal.lowPriceModifier">price.internal.lowPriceModifier</label>:</td>
+              <td class="settings_row_input">
+                <input id="lowPriceModifier" data-i18n="settings.price.internal.hour1" type="number" size="10" min="-50" max="-10" value="-10">%
+                <div class="hintButton" onclick="toggle(this,'lowPriceModifierHint');return false;">i</div></td>
+            </tr>
+          </table>
+          <p id="lowPriceModifierHint" class="hint" data-i18n="settings.price.internal.lowPriceModifierHint">price.internal.lowPriceModifierHint</p>
+
+          <table class="settings_table">
+            <tr>
+              <td class="settings_row_name"><label for="highPriceModifier" data-i18n="settings.price.internal.highPriceModifier">price.internal.highPriceModifier</label>:</td>
+              <td class="settings_row_input">
+                <input id="highPriceModifier" data-i18n="settings.price.internal.hour1" type="number" size="10" min="1" max="100" value="10">%
+                <div class="hintButton" onclick="toggle(this,'highPriceModifierHint');return false;">i</div></td>
+            </tr>
+          </table>
+          <p id="highPriceModifierHint" class="hint" data-i18n="settings.price.internal.highPriceModifierHint">price.internal.highPriceModifierHint</p>
+        </span>
 
         <table width="100%" id="sub_tab_selector" class="tab">
           <tr>
@@ -555,44 +622,6 @@
         </table>
         <span id="priceActionList">List of devices should have been generated here, if you see this text it is a bug...</span>
       </fieldset>
-      <span style="display: none">
-      <fieldset>
-        <legend data-i18n="settings.price.internal.header">price.internal.header</legend>
-        <table class="settings_table">
-          <tr>
-            <td class="settings_row_name"><label for="averageTime" data-i18n="settings.price.internal.averageTime">price.internal.averageTime</label>:</td>
-            <td class="settings_row_input">
-              <select id="averageTime" disabled>
-                <option value="1" data-i18n="settings.price.internal.day1">price.internal.day1</option>
-                <option value="2" data-i18n="settings.price.internal.day2" selected>price.internal.day2</option>
-                <option value="4" data-i18n="settings.price.internal.day4">price.internal.day4</option>
-                <option value="7" data-i18n="settings.price.internal.day7">price.internal.day7</option>
-                <option value="30" data-i18n="settings.price.internal.day30">price.internal.day30</option>
-              </select>
-              <div class="hintButton" onclick="toggle(this,'averageTimeHint');return false;">i</div></td>
-          </tr>
-        </table>
-        <p id="averageTimeHint" class="hint" data-i18n="settings.price.internal.averageTimeHint">price.internal.averageTimeHint</p>
-        <table class="settings_table">
-          <tr>
-            <td class="settings_row_name"><label for="futurePriceModifier" data-i18n="settings.price.internal.futurePriceModifier">price.internal.futurePriceModifier</label>:</td>
-            <td class="settings_row_input">
-              <select id="futurePriceModifier" disabled>
-                <option value="1" data-i18n="settings.price.internal.hour1">price.internal.hour1</option>
-                <option value="2" data-i18n="settings.price.internal.hour2" selected>price.internal.hour2</option>
-                <option value="3" data-i18n="settings.price.internal.hour3">price.internal.hour3</option>
-                <option value="4" data-i18n="settings.price.internal.hour4">price.internal.hour4</option>
-              </select>
-              <div class="hintButton" onclick="toggle(this,'futurePriceModifierHint');toggle(this,'futurePriceModifierHint2','inline-block');toggle(this,'futurePriceModifierHint4','inline-block');return false;">i</div></td>
-          </tr>
-        </table>
-        <p id="futurePriceModifierHint" class="hint" data-i18n="settings.price.internal.futurePriceModifierHint">price.internal.futurePriceModifierHint</p>
-        <p id="futurePriceModifierHint2" class="math"><span class='locked'>
-            <sup><u data-i18n="settings.price.internal.futurePriceModifierHint2">min(price_in_x_hours(i))</u></sup>
-            <sub data-i18n="settings.price.internal.futurePriceModifierHint3">price_now</sub></span></p>
-        <p id="futurePriceModifierHint4" class="hint" data-i18n="settings.price.internal.futurePriceModifierHint4">for all i &isin; [1, n]</p>
-      </fieldset>
-      </span>
     </div>
     <!-- Price page end -->
 
@@ -669,6 +698,7 @@
       var frostListLoaded = false;
       var zoneListLoaded = false;
       var mainFuseLoaded = false;
+      var futurePriceOptionsLoaded = false;
 
       // Called whenever things has been loaded
       function checkLoadingDone() {
@@ -684,7 +714,8 @@
           && priceActionListLoaded
           && frostListLoaded
           && zoneListLoaded
-          && mainFuseLoaded) {
+          && mainFuseLoaded
+          && futurePriceOptionsLoaded) {
           // Update device enable list:
           generateEnableList('highPriDevices', 1);
           generateEnableList('lowPriDevices', 0);
@@ -692,15 +723,22 @@
           // Hide all tabs except one:
           changeTab(false, 'globalPage');
           updateOperatingModes(currentOperatingMode);
-          updatePriceModes(currentPriceMode);
           updatePricePoints(currentPricePoint);
           loadElement.style.display = "none";
+          document.getElementById("priceMode").value = currentPriceMode;
           document.getElementById("tab_selector").style.display = "inline-block";
           document.getElementById("save").style.display = "inline-block";
           document.getElementById("errorMargin").value = currentErrorMargin;
           document.getElementById("safetyPower").value = currentSafetyPower;
           document.getElementById("pricePoint").value = currentPricePoint;
           document.getElementById("mainFuse").value = currentMainFuse;
+          document.getElementById("averageTime").value = futurePriceOptions.averageTime;
+          document.getElementById("futurePriceModifier").value = futurePriceOptions.futurePriceModifier;
+          document.getElementById("futurePriceFactor").value = futurePriceOptions.futurePriceFactor;
+          document.getElementById("lowPriceModifier").value = futurePriceOptions.lowPriceModifier;
+          document.getElementById("highPriceModifier").value = futurePriceOptions.highPriceModifier;
+          document.getElementById("errp1").style.display = futurePriceOptions.ApiError ? 'inline-block' : 'none';
+          checkPriceMode(document.getElementById("priceMode")); // not called automatically when programatically changed
         }
       }
 
@@ -713,6 +751,11 @@
         var priceModeElement = document.getElementById("priceMode");
         var pricePointElement = document.getElementById("pricePoint");
         var mainFuseElement = document.getElementById("mainFuse");
+        var averageTimeElement = document.getElementById("averageTime");
+        var futurePriceModifierElement = document.getElementById("futurePriceModifier");
+        var futurePriceFactorElement =  document.getElementById("futurePriceFactor");
+        var lowPriceModifierElement =  document.getElementById("lowPriceModifier");
+        var highPriceModifierElement =  document.getElementById("highPriceModifier");
 
         // Fetch translation strings from Homey
         deltaText = Homey.__(deltaText);
@@ -737,9 +780,6 @@
 
         for (var i = 0; i < operatingModes.length; i++) {
           operatingModes[i].name = Homey.__(operatingModes[i].name);
-        }
-        for (var i = 0; i < priceModes.length; i++) {
-          priceModes[i].name = Homey.__(priceModes[i].name);
         }
         for (var i = 0; i < pricePoints.length; i++) {
           pricePoints[i].name = Homey.__(pricePoints[i].name);
@@ -864,32 +904,60 @@
           mainFuseLoaded = true;
           checkLoadingDone();
         });
+        Homey.get("futurePriceOptions", function (err, options) {
+          if (err) return Homey.alert(err);
+          if (options) {
+            futurePriceOptions = options;
+          } else {
+            futurePriceOptions = {}
+          }
+          if (!futurePriceOptions.hasOwnProperty("averageTime")) futurePriceOptions.averageTime = 2;
+          if (!futurePriceOptions.hasOwnProperty("futurePriceModifier")) futurePriceOptions.futurePriceModifier = 2;
+          if (!futurePriceOptions.hasOwnProperty("futurePriceFactor")) futurePriceOptions.futurePriceFactor = 1.5;
+          if (!futurePriceOptions.hasOwnProperty("lowPriceModifier")) futurePriceOptions.lowPriceModifier = -10;
+          if (!futurePriceOptions.hasOwnProperty("highPriceModifier")) futurePriceOptions.highPriceModifier = 10;
+          if (!futurePriceOptions.hasOwnProperty("ApiError")) futurePriceOptions.ApiError = true;
+          if (typeof futurePriceOptions.ApiError != "boolean") futurePriceOptions.ApiError = futurePriceOptions.ApiError === "true";
+          futurePriceOptionsLoaded = true;
+          checkLoadingDone();
+        });
 
         // Callback function does only return on failure unfortunately
         const errFunc = (err) => { Homey.alert(err.message) }
         saveElement.addEventListener("click", function (e) {
           Homey.alert(Homey.__('warnings.savingWait'));
-          // Make sure all settings are up to date:
-          refreshModeLists(); // It's a pitty but the user did not even visit these pages. Probably they will do later
-          refreshFrostList(); // It's a pitty but the user did not even visit these pages. Probably they will do later
-          refreshPriceActionList(); // It's a pitty but the user did not even visit these pages. Probably they will do later
-          if (Object.keys(frostList).length === 0) {
-            Homey.alert(Homey.__('warnings.noDevices'))
-          } else {
-            Homey.set("deviceList", deviceList, errFunc);
-            Homey.set("modeList", modeList, errFunc);
-            Homey.set("frostList", frostList, errFunc);
-            Homey.set("zones", zoneList, errFunc);
-            Homey.set("maxPowerList", maxPowerList, errFunc);
-            Homey.set("operatingMode", operatingModeElement.value, errFunc);
-            Homey.set("priceMode", priceModeElement.value, errFunc);
-            Homey.set("pricePoint", pricePointElement.value, errFunc);
-            Homey.set("priceActionList", priceActionList, errFunc);
-            Homey.set("errorMargin", errorMarginElement.value, errFunc);
-            Homey.set("safetyPower", safetyPowerElement.value, errFunc);
-            Homey.set("mainFuse", mainFuseElement.value, errFunc);
-            Homey.set("settingsSaved", "", errFunc); // On settings is only called if the settings actually changed
-            Homey.set("settingsSaved", "true", errFunc); // This one will throw the message settings.alert.settingssaved on success
+          try {
+            // Make sure all settings are up to date:
+            refreshModeLists(); // It's a pitty but the user did not even visit these pages. Probably they will do later
+            refreshFrostList(); // It's a pitty but the user did not even visit these pages. Probably they will do later
+            refreshPriceActionList(); // It's a pitty but the user did not even visit these pages. Probably they will do later
+            if (Object.keys(frostList).length === 0) {
+              Homey.alert(Homey.__('warnings.noDevices'))
+            } else {
+              futurePriceOptions.averageTime = averageTimeElement.value;
+              futurePriceOptions.futurePriceModifier = futurePriceModifierElement.value;
+              futurePriceOptions.futurePriceFactor = futurePriceFactorElement.value;
+              futurePriceOptions.lowPriceModifier = lowPriceModifierElement.value;
+              futurePriceOptions.highPriceModifier = highPriceModifierElement.value;
+              Homey.set("futurePriceOptions", futurePriceOptions, errFunc);
+              Homey.set("deviceList", deviceList, errFunc);
+              Homey.set("modeList", modeList, errFunc);
+              Homey.set("frostList", frostList, errFunc);
+              Homey.set("zones", zoneList, errFunc);
+              Homey.set("maxPowerList", maxPowerList, errFunc);
+              Homey.set("operatingMode", operatingModeElement.value, errFunc);
+              Homey.set("priceMode", priceModeElement.value, errFunc);
+              Homey.set("pricePoint", pricePointElement.value, errFunc);
+              Homey.set("priceActionList", priceActionList, errFunc);
+              Homey.set("errorMargin", errorMarginElement.value, errFunc);
+              Homey.set("safetyPower", safetyPowerElement.value, errFunc);
+              Homey.set("mainFuse", mainFuseElement.value, errFunc);
+              Homey.set("settingsSaved", "", errFunc); // On settings is only called if the settings actually changed
+              Homey.set("settingsSaved", "true", errFunc); // This one will throw the message settings.alert.settingssaved on success
+            }
+          }
+          catch (err) {
+            Homey.alert(Homey.__('warnings.savingFailed'));
           }
         });
 
@@ -1083,6 +1151,7 @@
         errorMarginLoaded = true;
         safetyPowerLoaded = true;
         mainFuseLoaded = true;
+        futurePriceOptionsLoaded = true;
         checkLoadingDone();
       }*/
     </script>
