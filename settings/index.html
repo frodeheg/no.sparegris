@@ -95,7 +95,7 @@
           gen_list +=
             '<tr>' +
             '  <td><img src="' + device.image + '" alt="icon"></td>' +
-            '  <td><input type="image" width="40" height="20" src="' + enabledImg + '" onclick="toggleEnableDevice(event, \'' + String(key) + '\')" id="enableDevice' + String(key) + '"></td>' +
+            '  <td><input type="image" width="40" height="20" src="' + enabledImg + '" onclick="toggleEnableDevice(event, \'' + String(key) + '\');displaySaveHint()" id="enableDevice' + String(key) + '"></td>' +
             '  <td><h3>' + device.name + '</h3></td>' +
             '  <td><p>' + device.room + '</p></td>' +
             '</tr>';
@@ -140,7 +140,7 @@
             '</tr>';
         for (var deviceId in frostList) {
           var device = deviceList[deviceId];
-          var frost_temp_input = device.thermostat_cap ? '<input type="number" id="minTemp' + String(deviceId) + '" min=0 max=90 size="1" onchange="setFrostTemp(this, \'' + String(deviceId) + '\')" value="' + String(frostList[deviceId].minTemp) + '">°C' : '-';
+          var frost_temp_input = device.thermostat_cap ? '<input type="number" id="minTemp' + String(deviceId) + '" min=0 max=90 size="1" onchange="setFrostTemp(this, \'' + String(deviceId) + '\');displaySaveHint()" value="' + String(frostList[deviceId].minTemp) + '">°C' : '-';
           gen_list +=
             '<tr>' +
               '<td><img src="' + device.image + '" alt="icon" width="auto" height="50"></td>' +
@@ -205,13 +205,13 @@
             '</tr>';
         for (var deviceId in priceActionList[tabPage]) {
           var device = deviceList[deviceId];
-          var price_temp_input = device.thermostat_cap ? '<input type="number" id="deltaTemp' + String(deviceId) + '" min=-30 max=30 size="1" onchange="setDeltaTemp(this, ' + String(tabPage) + ', \'' + String(deviceId) + '\')" value="' + String(priceActionList[tabPage][deviceId].delta) + '">°C' : '-';
+          var price_temp_input = device.thermostat_cap ? '<input type="number" id="deltaTemp' + String(deviceId) + '" min=-30 max=30 size="1" onchange="setDeltaTemp(this, ' + String(tabPage) + ', \'' + String(deviceId) + '\');displaySaveHint()" value="' + String(priceActionList[tabPage][deviceId].delta) + '">°C' : '-';
           priceTabText +=
             '<tr>' +
               '<td><img src="' + device.image + '" alt="icon" width="auto" height="50"></td>' +
               '<td><h3>' + device.name + '</h3>' +
                 '<p>' + device.room + '</p></td>' +
-              '<td><div class="imgButtonText" id="priceActionButton' + String(deviceId) + '" onclick="updatePriceAction(this, ' + String(tabPage) + ', \'' + String(deviceId) + '\')">N/A</div></td>' +
+              '<td><div class="imgButtonText" id="priceActionButton' + String(deviceId) + '" onclick="updatePriceAction(this, ' + String(tabPage) + ', \'' + String(deviceId) + '\');displaySaveHint()">N/A</div></td>' +
               '<td>' + price_temp_input + '</td>' +
             '</tr>';
         }
@@ -239,13 +239,13 @@
           var device = deviceList[modeList[listNum][i].id];
           var upenabled  = (i==0) ? 'disabled' : '';
           var dwnenabled = (i==modeList[listNum].length-1) ? 'disabled' : '';
-          var target_temp_input = device.thermostat_cap ? '<input type="number" id="targetTemp' + String(i) + '" min=0 max=90 size="1" onchange="setTargetTemp(this,' + String(listNum) + ',' + String(i) + ')" value="' + String(modeList[listNum][i].targetTemp) + '">°C' : '-';
+          var target_temp_input = device.thermostat_cap ? '<input type="number" id="targetTemp' + String(i) + '" min=0 max=90 size="1" onchange="setTargetTemp(this,' + String(listNum) + ',' + String(i) + ');displaySaveHint()" value="' + String(modeList[listNum][i].targetTemp) + '">°C' : '-';
           gen_list +=
             '<tr>' +
-              '<td><input ' + upenabled + ' type="image" width="40" height="15" src="up_arrow.png" onclick="moveDevice(event, ' + String(listNum) + ', ' + String(i) + ',-1)" id="moveDeviceUp' + String(i) + '"/><br>' +
-                  '<input ' + dwnenabled + ' type="image" width="40" height="15" src="down_arrow.png" onclick="moveDevice(event, ' + String(listNum) + ', ' + String(i) + ',+1)" id="moveDeviceDown' + String(i) + '"/></td>' +
+              '<td><input ' + upenabled + ' type="image" width="40" height="15" src="up_arrow.png" onclick="moveDevice(event, ' + String(listNum) + ', ' + String(i) + ',-1);displaySaveHint()" id="moveDeviceUp' + String(i) + '"/><br>' +
+                  '<input ' + dwnenabled + ' type="image" width="40" height="15" src="down_arrow.png" onclick="moveDevice(event, ' + String(listNum) + ', ' + String(i) + ',+1);displaySaveHint()" id="moveDeviceDown' + String(i) + '"/></td>' +
               '<td><img src="' + device.image + '" alt="icon" width="auto" height="50"></td>' +
-              '<td><div class="imgButtonText" id="deviceStateButton' + String(i) + '" onclick="updateState(this, ' + String(listNum) + ', ' + String(i) + ')">N/A</div></td>' +
+              '<td><div class="imgButtonText" id="deviceStateButton' + String(i) + '" onclick="updateState(this, ' + String(listNum) + ', ' + String(i) + ');displaySaveHint()">N/A</div></td>' +
               '<td><h3>' + device.name + '</h3>' +
                   '<p>' + device.room + '</p></td>' +
                   '<td>' + target_temp_input + '</td>' +
@@ -348,6 +348,11 @@
         }
       }
 
+      function displaySaveHint() {
+        var rememberToSaveElement = document.getElementById("rememberToSave");
+        rememberToSaveElement.style.display = 'block';
+      }
+
       function setMaxPower(object) {
         if(object.value != ""){
           if(parseInt(object.value) < parseInt(object.min)){
@@ -430,6 +435,9 @@
       </tr>
     </table>
 
+    <!-- Important information is shown here -->
+    <div data-i18n="settings.warnings.rememberToSave" id="rememberToSave" style="display:none;color:red;">Remember to save</div>
+
     <!-- Global page -->
     <div id="globalPage" class="tabcontent">
       <fieldset>
@@ -438,7 +446,7 @@
           <tr>
             <td class="settings_row_name"><label for="operatingMode" data-i18n="settings.global.operatingMode">global.operatingMode</label>:</td>
             <td class="settings_row_input">
-              <select id="operatingMode">
+              <select id="operatingMode" onchange="displaySaveHint()">
                 <option value="0" selected>App Disabled</option>
               </select>
               <div class="hintButton" onclick="toggle(this,'hint1');toggle(this,'hint2');return false;">i</div></td>
@@ -450,7 +458,7 @@
         <table class="settings_table">
           <tr>
             <td class="settings_row_name"><label for="errorMargin" data-i18n="settings.global.errorMargin">global.errorMargin</label>:</td>
-            <td class="settings_row_input"><input id="errorMargin" type="number" min="0" max="30" value="5" size="10">% 
+            <td class="settings_row_input"><input id="errorMargin" type="number" min="0" max="30" value="5" size="10" onchange="displaySaveHint()">% 
             <div class="hintButton" onclick="toggle(this,'hintEm1');toggle(this,'hintEm2');return false;">i</div></td>
           </tr>
         </table>
@@ -460,7 +468,7 @@
         <table class="settings_table">
           <tr>
             <td class="settings_row_name"><label for="safetyPower" data-i18n="settings.global.safetyPower">global.safetyPower</label>:</td>
-            <td class="settings_row_input"><input id="safetyPower" type="number" min="0" max="100000" value="500" size="10">W 
+            <td class="settings_row_input"><input id="safetyPower" type="number" min="0" max="100000" value="500" size="10" onchange="displaySaveHint()">W 
             <div class="hintButton" onclick="toggle(this,'hint3');toggle(this,'hint4');return false;">i</div></td>
           </tr>
         </table>
@@ -470,7 +478,7 @@
         <table class="settings_table">
           <tr>
             <td class="settings_row_name"><label for="mainFuse" data-i18n="settings.global.mainFuse">global.mainFuse</label>:</td>
-            <td class="settings_row_input"><input id="mainFuse" type="number" min="0" max="100000" value="63" size="10">A 
+            <td class="settings_row_input"><input id="mainFuse" type="number" min="0" max="100000" value="63" size="10" onchange="displaySaveHint()">A 
             <div class="hintButton" onclick="toggle(this,'mainFuseHint');return false;">i</div></td>
           </tr>
         </table>
@@ -517,7 +525,7 @@
           <tr>
             <td class="settings_row_name"><label for="pricePoint" data-i18n="settings.price.pricePoint">price.pricePoint</label>:</td>
             <td class="settings_row_input">
-              <select id="pricePoint">
+              <select id="pricePoint" onchange="displaySaveHint()">
                 <option value="0" selected>Price point disabled</option>
               </select>
               <div class="hintButton" onclick="toggle(this,'hintpp');return false;">i</div></td>
@@ -529,7 +537,7 @@
           <tr>
             <td class="settings_row_name"><label for="priceMode" data-i18n="settings.price.priceMode">price.priceMode</label>:</td>
             <td class="settings_row_input">
-              <select id="priceMode" onchange="checkPriceMode(this)">
+              <select id="priceMode" onchange="checkPriceMode(this);displaySaveHint()">
                 <option value="0" data-i18n="settings.price.mode.flow" selected>From flows</option>
                 <option value="1" data-i18n="settings.price.mode.internal">Internally</option>
               </select>
@@ -545,7 +553,7 @@
             <tr>
               <td class="settings_row_name"><label for="averageTime" data-i18n="settings.price.internal.averageTime">price.internal.averageTime</label>:</td>
               <td class="settings_row_input">
-                <select id="averageTime">
+                <select id="averageTime" onchange="displaySaveHint()">
                   <option value="1" data-i18n="settings.price.internal.day1">price.internal.day1</option>
                   <option value="2" data-i18n="settings.price.internal.day2" selected>price.internal.day2</option>
                   <option value="4" data-i18n="settings.price.internal.day4">price.internal.day4</option>
@@ -564,7 +572,7 @@
             <tr>
               <td class="settings_row_name"><label for="futurePriceModifier" data-i18n="settings.price.internal.futurePriceModifier">price.internal.futurePriceModifier</label>:</td>
               <td class="settings_row_input">
-                <select id="futurePriceModifier">
+                <select id="futurePriceModifier" onchange="displaySaveHint()">
                   <option value="1" data-i18n="settings.price.internal.hour1">price.internal.hour1</option>
                   <option value="2" data-i18n="settings.price.internal.hour2" selected>price.internal.hour2</option>
                   <option value="3" data-i18n="settings.price.internal.hour3">price.internal.hour3</option>
@@ -577,7 +585,7 @@
             <tr>
               <td class="settings_row_name"><label for="futurePriceFactor" data-i18n="settings.price.internal.futurePriceFactor">price.internal.futurePriceFactor</label>:</td>
               <td class="settings_row_input">
-                <input id="futurePriceFactor" type="number" size="10" min="0" max="5" step="0.1" value="1.5">
+                <input id="futurePriceFactor" type="number" size="10" min="0" max="5" step="0.1" value="1.5" onchange="displaySaveHint()">
                 <div class="hintButton" onclick="toggle(this,'futurePriceModifierHint');toggle(this,'futurePriceModifierHint1','inline-block');toggle(this,'futurePriceModifierHint2','inline-block');toggle(this,'futurePriceModifierHint4','inline-block');return false;">i</div></td>
             </tr>
           </table>
@@ -593,7 +601,7 @@
             <tr>
               <td class="settings_row_name"><label for="lowPriceModifier" data-i18n="settings.price.internal.lowPriceModifier">price.internal.lowPriceModifier</label>:</td>
               <td class="settings_row_input">
-                <input id="lowPriceModifier" data-i18n="settings.price.internal.hour1" type="number" size="10" min="-50" max="-10" value="-10">%
+                <input id="lowPriceModifier" data-i18n="settings.price.internal.hour1" type="number" size="10" min="-50" max="-10" value="-10" onchange="displaySaveHint()">%
                 <div class="hintButton" onclick="toggle(this,'lowPriceModifierHint');return false;">i</div></td>
             </tr>
           </table>
@@ -603,7 +611,7 @@
             <tr>
               <td class="settings_row_name"><label for="highPriceModifier" data-i18n="settings.price.internal.highPriceModifier">price.internal.highPriceModifier</label>:</td>
               <td class="settings_row_input">
-                <input id="highPriceModifier" data-i18n="settings.price.internal.hour1" type="number" size="10" min="1" max="100" value="10">%
+                <input id="highPriceModifier" data-i18n="settings.price.internal.hour1" type="number" size="10" min="1" max="100" value="10" onchange="displaySaveHint()">%
                 <div class="hintButton" onclick="toggle(this,'highPriceModifierHint');return false;">i</div></td>
             </tr>
           </table>
@@ -647,7 +655,7 @@
         <p id="zoneHint2" class="hint" data-i18n="settings.zone.zoneHint2">zone.zoneHint</p>
         <span data-i18n="settings.zone.zonesOff">zone.zonesOff</span>:
         <span id="zoneList">Zones should have been filled in here, if you see this text it is a bug</span>
-        <button id="clear" class="right" data-i18n="settings.zone.zonesClear" onclick="clearZones();return false;">zone.zonesClear</button>
+        <button id="clear" class="right" data-i18n="settings.zone.zonesClear" onclick="clearZones();displaySaveHint();return false;">zone.zonesClear</button>
       </fieldset>
     </div>
     <!-- Zone page end -->
@@ -659,7 +667,7 @@
         <table class="settings_table">
           <tr>
             <td class="settings_row_name"><label for="maxPower" data-i18n="settings.mode.maxPower">mode.maxPower</label>:</td>
-            <td class="settings_row_input"><input id="maxPower" onchange="setMaxPower(this)" type="number" min="1000" max="100000" value="500" size="10">Wh</td>
+            <td class="settings_row_input"><input id="maxPower" onchange="setMaxPower(this);displaySaveHint()" type="number" min="1000" max="100000" value="500" size="10">Wh</td>
           </tr>
         </table>
       </fieldset>
@@ -756,6 +764,7 @@
         var futurePriceFactorElement =  document.getElementById("futurePriceFactor");
         var lowPriceModifierElement =  document.getElementById("lowPriceModifier");
         var highPriceModifierElement =  document.getElementById("highPriceModifier");
+        var rememberToSaveElement = document.getElementById("rememberToSave");
 
         // Fetch translation strings from Homey
         deltaText = Homey.__(deltaText);
@@ -958,6 +967,7 @@
           }
           catch (err) {
             Homey.alert(Homey.__('warnings.savingFailed'));
+            rememberToSaveElement.style.display = 'none';
           }
         });
 
