@@ -37,15 +37,27 @@ class MyDevice extends Device {
       this.addCapability('meter_power.month_estimate');
     }
 
-    // New normal capabilities in version 1.0
-    if (this.hasCapability('piggy_money.savings_all_time_use') === false) {
-      this.addCapability('piggy_money.savings_all_time_use');
-    }
-    if (this.hasCapability('piggy_money.savings_all_time_power_part') === false) {
-      this.addCapability('piggy_money.savings_all_time_power_part');
-    }
-    if (this.hasCapability('piggy_money.savings_all_time_total') === false) {
-      this.addCapability('piggy_money.savings_all_time_total');
+    // New experimental capabilities
+    if (settings['experimentalCap'] === true) {
+      if (this.hasCapability('piggy_money.savings_all_time_use') === false) {
+        this.addCapability('piggy_money.savings_all_time_use');
+      }
+      if (this.hasCapability('piggy_money.savings_all_time_power_part') === false) {
+        this.addCapability('piggy_money.savings_all_time_power_part');
+      }
+      if (this.hasCapability('piggy_money.savings_all_time_total') === false) {
+        this.addCapability('piggy_money.savings_all_time_total');
+      }
+    } else if (settings['experimentalCap'] === false) {
+      if (this.hasCapability('piggy_money.savings_all_time_use') === true) {
+        this.removeCapability('piggy_money.savings_all_time_use');
+      }
+      if (this.hasCapability('piggy_money.savings_all_time_power_part') === true) {
+        this.removeCapability('piggy_money.savings_all_time_power_part');
+      }
+      if (this.hasCapability('piggy_money.savings_all_time_total') === true) {
+        this.removeCapability('piggy_money.savings_all_time_total');
+      }
     }
 
     // New extended capabilities
@@ -154,7 +166,7 @@ class MyDevice extends Device {
       this.setPollIntervalTime(newSettings['refreshRate']);
       // The new setting will be applied after next refresh
     }
-    if (changedKeys.includes('debugCap') || changedKeys.includes('extendedCap')) {
+    if (changedKeys.includes('debugCap') || changedKeys.includes('extendedCap') || changedKeys.includes('experimentalCap')) {
       this.updateCapabilities(newSettings);
     }
   }
@@ -239,13 +251,15 @@ class MyDevice extends Device {
       if (piggyState.power_average) {
         this.setCapabilityValue('meter_power.month_estimate', piggyState.power_average);
       }
-      if (piggyState.savings_all_time_use) {
+
+      // Experimental capabilities, so only update if they exist
+      if (this.hasCapability('piggy_money.savings_all_time_use') === true && piggyState.savings_all_time_use) {
         this.setCapabilityValue('piggy_money.savings_all_time_use', piggyState.savings_all_time_use);
       }
-      if (piggyState.savings_all_time_power_part) {
+      if (this.hasCapability('piggy_money.savings_all_time_power_part') === true && piggyState.savings_all_time_power_part) {
         this.setCapabilityValue('piggy_money.savings_all_time_power_part', piggyState.savings_all_time_power_part);
       }
-      if (piggyState.savings_all_time_use && piggyState.savings_all_time_power_part) {
+      if (this.hasCapability('piggy_money.savings_all_time_total') === true && piggyState.savings_all_time_use && piggyState.savings_all_time_power_part) {
         this.setCapabilityValue('piggy_money.savings_all_time_total', piggyState.savings_all_time_use + piggyState.savings_all_time_power_part);
       }
 

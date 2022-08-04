@@ -22,8 +22,21 @@
     "id": "extendedCap",
     "type": "checkbox",
     "label": {
-      "en": "Show extended information",
+      "en": "Show extended capabilities",
       "no": "Vis utvidet informasjon"
+    },
+    "value": false
+  },
+  {
+    "id": "experimentalCap",
+    "type": "checkbox",
+    "label": {
+      "en": "Show experimental capabilities",
+      "no": "Vis eksperimentell informasjon"
+    },
+    "hint": {
+      "en": "Experimental features are planned features that are under development and as such might show incorrect information.",
+      "no": "Eksperimentell informasjon er planlagt informasjon som ikke er ferdig utviklet enda. Tallene som vises kan være gale."
     },
     "value": false
   },
@@ -31,7 +44,7 @@
     "id": "debugCap",
     "type": "checkbox",
     "label": {
-      "en": "Show debug information",
+      "en": "Show debug capabilities",
       "no": "Vis debug informasjon"
     },
     "value": false
