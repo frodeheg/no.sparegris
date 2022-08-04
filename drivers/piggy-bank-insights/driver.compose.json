@@ -51,30 +51,55 @@
       "title": {
         "en": "Moving average price",
         "no": "Glidende snittpris"
+      },
+      "decimals": 5,
+      "units": {
+        "en": "NOK/kWh",
+        "no": "kr/kWh"
       }
     },
     "piggy_money.current_price": {
       "title": {
         "en": "Current price",
         "no": "Gjeldende pris"
+      },
+      "decimals": 5,
+      "units": {
+        "en": "NOK/kWh",
+        "no": "kr/kWh"
       }
     },
     "piggy_money.acceptable_price": {
       "title": {
         "en": "Acceptable price",
         "no": "Akseptabel pris"
+      },
+      "decimals": 5,
+      "units": {
+        "en": "NOK/kWh",
+        "no": "kr/kWh"
       }
     },
     "piggy_money.low_price_limit": {
       "title": {
         "en": "Low price limit",
         "no": "Grense for lav pris"
+      },
+      "decimals": 5,
+      "units": {
+        "en": "NOK/kWh",
+        "no": "kr/kWh"
       }
     },
     "piggy_money.high_price_limit": {
       "title": {
         "en": "High price limit",
         "no": "Grense for høy pris"
+      },
+      "decimals": 5,
+      "units": {
+        "en": "NOK/kWh",
+        "no": "kr/kWh"
       }
     },
     "alarm_generic.overshoot": {

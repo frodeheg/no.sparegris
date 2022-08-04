@@ -6,7 +6,7 @@
     },
     "units": {
       "en": "NOK",
-      "no": "Kr"
+      "no": "kr"
     },
     "insights": true,
     "chartType": "spline",
