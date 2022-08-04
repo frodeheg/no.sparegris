@@ -139,5 +139,8 @@
   },
   "0.6.6": {
     "en": "The device now show as disabled when the app operating mode is deactivated. + Added ability to show current state in the log window in the app setitngs. + fixed saving hint that did not go away when settings was saved"
+  },
+  "0.6.7": {
+    "en": "Cosmetic changes to logging"
   }
 }
