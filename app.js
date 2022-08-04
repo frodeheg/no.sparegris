@@ -1142,7 +1142,7 @@ class PiggyBank extends Homey.App {
         this.updateLog('Device Name          | Location        | Is On      | Temperature | Com errors | Ongoing', LOG_ALL);
         for (const deviceId in frostList) {
           if (!(deviceId in this.__deviceList) || this.__deviceList[deviceId].use === false) continue;
-          const { name, room } = this.__deviceList[deviceId].name;
+          const { name, room } = this.__deviceList[deviceId];
           const { isOn, numerr } = this.__current_state[deviceId];
           const { temp, ongoing } = this.__current_state[deviceId];
           this.updateLog(`${String(name).padEnd(20)} | ${String(room).padEnd(15)} | ${String(isOn).padEnd(10)} | ${
