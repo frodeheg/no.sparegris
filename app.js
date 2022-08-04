@@ -1139,14 +1139,14 @@ class PiggyBank extends Homey.App {
         const numControlledDevices = Object.keys(frostList).length;
         this.updateLog('========== INTERNAL STATE ==========', LOG_ALL);
         this.updateLog(`Number of devices under control: ${numControlledDevices}`, LOG_ALL);
-        this.updateLog('Device ID                                | Is On      | Temperature | Com errors | Ongoing', LOG_ALL);
+        this.updateLog('Device Name          | Location        | Is On      | Temperature | Com errors | Ongoing', LOG_ALL);
         for (const deviceId in frostList) {
           if (!(deviceId in this.__deviceList) || this.__deviceList[deviceId].use === false) continue;
-          const {
-            temp, isOn, numerr, ongoing
-          } = this.__current_state[deviceId];
-          this.updateLog(`${String(deviceId).padEnd(40, '.')} | ${String(isOn).padEnd(10, ' ')} | ${
-            String(temp).padStart(11)} | ${String(numerr).padStart(10)} | ${String(ongoing).padEnd(5, '.')}`, LOG_ALL);
+          const { name, room } = this.__deviceList[deviceId].name;
+          const { isOn, numerr } = this.__current_state[deviceId];
+          const { temp, ongoing } = this.__current_state[deviceId];
+          this.updateLog(`${String(name).padEnd(20)} | ${String(room).padEnd(15)} | ${String(isOn).padEnd(10)} | ${
+            String(temp).padStart(11)} | ${String(numerr).padStart(10)} | ${String(ongoing).padEnd(5)}`, LOG_ALL);
         }
         this.updateLog('======== INTERNAL STATE END ========', LOG_ALL);
         this.homey.settings.set('showState', '');
