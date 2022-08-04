@@ -121,5 +121,8 @@
   },
   "0.6.0": {
     "en": "Added support to fetch energy prices from the app no.almli.utilitycost and use it to control price points internally + new statistics for savings + improved translations"
+  },
+  "0.6.1": {
+    "en": "Fixed a bug displaying price point in the device + fixed an invalid reference in app settings"
   }
 }
