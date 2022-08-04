@@ -127,5 +127,8 @@
   },
   "0.6.2": {
     "en": "Changed some units so iẗ́'s possible to compare with insights"
+  },
+  "0.6.3": {
+    "en": "Moved the savings capabilities into experimental info so it is clear that they are not expected to work properly yet"
   }
 }
