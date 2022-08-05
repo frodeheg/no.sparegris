@@ -606,7 +606,10 @@ class PiggyBank extends Homey.App {
     const maxDrain = Math.round(1.732050808 * 230 * mainFuse);
     const maxFreeDrain = ((isNumber(maxDrain) && (maxDrain > trueMaxPower)) ? maxDrain : (trueMaxPower * 10)) - newPower;
     if (powerDiff > maxFreeDrain) {
-      powerDiff = maxFreeDrain;
+      powerDiff = maxFreeDrain; // Cannot use more than the main fuse
+    }
+    if (powerDiff < -maxDrain) {
+      powerDiff = -maxDrain; // If this is the case then we have most likely crossed the power roof already for this hour.
     }
     this.__free_capacity = powerDiff;
     let promise;
