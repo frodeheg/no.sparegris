@@ -443,23 +443,24 @@ class PiggyBank extends Homey.App {
     const frostGuardActive = this.__deviceList[deviceId].thermostat_cap
       ? (device.capabilitiesObj['measure_temperature'].value < frostList[deviceId].minTemp) : false;
 
-    const isOn = (this.__deviceList[deviceId].onoff_cap === undefined) ? undefined : device.capabilitiesObj[this.__deviceList[deviceId].onoff_cap].value;
+    const isOn = await ((this.__deviceList[deviceId].onoff_cap === undefined) ? undefined : device.capabilitiesObj[this.__deviceList[deviceId].onoff_cap].value);
     const activeZones = this.homey.settings.get('zones');
     const newStateOn = frostGuardActive
       || (currentActionOp !== TURN_OFF
         && !this.__deviceList[deviceId].memberOf.some(z => (activeZones.hasOwnProperty(z) && !activeZones[z].enabled))
         && ((newState === TURN_ON && currentModeState !== ALWAYS_OFF) || (newState === TURN_OFF && currentModeState === ALWAYS_ON)));
 
+    this.__current_state[deviceId].isOn = newStateOn;
+    this.__current_state[deviceId].ongoing = false; // If already ongoing then it should already have been completed, try again
     if (newStateOn && !isOn) {
       // Turn on
       const deviceName = this.__deviceList[deviceId].name;
       this.updateLog(`Turning on device: ${deviceName}`, LOG_INFO);
-      this.__current_state[deviceId].isOn = true;
       this.__current_state[deviceId].ongoing = true;
       return device.setCapabilityValue({ capabilityId: this.__deviceList[deviceId].onoff_cap, value: true })
         .then(() => {
           this.__current_state[deviceId].nComError = 0;
-          // In case the device has a delayed temperature change action then change the temperature
+          // Always change temperature when turning on
           if (device.capabilities.includes('target_temperature')) {
             const modeTemp = parseInt(currentModeList[currentModeIdx].targetTemp, 10);
             const deltaTemp = (currentAction.operation === DELTA_TEMP) ? parseInt(currentAction.delta, 10) : 0;
@@ -488,7 +489,6 @@ class PiggyBank extends Homey.App {
       const deviceName = this.__deviceList[deviceId].name;
       this.updateLog(`Turning off device: ${deviceName}`, LOG_INFO);
       this.__current_state[deviceId].ongoing = true;
-      this.__current_state[deviceId].isOn = false;
       return device.setCapabilityValue({ capabilityId: this.__deviceList[deviceId].onoff_cap, value: false })
         .then(() => {
           this.__current_state[deviceId].nComError = 0;
@@ -848,9 +848,10 @@ class PiggyBank extends Homey.App {
           const modeTemp = parseInt(currentModeList[modeIdx].targetTemp, 10);
           const deltaTemp = parseInt(currentActions[deviceId].delta, 10);
           const newTemp = modeTemp + deltaTemp;
-          const isOn = await (this.__deviceList[deviceId].onoff_cap === undefined) ? undefined : device.capabilitiesObj[this.__deviceList[deviceId].onoff_cap].value;
+          const isOn = await ((this.__deviceList[deviceId].onoff_cap === undefined) ? undefined : device.capabilitiesObj[this.__deviceList[deviceId].onoff_cap].value);
           if (isOn) {
             this.__current_state[deviceId].ongoing = true;
+            this.__current_state[deviceId].isOn = true;
             this.__current_state[deviceId].temp = newTemp;
             promises.push(device.setCapabilityValue({ capabilityId: 'target_temperature', value: newTemp })
               .then(() => {
@@ -865,6 +866,8 @@ class PiggyBank extends Homey.App {
               }));
           } else {
             // The action will be retried when the device turns on
+            this.__current_state[deviceId].isOn = false;
+            this.__current_state[deviceId].ongoing = false;
             promises.push(Promise.resolve([true, false]));
           }
         }
@@ -1125,7 +1128,7 @@ class PiggyBank extends Homey.App {
     this.homey.settings.set('showState', '');
 
     // When sendLog is clicked, send the log
-    this.homey.settings.on('set', setting => {
+    this.homey.settings.on('set', async setting => {
       if (setting === 'diagLog') return;
       const diagLog = this.homey.settings.get('diagLog');
       const sendLog = this.homey.settings.get('sendLog');
@@ -1139,14 +1142,22 @@ class PiggyBank extends Homey.App {
         const numControlledDevices = Object.keys(frostList).length;
         this.updateLog('========== INTERNAL STATE ==========', LOG_ALL);
         this.updateLog(`Number of devices under control: ${numControlledDevices}`, LOG_ALL);
+        this.updateLog(`Current operating mode: ${this.homey.settings.get('operatingMode')}`, LOG_ALL);
+        this.updateLog(`Current price point: ${this.homey.settings.get('pricePoint')}`, LOG_ALL);
         this.updateLog('Device Name               | Location        | Is On      | Temperature | Com errors | Ongoing', LOG_ALL);
         for (const deviceId in frostList) {
           if (!(deviceId in this.__deviceList) || this.__deviceList[deviceId].use === false) continue;
           const { name, room } = this.__deviceList[deviceId];
-          const { isOn, numerr } = this.__current_state[deviceId];
+          const { isOn, nComError } = this.__current_state[deviceId];
           const { temp, ongoing } = this.__current_state[deviceId];
+          const device = await this.homeyApi.devices.getDevice({ id: deviceId });
+          const isOnActual = (this.__deviceList[deviceId].onoff_cap === undefined) ? undefined : device.capabilitiesObj[this.__deviceList[deviceId].onoff_cap].value;
+          const tempActualTarget = ('target_temperature' in device.capabilitiesObj) ? device.capabilitiesObj['target_temperature'].value : 'undef';
+          const tempActualMeasure = ('measure_temperature' in device.capabilitiesObj) ? device.capabilitiesObj['measure_temperature'].value : 'undef';
           this.updateLog(`${String(name).padEnd(25)} | ${String(room).padEnd(15)} | ${String(isOn).padEnd(10)} | ${
-            String(temp).padStart(11)} | ${String(numerr).padStart(10)} | ${String(ongoing).padEnd(5)}`, LOG_ALL);
+            String(temp).padStart(11)} | ${String(nComError).padStart(10)} | ${String(ongoing).padEnd(5)}`, LOG_ALL);
+          this.updateLog(`${String('--->Actual').padEnd(25)} | ${''.padEnd(15)} | ${String(isOnActual).padEnd(10)} | ${
+            String(tempActualMeasure).padStart(5)}/${String(tempActualTarget).padStart(5)} | ${''.padStart(10)} | ${''.padEnd(5)}`, LOG_ALL);
         }
         this.updateLog('======== INTERNAL STATE END ========', LOG_ALL);
         this.homey.settings.set('showState', '');
