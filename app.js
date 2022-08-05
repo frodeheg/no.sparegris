@@ -518,9 +518,11 @@ class PiggyBank extends Homey.App {
       if (this.__current_power === undefined) {
         // First hour after app was started
         // Reserve energy for the time we have no data on
-        let maxPower = this.homey.settings.get('maxPower');
-        if (maxPower === undefined) {
-          maxPower = 5000;
+        const maxPowerList = this.homey.settings.get('maxPowerList');
+        const currentMode = +this.homey.settings.get('operatingMode');
+        let maxPower = 2000;
+        if (Array.isArray(maxPowerList) && (currentMode > 0) && maxPowerList[currentMode - 1] !== undefined) {
+          maxPower = +maxPowerList[currentMode - 1];
         }
         const lapsedTime = 1000 * 60 * 60 - this.timeToNextHour(now);
         this.__reserved_energy = (maxPower * lapsedTime) / (1000 * 60 * 60);
