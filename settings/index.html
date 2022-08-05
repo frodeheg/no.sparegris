@@ -140,7 +140,7 @@
             '</tr>';
         for (var deviceId in frostList) {
           var device = deviceList[deviceId];
-          var frost_temp_input = device.thermostat_cap ? '<input type="number" id="minTemp' + String(deviceId) + '" min=0 max=90 size="1" onchange="setFrostTemp(this, \'' + String(deviceId) + '\');displaySaveHint()" value="' + String(frostList[deviceId].minTemp) + '">°C' : '-';
+          var frost_temp_input = device.thermostat_cap ? '<input type="number" id="minTemp' + String(deviceId) + '" min=0 max=90 size="4" onchange="setFrostTemp(this, \'' + String(deviceId) + '\');displaySaveHint()" value="' + String(frostList[deviceId].minTemp) + '">°C' : '-';
           gen_list +=
             '<tr>' +
               '<td><img src="' + device.image + '" alt="icon" width="auto" height="50"></td>' +
@@ -205,7 +205,7 @@
             '</tr>';
         for (var deviceId in priceActionList[tabPage]) {
           var device = deviceList[deviceId];
-          var price_temp_input = device.thermostat_cap ? '<input type="number" id="deltaTemp' + String(deviceId) + '" min=-30 max=30 size="1" onchange="setDeltaTemp(this, ' + String(tabPage) + ', \'' + String(deviceId) + '\');displaySaveHint()" value="' + String(priceActionList[tabPage][deviceId].delta) + '">°C' : '-';
+          var price_temp_input = device.thermostat_cap ? '<input type="number" id="deltaTemp' + String(deviceId) + '" min=-30 max=30 size="4" onchange="setDeltaTemp(this, ' + String(tabPage) + ', \'' + String(deviceId) + '\');displaySaveHint()" value="' + String(priceActionList[tabPage][deviceId].delta) + '">°C' : '-';
           priceTabText +=
             '<tr>' +
               '<td><img src="' + device.image + '" alt="icon" width="auto" height="50"></td>' +
@@ -239,7 +239,7 @@
           var device = deviceList[modeList[listNum][i].id];
           var upenabled  = (i==0) ? 'disabled' : '';
           var dwnenabled = (i==modeList[listNum].length-1) ? 'disabled' : '';
-          var target_temp_input = device.thermostat_cap ? '<input type="number" id="targetTemp' + String(i) + '" min=0 max=90 size="1" onchange="setTargetTemp(this,' + String(listNum) + ',' + String(i) + ');displaySaveHint()" value="' + String(modeList[listNum][i].targetTemp) + '">°C' : '-';
+          var target_temp_input = device.thermostat_cap ? '<input type="number" id="targetTemp' + String(i) + '" min=0 max=90 size="4" onchange="setTargetTemp(this,' + String(listNum) + ',' + String(i) + ');displaySaveHint()" value="' + String(modeList[listNum][i].targetTemp) + '">°C' : '-';
           gen_list +=
             '<tr>' +
               '<td><input ' + upenabled + ' type="image" width="40" height="15" src="up_arrow.png" onclick="moveDevice(event, ' + String(listNum) + ', ' + String(i) + ',-1);displaySaveHint()" id="moveDeviceUp' + String(i) + '"/><br>' +
@@ -679,7 +679,7 @@
                 <option value="100000" data-i18n="settings.mode.powerLimit9">mode.powerLimit9</option>
                 <option value="inf" data-i18n="settings.mode.powerLimit10">mode.powerLimit10</option>
               </select>
-              <input id="maxPower" onchange="setMaxPower(this.value,1000,100000);displaySaveHint();" type="number" min="1000" max="100000" value="5000" step="1000" size="3">Wh</td>
+              <input id="maxPower" onchange="setMaxPower(this.value,1000,100000);displaySaveHint();" type="number" min="1000" max="100000" value="5000" step="1000" size="8">Wh</td>
           </tr>
         </table>
       </fieldset>
