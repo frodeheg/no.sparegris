@@ -1286,7 +1286,7 @@ class PiggyBank extends Homey.App {
       power_last_month: this.__stats_last_month_max,
       num_restarts: this.__stats_app_restarts,
 
-      average_price: this.__average_price,
+      average_price: +this.homey.settings.get('averagePrice') || undefined,
       current_price: this.__current_prices[0],
       acceptable_price: this.__acceptable_price,
       low_price_limit: this.__low_price_limit,
@@ -1376,11 +1376,13 @@ class PiggyBank extends Homey.App {
       hoursInInterval = 48; // Should not happen but check anyways
     }
     // Calculate average price
-    if ((typeof (+this.__average_price) !== 'number') || !Number.isFinite(this.__average_price)) {
-      this.__average_price = this.__current_prices[0]; // First time called
+    let averagePrice = +this.homey.settings.get('averagePrice') || undefined;
+    if ((typeof (averagePrice) !== 'number') || !Number.isFinite(averagePrice)) {
+      averagePrice = this.__current_prices[0]; // First time called
     } else {
-      this.__average_price = (this.__average_price * (hoursInInterval - 1) + this.__current_prices[0]) / hoursInInterval;
+      averagePrice = (averagePrice * (hoursInInterval - 1) + this.__current_prices[0]) / hoursInInterval;
     }
+    this.homey.settings.set('averagePrice', averagePrice);
     // Calculate acceptable price
     let futureMinPriceTime = +futurePriceOptions.futurePriceModifier;
     if (!Number.isInteger(futureMinPriceTime) || futureMinPriceTime < 1 || futureMinPriceTime >= this.__current_prices.length) {
@@ -1392,7 +1394,7 @@ class PiggyBank extends Homey.App {
         futureMinPrice = this.__current_prices[i];
       }
     }
-    this.__acceptable_price = this.__average_price * ((futureMinPrice / this.__current_prices[0]) ** (+futurePriceOptions.futurePriceFactor));
+    this.__acceptable_price = averagePrice * ((futureMinPrice / this.__current_prices[0]) ** (+futurePriceOptions.futurePriceFactor));
     // Calculate min/max limits
     this.__low_price_limit = this.__acceptable_price * (+futurePriceOptions.lowPriceModifier / 100 + 1);
     this.__high_price_limit = this.__acceptable_price * (+futurePriceOptions.highPriceModifier / 100 + 1);
