@@ -154,5 +154,8 @@
   },
   "0.6.11": {
     "en": "Now the max power limit can both be selected from the default limits and input manually"
+  },
+  "0.6.12": {
+    "en": "Updated english translation"
   }
 }
