@@ -164,12 +164,10 @@ class PiggyBank extends Homey.App {
     const timeToPreventZigbee = Math.min(15 * 60 - os.uptime(), 15 * 60);
     if (timeToPreventZigbee > 0) {
       preventZigbee = true;
-      this.homey.settings.set('preventZigbee', true);
       this.updateLog(`Homey reboot detected. Delaying device control by ${timeToPreventZigbee} seconds to improve Zigbee recovery.`, LOG_ERROR);
       setTimeout(() => {
         this.updateLog('Device constrol is once again enabled.', LOG_INFO);
         preventZigbee = false;
-        this.homey.settings.unset('preventZigbee');
       }, timeToPreventZigbee * 1000);
     }
 
