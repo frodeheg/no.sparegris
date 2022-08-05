@@ -166,5 +166,8 @@
   },
   "0.6.15": {
     "en": "Changed the power cycle to decrease as the hour end is approaching as the available power increases faster at this point and the time to take advantage of it decreases."
+  },
+  "0.6.16": {
+    "en": "Fixed a bug when restarting the app in the middle of an hour. The bug might turn all devices off for the rest of the hour"
   }
 }
