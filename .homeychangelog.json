@@ -157,5 +157,8 @@
   },
   "0.6.12": {
     "en": "Updated english translation"
+  },
+  "0.6.13": {
+    "en": "Average price is now stored between reboots"
   }
 }
