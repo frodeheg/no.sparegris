@@ -23,7 +23,10 @@ const { Mutex } = require('async-mutex');
 const { HomeyAPIApp } = require('homey-api');
 const { resolve } = require('path');
 
-const WAIT_TIME_TO_POWER_ON_AFTER_POWEROFF = 5 * 60 * 1000;
+const WAIT_TIME_TO_POWER_ON_AFTER_POWEROFF_MIN = 1 * 60 * 1000; // Wait 1 minute
+const WAIT_TIME_TO_POWER_ON_AFTER_POWEROFF_MAX = 5 * 60 * 1000; // Wait 5 minutes
+const TIME_FOR_POWERCYCLE_MIN = 5 * 60 * 1000; // 5 minutes left
+const TIME_FOR_POWERCYCLE_MAX = 30 * 60 * 1000; // more than 30 minutes left
 
 // Logging classes
 const LOG_ERROR = 0;
@@ -697,11 +700,18 @@ class PiggyBank extends Homey.App {
     // Reset the power alarm as we now have sufficient power available
     this.__alarm_overshoot = false;
 
-    // If power was turned _OFF_ within the last 5 minutes then abort turning on anything
+    // If power was turned _OFF_ within the last 1-5 minutes then abort turning on anything.
+    // The waiting time is 5 minutes at the beginning of an hour and reduces gradually to 1 minute for the last 5 minutes
     // This is to avoid excessive on/off cycles of high power devices such as electric car chargers
     this.__last_power_on_time = new Date();
+    const timeLeftInHour = this.timeToNextHour(this.__last_power_on_time);
+    const powerCycleInterval = (timeLeftInHour > TIME_FOR_POWERCYCLE_MAX) ? WAIT_TIME_TO_POWER_ON_AFTER_POWEROFF_MAX
+      : (timeLeftInHour < TIME_FOR_POWERCYCLE_MIN) ? WAIT_TIME_TO_POWER_ON_AFTER_POWEROFF_MIN
+        : (WAIT_TIME_TO_POWER_ON_AFTER_POWEROFF_MIN + (WAIT_TIME_TO_POWER_ON_AFTER_POWEROFF_MAX - WAIT_TIME_TO_POWER_ON_AFTER_POWEROFF_MIN)
+          * ((timeLeftInHour - TIME_FOR_POWERCYCLE_MIN) / (TIME_FOR_POWERCYCLE_MAX - TIME_FOR_POWERCYCLE_MIN)));
+
     const timeSincePowerOff = this.__last_power_on_time - this.__last_power_off_time;
-    if (timeSincePowerOff < WAIT_TIME_TO_POWER_ON_AFTER_POWEROFF) {
+    if (timeSincePowerOff < powerCycleInterval) {
       this.updateLog(`Could use ${String(morePower)} W more power but was aborted due to recent turn off activity. Remaining wait = ${String((5 * 60 * 1000 - timeSincePowerOff) / 1000)} s`,
         LOG_DEBUG);
       return Promise.resolve();
@@ -753,7 +763,7 @@ class PiggyBank extends Homey.App {
   }
 
   /**
-   * onAbovePowerLimit is called whenever power changed and we can use more power
+   * onAbovePowerLimit is called whenever the power changed and we need to reduce it
    */
   async onAbovePowerLimit(lessPower, errorMarginWatts) {
     lessPower = Math.ceil(lessPower);
