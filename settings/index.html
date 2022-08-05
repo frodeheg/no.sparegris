@@ -353,15 +353,13 @@
         rememberToSaveElement.style.display = 'block';
       }
 
-      function setMaxPower(object) {
-        if(object.value != ""){
-          if(parseInt(object.value) < parseInt(object.min)){
-            object.value = object.min;
-          }
-          if(parseInt(object.value) > parseInt(object.max)){
-            object.value = object.max;
-          }
-          maxPowerList[currentModeTab]=object.value;
+      function setMaxPower(value, min, max) {
+        if(value != "") {
+          if(parseInt(value) < parseInt(min)) { value = min; }
+          if(parseInt(value) > parseInt(max)) { value = max; }
+          document.getElementById('maxPower').value=value;
+          document.getElementById('forMaxPower').value=value;
+          maxPowerList[currentModeTab]=value;
         }
       }
 
@@ -668,7 +666,20 @@
         <table class="settings_table">
           <tr>
             <td class="settings_row_name"><label for="maxPower" data-i18n="settings.mode.maxPower">mode.maxPower</label>:</td>
-            <td class="settings_row_input"><input id="maxPower" onchange="setMaxPower(this);displaySaveHint()" type="number" min="1000" max="100000" value="500" size="10">Wh</td>
+            <td class="settings_row_input">
+              <select id ="forMaxPower" onchange="setMaxPower(this.value,1000,100000);displaySaveHint();">
+                <option value="2000" data-i18n="settings.mode.powerLimit1">mode.powerLimit1</option>
+                <option value="5000" data-i18n="settings.mode.powerLimit2" selected>mode.powerLimit2</option>
+                <option value="10000" data-i18n="settings.mode.powerLimit3">mode.powerLimit3</option>
+                <option value="15000" data-i18n="settings.mode.powerLimit4">mode.powerLimit4</option>
+                <option value="20000" data-i18n="settings.mode.powerLimit5">mode.powerLimit5</option>
+                <option value="25000" data-i18n="settings.mode.powerLimit6">mode.powerLimit6</option>
+                <option value="50000" data-i18n="settings.mode.powerLimit7">mode.powerLimit7</option>
+                <option value="75000" data-i18n="settings.mode.powerLimit8">mode.powerLimit8</option>
+                <option value="100000" data-i18n="settings.mode.powerLimit9">mode.powerLimit9</option>
+                <option value="inf" data-i18n="settings.mode.powerLimit10">mode.powerLimit10</option>
+              </select>
+              <input id="maxPower" onchange="setMaxPower(this.value,1000,100000);displaySaveHint();" type="number" min="1000" max="100000" value="5000" step="1000" size="3">Wh</td>
           </tr>
         </table>
       </fieldset>
@@ -1126,6 +1137,7 @@
           generatePriorityList(modeId);
           currentModeTab = modeId;
           document.getElementById("maxPower").value = maxPowerList[modeId];
+          document.getElementById("forMaxPower").value = maxPowerList[modeId];
         }
 
         // Get all elements with class="tabcontent" and hide them
