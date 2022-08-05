@@ -160,5 +160,8 @@
   },
   "0.6.13": {
     "en": "Average price is now stored between reboots"
+  },
+  "0.6.14": {
+    "en": "Increased width of some input boxes in the setup screen so they are easier to edit"
   }
 }
