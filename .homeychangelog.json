@@ -169,5 +169,8 @@
   },
   "0.6.16": {
     "en": "Fixed a bug when restarting the app in the middle of an hour. The bug might turn all devices off for the rest of the hour"
+  },
+  "0.6.17": {
+    "en": "Added limit on maximum overuse of power to avoid clutter in the history graphs"
   }
 }
