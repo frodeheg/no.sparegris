@@ -795,6 +795,7 @@
         var saveElement = document.getElementById("save");
         var operatingModeElement = document.getElementById("operatingMode");
         var errorMarginElement = document.getElementById("errorMargin");
+        var freeThresholdElement = document.getElementById("freeThreshold");
         var safetyPowerElement = document.getElementById("safetyPower");
         var priceModeElement = document.getElementById("priceMode");
         var pricePointElement = document.getElementById("pricePoint");
@@ -938,7 +939,7 @@
           if (threshold !== null) {
             currentfreeThreshold = threshold;
           } else {
-            currentfreeThreshold = 5;
+            currentfreeThreshold = 100;
           }
           freeThresholdLoaded = true;
           checkLoadingDone();
@@ -1025,6 +1026,7 @@
               Homey.set("pricePoint", pricePointElement.value, errFunc);
               Homey.set("priceActionList", priceActionList, errFunc);
               Homey.set("errorMargin", errorMarginElement.value, errFunc);
+              Homey.set("freeThreshold",freeThresholdElement.value, errFunc);
               Homey.set("safetyPower", safetyPowerElement.value, errFunc);
               Homey.set("mainFuse", mainFuseElement.value, errFunc);
               Homey.set("settingsSaved", "", errFunc); // On settings is only called if the settings actually changed
