@@ -172,5 +172,8 @@
   },
   "0.6.17": {
     "en": "Added limit on maximum overuse of power to avoid clutter in the history graphs"
+  },
+  "0.7.0": {
+    "en": "Added improved car charging support by enabling a threshold option for when to report free power"
   }
 }
