@@ -178,5 +178,8 @@
   },
   "0.7.1": {
     "en": "The free power threshold was not saved in previous version"
+  },
+  "0.8.0": {
+    "en": "Added flow for current available power + fixed bug that prevented the trigger unable-to-limit-power from triggering"
   }
 }
