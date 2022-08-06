@@ -1030,16 +1030,19 @@ class PiggyBank extends Homey.App {
    */
   statsCountFailedTurnOn() {
     this.__stats_failed_turn_on += 1;
+    this.updateLog(`Signal failures *On:${this.__stats_failed_turn_on} Off:${this.__stats_failed_turn_off} Temp:${this.__stats_failed_temp_change}`)
     this.homey.settings.set('stats_failed_turn_on', this.__stats_failed_turn_on);
   }
 
   statsCountFailedTurnOff() {
     this.__stats_failed_turn_off += 1;
+    this.updateLog(`Signal failures On:${this.__stats_failed_turn_on} *Off:${this.__stats_failed_turn_off} Temp:${this.__stats_failed_temp_change}`)
     this.homey.settings.set('stats_failed_turn_off', this.__stats_failed_turn_off);
   }
 
   statsCountFailedTempChange() {
     this.__stats_failed_temp_change += 1;
+    this.updateLog(`Signal failures On:${this.__stats_failed_turn_on} Off:${this.__stats_failed_turn_off} *Temp:${this.__stats_failed_temp_change}`)
     this.homey.settings.set('stats_failed_temp_change', this.__stats_failed_temp_change);
   }
 
