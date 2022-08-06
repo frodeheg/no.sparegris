@@ -183,6 +183,12 @@ class PiggyBank extends Homey.App {
     // Create list of devices
     await this.createDeviceList();
 
+    // Enable trigger cards
+    const freePowerTrigger = this.homey.flow.getTriggerCard('free-power-changed');
+    freePowerTrigger.registerRunListener(async (args, state) => {
+      return state.freePower >= args.freePower;
+    });
+
     // Enable action cards
     const cardActionEnergyUpdate = this.homey.flow.getActionCard('update-meter-energy'); // Marked as deprecated so nobody will see it yet
     cardActionEnergyUpdate.registerRunListener(async args => {
@@ -596,7 +602,7 @@ class PiggyBank extends Homey.App {
     const trueMaxPower = maxPowerList[currentMode - 1];
     const errorMarginWatts = trueMaxPower * errorMargin;
     const maxPower = trueMaxPower - errorMarginWatts;
-    const safetyPower = this.homey.settings.get('safetyPower');
+    const safetyPower = +this.homey.settings.get('safetyPower');
 
     this.updateLog(`${'onPowerUpdate: '
       + 'Using: '}${String(newPower)}W, `
@@ -617,13 +623,13 @@ class PiggyBank extends Homey.App {
       powerDiff = -maxDrain; // If this is the case then we have most likely crossed the power roof already for this hour.
     }
     // Report free capacity:
-    this.onFreePowerChanged(powerDiff);
+    this.onFreePowerChanged(powerDiff + safetyPower);
     let promise;
     if (powerDiff < 0) {
-      promise = this.onAbovePowerLimit(-powerDiff)
+      promise = this.onAbovePowerLimit(-powerDiff, errorMarginWatts)
         .catch(() => resolve()); // Ignore failures
     } else if (powerDiff > 0) {
-      promise = this.onBelowPowerLimit(powerDiff, errorMarginWatts)
+      promise = this.onBelowPowerLimit(powerDiff)
         .catch(() => resolve()); // Ignore failures
     }
     return promise;
@@ -718,6 +724,10 @@ class PiggyBank extends Homey.App {
     } else {
       this.__free_capacity = powerDiff;
     }
+    const freePowerTrigger = this.homey.flow.getTriggerCard('free-power-changed');
+    const tokens = { freePower: Math.round(this.__free_capacity) };
+    const state = tokens;
+    return freePowerTrigger.trigger(tokens, state);
   }
 
   /**
@@ -833,10 +843,13 @@ class PiggyBank extends Homey.App {
     const errorString = `Failed to reduce power usage by ${String(lessPower)}W (number of forced on devices: ${String(numForcedOnDevices)})`;
     this.updateLog(errorString, LOG_ERROR);
     // Alert the user, but not if first hour since app was started or we are within the error margin. Only send one alert before it has been resolved
-    const firstHourEver = this.__reserved_energy > 0;
-    if (!firstHourEver && (lessPower > errorMarginWatts) && !this.__alarm_overshoot) {
+    // const firstHourEver = this.__reserved_energy > 0;
+    if (/* !firstHourEver && */ (lessPower > errorMarginWatts) && !this.__alarm_overshoot) {
       this.__alarm_overshoot = true;
-      this.homey.notifications.createNotification({ excerpt: `Alert: The power must be reduced by ${String(lessPower)} W immediately or the hourly limit will be breached` });
+      // this.homey.notifications.createNotification({ excerpt: `Alert: The power must be reduced by ${String(lessPower)} W immediately or the hourly limit will be breached` });
+      const alertTrigger = this.homey.flow.getTriggerCard('unable-to-limit-power');
+      const tokens = { excessPower: Math.round(lessPower) };
+      alertTrigger.trigger(tokens);
     }
     this.__num_off_devices = numDevices - numForcedOnDevices; // Reset off counter in case it was wrong
     return Promise.reject(new Error(errorString));

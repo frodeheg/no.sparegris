@@ -1,0 +1,41 @@
+{
+    "title": {
+      "en": "Available power changed",
+      "no": "Ledig effekt endret seg"
+    },
+    "titleFormatted": {
+      "en": "It is more than [[freePower]] Watts available for other devices for the rest of the hour.",
+      "no": "Det er mer enn [[freePower]] Watt ledig for andre enheter for resten av timen."
+    },
+    "hint": {
+      "en": "Use this trigger if you want to control the power of for example an electric car charger.",
+      "no": "Bruk denne triggeren til å endre effekten på for eksempel en lader for en elbil."
+    },
+    "args": [
+      {
+        "type": "number",
+        "name": "freePower",
+        "placeholder": {
+          "en": "Free Power",
+          "no": "Ledig effekt"
+        },
+        "min": 1,
+        "max": 100000,
+        "step": 1
+      }
+    ],
+    "tokens": [
+      {
+        "type": "number",
+        "name": "freePower",
+        "title": {
+          "en": "Free Power",
+          "no": "Ledig effekt"
+        },
+        "example": {
+          "en": "Number of additional Watts that can be used for the rest of the hour before the power tariff is exceeded",
+          "no": "Antall Watt som kan brukes ekstra resten av timen før effekttariffen blir brutt"
+        }
+      }
+    ]
+  }

@@ -4,30 +4,17 @@
     "no": "Klarer ikke å begrense strømforbruket"
   },
   "titleFormatted": {
-    "en": "Could not reduce power usage. Turn off [[excessPower]] Watts immediately or the power-tariff for next month will be increased.",
-    "no": "Klarer ikke å begrense strømforbruket. Slå av [[excessPower]] Watt umiddelbart ellers vil effekt-tariffen for neste måned øke."
+    "en": "Could not reduce power usage. Turn off attached power immediately or the power-tariff for next month will be increased.",
+    "no": "Klarer ikke å begrense strømforbruket. Slå av vedlagt effekt umiddelbart ellers vil effekt-tariffen for neste måned øke."
   },
   "hint": {
     "en": "Use this condition as a last resort to limit energy. If the app turned off every controllable device the user can be alerted to do a manual powerdown if this was not enough.",
     "no": "Brukes som en siste utvei for å begrense energiforbruk. Dersom appen har slått av alt kan en melding sendes ut om å redusere forbruket manuelt dersom dette ikke var tilstrekkelig."
   },
-  "args": [
-    {
-      "type": "number",
-      "name": "excessPower",
-      "placeholder": {
-        "en": "Excess Power",
-        "no": "Overskytende effekt"
-      },
-      "min": 1,
-      "max": 100000,
-      "step": 1
-    }
-  ],
   "tokens": [
     {
       "type": "number",
-      "name": "excess-power",
+      "name": "excessPower",
       "title": {
         "en": "Excess Power",
         "no": "Overskytende effekt"
