@@ -181,5 +181,8 @@
   },
   "0.8.0": {
     "en": "Added flow for current available power + fixed bug that prevented the trigger unable-to-limit-power from triggering"
+  },
+  "0.8.1": {
+    "en": "Made sure the avaiable power trigger does not trigger more often than once every minute"
   }
 }
