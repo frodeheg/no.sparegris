@@ -192,11 +192,10 @@ p {
   width:120px;
 }
 
-#safetyPower {
-  width:90px;
-}
-
-#errorMargin {
+#safetyPower,
+#errorMargin,
+#mainFuse,
+#freeThreshold {
   width:90px;
 }
 

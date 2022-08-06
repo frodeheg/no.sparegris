@@ -149,6 +149,7 @@ class PiggyBank extends Homey.App {
     this.__power_estimated = undefined;
     this.__alarm_overshoot = false;
     this.__free_capacity = 0;
+    this.__num_forced_off_devices = 0;
     this.__num_off_devices = 0;
     this.__current_prices = [];
     this.mutex = new Mutex();
@@ -544,6 +545,10 @@ class PiggyBank extends Homey.App {
       if (+this.homey.settings.get('operatingMode') !== MODE_DISABLED) {
         this.doPriceCalculations();
       }
+      // Number of forced off devices can change every hour.
+      // Instead of counting it here it is set whenever all devices has been tried to turn off
+      // In the meantime it is just set to 0 to prevent the onFreePowerChanged to send out too much free power
+      this.__num_forced_off_devices = 0;
     } finally {
       // Start timer to start exactly when a new hour starts
       const timeToNextTrigger = this.timeToNextHour(now);
@@ -611,7 +616,8 @@ class PiggyBank extends Homey.App {
     if (powerDiff < -maxDrain) {
       powerDiff = -maxDrain; // If this is the case then we have most likely crossed the power roof already for this hour.
     }
-    this.__free_capacity = powerDiff;
+    // Report free capacity:
+    this.onFreePowerChanged(powerDiff);
     let promise;
     if (powerDiff < 0) {
       promise = this.onAbovePowerLimit(-powerDiff)
@@ -698,6 +704,23 @@ class PiggyBank extends Homey.App {
   }
 
   /**
+   * onFreePowerChanged is called whenever the amount of free power has changed
+   */
+  async onFreePowerChanged(powerDiff) {
+    const freeThreshold = +this.homey.settings.get('freeThreshold') || 100;
+    const listOfUsedDevices = this.homey.settings.get('frostList') || {};
+    const numDevices = Object.keys(listOfUsedDevices).length;
+    const percentDevicesOn = (this.__num_off_devices === this.__num_forced_off_devices) ? 100 : (100 * (this.__num_off_devices / numDevices));
+    if (powerDiff < 0) {
+      this.__free_capacity = 0;
+    } else if (percentDevicesOn >= freeThreshold) {
+      this.__free_capacity = powerDiff;
+    } else {
+      this.__free_capacity = powerDiff;
+    }
+  }
+
+  /**
    * onBelowPowerLimit is called whenever power changed and we're allowed to use more power
    */
   async onBelowPowerLimit(morePower) {
@@ -764,6 +787,7 @@ class PiggyBank extends Homey.App {
     }
     // If this point was reached then all devices are on and still below power limit
     this.__num_off_devices = numForcedOffDevices; // Reset the off counter in case it was incorrect
+    this.__num_forced_off_devices = numForcedOffDevices;
     return Promise.resolve();
   }
 
@@ -814,7 +838,7 @@ class PiggyBank extends Homey.App {
       this.__alarm_overshoot = true;
       this.homey.notifications.createNotification({ excerpt: `Alert: The power must be reduced by ${String(lessPower)} W immediately or the hourly limit will be breached` });
     }
-    this.__num_off_devices = Object.keys(this.homey.settings.get('frostList')).length - numForcedOnDevices; // Reset off counter in case it was wrong
+    this.__num_off_devices = numDevices - numForcedOnDevices; // Reset off counter in case it was wrong
     return Promise.reject(new Error(errorString));
   }
 

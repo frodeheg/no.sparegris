@@ -65,6 +65,7 @@
       var currentPricePoint = 1; // Normal
       var currentOperatingMode = 0; // Disabled
       var currentErrorMargin = 5;
+      var currentfreeThreshold = 100;
       var currentSafetyPower = 500;
       var currentMainFuse = 63;
       var futurePriceOptions = {ApiError:true};
@@ -398,6 +399,12 @@
           modeList[listNum][device_id]['targetTemp'] = object.value
         }
       }
+
+      function checkEasterEgg() {
+        if (document.getElementById('mainFuse').value == 1000) {
+          document.getElementById('showlog').style.display = 'block';
+        }
+      }
     </script>
   </head>
 
@@ -456,7 +463,7 @@
         <table class="settings_table">
           <tr>
             <td class="settings_row_name"><label for="errorMargin" data-i18n="settings.global.errorMargin">global.errorMargin</label>:</td>
-            <td class="settings_row_input"><input id="errorMargin" type="number" min="0" max="30" value="5" size="10" onchange="displaySaveHint()">% 
+            <td class="settings_row_input"><input id="errorMargin" type="number" min="0" max="30" value="5" onchange="displaySaveHint()">% 
             <div class="hintButton" onclick="toggle(this,'hintEm1');toggle(this,'hintEm2');return false;">i</div></td>
           </tr>
         </table>
@@ -466,7 +473,7 @@
         <table class="settings_table">
           <tr>
             <td class="settings_row_name"><label for="safetyPower" data-i18n="settings.global.safetyPower">global.safetyPower</label>:</td>
-            <td class="settings_row_input"><input id="safetyPower" type="number" min="0" max="100000" value="500" size="10" onchange="displaySaveHint()">W 
+            <td class="settings_row_input"><input id="safetyPower" type="number" min="0" max="100000" value="500" onchange="displaySaveHint()">W 
             <div class="hintButton" onclick="toggle(this,'hint3');toggle(this,'hint4');return false;">i</div></td>
           </tr>
         </table>
@@ -476,12 +483,29 @@
         <table class="settings_table">
           <tr>
             <td class="settings_row_name"><label for="mainFuse" data-i18n="settings.global.mainFuse">global.mainFuse</label>:</td>
-            <td class="settings_row_input"><input id="mainFuse" type="number" min="0" max="100000" value="63" size="10" onchange="displaySaveHint()">A 
-            <div class="hintButton" onclick="toggle(this,'mainFuseHint');return false;">i</div></td>
+            <td class="settings_row_input"><input id="mainFuse" type="number" min="0" max="100000" value="63" onchange="displaySaveHint()">A 
+            <div class="hintButton" onclick="toggle(this,'mainFuseHint');checkEasterEgg();return false;">i</div></td>
           </tr>
         </table>
         <p id="mainFuseHint" class="hint" data-i18n="settings.global.mainFuseHint">global.mainFuseHint</p>
-        <a href="#ShowLog" data-i18n="settings.log.show" onclick="changeTab(event, 'logPage');return false;">log.show</a>
+
+        <table class="settings_table">
+          <tr>
+            <td class="settings_row_name"><label for="freeThreshold" data-i18n="settings.global.freeThreshold">global.freeThreshold</label>:</td>
+            <td class="settings_row_input"><input id="freeThreshold" type="number" min="0" max="100" value="100" onchange="displaySaveHint()">% 
+            <div class="hintButton" onclick="toggle(this,'freeThresholdHint');checkEasterEgg();return false;">i</div></td>
+          </tr>
+        </table>
+        <p id="freeThresholdHint" class="hint" data-i18n="settings.global.freeThresholdHint">global.freeThresholdHint</p>
+
+        <table class="settings_table">
+          <tr>
+            <td class="settings_row_name"><label data-i18n="settings.global.carCharger">global.carCharger</label>:</td>
+            <td class="settings_row_input"><div class="hintButton" onclick="toggle(this,'carChargerHint');checkEasterEgg();return false;">i</div></td>
+          </tr>
+        </table>
+        <p id="carChargerHint" class="hint" data-i18n="settings.global.carChargerHint">global.carChargerHint</p>
+        <a id="showlog" style="display:none" href="#ShowLog" data-i18n="settings.log.show" onclick="changeTab(event, 'logPage');return false;">log.show</a>
       </fieldset>
       <fieldset>
         <legend for="highPriDevices"><div class="blockHeader" data-i18n="settings.global.controllableDevices">global.controllableDevices</div> 
@@ -709,6 +733,7 @@
       // Load control
       var operatingModeLoaded = false;
       var errorMarginLoaded = false;
+      var freeThresholdLoaded = false;
       var safetyPowerLoaded = false;
       var maxPowerListLoaded = false;
       var deviceListLoaded = false;
@@ -729,6 +754,7 @@
           && modeListLoaded
           && operatingModeLoaded
           && errorMarginLoaded
+          && freeThresholdLoaded
           && safetyPowerLoaded
           && priceModeLoaded
           && pricePointLoaded
@@ -750,6 +776,7 @@
           document.getElementById("tab_selector").style.display = "inline-block";
           document.getElementById("save").style.display = "inline-block";
           document.getElementById("errorMargin").value = currentErrorMargin;
+          document.getElementById("freeThreshold").value = currentfreeThreshold;
           document.getElementById("safetyPower").value = currentSafetyPower;
           document.getElementById("pricePoint").value = currentPricePoint;
           document.getElementById("mainFuse").value = currentMainFuse;
@@ -904,6 +931,16 @@
             currentErrorMargin = 5;
           }
           errorMarginLoaded = true;
+          checkLoadingDone();
+        });
+        Homey.get("freeThreshold", function (err, threshold) {
+          if (err) return Homey.alert(err);
+          if (threshold !== null) {
+            currentfreeThreshold = threshold;
+          } else {
+            currentfreeThreshold = 5;
+          }
+          freeThresholdLoaded = true;
           checkLoadingDone();
         });
         Homey.get("safetyPower", function (err, safetyPower) {
@@ -1177,6 +1214,7 @@
         pricePointLoaded = true;
         priceActionListLoaded = true;
         errorMarginLoaded = true;
+        freeThresholdLoaded = true;
         safetyPowerLoaded = true;
         mainFuseLoaded = true;
         futurePriceOptionsLoaded = true;
