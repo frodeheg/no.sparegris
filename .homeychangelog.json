@@ -175,5 +175,8 @@
   },
   "0.7.0": {
     "en": "Added improved car charging support by enabling a threshold option for when to report free power"
+  },
+  "0.7.1": {
+    "en": "The free power threshold was not saved in previous version"
   }
 }
