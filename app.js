@@ -143,6 +143,7 @@ class PiggyBank extends Homey.App {
     this.__current_power_time = undefined;
     this.__accum_energy = undefined;
     this.__reserved_energy = 0;
+    this.__free_power_trigger_time = new Date();
     this.__last_power_off_time = new Date();
     this.__last_power_on_time = new Date();
     this.__power_last_hour = undefined;
@@ -724,10 +725,17 @@ class PiggyBank extends Homey.App {
     } else {
       this.__free_capacity = powerDiff;
     }
-    const freePowerTrigger = this.homey.flow.getTriggerCard('free-power-changed');
-    const tokens = { freePower: Math.round(this.__free_capacity) };
-    const state = tokens;
-    return freePowerTrigger.trigger(tokens, state);
+    // Prevent the trigger from triggering more than once a minute
+    const now = new Date();
+    const timeSinceLastTrigger = now - this.__free_power_trigger_time;
+    if (!timeSinceLastTrigger > (60 * 1000)) {
+      this.__free_power_trigger_time = now;
+      const freePowerTrigger = this.homey.flow.getTriggerCard('free-power-changed');
+      const tokens = { freePower: Math.round(this.__free_capacity) };
+      const state = tokens;
+      return freePowerTrigger.trigger(tokens, state);
+    }
+    return Promise.resolve();
   }
 
   /**
@@ -1108,11 +1116,11 @@ class PiggyBank extends Homey.App {
 
     try {
       // Energy based statistics
-      const timeSinceEnergy = this.__stats_energy_time - now;
+      const timeSinceEnergy = now - this.__stats_energy_time;
       if (timeSinceEnergy < tenMinutes) {
         // Only register statistics if reported for the current hour
         let pricePointLastHour;
-        const timeSincePricePoint = this.__starts_price_point_time - now;
+        const timeSincePricePoint = now - this.__starts_price_point_time;
         if (timeSincePricePoint > tenMinutes) {
           pricePointLastHour = this.__stats_price_point;
         } else {
@@ -1136,7 +1144,7 @@ class PiggyBank extends Homey.App {
       }
 
       // Price statistics
-      const timeSincePrice = this.__stats_price_time - now;
+      const timeSincePrice = now - this.__stats_price_time;
       if (timeSincePrice < tenMinutes && this.__stats_price && this.__stats_energy) {
         // Calculate how much money has been saved today
         this.__stats_n_hours_today++;
