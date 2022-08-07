@@ -184,5 +184,8 @@
   },
   "0.8.1": {
     "en": "Made sure the avaiable power trigger does not trigger more often than once every minute"
+  },
+  "0.8.2": {
+    "en": "Fixed bug where turning on/off devices could be based on state from another device. + Fixed when overshooting the power roof is reported, it did not account for reserved power. + Improvements in stability if some devices does not respond properly."
   }
 }
