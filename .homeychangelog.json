@@ -190,5 +190,8 @@
   },
   "0.8.3": {
     "en": "Changed the internal price evaluation scheme to be easier to understand and use"
+  },
+  "0.8.4": {
+    "en": "Fixed a bug in previous version that prevented you from saving settings."
   }
 }
