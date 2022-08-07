@@ -26,6 +26,15 @@
     "piggy_devices_on"
   ],
   "capabilitiesOptions": {
+    "button.reset_stats": {
+      "maintenanceAction": true,
+      "title": {
+         "en": "Reset Statistics"
+      },
+      "desc": {
+         "en": "Reset the Statistics."
+      }
+    },
     "piggy_money.savings_all_time_use": {
       "title": {
         "en": "Money saved utility joint",

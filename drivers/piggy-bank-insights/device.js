@@ -121,12 +121,19 @@ class MyDevice extends Device {
       if (this.hasCapability('piggy_num_restarts') === false) {
         this.addCapability('piggy_num_restarts');
       }
+      if (this.hasCapability('button.reset_stats') === false) {
+        this.addCapability('button.reset_stats');
+      }
+      this.registerCapabilityListener('button.reset_stats', async () => this.homey.app.resetStatistics());
     } else if (settings['debugCap'] === false) {
       if (this.hasCapability('piggy_num_failures') === true) {
         this.removeCapability('piggy_num_failures');
       }
       if (this.hasCapability('piggy_num_restarts') === true) {
         this.removeCapability('piggy_num_restarts');
+      }
+      if (this.hasCapability('button.reset_stats') === true) {
+        this.removeCapability('button.reset_stats');
       }
     }
   }
@@ -264,7 +271,7 @@ class MyDevice extends Device {
       if (this.hasCapability('piggy_money.savings_all_time_power_part') === true && piggyState.savings_all_time_power_part) {
         this.setCapabilityValue('piggy_money.savings_all_time_power_part', piggyState.savings_all_time_power_part);
       }
-      if (this.hasCapability('piggy_money.savings_all_time_total') === true && piggyState.savings_all_time_use || piggyState.savings_all_time_power_part) {
+      if (this.hasCapability('piggy_money.savings_all_time_total') === true && (piggyState.savings_all_time_use || piggyState.savings_all_time_power_part)) {
         this.setCapabilityValue('piggy_money.savings_all_time_total', piggyState.savings_all_time_use + piggyState.savings_all_time_power_part);
       }
 
