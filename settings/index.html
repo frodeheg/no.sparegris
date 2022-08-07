@@ -790,8 +790,8 @@
         var pricePointElement = document.getElementById("pricePoint");
         var mainFuseElement = document.getElementById("mainFuse");
         var averageTimeElement = document.getElementById("averageTime");
-        var minCheapTimeModifierElement = document.getElementById("minCheapTime");
-        var minExpensiveTimeFactorElement =  document.getElementById("minExpensiveTime");
+        var minCheapTimeElement = document.getElementById("minCheapTime");
+        var minExpensiveTimeElement =  document.getElementById("minExpensiveTime");
         var lowPriceModifierElement =  document.getElementById("lowPriceModifier");
         var highPriceModifierElement =  document.getElementById("highPriceModifier");
         var rememberToSaveElement = document.getElementById("rememberToSave");
@@ -1023,7 +1023,7 @@
             }
           }
           catch (err) {
-            Homey.alert(Homey.__('warnings.savingFailed'));
+            Homey.alert(Homey.__(`warnings.savingFailed: ${err}`));
           }
         });
 
