@@ -187,5 +187,8 @@
   },
   "0.8.2": {
     "en": "Fixed bug where turning on/off devices could be based on state from another device. + Fixed when overshooting the power roof is reported, it did not account for reserved power. + Improvements in stability if some devices does not respond properly."
+  },
+  "0.8.3": {
+    "en": "Changed the internal price evaluation scheme to be easier to understand and use"
   }
 }
