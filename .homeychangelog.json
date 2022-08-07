@@ -193,5 +193,8 @@
   },
   "0.8.4": {
     "en": "Fixed a bug in previous version that prevented you from saving settings."
+  },
+  "0.8.5": {
+    "en": "Fixed a bug where the low price limit was not set correctly"
   }
 }
