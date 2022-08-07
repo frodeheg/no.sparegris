@@ -1573,7 +1573,7 @@ class PiggyBank extends Homey.App {
     const orderedPriceTable = [...this.__current_prices].sort();
     const lowPriceIndex = +futurePriceOptions.minCheapTime;
     const highPriceIndex = 23 - futurePriceOptions.minExpensiveTime;
-    if (this.__low_price_limit < orderedPriceTable[lowPriceIndex]) this.__low_price_limit = orderedPriceTable[lowPriceIndex];
+    if (this.__low_price_limit > orderedPriceTable[lowPriceIndex]) this.__low_price_limit = orderedPriceTable[lowPriceIndex];
     if (this.__high_price_limit < orderedPriceTable[highPriceIndex]) this.__high_price_limit = orderedPriceTable[highPriceIndex];
 
     // Trigger new Price points
