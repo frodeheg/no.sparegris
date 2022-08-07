@@ -153,6 +153,7 @@ class PiggyBank extends Homey.App {
     this.__num_forced_off_devices = 0;
     this.__num_off_devices = 0;
     this.__current_prices = [];
+    this.__current_price_index = undefined;
     this.mutex = new Mutex();
     this.homeyApi = new HomeyAPIApp({
       homey: this.homey
@@ -467,6 +468,9 @@ class PiggyBank extends Homey.App {
         && ((newState === TURN_ON && currentModeState !== ALWAYS_OFF) || (newState === TURN_OFF && currentModeState === ALWAYS_ON)));
 
     this.__current_state[deviceId].isOn = newStateOn;
+    if (newStateOn === undefined) {
+      this.updateLog(`isOn was set to undefined ${frostGuardActive}`, LOG_ERROR);
+    }
     this.__current_state[deviceId].ongoing = false; // If already ongoing then it should already have been completed, try again
     if (newStateOn && !isOn) {
       // Turn on
@@ -972,6 +976,9 @@ class PiggyBank extends Homey.App {
         }
         const isOn = device.capabilitiesObj[this.__deviceList[deviceId].onoff_cap].value;
         this.__current_state[deviceId].isOn = isOn;
+        if (isOn === undefined) {
+          this.updateLog(`Refreshtemp: isOn was set to undefined ${isOn}`, LOG_ERROR);
+        }
         if (!isOn) return Promise.resolve([true, true]);
         const hasTargetTemp = device.capabilities.includes('target_temperature');
         if (!hasTargetTemp) return Promise.resolve([true, true]);
@@ -1457,8 +1464,7 @@ class PiggyBank extends Homey.App {
       num_restarts: this.__stats_app_restarts,
 
       average_price: +this.homey.settings.get('averagePrice') || undefined,
-      current_price: this.__current_prices[0],
-      acceptable_price: this.__acceptable_price,
+      current_price: this.__current_prices[this.__current_price_index],
       low_price_limit: this.__low_price_limit,
       high_price_limit: this.__high_price_limit,
       savings_yesterday: this.__stats_savings_yesterday,
@@ -1497,18 +1503,20 @@ class PiggyBank extends Homey.App {
       const nowSeconds = new Date().getTime() / 1000;
       const futurePrices = await this.elPriceApi.get('/prices');
       if (!futurePrices || !Array.isArray(futurePrices)) {
-        return [];
+        return { prices: [], now: undefined };
       }
       const pricesOnly = [];
+      let currentIndex = 0;
       for (let i = 0; i < futurePrices.length; i++) {
+        pricesOnly.push(futurePrices[i].price);
         if ((nowSeconds - 3600) < (futurePrices[i].time)) {
-          pricesOnly.push(futurePrices[i].price);
+          currentIndex++;
         }
       }
-      return pricesOnly;
+      return { prices: pricesOnly, now: currentIndex };
     } catch (err) {
       this.updateLog(`Electricity price api failed: ${err.message}`, LOG_ERROR);
-      return [];
+      return { prices: [], now: undefined };
     }
   }
 
@@ -1519,60 +1527,59 @@ class PiggyBank extends Homey.App {
     // Abort if prices are not available
     if (!await this._checkApi()) return Promise.reject(new Error(this.homey.__('warnings.noPriceApi')));
 
-    if (this.__current_prices) {
-      this.__last_hour_price = this.__current_prices[0];
+    if (this.__current_prices && this.__current_price_index) {
+      this.__last_hour_price = this.__current_prices[this.__current_price_index];
     } else {
       this.__last_hour_price = undefined;
     }
-    this.__current_prices = await this.currentPrices();
+    const priceInfo = await this.currentPrices();
+    this.__current_prices = priceInfo.prices;
+    this.__current_price_index = priceInfo.now;
 
     this.statsSetLastHourPrice(this.__last_hour_price);
 
     // === Calculate price point if state is internal and have future prices ===
     const futurePriceOptions = this.homey.settings.get('futurePriceOptions');
-    if (this.__current_prices.length < 2
+    if (this.__current_prices.length !== 24
       || +this.homey.settings.get('priceMode') !== 1) {
       return Promise.resolve();
     }
     if (!this.app_is_configured
-      || typeof (+futurePriceOptions.futurePriceFactor) !== 'number'
-      || !Number.isInteger(+futurePriceOptions.futurePriceModifier)
+      || !Number.isInteger(+futurePriceOptions.minCheapTime)
+      || !Number.isInteger(+futurePriceOptions.minExpensiveTime)
       || !Number.isInteger(+futurePriceOptions.lowPriceModifier)
       || !Number.isInteger(+futurePriceOptions.highPriceModifier)) {
       return Promise.reject(new Error(this.homey.__('warnings.notConfigured')));
     }
-    let hoursInInterval = +futurePriceOptions.averageTime * 24;
-    if (!Number.isInteger(hoursInInterval) || hoursInInterval === 0) {
-      hoursInInterval = 48; // Should not happen but check anyways
-    }
-    // Calculate average price
+    const hoursInInterval = +futurePriceOptions.averageTime * 24;
     let averagePrice = +this.homey.settings.get('averagePrice') || undefined;
-    if ((typeof (averagePrice) !== 'number') || !Number.isFinite(averagePrice)) {
-      averagePrice = this.__current_prices[0]; // First time called
+    if (!Number.isInteger(hoursInInterval)
+      || hoursInInterval === 0
+      || typeof (averagePrice) !== 'number'
+      || !Number.isFinite(averagePrice)) {
+      // Use today price average
+      averagePrice = this.__current_prices.reduce((a, b) => a + b, 0) / 24;
     } else {
-      averagePrice = (averagePrice * (hoursInInterval - 1) + this.__current_prices[0]) / hoursInInterval;
+      // Calculate average price over time
+      averagePrice = (averagePrice * (hoursInInterval - 1) + this.__current_prices[this.__current_price_index]) / hoursInInterval;
     }
+
     this.homey.settings.set('averagePrice', averagePrice);
-    // Calculate acceptable price
-    let futureMinPriceTime = +futurePriceOptions.futurePriceModifier;
-    if (!Number.isInteger(futureMinPriceTime) || futureMinPriceTime < 1 || futureMinPriceTime >= this.__current_prices.length) {
-      futureMinPriceTime = this.__current_prices.length - 1; // Should not happen but check anyways
-    }
-    let futureMinPrice = Infinity;
-    for (let i = 1; i <= futureMinPriceTime; i++) {
-      if (this.__current_prices[i] < futureMinPrice) {
-        futureMinPrice = this.__current_prices[i];
-      }
-    }
-    this.__acceptable_price = averagePrice * ((futureMinPrice / this.__current_prices[0]) ** (+futurePriceOptions.futurePriceFactor));
     // Calculate min/max limits
-    this.__low_price_limit = this.__acceptable_price * (+futurePriceOptions.lowPriceModifier / 100 + 1);
-    this.__high_price_limit = this.__acceptable_price * (+futurePriceOptions.highPriceModifier / 100 + 1);
+    this.__low_price_limit = averagePrice * (+futurePriceOptions.lowPriceModifier / 100 + 1);
+    this.__high_price_limit = averagePrice * (+futurePriceOptions.highPriceModifier / 100 + 1);
+
+    // If min/max limit does not encompas enough hours, change the limits
+    const orderedPriceTable = [...this.__current_prices].sort();
+    const lowPriceIndex = +futurePriceOptions.minCheapTime;
+    const highPriceIndex = 23 - futurePriceOptions.minExpensiveTime;
+    if (this.__low_price_limit < orderedPriceTable[lowPriceIndex]) this.__low_price_limit = orderedPriceTable[lowPriceIndex];
+    if (this.__high_price_limit < orderedPriceTable[highPriceIndex]) this.__high_price_limit = orderedPriceTable[highPriceIndex];
 
     // Trigger new Price points
-    const mode = (this.__current_prices[0] < this.__low_price_limit) ? PP_LOW
-      : (this.__current_prices[0] > this.__high_price_limit) ? PP_HIGH
-        : PP_NORM;
+    const isLowPrice = (this.__current_prices[this.__current_price_index] < this.__low_price_limit);
+    const isHighPrice = (this.__current_prices[this.__current_price_index] > this.__high_price_limit);
+    const mode = isLowPrice ? PP_LOW : isHighPrice ? PP_HIGH : PP_NORM;
     if (!preventZigbee) {
       return this.onPricePointUpdate(mode);
     }

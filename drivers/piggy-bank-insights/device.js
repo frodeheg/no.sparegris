@@ -37,6 +37,11 @@ class MyDevice extends Device {
       this.addCapability('meter_power.month_estimate');
     }
 
+    // Removed capabilities in version 0.8.3
+    if (this.hasCapability('piggy_money.acceptable_price') === true) {
+      this.removeCapability('piggy_money.acceptable_price');
+    }
+
     // New experimental capabilities
     if (settings['experimentalCap'] === true) {
       if (this.hasCapability('piggy_money.savings_all_time_use') === false) {
@@ -77,9 +82,6 @@ class MyDevice extends Device {
       if (this.hasCapability('piggy_money.current_price') === false) {
         this.addCapability('piggy_money.current_price');
       }
-      if (this.hasCapability('piggy_money.acceptable_price') === false) {
-        this.addCapability('piggy_money.acceptable_price');
-      }
       if (this.hasCapability('piggy_money.low_price_limit') === false) {
         this.addCapability('piggy_money.low_price_limit');
       }
@@ -101,9 +103,6 @@ class MyDevice extends Device {
       }
       if (this.hasCapability('piggy_money.current_price') === true) {
         this.removeCapability('piggy_money.current_price');
-      }
-      if (this.hasCapability('piggy_money.acceptable_price') === true) {
-        this.removeCapability('piggy_money.acceptable_price');
       }
       if (this.hasCapability('piggy_money.low_price_limit') === true) {
         this.removeCapability('piggy_money.low_price_limit');
@@ -298,9 +297,6 @@ class MyDevice extends Device {
       }
       if (this.hasCapability('piggy_money.current_price') === true && piggyState.current_price) {
         this.setCapabilityValue('piggy_money.current_price', piggyState.current_price);
-      }
-      if (this.hasCapability('piggy_money.acceptable_price') === true && piggyState.acceptable_price) {
-        this.setCapabilityValue('piggy_money.acceptable_price', piggyState.acceptable_price);
       }
       if (this.hasCapability('piggy_money.low_price_limit') === true && piggyState.low_price_limit) {
         this.setCapabilityValue('piggy_money.low_price_limit', piggyState.low_price_limit);

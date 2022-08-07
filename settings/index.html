@@ -574,51 +574,23 @@
 
           <table class="settings_table">
             <tr>
-              <td class="settings_row_name"><label for="averageTime" data-i18n="settings.price.internal.averageTime">price.internal.averageTime</label>:</td>
+              <td class="settings_row_name"><label for="minCheapTime" data-i18n="settings.price.internal.minCheapTime">price.internal.minCheapTime</label>:</td>
               <td class="settings_row_input">
-                <select id="averageTime" onchange="displaySaveHint()">
-                  <option value="1" data-i18n="settings.price.internal.day1">price.internal.day1</option>
-                  <option value="2" data-i18n="settings.price.internal.day2" selected>price.internal.day2</option>
-                  <option value="4" data-i18n="settings.price.internal.day4">price.internal.day4</option>
-                  <option value="7" data-i18n="settings.price.internal.day7">price.internal.day7</option>
-                  <option value="30" data-i18n="settings.price.internal.day30">price.internal.day30</option>
-                </select>
-                <div class="hintButton" onclick="toggle(this,'averageTimeHint');toggle(this,'averageTimeHint2');return false;">i</div></td>
+                <input id="minCheapTime" type="number" size="10" min="0" max="10" step="1" value="4" onchange="displaySaveHint()">
+                <div class="hintButton" onclick="toggle(this,'minCheapTimeHint');return false;">i</div></td>
             </tr>
           </table>
-          <p id="averageTimeHint" class="hint" data-i18n="settings.price.internal.averageTimeHint">price.internal.averageTimeHint</p>
-          <p id="averageTimeHint2" class="math"><span data-i18n="settings.price.internal.averageTimeHint2">average_price</span>=<span class='locked'>
-            <sup><u data-i18n="settings.price.internal.averageTimeHint3">old_average *(num_hours_in_interval-1) + new_price</u></sup>
-            <sub data-i18n="settings.price.internal.averageTimeHint4">num_hours_in_interval</sub></span></p>
+          <p id="minCheapTimeHint" class="hint" data-i18n="settings.price.internal.minCheapTimeHint">price.internal.minCheapTimeHint</p>
 
           <table class="settings_table">
             <tr>
-              <td class="settings_row_name"><label for="futurePriceModifier" data-i18n="settings.price.internal.futurePriceModifier">price.internal.futurePriceModifier</label>:</td>
+              <td class="settings_row_name"><label for="minExpensiveTime" data-i18n="settings.price.internal.minExpensiveTime">price.internal.minExpensiveTime</label>:</td>
               <td class="settings_row_input">
-                <select id="futurePriceModifier" onchange="displaySaveHint()">
-                  <option value="1" data-i18n="settings.price.internal.hour1">price.internal.hour1</option>
-                  <option value="2" data-i18n="settings.price.internal.hour2" selected>price.internal.hour2</option>
-                  <option value="3" data-i18n="settings.price.internal.hour3">price.internal.hour3</option>
-                  <option value="4" data-i18n="settings.price.internal.hour4">price.internal.hour4</option>
-                </select>
-                <div class="hintButton" onclick="toggle(this,'futurePriceModifierHint');toggle(this,'futurePriceModifierHint1','inline-block');toggle(this,'futurePriceModifierHint2','inline-block');toggle(this,'futurePriceModifierHint4','inline-block');return false;">i</div></td>
+                <input id="minExpensiveTime" type="number" size="10" min="0" max="10" step="1" value="4" onchange="displaySaveHint()">
+                <div class="hintButton" onclick="toggle(this,'minExpensiveTimeHint');return false;">i</div></td>
             </tr>
           </table>
-          <table class="settings_table">
-            <tr>
-              <td class="settings_row_name"><label for="futurePriceFactor" data-i18n="settings.price.internal.futurePriceFactor">price.internal.futurePriceFactor</label>:</td>
-              <td class="settings_row_input">
-                <input id="futurePriceFactor" type="number" size="10" min="0" max="5" step="0.1" value="1.5" onchange="displaySaveHint()">
-                <div class="hintButton" onclick="toggle(this,'futurePriceModifierHint');toggle(this,'futurePriceModifierHint1','inline-block');toggle(this,'futurePriceModifierHint2','inline-block');toggle(this,'futurePriceModifierHint4','inline-block');return false;">i</div></td>
-            </tr>
-          </table>
-          <p id="futurePriceModifierHint" class="hint" data-i18n="settings.price.internal.futurePriceModifierHint">price.internal.futurePriceModifierHint</p>
-          <p id="futurePriceModifierHint1" class="hint" data-i18n="settings.price.internal.futurePriceModifierHint1">acceptable_price = average_price * (</p>
-          <p id="futurePriceModifierHint2" class="math">
-            <span class='locked'>
-              <sup><u data-i18n="settings.price.internal.futurePriceModifierHint2">min(price_in_interval)</u></sup>
-              <sub data-i18n="settings.price.internal.futurePriceModifierHint3">price_now</sub></span></p>
-          <p id="futurePriceModifierHint4" class="hint" data-i18n="settings.price.internal.futurePriceModifierHint4">) ^ future_price_factor</p>
+          <p id="minExpensiveTimeHint" class="hint" data-i18n="settings.price.internal.minExpensiveTimeHint">price.internal.minExpensiveTimeHint</p>
 
           <table class="settings_table">
             <tr>
@@ -639,6 +611,23 @@
             </tr>
           </table>
           <p id="highPriceModifierHint" class="hint" data-i18n="settings.price.internal.highPriceModifierHint">price.internal.highPriceModifierHint</p>
+
+          <table class="settings_table">
+            <tr>
+              <td class="settings_row_name"><label for="averageTime" data-i18n="settings.price.internal.averageTime">price.internal.averageTime</label>:</td>
+              <td class="settings_row_input">
+                <select id="averageTime" onchange="displaySaveHint()">
+                  <option value="0" data-i18n="settings.price.internal.day0" selected>price.internal.day0</option>
+                  <option value="1" data-i18n="settings.price.internal.day1">price.internal.day1</option>
+                  <option value="2" data-i18n="settings.price.internal.day2">price.internal.day2</option>
+                  <option value="4" data-i18n="settings.price.internal.day4">price.internal.day4</option>
+                  <option value="7" data-i18n="settings.price.internal.day7">price.internal.day7</option>
+                  <option value="30" data-i18n="settings.price.internal.day30">price.internal.day30</option>
+                </select>
+                <div class="hintButton" onclick="toggle(this,'averageTimeHint');return false;">i</div></td>
+            </tr>
+          </table>
+          <p id="averageTimeHint" class="hint" data-i18n="settings.price.internal.averageTimeHint">price.internal.averageTimeHint</p>
         </span>
 
         <table width="100%" id="sub_tab_selector" class="tab">
@@ -781,8 +770,8 @@
           document.getElementById("pricePoint").value = currentPricePoint;
           document.getElementById("mainFuse").value = currentMainFuse;
           document.getElementById("averageTime").value = futurePriceOptions.averageTime;
-          document.getElementById("futurePriceModifier").value = futurePriceOptions.futurePriceModifier;
-          document.getElementById("futurePriceFactor").value = futurePriceOptions.futurePriceFactor;
+          document.getElementById("minCheapTime").value = futurePriceOptions.minCheapTime;
+          document.getElementById("minExpensiveTime").value = futurePriceOptions.minExpensiveTime;
           document.getElementById("lowPriceModifier").value = futurePriceOptions.lowPriceModifier;
           document.getElementById("highPriceModifier").value = futurePriceOptions.highPriceModifier;
           document.getElementById("errp1").style.display = futurePriceOptions.ApiError ? 'inline-block' : 'none';
@@ -801,8 +790,8 @@
         var pricePointElement = document.getElementById("pricePoint");
         var mainFuseElement = document.getElementById("mainFuse");
         var averageTimeElement = document.getElementById("averageTime");
-        var futurePriceModifierElement = document.getElementById("futurePriceModifier");
-        var futurePriceFactorElement =  document.getElementById("futurePriceFactor");
+        var minCheapTimeModifierElement = document.getElementById("minCheapTime");
+        var minExpensiveTimeFactorElement =  document.getElementById("minExpensiveTime");
         var lowPriceModifierElement =  document.getElementById("lowPriceModifier");
         var highPriceModifierElement =  document.getElementById("highPriceModifier");
         var rememberToSaveElement = document.getElementById("rememberToSave");
@@ -981,9 +970,9 @@
           } else {
             futurePriceOptions = {}
           }
-          if (!futurePriceOptions.hasOwnProperty("averageTime")) futurePriceOptions.averageTime = 2;
-          if (!futurePriceOptions.hasOwnProperty("futurePriceModifier")) futurePriceOptions.futurePriceModifier = 2;
-          if (!futurePriceOptions.hasOwnProperty("futurePriceFactor")) futurePriceOptions.futurePriceFactor = 1.5;
+          if (!futurePriceOptions.hasOwnProperty("minCheapTime")) futurePriceOptions.minCheapTime = 4;
+          if (!futurePriceOptions.hasOwnProperty("minExpensiveTime")) futurePriceOptions.minExpensiveTime = 4;
+          if (!futurePriceOptions.hasOwnProperty("averageTime")) futurePriceOptions.averageTime = 0;
           if (!futurePriceOptions.hasOwnProperty("lowPriceModifier")) futurePriceOptions.lowPriceModifier = -10;
           if (!futurePriceOptions.hasOwnProperty("highPriceModifier")) futurePriceOptions.highPriceModifier = 10;
           if (!futurePriceOptions.hasOwnProperty("ApiError")) futurePriceOptions.ApiError = true;
@@ -1011,8 +1000,8 @@
               Homey.alert(Homey.__('warnings.noDevices'))
             } else {
               futurePriceOptions.averageTime = averageTimeElement.value;
-              futurePriceOptions.futurePriceModifier = futurePriceModifierElement.value;
-              futurePriceOptions.futurePriceFactor = futurePriceFactorElement.value;
+              futurePriceOptions.minCheapTime = minCheapTimeElement.value;
+              futurePriceOptions.minExpensiveTime = minExpensiveTimeElement.value;
               futurePriceOptions.lowPriceModifier = lowPriceModifierElement.value;
               futurePriceOptions.highPriceModifier = highPriceModifierElement.value;
               Homey.set("futurePriceOptions", futurePriceOptions, errFunc);
