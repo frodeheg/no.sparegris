@@ -1579,7 +1579,7 @@ class PiggyBank extends Homey.App {
 
     // === Calculate price point if state is internal and have future prices ===
     const futurePriceOptions = this.homey.settings.get('futurePriceOptions');
-    if (this.__current_prices.length > 0
+    if (this.__current_prices.length < 1
       || +this.homey.settings.get('priceMode') !== 1) {
       return Promise.resolve();
     }
