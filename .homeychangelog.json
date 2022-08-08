@@ -202,5 +202,8 @@
   },
   "0.8.7": {
     "en": "Fixed a bug when selecting the minimum number of cheap/expensive hours. Instead it was treated as not more than."
+  },
+  "0.8.8": {
+    "en": "Fixed a bug that prevented calculation of price points"
   }
 }
