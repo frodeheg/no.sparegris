@@ -1534,6 +1534,11 @@ class PiggyBank extends Homey.App {
           newestPriceWeGot = this.__all_prices[i].time;
         }
       }
+      // If it is midnight then wait 2 minutes for the price api to update its prices.
+      const delay = ms => new Promise(res => setTimeout(res, ms));
+      if ((nowSeconds - (15 * 60)) < todayStart) {
+        await delay(2 * 60 * 1000);
+      }
       // Fetch new prices if needed and add them
       if (this.__all_prices.length < 24) {
         const futurePrices = await this.elPriceApi.get('/prices');
