@@ -538,7 +538,11 @@ class PiggyBank extends Homey.App {
       this.__current_power_time = now;
       this.__accum_energy = 0;
       if (+this.homey.settings.get('operatingMode') !== MODE_DISABLED) {
-        this.doPriceCalculations();
+        this.doPriceCalculations()
+          .catch(err => {
+            // Either the app is not configured yet or the utility price API is not installed, just ignore
+            return Promise.resolve();
+          });
       }
       // Number of forced off devices can change every hour.
       // Instead of counting it here it is set whenever all devices has been tried to turn off
@@ -558,6 +562,10 @@ class PiggyBank extends Homey.App {
    */
   async onMonitor() {
     this.updateLog('onMonitor()', LOG_DEBUG);
+    if (!this.app_is_configured) {
+      // Early exit if the app is not configured
+      return Promise.resolve(false);
+    }
     // Go through all actions for this new mode;
     const actionLists = this.homey.settings.get('priceActionList');
     const currentPricePoint = this.homey.settings.get('pricePoint');
