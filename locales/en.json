@@ -39,7 +39,7 @@
       "mainFuse" : "Main fuse",
       "mainFuseHint" : "The main fuse is important for what is calculated as the maximum available power. The app will not let you use more power than the main fuse allows.",
       "freeThreshold": "Free capacity threshold",
-      "freeThresholdHint": "Free power will only be reported if the indicated amount of controllable units are switched on. This can be used to give priority to devices that are controlled outside the app, such as charging an electric car. 0% will give the highest priority while 100% will give the least priority.",
+      "freeThresholdHint": "Free power will only be reported if the indicated amount of controllable units are switched on. This can be used to give priority to devices that are controlled outside the app, such as charging an electric car. 0% will give the highest priority while 100% will give the lowest priority.",
       "carCharger": "Car Charger Howto",
       "carChargerHint": ["<p>Depending on your preferences, there are two methods that can be used to let this app control an electric car charger:</p><!--",
           "--><ol><!--",

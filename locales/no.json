@@ -39,7 +39,7 @@
       "mainFuse" : "Hovedsikring",
       "mainFuseHint" : "Hovdedsikringen har betydning for hva som regnes ut som maks tilgjengelig effekt. Appen vil ikke la deg bruke mer effekt enn det hovedsikringen tillater.",
       "freeThreshold": "Terskelverdi ledig kapasitet",
-      "freeThresholdHint": "Ledig effekt vil kun bli rapportert dersom den indikerte mengden av kontrollerbare enheter er påslått. Dette kan brukes for å gi prioritet til enheter som styres utenfor appen som for eksempel lading av elbil. 0% Vil gi høyest prioritet mends 100% vil gi minst prioritet.",
+      "freeThresholdHint": "Ledig effekt vil kun bli rapportert dersom den indikerte mengden av kontrollerbare enheter er påslått. Dette kan brukes for å gi prioritet til enheter som styres utenfor appen som for eksempel lading av elbil. 0% Vil gi høyest prioritet mens 100% vil gi minst prioritet.",
       "carCharger": "Lading av Elbil info",
       "carChargerHint": ["<p>Avhengig av dine preferanser er det to metoder som kan benyttes for å la denne appen styre en elbil-lader:</p><!--",
           "--><ol><!--",
