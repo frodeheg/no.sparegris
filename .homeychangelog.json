@@ -196,5 +196,8 @@
   },
   "0.8.5": {
     "en": "Fixed a bug where the low price limit was not set correctly"
+  },
+  "0.8.6": {
+    "en": "Fixed a bug in the internal calculation of price points + improved text in the price tab setup page"
   }
 }
