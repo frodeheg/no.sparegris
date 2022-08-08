@@ -67,25 +67,6 @@ function isNumber(value) {
 class PiggyBank extends Homey.App {
 
   /**
-   * Returns the number of milliseconds until next hour
-   */
-  timeToNextHour(inputTime) {
-    return 60 * 60 * 1000
-    - inputTime.getMinutes() * 60 * 1000
-    - inputTime.getSeconds() * 1000
-    - inputTime.getMilliseconds();
-  }
-
-  /**
-   * Rounds a time object to nearest hour
-   */
-  roundToNearestHour(date) {
-    date.setMinutes(date.getMinutes() + 30);
-    date.setMinutes(0, 0, 0);
-    return date;
-  }
-
-  /**
    * Validates the settings
    */
   validateSettings() {
@@ -152,6 +133,7 @@ class PiggyBank extends Homey.App {
     this.__free_capacity = 0;
     this.__num_forced_off_devices = 0;
     this.__num_off_devices = 0;
+    this.__all_prices = this.homey.settings.get('all_prices');
     this.__current_prices = [];
     this.__current_price_index = undefined;
     this.mutex = new Mutex();
@@ -1052,7 +1034,36 @@ class PiggyBank extends Homey.App {
    */
   toLocalTime(homeyTime) {
     const tz = this.homey.clock.getTimezone();
-    const localTime = new Date(new Date().toLocaleString('en-US', { timeZone: tz }));
+    const localTime = new Date(homeyTime.toLocaleString('en-US', { timeZone: tz }));
+    return localTime;
+  }
+
+  /**
+   * Returns the number of milliseconds until next hour
+   */
+  timeToNextHour(inputTime) {
+    return 60 * 60 * 1000
+    - inputTime.getMinutes() * 60 * 1000
+    - inputTime.getSeconds() * 1000
+    - inputTime.getMilliseconds();
+  }
+
+  /**
+   * Rounds a time object to nearest hour
+   */
+  roundToNearestHour(date) {
+    date.setMinutes(date.getMinutes() + 30);
+    date.setMinutes(0, 0, 0);
+    return date;
+  }
+
+  /**
+   * Rounds a time object to start of the day in local time
+   */
+  roundToStartOfDay(time) {
+    const localTime = this.toLocalTime(time);
+    const localTimeDiff = Math.round((time.getTime() - localTime.getTime()) / (60 * 60 * 1000));
+    localTime.setHours(localTimeDiff, 0, 0, 0);
     return localTime;
   }
 
@@ -1500,16 +1511,44 @@ class PiggyBank extends Homey.App {
    */
   async currentPrices() {
     try {
-      const nowSeconds = new Date().getTime() / 1000;
-      const futurePrices = await this.elPriceApi.get('/prices');
-      if (!futurePrices || !Array.isArray(futurePrices)) {
-        return { prices: [], now: undefined };
+      const now = new Date();
+      const nowSeconds = now.getTime() / 1000;
+      const todayStart = this.roundToStartOfDay(now).getTime() / 1000;
+      let newestPriceWeGot = 0;
+      // First delete prices older than today
+      if (!Array.isArray(this.__all_prices)) {
+        this.__all_prices = [];
       }
+      for (let i = this.__all_prices.length - 1; i >= 0; i--) {
+        if (this.__all_prices[i].time < todayStart) {
+          this.__all_prices.splice(i, 1);
+        } else if (this.__all_prices[i].time > newestPriceWeGot) {
+          newestPriceWeGot = this.__all_prices[i].time;
+        }
+      }
+      // Fetch new prices if needed and add them
+      if (this.__all_prices.length < 24) {
+        const futurePrices = await this.elPriceApi.get('/prices');
+        if (Array.isArray(futurePrices)) {
+          for (let i = 0; i < futurePrices.length; i++) {
+            if (futurePrices[i].time > newestPriceWeGot) {
+              this.__all_prices.push(futurePrices[i]);
+            }
+          }
+          // Probably not necessary to sort but do it just in case
+          this.__all_prices.sort((a, b) => {
+            return a.time - b.time;
+          });
+        }
+      }
+      this.homey.settings.set('all_prices', this.__all_prices);
+      // Analyze the prizes we got and return 24 values only (today prices)
       const pricesOnly = [];
       let currentIndex = 0;
-      for (let i = 0; i < futurePrices.length; i++) {
-        pricesOnly.push(futurePrices[i].price);
-        if ((nowSeconds - 3600) < (futurePrices[i].time)) {
+      const nPricesToAdd = Math.min(this.__all_prices.length, 24);
+      for (let i = 0; i < nPricesToAdd; i++) {
+        pricesOnly.push(this.__all_prices[i].price);
+        if ((nowSeconds - 3600) > this.__all_prices[i].time) {
           currentIndex++;
         }
       }
@@ -1540,7 +1579,7 @@ class PiggyBank extends Homey.App {
 
     // === Calculate price point if state is internal and have future prices ===
     const futurePriceOptions = this.homey.settings.get('futurePriceOptions');
-    if (this.__current_prices.length !== 24
+    if (this.__current_prices.length > 0
       || +this.homey.settings.get('priceMode') !== 1) {
       return Promise.resolve();
     }
@@ -1558,7 +1597,7 @@ class PiggyBank extends Homey.App {
       || typeof (averagePrice) !== 'number'
       || !Number.isFinite(averagePrice)) {
       // Use today price average
-      averagePrice = this.__current_prices.reduce((a, b) => a + b, 0) / 24;
+      averagePrice = this.__current_prices.reduce((a, b) => a + b, 0) / this.__current_prices.length; // Should always be divide by 24
     } else {
       // Calculate average price over time
       averagePrice = (averagePrice * (hoursInInterval - 1) + this.__current_prices[this.__current_price_index]) / hoursInInterval;
