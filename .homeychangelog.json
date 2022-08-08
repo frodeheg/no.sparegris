@@ -205,5 +205,8 @@
   },
   "0.8.8": {
     "en": "Fixed a bug that prevented calculation of price points"
+  },
+  "0.8.9": {
+    "en": "Fixed 2 crashes that could occur when the app has not been configured yet and one crash that occur when the utility price API has not been installed"
   }
 }
