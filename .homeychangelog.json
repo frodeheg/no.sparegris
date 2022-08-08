@@ -208,5 +208,8 @@
   },
   "0.8.9": {
     "en": "Fixed 2 crashes that could occur when the app has not been configured yet and one crash that occur when the utility price API has not been installed"
+  },
+  "0.8.10": {
+    "en": "Added 2 minute waiting time at midnight before new prices are fetched as the price api need time to update its prices"
   }
 }
