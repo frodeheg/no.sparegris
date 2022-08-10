@@ -211,5 +211,8 @@
   },
   "0.8.10": {
     "en": "Added 2 minute waiting time at midnight before new prices are fetched as the price api need time to update its prices"
+  },
+  "0.8.11": {
+    "en": "Some translation fixes + Increased minimum device poll time to avoid bad performance. + Added info about funding and sponsoring"
   }
 }
