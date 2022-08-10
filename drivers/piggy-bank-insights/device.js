@@ -143,7 +143,7 @@ class MyDevice extends Device {
    */
   setPollIntervalTime(newTime) {
     let myTime = +newTime; // Convert to number in case it is not
-    if (typeof myTime !== 'number' || myTime < 5 || myTime > 60) {
+    if (typeof myTime !== 'number' || myTime < 10 || myTime > 60) {
       this.homey.app.updateLog(`New poll time '${myTime}' was rejected`, 0);
       myTime = DEFAULT_POLL_INTERVAL;
     }

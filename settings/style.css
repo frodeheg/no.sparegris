@@ -220,3 +220,27 @@ p {
   border-radius: 8px;
   box-shadow: 2px 2px 10px gray;
 }
+
+#loadingText {
+  padding: 20px 10px;
+  text-align: center;
+}
+
+#sponsoredByText {
+  padding: 5px 10px;
+  text-align: center;
+}
+
+#sponsorText {
+  color:red;
+  margin:auto;
+  text-align: center;
+  background-color:rgba(255,255,128,0.5);
+  font-weight:bold;
+  padding: 100px 10px;
+  width: 80%;
+
+  border: 1px solid rgba(0,0,0,0.5);
+  border-radius: 8px;
+  box-shadow: 2px 2px 10px gray;
+}

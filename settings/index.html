@@ -414,7 +414,12 @@
     <h1 data-i18n="settings.title">.title</h1>
     <p data-i18n="settings.subtitle">.subtitle</p>
     -->
+    <!-- Loading page-->
+    <div id="loadingPage">
     <div data-i18n="settings.loadingText" id="loadingText">loadingText</div>
+    <p><div data-i18n="settings.sponsoredBy" id="sponsoredByText">sponsoredBy</div></p>
+    <div data-i18n="settings.sponsorText" id="sponsorText">sponsorText</div>
+    </div>
 
     <!-- Tabs -->
     <table width="100%" id="tab_selector" class="tab">
@@ -493,7 +498,7 @@
           <tr>
             <td class="settings_row_name"><label for="freeThreshold" data-i18n="settings.global.freeThreshold">global.freeThreshold</label>:</td>
             <td class="settings_row_input"><input id="freeThreshold" type="number" min="0" max="100" value="100" onchange="displaySaveHint()">% 
-            <div class="hintButton" onclick="toggle(this,'freeThresholdHint');checkEasterEgg();return false;">i</div></td>
+            <div class="hintButton" onclick="toggle(this,'freeThresholdHint');return false;">i</div></td>
           </tr>
         </table>
         <p id="freeThresholdHint" class="hint" data-i18n="settings.global.freeThresholdHint">global.freeThresholdHint</p>
@@ -501,10 +506,17 @@
         <table class="settings_table">
           <tr>
             <td class="settings_row_name"><label data-i18n="settings.global.carCharger">global.carCharger</label>:</td>
-            <td class="settings_row_input"><div class="hintButton" onclick="toggle(this,'carChargerHint');checkEasterEgg();return false;">i</div></td>
+            <td class="settings_row_input"><div class="hintButton" onclick="toggle(this,'carChargerHint');return false;">i</div></td>
           </tr>
         </table>
         <p id="carChargerHint" class="hint" data-i18n="settings.global.carChargerHint">global.carChargerHint</p>
+        <table class="settings_table">
+          <tr>
+            <td class="settings_row_name"><label data-i18n="settings.global.sponsorInfo">global.sponsorInfo</label>:</td>
+            <td class="settings_row_input"><div class="hintButton" onclick="toggle(this,'sponsorInfoHint');return false;">i</div></td>
+          </tr>
+        </table>
+        <p id="sponsorInfoHint" class="hint" data-i18n="settings.global.sponsorInfoHint">global.sponsorInfoHint</p>
         <a id="showlog" style="display:none" href="#ShowLog" data-i18n="settings.log.show" onclick="changeTab(event, 'logPage');return false;">log.show</a>
       </fieldset>
       <fieldset>
@@ -734,10 +746,11 @@
       var zoneListLoaded = false;
       var mainFuseLoaded = false;
       var futurePriceOptionsLoaded = false;
+      var onHomeyReadyCompleted = false;
 
       // Called whenever things has been loaded
       function checkLoadingDone() {
-        var loadElement = document.getElementById("loadingText");
+        var loadElement = document.getElementById("loadingPage");
         if (maxPowerListLoaded
           && deviceListLoaded
           && modeListLoaded
@@ -751,7 +764,8 @@
           && frostListLoaded
           && zoneListLoaded
           && mainFuseLoaded
-          && futurePriceOptionsLoaded) {
+          && futurePriceOptionsLoaded
+          && onHomeyReadyCompleted) {
           // Update device enable list:
           generateEnableList('highPriDevices', 1);
           generateEnableList('lowPriDevices', 0);
@@ -781,6 +795,10 @@
 
       // a method named 'onHomeyReady' must be present in your code
       function onHomeyReady(Homey) {
+
+        // Tell Homey we're ready to be displayed
+        Homey.ready();
+
         var saveElement = document.getElementById("save");
         var operatingModeElement = document.getElementById("operatingMode");
         var errorMarginElement = document.getElementById("errorMargin");
@@ -1066,8 +1084,10 @@
           });
         });
 
-        // Tell Homey we're ready to be displayed
-        Homey.ready();
+        setTimeout(function () {
+          onHomeyReadyCompleted = true;
+          checkLoadingDone();
+        }, 4 * 1000);
       }
 
       function refreshPriceActionList() {
