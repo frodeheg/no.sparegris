@@ -401,10 +401,12 @@
         "button.reset_stats": {
           "maintenanceAction": true,
           "title": {
-            "en": "Reset Statistics"
+            "en": "Reset Statistics",
+            "no": "Nullstill statistikk"
           },
           "desc": {
-            "en": "Reset the Statistics."
+            "en": "Reset the Statistics.",
+            "no": "Nullstiller statistikken."
           }
         },
         "piggy_money.savings_all_time_use": {
@@ -635,15 +637,15 @@
             "no": "Oppdateringshastighet"
           },
           "value": 60,
-          "min": 5,
+          "min": 10,
           "max": 60,
           "units": {
             "en": "seconds",
             "no": "sekunder"
           },
           "hint": {
-            "en": "Number of seconds between every time to fetch fresh data from the app.",
-            "no": "Antall sekunder mellom hver gang det skal hentes oppdaterte tall fra appen."
+            "en": "Number of seconds between every time to fetch fresh data from the app. It is not reccomended to go much below 15 as it may affect homey performance.",
+            "no": "Antall sekunder mellom hver gang det skal hentes oppdaterte tall fra appen. Det er ikke anbefalt å gå mye under 15 ettersom ytelsen til homey vil bli påvirket."
           }
         },
         {
