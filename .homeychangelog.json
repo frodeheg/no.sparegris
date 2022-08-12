@@ -214,5 +214,8 @@
   },
   "0.8.11": {
     "en": "Some translation fixes + Increased minimum device poll time to avoid bad performance. + Added info about funding and sponsoring"
+  },
+  "0.8.12": {
+    "en": "Moved the app tagline from the readme to the description and cleaned up the readme-files a little"
   }
 }
