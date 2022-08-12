@@ -19,8 +19,8 @@
     "no": "Sparegris"
   },
   "description": {
-    "en": "Limit the power tariff, move electricity consumption and save money",
-    "no": "Begrens effekttariffen, flytt strømforbruket og spar penger"
+    "en": "Save money by moving electricity consumption within the desired power tariff",
+    "no": "Spar penger ved å flytte strømforbruket innenfor ønsket effekttariff"
   },
   "category": [
     "energy",
