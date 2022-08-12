@@ -1,5 +1,3 @@
-Limit the power tariff, move electricity consumption and save money.
-
 The main purpose of this app is to limit the maximum electricity usage per hour so you don't breach your desired power tariff in Norway. Among other features, you may also use it as a price and situation-dependent heating controller or car charger controller.
 Please contact the developer if you want support added for other countries.
 
@@ -16,11 +14,6 @@ Instructions:
 - Save over 1000 NOK a year on the power tariff. (in Norway)
 - Experiment with the settings and flows and follow the recommendations below to get the most out of the app.
 - Install the piggy bank insights device if you're interested in statistics (this is optional)
-
-Important:
-- All devices controlled by the app should not be switched on by other flows, otherwise, conflicts will arise and the target value for the power tariff may fail.
-- In case a flow informs the app about the current price point then the temperature should not be changed by other sources too.
-- Other things such as brightness, max wattage, etc. can be controlled outside the app.
 
 Recommendations:
 - Use flows to change between normal / night mode at relevant times.

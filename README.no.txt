@@ -1,5 +1,3 @@
-Begrens effekttariffen, flytt strømforbruket og spar penger.
-
 Hovedmålet med denne appen er å begrense maksimalt strømforbruk per time slik at man holder seg innenfor ønsket effekttariff i Norge. Forøvrig kan man også bruke appen som en pris og situasjonsavhengig kontroller for oppvarming og/eller lading av bil.
 Det gjøres oppmerksom på at appen fortsatt er under utvikling så det blir satt pris på om enhver feil blir meldt ifra i forumet så det kan utbedres så snart som mulig.
 
@@ -16,11 +14,6 @@ Bruksanvisning:
 - Spar over 1000 kroner i året på effekttariffen.
 - Eksperimenter med innstillingene og flytkort i henhold til anbefalingene under for å få mest mulig ut av appen.
 - Installer enheten "sparegris innsikt" dersom du er interessert  i statistikk (ikke påkrevd)
-
-Viktig:
-- Alle enheter som kontrolleres av appen må ikke slås på av andre kilder, ellers oppstår konflikter og målverdi for effekttariff kan feile.
-- Dersom flytkort for prispunkt benyttes bør heller ikke temperatur endres av andre kilder.
-- Øvrige ting som lysstyrke, max wattstyrke etc. kan styres utenfor appen.
 
 Anbefalinger:
 - Sett opp flytkort for å endre mellom modus normal/natt/etc. på relevante tidspunkt.
