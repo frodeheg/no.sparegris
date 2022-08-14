@@ -12,6 +12,10 @@ TODO list:
 * Use the devices default setpoint temperatures when creating the device list for the first time. Water heaters get way too low temp as default.
 * Add number of cheap/expensive/normal hours to the device capability list
 * Add calculation of what is best, higher tariff or money saved by moving electricity between price points
-* Old capabilities doesn't seem to be deleted from the statistics section when they are deleted, need to manually delete the legacy capabilities from the statistics section as well.
 * Remove public API for refreshing devices. Use settings instead.
-* Find out if the public-variable for API's can be used to expose an api to the høiax app.
+* Check if webhooks can be used for inter-app comunication when permissions has not been set up. (need a way to communicate with the
+  høiax app without adding permissions as this will result in some users not getting automatic updates any more).
+
+=== ISSUES I DO NOT KNOW ANY WAY TO RESOLVE ===
+* Old capabilities are not deleted from the statistics section (insights) when they are deleted, and the homey web api does not give the app
+  permission to delete it. Thus the only way to delete deprecated statistics is to manually do this with the web api playground or by deleting the device and reinstalling it. I do not know why Athom is this restrictive but I am sorry I cannot clean up the mess.
