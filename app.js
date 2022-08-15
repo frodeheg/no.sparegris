@@ -1501,6 +1501,7 @@ class PiggyBank extends Homey.App {
       current_price: this.__current_prices[this.__current_price_index],
       low_price_limit: this.__low_price_limit,
       high_price_limit: this.__high_price_limit,
+      extreme_price_limit: this.__extreme_price_limit,
       savings_yesterday: this.__stats_savings_yesterday,
       savings_all_time_use: this.__stats_savings_all_time_use,
       savings_all_time_power_part: this.__stats_savings_all_time_power_part

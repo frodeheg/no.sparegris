@@ -124,6 +124,9 @@ class MyDevice extends Device {
       if (this.hasCapability('piggy_money.high_price_limit') === false) {
         this.addCapability('piggy_money.high_price_limit');
       }
+      if (this.hasCapability('piggy_money.extreme_price_limit') === false) {
+        this.addCapability('piggy_money.extreme_price_limit');
+      }
     } else if (settings['extendedCap'] === false) {
       if (this.hasCapability('meter_power.low_energy_avg') === true) {
         this.removeCapability('meter_power.low_energy_avg');
@@ -148,6 +151,9 @@ class MyDevice extends Device {
       }
       if (this.hasCapability('piggy_money.high_price_limit') === true) {
         this.removeCapability('piggy_money.high_price_limit');
+      }
+      if (this.hasCapability('piggy_money.extreme_price_limit') === true) {
+        this.removeCapability('piggy_money.extreme_price_limit');
       }
     }
 
@@ -348,6 +354,9 @@ class MyDevice extends Device {
       }
       if (this.hasCapability('piggy_money.high_price_limit') === true && piggyState.high_price_limit) {
         this.setCapabilityValue('piggy_money.high_price_limit', piggyState.high_price_limit);
+      }
+      if (this.hasCapability('piggy_money.extreme_price_limit') === true && piggyState.extreme_price_limit) {
+        this.setCapabilityValue('piggy_money.extreme_price_limit', piggyState.extreme_price_limit);
       }
 
       // Other things to report:

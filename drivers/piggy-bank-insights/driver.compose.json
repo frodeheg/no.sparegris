@@ -91,7 +91,7 @@
     },
     "piggy_money.low_price_limit": {
       "title": {
-        "en": "Low price limit",
+        "en": "Limit for low prices",
         "no": "Grense for lav pris"
       },
       "decimals": 5,
@@ -102,8 +102,19 @@
     },
     "piggy_money.high_price_limit": {
       "title": {
-        "en": "High price limit",
+        "en": "Limit for high prices",
         "no": "Grense for høy pris"
+      },
+      "decimals": 5,
+      "units": {
+        "en": "NOK/kWh",
+        "no": "kr/kWh"
+      }
+    },
+    "piggy_money.extreme_price_limit": {
+      "title": {
+        "en": "Limit for extremely high prices",
+        "no": "Grense for ekstrempriser"
       },
       "decimals": 5,
       "units": {
