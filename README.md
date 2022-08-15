@@ -4,9 +4,10 @@ https://homey.app/no-no/app/no.sparegris/PiggyBank/
 Save money by controling when to use electricity
 
 New features I want input from others before I do anything:
-* Should I add a timer that prevents signalling that we are out of power within the x first minutes of every hour? (where x is set in the settings)
-* Should I add a new controller option that leaves devices in the state they are with the only option to turn them off in the event the app does not have any other devices to turn off to get below the power limit? (or is it sufficient that this can be done outside of the app with a flow right now?)
-* Should I add an action when the power tariff is once again within reach after a manual powerdown has been signaled?
+* Do you want an output signal when the power tariff is once again within reach after a manual powerdown has been signaled?
+* Do you want an output signal for the current price point if internal price points are used.
+* Do you want a condition that prevents signalling that we are out of power before at least x% of the power tariff has been used? (where x is set in the settings)
+* Do you want a new controller option that leaves devices in the state they are with the only option to turn them off in the event the app does not have any other devices to turn off to get below the power limit? (or is it sufficient that this can be done outside of the app with a flow right now?)
 
 TODO list:
 * Improve power-usage calculation over the time the app is restarted / inactive.
