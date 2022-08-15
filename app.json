@@ -206,8 +206,8 @@
           "no": "Endre Sparegris Prispunkt"
         },
         "titleFormatted": {
-          "en": "Set the Piggy Bank price point to [[mode]]",
-          "no": "Sett Sparegris prispunkt til [[mode]]"
+          "en": "Set the Piggy Bank price point to [[mode]] price",
+          "no": "Sett Sparegris prispunkt til [[mode]] pris"
         },
         "hint": {
           "en": "Inform Piggy Bank whether the price on electricity is high or low",
@@ -221,22 +221,29 @@
               {
                 "id": "0",
                 "label": {
-                  "en": "Low price",
-                  "no": "Lav pris"
+                  "en": "Low",
+                  "no": "Lav"
                 }
               },
               {
                 "id": "1",
                 "label": {
-                  "en": "Normal price",
-                  "no": "Normal pris"
+                  "en": "Normal",
+                  "no": "Normal"
                 }
               },
               {
                 "id": "2",
                 "label": {
-                  "en": "High price",
-                  "no": "Høy pris"
+                  "en": "High",
+                  "no": "Høy"
+                }
+              },
+              {
+                "id": "3",
+                "label": {
+                  "en": "Extremely high",
+                  "no": "Ekstremt høy"
                 }
               }
             ]
