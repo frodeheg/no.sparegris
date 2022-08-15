@@ -1122,6 +1122,9 @@
 
       function refreshPriceActionList() {
         for (var tabPage = 0; tabPage < 4; tabPage++) {
+          if (priceActionList[tabPage] === undefined) {
+            priceActionList[tabPage] = {};
+          }
           // Remove devices that are no longer in use.
           for (var deviceId in priceActionList[tabPage]) {
             if (!deviceList[deviceId].use) {
