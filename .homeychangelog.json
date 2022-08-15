@@ -223,5 +223,8 @@
   },
   "0.8.14": {
     "en": "Security fix: Moved devicelist refresh from web api into settings to avoid other apps from calling it. + Added public api for other apps to check for the presence of this app."
+  },
+  "0.8.15": {
+    "en": "Added price point extreme for extremely high prices"
   }
 }
