@@ -199,6 +199,7 @@ class PiggyBank extends Homey.App {
       if (!this.app_is_configured) return Promise.reject(new Error(this.homey.__('warnings.notConfigured')));
       if (+this.homey.settings.get('operatingMode') === MODE_DISABLED) return Promise.reject(new Error(this.homey.__('warnings.notEnabled')));
       if (+this.homey.settings.get('priceMode') === 1) return Promise.reject(new Error(this.homey.__('warnings.internalPP')));
+      if (+args.mode === PP_EXTREME && this.homey.settings.get('priceActionList').length === 3) return Promise.reject(new Error(this.homey.__('warnings.notConfigured'))); // Added in version 0.8.15
       return this.onPricePointUpdate(args.mode);
     });
     const cardActionSafetyPowerUpdate = this.homey.flow.getActionCard('change-piggy-bank-safety-power');
@@ -1614,7 +1615,7 @@ class PiggyBank extends Homey.App {
       || !Number.isInteger(+futurePriceOptions.minCheapTime)
       || !Number.isInteger(+futurePriceOptions.minExpensiveTime)
       || !Number.isInteger(+futurePriceOptions.lowPriceModifier)
-      || !Number.isInteger(+futurePriceOptions.highPriceModifier)) {
+      || !Number.isInteger(+futurePriceOptions.highPriceModifier)) { // Do not check for extremePriceModifier because it was added later and may be missing
       return Promise.reject(new Error(this.homey.__('warnings.notConfigured')));
     }
     const hoursInInterval = +futurePriceOptions.averageTime * 24;
@@ -1646,7 +1647,7 @@ class PiggyBank extends Homey.App {
     // Trigger new Price points
     const isLowPrice = (this.__current_prices[this.__current_price_index] < this.__low_price_limit);
     const isHighPrice = (this.__current_prices[this.__current_price_index] > this.__high_price_limit);
-    const isExtremePrice = (this.__current_prices[this.__current_price_index] > this.__extreme_price_limit);
+    const isExtremePrice = (this.__current_prices[this.__current_price_index] > this.__extreme_price_limit) && Number.isInteger(+futurePriceOptions.extremePriceModifier);
     const mode = isLowPrice ? PP_LOW
       : isExtremePrice ? PP_EXTREME
         : isHighPrice ? PP_HIGH
