@@ -225,21 +225,29 @@ class PiggyBank extends Homey.App {
     });
 
     this.homey.settings.on('set', setting => {
-      const doRefresh = this.homey.settings.get('settingsSaved');
-      if ((setting === 'settingsSaved') && (doRefresh === 'true')) {
-        this.updateLog('Settings saved, refreshing all devices.', LOG_INFO);
-        this.app_is_configured = this.validateSettings();
-        if (!this.app_is_configured) {
-          throw (new Error('This should never happen, please contact the developer and the bug will be fixed'));
+      if (setting === 'deviceListRefresh') {
+        const doRefresh = this.homey.settings.get('deviceListRefresh');
+        if (doRefresh === 'true') {
+          this.createDeviceList();
+          this.homey.settings.set('deviceListRefresh', 'done');
         }
+      } else if (setting === 'settingsSaved') {
+        const doRefresh = this.homey.settings.get('settingsSaved');
+        if (doRefresh === 'true') {
+          this.updateLog('Settings saved, refreshing all devices.', LOG_INFO);
+          this.app_is_configured = this.validateSettings();
+          if (!this.app_is_configured) {
+            throw (new Error('This should never happen, please contact the developer and the bug will be fixed'));
+          }
 
-        const currentMode = +this.homey.settings.get('operatingMode');
-        if (!preventZigbee && currentMode !== MODE_DISABLED) {
-          this.refreshAllDevices();
+          const currentMode = +this.homey.settings.get('operatingMode');
+          if (!preventZigbee && currentMode !== MODE_DISABLED) {
+            this.refreshAllDevices();
+          }
+          this.homey.settings.set('settingsSaved', '');
+          // The callback only returns on error so notify success with failure
+          throw (new Error(this.homey.__('settings.alert.settingssaved')));
         }
-        this.homey.settings.set('settingsSaved', '');
-        // The callback only returns on error so notify success with failure
-        throw (new Error(this.homey.__('settings.alert.settingssaved')));
       }
     });
 

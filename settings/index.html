@@ -843,15 +843,26 @@
         }
 
 
-        Homey.api("GET", "/requestDeviceListRefresh", {}, function(err, result) {
-            if (err) return Homey.alert(err);
-            Homey.get("deviceList", function (err, myDevices) {
-            if (err) return Homey.alert(err);
-              deviceList = myDevices;
-              deviceListLoaded = true;
-              checkLoadingDone();
-            })
-          });
+        // When done refreshing device list then refresh screen
+        Homey.on('settings.set', function (setting) {
+          if (setting === 'deviceListRefresh') {
+            Homey.get('deviceListRefresh', function (err, refreshDone) {
+              if (err) Homey.alert(err);
+              if (refreshDone === 'done') {
+                Homey.get("deviceList", function (err, myDevices) {
+                  if (err) return Homey.alert(err);
+                    deviceList = myDevices;
+                    deviceListLoaded = true;
+                    checkLoadingDone();
+                  })
+              }
+            });
+          }
+        });
+        // Request devicelist refresh
+        Homey.set("deviceListRefresh", 'true', function (err) {
+          //if (err) return Homey.alert(err);
+        });
 
         Homey.get("modeList", function (err, myModeList) {
           if (err) return Homey.alert(err);
