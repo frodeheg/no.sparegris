@@ -226,5 +226,8 @@
   },
   "0.8.15": {
     "en": "Added price point extreme for extremely high prices"
+  },
+  "0.8.16": {
+    "en": "Made sure that the new extreme price point cannot be entered unless it has been configured"
   }
 }
