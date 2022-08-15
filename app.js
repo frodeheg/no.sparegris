@@ -85,7 +85,7 @@ class PiggyBank extends Homey.App {
       const modeList = this.homey.settings.get('modeList');
       const actionList = this.homey.settings.get('priceActionList');
       if (modeList.length !== 4
-        || actionList.length !== 3) return false;
+        || actionList.length < 3) return false; // Do not complain about actionList missing for extremely high prices as this could cause older versions of the app to fail
       if (modeList[0].length !== numControlledDevices
         || modeList[1].length !== numControlledDevices
         || modeList[2].length !== numControlledDevices
