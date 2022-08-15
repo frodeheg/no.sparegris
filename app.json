@@ -395,6 +395,7 @@
         "piggy_price_low",
         "piggy_price_normal",
         "piggy_price_expensive",
+        "piggy_price_extreme",
         "measure_power.reserved_power",
         "piggy_devices_on"
       ],
@@ -596,6 +597,17 @@
           "title": {
             "en": "Average Power for expensive price hours",
             "no": "Snitt Energibruk for dyre timer"
+          },
+          "approximated": true
+        },
+        "meter_power.extreme_energy_avg": {
+          "units": {
+            "en": "Wh",
+            "no": "Wh"
+          },
+          "title": {
+            "en": "Average Power for extremely expensive price hours",
+            "no": "Snitt Energibruk for ekstremt dyre timer"
           },
           "approximated": true
         }
@@ -956,6 +968,13 @@
             "en": "Expensive",
             "no": "Dyrt"
           }
+        },
+        {
+          "id": "3",
+          "title": {
+            "en": "Extremely expensive",
+            "no": "Ekstremt dyrt"
+          }
         }
       ],
       "icon": "/assets/price.svg",
@@ -980,6 +999,26 @@
       "insightsTitleFalse": {
         "en": "Price Point changed to expensive",
         "no": "Prispunkt endret til dyrt"
+      }
+    },
+    "piggy_price_extreme": {
+      "type": "boolean",
+      "title": {
+        "en": "Price Point",
+        "no": "Prispunkt"
+      },
+      "getable": true,
+      "setable": false,
+      "uiComponent": null,
+      "uiQuickAction": false,
+      "insightsTitleTrue": {
+        "en": "Price Point changed to extremely expensive",
+        "no": "Prispunkt endret til ekstremt dyrt"
+      },
+      "insights": true,
+      "insightsTitleFalse": {
+        "en": "Price Point changed to extremely expensive",
+        "no": "Prispunkt endret til ekstremt dyrt"
       }
     },
     "piggy_price_low": {
