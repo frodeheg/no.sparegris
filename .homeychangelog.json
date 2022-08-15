@@ -220,5 +220,8 @@
   },
   "0.8.13": {
     "en": "Updated the tagline to be more catchy"
+  },
+  "0.8.14": {
+    "en": "Security fix: Moved devicelist refresh from web api into settings to avoid other apps from calling it. + Added public api for other apps to check for the presence of this app."
   }
 }
