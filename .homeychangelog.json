@@ -232,5 +232,8 @@
   },
   "0.8.17": {
     "en": "Updated the action change-piggy-bank-price-point to support the new extremely high price point"
+  },
+  "0.8.18": {
+    "en": "Fixed a bug where the configuration validation failed to validate due to the new price point for extremely high prices"
   }
 }
