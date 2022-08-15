@@ -63,6 +63,11 @@
     "requestDeviceListRefresh": {
       "method": "GET",
       "path": "/requestDeviceListRefresh"
+    },
+    "getVersion": {
+      "method": "GET",
+      "path": "/getVersion",
+      "public": true
     }
   }
 }
