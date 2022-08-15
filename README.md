@@ -12,9 +12,6 @@ TODO list:
 * Use the devices default setpoint temperatures when creating the device list for the first time. Water heaters get way too low temp as default.
 * Add number of cheap/expensive/normal hours to the device capability list
 * Add calculation of what is best, higher tariff or money saved by moving electricity between price points
-* Remove public API for refreshing devices. Use settings instead.
-* Check if webhooks can be used for inter-app comunication when permissions has not been set up. (need a way to communicate with the
-  høiax app without adding permissions as this will result in some users not getting automatic updates any more).
 
 === ISSUES I DO NOT KNOW ANY WAY TO RESOLVE ===
 * Old capabilities are not deleted from the statistics section (insights) when they are deleted, and the homey web api does not give the app
