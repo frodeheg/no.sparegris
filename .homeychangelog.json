@@ -229,5 +229,8 @@
   },
   "0.8.16": {
     "en": "Made sure that the new extreme price point cannot be entered unless it has been configured"
+  },
+  "0.8.17": {
+    "en": "Updated the action change-piggy-bank-price-point to support the new extremely high price point"
   }
 }
