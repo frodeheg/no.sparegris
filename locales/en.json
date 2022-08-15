@@ -18,7 +18,8 @@
     "pricetab": {
       "cheap": "Cheap",
       "normal": "Normal",
-      "expensive": "Expensive"
+      "expensive": "Expensive",
+      "extreme": "Extreme"
     },
     "opMode": {
       "disabled": "App Disabled",
@@ -85,6 +86,7 @@
       },
       "actionLow": "Actions when price is low",
       "actionHigh": "Actions when price is high",
+      "actionExtreme": "Actions when price is extremely high",
       "actionNormal": "Actions when price is normal",
       "priceHint1": "The Mode allows you to choose whether to feed the app with manually crafted price points or if the price points should be set automatically. If neither is used then the app will only control max power.",
       "priceErr1": "Note! You have to install the app no.almli.utilitycost in order to use the internal price control. The prices are fetched seamlessly, flow cards are not necessary.",
@@ -104,6 +106,8 @@
         "lowPriceModifierHint": "If the current hourly price falls x% below the basis for price comparison, the price point is always set to Low",
         "highPriceModifier": "Limit for expensive price",
         "highPriceModifierHint": "If the current hourly price is x% above the basis for price comparison, the price point is always set to High",
+        "extremePriceModifier": "Limit for extreme prices",
+        "extremePriceModifierHint": "If the current hourly price is x% above the basis for price comparison, the price point is always set to Extremely High",
         "averageTime": "Basis for price comparison",
         "averageTimeHint": "Whether a price is expensive or cheap is determined by seeing if it is x% above/below the average price in the specified interval.",
         "day0": "Average price today",

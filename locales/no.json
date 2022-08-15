@@ -18,7 +18,8 @@
     "pricetab": {
       "cheap": "Billig",
       "normal": "Normal",
-      "expensive": "Dyrt"
+      "expensive": "Dyrt",
+      "extreme": "Ekstremt"
     },
     "opMode": {
       "disabled": "Deaktivert",
@@ -85,6 +86,7 @@
       },
       "actionLow": "Handling når strømprisen blir lav",
       "actionHigh": "Handling når strømprisen blir høy",
+      "actionExtreme": "Handling når strømprisen blir ekstremt høy",
       "actionNormal": "Handling når strømprisen blir normal",
       "priceHint1": "Modus lar deg velge om du skal fore appen med prispunkt manuelt via flows eller om det skal gjøres automatisk. Dersom ingen av delene benyttes vil appen bare styre maks effekt.",
       "priceErr1": "NB! Du må installere appen no.almli.utilitycost for å bruke den interne priskontrollen. Strømprisen hentes sømløst uten å benytte flytkort.",
@@ -101,9 +103,11 @@
         "minExpensiveTime": "Minimum antall dyre timer",
         "minExpensiveTimeHint": "Uavhengig av faktisk pris kan du kreve at de x dyreste timene i døgnet alltid skal sette prispunkt til dyrt.",
         "lowPriceModifier": "Grense for lav pris",
-        "lowPriceModifierHint": "Dersom den gjeldende timeprisen faller x% under grunnlaget for prissammenligning blir prispunkt alltid satt til Lavt",
+        "lowPriceModifierHint": "Dersom den gjeldende timeprisen faller x% under grunnlaget for prissammenligning blir prispunkt alltid satt til billig",
         "highPriceModifier": "Grense for dyr pris",
-        "highPriceModifierHint": "Dersom den gjeldende timeprisen kommer x% over grunnlaget for prissammenligning blir prispunkt alltid satt til Høyt",
+        "highPriceModifierHint": "Dersom den gjeldende timeprisen kommer x% over grunnlaget for prissammenligning blir prispunkt alltid satt til dyrt",
+        "extremePriceModifier": "Grense for ekstremt dyr pris",
+        "extremePriceModifierHint": "Dersom den gjeldende timeprisen kommer x% over grunnlaget for prissammenligning blir prispunkt alltid satt til ekstremt dyrt",
         "averageTime": "Grunnlag for prissammenligning",
         "averageTimeHint": "Om en pris er dyr eller billig avgjøres ved å se om den er x% over/under snittprisen i det angitte intervallet.",
         "day0": "Snittpris i dag",

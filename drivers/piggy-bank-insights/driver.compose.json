@@ -22,6 +22,7 @@
     "piggy_price_low",
     "piggy_price_normal",
     "piggy_price_expensive",
+    "piggy_price_extreme",
     "measure_power.reserved_power",
     "piggy_devices_on"
   ],
@@ -223,6 +224,17 @@
       "title": {
         "en": "Average Power for expensive price hours",
         "no": "Snitt Energibruk for dyre timer"
+      },
+      "approximated": true
+    },
+    "meter_power.extreme_energy_avg": {
+      "units": {
+        "en": "Wh",
+        "no": "Wh"
+      },
+      "title": {
+        "en": "Average Power for extremely expensive price hours",
+        "no": "Snitt Energibruk for ekstremt dyre timer"
       },
       "approximated": true
     }

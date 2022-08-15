@@ -46,6 +46,7 @@ const DELTA_TEMP = 2;
 const PP_LOW = 0;
 const PP_NORM = 1;
 const PP_HIGH = 2;
+const PP_EXTREME = 3;
 
 // Modes
 const MODE_DISABLED = 0;
@@ -1267,6 +1268,10 @@ class PiggyBank extends Homey.App {
             this.__stats_high_energy = (!this.__stats_high_energy) ? this.__stats_energy : ((+this.__stats_high_energy * 99 + this.__stats_energy) / 100);
             this.homey.settings.set('stats_high_energy', this.__stats_high_energy);
             break;
+          case PP_EXTREME:
+            this.__stats_extreme_energy = (!this.__stats_extreme_energy) ? this.__stats_energy : ((+this.__stats_extreme_energy * 99 + this.__stats_energy) / 100);
+            this.homey.settings.set('stats_extreme_energy', this.__stats_extreme_energy);
+            break;
           default:
         }
       }
@@ -1485,6 +1490,7 @@ class PiggyBank extends Homey.App {
       low_price_energy_avg: this.__stats_low_energy,
       norm_price_energy_avg: this.__stats_norm_energy,
       high_price_energy_avg: this.__stats_high_energy,
+      extreme_price_energy_avg: this.__stats_extreme_energy,
       power_yesterday: this.__stats_last_day_max,
       power_average: this.__stats_this_month_average,
       power_last_month: this.__stats_last_month_max,
@@ -1628,6 +1634,7 @@ class PiggyBank extends Homey.App {
     // Calculate min/max limits
     this.__low_price_limit = averagePrice * (+futurePriceOptions.lowPriceModifier / 100 + 1);
     this.__high_price_limit = averagePrice * (+futurePriceOptions.highPriceModifier / 100 + 1);
+    this.__extreme_price_limit = averagePrice * (+futurePriceOptions.extremePriceModifier / 100 + 1);
 
     // If min/max limit does not encompas enough hours, change the limits
     const orderedPriceTable = [...this.__current_prices].sort();
@@ -1639,7 +1646,11 @@ class PiggyBank extends Homey.App {
     // Trigger new Price points
     const isLowPrice = (this.__current_prices[this.__current_price_index] < this.__low_price_limit);
     const isHighPrice = (this.__current_prices[this.__current_price_index] > this.__high_price_limit);
-    const mode = isLowPrice ? PP_LOW : isHighPrice ? PP_HIGH : PP_NORM;
+    const isExtremePrice = (this.__current_prices[this.__current_price_index] > this.__extreme_price_limit);
+    const mode = isLowPrice ? PP_LOW
+      : isExtremePrice ? PP_EXTREME
+        : isHighPrice ? PP_HIGH
+          : PP_NORM;
     if (!preventZigbee) {
       return this.onPricePointUpdate(mode);
     }

@@ -27,6 +27,13 @@
           "en": "Expensive",
           "no": "Dyrt"
         }
+      },
+      {
+        "id": "3",
+        "title": {
+          "en": "Extremely expensive",
+          "no": "Ekstremt dyrt"
+        }
       }
     ],
     "icon": "/assets/price.svg",

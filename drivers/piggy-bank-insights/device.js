@@ -18,9 +18,33 @@ class MyDevice extends Device {
     const settings = this.getSettings();
     this.setPollIntervalTime(settings['refreshRate']);
     this.intervalID = setTimeout(() => this.updateState(), this.__pollIntervalTime);
+    // this.deviceId = await this.getDeviceId();
     this.updateCapabilities(settings);
     this.homey.app.updateLog('MyDevice has been initialized', 1);
   }
+
+  /**
+   * Incredible complicated function to get the DeviceId.
+   * There has to be a simpler way????
+   */
+  /* async getDeviceId() {
+    const deviceInternalId = this.getData().id;
+    const deviceDriverId = this.driver.id;
+    const deviceAppId = this.homey.app.id;
+    // Find deviceId
+    const allDevices = await this.homey.app.homeyApi.devices.getDevices();
+    return new Promise(resolve => {
+      // eslint-disable-next-line no-restricted-syntax
+      for (const devId in allDevices) {
+        if (allDevices[devId].data.id === deviceInternalId
+          && allDevices[devId].driverUri === `homey:app:${deviceAppId}`
+          && allDevices[devId].driverId === deviceDriverId) {
+          resolve(allDevices[devId].id);
+        }
+      }
+      resolve(undefined);
+    });
+  } */
 
   /**
    * Update which capabilities to show
@@ -41,6 +65,15 @@ class MyDevice extends Device {
     if (this.hasCapability('piggy_money.acceptable_price') === true) {
       this.removeCapability('piggy_money.acceptable_price');
     }
+
+    // Added capabilities in version 0.8.15
+    if (this.hasCapability('piggy_price_extreme') === false) {
+      this.addCapability('piggy_price_extreme');
+    }
+    // === Athom seem to have disabled permission for apps to delete logs even for their own devices ===
+    // if (this.homey.app.homeyApi.insights.getLog({ uri: `homey:device:${this.deviceId}`, id: 'piggy_money.acceptable_price' })) {
+    //   this.homey.app.homeyApi.insights.deleteLog({ uri: `homey:device:${this.deviceId}`, id: 'piggy_money.acceptable_price' });
+    // }
 
     // New experimental capabilities
     if (settings['experimentalCap'] === true) {
@@ -76,6 +109,9 @@ class MyDevice extends Device {
       if (this.hasCapability('meter_power.high_energy_avg') === false) {
         this.addCapability('meter_power.high_energy_avg');
       }
+      if (this.hasCapability('meter_power.extreme_energy_avg') === false) {
+        this.addCapability('meter_power.extreme_energy_avg');
+      }
       if (this.hasCapability('piggy_money.average_price') === false) {
         this.addCapability('piggy_money.average_price');
       }
@@ -97,6 +133,9 @@ class MyDevice extends Device {
       }
       if (this.hasCapability('meter_power.high_energy_avg') === true) {
         this.removeCapability('meter_power.high_energy_avg');
+      }
+      if (this.hasCapability('meter_power.extreme_energy_avg') === true) {
+        this.removeCapability('meter_power.extreme_energy_avg');
       }
       if (this.hasCapability('piggy_money.average_price') === true) {
         this.removeCapability('piggy_money.average_price');
@@ -231,6 +270,7 @@ class MyDevice extends Device {
           case 0: this.toggleCapability('piggy_price_low'); break;
           case 1: this.toggleCapability('piggy_price_normal'); break;
           case 2: this.toggleCapability('piggy_price_expensive'); break;
+          case 3: this.toggleCapability('piggy_price_extreme'); break;
           default: /* Broken input should not happen */ break;
         }
       }
@@ -293,6 +333,9 @@ class MyDevice extends Device {
       }
       if (this.hasCapability('meter_power.high_energy_avg') === true && piggyState.high_price_energy_avg) {
         this.setCapabilityValue('meter_power.high_energy_avg', piggyState.high_price_energy_avg);
+      }
+      if (this.hasCapability('meter_power.extreme_energy_avg') === true && piggyState.extreme_price_energy_avg) {
+        this.setCapabilityValue('meter_power.extreme_energy_avg', piggyState.extreme_price_energy_avg);
       }
       if (this.hasCapability('piggy_money.average_price') === true && piggyState.average_price) {
         this.setCapabilityValue('piggy_money.average_price', piggyState.average_price);

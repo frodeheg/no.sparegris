@@ -19,6 +19,7 @@
       var priceLowText = "settings.price.actionLow";
       var alwaysOffText = "settings.mode.alwaysOff";
       var priceHighText = "settings.price.actionHigh";
+      var priceExtremeText = "settings.price.actionExtreme";
       var deltaTempText = "settings.price.deltaTemp";
       var targetTempText = "settings.mode.targetTemp";
       var controlledText = "settings.mode.controlled";
@@ -54,7 +55,7 @@
       ]
       var frostList = {} // Indexed by deviceId
       var zoneList = {} // Indexed by zone-id
-      var priceActionList = [ {}, {}, {} ] // Indexed by deviceId
+      var priceActionList = [ {}, {}, {}, {} ] // Indexed by deviceId
       var maxPowerList = [
         2000, // Normal
         2000, // Night
@@ -83,6 +84,7 @@
         { name:"settings.pricetab.cheap", value: 0 },
         { name:"settings.pricetab.normal", value: 1 },
         { name:"settings.pricetab.expensive", value: 2 },
+        { name:"settings.pricetab.extreme", value: 3 }
       ]
 
       function generateEnableList(listName, priority) {
@@ -193,6 +195,7 @@
           case 0: legendText = priceLowText; break;
           case 1: legendText = priceNormalText; break;
           case 2: legendText = priceHighText; break;
+          case 3: legendText = priceExtremeText; break;
         }
         var priceTabText =
           '<fieldset>' +
@@ -626,6 +629,16 @@
 
           <table class="settings_table">
             <tr>
+              <td class="settings_row_name"><label for="extremePriceModifier" data-i18n="settings.price.internal.extremePriceModifier">price.internal.extremePriceModifier</label>:</td>
+              <td class="settings_row_input">
+                <input id="extremePriceModifier" data-i18n="settings.price.internal.hour1" type="number" size="10" min="100" max="1000" value="10" onchange="displaySaveHint()">%
+                <div class="hintButton" onclick="toggle(this,'extremePriceModifierHint');return false;">i</div></td>
+            </tr>
+          </table>
+          <p id="extremePriceModifierHint" class="hint" data-i18n="settings.price.internal.extremePriceModifierHint">price.internal.extremePriceModifierHint</p>
+
+          <table class="settings_table">
+            <tr>
               <td class="settings_row_name"><label for="averageTime" data-i18n="settings.price.internal.averageTime">price.internal.averageTime</label>:</td>
               <td class="settings_row_input">
                 <select id="averageTime" onchange="displaySaveHint()">
@@ -650,6 +663,8 @@
               <span data-i18n="settings.pricetab.normal">pricetab.normal</span></td>
             <td class="subtablinks" onclick="changePriceTab(event, 2)" id="subTabExpensive">
               <span data-i18n="settings.pricetab.expensive">pricetab.expensive</span></td>
+            <td class="subtablinks" onclick="changePriceTab(event, 3)" id="subTabExtreme">
+              <span data-i18n="settings.pricetab.extreme">pricetab.extreme</span></td>
           </tr>
         </table>
         <span id="priceActionList">List of devices should have been generated here, if you see this text it is a bug...</span>
@@ -788,6 +803,7 @@
           document.getElementById("minExpensiveTime").value = futurePriceOptions.minExpensiveTime;
           document.getElementById("lowPriceModifier").value = futurePriceOptions.lowPriceModifier;
           document.getElementById("highPriceModifier").value = futurePriceOptions.highPriceModifier;
+          document.getElementById("extremePriceModifier").value = futurePriceOptions.extremePriceModifier;
           document.getElementById("errp1").style.display = futurePriceOptions.ApiError ? 'inline-block' : 'none';
           checkPriceMode(document.getElementById("priceMode")); // not called automatically when programatically changed
         }
@@ -812,6 +828,7 @@
         var minExpensiveTimeElement =  document.getElementById("minExpensiveTime");
         var lowPriceModifierElement =  document.getElementById("lowPriceModifier");
         var highPriceModifierElement =  document.getElementById("highPriceModifier");
+        var extremePriceModifierElement =  document.getElementById("extremePriceModifier");
         var rememberToSaveElement = document.getElementById("rememberToSave");
 
         // Fetch translation strings from Homey
@@ -1004,6 +1021,7 @@
           if (!futurePriceOptions.hasOwnProperty("averageTime")) futurePriceOptions.averageTime = 0;
           if (!futurePriceOptions.hasOwnProperty("lowPriceModifier")) futurePriceOptions.lowPriceModifier = -10;
           if (!futurePriceOptions.hasOwnProperty("highPriceModifier")) futurePriceOptions.highPriceModifier = 10;
+          if (!futurePriceOptions.hasOwnProperty("extremePriceModifier")) futurePriceOptions.extremePriceModifier = 100;
           if (!futurePriceOptions.hasOwnProperty("ApiError")) futurePriceOptions.ApiError = true;
           if (typeof futurePriceOptions.ApiError != "boolean") futurePriceOptions.ApiError = futurePriceOptions.ApiError === "true";
           futurePriceOptionsLoaded = true;
@@ -1033,6 +1051,7 @@
               futurePriceOptions.minExpensiveTime = minExpensiveTimeElement.value;
               futurePriceOptions.lowPriceModifier = lowPriceModifierElement.value;
               futurePriceOptions.highPriceModifier = highPriceModifierElement.value;
+              futurePriceOptions.extremePriceModifier = extremePriceModifierElement.value;
               Homey.set("futurePriceOptions", futurePriceOptions, errFunc);
               Homey.set("deviceList", deviceList, errFunc);
               Homey.set("modeList", modeList, errFunc);
@@ -1102,7 +1121,7 @@
       }
 
       function refreshPriceActionList() {
-        for (var tabPage = 0; tabPage < 3; tabPage++) {
+        for (var tabPage = 0; tabPage < 4; tabPage++) {
           // Remove devices that are no longer in use.
           for (var deviceId in priceActionList[tabPage]) {
             if (!deviceList[deviceId].use) {
@@ -1110,10 +1129,22 @@
             }
           }
           // Add new devices
-          var new_delta = (tabPage == 0 ? 3 : (tabPage == 1 ? 0 : -5))
+          var new_delta = (tabPage == 0) ? 3
+            : (tabPage == 1) ?  0
+            : (tabPage == 2) ? -5
+            : -10
           for (var key in deviceList) {
             if (deviceList[key].use && !(key in priceActionList[tabPage])) {
-              priceActionList[tabPage][key] = { delta: new_delta, operation: DELTA_TEMP }
+              var new_op = DELTA_TEMP;
+              if (!deviceList[key].thermostat_cap) {
+                switch (tabPage) {
+                  case 0:
+                  case 1: new_op = TURN_ON; break;
+                  case 2:
+                  case 3: new_op = TURN_OFF; break;
+                }
+              }
+              priceActionList[tabPage][key] = { delta: new_delta, operation: new_op }
             }
           }
         }
@@ -1240,6 +1271,7 @@
         safetyPowerLoaded = true;
         mainFuseLoaded = true;
         futurePriceOptionsLoaded = true;
+        onHomeyReadyCompleted = true;
         checkLoadingDone();
       }*/
     </script>

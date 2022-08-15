@@ -1,0 +1,20 @@
+{
+  "type": "boolean",
+  "title": {
+    "en": "Price Point",
+    "no": "Prispunkt"
+  },
+  "getable": true,
+  "setable": false,
+  "uiComponent": null,
+  "uiQuickAction": false,
+  "insightsTitleTrue": {
+    "en": "Price Point changed to extremely expensive",
+    "no": "Prispunkt endret til ekstremt dyrt"
+  },
+  "insights": true,
+  "insightsTitleFalse": {
+    "en": "Price Point changed to extremely expensive",
+    "no": "Prispunkt endret til ekstremt dyrt"
+  }
+}
