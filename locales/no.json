@@ -97,6 +97,7 @@
       "deltaTemp": "Endre temp",
       "turnOn": "Slå på",
       "turnOff": "Slå av",
+      "emergencyOff": "Av hvis krise",
       "internal": {
         "minCheapTime": "Minimum antall billige timer",
         "minCheapTimeHint": "Uavhengig av faktisk pris kan du kreve at de x billigste timene i døgnet alltid skal sette prispunkt til billig.",

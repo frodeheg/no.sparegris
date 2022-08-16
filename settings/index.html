@@ -21,6 +21,7 @@
       var priceHighText = "settings.price.actionHigh";
       var priceExtremeText = "settings.price.actionExtreme";
       var deltaTempText = "settings.price.deltaTemp";
+      var emergencyOffText = "settings.price.emergencyOff";
       var targetTempText = "settings.mode.targetTemp";
       var controlledText = "settings.mode.controlled";
       var priceNormalText = "settings.price.actionNormal";
@@ -36,6 +37,7 @@
       const TURN_ON = 0;
       const TURN_OFF = 1;
       const DELTA_TEMP = 2;
+      const EMERGENCY_OFF = 3;
 
       var deviceList = {
         id_a: { name:"DeviceName 1", room: "Stue",    image: "https://as2.ftcdn.net/v2/jpg/02/49/76/93/1000_F_249769389_7su5tYXOvcjcehNCcWTwcjnHvSMkLocJ.jpg", use: true, priority: 0, thermostat_cap: true },
@@ -266,13 +268,13 @@
 
       function updatePriceAction(button, pricePoint, device_id, newstate = undefined) {
         if (newstate == undefined) {
-          newstate = (priceActionList[pricePoint][device_id].operation + 1) % 3;
+          newstate = (priceActionList[pricePoint][device_id].operation + 1) % 4;
         } else if (newstate == KEEP) {
           newstate = priceActionList[pricePoint][device_id].operation;
         }
         var device = deviceList[device_id];
         if (!device.thermostat_cap && newstate == DELTA_TEMP) {
-          newstate = TURN_ON;
+          newstate = EMERGENCY_OFF;
         }
         priceActionList[pricePoint][device_id].operation = newstate;
         var deltaTempInput =  document.getElementById('deltaTemp' + String(device_id));
@@ -291,6 +293,11 @@
             button.innerHTML=deltaTempText;
             button.style.backgroundImage = 'radial-gradient(white, rgb(150, 255, 150), green)';
             if (deltaTempInput) deltaTempInput.disabled = false;
+            break;
+          case EMERGENCY_OFF:
+            button.innerHTML=emergencyOffText;
+            button.style.backgroundImage = 'radial-gradient(white, rgb(150, 255, 150), green)';
+            if (deltaTempInput) deltaTempInput.disabled = true;
             break;
         }
       }
@@ -842,6 +849,7 @@
         alwaysOnText = Homey.__(alwaysOnText);
         priceLowText = Homey.__(priceLowText);
         deltaTempText = Homey.__(deltaTempText);
+        emergencyOffText = Homey.__(emergencyOffText);
         alwaysOffText = Homey.__(alwaysOffText);
         priceHighText = Homey.__(priceHighText);
         targetTempText = Homey.__(targetTempText);
@@ -1142,7 +1150,7 @@
               if (!deviceList[key].thermostat_cap) {
                 switch (tabPage) {
                   case 0:
-                  case 1: new_op = TURN_ON; break;
+                  case 1: new_op = EMERGENCY_OFF; break;
                   case 2:
                   case 3: new_op = TURN_OFF; break;
                 }

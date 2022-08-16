@@ -41,6 +41,7 @@ const CONTROLLED = 2;
 const TURN_ON = 0;
 const TURN_OFF = 1;
 const DELTA_TEMP = 2;
+const EMERGENCY_OFF = 3;
 
 // Price points
 const PP_LOW = 0;
@@ -439,6 +440,11 @@ class PiggyBank extends Homey.App {
       return Promise.resolve();
     }
 
+    // Do not attempt to change the device state if it is in EMERGENCY_OFF mode unless it is an EMERGENCY_OFF operation
+    if (currentActionOp === EMERGENCY_OFF && newState !== EMERGENCY_OFF) {
+      return Promise.resolve([false, false]);
+    }
+
     let device;
     try {
       device = await promiseDevice;
@@ -455,7 +461,7 @@ class PiggyBank extends Homey.App {
     const isOn = await device.capabilitiesObj[this.__deviceList[deviceId].onoff_cap].value;
     const activeZones = this.homey.settings.get('zones');
     const newStateOn = frostGuardActive
-      || (currentActionOp !== TURN_OFF
+      || (currentActionOp !== TURN_OFF && currentActionOp !== EMERGENCY_OFF
         && !this.__deviceList[deviceId].memberOf.some(z => (activeZones.hasOwnProperty(z) && !activeZones[z].enabled))
         && ((newState === TURN_ON && currentModeState !== ALWAYS_OFF) || (newState === TURN_OFF && currentModeState === ALWAYS_ON)));
 
@@ -908,21 +914,25 @@ class PiggyBank extends Homey.App {
     });
     // Turn off devices from bottom and up in the priority list
     // Only turn off one device at the time
-    let numForcedOnDevices = 0;
-    for (let idx = numDevices - 1; idx >= 0; idx--) {
-      const deviceId = reorderedModeList[idx].id;
-      // Try to turn the device off regardless, it might be blocked by the state
-      try {
-        const [success, noChange] = await this.changeDeviceState(deviceId, TURN_OFF);
-        if (success && !noChange) {
-          // Sucessfully Turned off
-          return Promise.resolve();
+    let numForcedOnDevices;
+    for (let isEmergency = 0; isEmergency < 2; isEmergency++) {
+      numForcedOnDevices = 0;
+      for (let idx = numDevices - 1; idx >= 0; idx--) {
+        const deviceId = reorderedModeList[idx].id;
+        const operation = (isEmergency === 0) ? TURN_OFF : EMERGENCY_OFF;
+        // Try to turn the device off regardless, it might be blocked by the state
+        try {
+          const [success, noChange] = await this.changeDeviceState(deviceId, operation);
+          if (success && !noChange) {
+            // Sucessfully Turned off
+            return Promise.resolve();
+          }
+          if (!success) {
+            numForcedOnDevices++;
+          }
+        } catch (err) {
+          return Promise.reject(new Error(`Unknown error: ${err}`));
         }
-        if (!success) {
-          numForcedOnDevices++;
-        }
-      } catch (err) {
-        return Promise.reject(new Error(`Unknown error: ${err}`));
       }
     }
 
@@ -1027,6 +1037,9 @@ class PiggyBank extends Homey.App {
           break;
         case DELTA_TEMP:
           promises.push(this.refreshTemp(deviceId));
+          break;
+        case EMERGENCY_OFF:
+          // Ignore the device state, it should only be turned off in case of emergency
           break;
         default:
           promises.push(Promise.reject(new Error('Invalid Action')));
