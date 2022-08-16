@@ -107,7 +107,7 @@
         "lowPriceModifierHint": "Dersom den gjeldende timeprisen faller x% under grunnlaget for prissammenligning blir prispunkt alltid satt til billig",
         "highPriceModifier": "Grense for dyr pris",
         "highPriceModifierHint": "Dersom den gjeldende timeprisen kommer x% over grunnlaget for prissammenligning blir prispunkt alltid satt til dyrt",
-        "extremePriceModifier": "Grense for ekstremt dyr pris",
+        "extremePriceModifier": "Grense for ekstrempriser",
         "extremePriceModifierHint": "Dersom den gjeldende timeprisen kommer x% over grunnlaget for prissammenligning blir prispunkt alltid satt til ekstremt dyrt",
         "averageTime": "Grunnlag for prissammenligning",
         "averageTimeHint": "Om en pris er dyr eller billig avgjøres ved å se om den er x% over/under snittprisen i det angitte intervallet.",
