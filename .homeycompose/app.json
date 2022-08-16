@@ -25,6 +25,48 @@
     "energy",
     "tools"
   ],
+  "tags": {
+    "en": [
+      "power",
+      "tariff",
+      "price",
+      "electricity",
+      "energy",
+      "regulation",
+      "save",
+      "money",
+      "charge",
+      "move",
+      "consumption",
+      "heating",
+      "heater",
+      "heat pump",
+      "control",
+      "management",
+      "oversight",
+      "guidance"
+    ],
+    "no": [
+      "effekt",
+      "tariff",
+      "pris",
+      "strøm",
+      "energi",
+      "styring",
+      "spare",
+      "penger",
+      "lade",
+      "flytte",
+      "forbruk",
+      "oppvarming",
+      "varmovn",
+      "varmepumpe",
+      "kontroll",
+      "håndtering",
+      "oversikt",
+      "guide"
+    ]
+  },
   "images": {
     "small": "/assets/images/small.png",
     "large": "/assets/images/large.png",
