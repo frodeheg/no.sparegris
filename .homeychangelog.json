@@ -238,5 +238,8 @@
   },
   "0.8.19": {
     "en": "Added capability to show the limit for extremely high prices in the insights device"
+  },
+  "0.9.0": {
+    "en": "Added Emergency off option that will only turn off devices if needed and ignore state otherwise."
   }
 }
