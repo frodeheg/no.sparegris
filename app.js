@@ -371,6 +371,7 @@ class PiggyBank extends Homey.App {
       this.updateLog(`Device: ${String(priority)} ${device.id} ${device.name} ${device.class}`, LOG_DEBUG);
       const thermostatCap = device.capabilities.includes('target_temperature')
         && device.capabilities.includes('measure_temperature');
+      const targetTemp = thermostatCap ? +device.capabilitiesObj['target_temperature'].value : 24;
       const relevantDevice = {
         priority: (priority > 0) ? 1 : 0,
         name: device.name,
@@ -380,6 +381,7 @@ class PiggyBank extends Homey.App {
         image: device.iconObj == null ? null : device.iconObj.url,
         onoff_cap: onoffCap,
         thermostat_cap: thermostatCap,
+        targetTemp,
         use: useDevice
       };
       relevantDevices[device.id] = relevantDevice;

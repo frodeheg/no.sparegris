@@ -11,7 +11,6 @@ New features I want input from others before I do anything:
 
 TODO list:
 * Improve power-usage calculation over the time the app is restarted / inactive.
-* Use the devices default setpoint temperatures when creating the device list for the first time. Water heaters get way too low temp as default.
 * Add number of cheap/expensive/normal hours to the device capability list
 * Add calculation of what is best, higher tariff or money saved by moving electricity between price points
 

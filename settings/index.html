@@ -1197,10 +1197,6 @@
             }
           }
           // Add new devices
-          var new_delta = (tabPage == 0) ? 3
-            : (tabPage == 1) ?  0
-            : (tabPage == 2) ? -5
-            : -10
           for (var key in deviceList) {
             if (deviceList[key].use && !(key in priceActionList[tabPage])) {
               var new_op = DELTA_TEMP;
@@ -1212,6 +1208,13 @@
                   case 3: new_op = TURN_OFF; break;
                 }
               }
+              const tempChangeCheapPrice = (deviceList[key].targetTemp > 50) ? 20 : Math.round(deviceList[key].targetTemp * 3 / 24);
+              const tempChangeHighPrice = (deviceList[key].targetTemp > 50) ? -10 : -Math.round(deviceList[key].targetTemp * 5 / 24);
+              const tempChangeInsanePrice = (deviceList[key].targetTemp > 50) ? -30 : -Math.round(deviceList[key].targetTemp * 10 / 24);
+              var new_delta = (tabPage == 0) ? tempChangeCheapPrice
+                : (tabPage == 1) ?  0
+                : (tabPage == 2) ? tempChangeHighPrice
+                : tempChangeInsanePrice;
               priceActionList[tabPage][key] = { delta: new_delta, operation: new_op }
             }
           }
@@ -1248,7 +1251,15 @@
           // Add new devices
           for (var key in deviceList) {
             if (deviceList[key].use && !(key in up_to_date_elements)) {
-              modeList[modeId].push({ id: key, operation: CONTROLLED, targetTemp: 28 });
+              // Adjust target to accomodate for both mode, water heaters and make room for price point deltas
+              let targetTemp = deviceList[key].targetTemp;
+              switch (modeId) {
+                case 0: targetTemp = (targetTemp > 50) ? 65 : targetTemp; break; // Normal
+                case 1: targetTemp = (targetTemp > 50) ? 65 : Math.round(targetTemp*0.8); break; // Night
+                case 2: targetTemp = (targetTemp > 50) ? 30 : Math.round(targetTemp*0.25); break; // Away
+                case 3: targetTemp = (targetTemp > 50) ? 65 : Math.round(targetTemp*0.5); break; // Custom
+              }
+              modeList[modeId].push({ id: key, operation: CONTROLLED, targetTemp: targetTemp });
             }
           }
         }
