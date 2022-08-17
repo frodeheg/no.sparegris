@@ -84,6 +84,14 @@
         "flow": "Fra flytkort",
         "internal": "Intern Styring"
       },
+      "buttons": {
+        "help": "Frostsikring og sonestyring vil overstyre alle handlinger. Frostsikring overstyrer alt som har termostat og Sonestyring slår av alt som ikke har frostsikring. For øvrig får handlingene følgende effekt",
+        "helpOn": "På når det er nok effekt, ellers av",
+        "helpOff": "Slå av",
+        "helpDelta": "Slå på og endre temp, men bare hvis nok ledig effekt",
+        "helpEmergency": "Slå av kun som en siste utvei for å komme under effekttariffen (ingen frostsikring)",
+        "helpIgnore": "Ignorer enheten under alle omstendigheter (ingen frostsikring)"
+      },
       "actionLow": "Handling når strømprisen blir lav",
       "actionHigh": "Handling når strømprisen blir høy",
       "actionExtreme": "Handling når strømprisen blir ekstremt høy",
@@ -98,6 +106,7 @@
       "turnOn": "Slå på",
       "turnOff": "Slå av",
       "emergencyOff": "Av hvis krise",
+      "ignore": "Ignorer",
       "internal": {
         "minCheapTime": "Minimum antall billige timer",
         "minCheapTimeHint": "Uavhengig av faktisk pris kan du kreve at de x billigste timene i døgnet alltid skal sette prispunkt til billig.",
@@ -105,7 +114,7 @@
         "minExpensiveTimeHint": "Uavhengig av faktisk pris kan du kreve at de x dyreste timene i døgnet alltid skal sette prispunkt til dyrt.",
         "lowPriceModifier": "Grense for lav pris",
         "lowPriceModifierHint": "Dersom den gjeldende timeprisen faller x% under grunnlaget for prissammenligning blir prispunkt alltid satt til billig",
-        "highPriceModifier": "Grense for dyr pris",
+        "highPriceModifier": "Grense for høy pris",
         "highPriceModifierHint": "Dersom den gjeldende timeprisen kommer x% over grunnlaget for prissammenligning blir prispunkt alltid satt til dyrt",
         "extremePriceModifier": "Grense for ekstrempriser",
         "extremePriceModifierHint": "Dersom den gjeldende timeprisen kommer x% over grunnlaget for prissammenligning blir prispunkt alltid satt til ekstremt dyrt",

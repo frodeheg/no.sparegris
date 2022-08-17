@@ -84,6 +84,14 @@
         "flow": "From Flow",
         "internal": "Internal control"
       },
+      "buttons": {
+        "help": "Frost guard and zone control will override all actions. Frost guard will override everything with a thermostat and zone control turns off everything without frost guard. Other than that the actions have the following effect",
+        "helpOn": "On when sufficient power, otherwize off",
+        "helpOff": "Turn off",
+        "helpDelta": "Turn on and change temp, but only if sufficient power",
+        "helpEmergency": "Turn off only as a last resort to get below the power tariff (no frost guard)",
+        "helpIgnore": "Ignore the unit completely (no frost guard)"
+      },
       "actionLow": "Actions when price is low",
       "actionHigh": "Actions when price is high",
       "actionExtreme": "Actions when price is extremely high",
@@ -98,6 +106,7 @@
       "turnOn": "Turn on",
       "turnOff": "Turn off",
       "emergencyOff": "Off if needed",
+      "ignore": "Ignore",
       "internal": {
         "minCheapTime": "Minimum amount of cheap hours",
         "minCheapTimeHint": "Regardless of the actual price, you can demand that the x cheapest hours of the day always set the price point to cheap.",

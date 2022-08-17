@@ -42,6 +42,7 @@ const TURN_ON = 0;
 const TURN_OFF = 1;
 const DELTA_TEMP = 2;
 const EMERGENCY_OFF = 3;
+const IGNORE = 4;
 
 // Price points
 const PP_LOW = 0;
@@ -441,8 +442,10 @@ class PiggyBank extends Homey.App {
       return Promise.resolve();
     }
 
-    // Do not attempt to change the device state if it is in EMERGENCY_OFF mode unless it is an EMERGENCY_OFF operation
-    if (currentActionOp === EMERGENCY_OFF && newState !== EMERGENCY_OFF) {
+    // Do not attempt to change the device state if it is in IGNORE
+    // or EMERGENCY_OFF mode unless it is an EMERGENCY_OFF operation
+    if ((currentActionOp === IGNORE)
+      || (currentActionOp === EMERGENCY_OFF && newState !== EMERGENCY_OFF)) {
       return Promise.resolve([false, false]);
     }
 
@@ -1039,6 +1042,7 @@ class PiggyBank extends Homey.App {
         case DELTA_TEMP:
           promises.push(this.refreshTemp(deviceId));
           break;
+        case IGNORE:
         case EMERGENCY_OFF:
           // Ignore the device state, it should only be turned off in case of emergency
           break;

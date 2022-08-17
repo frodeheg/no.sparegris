@@ -77,13 +77,12 @@ p {
   .subtablinks,
   .tablinks {
     background-color: #f1f1f1;
-    float: left;
     border: none;
     outline: none;
     cursor: pointer;
     padding: 0px 10px;
     line-height: 30px;
-    min-width: 50px;
+    min-width: 40px;
     height: 30px;
     transition: 0.3s;
     font-size: 10px !important;

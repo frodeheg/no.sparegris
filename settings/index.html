@@ -22,12 +22,19 @@
       var priceExtremeText = "settings.price.actionExtreme";
       var deltaTempText = "settings.price.deltaTemp";
       var emergencyOffText = "settings.price.emergencyOff";
+      var ignoreText = "settings.price.ignore";
       var targetTempText = "settings.mode.targetTemp";
       var controlledText = "settings.mode.controlled";
       var priceNormalText = "settings.price.actionNormal";
       var leavePageText = "settings.alert.leavepage";
       var zoneNameText = "settings.zone.zoneName";
       var zoneNumText = "settings.zone.zoneNum";
+      var helpButtons = "settings.price.buttons.help";
+      var helpButtonOn = "settings.price.buttons.helpOn";
+      var helpButtonOff = "settings.price.buttons.helpOff";
+      var helpButtonDelta = "settings.price.buttons.helpDelta";
+      var helpButtonEmergency = "settings.price.buttons.helpEmergency";
+      var helpButtonIgnore = "settings.price.buttons.helpIgnore";
 
       const KEEP = -1;
       const ALWAYS_OFF = 0;
@@ -38,9 +45,12 @@
       const TURN_OFF = 1;
       const DELTA_TEMP = 2;
       const EMERGENCY_OFF = 3;
+      const IGNORE = 4;
+
+      const MAXLEN_DEVICETEXT = 12
 
       var deviceList = {
-        id_a: { name:"DeviceName 1", room: "Stue",    image: "https://as2.ftcdn.net/v2/jpg/02/49/76/93/1000_F_249769389_7su5tYXOvcjcehNCcWTwcjnHvSMkLocJ.jpg", use: true, priority: 0, thermostat_cap: true },
+        id_a: { name:"DeviceNamenamenamenamename 1", room: "Stue",    image: "https://as2.ftcdn.net/v2/jpg/02/49/76/93/1000_F_249769389_7su5tYXOvcjcehNCcWTwcjnHvSMkLocJ.jpg", use: true, priority: 0, thermostat_cap: true },
         id_b: { name:"DeviceName 2", room: "Kjøkken", image: "https://as2.ftcdn.net/v2/jpg/02/49/76/93/1000_F_249769389_7su5tYXOvcjcehNCcWTwcjnHvSMkLocJ.jpg", use: true, priority: 1, thermostat_cap: true },
         id_c: { name:"DeviceName 3", room: "Bad",     image: "https://as2.ftcdn.net/v2/jpg/02/49/76/93/1000_F_249769389_7su5tYXOvcjcehNCcWTwcjnHvSMkLocJ.jpg", use: true, priority: 0, thermostat_cap: false }
       }
@@ -89,6 +99,23 @@
         { name:"settings.pricetab.extreme", value: 3 }
       ]
 
+      function limitText(text) {
+        const splitText = text.split(" ", 5);
+        for (let i = 0; i < splitText.length; i++) {
+          if (splitText[i].length > MAXLEN_DEVICETEXT) {
+            let firstPart = splitText[i].substring(0,MAXLEN_DEVICETEXT);
+            let secondPart = splitText[i].substring(MAXLEN_DEVICETEXT);
+            splitText.splice(i, 1, firstPart);
+            splitText.splice(i+1, 0, secondPart);
+            console.log(`${splitText}`);
+            if (splitText.length > 5) {
+              splitText.pop();
+            }
+          }
+        }
+        return splitText.join(" ")
+      }
+
       function generateEnableList(listName, priority) {
         var list = document.getElementById(listName);
         var gen_list = "<table class=device-list>";
@@ -101,7 +128,7 @@
             '<tr>' +
             '  <td><img src="' + device.image + '" alt="icon"></td>' +
             '  <td><input type="image" width="40" height="20" src="' + enabledImg + '" onclick="toggleEnableDevice(event, \'' + String(key) + '\');displaySaveHint()" id="enableDevice' + String(key) + '"></td>' +
-            '  <td><h3>' + device.name + '</h3></td>' +
+            '  <td><h3>' + limitText(device.name) + '</h3></td>' +
             '  <td><p>' + device.room + '</p></td>' +
             '</tr>';
         }
@@ -149,7 +176,7 @@
           gen_list +=
             '<tr>' +
               '<td><img src="' + device.image + '" alt="icon" width="auto" height="50"></td>' +
-              '<td><h3>' + device.name + '</h3>' +
+              '<td><h3>' + limitText(device.name) + '</h3>' +
                 '<p>' + device.room + '</p></td>' +
               '<td>' + frost_temp_input + '</td>' +
             '</tr>';
@@ -176,7 +203,7 @@
             }
             gen_list +=
               "<tr>" +
-                "<td>" + zoneList[zone].name + "</td>" +
+                "<td>" + limitText(zoneList[zone].name) + "</td>" +
                 "<td>" + String(num_affected_devices) + "</td>" +
               "</tr>";
           } // else the zone has been enabled again
@@ -201,7 +228,16 @@
         }
         var priceTabText =
           '<fieldset>' +
-            '<legend>' + legendText + '</legend>' +
+            '<legend>' + legendText + ' <div class="hintButton" onclick="toggle(this,\'priceActionHint\');return false;">i</div></legend>' +
+            '<p id="priceActionHint" class="hint" data-i18n="hola">' + helpButtons + ':' +
+              '<span class="imgButtonText" id="demoButton1" onclick="return false;">N/A</span> ' + helpButtonOn + '<br>' +
+              '<span class="imgButtonText" id="demoButton2" onclick="return false;">N/A</span> ' + helpButtonOff + '<br>' +
+              '<span class="imgButtonText" id="demoButton3" onclick="return false;">N/A</span> ' + helpButtonDelta + '<br>' +
+              '<span class="imgButtonText" id="demoButton4" onclick="return false;">N/A</span> ' + helpButtonEmergency + '<br>' +
+              '<span class="imgButtonText" id="demoButton5" onclick="return false;">N/A</span> ' + helpButtonIgnore + '<br>' +
+              '' +
+              '' +
+            '</p>' +
             '<table class="device-list">' +
               '<tr>' +
               '<th>&nbsp;</th>' +
@@ -215,7 +251,7 @@
           priceTabText +=
             '<tr>' +
               '<td><img src="' + device.image + '" alt="icon" width="auto" height="50"></td>' +
-              '<td><h3>' + device.name + '</h3>' +
+              '<td><h3>' + limitText(device.name) + '</h3>' +
                 '<p>' + device.room + '</p></td>' +
               '<td><div class="imgButtonText" id="priceActionButton' + String(deviceId) + '" onclick="updatePriceAction(this, ' + String(tabPage) + ', \'' + String(deviceId) + '\');displaySaveHint()">N/A</div></td>' +
               '<td>' + price_temp_input + '</td>' +
@@ -227,6 +263,11 @@
         document.getElementById("priceActionList").innerHTML = priceTabText;
 
         // Refresh states on list elements
+        updatePriceAction(document.getElementById('demoButton1'), undefined, undefined, TURN_ON);
+        updatePriceAction(document.getElementById('demoButton2'), undefined, undefined, TURN_OFF);
+        updatePriceAction(document.getElementById('demoButton3'), undefined, undefined, DELTA_TEMP);
+        updatePriceAction(document.getElementById('demoButton4'), undefined, undefined, EMERGENCY_OFF);
+        updatePriceAction(document.getElementById('demoButton5'), undefined, undefined, IGNORE);
         for (var deviceId in priceActionList[tabPage]) {
           updatePriceAction(document.getElementById('priceActionButton' + String(deviceId)), tabPage, deviceId, KEEP);
         }
@@ -252,7 +293,7 @@
                   '<input ' + dwnenabled + ' type="image" width="40" height="15" src="down_arrow.png" onclick="moveDevice(event, ' + String(listNum) + ', ' + String(i) + ',+1);displaySaveHint()" id="moveDeviceDown' + String(i) + '"/></td>' +
               '<td><img src="' + device.image + '" alt="icon" width="auto" height="50"></td>' +
               '<td><div class="imgButtonText" id="deviceStateButton' + String(i) + '" onclick="updateState(this, ' + String(listNum) + ', ' + String(i) + ');displaySaveHint()">N/A</div></td>' +
-              '<td><h3>' + device.name + '</h3>' +
+              '<td><h3>' + limitText(device.name) + '</h3>' +
                   '<p>' + device.room + '</p></td>' +
                   '<td>' + target_temp_input + '</td>' +
             '</tr>';
@@ -267,18 +308,21 @@
       }
 
       function updatePriceAction(button, pricePoint, device_id, newstate = undefined) {
-        if (newstate == undefined) {
-          newstate = (priceActionList[pricePoint][device_id].operation + 1) % 4;
-        } else if (newstate == KEEP) {
-          newstate = priceActionList[pricePoint][device_id].operation;
+        var deltaTempInput = undefined;
+        if (pricePoint !== undefined) {
+          if (newstate == undefined) {
+            newstate = (priceActionList[pricePoint][device_id].operation + 1) % 5;
+          } else if (newstate == KEEP) {
+            newstate = priceActionList[pricePoint][device_id].operation;
+          }
+          var device = deviceList[device_id];
+          if (!device.thermostat_cap && newstate == DELTA_TEMP) {
+            newstate = EMERGENCY_OFF;
+          }
+          priceActionList[pricePoint][device_id].operation = newstate;
+          deltaTempInput =  document.getElementById('deltaTemp' + String(device_id));
         }
-        var device = deviceList[device_id];
-        if (!device.thermostat_cap && newstate == DELTA_TEMP) {
-          newstate = EMERGENCY_OFF;
-        }
-        priceActionList[pricePoint][device_id].operation = newstate;
-        var deltaTempInput =  document.getElementById('deltaTemp' + String(device_id));
-        switch (priceActionList[pricePoint][device_id].operation) {
+        switch (newstate) {
           case TURN_OFF:
             button.innerHTML=turnOffText;
             button.style.backgroundImage = 'radial-gradient(white, lightgray, gray)';
@@ -297,6 +341,11 @@
           case EMERGENCY_OFF:
             button.innerHTML=emergencyOffText;
             button.style.backgroundImage = 'radial-gradient(white, rgb(150, 255, 150), green)';
+            if (deltaTempInput) deltaTempInput.disabled = true;
+            break;
+          case IGNORE:
+            button.innerHTML=ignoreText;
+            button.style.backgroundImage = 'radial-gradient(white, lightgray, gray)';
             if (deltaTempInput) deltaTempInput.disabled = true;
             break;
         }
@@ -616,6 +665,23 @@
 
           <table class="settings_table">
             <tr>
+              <td class="settings_row_name"><label for="averageTime" data-i18n="settings.price.internal.averageTime">price.internal.averageTime</label>:</td>
+              <td class="settings_row_input">
+                <select id="averageTime" onchange="displaySaveHint()">
+                  <option value="0" data-i18n="settings.price.internal.day0" selected>price.internal.day0</option>
+                  <option value="1" data-i18n="settings.price.internal.day1">price.internal.day1</option>
+                  <option value="2" data-i18n="settings.price.internal.day2">price.internal.day2</option>
+                  <option value="4" data-i18n="settings.price.internal.day4">price.internal.day4</option>
+                  <option value="7" data-i18n="settings.price.internal.day7">price.internal.day7</option>
+                  <option value="30" data-i18n="settings.price.internal.day30">price.internal.day30</option>
+                </select>
+                <div class="hintButton" onclick="toggle(this,'averageTimeHint');return false;">i</div></td>
+            </tr>
+          </table>
+          <p id="averageTimeHint" class="hint" data-i18n="settings.price.internal.averageTimeHint">price.internal.averageTimeHint</p>
+
+          <table class="settings_table">
+            <tr>
               <td class="settings_row_name"><label for="lowPriceModifier" data-i18n="settings.price.internal.lowPriceModifier">price.internal.lowPriceModifier</label>:</td>
               <td class="settings_row_input">
                 <input id="lowPriceModifier" data-i18n="settings.price.internal.hour1" type="number" size="10" min="-50" max="-10" value="-10" onchange="displaySaveHint()">%
@@ -643,23 +709,6 @@
             </tr>
           </table>
           <p id="extremePriceModifierHint" class="hint" data-i18n="settings.price.internal.extremePriceModifierHint">price.internal.extremePriceModifierHint</p>
-
-          <table class="settings_table">
-            <tr>
-              <td class="settings_row_name"><label for="averageTime" data-i18n="settings.price.internal.averageTime">price.internal.averageTime</label>:</td>
-              <td class="settings_row_input">
-                <select id="averageTime" onchange="displaySaveHint()">
-                  <option value="0" data-i18n="settings.price.internal.day0" selected>price.internal.day0</option>
-                  <option value="1" data-i18n="settings.price.internal.day1">price.internal.day1</option>
-                  <option value="2" data-i18n="settings.price.internal.day2">price.internal.day2</option>
-                  <option value="4" data-i18n="settings.price.internal.day4">price.internal.day4</option>
-                  <option value="7" data-i18n="settings.price.internal.day7">price.internal.day7</option>
-                  <option value="30" data-i18n="settings.price.internal.day30">price.internal.day30</option>
-                </select>
-                <div class="hintButton" onclick="toggle(this,'averageTimeHint');return false;">i</div></td>
-            </tr>
-          </table>
-          <p id="averageTimeHint" class="hint" data-i18n="settings.price.internal.averageTimeHint">price.internal.averageTimeHint</p>
         </span>
 
         <table width="100%" id="sub_tab_selector" class="tab">
@@ -850,6 +899,7 @@
         priceLowText = Homey.__(priceLowText);
         deltaTempText = Homey.__(deltaTempText);
         emergencyOffText = Homey.__(emergencyOffText);
+        ignoreText = Homey.__(ignoreText);
         alwaysOffText = Homey.__(alwaysOffText);
         priceHighText = Homey.__(priceHighText);
         priceExtremeText = Homey.__(priceExtremeText);
@@ -859,6 +909,12 @@
         leavePageText = Homey.__(leavePageText);
         zoneNameText = Homey.__(zoneNameText);
         zoneNumText = Homey.__(zoneNumText);
+        helpButtons = Homey.__(helpButtons);
+        helpButtonOn = Homey.__(helpButtonOn);
+        helpButtonOff = Homey.__(helpButtonOff);
+        helpButtonDelta = Homey.__(helpButtonDelta);
+        helpButtonEmergency = Homey.__(helpButtonEmergency);
+        helpButtonIgnore = Homey.__(helpButtonIgnore);
 
 
         for (var i = 0; i < operatingModes.length; i++) {
