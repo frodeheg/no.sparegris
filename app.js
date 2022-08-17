@@ -232,7 +232,6 @@ class PiggyBank extends Homey.App {
         const doRefresh = this.homey.settings.get('deviceListRefresh');
         if (doRefresh === 'true') {
           this.createDeviceList();
-          this.homey.settings.set('deviceListRefresh', 'done');
         }
       } else if (setting === 'settingsSaved') {
         const doRefresh = this.homey.settings.get('settingsSaved');
@@ -407,6 +406,8 @@ class PiggyBank extends Homey.App {
     if (!futurePriceOptions) futurePriceOptions = {};
     futurePriceOptions.ApiError = !(await this._checkApi());
     this.homey.settings.set('futurePriceOptions', futurePriceOptions);
+
+    this.homey.settings.set('deviceListRefresh', 'done');
   }
 
   /**

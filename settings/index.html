@@ -877,10 +877,10 @@
               if (refreshDone === 'done') {
                 Homey.get("deviceList", function (err, myDevices) {
                   if (err) return Homey.alert(err);
-                    deviceList = myDevices;
-                    deviceListLoaded = true;
-                    checkLoadingDone();
-                  })
+                  deviceList = myDevices;
+                  deviceListLoaded = true;
+                  checkLoadingDone();
+                })
               }
             });
           }
