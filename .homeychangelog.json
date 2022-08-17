@@ -241,5 +241,8 @@
   },
   "0.9.0": {
     "en": "Added Emergency off option that will only turn off devices if needed and ignore state otherwise."
+  },
+  "0.10.0": {
+    "en": "Added posibility to Completely ignore devices for some price points"
   }
 }
