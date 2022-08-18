@@ -171,7 +171,7 @@
               '<th align="left" colspan="2">' + minTempText + '</th>' +
             '</tr>';
         for (var deviceId in frostList) {
-          var device = deviceList[deviceId];
+          var device = deviceList[deviceId]; // refreshFrostList already called, so indexing by deviceId is safe
           var frost_temp_input = device.thermostat_cap ? '<input type="number" id="minTemp' + String(deviceId) + '" min=0 max=90 size="4" onchange="setFrostTemp(this, \'' + String(deviceId) + '\');displaySaveHint()" value="' + String(frostList[deviceId].minTemp) + '">°C' : '-';
           gen_list +=
             '<tr>' +
@@ -246,7 +246,7 @@
               '<th align="left">' + deltaText + '</th>' +
             '</tr>';
         for (var deviceId in priceActionList[tabPage]) {
-          var device = deviceList[deviceId];
+          var device = deviceList[deviceId]; // refreshPriceActionList already called so indexing by deviceId should be safe
           var price_temp_input = device.thermostat_cap ? '<input type="number" id="deltaTemp' + String(deviceId) + '" min=-30 max=30 size="4" onchange="setDeltaTemp(this, ' + String(tabPage) + ', \'' + String(deviceId) + '\');displaySaveHint()" value="' + String(priceActionList[tabPage][deviceId].delta) + '">°C' : '-';
           priceTabText +=
             '<tr>' +
@@ -283,7 +283,7 @@
               '<th align="left">' + targetTempText + '</th>' +
             '</tr>';
         for (var i = 0; i < modeList[listNum].length; i++) {
-          var device = deviceList[modeList[listNum][i].id];
+          var device = deviceList[modeList[listNum][i].id]; // refreshModeLists already called so should be safe to index deviceList with modeList[listNum][i].id
           var upenabled  = (i==0) ? 'disabled' : '';
           var dwnenabled = (i==modeList[listNum].length-1) ? 'disabled' : '';
           var target_temp_input = device.thermostat_cap ? '<input type="number" id="targetTemp' + String(i) + '" min=0 max=90 size="4" onchange="setTargetTemp(this,' + String(listNum) + ',' + String(i) + ');displaySaveHint()" value="' + String(modeList[listNum][i].targetTemp) + '">°C' : '-';
@@ -315,7 +315,7 @@
           } else if (newstate == KEEP) {
             newstate = priceActionList[pricePoint][device_id].operation;
           }
-          var device = deviceList[device_id];
+          var device = deviceList[device_id]; // refreshPriceActionList already called so should be safe to index by elements from priceActionList[tabPage]
           if (!device.thermostat_cap && newstate == DELTA_TEMP) {
             newstate = EMERGENCY_OFF;
           }
@@ -1192,7 +1192,7 @@
           }
           // Remove devices that are no longer in use.
           for (var deviceId in priceActionList[tabPage]) {
-            if (!deviceList[deviceId].use) {
+            if (!(deviceId in deviceList) || !deviceList[deviceId].use) {
               delete priceActionList[tabPage][deviceId];
             }
           }
@@ -1242,7 +1242,7 @@
           var up_to_date_elements = {};
           // First remove devices that are no longer in use.
           for (var i = modeList[modeId].length-1; i >= 0 ; i--) {
-            if (!deviceList[modeList[modeId][i].id].use) {
+            if (!(modeList[modeId][i].id in deviceList) || !deviceList[modeList[modeId][i].id].use) {
               modeList[modeId].splice(i, 1);
             } else {
               up_to_date_elements[modeList[modeId][i].id] = true;
@@ -1268,7 +1268,7 @@
       function refreshFrostList() {
         // Remove devices that are no longer in use.
         for (var deviceId in frostList) {
-          if (!deviceList[deviceId].use) {
+          if (!(deviceId in deviceList) || !deviceList[deviceId].use) {
             delete frostList[deviceId];
           }
         }
