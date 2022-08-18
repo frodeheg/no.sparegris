@@ -4,6 +4,7 @@ https://homey.app/no-no/app/no.sparegris/PiggyBank/
 Save money by controling when to use electricity
 
 New features I want input from others before I do anything:
+* Do you want to keep Zone control as it is or do you want it to affect heaters only (right now it turns off lights as well, which might be a bit odd if you use zone-control to turn off heaters when airing).
 * Do you want an output signal when the power tariff is once again within reach after a manual powerdown has been signaled?
 * Do you want an output signal for the current price point if internal price points are used.
 * Do you want a condition that prevents signalling that we are out of power before at least x% of the power tariff has been used? (where x is set in the settings)
