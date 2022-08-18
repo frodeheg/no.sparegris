@@ -428,6 +428,10 @@ class PiggyBank extends Homey.App {
    * @throw error in case of failure
    */
   async changeDeviceState(deviceId, newState) {
+    if (!(deviceId in this.__deviceList)) {
+      // Apparently the stored settings are invalid and need to be refreshed
+      return Promise.resolve([false, false]);
+    }
     const promiseDevice = this.homeyApi.devices.getDevice({ id: deviceId });
     const actionLists = this.homey.settings.get('priceActionList');
     const actionListIdx = this.homey.settings.get('pricePoint');
@@ -594,6 +598,10 @@ class PiggyBank extends Homey.App {
     const currentActions = actionLists[currentPricePoint];
     const promises = [];
     for (const deviceId in currentActions) {
+      if (!(deviceId in this.__deviceList)) {
+        // Apparently the stored settings are invalid and need to be refreshed
+        continue;
+      }
       const { operation } = currentActions[deviceId];
       const { confirmed } = this.__current_state[deviceId];
       if (confirmed) continue;
@@ -869,6 +877,10 @@ class PiggyBank extends Homey.App {
     let numForcedOffDevices = 0;
     for (let idx = 0; idx < numDevices; idx++) {
       const deviceId = reorderedModeList[idx].id;
+      if (!(deviceId in this.__deviceList)) {
+        // Apparently the stored settings are invalid and need to be refreshed
+        continue;
+      }
       // Check if the on state complies with the settings
       switch (reorderedModeList[idx].operation) {
         case CONTROLLED:
@@ -927,6 +939,10 @@ class PiggyBank extends Homey.App {
         const deviceId = reorderedModeList[idx].id;
         const operation = (isEmergency === 0) ? TURN_OFF : EMERGENCY_OFF;
         // Try to turn the device off regardless, it might be blocked by the state
+        if (!(deviceId in this.__deviceList)) {
+          // Apparently the stored settings are invalid and need to be refreshed
+          continue;
+        }
         try {
           const [success, noChange] = await this.changeDeviceState(deviceId, operation);
           if (success && !noChange) {
@@ -1035,6 +1051,10 @@ class PiggyBank extends Homey.App {
     const currentActions = actionLists[currentPricePoint];
     const promises = [];
     for (const deviceId in currentActions) {
+      if (!(deviceId in this.__deviceList)) {
+        // Apparently the stored settings are invalid and need to be refreshed
+        continue;
+      }
       const { operation } = currentActions[deviceId];
       switch (operation) {
         case TURN_ON:
