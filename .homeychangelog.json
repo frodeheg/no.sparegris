@@ -250,5 +250,8 @@
   },
   "0.10.2": {
     "en": "Fixed crash as reported by Krisch2 in the forum"
+  },
+  "0.10.3": {
+    "en": "Added additional protection against crash bug as reported by Krisch2 in the forum"
   }
 }
