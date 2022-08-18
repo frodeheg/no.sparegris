@@ -247,5 +247,8 @@
   },
   "0.10.1": {
     "en": "When adding devices with thermostats the default setpoint temperatures in the app will now be based on the current setting instead of a static variable."
+  },
+  "0.10.2": {
+    "en": "Fixed crash as reported by Krisch2 in the forum"
   }
 }
