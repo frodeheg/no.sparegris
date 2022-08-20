@@ -14,8 +14,7 @@ TODO list:
 * Add calculation of what is best, higher tariff or money saved by moving electricity between price points
 
 === ISSUES I DO NOT KNOW ANY WAY TO RESOLVE ===
-* Old capabilities are not deleted from the statistics section (insights) when they are deleted, and the homey web api does not give the app
-  permission to delete it. Thus the only way to delete deprecated statistics is to manually do this with the web api playground or by deleting the device and reinstalling it. I do not know why Athom is this restrictive but I am sorry I cannot clean up the mess.
+* Old capabilities are not deleted from the statistics section (insights) when they are deleted, and the homey web api does not give the app permission to delete it. Thus the only way to delete deprecated statistics is to manually do this with the web api playground or by deleting the device and reinstalling it. I do not know why Athom is this restrictive but I am sorry I cannot clean up the mess.
 
 === REJECTED FEATURES ===
 (if you're not happy with this, please make contact and I might reconsider)
