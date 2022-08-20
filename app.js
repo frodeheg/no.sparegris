@@ -391,17 +391,21 @@ class PiggyBank extends Homey.App {
     this.homey.settings.set('deviceList', this.__deviceList);
 
     // Refresh current state:
-    this.__current_state = {};
+    if (!this.__current_state) {
+      this.__current_state = {};
+    }
     for (const deviceId in relevantDevices) {
-      this.__current_state[deviceId] = {
-        nComError: 0,
-        isOn: undefined,
-        temp: undefined,
-        ongoing: false,
-        __monitorError: 0,
-        __monitorFixOn: 0,
-        __monitorFixTemp: 0
-      };
+      if (!(deviceId in this.__current_state)) {
+        this.__current_state[deviceId] = {
+          nComError: 0,
+          isOn: undefined,
+          temp: undefined,
+          ongoing: false,
+          __monitorError: 0,
+          __monitorFixOn: 0,
+          __monitorFixTemp: 0
+        };
+      }
     }
 
     // This shouldn't be done here but is needed as the ApiError must be sent to the setup page
