@@ -35,6 +35,7 @@
       var helpButtonDelta = "settings.price.buttons.helpDelta";
       var helpButtonEmergency = "settings.price.buttons.helpEmergency";
       var helpButtonIgnore = "settings.price.buttons.helpIgnore";
+      var timeoutText = "warnings.timeout";
 
       const KEEP = -1;
       const ALWAYS_OFF = 0;
@@ -915,6 +916,7 @@
         helpButtonDelta = Homey.__(helpButtonDelta);
         helpButtonEmergency = Homey.__(helpButtonEmergency);
         helpButtonIgnore = Homey.__(helpButtonIgnore);
+        timeoutText = Homey.__(timeoutText);
 
 
         for (var i = 0; i < operatingModes.length; i++) {
@@ -933,9 +935,17 @@
               if (refreshDone === 'done') {
                 Homey.get("deviceList", function (err, myDevices) {
                   if (err) return Homey.alert(err);
-                  deviceList = myDevices;
-                  deviceListLoaded = true;
-                  checkLoadingDone();
+                  if (myDevices) {
+                    deviceList = myDevices;
+                    deviceListLoaded = true;
+                    checkLoadingDone();
+                  } else {
+                    // In case myDevices was not set this means that
+                    // the app onInit has not completed... that is the first
+                    // attempt to create a device list did not finish yet.
+                    // Having this else will enforce a timeout and as such tell the
+                    // user to try again later.
+                  }
                 })
               }
             });
@@ -1183,6 +1193,13 @@
           onHomeyReadyCompleted = true;
           checkLoadingDone();
         }, 4 * 1000);
+
+        setTimeout(function () {
+          loadElement = document.getElementById("loadingPage");
+          if (loadElement.style.display !== "none") {
+            loadElement.innerHTML = timeoutText;
+          }
+        }, 7 * 1000);
       }
 
       function refreshPriceActionList() {

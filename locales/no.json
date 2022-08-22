@@ -198,6 +198,7 @@
     "noPriceApi": "Du må installere appen 'no.almli.utilitycost' for få strømpriser til å virke",
     "internalPP": "For å sette prispunkt med flows må du først deaktivere den interne prisstyringen fra appens innstillinger",
     "rememberToSave": "Husk å lagre!",
-    "appDisabled": "Appens operasjonsmodus er satt til deaktivert. Du kan aktivere appen ved å gå inn i appens innstillinger eller gjennom en flow."
+    "appDisabled": "Appens operasjonsmodus er satt til deaktivert. Du kan aktivere appen ved å gå inn i appens innstillinger eller gjennom en flow.",
+    "timeout": "Timeout! Homey er opptatt, vennligst prøv igjen senere eller kontakt appens utvikler dersom problemet fortsetter."
   }
 }

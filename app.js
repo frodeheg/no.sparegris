@@ -22,6 +22,7 @@ const { Log } = require('homey-log');
 const { Mutex } = require('async-mutex');
 const { HomeyAPIApp } = require('homey-api');
 const { resolve } = require('path');
+const c = require('./common/constants');
 
 const WAIT_TIME_TO_POWER_ON_AFTER_POWEROFF_MIN = 1 * 60 * 1000; // Wait 1 minute
 const WAIT_TIME_TO_POWER_ON_AFTER_POWEROFF_MAX = 5 * 60 * 1000; // Wait 5 minutes
@@ -168,7 +169,13 @@ class PiggyBank extends Homey.App {
     this.app_is_configured = this.validateSettings();
 
     // Create list of devices
-    await this.createDeviceList();
+    while (this.__deviceList === undefined) {
+      try {
+        await this.createDeviceList();
+      } catch (err) {
+        // Ignore the error and try to refresh the devicelist once more
+      }
+    }
 
     // Enable trigger cards
     const freePowerTrigger = this.homey.flow.getTriggerCard('free-power-changed');
@@ -232,7 +239,11 @@ class PiggyBank extends Homey.App {
       if (setting === 'deviceListRefresh') {
         const doRefresh = this.homey.settings.get('deviceListRefresh');
         if (doRefresh === 'true') {
-          this.createDeviceList();
+          try {
+            this.createDeviceList();
+          } catch (err) {
+            // In case refreshing the devicelist failed we just reuse the device list from when the app was initialized
+          }
         }
       } else if (setting === 'settingsSaved') {
         const doRefresh = this.homey.settings.get('settingsSaved');
@@ -325,7 +336,10 @@ class PiggyBank extends Homey.App {
    * Create a list of relevant devices
    */
   async createDeviceList() {
+    // Call APIs
     const devices = await this.homeyApi.devices.getDevices();
+    const zones = await this.homeyApi.zones.getZones();
+    // Note: The API calls above might time out, in which case the rest of the function will never be executed.
 
     const relevantDevices = {};
 
@@ -360,7 +374,6 @@ class PiggyBank extends Homey.App {
       }
 
       // Find which zones the device are within:
-      const zones = await this.homeyApi.zones.getZones();
       let zoneId = device.zone;
       const memberOfZones = [];
       while (zoneId !== null) {
@@ -1548,7 +1561,9 @@ class PiggyBank extends Homey.App {
       extreme_price_limit: this.__extreme_price_limit,
       savings_yesterday: this.__stats_savings_yesterday,
       savings_all_time_use: this.__stats_savings_all_time_use,
-      savings_all_time_power_part: this.__stats_savings_all_time_power_part
+      savings_all_time_power_part: this.__stats_savings_all_time_power_part,
+
+      app_ready: (this.__deviceList === undefined) ? c.APP_NOT_READY : c.APP_READY
     };
   }
 

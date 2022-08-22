@@ -3,6 +3,7 @@
 'use strict';
 
 const { Device } = require('homey');
+const c = require('../../common/constants');
 
 const DEFAULT_POLL_INTERVAL = 60; // Number of seconds to poll data
 
@@ -250,6 +251,11 @@ class MyDevice extends Device {
   async updateState() {
     try {
       const piggyState = this.homey.app.getState();
+      if (piggyState.appState === c.APP_NOT_READY) {
+        this.setUnavailable('Having difficulties getting device states out of the Homey API. This problem should resolve shortly, if not contact the app developer as it might be a bug.');
+      } else {
+        this.setAvailable();
+      }
       // this.homey.app.updateLog("Updating state: " + JSON.stringify(piggyState), 1);
       if (piggyState.power_last_hour) {
         this.setCapabilityValue('meter_power.last_hour', piggyState.power_last_hour);
