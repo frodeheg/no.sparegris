@@ -253,5 +253,8 @@
   },
   "0.10.3": {
     "en": "Added additional protection against crash bug as reported by Krisch2 in the forum"
+  },
+  "0.10.4": {
+    "en": "Fixed crash bug when Homey was overloaded. + Fixed the device state monitor that would fail to correct invalid device states caused by bad signalling for some hours after entering the app setup page."
   }
 }
