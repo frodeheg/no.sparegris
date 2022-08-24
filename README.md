@@ -9,6 +9,7 @@ New features I want input from others before I do anything:
 * Do you want a condition that prevents signalling that we are out of power before at least x% of the power tariff has been used? (where x is set in the settings)
 
 TODO list:
+* Add function that automatically forces the høiax heater into homey controlled mode when the app tries to control it.
 * Improve power-usage calculation over the time the app is restarted / inactive.
 * Add number of cheap/expensive/normal hours to the device capability list
 * Add calculation of what is best, higher tariff or money saved by moving electricity between price points
