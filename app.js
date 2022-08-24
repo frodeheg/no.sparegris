@@ -660,8 +660,9 @@ class PiggyBank extends Homey.App {
                 this.__current_state[deviceId].confirmed = true;
                 return Promise.resolve(true);
               }
-              if (this.__current_state[deviceId].temp === undefined) return Promise.resolve(true);
-              const tempConfirmed = (device.capabilitiesObj['target_temperature'].value === this.__current_state[deviceId].temp);
+              // Thermostat capabilities
+              if (!this.__deviceList[deviceId].thermostat_cap) return Promise.resolve(true);
+              const tempConfirmed = this.__current_state[deviceId].temp && (device.capabilitiesObj['target_temperature'].value === this.__current_state[deviceId].temp);
               if (tempConfirmed) {
                 this.__current_state[deviceId].confirmed = true;
                 return Promise.resolve(true);
