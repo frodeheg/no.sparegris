@@ -284,8 +284,13 @@ class PiggyBank extends Homey.App {
    */
   async generateZoneList(query, args) {
     // Count how many devices there are in every zone
-    const zones = await this.homeyApi.zones.getZones();// devices.getDevices();
+    // The zone object looks like this:
     // {"id":"9919ee1e-ffbc-480b-bc4b-77fb047e9e68","name":"Hjem","order":1,"parent":null,"active":false,"activeLastUpdated":null,"icon":"home"}
+    const zones = await this.homeyApi.zones.getZones()
+      .catch(err => {
+        // Failed to get the zones so just return nothing
+        return [];
+      });
     const activeZones = {};
     for (const deviceId in this.__deviceList) {
       if (this.__deviceList[deviceId].use) {
@@ -337,8 +342,8 @@ class PiggyBank extends Homey.App {
    */
   async createDeviceList() {
     // Call APIs
-    const devices = await this.homeyApi.devices.getDevices();
-    const zones = await this.homeyApi.zones.getZones();
+    const devices = await this.homeyApi.devices.getDevices(); // Error thrown is catched by caller of createDeviceList
+    const zones = await this.homeyApi.zones.getZones(); // Error thrown is catched by caller of createDeviceList
     // Note: The API calls above might time out, in which case the rest of the function will never be executed.
 
     const relevantDevices = {};
@@ -668,6 +673,12 @@ class PiggyBank extends Homey.App {
                   this.__current_state[deviceId].confirmed = true;
                   return Promise.resolve(false);
                 });
+            })
+            .catch(err => {
+              // Ignore the error, just count the error for statistics
+              // A fix will be attempted next time the monitor runs anyway
+              this.__current_state[deviceId].__monitorError += 1;
+              return Promise.resolve(false);
             });
         }));
     }
@@ -1415,16 +1426,21 @@ class PiggyBank extends Homey.App {
           const { isOn, nComError } = this.__current_state[deviceId];
           const { temp, ongoing, confirmed } = this.__current_state[deviceId];
           const { __monitorError, __monitorFixTemp, __monitorFixOn } = this.__current_state[deviceId];
-          const device = await this.homeyApi.devices.getDevice({ id: deviceId });
-          this.updateLog(JSON.stringify(this.__current_state[deviceId]));
-          const isOnActual = (this.__deviceList[deviceId].onoff_cap === undefined) ? undefined : device.capabilitiesObj[this.__deviceList[deviceId].onoff_cap].value;
-          const tempActualTarget = ('target_temperature' in device.capabilitiesObj) ? device.capabilitiesObj['target_temperature'].value : 'undef';
-          const tempActualMeasure = ('measure_temperature' in device.capabilitiesObj) ? device.capabilitiesObj['measure_temperature'].value : 'undef';
-          this.updateLog(`${String(name).padEnd(25)} | ${String(room).padEnd(15)} | ${String(isOn).padEnd(10)} | ${
-            String(temp).padStart(11)} | ${String(nComError).padStart(10)} | ${String(ongoing).padEnd(7)}`, LOG_ALL);
-          this.updateLog(`${String('--->Actual').padEnd(13)} - Errs: ${String(__monitorError).padEnd(3)} | ${
-            String(__monitorFixOn).padEnd(7)},${String(__monitorFixTemp).padEnd(7)} | ${String(isOnActual).padEnd(10)} | ${
-            String(tempActualMeasure).padStart(5)}/${String(tempActualTarget).padStart(5)} | ${''.padStart(10)} | ${String(confirmed).padEnd(7)}`, LOG_ALL);
+          this.homeyApi.devices.getDevice({ id: deviceId })
+            .then(device => {
+              this.updateLog(JSON.stringify(this.__current_state[deviceId]));
+              const isOnActual = (this.__deviceList[deviceId].onoff_cap === undefined) ? undefined : device.capabilitiesObj[this.__deviceList[deviceId].onoff_cap].value;
+              const tempActualTarget = ('target_temperature' in device.capabilitiesObj) ? device.capabilitiesObj['target_temperature'].value : 'undef';
+              const tempActualMeasure = ('measure_temperature' in device.capabilitiesObj) ? device.capabilitiesObj['measure_temperature'].value : 'undef';
+              this.updateLog(`${String(name).padEnd(25)} | ${String(room).padEnd(15)} | ${String(isOn).padEnd(10)} | ${
+                String(temp).padStart(11)} | ${String(nComError).padStart(10)} | ${String(ongoing).padEnd(7)}`, LOG_ALL);
+              this.updateLog(`${String('--->Actual').padEnd(13)} - Errs: ${String(__monitorError).padEnd(3)} | ${
+                String(__monitorFixOn).padEnd(7)},${String(__monitorFixTemp).padEnd(7)} | ${String(isOnActual).padEnd(10)} | ${
+                String(tempActualMeasure).padStart(5)}/${String(tempActualTarget).padStart(5)} | ${''.padStart(10)} | ${String(confirmed).padEnd(7)}`, LOG_ALL);
+            })
+            .catch(err => {
+              this.log(`Error log failed for device with name: ${name}`);
+            });
         }
         this.updateLog('======== INTERNAL STATE END ========', LOG_ALL);
         this.homey.settings.set('showState', '');
