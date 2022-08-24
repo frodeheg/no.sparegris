@@ -259,5 +259,8 @@
   },
   "0.10.5": {
     "en": "Improved reliability -> Added more handling of homeyAPI timeouts"
+  },
+  "0.10.6": {
+    "en": "Fixed bug in the monitor that prevented correction of incorrect temperatures within short timespan after the app was restarted."
   }
 }
