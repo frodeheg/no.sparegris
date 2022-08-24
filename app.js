@@ -693,7 +693,7 @@ class PiggyBank extends Homey.App {
    * Must never be called when operatingMode is set to Disabled
    */
   async onPowerUpdate(newPower) {
-    if (Number.isNaN(newPower)) {
+    if (Number.isNaN(+newPower)) {
       // If newPower is invalid or app is not configured just ignore it
       return Promise.resolve();
     }
