@@ -262,5 +262,8 @@
   },
   "0.10.6": {
     "en": "Fixed bug in the monitor that prevented correction of incorrect temperatures within short timespan after the app was restarted."
+  },
+  "0.10.7": {
+    "en": "Fixed bug in the monitor that could make the monitor turn off devices instead of on in case emergency off was chosen."
   }
 }
