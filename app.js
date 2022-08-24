@@ -456,7 +456,7 @@ class PiggyBank extends Homey.App {
     }
     const promiseDevice = this.homeyApi.devices.getDevice({ id: deviceId });
     const actionLists = this.homey.settings.get('priceActionList');
-    const actionListIdx = this.homey.settings.get('pricePoint');
+    const actionListIdx = +this.homey.settings.get('pricePoint');
     const currentAction = actionLists[actionListIdx][deviceId]; // Action state: .operation
     const currentActionOp = parseInt(currentAction.operation, 10);
     const modeLists = this.homey.settings.get('modeList');
@@ -609,14 +609,14 @@ class PiggyBank extends Homey.App {
    * Similar to refreshAllDevices(), but it will only refresh states that are not correct
    */
   async onMonitor() {
-    this.updateLog('onMonitor()', LOG_DEBUG);
+    this.updateLog('onMonitor()', LOG_INFO);
     if (!this.app_is_configured) {
       // Early exit if the app is not configured
       return Promise.resolve(false);
     }
     // Go through all actions for this new mode;
     const actionLists = this.homey.settings.get('priceActionList');
-    const currentPricePoint = this.homey.settings.get('pricePoint');
+    const currentPricePoint = +this.homey.settings.get('pricePoint');
     const currentActions = actionLists[currentPricePoint];
     const promises = [];
     for (const deviceId in currentActions) {
@@ -649,29 +649,29 @@ class PiggyBank extends Homey.App {
               if (!onConfirmed) {
                 // Try to change the on state.....
                 this.__current_state[deviceId].__monitorFixOn += 1;
-                return this.changeDeviceState(deviceId, operation)
+                const newOp = this.__current_state[deviceId].isOn ? TURN_ON : TURN_OFF;
+                return this.changeDeviceState(deviceId, newOp)
                   .then(() => this.refreshTemp(deviceId))
                   .then(() => {
-                    this.__current_state[deviceId].confirmed = true;
+                    this.__current_state[deviceId].confirmed = 1;
                     return Promise.resolve(false);
                   });
               }
-              if (!isOn) {
-                this.__current_state[deviceId].confirmed = true;
+              if ((!isOn) || (!this.__deviceList[deviceId].thermostat_cap)) {
+                this.__current_state[deviceId].confirmed = 2;
                 return Promise.resolve(true);
               }
               // Thermostat capabilities
-              if (!this.__deviceList[deviceId].thermostat_cap) return Promise.resolve(true);
               const tempConfirmed = this.__current_state[deviceId].temp && (device.capabilitiesObj['target_temperature'].value === this.__current_state[deviceId].temp);
               if (tempConfirmed) {
-                this.__current_state[deviceId].confirmed = true;
+                this.__current_state[deviceId].confirmed = 3;
                 return Promise.resolve(true);
               }
               // Try to change the temp state.....
               this.__current_state[deviceId].__monitorFixTemp += 1;
               return this.refreshTemp(deviceId)
                 .then(() => {
-                  this.__current_state[deviceId].confirmed = true;
+                  this.__current_state[deviceId].confirmed = 4;
                   return Promise.resolve(false);
                 });
             })
@@ -1024,7 +1024,7 @@ class PiggyBank extends Homey.App {
     const frostList = this.homey.settings.get('frostList');
     const currentMode = +this.homey.settings.get('operatingMode');
     const actionLists = this.homey.settings.get('priceActionList');
-    const actionListIdx = this.homey.settings.get('pricePoint');
+    const actionListIdx = +this.homey.settings.get('pricePoint');
     const currentModeList = modeList[currentMode - 1];
     const modeIdx = this.findModeIdx(deviceId);
     const modeTemp = parseInt(currentModeList[modeIdx].targetTemp, 10);
@@ -1048,10 +1048,10 @@ class PiggyBank extends Homey.App {
         const frostGuardActive = this.__deviceList[deviceId].thermostat_cap
           ? (device.capabilitiesObj['measure_temperature'].value < frostList[deviceId].minTemp) : false;
         const newTemp = frostGuardActive ? frostList[deviceId].minTemp : (modeTemp + deltaTemp);
+        this.__current_state[deviceId].temp = newTemp;
         if (device.capabilitiesObj['target_temperature'].value === newTemp) return Promise.resolve([true, true]);
         this.__current_state[deviceId].ongoing = true;
         this.__current_state[deviceId].confirmed = false;
-        this.__current_state[deviceId].temp = newTemp;
         return device.setCapabilityValue({ capabilityId: 'target_temperature', value: newTemp })
           .then(() => Promise.resolve([true, false]));
       })
@@ -1073,7 +1073,7 @@ class PiggyBank extends Homey.App {
    * This will trigger a full refresh of all the devices.
    */
   async refreshAllDevices() {
-    const currentPricePoint = this.homey.settings.get('pricePoint');
+    const currentPricePoint = +this.homey.settings.get('pricePoint');
 
     // Go through all actions for this new mode;
     const actionLists = this.homey.settings.get('priceActionList');
@@ -1429,7 +1429,6 @@ class PiggyBank extends Homey.App {
           const { __monitorError, __monitorFixTemp, __monitorFixOn } = this.__current_state[deviceId];
           this.homeyApi.devices.getDevice({ id: deviceId })
             .then(device => {
-              this.updateLog(JSON.stringify(this.__current_state[deviceId]));
               const isOnActual = (this.__deviceList[deviceId].onoff_cap === undefined) ? undefined : device.capabilitiesObj[this.__deviceList[deviceId].onoff_cap].value;
               const tempActualTarget = ('target_temperature' in device.capabilitiesObj) ? device.capabilitiesObj['target_temperature'].value : 'undef';
               const tempActualMeasure = ('measure_temperature' in device.capabilitiesObj) ? device.capabilitiesObj['measure_temperature'].value : 'undef';
