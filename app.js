@@ -481,7 +481,8 @@ class PiggyBank extends Homey.App {
     try {
       device = await promiseDevice;
     } catch (err) {
-      this.updateLog(`Device not found? ${String(err)}`, LOG_ERROR);
+      // Most likely timeout
+      this.updateLog(`Device cannot be fetched. ${String(err)}`, LOG_ERROR);
       this.__current_state[deviceId].nComError += 10; // Big error so wait more until retry than smaller errors
       return Promise.resolve([false, false]); // The unhandled device is solved by the later nComError handling
     }
@@ -542,7 +543,7 @@ class PiggyBank extends Homey.App {
           this.__current_state[deviceId].ongoing = undefined;
           this.statsCountFailedTurnOff();
           this.__current_state[deviceId].nComError += 1;
-          this.updateLog(`Failed to turn off device ${deviceName}, will try to turn off other devices instead.`, LOG_ERROR);
+          this.updateLog(`Failed to turn off device ${deviceName}, will try to turn off other devices instead. (${error})`, LOG_ERROR);
           return Promise.resolve([false, false]); // The unresolved part is solved by the later nComError handling
         });
     }
@@ -578,7 +579,7 @@ class PiggyBank extends Homey.App {
         this.__reserved_energy = 0;
         if (this.__power_last_hour !== undefined) {
           // The first time the data is not for a full hour, so skip adding to statistics
-          this.statsSetLastHourEnergy(this.__accum_energy);
+          await this.statsSetLastHourEnergy(this.__accum_energy);
         }
         this.__power_last_hour = this.__accum_energy;
         this.updateLog(`Hour finalized: ${String(this.__accum_energy)} Wh`, LOG_INFO);
@@ -624,7 +625,6 @@ class PiggyBank extends Homey.App {
         // Apparently the stored settings are invalid and need to be refreshed
         continue;
       }
-      const { operation } = currentActions[deviceId];
       const { confirmed } = this.__current_state[deviceId];
       if (confirmed) continue;
       promises.push(Promise.resolve()
@@ -1243,12 +1243,12 @@ class PiggyBank extends Homey.App {
   }
 
   // Must only be called once every month
-  statsSetLastMonthPower(energy) {
+  async statsSetLastMonthPower(energy) {
     this.__stats_last_month_max = energy;
     this.homey.settings.set('stats_last_month_max', this.__stats_last_month_max);
 
     // Add savings for power tariff, always assume one step down
-    const tariffTable = this.fetchTariffTable();
+    const tariffTable = await this.fetchTariffTable();
     const tariffIndex = this.findTariffIndex(tariffTable, energy);
     if (tariffIndex < tariffTable.length - 1) {
       this.__stats_savings_all_time_power_part += tariffTable[tariffIndex + 1].price - tariffTable[tariffIndex].price;
@@ -1256,7 +1256,7 @@ class PiggyBank extends Homey.App {
     } // else max tariff, nothing saved
   }
 
-  statsSetLastDayMaxEnergy(energy) {
+  async statsSetLastDayMaxEnergy(energy) {
     this.__stats_last_day_time = this.roundToNearestHour(new Date());
     this.__stats_last_day_max = energy;
 
@@ -1270,7 +1270,7 @@ class PiggyBank extends Homey.App {
     // On new month:
     const dayOfMonth = this.toLocalTime(this.__stats_last_day_time).getDate();
     if (dayOfMonth === 0) {
-      this.statsSetLastMonthPower(this.__stats_this_month_average);
+      await this.statsSetLastMonthPower(this.__stats_this_month_average);
       this.__stats_this_month_maxes = [];
       this.__stats_app_restarts = 0;
       this.homey.settings.set('stats_app_restarts', 0);
@@ -1279,7 +1279,7 @@ class PiggyBank extends Homey.App {
     this.homey.settings.set('stats_this_month_average', this.__stats_this_month_average);
   }
 
-  statsSetLastHourEnergy(energy) {
+  async statsSetLastHourEnergy(energy) {
     this.__stats_energy_time = this.roundToNearestHour(new Date());
     this.updateLog(`Stats last energy time: ${this.__stats_energy_time}`, LOG_INFO);
     this.__stats_energy = energy;
@@ -1291,7 +1291,7 @@ class PiggyBank extends Homey.App {
 
     // If new day has begun
     if (this.toLocalTime(this.__stats_energy_time).getHours() === 0) {
-      this.statsSetLastDayMaxEnergy(this.__stats_tmp_max_power_today);
+      await this.statsSetLastDayMaxEnergy(this.__stats_tmp_max_power_today);
       this.__stats_tmp_max_power_today = 0;
     }
 
@@ -1593,7 +1593,7 @@ class PiggyBank extends Homey.App {
       const version = await this.elPriceApi.getVersion();
       if (isInstalled && !!version) {
         const split = version.split('.');
-        const apiOk = (Number(split[0]) >= 1 && Number(split[1]) >= 4);
+        const apiOk = (Number(split[0]) >= 1 && Number(split[1]) >= 5);
         this.updateLog(`Electricity price api version ${version} installed${apiOk ? ' and version is ok' : ', but wrong version'}`, LOG_INFO);
         return apiOk;
       }
@@ -1734,9 +1734,8 @@ class PiggyBank extends Homey.App {
     return Promise.resolve();
   }
 
-  fetchTariffTable() {
-    // TBD, just return tensio table for now:
-    return [
+  async fetchTariffTable() {
+    const tensioGridCosts = [
       { limit: 2000, price: 73 },
       { limit: 5000, price: 128 },
       { limit: 10000, price: 219 },
@@ -1753,6 +1752,14 @@ class PiggyBank extends Homey.App {
       { limit: 500000, price: 9743 },
       { limit: Infinity, price: 11821 }
     ];
+    if (await this._checkApi()) {
+      const gridFromApi = await this.elPriceApi.get('/gridcosts');
+      if (Array.isArray(gridFromApi) && gridFromApi.length > 0) {
+        return gridFromApi;
+      }
+    }
+    // Could not fetch the table, using tensio price table instead.
+    return tensioGridCosts;
   }
 
   findTariffIndex(tariffTable, energy) {
