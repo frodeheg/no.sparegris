@@ -41,10 +41,19 @@
       "heating",
       "heater",
       "heat pump",
-      "control",
+      "controller",
       "management",
       "oversight",
-      "guidance"
+      "guidance",
+      "powersave",
+      "thermostat",
+      "step",
+      "heatit",
+      "elko",
+      "danfoss",
+      "namron",
+      "sensibo",
+      "hoiax"
     ],
     "no": [
       "effekt",
@@ -61,10 +70,20 @@
       "oppvarming",
       "varmovn",
       "varmepumpe",
-      "kontroll",
+      "kontroller",
       "håndtering",
       "oversikt",
-      "guide"
+      "guide",
+      "strømsparing",
+      "effekttrinn",
+      "termostat",
+      "trinn",
+      "heatit",
+      "elko",
+      "danfoss",
+      "namron",
+      "sensibo",
+      "høiax"
     ]
   },
   "images": {
