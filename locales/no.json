@@ -6,6 +6,7 @@
     "sponsoredBy": "Denne appen er sponset av:",
     "sponsorText": "Din firmalogo her?<br>Ta kontakt.",
     "tab": {
+      "welcome": "Velkommen",
       "global": "Global",
       "price": "Pris",
       "frost": "Frost",
@@ -27,6 +28,16 @@
       "night": "Natt",
       "holiday": "Borte",
       "custom": "Egen"
+    },
+    "welcome": {
+      "header": "La oss spare penger",
+      "remaining": "Gjenværende oppgaver",
+      "taskEnableApp": "Appen må slås på for at du skal spare penger.",
+      "taskCreateEnergyFlow": "Vennligst koble strømmålerens effektutgang inn til denne appens effektinngang.",
+      "taskEnergyFlowRate": "Hyppigheten strømmålerens effekt oppdateres virker å være for lav (once every ${rate} min). Vennligst øk hyppigheten om mulig.",
+      "taskNoPriceFlow": "Innstillingene indikerer at prispunkt skal komme fra et flytkort, men ingen slike signaler har blitt mottatt.",
+      "taskNoPriceAPI": "Innstillingene indikerer at prispunkt skal settes internt, noe som krever at appen Strømregning er installert, men appen kan ikke finnes eller er for gammel.",
+      "taskNone": "Supert, appen er riktig konfigurert."
     },
     "global": {
       "settings": "Global Innstillinger",

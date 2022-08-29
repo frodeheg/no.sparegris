@@ -484,6 +484,10 @@
     <!-- Tabs -->
     <table width="100%" id="tab_selector" class="tab">
       <tr>
+        <td colspan="4" class="tablinks" onclick="changeTab(event, 'welcomePage')" id="welcomeTab">
+          <span data-i18n="settings.tab.welcome">tab.welcome</span></td>
+      </tr>
+      <tr>
         <td class="tablinks" onclick="changeTab(event, 'globalPage')" id="globalTab">
           <span data-i18n="settings.tab.global">tab.global</span></td>
         <td class="tablinks" onclick="changeTab(event, 'pricePage')" id="priceTab">
@@ -507,6 +511,13 @@
 
     <!-- Important information is shown here -->
     <div data-i18n="warnings.rememberToSave" id="rememberToSave">Remember to save</div>
+
+    <!-- Welcome page -->
+    <div id="welcomePage" class="tabcontent">
+      <fieldset>
+        <legend data-i18n="settings.welcome.header">welcome.header</legend>
+      </fieldset>
+    </div>
 
     <!-- Global page -->
     <div id="globalPage" class="tabcontent">
@@ -843,7 +854,7 @@
           generateEnableList('lowPriDevices', 0);
 
           // Hide all tabs except one:
-          changeTab(false, 'globalPage');
+          changeTab(false, 'welcomePage');
           updateOperatingModes(currentOperatingMode);
           updatePricePoints(currentPricePoint);
           loadElement.style.display = "none";
