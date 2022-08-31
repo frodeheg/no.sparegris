@@ -10,7 +10,9 @@ New features I want input from others before I do anything:
 
 TODO list:
 * Make the user interface more intuitive and add hints what the user can do to get more out of the app.
+* Improve the debug panel so capabilities of all devices can be printed. This is needed to see why the Easee charger is not listed (message @dooniem when ready)
 * Add zone-control for mode changes --> breaking change: will have to move the power limit to the global settings and use flow to change it instead.
+* Improve handling of AC devices (not sure how yet - might need more discussions requested by @dooniem)
 * Improve power-usage calculation over the time the app is restarted / inactive.
 * Add number of cheap/expensive/normal hours to the device capability list
 * Add calculation of what is best, higher tariff or money saved by moving electricity between price points
