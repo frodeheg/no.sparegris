@@ -475,29 +475,29 @@
     <table id="main_menu" class="menu" style="display:none;top:0px;position:fixed;">
       <tbody class="menuitem">
       <tr>
-        <td><a href="#home" data-i18n="settings.menu.home.title">Home</a></td>
+        <td><a href="#home" data-i18n="settings.menu.home.title" onclick="changeTab(event, 'welcomePage')">Home</a></td>
         <td class="dropdown">
           <a href="javascript:void(0)" class="dropbtn" data-i18n="settings.menu.devices.title">Devices</a>
           <div class="dropdown-content">
-            <a href="#" data-i18n="settings.menu.devices.controllable">Controllable devices</a>
-            <a href="#" data-i18n="settings.menu.devices.modes">Modes and priority</a>
-            <a href="#" data-i18n="settings.menu.devices.prices">Price control</a>
+            <a href="#" data-i18n="settings.menu.devices.controllable" onclick="changeTab(event, 'devicePage')">Controllable devices</a>
+            <a href="#" data-i18n="settings.menu.devices.modes" onclick="changeTab(event, 'priorityPage', 0)">Modes and priority</a>
+            <a href="#" data-i18n="settings.menu.devices.prices" onclick="changeTab(event, 'pricePage')">Price control</a>
           </div>
         </td>
         <td class="dropdown">
           <a href="javascript:void(0)" class="dropbtn" data-i18n="settings.menu.advanced.title">Advanced</a>
           <div class="dropdown-content">
-            <a href="#" data-i18n="settings.menu.advanced.settings">Advanced settings</a>
-            <a href="#" data-i18n="settings.menu.advanced.frost">Frost guard</a>
-            <a href="#" data-i18n="settings.menu.advanced.zones">Zone control</a>
+            <a href="#" data-i18n="settings.menu.advanced.settings" onclick="changeTab(event, 'advancedPage')">Advanced settings</a>
+            <a href="#" data-i18n="settings.menu.advanced.frost" onclick="changeTab(event, 'frostPage')">Frost guard</a>
+            <a href="#" data-i18n="settings.menu.advanced.zones" onclick="changeTab(event, 'zonePage')">Zone control</a>
           </div>
         </td>
         <td class="dropdown" style="text-align:right">
           <a href="javascript:void(0)" class="dropbtn" data-i18n="settings.menu.help.title">Help</a>
           <div class="dropdown-content" style="position:fixed;right:0">
-            <a href="#" data-i18n="settings.menu.help.save">How To Save Money</a>
-            <a href="#" data-i18n="settings.menu.help.charger">Car Chargers</a>
-            <a href="#" data-i18n="settings.menu.help.about">About</a>
+            <a href="#" data-i18n="settings.menu.help.save" onclick="changeTab(event, 'helpHowToPage')">How To Save Money</a>
+            <a href="#" data-i18n="settings.menu.help.charger" onclick="changeTab(event, 'helpChargerPage')">Car Chargers</a>
+            <a href="#" data-i18n="settings.menu.help.about" onclick="changeTab(event, 'helpAboutPage')">About</a>
           </div>
         </td>
       </tr>
@@ -505,33 +505,6 @@
     </table>
 
     <div style="padding:16px;margin-top:16px;height:0px;"></div>
-
-    <table width="100%" id="tab_selector" class="tab">
-      <tr>
-        <td colspan="4" class="tablinks" onclick="changeTab(event, 'welcomePage')" id="welcomeTab">
-          <span data-i18n="settings.tab.welcome">tab.welcome</span></td>
-      </tr>
-      <tr>
-        <td class="tablinks" onclick="changeTab(event, 'globalPage')" id="globalTab">
-          <span data-i18n="settings.tab.global">tab.global</span></td>
-        <td class="tablinks" onclick="changeTab(event, 'pricePage')" id="priceTab">
-          <span data-i18n="settings.tab.price">tab.price</span></td>
-        <td class="tablinks" onclick="changeTab(event, 'frostPage')" id="frostTab">
-          <span data-i18n="settings.tab.frost">tab.frost</span></td>
-        <td class="tablinks" onclick="changeTab(event, 'zonePage')" id="zoneTab">
-          <span data-i18n="settings.tab.zone">tab.zone</span></td>
-      </tr>
-      <tr>
-        <td class="tablinks" onclick="changeTab(event, 'priorityPage', 0)" id="normalTab">
-          <span data-i18n="settings.tab.normal">tab.normal</span></td>
-        <td class="tablinks" onclick="changeTab(event, 'priorityPage', 1)" id="nightTab">
-          <span data-i18n="settings.tab.night">tab.night</span></td>
-        <td class="tablinks" onclick="changeTab(event, 'priorityPage', 2)" id="holidayTab">
-          <span data-i18n="settings.tab.holiday">tab.holiday</span></td>
-        <td class="tablinks" onclick="changeTab(event, 'priorityPage', 3)" id="customTab">
-          <span data-i18n="settings.tab.custom">tab.custom</span></td>
-      </tr>
-    </table>
 
     <!-- Important information is shown here -->
     <div data-i18n="warnings.rememberToSave" id="rememberToSave">Remember to save</div>
@@ -548,10 +521,11 @@
                 <option value="0" selected data-i18n="settings.app.disabled">App Disabled</option>
                 <option value="1" data-i18n="settings.app.enabled">App Enabled</option>
               </select>
-              <div class="hintButton" onclick="toggle(this,'activationHint');return false;">i</div></td>
+              <div class="hintButton" onclick="toggle(this,'activationHint1');toggle(this,'activationHint2');return false;">i</div></td>
           </tr>
         </table>
-        <p id="activationHint" class="hint" data-i18n="settings.app.activationHint">app.activationHint</p>
+        <p id="activationHint1" class="hint" data-i18n="settings.app.activationHint1">app.activationHint1</p>
+        <p id="activationHint2" class="hint" data-i18n="settings.app.activationHint2">app.activationHint2</p>
 
         <table class="settings_table">
           <tr>
@@ -580,26 +554,34 @@
       </fieldset>
     </div>
 
-    <!-- Global page -->
-    <div id="globalPage" class="tabcontent">
+    <!-- Help page: How to save money -->
+    <div id="helpHowToPage" class="tabcontent">
+      <fieldset>
+        <legend data-i18n="settings.help.saveMoney">help.saveMoney</legend>
+        <p data-i18n="settings.help.saveMoneyHint">help.saveMoneyHint</p>
+      </fieldset>
+    </div>
+
+    <!-- Help page: Car Chargers -->
+    <div id="helpChargerPage" class="tabcontent">
+      <fieldset>
+        <legend data-i18n="settings.help.carCharger">help.carCharger</legend>
+        <p data-i18n="settings.help.carChargerHint">help.carChargerHint</p>
+      </fieldset>
+    </div>
+
+    <!-- Help page: About -->
+    <div id="helpAboutPage" class="tabcontent">
+      <fieldset>
+        <legend data-i18n="settings.help.aboutInfo">help.aboutInfo</legend>
+        <p data-i18n="settings.help.aboutInfoHint">help.aboutInfoHint</p>
+      </fieldset>
+    </div>
+
+    <!-- Advanced page -->
+    <div id="advancedPage" class="tabcontent">
       <fieldset>
         <legend data-i18n="settings.global.settings">global.settings</legend>
-        <table class="settings_table">
-          <tr>
-            <td class="settings_row_name"><label for="operatingMode" data-i18n="settings.global.operatingMode">global.operatingMode</label>:</td>
-            <td class="settings_row_input">
-              <select id="operatingMode" onchange="displaySaveHint()">
-                <option value="1" data-i18n="settings.opMode.normal">Normal</option>
-                <option value="2" data-i18n="settings.opMode.night">Night</option>
-                <option value="3" data-i18n="settings.opMode.holiday">Holiday</option>
-                <option value="4" data-i18n="settings.opMode.custom">Custom</option>
-              </select>
-              <div class="hintButton" onclick="toggle(this,'hint1');toggle(this,'hint2');return false;">i</div></td>
-          </tr>
-        </table>
-        <p id="hint1" class="hint" data-i18n="settings.global.operatingModeHint1">global.operatingModeHint1</p>
-        <p id="hint2" class="hint" data-i18n="settings.global.operatingModeHint2">global.operatingModeHint2</p>
-
         <table class="settings_table">
           <tr>
             <td class="settings_row_name"><label for="errorMargin" data-i18n="settings.global.errorMargin">global.errorMargin</label>:</td>
@@ -637,23 +619,12 @@
           </tr>
         </table>
         <p id="freeThresholdHint" class="hint" data-i18n="settings.global.freeThresholdHint">global.freeThresholdHint</p>
-
-        <table class="settings_table">
-          <tr>
-            <td class="settings_row_name"><label data-i18n="settings.global.carCharger">global.carCharger</label>:</td>
-            <td class="settings_row_input"><div class="hintButton" onclick="toggle(this,'carChargerHint');return false;">i</div></td>
-          </tr>
-        </table>
-        <p id="carChargerHint" class="hint" data-i18n="settings.global.carChargerHint">global.carChargerHint</p>
-        <table class="settings_table">
-          <tr>
-            <td class="settings_row_name"><label data-i18n="settings.global.sponsorInfo">global.sponsorInfo</label>:</td>
-            <td class="settings_row_input"><div class="hintButton" onclick="toggle(this,'sponsorInfoHint');return false;">i</div></td>
-          </tr>
-        </table>
-        <p id="sponsorInfoHint" class="hint" data-i18n="settings.global.sponsorInfoHint">global.sponsorInfoHint</p>
         <a id="showlog" style="display:none" href="#ShowLog" data-i18n="settings.log.show" onclick="changeTab(event, 'logPage');return false;">log.show</a>
       </fieldset>
+    </div>
+
+    <!-- Global page -->
+    <div id="devicePage" class="tabcontent">
       <fieldset>
         <legend for="highPriDevices"><div class="blockHeader" data-i18n="settings.global.controllableDevices">global.controllableDevices</div> 
           <div class="hintButton" onclick="toggle(this,'hintcd1');toggle(this,'hintcd2');return false;">i</div></legend>
@@ -682,7 +653,7 @@
             <button id="sendLog" data-i18n="settings.log.sendLog">log.sendLog</button>
           </p>
             <textarea id="diagLog"></textarea>
-          <a href="#ExitLog" data-i18n="settings.log.exit" onclick="changeTab(event, 'globalPage');return false;">log.exit</a>
+          <a href="#ExitLog" data-i18n="settings.log.exit" onclick="changeTab(event, 'welcomePage');return false;">log.exit</a>
       </fieldset>
     </div>
     <!-- Log page end -->
@@ -786,21 +757,21 @@
           </table>
           <p id="extremePriceModifierHint" class="hint" data-i18n="settings.price.internal.extremePriceModifierHint">price.internal.extremePriceModifierHint</p>
         </span>
-
-        <table width="100%" id="sub_tab_selector" class="tab">
-          <tr>
-            <td class="subtablinks" onclick="changePriceTab(event, 0)" id="subTabCheap">
-              <span data-i18n="settings.pricetab.cheap">pricetab.cheap</span></td>
-            <td class="subtablinks" onclick="changePriceTab(event, 1)" id="subTabNormal">
-              <span data-i18n="settings.pricetab.normal">pricetab.normal</span></td>
-            <td class="subtablinks" onclick="changePriceTab(event, 2)" id="subTabExpensive">
-              <span data-i18n="settings.pricetab.expensive">pricetab.expensive</span></td>
-            <td class="subtablinks" onclick="changePriceTab(event, 3)" id="subTabExtreme">
-              <span data-i18n="settings.pricetab.extreme">pricetab.extreme</span></td>
-          </tr>
-        </table>
-        <span id="priceActionList">List of devices should have been generated here, if you see this text it is a bug...</span>
       </fieldset>
+
+      <table width="100%" id="sub_tab_selector" class="tab">
+        <tr>
+          <td class="subtablinks" onclick="changePriceTab(event, 0)" id="subTabCheap">
+            <span data-i18n="settings.pricetab.cheap">pricetab.cheap</span></td>
+          <td class="subtablinks" onclick="changePriceTab(event, 1)" id="subTabNormal">
+            <span data-i18n="settings.pricetab.normal">pricetab.normal</span></td>
+          <td class="subtablinks" onclick="changePriceTab(event, 2)" id="subTabExpensive">
+            <span data-i18n="settings.pricetab.expensive">pricetab.expensive</span></td>
+          <td class="subtablinks" onclick="changePriceTab(event, 3)" id="subTabExtreme">
+            <span data-i18n="settings.pricetab.extreme">pricetab.extreme</span></td>
+        </tr>
+      </table>
+      <span id="priceActionList">List of devices should have been generated here, if you see this text it is a bug...</span>
     </div>
     <!-- Price page end -->
 
@@ -833,6 +804,37 @@
 
     <!-- Mode specific page -->
     <div id="priorityPage" class="tabcontent">
+      <fieldset>
+        <legend><div class="blockHeader" data-i18n="settings.mode.operatingMode">mode.operatingMode</div></legend>
+        <table class="settings_table">
+          <tr>
+            <td class="settings_row_name"><label for="operatingMode" data-i18n="settings.mode.activeMode">mode.activeMode</label>:</td>
+            <td class="settings_row_input">
+              <select id="operatingMode" onchange="displaySaveHint()">
+                <option value="1" data-i18n="settings.opMode.normal">Normal</option>
+                <option value="2" data-i18n="settings.opMode.night">Night</option>
+                <option value="3" data-i18n="settings.opMode.holiday">Holiday</option>
+                <option value="4" data-i18n="settings.opMode.custom">Custom</option>
+              </select>
+              <div class="hintButton" onclick="toggle(this,'operatingModeHint');return false;">i</div></td>
+          </tr>
+        </table>
+        <p id="operatingModeHint" class="hint" data-i18n="settings.mode.operatingModeHint">mode.operatingModeHint</p>
+      </fieldset>
+
+      <table width="100%" id="tab_selector" class="tab">
+        <tr>
+          <td class="tablinks" onclick="changeTab(event, 'priorityPage', 0)" id="normalTab">
+            <span data-i18n="settings.tab.normal">tab.normal</span></td>
+          <td class="tablinks" onclick="changeTab(event, 'priorityPage', 1)" id="nightTab">
+            <span data-i18n="settings.tab.night">tab.night</span></td>
+          <td class="tablinks" onclick="changeTab(event, 'priorityPage', 2)" id="holidayTab">
+            <span data-i18n="settings.tab.holiday">tab.holiday</span></td>
+          <td class="tablinks" onclick="changeTab(event, 'priorityPage', 3)" id="customTab">
+            <span data-i18n="settings.tab.custom">tab.custom</span></td>
+        </tr>
+      </table>
+  
       <fieldset>
         <legend><div class="blockHeader" data-i18n="settings.mode.priorities">mode.priorities</div> 
           <div class="hintButton" onclick="toggle(this,'hint6');toggle(this,'hint7');toggle(this,'hint8');return false;">i</div>

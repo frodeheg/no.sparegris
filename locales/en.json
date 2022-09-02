@@ -9,7 +9,8 @@
       "activeted": "The app is",
       "enabled": "App enabled",
       "disabled": "App disabled",
-      "activationHint": "Before you activate the app, please completa all actions in the todo list below.",
+      "activationHint1": "Before you activate the app, please completa all actions in the todo list below.",
+      "activationHint2": "Note: To avoid conflicting settings you should carefully make sure no external flows are working against this app before before activating it.",
       "maxPowHint": "The maximum power can also be changed with flows for example when different maximums are wanted during winter and summer time."
     },
     "menu": {
@@ -36,11 +37,6 @@
       }
     },
     "tab": {
-      "welcome": "Welcome",
-      "global": "Global",
-      "price": "Price",
-      "frost": "Frost",
-      "zone": "Zones",
       "normal": "Normal",
       "night": "Night",
       "holiday": "Away",
@@ -69,9 +65,6 @@
     },
     "global": {
       "settings": "Global Settings",
-      "operatingMode" : "Operating Mode",
-      "operatingModeHint1": "Note: To avoid conflicting settings you should disable all flows trying to operate the devices selected below before activating this app.",
-      "operatingModeHint2": "Hint: You can use flow cards to change operating mode.",
       "errorMargin" : "Error Margin",
       "errorMarginHint1" : "Ensure that you always end up a bit below the effect tariff.",
       "errorMarginHint2" : "Hint: This give you room for a minor overuse another day as the tariff is based on a 3 day average.",
@@ -82,6 +75,11 @@
       "mainFuseHint" : "The main fuse is important for what is calculated as the maximum available power. The app will not let you use more power than the main fuse allows.",
       "freeThreshold": "Free capacity threshold",
       "freeThresholdHint": "Free power will only be reported if the indicated amount of controllable units are switched on. This can be used to give priority to devices that are controlled outside the app, such as charging an electric car. 0% will give the highest priority while 100% will give the lowest priority.",
+      "controllableDevices": "Controllable devices",
+      "deviceListHint1" : "Only selected devices can be controlled by the app.",
+      "deviceListHint2" : "Tip: For optimal control, ensure that heavy adjustable current draws are set to a power that does not exceed the desired power tariff. Otherwise it will result in frequent switching on/off."
+    },
+    "help": {
       "carCharger": "Car Charger Howto",
       "carChargerHint": ["<p>Depending on your preferences, there are two methods that can be used to let this app control an electric car charger:</p><!--",
           "--><ol><!--",
@@ -101,8 +99,9 @@
           "-->  </li><!--",
           "-->  <p style='color:red;'>NB! Help is requested to verify that the above methods can be used to charge an electric car, as the developer of the app does not have an electric car. If you could give the developer of the app feedback on whether it works, that would be great.</p><!--",
           "--></ol>"],
-      "sponsorInfo": "Sponsor and funding",
-      "sponsorInfoHint": ["<p>A lot of free time has gone into developing this app and the hope is that everyone saves money. If you think this is a good idea and want to support the development of the app, you can:</p><!--",
+      "aboutInfo": "About Piggy Bank",
+      "aboutInfoHint": ["<p>This app was made in order for everyone to control their energy usage in a simple way and at the same time save as much money as possible on it.</p><!--",
+          "--><p>A lot of free time has gone into developing this app. If you're hgappy with what you save then please feel free to support the development of the app in the following ways: (completely optional)</p><!--",
           "--><ol><!--",
           "-->  <li><b>For private individuals</b><!--",
           "-->      <p>You can sponsor the development of the app by donating money at <a href='https://github.com/sponsors/frodeheg'>https://github.com/sponsors/frodeheg</a></p><!--",
@@ -112,9 +111,8 @@
           "-->      <p>If your company wants to make use of this great opportunity, you can contact the developer of the app.</p><!--",
           "-->  </li><!--",
           "--></ol>"],
-      "controllableDevices": "Controllable devices",
-      "deviceListHint1" : "Only selected devices can be controlled by the app.",
-      "deviceListHint2" : "Tip: For optimal control, ensure that heavy adjustable current draws are set to a power that does not exceed the desired power tariff. Otherwise it will result in frequent switching on/off."
+      "saveMoney": "How to save money",
+      "saveMoneyHint": "More help is coming...."
     },
     "price": {
       "header": "Price control",
@@ -182,6 +180,9 @@
       "zoneNum": "Antall enheter påvirket"
     },
     "mode" : {
+      "activeMode" : "Active Mode",
+      "operatingMode" : "Operating Mode",
+      "operatingModeHint": "Hint: You can use flow cards to change operating mode.",
       "powerSettings": "Power settings",
       "powerLimit1" : "Step 1 - 0-2 kW",
       "powerLimit2" : "Step 2 - 2-5 kW",

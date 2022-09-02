@@ -9,7 +9,8 @@
       "activeted": "Appen er",
       "enabled": "Aktivert",
       "disabled": "Deaktivert",
-      "activationHint": "Før du aktiverer appen må du passe på at det ikke er noen utestående oppgaver listet nedenfor.",
+      "activationHint1": "Før du aktiverer appen må du passe på at det ikke er noen utestående oppgaver listet nedenfor.",
+      "activationHint2": "Merk: For å unngå motstridende innstillinger bør du være forsiktig så ingen eksterne flytkort jobber mot denne appen før appen aktiveres.",
       "maxPowHint": "Maks forbruk per time kan endres via flows dersom det er ønskelig. For eksempel kan man ha ulikt maks forbruk på sommeren og vinteren."
     },
     "menu": {
@@ -31,16 +32,11 @@
       "help": {
         "title": "Hjelp",
         "save": "Hvordan spare penger",
-        "charger": "Billader",
+        "charger": "Lading av elbil",
         "about": "Om"
       }
     },
     "tab": {
-      "welcome": "Velkommen",
-      "global": "Global",
-      "price": "Pris",
-      "frost": "Frost",
-      "zone": "Soner",
       "normal": "Normal",
       "night": "Natt",
       "holiday": "Borte",
@@ -69,9 +65,6 @@
     },
     "global": {
       "settings": "Global Innstillinger",
-      "operatingMode" : "Driftsmodus",
-      "operatingModeHint1": "Merk: For å unngå motstridende innstillinger bør du deaktivere alle flyter som prøver å betjene enhetene valgt nedenfor før appen aktiveres.",
-      "operatingModeHint2": "Hint: Du kan bruke flytkort for å endre driftsmodus.",
       "errorMargin" : "Feilmargin",
       "errorMarginHint1" : "Sørger for at du alltid ender opp på et nivå under effekttariffen.",
       "errorMarginHint2" : "Hint: Dette gir deg rom for en mindre overskridelse en annen dag ettersom tariffer regnes av snittet av effekttoppen i 3 dager.",
@@ -82,6 +75,11 @@
       "mainFuseHint" : "Hovdedsikringen har betydning for hva som regnes ut som maks tilgjengelig effekt. Appen vil ikke la deg bruke mer effekt enn det hovedsikringen tillater.",
       "freeThreshold": "Terskelverdi ledig kapasitet",
       "freeThresholdHint": "Ledig effekt vil kun bli rapportert dersom den indikerte mengden av kontrollerbare enheter er påslått. Dette kan brukes for å gi prioritet til enheter som styres utenfor appen som for eksempel lading av elbil. 0% Vil gi høyest prioritet mens 100% vil gi minst prioritet.",
+      "controllableDevices": "Kontrollerbare enheter",
+      "deviceListHint1" : "Bare valgte enheter kan kontrolleres av appen.",
+      "deviceListHint2" : "Tips: For optimal styring, sørg for at kraftige justerbare strømtrekk er satt til en effekt som ikke overstiger ønsket effekttariff. Hvis ikke vil det resultere i hyppig av/på slåing."
+    },
+    "help": {
       "carCharger": "Lading av Elbil info",
       "carChargerHint": ["<p>Avhengig av dine preferanser er det to metoder som kan benyttes for å la denne appen styre en elbil-lader:</p><!--",
           "--><ol><!--",
@@ -101,8 +99,9 @@
           "-->  </li><!--",
           "-->  <p style='color:red;'>NB! Det bes om hjelp til å verifisere at overstående metoder kan benyttes til lading av elbil ettersom utvikleren av appen ikke har elbil. Om du kan gi utvikleren av appen tilbakemelding om det fungerer hadde det vært supert.</p><!--",
           "--></ol>"],
-      "sponsorInfo": "Sponsor og finansiering",
-      "sponsorInfoHint": ["<p>Det har gått mye fritid med på å utvikle denne appen og håpet er at alle sparer penger. Syns du dette er en god ide og ønsker å støtte utviklingen av appen kan du:</p><!--",
+      "aboutInfo": "Om Sparegris",
+      "aboutInfoHint": ["<p>Denne appen er laget for at alle skal kunne styre strømmen sin på en enkel måte og samtidig spare så mye penger som mulig på det.</p><!--",
+          "--><p>Det har gått fryktelig mye fritid med for å fullføre dette prosjektet, så dersom du er fornøyd med det du sparer kan du gjerne støtte prosjektet på følgende måter: (helt frivillig)</p><!--",
           "--><ol><!--",
           "-->  <li><b>For privatpersoner</b><!--",
           "-->      <p>Man kan sponse utviklingen av appen ved å donere penger på <a href='https://github.com/sponsors/frodeheg'>https://github.com/sponsors/frodeheg</a></p><!--",
@@ -112,9 +111,8 @@
           "-->      <p>Dersom din bedrift ønsker å utnytte denne fine muligheten kan dere ta kontakt med utvikleren av appen.</p><!--",
           "-->  </li><!--",
           "--></ol>"],
-      "controllableDevices": "Kontrollerbare enheter",
-      "deviceListHint1" : "Bare valgte enheter kan kontrolleres av appen.",
-      "deviceListHint2" : "Tips: For optimal styring, sørg for at kraftige justerbare strømtrekk er satt til en effekt som ikke overstiger ønsket effekttariff. Hvis ikke vil det resultere i hyppig av/på slåing."
+      "saveMoney": "Hvordan spare penger",
+      "saveMoneyHint": "Mer hjelp kommer snart...."
     },
     "price": {
       "header": "Priskontroll",
@@ -182,6 +180,9 @@
       "zoneNum": "Antall enheter påvirket"
     },
     "mode" : {
+      "activeMode" : "Aktiv modus",
+      "operatingMode" : "Driftsmodus",
+      "operatingModeHint": "Hint: Du kan bruke flytkort for å endre driftsmodus.",
       "powerSettings": "Strøminnstillinger",
       "powerLimit1" : "Trinn 1 - 0-2 kW",
       "powerLimit2" : "Trinn 2 - 2-5 kW",
