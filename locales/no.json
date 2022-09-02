@@ -119,7 +119,8 @@
       "priceMode": "Modus",
       "mode": {
         "flow": "Fra flytkort",
-        "internal": "Intern Styring"
+        "internal": "Intern Styring",
+        "disabled": "Deaktivert"
       },
       "buttons": {
         "help": "Frostsikring og sonestyring vil overstyre alle handlinger. Frostsikring overstyrer alt som har termostat og Sonestyring slår av alt som ikke har frostsikring. For øvrig får handlingene følgende effekt",

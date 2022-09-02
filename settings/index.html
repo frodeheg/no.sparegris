@@ -662,6 +662,21 @@
     <div id="pricePage" class="tabcontent">
       <fieldset>
         <legend data-i18n="settings.price.header">price.header</legend>
+
+        <table class="settings_table">
+          <tr>
+            <td class="settings_row_name"><label for="priceMode" data-i18n="settings.price.priceMode">price.priceMode</label>:</td>
+            <td class="settings_row_input">
+              <select id="priceMode" onchange="checkPriceMode(this);displaySaveHint()">
+                <option value="0" data-i18n="settings.price.mode.flow">From flows</option>
+                <option value="1" data-i18n="settings.price.mode.internal">Internally</option>
+                <option value="2" data-i18n="settings.price.mode.disabled" selected>Disabled</option>
+              </select>
+              <div class="hintButton" onclick="toggle(this,'hintp1');return false;">i</div></td>
+          </tr>
+        </table>
+        <p id="hintp1" class="hint" data-i18n="settings.price.priceHint1">price.priceHint1</p>
+
         <table class="settings_table">
           <tr>
             <td class="settings_row_name"><label for="pricePoint" data-i18n="settings.price.pricePoint">price.pricePoint</label>:</td>
@@ -673,19 +688,6 @@
           </tr>
         </table>
         <p id="hintpp" class="hint" data-i18n="settings.price.pricePointHint">price.pricePointHint</p>
-
-        <table class="settings_table">
-          <tr>
-            <td class="settings_row_name"><label for="priceMode" data-i18n="settings.price.priceMode">price.priceMode</label>:</td>
-            <td class="settings_row_input">
-              <select id="priceMode" onchange="checkPriceMode(this);displaySaveHint()">
-                <option value="0" data-i18n="settings.price.mode.flow" selected>From flows</option>
-                <option value="1" data-i18n="settings.price.mode.internal">Internally</option>
-              </select>
-              <div class="hintButton" onclick="toggle(this,'hintp1');return false;">i</div></td>
-          </tr>
-        </table>
-        <p id="hintp1" class="hint" data-i18n="settings.price.priceHint1">price.priceHint1</p>
 
         <span id="priceControl" style="display: none">
           <p id="errp1" class="error" data-i18n="settings.price.priceErr1">price.priceErr1</p>
@@ -1073,7 +1075,7 @@
           if (priceMode !== null) {
             currentPriceMode = priceMode;
           } else {
-            currentPriceMode = 0;
+            currentPriceMode = 2;
           }
           priceModeLoaded = true;
           checkLoadingDone();

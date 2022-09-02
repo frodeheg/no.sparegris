@@ -119,7 +119,8 @@
       "priceMode": "Mode",
       "mode": {
         "flow": "From Flow",
-        "internal": "Internal control"
+        "internal": "Internal control",
+        "disabled": "Disabled"
       },
       "buttons": {
         "help": "Frost guard and zone control will override all actions. Frost guard will override everything with a thermostat and zone control turns off everything without frost guard. Other than that the actions have the following effect",
