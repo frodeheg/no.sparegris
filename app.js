@@ -219,7 +219,7 @@ class PiggyBank extends Homey.App {
       if (preventZigbee) return Promise.reject(new Error(this.homey.__('warnings.homeyReboot')));
       if (!this.app_is_configured) return Promise.reject(new Error(this.homey.__('warnings.notConfigured')));
       if (+this.homey.settings.get('operatingMode') === MODE_DISABLED) return Promise.reject(new Error(this.homey.__('warnings.notEnabled')));
-      if (+this.homey.settings.get('priceMode') === 1) return Promise.reject(new Error(this.homey.__('warnings.internalPP')));
+      if (+this.homey.settings.get('priceMode') !== c.PRICE_MODE_FLOW) return Promise.reject(new Error(this.homey.__('warnings.notPMfromFlow')));
       if (+args.mode === PP_EXTREME && this.homey.settings.get('priceActionList').length === 3) return Promise.reject(new Error(this.homey.__('warnings.notConfigured'))); // Added in version 0.8.15
       return this.onPricePointUpdate(args.mode);
     });
@@ -475,23 +475,40 @@ class PiggyBank extends Homey.App {
     }
     const promiseDevice = this.homeyApi.devices.getDevice({ id: deviceId });
     const actionLists = this.homey.settings.get('priceActionList');
+    const priceMode = +this.homey.settings.get('priceMode');
     const actionListIdx = +this.homey.settings.get('pricePoint');
     const currentAction = actionLists[actionListIdx][deviceId]; // Action state: .operation
-    const currentActionOp = parseInt(currentAction.operation, 10);
     const modeLists = this.homey.settings.get('modeList');
     const currentMode = +this.homey.settings.get('operatingMode');
     const currentModeList = modeLists[currentMode - 1];
     const currentModeIdx = this.findModeIdx(deviceId);
     const currentModeState = parseInt(currentModeList[currentModeIdx].operation, 10); // Mode state
+    const replacementOp = (currentModeState === ALWAYS_OFF) ? TURN_OFF : TURN_ON;
+    const currentActionOp = (priceMode === c.PRICE_MODE_DISABLED) ? replacementOp : parseInt(currentAction.operation, 10); // Override the current action if price actions are disabled
 
     // Do not attempt to control any devices if the app is disabled
     if (currentMode === 0) { // App is disabled
       return Promise.resolve();
     }
 
+    // In case the new state was not set it will be the same as the preferred state.
+    // This can happen for 2 cases:
+    // - priceMode is DISABLED
+    // - zone control turns on devices again
+    if (newState === undefined) {
+      switch (currentActionOp) {
+        case DELTA_TEMP:
+          // Override as changedevicestate only handles onoff
+          newState = TURN_ON;
+          break;
+        default:
+          newState = currentActionOp;
+      }
+    }
+
     // Do not attempt to change the device state if it is in IGNORE
     // or EMERGENCY_OFF mode unless it is an EMERGENCY_OFF operation
-    if ((currentActionOp === IGNORE)
+    if ((currentActionOp === IGNORE) || (newState === IGNORE)
       || (currentActionOp === EMERGENCY_OFF && newState !== EMERGENCY_OFF)) {
       return Promise.resolve([false, false]);
     }
@@ -656,48 +673,48 @@ class PiggyBank extends Homey.App {
             this.__current_state[deviceId].__monitorError += 1;
           }
           // Go on to confirm device states
-          return this.homeyApi.devices.getDevice({ id: deviceId })
-            .then(device => {
-              if (this.__deviceList[deviceId].onoff_cap === undefined) {
-                return Promise.reject(new Error('The onoff capability is non-existing, this should never happen.'));
-              }
-              const isOn = device.capabilitiesObj[this.__deviceList[deviceId].onoff_cap].value;
-              const onConfirmed = (this.__current_state[deviceId].isOn === isOn);
-              if (!onConfirmed) {
-                // Try to change the on state.....
-                this.__current_state[deviceId].__monitorFixOn += 1;
-                const newOp = this.__current_state[deviceId].isOn ? TURN_ON : TURN_OFF;
-                return this.changeDeviceState(deviceId, newOp)
-                  .then(() => this.refreshTemp(deviceId))
-                  .then(() => {
-                    this.__current_state[deviceId].confirmed = 1;
-                    return Promise.resolve(false);
-                  });
-              }
-              if ((!isOn) || (!this.__deviceList[deviceId].thermostat_cap)) {
-                this.__current_state[deviceId].confirmed = 2;
-                return Promise.resolve(true);
-              }
-              // Thermostat capabilities
-              const tempConfirmed = this.__current_state[deviceId].temp && (device.capabilitiesObj['target_temperature'].value === this.__current_state[deviceId].temp);
-              if (tempConfirmed) {
-                this.__current_state[deviceId].confirmed = 3;
-                return Promise.resolve(true);
-              }
-              // Try to change the temp state.....
-              this.__current_state[deviceId].__monitorFixTemp += 1;
-              return this.refreshTemp(deviceId)
-                .then(() => {
-                  this.__current_state[deviceId].confirmed = 4;
-                  return Promise.resolve(false);
-                });
-            })
-            .catch(err => {
-              // Ignore the error, just count the error for statistics
-              // A fix will be attempted next time the monitor runs anyway
-              this.__current_state[deviceId].__monitorError += 1;
+          return this.homeyApi.devices.getDevice({ id: deviceId });
+        })
+        .then(device => {
+          if (this.__deviceList[deviceId].onoff_cap === undefined) {
+            return Promise.reject(new Error('The onoff capability is non-existing, this should never happen.'));
+          }
+          const isOn = device.capabilitiesObj[this.__deviceList[deviceId].onoff_cap].value;
+          const onConfirmed = (this.__current_state[deviceId].isOn === isOn);
+          if (!onConfirmed) {
+            // Try to change the on state.....
+            this.__current_state[deviceId].__monitorFixOn += 1;
+            const newOp = this.__current_state[deviceId].isOn ? TURN_ON : TURN_OFF;
+            return this.changeDeviceState(deviceId, newOp)
+              .then(() => this.refreshTemp(deviceId))
+              .then(() => {
+                this.__current_state[deviceId].confirmed = 1;
+                return Promise.resolve(false);
+              });
+          }
+          if ((!isOn) || (!this.__deviceList[deviceId].thermostat_cap)) {
+            this.__current_state[deviceId].confirmed = 2;
+            return Promise.resolve(true);
+          }
+          // Thermostat capabilities
+          const tempConfirmed = this.__current_state[deviceId].temp && (device.capabilitiesObj['target_temperature'].value === this.__current_state[deviceId].temp);
+          if (tempConfirmed) {
+            this.__current_state[deviceId].confirmed = 3;
+            return Promise.resolve(true);
+          }
+          // Try to change the temp state.....
+          this.__current_state[deviceId].__monitorFixTemp += 1;
+          return this.refreshTemp(deviceId)
+            .then(() => {
+              this.__current_state[deviceId].confirmed = 4;
               return Promise.resolve(false);
             });
+        })
+        .catch(err => {
+          // Ignore the error, just count the error for statistics
+          // A fix will be attempted next time the monitor runs anyway
+          this.__current_state[deviceId].__monitorError += 1;
+          return Promise.resolve(false);
         }));
     }
 
@@ -816,7 +833,7 @@ class PiggyBank extends Homey.App {
     for (const deviceId in this.__deviceList) {
       if (this.__deviceList[deviceId].use
         && this.__deviceList[deviceId].memberOf.includes(zone.id)) {
-        promises.push(this.changeDeviceState(deviceId, enabled ? TURN_ON : TURN_OFF));
+        promises.push(this.changeDeviceState(deviceId, enabled ? undefined : TURN_OFF));
       }
     }
 
@@ -836,6 +853,11 @@ class PiggyBank extends Homey.App {
    * onPricePointUpdate is called whenever the price point is changed
    */
   async onPricePointUpdate(newMode) {
+    // Do not continue if price points are disabled:
+    if (+this.homey.settings.get('priceMode') === c.PRICE_MODE_DISABLED) {
+      return Promise.resolve();
+    }
+    // Do not continue if the price point did not change
     const oldPricePoint = +this.homey.settings.get('pricePoint');
     this.statsSetLastHourPricePoint(oldPricePoint);
     if (+newMode === +oldPricePoint) {
@@ -1054,7 +1076,8 @@ class PiggyBank extends Homey.App {
     const modeIdx = this.findModeIdx(deviceId);
     const modeTemp = parseInt(currentModeList[modeIdx].targetTemp, 10);
     const currentAction = actionLists[actionListIdx][deviceId]; // Action state: .operation
-    const deltaTemp = (currentAction.operation === DELTA_TEMP) ? parseInt(currentAction.delta, 10) : 0;
+    const currentPriceMode = +this.homey.settings.get('priceMode');
+    const deltaTemp = ((currentPriceMode !== c.PRICE_MODE_DISABLED) && (currentAction.operation === DELTA_TEMP)) ? parseInt(currentAction.delta, 10) : 0;
     return this.homeyApi.devices.getDevice({ id: deviceId })
       .then(device => {
         if (this.__deviceList[deviceId].onoff_cap === undefined) {
@@ -1099,6 +1122,7 @@ class PiggyBank extends Homey.App {
    */
   async refreshAllDevices() {
     const currentPricePoint = +this.homey.settings.get('pricePoint');
+    const currentPriceMode = +this.homey.settings.get('priceMode');
 
     // Go through all actions for this new mode;
     const actionLists = this.homey.settings.get('priceActionList');
@@ -1109,10 +1133,11 @@ class PiggyBank extends Homey.App {
         // Apparently the stored settings are invalid and need to be refreshed
         continue;
       }
-      const { operation } = currentActions[deviceId];
+      const { operation } = (currentPriceMode === c.PRICE_MODE_DISABLED) ? undefined : currentActions[deviceId];
       switch (operation) {
         case TURN_ON:
         case TURN_OFF:
+        case undefined: // undefined only means leave it to the changeDeviceState function to decide the operation
           promises.push(this.changeDeviceState(deviceId, operation));
           break;
         case DELTA_TEMP:
@@ -1442,6 +1467,7 @@ class PiggyBank extends Homey.App {
         this.updateLog('========== INTERNAL STATE ==========', LOG_ALL);
         this.updateLog(`Number of devices under control: ${numControlledDevices}`, LOG_ALL);
         this.updateLog(`Current operating mode: ${this.homey.settings.get('operatingMode')}`, LOG_ALL);
+        this.updateLog(`Current price mode: ${this.homey.settings.get('priceMode')}`, LOG_ALL);
         this.updateLog(`Current price point: ${this.homey.settings.get('pricePoint')}`, LOG_ALL);
         this.updateLog(`Total signal failures On:${this.__stats_failed_turn_on} Off:${this.__stats_failed_turn_off} Temp:${this.__stats_failed_temp_change}`, LOG_ALL);
         this.updateLog(`Total number of monitor errors: ${this.__monitorError}`, LOG_ALL);
@@ -1709,7 +1735,7 @@ class PiggyBank extends Homey.App {
     // === Calculate price point if state is internal and have future prices ===
     const futurePriceOptions = this.homey.settings.get('futurePriceOptions');
     if (this.__current_prices.length < 1
-      || +this.homey.settings.get('priceMode') !== 1) {
+      || +this.homey.settings.get('priceMode') !== c.PRICE_MODE_INTERNAL) {
       return Promise.resolve();
     }
     if (!this.app_is_configured

@@ -237,7 +237,7 @@
     "savingWait": "Lagrer, vennligst vent...",
     "savingFailed": "Klarte ikke å lagre! Dette skal ikke skje, vennligst meld ifra til utvikleren så feilen kan bli fikset.",
     "noPriceApi": "Du må installere appen 'no.almli.utilitycost' for få strømpriser til å virke",
-    "internalPP": "For å sette prispunkt med flows må du først deaktivere den interne prisstyringen fra appens innstillinger",
+    "notPMfromFlow": "For å sette prispunkt med flows må du først aktivere dette fra appens innstillinger",
     "rememberToSave": "Husk å lagre!",
     "appDisabled": "Appens operasjonsmodus er satt til deaktivert. Du kan aktivere appen ved å gå inn i appens innstillinger eller gjennom en flow.",
     "timeout": "Timeout! Homey er opptatt, vennligst prøv igjen senere eller kontakt appens utvikler dersom problemet fortsetter. Hvis du kjører fra en browser bruker det å hjelpe å laste inn siden på nytt."

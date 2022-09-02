@@ -237,7 +237,7 @@
     "savingWait": "Saving, please wait...",
     "savingFailed": "Failed to save, This should not happen, please notify the developer so this can be fixed",
     "noPriceApi": "You have to install the app 'no.almli.utilitycost' to get the electricity prices to work",
-    "internalPP": "In order to set price points with flows you have to disable the internal price control first in the app setup",
+    "notPMfromFlow": "In order to set price points with flows you first have to enable price control using flows in the app setup",
     "rememberToSave": "Remember to save!",
     "appDisabled": "The app operating mode is set to disabled. Please turn it on in app settings or with a flow.",
     "timeout": "Timeout! Homey is busy. Please retry later or contact the App developer if the problem persist. If you're running from a browser then it usually helps to refresh the page."
