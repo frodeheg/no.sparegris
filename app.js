@@ -585,6 +585,9 @@ class PiggyBank extends Homey.App {
         const lapsedTime = 1000 * 60 * 60 - this.timeToNextHour(now);
         // Assume 100% use this hour up until now (except for the errorMargin so we gett less warnings the first hour)
         this.__reserved_energy = (1 - errorMargin) * ((maxPower * lapsedTime) / (1000 * 60 * 60));
+        if (Number.isNaN(this.__reserved_energy)) {
+          this.__reserved_energy = 0;
+        }
       } else {
         // Add up last part of previous hour
         const lapsedTime = now - this.__current_power_time;
@@ -740,7 +743,7 @@ class PiggyBank extends Homey.App {
     this.__power_estimated = this.__accum_energy + (newPower * remainingTime) / (1000 * 60 * 60);
 
     // Check if power can be increased or reduced
-    const errorMargin = this.homey.settings.get('errorMargin') ? (parseInt(this.homey.settings.get('errorMargin'), 10) / 100) : 1;
+    const errorMargin = this.homey.settings.get('errorMargin') ? (parseInt(this.homey.settings.get('errorMargin'), 10) / 100) : 0;
     const trueMaxPower = this.homey.settings.get('maxPower');
     const errorMarginWatts = trueMaxPower * errorMargin;
     const maxPower = trueMaxPower - errorMarginWatts;

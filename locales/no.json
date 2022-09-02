@@ -134,7 +134,7 @@
       "actionHigh": "Handling når strømprisen blir høy",
       "actionExtreme": "Handling når strømprisen blir ekstremt høy",
       "actionNormal": "Handling når strømprisen blir normal",
-      "priceHint1": "Modus lar deg velge om du skal fore appen med prispunkt manuelt via flows eller om det skal gjøres automatisk. Dersom ingen av delene benyttes vil appen bare styre maks effekt.",
+      "priceHint1": "Modus lar deg velge om du skal fore appen med prispunkt manuelt via flows eller om det skal gjøres automatisk. Dersom ingen av delene benyttes (deaktivert) vil appen bare styre maks effekt.",
       "priceErr1": "NB! Du må installere appen no.almli.utilitycost for å bruke den interne priskontrollen. Strømprisen hentes sømløst uten å benytte flytkort.",
       "pricePoint": "Prispunkt",
       "pricePointHint": "Oppførsel for hvert prispunkt kan endres nedenfor. Man kan bytte mellom ulike prispunkt ved hjelp av flows.",
@@ -240,7 +240,7 @@
     "internalPP": "For å sette prispunkt med flows må du først deaktivere den interne prisstyringen fra appens innstillinger",
     "rememberToSave": "Husk å lagre!",
     "appDisabled": "Appens operasjonsmodus er satt til deaktivert. Du kan aktivere appen ved å gå inn i appens innstillinger eller gjennom en flow.",
-    "timeout": "Timeout! Homey er opptatt, vennligst prøv igjen senere eller kontakt appens utvikler dersom problemet fortsetter."
+    "timeout": "Timeout! Homey er opptatt, vennligst prøv igjen senere eller kontakt appens utvikler dersom problemet fortsetter. Hvis du kjører fra en browser bruker det å hjelpe å laste inn siden på nytt."
   },
   "breaking": {
     "maxPower": "Viktig endring for **Sparegris**: Maks effekt er nå en enkelt global verdi istedenfor en for hver operasjonsmodus. Vennligst sjekk at den nye innstillingen passer for deg. Den nye innstillingen er:"

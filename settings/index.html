@@ -69,7 +69,6 @@
       var frostList = {} // Indexed by deviceId
       var zoneList = {} // Indexed by zone-id
       var priceActionList = [ {}, {}, {}, {} ] // Indexed by deviceId
-      var maxPower = 2000;
       var currentPriceMode = 0; // From Flow
       var currentPricePoint = 1; // Normal
       var currentOperatingMode = 0; // Disabled
@@ -408,9 +407,8 @@
         if(value != "") {
           if(parseInt(value) < parseInt(min)) { value = min; }
           if(parseInt(value) > parseInt(max)) { value = max; }
-          document.getElementById('maxPower').value=value;
-          document.getElementById('forMaxPower').value=value;
-          maxPower=value;
+          document.getElementById('maxPower').value = value;
+          document.getElementById('forMaxPower').value = value;
         }
       }
 
@@ -946,6 +944,7 @@
         var highPriceModifierElement =  document.getElementById("highPriceModifier");
         var extremePriceModifierElement =  document.getElementById("extremePriceModifier");
         var rememberToSaveElement = document.getElementById("rememberToSave");
+        var maxPowerElement = document.getElementById("maxPower");
 
         // Fetch translation strings from Homey
         deltaText = Homey.__(deltaText);
@@ -1052,10 +1051,11 @@
           priceActionListLoaded = true;
           checkLoadingDone();
         });
-        Homey.get("maxPower", function (err, maxPow) {
+        Homey.get("maxPower", function (err, maxPower) {
           if (err) return Homey.alert(err);
-          if (Array.isArray(maxPow)) {
-            maxPower = maxPow;
+          if (Number.isInteger(+maxPower)) {
+            document.getElementById("maxPower").value = +maxPower;
+            document.getElementById("forMaxPower").value = +maxPower;
           } // else use defaults set from the top (this is the first time)
           maxPowerLoaded = true;
           checkLoadingDone();
@@ -1189,7 +1189,7 @@
               Homey.set("modeList", modeList, errFunc);
               Homey.set("frostList", frostList, errFunc);
               Homey.set("zones", zoneList, errFunc);
-              Homey.set("maxPower", maxPower, errFunc);
+              Homey.set("maxPower", maxPowerElement.value, errFunc);
               Homey.set("operatingMode", opModeValue, errFunc);
               Homey.set("priceMode", priceModeElement.value, errFunc);
               Homey.set("pricePoint", pricePointElement.value, errFunc);
@@ -1379,8 +1379,6 @@
           refreshModeLists();
           generatePriorityList(modeId);
           currentModeTab = modeId;
-          document.getElementById("maxPower").value = maxPower;
-          document.getElementById("forMaxPower").value = maxPower;
         }
 
         // Get all elements with class="tabcontent" and hide them
