@@ -5,6 +5,36 @@
     "loadingText": "Please wait a few seconds while devices are being loaded...",
     "sponsoredBy": "This app is sponsored by:",
     "sponsorText": "Your company logo here?<br>Contact the developer.",
+    "app": {
+      "activeted": "The app is",
+      "enabled": "App enabled",
+      "disabled": "App disabled",
+      "activationHint": "Before you activate the app, please completa all actions in the todo list below.",
+      "maxPowHint": "The maximum power can also be changed with flows for example when different maximums are wanted during winter and summer time."
+    },
+    "menu": {
+      "home": {
+        "title": "Home"
+      },
+      "devices": {
+        "title": "Devices",
+        "controllable": "Controllable devices",
+        "modes": "Modes and priority",
+        "prices": "Price control"
+      },
+      "advanced": {
+        "title": "Advanced",
+        "settings": "Advanced settings",
+        "frost": "Frost guard",
+        "zones": "Zone control"
+      },
+      "help": {
+        "title": "Help",
+        "save": "How to save money",
+        "charger": "Car chargers",
+        "about": "About"
+      }
+    },
     "tab": {
       "welcome": "Welcome",
       "global": "Global",
@@ -23,14 +53,12 @@
       "extreme": "Extreme"
     },
     "opMode": {
-      "disabled": "App Disabled",
       "normal": "Normal",
       "night": "Night",
       "holiday": "Away",
       "custom": "Custom"
     },
     "welcome": {
-      "header": "Let's save money",
       "remaining": "Remaining tasks",
       "taskEnableApp": "The app must be enabled in order to save money.",
       "taskCreateEnergyFlow": "Please connect the output of the house energy meter to the energy input of this app.",
@@ -211,5 +239,8 @@
     "rememberToSave": "Remember to save!",
     "appDisabled": "The app operating mode is set to disabled. Please turn it on in app settings or with a flow.",
     "timeout": "Timeout! Homey is busy. Please retry later or contact the App developer if the problem persist."
+  },
+  "breaking": {
+    "maxPower": "Important change for **Piggy Bank**: Max Power is now a single global setting instead of per mode. Please check that the new setting is ok. The new setting is "
   }
 }

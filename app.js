@@ -75,13 +75,12 @@ class PiggyBank extends Homey.App {
    */
   validateSettings() {
     // this.log('Validating settings.');
-    // this.log(`maxPowerList: ${JSON.stringify(this.homey.settings.get('maxPowerList'))}`);
     // this.log(`frostList: ${JSON.stringify(this.homey.settings.get('frostList'))}`);
     // this.log(`modeList: ${JSON.stringify(this.homey.settings.get('modeList'))}`);
     // this.log(`priceActionList: ${JSON.stringify(this.homey.settings.get('priceActionList'))}`);
     try {
       if (this.homey.settings.get('operatingMode') === null) return false;
-      if (this.homey.settings.get('maxPowerList') === null) return false;
+      if (this.homey.settings.get('maxPower') === null) return false;
       const frostList = this.homey.settings.get('frostList');
       const numControlledDevices = Object.keys(frostList).length;
       if (numControlledDevices === 0) return false;
@@ -106,8 +105,21 @@ class PiggyBank extends Homey.App {
    * onInit is called when the app is initialized.
    */
   async onInit() {
-    /* DEBUG_BEGIN
     this.log('OnInit');
+
+    // ===== BREAKING CHANGES =====
+    // Version 0.10.8 changes from having maxPower per mode to one global setting
+    if (Array.isArray(this.homey.settings.get('maxPowerList'))) {
+      const maxPowerList = this.homey.settings.get('maxPowerList');
+      this.homey.settings.set('maxPower', maxPowerList[0]);
+      this.homey.settings.unset('maxPowerList');
+      const maxPowerText = `${this.homey.__('breaking.maxPower')} ${maxPowerList[0]} kWh`;
+      this.log(maxPowerText);
+      this.homey.notifications.createNotification({ excerpt: maxPowerText });
+    }
+    // ===== BREAKING CHANGES END =====
+
+    /* DEBUG_BEGIN
     // // In case of debug
     if (this.homey.app.manifest.id === 'no.sparegris2') {
       this.log('===== DEBUG MODE =====');
@@ -210,6 +222,13 @@ class PiggyBank extends Homey.App {
       if (+this.homey.settings.get('priceMode') === 1) return Promise.reject(new Error(this.homey.__('warnings.internalPP')));
       if (+args.mode === PP_EXTREME && this.homey.settings.get('priceActionList').length === 3) return Promise.reject(new Error(this.homey.__('warnings.notConfigured'))); // Added in version 0.8.15
       return this.onPricePointUpdate(args.mode);
+    });
+    const cardActionMaxUsageUpdate = this.homey.flow.getActionCard('change-piggy-bank-max-usage');
+    cardActionMaxUsageUpdate.registerRunListener(async args => {
+      if (preventZigbee) return Promise.reject(new Error(this.homey.__('warnings.homeyReboot')));
+      if (!this.app_is_configured) return Promise.reject(new Error(this.homey.__('warnings.notConfigured')));
+      if (+this.homey.settings.get('operatingMode') === MODE_DISABLED) return Promise.reject(new Error(this.homey.__('warnings.notEnabled')));
+      return this.onMaxUsageUpdate(args.maxPow);
     });
     const cardActionSafetyPowerUpdate = this.homey.flow.getActionCard('change-piggy-bank-safety-power');
     cardActionSafetyPowerUpdate.registerRunListener(async args => {
@@ -561,13 +580,8 @@ class PiggyBank extends Homey.App {
       if (this.__current_power === undefined) {
         // First hour after app was started
         // Reserve energy for the time we have no data on
-        const maxPowerList = this.homey.settings.get('maxPowerList');
-        const currentMode = +this.homey.settings.get('operatingMode');
+        const maxPower = this.homey.settings.get('maxPower');
         const errorMargin = this.homey.settings.get('errorMargin') ? (parseInt(this.homey.settings.get('errorMargin'), 10) / 100) : 1;
-        let maxPower = 2000;
-        if (Array.isArray(maxPowerList) && (currentMode > 0) && maxPowerList[currentMode - 1] !== undefined) {
-          maxPower = +maxPowerList[currentMode - 1];
-        }
         const lapsedTime = 1000 * 60 * 60 - this.timeToNextHour(now);
         // Assume 100% use this hour up until now (except for the errorMargin so we gett less warnings the first hour)
         this.__reserved_energy = (1 - errorMargin) * ((maxPower * lapsedTime) / (1000 * 60 * 60));
@@ -705,6 +719,7 @@ class PiggyBank extends Homey.App {
    * Must never be called when operatingMode is set to Disabled
    */
   async onPowerUpdate(newPower) {
+    // this.log(`OnPowerUpdate(${newPower})`);
     if (Number.isNaN(+newPower)) {
       // If newPower is invalid or app is not configured just ignore it
       return Promise.resolve();
@@ -726,9 +741,7 @@ class PiggyBank extends Homey.App {
 
     // Check if power can be increased or reduced
     const errorMargin = this.homey.settings.get('errorMargin') ? (parseInt(this.homey.settings.get('errorMargin'), 10) / 100) : 1;
-    const maxPowerList = this.homey.settings.get('maxPowerList');
-    const currentMode = +this.homey.settings.get('operatingMode');
-    const trueMaxPower = maxPowerList[currentMode - 1];
+    const trueMaxPower = this.homey.settings.get('maxPower');
     const errorMarginWatts = trueMaxPower * errorMargin;
     const maxPower = trueMaxPower - errorMarginWatts;
     const safetyPower = +this.homey.settings.get('safetyPower');
@@ -831,6 +844,14 @@ class PiggyBank extends Homey.App {
   }
 
   /**
+   * onMaxUsageUpdate is called whenever the max usage per hour is changed
+   */
+  async onMaxUsageUpdate(newVal) {
+    this.updateLog(`Changing the max usage per hour to: ${String(newVal)}`, LOG_INFO);
+    this.homey.settings.set('maxPower', newVal);
+  }
+
+  /**
    * onSafetyPowerUpdate is called whenever the safety power is changed
    */
   async onSafetyPowerUpdate(newVal) {
@@ -842,6 +863,7 @@ class PiggyBank extends Homey.App {
    * onFreePowerChanged is called whenever the amount of free power has changed
    */
   async onFreePowerChanged(powerDiff) {
+    // this.log(`OnFreePowerChanged(${powerDiff})`);
     const freeThreshold = +this.homey.settings.get('freeThreshold') || 100;
     const listOfUsedDevices = this.homey.settings.get('frostList') || {};
     const numDevices = Object.keys(listOfUsedDevices).length;

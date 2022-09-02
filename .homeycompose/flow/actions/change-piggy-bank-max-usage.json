@@ -1,0 +1,30 @@
+{
+  "title": {
+    "en": "Change max usage per hour",
+    "no": "Endre maks forbruk per time"
+  },
+  "titleFormatted": {
+    "en": "Set the max hourly usage to [[maxPow]]",
+    "no": "Sett maks forbruk per time til [[maxPow]]"
+  },
+  "hint": {
+    "en": "Allows you to dynamically change the maximum hourly usage. This could be useful when changing between summer time, winter time and long holidays",
+    "no": "Tillater deg å dynamisk endre det maksimale forbruket per time. Dette kan være nyttig for å bytte mellom sommer, vinter og lange ferier"
+  },
+  "args": [
+    {
+      "type": "number",
+      "min": 0,
+      "max": 100000,
+      "placeholder": {
+        "en": "Number of Wh",
+        "no": "Antall Wh"
+      },
+      "title": {
+        "en": "Max usage per hour",
+        "no": "Maksimalt forbruk per time"
+      },
+      "name": "maxPow"
+    }
+  ]
+}

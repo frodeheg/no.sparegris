@@ -69,12 +69,7 @@
       var frostList = {} // Indexed by deviceId
       var zoneList = {} // Indexed by zone-id
       var priceActionList = [ {}, {}, {}, {} ] // Indexed by deviceId
-      var maxPowerList = [
-        2000, // Normal
-        2000, // Night
-        2000, // Away
-        2000  // Custom
-      ]
+      var maxPower = 2000;
       var currentPriceMode = 0; // From Flow
       var currentPricePoint = 1; // Normal
       var currentOperatingMode = 0; // Disabled
@@ -84,14 +79,6 @@
       var currentMainFuse = 63;
       var futurePriceOptions = {ApiError:true};
       var currentModeTab = 0; // Normal
-
-      var operatingModes = [
-        { name:"settings.opMode.disabled", value: 0 },
-        { name:"settings.opMode.normal", value: 1 },
-        { name:"settings.opMode.night", value: 2 },
-        { name:"settings.opMode.holiday", value: 3 },
-        { name:"settings.opMode.custom", value: 4 }
-      ]
 
       var pricePoints = [
         { name:"settings.pricetab.cheap", value: 0 },
@@ -145,12 +132,15 @@
 
       function updateOperatingModes(selectedMode) {
         var list = document.getElementById("operatingMode");
+        var appEn = document.getElementById("appEnabled");
         var options = '';
-        for (var i = 0; i < operatingModes.length; i++) {
-          options += '<option value="' + operatingModes[i].value + '" ' 
-            + ((selectedMode==i) ? 'selected' : '') + '>' + operatingModes[i].name + '</option>';
+        if (selectedMode === 0) {
+          appEn.value = 0;
+          list.value = 1;
+        } else {
+          appEn.value = 1;
+          list.value = selectedMode;
         }
-        list.innerHTML = options;
       }
 
       function updatePricePoints(selectedPoint) {
@@ -248,7 +238,7 @@
             '</tr>';
         for (var deviceId in priceActionList[tabPage]) {
           var device = deviceList[deviceId]; // refreshPriceActionList already called so indexing by deviceId should be safe
-          var price_temp_input = device.thermostat_cap ? '<input type="number" id="deltaTemp' + String(deviceId) + '" min=-30 max=30 size="4" onchange="setDeltaTemp(this, ' + String(tabPage) + ', \'' + String(deviceId) + '\');displaySaveHint()" value="' + String(priceActionList[tabPage][deviceId].delta) + '">°C' : '-';
+          var price_temp_input = device.thermostat_cap ? '<input type="number" id="deltaTemp' + String(deviceId) + '" min=-30 max=30 size="4" step="0.5" onchange="setDeltaTemp(this, ' + String(tabPage) + ', \'' + String(deviceId) + '\');displaySaveHint()" value="' + String(priceActionList[tabPage][deviceId].delta) + '">°C' : '-';
           priceTabText +=
             '<tr>' +
               '<td><img src="' + device.image + '" alt="icon" width="auto" height="50"></td>' +
@@ -287,7 +277,7 @@
           var device = deviceList[modeList[listNum][i].id]; // refreshModeLists already called so should be safe to index deviceList with modeList[listNum][i].id
           var upenabled  = (i==0) ? 'disabled' : '';
           var dwnenabled = (i==modeList[listNum].length-1) ? 'disabled' : '';
-          var target_temp_input = device.thermostat_cap ? '<input type="number" id="targetTemp' + String(i) + '" min=0 max=90 size="4" onchange="setTargetTemp(this,' + String(listNum) + ',' + String(i) + ');displaySaveHint()" value="' + String(modeList[listNum][i].targetTemp) + '">°C' : '-';
+          var target_temp_input = device.thermostat_cap ? '<input type="number" id="targetTemp' + String(i) + '" min=0 max=90 step="0.5" size="4" onchange="setTargetTemp(this,' + String(listNum) + ',' + String(i) + ');displaySaveHint()" value="' + String(modeList[listNum][i].targetTemp) + '">°C' : '-';
           gen_list +=
             '<tr>' +
               '<td><input ' + upenabled + ' type="image" width="40" height="15" src="up_arrow.png" onclick="moveDevice(event, ' + String(listNum) + ', ' + String(i) + ',-1);displaySaveHint()" id="moveDeviceUp' + String(i) + '"/><br>' +
@@ -420,7 +410,7 @@
           if(parseInt(value) > parseInt(max)) { value = max; }
           document.getElementById('maxPower').value=value;
           document.getElementById('forMaxPower').value=value;
-          maxPowerList[currentModeTab]=value;
+          maxPower=value;
         }
       }
 
@@ -481,7 +471,41 @@
     <div data-i18n="settings.sponsorText" id="sponsorText">sponsorText</div>
     </div>
 
-    <!-- Tabs -->
+    <!-- Menu -->
+    <table id="main_menu" class="menu" style="display:none;top:0px;position:fixed;">
+      <tbody class="menuitem">
+      <tr>
+        <td><a href="#home" data-i18n="settings.menu.home.title">Home</a></td>
+        <td class="dropdown">
+          <a href="javascript:void(0)" class="dropbtn" data-i18n="settings.menu.devices.title">Devices</a>
+          <div class="dropdown-content">
+            <a href="#" data-i18n="settings.menu.devices.controllable">Controllable devices</a>
+            <a href="#" data-i18n="settings.menu.devices.modes">Modes and priority</a>
+            <a href="#" data-i18n="settings.menu.devices.prices">Price control</a>
+          </div>
+        </td>
+        <td class="dropdown">
+          <a href="javascript:void(0)" class="dropbtn" data-i18n="settings.menu.advanced.title">Advanced</a>
+          <div class="dropdown-content">
+            <a href="#" data-i18n="settings.menu.advanced.settings">Advanced settings</a>
+            <a href="#" data-i18n="settings.menu.advanced.frost">Frost guard</a>
+            <a href="#" data-i18n="settings.menu.advanced.zones">Zone control</a>
+          </div>
+        </td>
+        <td class="dropdown" style="text-align:right">
+          <a href="javascript:void(0)" class="dropbtn" data-i18n="settings.menu.help.title">Help</a>
+          <div class="dropdown-content" style="position:fixed;right:0">
+            <a href="#" data-i18n="settings.menu.help.save">How To Save Money</a>
+            <a href="#" data-i18n="settings.menu.help.charger">Car Chargers</a>
+            <a href="#" data-i18n="settings.menu.help.about">About</a>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+    </table>
+
+    <div style="padding:16px;margin-top:16px;height:0px;"></div>
+
     <table width="100%" id="tab_selector" class="tab">
       <tr>
         <td colspan="4" class="tablinks" onclick="changeTab(event, 'welcomePage')" id="welcomeTab">
@@ -515,7 +539,44 @@
     <!-- Welcome page -->
     <div id="welcomePage" class="tabcontent">
       <fieldset>
-        <legend data-i18n="settings.welcome.header">welcome.header</legend>
+        <legend data-i18n="settings.mode.powerSettings">mode.powerSettings</legend>
+        <table class="settings_table">
+          <tr>
+            <td class="settings_row_name"><label for="appEnabled" data-i18n="settings.app.activeted">app.activeted</label>:</td>
+            <td class="settings_row_input">
+              <select id="appEnabled" onchange="displaySaveHint()">
+                <option value="0" selected data-i18n="settings.app.disabled">App Disabled</option>
+                <option value="1" data-i18n="settings.app.enabled">App Enabled</option>
+              </select>
+              <div class="hintButton" onclick="toggle(this,'activationHint');return false;">i</div></td>
+          </tr>
+        </table>
+        <p id="activationHint" class="hint" data-i18n="settings.app.activationHint">app.activationHint</p>
+
+        <table class="settings_table">
+          <tr>
+            <td class="settings_row_name"><label for="maxPower" data-i18n="settings.mode.maxPower">mode.maxPower</label>:</td>
+            <td class="settings_row_input">
+              <select id ="forMaxPower" onchange="setMaxPower(this.value,1000,100000);displaySaveHint();">
+                <option value="2000" data-i18n="settings.mode.powerLimit1">mode.powerLimit1</option>
+                <option value="5000" data-i18n="settings.mode.powerLimit2" selected>mode.powerLimit2</option>
+                <option value="10000" data-i18n="settings.mode.powerLimit3">mode.powerLimit3</option>
+                <option value="15000" data-i18n="settings.mode.powerLimit4">mode.powerLimit4</option>
+                <option value="20000" data-i18n="settings.mode.powerLimit5">mode.powerLimit5</option>
+                <option value="25000" data-i18n="settings.mode.powerLimit6">mode.powerLimit6</option>
+                <option value="50000" data-i18n="settings.mode.powerLimit7">mode.powerLimit7</option>
+                <option value="75000" data-i18n="settings.mode.powerLimit8">mode.powerLimit8</option>
+                <option value="100000" data-i18n="settings.mode.powerLimit9">mode.powerLimit9</option>
+                <option value="inf" data-i18n="settings.mode.powerLimit10">mode.powerLimit10</option>
+              </select>
+              <input id="maxPower" onchange="setMaxPower(this.value,1000,100000);displaySaveHint();" type="number" min="1000" max="100000" value="5000" step="100" size="8">Wh
+              <div class="hintButton" onclick="toggle(this,'maxPowHint');return false;">i</div></td>
+          </tr>
+        </table>
+        <p id="maxPowHint" class="hint" data-i18n="settings.app.maxPowHint">app.maxPowHint</p>
+      </fieldset>
+      <fieldset>
+        <legend data-i18n="settings.app.myTasks">app.myTasks</legend>
       </fieldset>
     </div>
 
@@ -528,7 +589,10 @@
             <td class="settings_row_name"><label for="operatingMode" data-i18n="settings.global.operatingMode">global.operatingMode</label>:</td>
             <td class="settings_row_input">
               <select id="operatingMode" onchange="displaySaveHint()">
-                <option value="0" selected>App Disabled</option>
+                <option value="1" data-i18n="settings.opMode.normal">Normal</option>
+                <option value="2" data-i18n="settings.opMode.night">Night</option>
+                <option value="3" data-i18n="settings.opMode.holiday">Holiday</option>
+                <option value="4" data-i18n="settings.opMode.custom">Custom</option>
               </select>
               <div class="hintButton" onclick="toggle(this,'hint1');toggle(this,'hint2');return false;">i</div></td>
           </tr>
@@ -549,7 +613,7 @@
         <table class="settings_table">
           <tr>
             <td class="settings_row_name"><label for="safetyPower" data-i18n="settings.global.safetyPower">global.safetyPower</label>:</td>
-            <td class="settings_row_input"><input id="safetyPower" type="number" min="0" max="100000" value="500" onchange="displaySaveHint()">W 
+            <td class="settings_row_input"><input id="safetyPower" type="number" min="0" max="100000" step="100" value="500" onchange="displaySaveHint()">W 
             <div class="hintButton" onclick="toggle(this,'hint3');toggle(this,'hint4');return false;">i</div></td>
           </tr>
         </table>
@@ -770,28 +834,6 @@
     <!-- Mode specific page -->
     <div id="priorityPage" class="tabcontent">
       <fieldset>
-        <legend data-i18n="settings.mode.powerSettings">mode.powerSettings</legend>
-        <table class="settings_table">
-          <tr>
-            <td class="settings_row_name"><label for="maxPower" data-i18n="settings.mode.maxPower">mode.maxPower</label>:</td>
-            <td class="settings_row_input">
-              <select id ="forMaxPower" onchange="setMaxPower(this.value,1000,100000);displaySaveHint();">
-                <option value="2000" data-i18n="settings.mode.powerLimit1">mode.powerLimit1</option>
-                <option value="5000" data-i18n="settings.mode.powerLimit2" selected>mode.powerLimit2</option>
-                <option value="10000" data-i18n="settings.mode.powerLimit3">mode.powerLimit3</option>
-                <option value="15000" data-i18n="settings.mode.powerLimit4">mode.powerLimit4</option>
-                <option value="20000" data-i18n="settings.mode.powerLimit5">mode.powerLimit5</option>
-                <option value="25000" data-i18n="settings.mode.powerLimit6">mode.powerLimit6</option>
-                <option value="50000" data-i18n="settings.mode.powerLimit7">mode.powerLimit7</option>
-                <option value="75000" data-i18n="settings.mode.powerLimit8">mode.powerLimit8</option>
-                <option value="100000" data-i18n="settings.mode.powerLimit9">mode.powerLimit9</option>
-                <option value="inf" data-i18n="settings.mode.powerLimit10">mode.powerLimit10</option>
-              </select>
-              <input id="maxPower" onchange="setMaxPower(this.value,1000,100000);displaySaveHint();" type="number" min="1000" max="100000" value="5000" step="1000" size="8">Wh</td>
-          </tr>
-        </table>
-      </fieldset>
-      <fieldset>
         <legend><div class="blockHeader" data-i18n="settings.mode.priorities">mode.priorities</div> 
           <div class="hintButton" onclick="toggle(this,'hint6');toggle(this,'hint7');toggle(this,'hint8');return false;">i</div>
         </legend>
@@ -819,7 +861,7 @@
       var errorMarginLoaded = false;
       var freeThresholdLoaded = false;
       var safetyPowerLoaded = false;
-      var maxPowerListLoaded = false;
+      var maxPowerLoaded = false;
       var deviceListLoaded = false;
       var modeListLoaded = false;
       var priceModeLoaded = false;
@@ -834,7 +876,7 @@
       // Called whenever things has been loaded
       function checkLoadingDone() {
         var loadElement = document.getElementById("loadingPage");
-        if (maxPowerListLoaded
+        if (maxPowerLoaded
           && deviceListLoaded
           && modeListLoaded
           && operatingModeLoaded
@@ -859,6 +901,7 @@
           updatePricePoints(currentPricePoint);
           loadElement.style.display = "none";
           document.getElementById("priceMode").value = currentPriceMode;
+          document.getElementById("main_menu").style.display = "table";
           document.getElementById("tab_selector").style.display = "inline-block";
           document.getElementById("save").style.display = "inline-block";
           document.getElementById("errorMargin").value = currentErrorMargin;
@@ -884,6 +927,7 @@
         Homey.ready();
 
         var saveElement = document.getElementById("save");
+        var appEnabledElement = document.getElementById("appEnabled");
         var operatingModeElement = document.getElementById("operatingMode");
         var errorMarginElement = document.getElementById("errorMargin");
         var freeThresholdElement = document.getElementById("freeThreshold");
@@ -930,9 +974,6 @@
         timeoutText = Homey.__(timeoutText);
 
 
-        for (var i = 0; i < operatingModes.length; i++) {
-          operatingModes[i].name = Homey.__(operatingModes[i].name);
-        }
         for (var i = 0; i < pricePoints.length; i++) {
           pricePoints[i].name = Homey.__(pricePoints[i].name);
         }
@@ -1007,12 +1048,12 @@
           priceActionListLoaded = true;
           checkLoadingDone();
         });
-        Homey.get("maxPowerList", function (err, maxPower) {
+        Homey.get("maxPower", function (err, maxPow) {
           if (err) return Homey.alert(err);
-          if (Array.isArray(maxPower)) {
-            maxPowerList = maxPower;
+          if (Array.isArray(maxPow)) {
+            maxPower = maxPow;
           } // else use defaults set from the top (this is the first time)
-          maxPowerListLoaded = true;
+          maxPowerLoaded = true;
           checkLoadingDone();
         });
         Homey.get("operatingMode", function (err, operatingMode) {
@@ -1138,13 +1179,14 @@
               futurePriceOptions.lowPriceModifier = lowPriceModifierElement.value;
               futurePriceOptions.highPriceModifier = highPriceModifierElement.value;
               futurePriceOptions.extremePriceModifier = extremePriceModifierElement.value;
+              let opModeValue = (appEnabledElement.value === "1") ? operatingModeElement.value : 0
               Homey.set("futurePriceOptions", futurePriceOptions, errFunc);
               Homey.set("deviceList", deviceList, errFunc);
               Homey.set("modeList", modeList, errFunc);
               Homey.set("frostList", frostList, errFunc);
               Homey.set("zones", zoneList, errFunc);
-              Homey.set("maxPowerList", maxPowerList, errFunc);
-              Homey.set("operatingMode", operatingModeElement.value, errFunc);
+              Homey.set("maxPower", maxPower, errFunc);
+              Homey.set("operatingMode", opModeValue, errFunc);
               Homey.set("priceMode", priceModeElement.value, errFunc);
               Homey.set("pricePoint", pricePointElement.value, errFunc);
               Homey.set("priceActionList", priceActionList, errFunc);
@@ -1333,8 +1375,8 @@
           refreshModeLists();
           generatePriorityList(modeId);
           currentModeTab = modeId;
-          document.getElementById("maxPower").value = maxPowerList[modeId];
-          document.getElementById("forMaxPower").value = maxPowerList[modeId];
+          document.getElementById("maxPower").value = maxPower;
+          document.getElementById("forMaxPower").value = maxPower;
         }
 
         // Get all elements with class="tabcontent" and hide them
@@ -1364,7 +1406,7 @@
       // Remove when used on homey
       /*if (navigator.userAgent == "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:101.0) Gecko/20100101 Firefox/101.0") {
         // Not homey, but debug mode
-        maxPowerListLoaded = true;
+        maxPowerLoaded = true;
         deviceListLoaded = true;
         modeListLoaded = true;
         frostListLoaded = true;
@@ -1379,7 +1421,9 @@
         mainFuseLoaded = true;
         futurePriceOptionsLoaded = true;
         onHomeyReadyCompleted = true;
-        checkLoadingDone();
+        setTimeout(function () {
+          checkLoadingDone();
+        }, 1 * 1000);
       }*/
     </script>
   </body>

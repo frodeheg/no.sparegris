@@ -5,6 +5,36 @@
     "loadingText": "Vennligst vent noen sekunder mens enhetene lastes...",
     "sponsoredBy": "Denne appen er sponset av:",
     "sponsorText": "Din firmalogo her?<br>Ta kontakt.",
+    "app": {
+      "activeted": "Appen er",
+      "enabled": "Aktivert",
+      "disabled": "Deaktivert",
+      "activationHint": "Før du aktiverer appen må du passe på at det ikke er noen utestående oppgaver listet nedenfor.",
+      "maxPowHint": "Maks forbruk per time kan endres via flows dersom det er ønskelig. For eksempel kan man ha ulikt maks forbruk på sommeren og vinteren."
+    },
+    "menu": {
+      "home": {
+        "title": "Hjem"
+      },
+      "devices": {
+        "title": "Enheter",
+        "controllable": "Kontrollerbare enheter",
+        "modes": "Modus og prioritet",
+        "prices": "Priskontroll"
+      },
+      "advanced": {
+        "title": "Avansert",
+        "settings": "Avanserte innstillinger",
+        "frost": "Frostsikring",
+        "zones": "Sonestyring"
+      },
+      "help": {
+        "title": "Hjelp",
+        "save": "Hvordan spare penger",
+        "charger": "Billader",
+        "about": "Om"
+      }
+    },
     "tab": {
       "welcome": "Velkommen",
       "global": "Global",
@@ -23,14 +53,12 @@
       "extreme": "Ekstremt"
     },
     "opMode": {
-      "disabled": "Deaktivert",
       "normal": "Normal",
       "night": "Natt",
       "holiday": "Borte",
       "custom": "Egen"
     },
     "welcome": {
-      "header": "La oss spare penger",
       "remaining": "Gjenværende oppgaver",
       "taskEnableApp": "Appen må slås på for at du skal spare penger.",
       "taskCreateEnergyFlow": "Vennligst koble strømmålerens effektutgang inn til denne appens effektinngang.",
@@ -211,5 +239,8 @@
     "rememberToSave": "Husk å lagre!",
     "appDisabled": "Appens operasjonsmodus er satt til deaktivert. Du kan aktivere appen ved å gå inn i appens innstillinger eller gjennom en flow.",
     "timeout": "Timeout! Homey er opptatt, vennligst prøv igjen senere eller kontakt appens utvikler dersom problemet fortsetter."
+  },
+  "breaking": {
+    "maxPower": "Viktig endring for **Sparegris**: Maks effekt er nå en enkelt global verdi istedenfor en for hver operasjonsmodus. Vennligst sjekk at den nye innstillingen passer for deg. Den nye innstillingen er:"
   }
 }
