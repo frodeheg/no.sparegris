@@ -265,5 +265,8 @@
   },
   "0.10.7": {
     "en": "Fixed bug in the monitor that could make the monitor turn off devices instead of on in case emergency off was chosen."
+  },
+  "0.11.0": {
+    "en": "Now require Strømregning api 1.5 + Added fetching grid costs from Strømregning + Added search tags and images + Minor fix: Made sure the low price limit is never above the High price limit and vice versa. + Changes to the user interface + Breaking change: Moved the max hourly usage setting from the operating mode into a global setting + Changed step for setting temperatures to 0.5 instead of 1"
   }
 }
