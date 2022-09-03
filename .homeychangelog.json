@@ -271,5 +271,8 @@
   },
   "0.11.1": {
     "en": "Fixed a bug with maxPower that was set incorrectly when saving settings (introduced in version 0.11.0)"
+  },
+  "0.11.2": {
+    "en": "Temperature control can now be disabled + Price points can now be disabled + Added app configuration warnings"
   }
 }
