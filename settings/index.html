@@ -76,7 +76,8 @@
       var currentfreeThreshold = 100;
       var currentSafetyPower = 500;
       var currentMainFuse = 63;
-      var futurePriceOptions = {ApiError:true};
+      var futurePriceOptions = {};
+      var appConfigProgress = {ApiError:true};
       var currentModeTab = 0; // Normal
 
       var pricePoints = [
@@ -464,6 +465,53 @@
           document.getElementById('showlog').style.display = 'block';
         }
       }
+
+      function setVisible(id, type = 'table-row') {
+        var element = document.getElementById(id);
+        element.style.display = type;
+      }
+
+      function refreshTodoList() {
+        let haveTasks = false;
+        if (document.getElementById("appEnabled").value == '0') {
+          setVisible('taskEnableApp');
+          haveTasks = true;
+        } else {
+          setVisible('taskEnableApp', 'none');
+        }
+        if (appConfigProgress.energyMeterNotConnected) {
+          setVisible('taskCreateEnergyFlow');
+          haveTasks = true;
+        } else {
+          setVisible('taskCreateEnergyFlow', 'none');
+        }
+        if (appConfigProgress.energyMeterRateToLow) {
+          setVisible('taskEnergyFlowRate');
+          haveTasks = true;
+        } else {
+          setVisible('taskEnergyFlowRate', 'none');
+        }
+        if (priceMode == 0 && !appConfigProgress.gotPPFromFlow) {
+          setVisible('taskNoPriceFlow');
+          haveTasks = true;
+        } else {
+          setVisible('taskNoPriceFlow', 'none');
+        }
+        if (priceMode == 1 && appConfigProgress.ApiError) {
+          setVisible('taskNoPriceAPI');
+          haveTasks = true;
+        } else {
+          setVisible('taskNoPriceAPI', 'none');
+        }
+        if (priceMode == 2) {
+          setVisible('taskNoPriceEnabled');
+        }
+        if (!haveTasks) {
+          setVisible('taskNone');
+        } else {
+          setVisible('taskNone', 'none');
+        }
+      }
     </script>
   </head>
 
@@ -526,7 +574,7 @@
           <tr>
             <td class="settings_row_name"><label for="appEnabled" data-i18n="settings.app.activeted">app.activeted</label>:</td>
             <td class="settings_row_input">
-              <select id="appEnabled" onchange="displaySaveHint()">
+              <select id="appEnabled" onchange="displaySaveHint();refreshTodoList();">
                 <option value="0" selected data-i18n="settings.app.disabled">App Disabled</option>
                 <option value="1" data-i18n="settings.app.enabled">App Enabled</option>
               </select>
@@ -560,6 +608,17 @@
       </fieldset>
       <fieldset>
         <legend data-i18n="settings.app.myTasks">app.myTasks</legend>
+
+        <table class="settings_table">
+          <tr id="taskEnableApp"><td><span class="⚠ warn"></span></td><td><span data-i18n="settings.welcome.taskEnableApp">taskEnableApp</span></td></tr>
+          <tr id="taskCreateEnergyFlow"><td><span class="⚠ err"></span></td><td><span data-i18n="settings.welcome.taskCreateEnergyFlow">taskCreateEnergyFlow</span></td></tr>
+          <tr id="taskEnergyFlowRate"><td><span class="⚠ warn"></span></td><td><span data-i18n="settings.welcome.taskEnergyFlowRate">taskEnergyFlowRate</span></td></tr>
+          <tr id="taskNoPriceFlow"><td><span class="⚠ warn"></span></td><td><span data-i18n="settings.welcome.taskNoPriceFlow">taskNoPriceFlow</span></td></tr>
+          <tr id="taskNoPriceAPI"><td><span class="⚠ err"></span></td><td><span data-i18n="settings.welcome.taskNoPriceAPI">taskNoPriceAPI</span></td></tr>
+          <tr id="taskNoPriceEnabled"><td><span class="⚠ info"></span></td><td><span data-i18n="settings.welcome.taskNoPriceEnabled">taskNoPriceEnabled</span></td></tr>
+          <tr id="taskNone"><td><span class="⚠ info"></span></td><td><span data-i18n="settings.welcome.taskNone">taskNone</span></td></tr>
+            </table>
+
       </fieldset>
     </div>
 
@@ -900,6 +959,7 @@
       var zoneListLoaded = false;
       var mainFuseLoaded = false;
       var futurePriceOptionsLoaded = false;
+      var appConfigProgressLoaded = false;
       var onHomeyReadyCompleted = false;
 
       // Called whenever things has been loaded
@@ -920,6 +980,7 @@
           && zoneListLoaded
           && mainFuseLoaded
           && futurePriceOptionsLoaded
+          && appConfigProgressLoaded
           && onHomeyReadyCompleted) {
           // Update device enable list:
           generateEnableList('highPriDevices', 1);
@@ -945,7 +1006,7 @@
           document.getElementById("lowPriceModifier").value = futurePriceOptions.lowPriceModifier;
           document.getElementById("highPriceModifier").value = futurePriceOptions.highPriceModifier;
           document.getElementById("extremePriceModifier").value = futurePriceOptions.extremePriceModifier;
-          document.getElementById("errp1").style.display = futurePriceOptions.ApiError ? 'inline-block' : 'none';
+          document.getElementById("errp1").style.display = appConfigProgress.ApiError ? 'inline-block' : 'none';
           checkPriceMode(document.getElementById("priceMode")); // not called automatically when programatically changed
         }
       }
@@ -1192,9 +1253,22 @@
           if (!futurePriceOptions.hasOwnProperty("lowPriceModifier")) futurePriceOptions.lowPriceModifier = -10;
           if (!futurePriceOptions.hasOwnProperty("highPriceModifier")) futurePriceOptions.highPriceModifier = 10;
           if (!futurePriceOptions.hasOwnProperty("extremePriceModifier")) futurePriceOptions.extremePriceModifier = 100;
-          if (!futurePriceOptions.hasOwnProperty("ApiError")) futurePriceOptions.ApiError = true;
-          if (typeof futurePriceOptions.ApiError != "boolean") futurePriceOptions.ApiError = futurePriceOptions.ApiError === "true";
           futurePriceOptionsLoaded = true;
+          checkLoadingDone();
+        });
+        // Refresh API configuration progress
+        Homey.get("appConfigProgress", function (err, options) {
+          if (err) return Homey.alert(err);
+          if (options) {
+            appConfigProgress = options;
+          } else {
+            appConfigProgress = {}
+          }
+          if (!appConfigProgress.hasOwnProperty("gotPPFromFlow")) appConfigProgress.gotPPFromFlow = false;
+          if (!appConfigProgress.hasOwnProperty("energyMeterRateToLow")) appConfigProgress.energyMeterRateToLow = true;
+          if (!appConfigProgress.hasOwnProperty("energyMeterNotConnected")) appConfigProgress.energyMeterNotConnected = true;
+          if (typeof appConfigProgress.ApiError != "boolean") appConfigProgress.ApiError = appConfigProgress.ApiError === "true";
+          appConfigProgressLoaded = true;
           checkLoadingDone();
         });
 
@@ -1398,6 +1472,11 @@
       function changeTab(evt, tabPage, modeId = undefined) {
         var i, tabcontent, tablinks;
 
+        // Update notifications in Welcome Page
+        if (tabPage == 'welcomePage') {
+          refreshTodoList();
+        }
+
         // Update devicelist for Frost Page
         if (tabPage == 'frostPage') {
           refreshFrostList();
@@ -1446,7 +1525,7 @@
 
       // For testing only -
       // Remove when used on homey
-      /*if (navigator.userAgent == "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:101.0) Gecko/20100101 Firefox/101.0") {
+      if (navigator.userAgent == "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:101.0) Gecko/20100101 Firefox/101.0") {
         // Not homey, but debug mode
         maxPowerLoaded = true;
         deviceListLoaded = true;
@@ -1463,11 +1542,12 @@
         safetyPowerLoaded = true;
         mainFuseLoaded = true;
         futurePriceOptionsLoaded = true;
+        appConfigProgressLoaded = true;
         onHomeyReadyCompleted = true;
         setTimeout(function () {
           checkLoadingDone();
         }, 1 * 1000);
-      }*/
+      }
     </script>
   </body>
 </html>

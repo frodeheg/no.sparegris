@@ -11,7 +11,8 @@
       "disabled": "App disabled",
       "activationHint1": "Before you activate the app, please completa all actions in the todo list below.",
       "activationHint2": "Note: To avoid conflicting settings you should carefully make sure no external flows are working against this app before before activating it.",
-      "maxPowHint": "The maximum power can also be changed with flows for example when different maximums are wanted during winter and summer time."
+      "maxPowHint": "The maximum power can also be changed with flows for example when different maximums are wanted during winter and summer time.",
+      "myTasks": "The App State"
     },
     "menu": {
       "home": {
@@ -61,6 +62,7 @@
       "taskEnergyFlowRate": "The rate of which the energy meter is reporting the energy is very low (once every ${rate} min). Please increase the rate if possible.",
       "taskNoPriceFlow": "Your setting indicate prices should come from a flow, but no such flow seem to be active",
       "taskNoPriceAPI": "Your setting indicate internal price setting, which require the app Utilitycost to be installed, but it can not be found or the version is too old.",
+      "taskNoPriceEnabled": "You have not activated price control of your devices yet. This could possibly save you some more money.",
       "taskNone": "Well done, the app is correctly configured."
     },
     "global": {
@@ -243,7 +245,7 @@
     "notPMfromFlow": "In order to set price points with flows you first have to enable price control using flows in the app setup",
     "rememberToSave": "Remember to save!",
     "appDisabled": "The app operating mode is set to disabled. Please turn it on in app settings or with a flow.",
-    "timeout": "Timeout! Homey is busy. Please retry later or contact the App developer if the problem persist. If you're running from a browser then it usually helps to refresh the page."
+    "timeout": "Timeout! Homey is busy. Please wait some more, retry later or contact the App developer if the problem persist. If you're running from a browser then it usually helps to refresh the page."
   },
   "breaking": {
     "maxPower": "Important change for **Piggy Bank**: Max Power is now a single global setting instead of per mode. Please check that the new setting is ok. The new setting is "

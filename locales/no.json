@@ -11,7 +11,8 @@
       "disabled": "Deaktivert",
       "activationHint1": "Før du aktiverer appen må du passe på at det ikke er noen utestående oppgaver listet nedenfor.",
       "activationHint2": "Merk: For å unngå motstridende innstillinger bør du være forsiktig så ingen eksterne flytkort jobber mot denne appen før appen aktiveres.",
-      "maxPowHint": "Maks forbruk per time kan endres via flows dersom det er ønskelig. For eksempel kan man ha ulikt maks forbruk på sommeren og vinteren."
+      "maxPowHint": "Maks forbruk per time kan endres via flows dersom det er ønskelig. For eksempel kan man ha ulikt maks forbruk på sommeren og vinteren.",
+      "myTasks": "Appens Tilstand"
     },
     "menu": {
       "home": {
@@ -61,6 +62,7 @@
       "taskEnergyFlowRate": "Hyppigheten strømmålerens effekt oppdateres virker å være for lav (once every ${rate} min). Vennligst øk hyppigheten om mulig.",
       "taskNoPriceFlow": "Innstillingene indikerer at prispunkt skal komme fra et flytkort, men ingen slike signaler har blitt mottatt.",
       "taskNoPriceAPI": "Innstillingene indikerer at prispunkt skal settes internt, noe som krever at appen Strømregning er installert, men appen kan ikke finnes eller er for gammel.",
+      "taskNoPriceEnabled": "Du har ikke aktivert prisstyring av enhetene enda. Det kan være litt å spare på å slå det på.",
       "taskNone": "Supert, appen er riktig konfigurert."
     },
     "global": {
@@ -243,7 +245,7 @@
     "notPMfromFlow": "For å sette prispunkt med flows må du først aktivere dette fra appens innstillinger",
     "rememberToSave": "Husk å lagre!",
     "appDisabled": "Appens operasjonsmodus er satt til deaktivert. Du kan aktivere appen ved å gå inn i appens innstillinger eller gjennom en flow.",
-    "timeout": "Timeout! Homey er opptatt, vennligst prøv igjen senere eller kontakt appens utvikler dersom problemet fortsetter. Hvis du kjører fra en browser bruker det å hjelpe å laste inn siden på nytt."
+    "timeout": "Timeout! Homey er opptatt, vennligst vent litt til til, prøv igjen senere eller kontakt appens utvikler dersom problemet fortsetter. Hvis du kjører fra en browser bruker det å hjelpe å laste inn siden på nytt."
   },
   "breaking": {
     "maxPower": "Viktig endring for **Sparegris**: Maks effekt er nå en enkelt global verdi istedenfor en for hver operasjonsmodus. Vennligst sjekk at den nye innstillingen passer for deg. Den nye innstillingen er:"

@@ -448,8 +448,14 @@ class PiggyBank extends Homey.App {
     // This shouldn't be done here but is needed as the ApiError must be sent to the setup page
     let futurePriceOptions = this.homey.settings.get('futurePriceOptions');
     if (!futurePriceOptions) futurePriceOptions = {};
-    futurePriceOptions.ApiError = !(await this._checkApi());
     this.homey.settings.set('futurePriceOptions', futurePriceOptions);
+
+    const appConfigProgress = {};
+    appConfigProgress.energyMeterNotConnected = (this.__energy_meter_detected_time === undefined);
+    appConfigProgress.energyMeterRateToLow = ((this.__energy_meter_detected_time - new Date()) > 60000); // must at least come a signal every 60 S
+    appConfigProgress.gotPPFromFlow = this.homey.settings.get('gotPPFromFlow') === 'true';
+    appConfigProgress.ApiError = !(await this._checkApi());
+    this.homey.settings.set('appConfigProgress', appConfigProgress);
 
     this.homey.settings.set('deviceListRefresh', 'done');
   }
@@ -755,6 +761,7 @@ class PiggyBank extends Homey.App {
       const energyUsed = (this.__current_power * lapsedTime) / (1000 * 60 * 60);
       this.__accum_energy += energyUsed;
     }
+    this.__energy_meter_detected_time = now;
     this.__current_power_time = now;
     this.__current_power = newPower;
     this.__power_estimated = this.__accum_energy + (newPower * remainingTime) / (1000 * 60 * 60);
@@ -857,6 +864,7 @@ class PiggyBank extends Homey.App {
     if (+this.homey.settings.get('priceMode') === c.PRICE_MODE_DISABLED) {
       return Promise.resolve();
     }
+    this.homey.settings.set('gotPPFromFlow', true);
     // Do not continue if the price point did not change
     const oldPricePoint = +this.homey.settings.get('pricePoint');
     this.statsSetLastHourPricePoint(oldPricePoint);
