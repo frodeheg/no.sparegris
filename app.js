@@ -1462,6 +1462,7 @@ class PiggyBank extends Homey.App {
     this.homey.settings.set('diagLog', '');
     this.homey.settings.set('sendLog', '');
     this.homey.settings.set('showState', '');
+    this.homey.settings.set('showCaps', '');
 
     // When sendLog is clicked, send the log
     this.homey.settings.on('set', async setting => {
@@ -1469,11 +1470,12 @@ class PiggyBank extends Homey.App {
       const diagLog = this.homey.settings.get('diagLog');
       const sendLog = this.homey.settings.get('sendLog');
       const showState = this.homey.settings.get('showState');
+      const showCaps = this.homey.settings.get('showCaps');
+      const LOG_ALL = LOG_ERROR; // Send as ERROR just to make it visible regardless
       if (setting === 'sendLog' && (sendLog === 'send') && (diagLog !== '')) {
         this.sendLog();
       }
       if (setting === 'showState' && (showState === '1')) {
-        const LOG_ALL = LOG_ERROR; // Send as ERROR just to make it visible regardless
         const frostList = this.homey.settings.get('frostList');
         const numControlledDevices = Object.keys(frostList).length;
         this.updateLog('========== INTERNAL STATE ==========', LOG_ALL);
@@ -1507,6 +1509,20 @@ class PiggyBank extends Homey.App {
         }
         this.updateLog('======== INTERNAL STATE END ========', LOG_ALL);
         this.homey.settings.set('showState', '');
+      }
+      if (setting === 'showCaps' && (showCaps === '1')) {
+        this.updateLog('========== LIST OF IGNORED DEVICES ==========', LOG_ALL);
+        const devices = await this.homeyApi.devices.getDevices(); // Error thrown is catched by caller of createDeviceList
+        // Loop all devices
+        for (const device of Object.values(devices)) {
+          const onoffCap = device.capabilities.includes('onoff') ? 'onoff' : device.capabilities.find(cap => cap.includes('onoff'));
+          if (onoffCap === undefined) {
+            this.updateLog(`Device: ${device.name}`, LOG_ALL);
+            this.updateLog(`Capabilities: ${String(device.capabilities)}`, LOG_ALL);
+          }
+        }
+        this.updateLog('======== IGNORED DEVICES END ========', LOG_ALL);
+        this.homey.settings.set('showCaps', '');
       }
     });
   }

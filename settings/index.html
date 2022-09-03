@@ -740,6 +740,7 @@
             <option value=2 data-i18n="settings.log.full">log.full</option>
           </select>
           <p>
+            <button id="showCaps" data-i18n="settings.log.showCaps">log.showCaps</button>
             <button id="showState" data-i18n="settings.log.showState">log.showState</button>
             <button id="clearLog" data-i18n="settings.log.clearLog">log.clearLog</button>
             <button id="sendLog" data-i18n="settings.log.sendLog">log.sendLog</button>
@@ -951,6 +952,7 @@
       var diagLogElement = document.getElementById('diagLog');
       var logLevelElement = document.getElementById('logLevel');
       var showStateElement = document.getElementById('showState');
+      var showCapsElement = document.getElementById('showCaps');
       var clearLogElement = document.getElementById('clearLog');
       var sendLogElement = document.getElementById('sendLog');
 
@@ -1352,6 +1354,12 @@
 
         showStateElement.addEventListener('click', function (e) {
           Homey.set('showState', "1", function (err) {
+            //if (err) return Homey.alert(err);
+          });
+        });
+
+        showCapsElement.addEventListener('click', function (e) {
+          Homey.set('showCaps', "1", function (err) {
             //if (err) return Homey.alert(err);
           });
         });

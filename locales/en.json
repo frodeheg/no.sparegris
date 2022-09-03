@@ -228,7 +228,8 @@
       "full": "All Information",
       "clearLog": "Clear",
       "sendLog": "Send",
-      "showState": "State"
+      "showState": "State",
+      "showCaps": "Info about difficult devices"
     }
   },
   "newdevice" : {

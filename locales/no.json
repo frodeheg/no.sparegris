@@ -228,8 +228,9 @@
       "full": "All informasjon",
       "clearLog": "Tøm",
       "sendLog": "Send",
-      "showState": "Status"
-}
+      "showState": "Status",
+      "showCaps": "Info om trøblete enheter"
+    }
   },
   "newdevice" : {
     "info": "Denne enheten vil gi deg innblikk i hva som skjer når appen styrer strømmen. Det er ikke nødvendig å installere denne enheten for å få appen til å fungere.",

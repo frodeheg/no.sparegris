@@ -9,8 +9,7 @@ New features I want input from others before I do anything:
 * Do you want a condition that prevents signalling that we are out of power before at least x% of the power tariff has been used? (where x is set in the settings)
 
 TODO list:
-* Improve the debug panel so capabilities of all devices can be printed. This is needed to see why the Easee charger is not listed (message @dooniem when ready)
-* Add zone-control for mode changes --> breaking change: will have to move the power limit to the global settings and use flow to change it instead.
+* Add zone-control for mode changes.
 * Improve handling of AC devices (not sure how yet - might need more discussions requested by @dooniem)
 * Improve power-usage calculation over the time the app is restarted / inactive.
 * Add number of cheap/expensive/normal hours to the device capability list
