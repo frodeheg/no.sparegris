@@ -445,7 +445,7 @@ class PiggyBank extends Homey.App {
       }
     }
 
-    // This shouldn't be done here but is needed as the ApiError must be sent to the setup page
+    // This shouldn't be done here but is needed as the ApiStatus must be sent to the setup page
     let futurePriceOptions = this.homey.settings.get('futurePriceOptions');
     if (!futurePriceOptions) futurePriceOptions = {};
     this.homey.settings.set('futurePriceOptions', futurePriceOptions);
@@ -454,7 +454,7 @@ class PiggyBank extends Homey.App {
     appConfigProgress.energyMeterNotConnected = (this.__energy_meter_detected_time === undefined);
     appConfigProgress.timeSinceEnergyMeter = ((new Date() - this.__energy_meter_detected_time) / 1000);
     appConfigProgress.gotPPFromFlow = this.homey.settings.get('gotPPFromFlow') === 'true';
-    appConfigProgress.ApiError = !(await this._checkApi());
+    appConfigProgress.ApiStatus = await this._checkApi();
     this.homey.settings.set('appConfigProgress', appConfigProgress);
 
     this.homey.settings.set('deviceListRefresh', 'done');
@@ -1657,14 +1657,16 @@ class PiggyBank extends Homey.App {
       if (isInstalled && !!version) {
         const split = version.split('.');
         const apiOk = (Number(split[0]) >= 1 && Number(split[1]) >= 5);
-        this.updateLog(`Electricity price api version ${version} installed${apiOk ? ' and version is ok' : ', but wrong version'}`, LOG_INFO);
-        return apiOk;
+        const deviceOk = apiOk ? (await this.elPriceApi.get('/prices') !== undefined) : false;
+        this.updateLog(`Electricity price api version ${version} installed${apiOk ? ' and version is ok' : ', but wrong version'}. Device ${deviceOk ? 'is installed and ok'
+          : 'must be installed'}.`, LOG_INFO);
+        return deviceOk ? 2 : apiOk ? 1 : 0;
       }
       this.updateLog('Electricity price api not installed', LOG_ERROR);
     } catch (err) {
       this.updateLog(`Failed checking electricity price API: ${err.message}`, LOG_ERROR);
     }
-    return false;
+    return 0;
   }
 
   /**
@@ -1731,7 +1733,9 @@ class PiggyBank extends Homey.App {
    */
   async doPriceCalculations() {
     // Abort if prices are not available
-    if (!await this._checkApi()) return Promise.reject(new Error(this.homey.__('warnings.noPriceApi')));
+    const apiCheck = await this._checkApi();
+    if (apiCheck === 0) return Promise.reject(new Error(this.homey.__('warnings.noPriceApi')));
+    if (apiCheck === 1) return Promise.reject(new Error(this.homey.__('warnings.noPriceApiDevice')));
 
     if (this.__current_prices && this.__current_price_index) {
       this.__last_hour_price = this.__current_prices[this.__current_price_index];
@@ -1825,7 +1829,7 @@ class PiggyBank extends Homey.App {
       { limit: 500000, price: 9743 },
       { limit: Infinity, price: 11821 }
     ];
-    if (await this._checkApi()) {
+    if (await this._checkApi() === 2) {
       const gridFromApi = await this.elPriceApi.get('/gridcosts');
       if (Array.isArray(gridFromApi) && gridFromApi.length > 0) {
         return gridFromApi;

@@ -78,7 +78,7 @@
       var currentSafetyPower = 500;
       var currentMainFuse = 63;
       var futurePriceOptions = {};
-      var appConfigProgress = {ApiError:true};
+      var appConfigProgress = {ApiStatus:0};
       var currentModeTab = 0; // Normal
 
       var pricePoints = [
@@ -498,11 +498,17 @@
         } else {
           setVisible('taskNoPriceFlow', 'none');
         }
-        if (priceMode == 1 && appConfigProgress.ApiError) {
+        if (priceMode == 1 && appConfigProgress.ApiStatus === 0) {
           setVisible('taskNoPriceAPI');
           haveTasks = true;
         } else {
           setVisible('taskNoPriceAPI', 'none');
+        }
+        if (priceMode == 1 && appConfigProgress.ApiStatus === 1) {
+          setVisible('taskNoPriceAPIDevice');
+          haveTasks = true;
+        } else {
+          setVisible('taskNoPriceAPIDevice', 'none');
         }
         if (priceMode == 2) {
           setVisible('taskNoPriceEnabled');
@@ -619,6 +625,7 @@
           <tr id="taskEnergyFlowRate"><td><span class="⚠ warn"></span></td><td><span id="energyFlowRateText">taskEnergyFlowRate</span></td></tr>
           <tr id="taskNoPriceFlow"><td><span class="⚠ warn"></span></td><td><span data-i18n="settings.welcome.taskNoPriceFlow">taskNoPriceFlow</span></td></tr>
           <tr id="taskNoPriceAPI"><td><span class="⚠ err"></span></td><td><span data-i18n="settings.welcome.taskNoPriceAPI">taskNoPriceAPI</span></td></tr>
+          <tr id="taskNoPriceAPIDevice"><td><span class="⚠ err"></span></td><td><span data-i18n="settings.welcome.taskNoPriceAPIDevice">taskNoPriceAPIDevice</span></td></tr>
           <tr id="taskNoPriceEnabled"><td><span class="⚠ info"></span></td><td><span data-i18n="settings.welcome.taskNoPriceEnabled">taskNoPriceEnabled</span></td></tr>
           <tr id="taskNone"><td><span class="⚠ info"></span></td><td><span data-i18n="settings.welcome.taskNone">taskNone</span></td></tr>
             </table>
@@ -1009,7 +1016,7 @@
           document.getElementById("lowPriceModifier").value = futurePriceOptions.lowPriceModifier;
           document.getElementById("highPriceModifier").value = futurePriceOptions.highPriceModifier;
           document.getElementById("extremePriceModifier").value = futurePriceOptions.extremePriceModifier;
-          document.getElementById("errp1").style.display = appConfigProgress.ApiError ? 'inline-block' : 'none';
+          document.getElementById("errp1").style.display = (appConfigProgress.ApiStatus !== 2) ? 'inline-block' : 'none';
           document.getElementById("energyFlowRateText").innerHTML = energyFlowRateText.replace("${interval}", Math.round(appConfigProgress.timeSinceEnergyMeter / 60));
           checkPriceMode(document.getElementById("priceMode")); // not called automatically when programatically changed
           changeTab(false, 'welcomePage');
@@ -1273,7 +1280,7 @@
           if (!appConfigProgress.hasOwnProperty("gotPPFromFlow")) appConfigProgress.gotPPFromFlow = false;
           if (!appConfigProgress.hasOwnProperty("timeSinceEnergyMeter")) appConfigProgress.timeSinceEnergyMeter = Infinity;
           if (!appConfigProgress.hasOwnProperty("energyMeterNotConnected")) appConfigProgress.energyMeterNotConnected = true;
-          if (typeof appConfigProgress.ApiError != "boolean") appConfigProgress.ApiError = appConfigProgress.ApiError === "true";
+          if (!appConfigProgress.hasOwnProperty("ApiStatus")) appConfigProgress.ApiStatus = 0;
           appConfigProgressLoaded = true;
           checkLoadingDone();
         });
