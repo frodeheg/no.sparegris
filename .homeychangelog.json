@@ -277,5 +277,8 @@
   },
   "0.11.3": {
     "en": "Fixed one of the new warnings that was displayed incorrectly"
+  },
+  "0.11.4": {
+    "en": "Added additional warning messages in the device state checking window"
   }
 }
