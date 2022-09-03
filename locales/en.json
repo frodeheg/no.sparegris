@@ -64,6 +64,9 @@
       "taskNone": "Well done, the app is correctly configured."
     },
     "global": {
+      "controlTemp": "Allow temperature control",
+      "controlTempYes": "Yes",
+      "controlTempNo": "No",
       "settings": "Global Settings",
       "errorMargin" : "Error Margin",
       "errorMarginHint1" : "Ensure that you always end up a bit below the effect tariff.",

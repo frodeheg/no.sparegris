@@ -1067,6 +1067,10 @@ class PiggyBank extends Homey.App {
    * @return [success, noChange] - success means that the result is as requested, noChange indicate if the result was already as requested
    */
   async refreshTemp(deviceId) {
+    // Do not refresh temperature if the temperature control is disabled
+    if (+this.homey.settings.get('controlTemp') === 0) {
+      return Promise.resolve([true, false]);
+    }
     const modeList = this.homey.settings.get('modeList');
     const frostList = this.homey.settings.get('frostList');
     const currentMode = +this.homey.settings.get('operatingMode');

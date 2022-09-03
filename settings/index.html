@@ -216,6 +216,7 @@
           case 2: legendText = priceHighText; break;
           case 3: legendText = priceExtremeText; break;
         }
+        var displayTemp = document.getElementById("controlTemp").value == 1;
         var priceTabText =
           '<fieldset>' +
             '<legend>' + legendText + ' <div class="hintButton" onclick="toggle(this,\'priceActionHint\');return false;">i</div></legend>' +
@@ -233,7 +234,7 @@
               '<th>&nbsp;</th>' +
               '<th align="left">' + deviceText + '</th>' +
               '<th align="left">' + actionText + '</th>' +
-              '<th align="left">' + deltaText + '</th>' +
+              (displayTemp ? `<th align="left">${deltaText}</th>` : '') +
             '</tr>';
         for (var deviceId in priceActionList[tabPage]) {
           var device = deviceList[deviceId]; // refreshPriceActionList already called so indexing by deviceId should be safe
@@ -244,7 +245,7 @@
               '<td><h3>' + limitText(device.name) + '</h3>' +
                 '<p>' + device.room + '</p></td>' +
               '<td><div class="imgButtonText" id="priceActionButton' + String(deviceId) + '" onclick="updatePriceAction(this, ' + String(tabPage) + ', \'' + String(deviceId) + '\');displaySaveHint()">N/A</div></td>' +
-              '<td>' + price_temp_input + '</td>' +
+              (displayTemp ? `<td>${price_temp_input}</td>` : '') +
             '</tr>';
         }
         priceTabText +=
@@ -264,13 +265,14 @@
       }
 
       function generatePriorityList(listNum) {
+        var displayTemp = document.getElementById("controlTemp").value == 1;
         var list = document.getElementById("priorityList");
         var gen_list =
           '<table class=device-list>' +
             '<tr>' +
               '<th colspan="3" align="left">' + priorityText + '</th>' +
               '<th align="left">' + deviceText + '</th>' +
-              '<th align="left">' + targetTempText + '</th>' +
+              (displayTemp ? `<th align="left">${targetTempText}</th>` : '') +
             '</tr>';
         for (var i = 0; i < modeList[listNum].length; i++) {
           var device = deviceList[modeList[listNum][i].id]; // refreshModeLists already called so should be safe to index deviceList with modeList[listNum][i].id
@@ -285,7 +287,7 @@
               '<td><div class="imgButtonText" id="deviceStateButton' + String(i) + '" onclick="updateState(this, ' + String(listNum) + ', ' + String(i) + ');displaySaveHint()">N/A</div></td>' +
               '<td><h3>' + limitText(device.name) + '</h3>' +
                   '<p>' + device.room + '</p></td>' +
-                  '<td>' + target_temp_input + '</td>' +
+                  (displayTemp ? `<td>${target_temp_input}</td>` : '') +
             '</tr>';
         }
         gen_list += "</table>";
@@ -299,6 +301,7 @@
 
       function updatePriceAction(button, pricePoint, device_id, newstate = undefined) {
         var deltaTempInput = undefined;
+        var displayTemp = document.getElementById("controlTemp").value == 1;
         if (pricePoint !== undefined) {
           if (newstate == undefined) {
             newstate = (priceActionList[pricePoint][device_id].operation + 1) % 5;
@@ -306,7 +309,7 @@
             newstate = priceActionList[pricePoint][device_id].operation;
           }
           var device = deviceList[device_id]; // refreshPriceActionList already called so should be safe to index by elements from priceActionList[tabPage]
-          if (!device.thermostat_cap && newstate == DELTA_TEMP) {
+          if (!(device.thermostat_cap && displayTemp) && newstate == DELTA_TEMP) {
             newstate = EMERGENCY_OFF;
           }
           priceActionList[pricePoint][device_id].operation = newstate;
@@ -377,12 +380,19 @@
 
       function checkPriceMode(source) {
         var priceControl = document.getElementById('priceControl');
+        var priceLowerPart = document.getElementById('priceLowerPart');
         if (source.value == "1") {
           // Internal use
           priceControl.style.display = 'block';
-        } else {
-          // External use or disabled
+          priceLowerPart.style.display = 'block';
+        } else if (source.value == "0") {
+          // External
           priceControl.style.display = 'none';
+          priceLowerPart.style.display = 'block';
+        } else {
+          // Disabled
+          priceControl.style.display = 'none';
+          priceLowerPart.style.display = 'none';
         }
       }
 
@@ -629,6 +639,19 @@
           <div class="hintButton" onclick="toggle(this,'hintcd1');toggle(this,'hintcd2');return false;">i</div></legend>
         <p id="hintcd1" class="hint" data-i18n="settings.global.deviceListHint1">global.deviceListHint1</p>
         <p id="hintcd2" class="hint" data-i18n="settings.global.deviceListHint2">global.deviceListHint2</p>
+
+        <table class="settings_table">
+          <tr>
+            <td class="settings_row_name"><label for="controlTemp" data-i18n="settings.global.controlTemp">global.controlTemp</label>:</td>
+            <td class="settings_row_input">
+              <select id="controlTemp">
+                <option value=0 data-i18n="settings.global.controlTempNo">global.controlTempNo</option>
+                <option value=1 data-i18n="settings.global.controlTempYes" selected>global.controlTempYes</option>
+              </select>
+            </td>
+          </tr>
+        </table>
+
         <span id="highPriDevices">High Priority devices should be listed here, if not it is a bug</span>
         <legend for="lowPriDevices" data-i18n="settings.lowPriDevices"><hr></legend>
         <span id="lowPriDevices">Low Priority devices should be listed here, if not it is a bug</span>
@@ -760,19 +783,21 @@
         </span>
       </fieldset>
 
-      <table width="100%" id="sub_tab_selector" class="tab">
-        <tr>
-          <td class="subtablinks" onclick="changePriceTab(event, 0)" id="subTabCheap">
-            <span data-i18n="settings.pricetab.cheap">pricetab.cheap</span></td>
-          <td class="subtablinks" onclick="changePriceTab(event, 1)" id="subTabNormal">
-            <span data-i18n="settings.pricetab.normal">pricetab.normal</span></td>
-          <td class="subtablinks" onclick="changePriceTab(event, 2)" id="subTabExpensive">
-            <span data-i18n="settings.pricetab.expensive">pricetab.expensive</span></td>
-          <td class="subtablinks" onclick="changePriceTab(event, 3)" id="subTabExtreme">
-            <span data-i18n="settings.pricetab.extreme">pricetab.extreme</span></td>
-        </tr>
-      </table>
-      <span id="priceActionList">List of devices should have been generated here, if you see this text it is a bug...</span>
+      <div id="priceLowerPart">
+        <table width="100%" id="sub_tab_selector" class="tab">
+          <tr>
+            <td class="subtablinks" onclick="changePriceTab(event, 0)" id="subTabCheap">
+              <span data-i18n="settings.pricetab.cheap">pricetab.cheap</span></td>
+            <td class="subtablinks" onclick="changePriceTab(event, 1)" id="subTabNormal">
+              <span data-i18n="settings.pricetab.normal">pricetab.normal</span></td>
+            <td class="subtablinks" onclick="changePriceTab(event, 2)" id="subTabExpensive">
+              <span data-i18n="settings.pricetab.expensive">pricetab.expensive</span></td>
+            <td class="subtablinks" onclick="changePriceTab(event, 3)" id="subTabExtreme">
+              <span data-i18n="settings.pricetab.extreme">pricetab.extreme</span></td>
+          </tr>
+        </table>
+        <span id="priceActionList">List of devices should have been generated here, if you see this text it is a bug...</span>
+      </div>
     </div>
     <!-- Price page end -->
 
@@ -862,6 +887,7 @@
       // Load control
       var operatingModeLoaded = false;
       var errorMarginLoaded = false;
+      var controlTempLoaded = false;
       var freeThresholdLoaded = false;
       var safetyPowerLoaded = false;
       var maxPowerLoaded = false;
@@ -884,6 +910,7 @@
           && modeListLoaded
           && operatingModeLoaded
           && errorMarginLoaded
+          && controlTempLoaded
           && freeThresholdLoaded
           && safetyPowerLoaded
           && priceModeLoaded
@@ -933,6 +960,7 @@
         var appEnabledElement = document.getElementById("appEnabled");
         var operatingModeElement = document.getElementById("operatingMode");
         var errorMarginElement = document.getElementById("errorMargin");
+        var controlTempElement = document.getElementById("controlTemp");
         var freeThresholdElement = document.getElementById("freeThreshold");
         var safetyPowerElement = document.getElementById("safetyPower");
         var priceModeElement = document.getElementById("priceMode");
@@ -1101,6 +1129,16 @@
           errorMarginLoaded = true;
           checkLoadingDone();
         });
+        Homey.get("controlTemp", function (err, temp) {
+          if (err) return Homey.alert(err);
+          if (temp !== null) {
+            document.getElementById("controlTemp").value = +temp;
+          } else {
+            document.getElementById("controlTemp").value = 1;
+          }
+          controlTempLoaded = true;
+          checkLoadingDone();
+        });
         Homey.get("freeThreshold", function (err, threshold) {
           if (err) return Homey.alert(err);
           if (threshold !== null) {
@@ -1196,6 +1234,7 @@
               Homey.set("pricePoint", pricePointElement.value, errFunc);
               Homey.set("priceActionList", priceActionList, errFunc);
               Homey.set("errorMargin", errorMarginElement.value, errFunc);
+              Homey.set("controlTemp", controlTempElement.value, errFunc);
               Homey.set("freeThreshold",freeThresholdElement.value, errFunc);
               Homey.set("safetyPower", safetyPowerElement.value, errFunc);
               Homey.set("mainFuse", mainFuseElement.value, errFunc);
@@ -1419,6 +1458,7 @@
         pricePointLoaded = true;
         priceActionListLoaded = true;
         errorMarginLoaded = true;
+        controlTempLoaded = true;
         freeThresholdLoaded = true;
         safetyPowerLoaded = true;
         mainFuseLoaded = true;

@@ -64,6 +64,9 @@
       "taskNone": "Supert, appen er riktig konfigurert."
     },
     "global": {
+      "controlTemp": "Tillat temperatursyring",
+      "controlTempYes": "Ja",
+      "controlTempNo": "Nei",
       "settings": "Global Innstillinger",
       "errorMargin" : "Feilmargin",
       "errorMarginHint1" : "Sørger for at du alltid ender opp på et nivå under effekttariffen.",
