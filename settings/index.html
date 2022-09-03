@@ -505,6 +505,9 @@
         }
         if (priceMode == 2) {
           setVisible('taskNoPriceEnabled');
+          haveTasks = true;
+        } else {
+          setVisible('taskNoPriceEnabled', 'none');
         }
         if (!haveTasks) {
           setVisible('taskNone');
