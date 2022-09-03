@@ -59,7 +59,7 @@
       "remaining": "Gjenværende oppgaver",
       "taskEnableApp": "Appen må slås på for at du skal spare penger.",
       "taskCreateEnergyFlow": "Vennligst koble strømmålerens effektutgang inn til denne appens effektinngang.",
-      "taskEnergyFlowRate": "Hyppigheten strømmålerens effekt oppdateres virker å være for lav (once every ${rate} min). Vennligst øk hyppigheten om mulig.",
+      "taskEnergyFlowRate": "Hyppigheten strømmålerens effekt oppdateres med virker å være for lav (forrige signal mottatt for ${interval} minutter siden). Vennligst øk hyppigheten om mulig.",
       "taskNoPriceFlow": "Innstillingene indikerer at prispunkt skal komme fra et flytkort, men ingen slike signaler har blitt mottatt.",
       "taskNoPriceAPI": "Innstillingene indikerer at prispunkt skal settes internt, noe som krever at appen Strømregning er installert, men appen kan ikke finnes eller er for gammel.",
       "taskNoPriceEnabled": "Du har ikke aktivert prisstyring av enhetene enda. Det kan være litt å spare på å slå det på.",

@@ -59,7 +59,7 @@
       "remaining": "Remaining tasks",
       "taskEnableApp": "The app must be enabled in order to save money.",
       "taskCreateEnergyFlow": "Please connect the output of the house energy meter to the energy input of this app.",
-      "taskEnergyFlowRate": "The rate of which the energy meter is reporting the energy is very low (once every ${rate} min). Please increase the rate if possible.",
+      "taskEnergyFlowRate": "The rate of which the energy meter is reporting the energy is very low (last signal received ${interval} minutes ago). Please increase the rate if possible.",
       "taskNoPriceFlow": "Your setting indicate prices should come from a flow, but no such flow seem to be active",
       "taskNoPriceAPI": "Your setting indicate internal price setting, which require the app Utilitycost to be installed, but it can not be found or the version is too old.",
       "taskNoPriceEnabled": "You have not activated price control of your devices yet. This could possibly save you some more money.",
