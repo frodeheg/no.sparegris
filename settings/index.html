@@ -989,8 +989,7 @@
           generateEnableList('highPriDevices', 1);
           generateEnableList('lowPriDevices', 0);
 
-          // Hide all tabs except one:
-          changeTab(false, 'welcomePage');
+          // Initialize state and show the welcome page:
           updateOperatingModes(currentOperatingMode);
           updatePricePoints(currentPricePoint);
           loadElement.style.display = "none";
@@ -1011,6 +1010,7 @@
           document.getElementById("extremePriceModifier").value = futurePriceOptions.extremePriceModifier;
           document.getElementById("errp1").style.display = appConfigProgress.ApiError ? 'inline-block' : 'none';
           checkPriceMode(document.getElementById("priceMode")); // not called automatically when programatically changed
+          changeTab(false, 'welcomePage');
         }
       }
 
