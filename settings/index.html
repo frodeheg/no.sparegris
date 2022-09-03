@@ -498,13 +498,13 @@
         } else {
           setVisible('taskNoPriceFlow', 'none');
         }
-        if (priceMode == 1 && appConfigProgress.ApiStatus === 0) {
+        if (priceMode == 1 && appConfigProgress.ApiStatus == 0) {
           setVisible('taskNoPriceAPI');
           haveTasks = true;
         } else {
           setVisible('taskNoPriceAPI', 'none');
         }
-        if (priceMode == 1 && appConfigProgress.ApiStatus === 1) {
+        if (priceMode == 1 && appConfigProgress.ApiStatus == 1) {
           setVisible('taskNoPriceAPIDevice');
           haveTasks = true;
         } else {
@@ -1016,7 +1016,7 @@
           document.getElementById("lowPriceModifier").value = futurePriceOptions.lowPriceModifier;
           document.getElementById("highPriceModifier").value = futurePriceOptions.highPriceModifier;
           document.getElementById("extremePriceModifier").value = futurePriceOptions.extremePriceModifier;
-          document.getElementById("errp1").style.display = (appConfigProgress.ApiStatus !== 2) ? 'inline-block' : 'none';
+          document.getElementById("errp1").style.display = (appConfigProgress.ApiStatus != 2) ? 'inline-block' : 'none';
           document.getElementById("energyFlowRateText").innerHTML = energyFlowRateText.replace("${interval}", Math.round(appConfigProgress.timeSinceEnergyMeter / 60));
           checkPriceMode(document.getElementById("priceMode")); // not called automatically when programatically changed
           changeTab(false, 'welcomePage');
