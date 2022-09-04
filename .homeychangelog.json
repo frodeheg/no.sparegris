@@ -286,5 +286,8 @@
   },
   "0.11.6": {
     "en": "Added new debug option to list troublesom devices. This was needed to see the capabilities of the Easee charger (thanks @dooniem)"
+  },
+  "0.11.7": {
+    "en": "Fixed some warnings that was shown incorrectly + Added more help sections"
   }
 }
