@@ -1652,7 +1652,8 @@ class PiggyBank extends Homey.App {
     const appState = (this.__deviceList === undefined) ? c.APP_NOT_READY
       : (this.apiState === c.PRICE_API_NO_APP) ? c.APP_MISSING_PRICE_API
         : (this.apiState === c.PRICE_API_NO_DEVICE) ? c.APP_MISSING_PRICE_DEVICE
-          : c.APP_READY;
+          : (this.apiState === c.PRICE_API_NO_DATA) ? c.APP_MISSING_PRICE_DATA
+            : c.APP_READY;
     return {
       power_last_hour: parseInt(this.__power_last_hour, 10),
       power_estimated: this.__power_estimated === undefined ? undefined : parseInt(this.__power_estimated.toFixed(2), 10),
@@ -1699,10 +1700,12 @@ class PiggyBank extends Homey.App {
       if (isInstalled && !!version) {
         const split = version.split('.');
         const apiOk = (Number(split[0]) >= 1 && Number(split[1]) >= 5);
-        const deviceOk = apiOk ? (await this.elPriceApi.get('/prices') !== undefined) : false;
+        const testData = await this.elPriceApi.get('/prices');
+        const deviceOk = apiOk ? (testData !== undefined) : false;
+        const dataOk = deviceOk ? (Array.isArray(testData) && testData.length > 0) : false;
         this.updateLog(`Electricity price api version ${version} installed${apiOk ? ' and version is ok' : ', but wrong version'}. Device ${deviceOk ? 'is installed and ok'
-          : 'must be installed'}.`, LOG_INFO);
-        return deviceOk ? c.PRICE_API_OK : apiOk ? c.PRICE_API_NO_DEVICE : c.PRICE_API_NO_APP;
+          : 'must be installed'}. Data ${dataOk ? 'was returned' : 'was not returned'}.`, LOG_INFO);
+        return dataOk ? c.PRICE_API_OK : deviceOk ? c.PRICE_API_NO_DATA : apiOk ? c.PRICE_API_NO_DEVICE : c.PRICE_API_NO_APP;
       }
       this.updateLog('Electricity price api not installed', LOG_ERROR);
     } catch (err) {
@@ -1778,6 +1781,7 @@ class PiggyBank extends Homey.App {
     this.apiState = await this._checkApi();
     if (this.apiState === c.PRICE_API_NO_APP) return Promise.reject(new Error(this.homey.__('warnings.noPriceApi')));
     if (this.apiState === c.PRICE_API_NO_DEVICE) return Promise.reject(new Error(this.homey.__('warnings.noPriceApiDevice')));
+    if (this.apiState === c.PRICE_API_NO_DATA) return Promise.reject(new Error(this.homey.__('warnings.noPriceApiData')));
 
     if (this.__current_prices && this.__current_price_index) {
       this.__last_hour_price = this.__current_prices[this.__current_price_index];

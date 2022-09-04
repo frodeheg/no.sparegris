@@ -504,6 +504,12 @@
         } else {
           setVisible('taskNoPriceAPIDevice', 'none');
         }
+        if (priceMode == 1 && appConfigProgress.ApiStatus == 3) {
+          setVisible('taskNoPriceAPIData');
+          haveTasks = true;
+        } else {
+          setVisible('taskNoPriceAPIData', 'none');
+        }
         if (priceMode == 2) {
           setVisible('taskNoPriceEnabled');
           haveTasks = true;
@@ -627,6 +633,7 @@
           <tr id="taskNoPriceFlow"><td><span class="⚠ warn"></span></td><td><span data-i18n="settings.welcome.taskNoPriceFlow">taskNoPriceFlow</span></td></tr>
           <tr id="taskNoPriceAPI"><td><span class="⚠ err"></span></td><td><span data-i18n="settings.welcome.taskNoPriceAPI">taskNoPriceAPI</span></td></tr>
           <tr id="taskNoPriceAPIDevice"><td><span class="⚠ err"></span></td><td><span data-i18n="settings.welcome.taskNoPriceAPIDevice">taskNoPriceAPIDevice</span></td></tr>
+          <tr id="taskNoPriceAPIData"><td><span class="⚠ err"></span></td><td><span data-i18n="settings.welcome.taskNoPriceAPIData">taskNoPriceAPIData</span></td></tr>
           <tr id="taskNoPriceEnabled"><td><span class="⚠ info"></span></td><td><span data-i18n="settings.welcome.taskNoPriceEnabled">taskNoPriceEnabled</span></td></tr>
           <tr id="taskDisableLogging"><td><span class="⚠ warn"></span></td><td><span data-i18n="settings.welcome.taskDisableLogging">taskDisableLogging</span></td></tr>
           <tr id="taskNone"><td><span class="⚠ info"></span></td><td><span data-i18n="settings.welcome.taskNone">taskNone</span></td></tr>

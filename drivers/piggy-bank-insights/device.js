@@ -257,6 +257,8 @@ class MyDevice extends Device {
         this.setUnavailable(this.homey.__('warnings.noPriceApi'));
       } else if (piggyState.appState === c.APP_MISSING_PRICE_DEVICE) {
         this.setUnavailable(this.homey.__('warnings.noPriceApiDevice'));
+      } else if (piggyState.appState === c.APP_MISSING_PRICE_DATA) {
+        this.setUnavailable(this.homey.__('warnings.noPriceApiData'));
       } else if (+piggyState.operating_mode === 0) {
         this.setUnavailable(this.homey.__('warnings.appDisabled'));
       } else {

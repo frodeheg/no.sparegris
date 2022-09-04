@@ -64,6 +64,7 @@
       "taskNoPriceFlow": "Du har valgt prispunkt fra flytkort, men ingen slike signaler har blitt mottatt.",
       "taskNoPriceAPI": "Du har valgt internt prispunkt, noe som krever at appen Strømregning er installert, men appen kan ikke finnes eller har en utdatert versjon.",
       "taskNoPriceAPIDevice": "Du har valgt internt prispunkt. Da hentes prisene fra Strømregning-appen, men for at dette skal virke må du også installere appens koresponderende enhet (Også kalt 'Strømregning').",
+      "taskNoPriceAPIData": "Du har valgt internt prispunkt, men Strømregning-appen er innstillt på pris fra flow, så da videresender den ikke prisen til denne appen...",
       "taskNoPriceEnabled": "Du har ikke aktivert prisstyring av enhetene enda. Det kan være litt å spare på å slå det på.",
       "taskDisableLogging": "Du har slått på utvidet logging, noe som sinker appen betydelig. Vennligst slå av utvidet logging for bedre ytelse.",
       "taskNone": "Supert, appen er riktig konfigurert."
@@ -260,6 +261,7 @@
     "savingFailed": "Klarte ikke å lagre! Dette skal ikke skje, vennligst meld ifra til utvikleren så feilen kan bli fikset.",
     "noPriceApi": "Du må installere appen 'no.almli.utilitycost' for få strømpriser til å virke. Alternativt sett prispunkt via flows.",
     "noPriceApiDevice": "Du må installere den tilhørende enheten til appen 'no.almli.utilitycost' for få strømpriser overført fra appen. Alternativt sett prispunkt via flows.",
+    "noPriceApiData": "Strømregning-appen har satt pris fra flows. Dermed videresender den ikke strømprisene til denne appen. Bytt til spotpris i Strømregning-appen eller sett prispunkt via flows i denne appen.",
     "notPMfromFlow": "For å sette prispunkt med flows må du først aktivere dette fra appens innstillinger",
     "rememberToSave": "Husk å lagre!",
     "appDisabled": "Appens operasjonsmodus er satt til deaktivert. Du kan aktivere appen ved å gå inn i appens innstillinger eller gjennom en flow.",

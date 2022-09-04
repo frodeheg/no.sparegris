@@ -14,6 +14,7 @@ TODO list:
 * Improve power-usage calculation over the time the app is restarted / inactive.
 * Add number of cheap/expensive/normal hours to the device capability list
 * Add calculation of what is best, higher tariff or money saved by moving electricity between price points
+* Allow the insights data to be tracked even when the app is disabled.
 
 === ISSUES I DO NOT KNOW ANY WAY TO RESOLVE ===
 * Old capabilities are not deleted from the statistics section (insights) when they are deleted, and the homey web api does not give the app permission to delete it. Thus the only way to delete deprecated statistics is to manually do this with the web api playground or by deleting the device and reinstalling it. I do not know why Athom is this restrictive but I am sorry I cannot clean up the mess.

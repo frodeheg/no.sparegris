@@ -64,6 +64,7 @@
       "taskNoPriceFlow": "Your setting indicate prices should come from a flow, but no such flow seem to be active",
       "taskNoPriceAPI": "Your setting indicate internal price setting, which require the app Utilitycost to be installed, but it can not be found or the version is too old.",
       "taskNoPriceAPIDevice": "Your selection to use internal price calculations require to fetch the prices from the app Utilitycost. The app is found but prices can only be retrieved when the apps corresponding device has been installed (Also named 'Utilitycost').",
+      "taskNoPriceAPIData": "You have selected internal price calculation, but the Utilitycost app has been configured for price from flows, and as such it will not forward the prices to this app...",
       "taskNoPriceEnabled": "You have not activated price control of your devices yet. This could possibly save you some more money.",
       "taskDisableLogging": "You have enabled extended logging, which slows down the app significantly. Please disable extended logging for better performance.",
       "taskNone": "Well done, the app is correctly configured."
@@ -260,6 +261,7 @@
     "savingFailed": "Failed to save, This should not happen, please notify the developer so this can be fixed",
     "noPriceApi": "You have to install the app 'no.almli.utilitycost' to get the electricity prices to work. Alternatively set the price point from flows.",
     "noPriceApiDevice": "You have to install the corresponding device to the app 'no.almli.utilitycost' in order to get the electricity prices from the app. Alternatively set the price point from flows.",
+    "noPriceApiData": "The Utilitycost app is set to use price from flows. Thus it will not forward the cost. Change to spot price in the Utilitycost app or set the price point from flows here.",
     "notPMfromFlow": "In order to set price points with flows you first have to enable price control using flows in the app setup",
     "rememberToSave": "Remember to save!",
     "appDisabled": "The app operating mode is set to disabled. Please turn it on in app settings or with a flow.",
