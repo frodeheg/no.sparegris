@@ -563,6 +563,7 @@
           <a href="javascript:void(0)" class="dropbtn" data-i18n="settings.menu.help.title">Help</a>
           <div class="dropdown-content" style="position:fixed;right:0">
             <a href="#" data-i18n="settings.menu.help.save" onclick="changeTab(event, 'helpHowToPage')">How To Save Money</a>
+            <a href="#" data-i18n="settings.menu.help.notfound" onclick="changeTab(event, 'helpNotFoundPage')">Not Found</a>
             <a href="#" data-i18n="settings.menu.help.charger" onclick="changeTab(event, 'helpChargerPage')">Car Chargers</a>
             <a href="#" data-i18n="settings.menu.help.about" onclick="changeTab(event, 'helpAboutPage')">About</a>
           </div>
@@ -638,6 +639,15 @@
       <fieldset>
         <legend data-i18n="settings.help.saveMoney">help.saveMoney</legend>
         <p data-i18n="settings.help.saveMoneyHint">help.saveMoneyHint</p>
+      </fieldset>
+    </div>
+
+    <!-- Help page: How to save money -->
+    <div id="helpNotFoundPage" class="tabcontent">
+      <fieldset>
+        <legend data-i18n="settings.help.notFound">help.notFound</legend>
+        <p data-i18n="settings.help.notFoundHint">help.notFoundHint</p>
+        <a href="#ShowLog" data-i18n="settings.log.show" onclick="changeTab(event, 'logPage');return false;">log.show</a>
       </fieldset>
     </div>
 

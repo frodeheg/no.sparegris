@@ -33,6 +33,7 @@
       "help": {
         "title": "Help",
         "save": "How to save money",
+        "notfound": "The app can't find my device",
         "charger": "Car chargers",
         "about": "About"
       }
@@ -86,6 +87,16 @@
       "deviceListHint2" : "Tip: For optimal control, ensure that heavy adjustable current draws are set to a power that does not exceed the desired power tariff. Otherwise it will result in frequent switching on/off."
     },
     "help": {
+      "notFound": "Instructions for non-supported devices",
+      "notFoundHint": ["<p>Unfortunately, there are some devices that do not use the standard mechanism to switch on and off. These will therefore not be detected as controllable by this app. To get these devices supported you can help as follows:</p><!--",
+      "--><ol><!--",
+      "-->  <li>Click the link at the bottom of this page</li><!--",
+      "-->  <li>Click the button named “Info about difficult devices” and wait for the log to populate</li><!--",
+      "-->  <li>Click the Send button (or alternatively find your device in the list and send the capability list for it in a message the developer if you don’t want to expose all your ignored devices.)</li><!--",
+      "-->  <li>Send the developer a personal message to inform about the report (the lifetime of the report is only 24 hours so this is essential or the report might be lost).</li><!--",
+      "-->  <li>Wait for a new test version and install it.</li><!--",
+      "-->  <li>Report back to the developer whether the test version works or not in order for the change to go public.</li><!--",
+      "--></ol>"],
       "carCharger": "Car Charger Howto",
       "carChargerHint": ["<p>Depending on your preferences, there are two methods that can be used to let this app control an electric car charger:</p><!--",
           "--><ol><!--",
