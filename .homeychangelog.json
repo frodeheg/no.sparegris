@@ -295,5 +295,8 @@
   },
   "0.11.9": {
     "en": "Added function in the log page to report what is returned from the price api."
+  },
+  "0.11.10": {
+    "en": "Added information about the Easee car charger"
   }
 }
