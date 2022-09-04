@@ -70,7 +70,6 @@
       var frostList = {} // Indexed by deviceId
       var zoneList = {} // Indexed by zone-id
       var priceActionList = [ {}, {}, {}, {} ] // Indexed by deviceId
-      var currentPriceMode = 0; // From Flow
       var currentPricePoint = 1; // Normal
       var currentOperatingMode = 0; // Disabled
       var currentErrorMargin = 5;
@@ -492,6 +491,7 @@
         } else {
           setVisible('taskEnergyFlowRate', 'none');
         }
+        const priceMode = document.getElementById("priceMode").value;
         if (priceMode == 0 && !appConfigProgress.gotPPFromFlow) {
           setVisible('taskNoPriceFlow');
           haveTasks = true;
@@ -515,6 +515,12 @@
           haveTasks = true;
         } else {
           setVisible('taskNoPriceEnabled', 'none');
+        }
+        if (document.getElementById('logLevel').value != 0) {
+          setVisible('taskDisableLogging');
+          haveTasks = true;
+        } else {
+          setVisible('taskDisableLogging', 'none');
         }
         if (!haveTasks) {
           setVisible('taskNone');
@@ -628,6 +634,7 @@
           <tr id="taskNoPriceAPI"><td><span class="⚠ err"></span></td><td><span data-i18n="settings.welcome.taskNoPriceAPI">taskNoPriceAPI</span></td></tr>
           <tr id="taskNoPriceAPIDevice"><td><span class="⚠ err"></span></td><td><span data-i18n="settings.welcome.taskNoPriceAPIDevice">taskNoPriceAPIDevice</span></td></tr>
           <tr id="taskNoPriceEnabled"><td><span class="⚠ info"></span></td><td><span data-i18n="settings.welcome.taskNoPriceEnabled">taskNoPriceEnabled</span></td></tr>
+          <tr id="taskDisableLogging"><td><span class="⚠ warn"></span></td><td><span data-i18n="settings.welcome.taskDisableLogging">taskDisableLogging</span></td></tr>
           <tr id="taskNone"><td><span class="⚠ info"></span></td><td><span data-i18n="settings.welcome.taskNone">taskNone</span></td></tr>
             </table>
 
@@ -1013,7 +1020,6 @@
           updateOperatingModes(currentOperatingMode);
           updatePricePoints(currentPricePoint);
           loadElement.style.display = "none";
-          document.getElementById("priceMode").value = currentPriceMode;
           document.getElementById("main_menu").style.display = "table";
           document.getElementById("tab_selector").style.display = "inline-block";
           document.getElementById("save").style.display = "inline-block";
@@ -1188,9 +1194,9 @@
         Homey.get("priceMode", function (err, priceMode) {
           if (err) return Homey.alert(err);
           if (priceMode !== null) {
-            currentPriceMode = priceMode;
+            document.getElementById("priceMode").value = +priceMode;
           } else {
-            currentPriceMode = 2;
+            document.getElementById("priceMode").value = 2;
           }
           priceModeLoaded = true;
           checkLoadingDone();
