@@ -460,12 +460,6 @@
         }
       }
 
-      function checkEasterEgg() {
-        if (document.getElementById('mainFuse').value == 1000) {
-          document.getElementById('showlog').style.display = 'block';
-        }
-      }
-
       function setVisible(id, type = 'table-row') {
         var element = document.getElementById(id);
         element.style.display = type;
@@ -702,7 +696,7 @@
           <tr>
             <td class="settings_row_name"><label for="mainFuse" data-i18n="settings.global.mainFuse">global.mainFuse</label>:</td>
             <td class="settings_row_input"><input id="mainFuse" type="number" min="0" max="100000" value="63" onchange="displaySaveHint()">A 
-            <div class="hintButton" onclick="toggle(this,'mainFuseHint');checkEasterEgg();return false;">i</div></td>
+            <div class="hintButton" onclick="toggle(this,'mainFuseHint');return false;">i</div></td>
           </tr>
         </table>
         <p id="mainFuseHint" class="hint" data-i18n="settings.global.mainFuseHint">global.mainFuseHint</p>
@@ -715,7 +709,6 @@
           </tr>
         </table>
         <p id="freeThresholdHint" class="hint" data-i18n="settings.global.freeThresholdHint">global.freeThresholdHint</p>
-        <a id="showlog" style="display:none" href="#ShowLog" data-i18n="settings.log.show" onclick="changeTab(event, 'logPage');return false;">log.show</a>
       </fieldset>
     </div>
 
@@ -758,6 +751,7 @@
           </select>
           <p>
             <button id="showCaps" data-i18n="settings.log.showCaps">log.showCaps</button>
+            <button id="showPriceApi" data-i18n="settings.log.showPriceApi">log.showPriceApi</button>
             <button id="showState" data-i18n="settings.log.showState">log.showState</button>
             <button id="clearLog" data-i18n="settings.log.clearLog">log.clearLog</button>
             <button id="sendLog" data-i18n="settings.log.sendLog">log.sendLog</button>
@@ -970,6 +964,7 @@
       var logLevelElement = document.getElementById('logLevel');
       var showStateElement = document.getElementById('showState');
       var showCapsElement = document.getElementById('showCaps');
+      var showPriceApiElement = document.getElementById('showPriceApi');
       var clearLogElement = document.getElementById('clearLog');
       var sendLogElement = document.getElementById('sendLog');
 
@@ -1376,6 +1371,12 @@
 
         showCapsElement.addEventListener('click', function (e) {
           Homey.set('showCaps', "1", function (err) {
+            //if (err) return Homey.alert(err);
+          });
+        });
+
+        showPriceApiElement.addEventListener('click', function (e) {
+          Homey.set('showPriceApi', "1", function (err) {
             //if (err) return Homey.alert(err);
           });
         });

@@ -241,7 +241,8 @@
       "clearLog": "Clear",
       "sendLog": "Send",
       "showState": "State",
-      "showCaps": "Info about difficult devices"
+      "showCaps": "Info about difficult devices",
+      "showPriceApi": "Info from Utilitycost"
     }
   },
   "newdevice" : {

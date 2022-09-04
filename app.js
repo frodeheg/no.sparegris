@@ -1462,6 +1462,7 @@ class PiggyBank extends Homey.App {
     this.homey.settings.set('sendLog', '');
     this.homey.settings.set('showState', '');
     this.homey.settings.set('showCaps', '');
+    this.homey.settings.set('showPriceApi', '');
 
     // When sendLog is clicked, send the log
     this.homey.settings.on('set', async setting => {
@@ -1470,6 +1471,7 @@ class PiggyBank extends Homey.App {
       const sendLog = this.homey.settings.get('sendLog');
       const showState = this.homey.settings.get('showState');
       const showCaps = this.homey.settings.get('showCaps');
+      const showPriceApi = this.homey.settings.get('showPriceApi');
       const LOG_ALL = LOG_ERROR; // Send as ERROR just to make it visible regardless
       if (setting === 'sendLog' && (sendLog === 'send') && (diagLog !== '')) {
         this.sendLog();
@@ -1522,6 +1524,24 @@ class PiggyBank extends Homey.App {
         }
         this.updateLog('======== IGNORED DEVICES END ========', LOG_ALL);
         this.homey.settings.set('showCaps', '');
+      }
+
+      if (setting === 'showPriceApi' && (showPriceApi === '1')) {
+        this.updateLog('========== UTILITYCOST INTEGRATION ==========', LOG_ALL);
+        const apiState = await this._checkApi();
+        const installed = await this.elPriceApi.getInstalled();
+        const version = await this.elPriceApi.getVersion();
+        const prices = await this.elPriceApi.get('/prices');
+        const gridcosts = await this.elPriceApi.get('gridcosts');
+        if (this.apiState === c.PRICE_API_NO_APP) this.updateLog('No Api or wrong version');
+        if (this.apiState === c.PRICE_API_NO_DEVICE) this.updateLog('No device found');
+        this.updateLog(`ApiState: ${apiState}`);
+        this.updateLog(`Installed: ${installed}`);
+        this.updateLog(`Version: ${version}`);
+        this.updateLog(`Prices: ${JSON.stringify(prices)}`);
+        this.updateLog(`GridCosts: ${JSON.stringify(gridcosts)}`);
+        this.updateLog('======== UTILITYCOST INTEGRATION ========', LOG_ALL);
+        this.homey.settings.set('showPriceApi', '');
       }
     });
   }

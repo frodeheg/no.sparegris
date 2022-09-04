@@ -241,7 +241,8 @@
       "clearLog": "Tøm",
       "sendLog": "Send",
       "showState": "Status",
-      "showCaps": "Info om trøblete enheter"
+      "showCaps": "Info om trøblete enheter",
+      "showPriceApi": "Info fra Strømregning"
     }
   },
   "newdevice" : {
