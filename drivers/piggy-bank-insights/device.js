@@ -252,7 +252,11 @@ class MyDevice extends Device {
     try {
       const piggyState = this.homey.app.getState();
       if (piggyState.appState === c.APP_NOT_READY) {
-        this.setUnavailable('Having difficulties getting device states out of the Homey API. This problem should resolve shortly, if not contact the app developer as it might be a bug.');
+        this.setUnavailable(this.homey.__('warnings.homeyApiNotResponding'));
+      } else if (piggyState.appState === c.APP_MISSING_PRICE_API) {
+        this.setUnavailable(this.homey.__('warnings.noPriceApi'));
+      } else if (piggyState.appState === c.APP_MISSING_PRICE_DEVICE) {
+        this.setUnavailable(this.homey.__('warnings.noPriceApiDevice'));
       } else {
         this.setAvailable();
       }

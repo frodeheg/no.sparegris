@@ -249,14 +249,15 @@
     "info2": "As the device only works as a window into the app, you cannot therefore configure what happens through this device's settings. You can only configure what happens through the app's settings."
   },
   "warnings" : {
+    "homeyApiNotResponding": "Having difficulties getting device states out of the Homey API. This problem should resolve shortly, if not contact the app developer as it might be a bug.",
     "notConfigured": "The App has not been configured properly yet, please go to the app settings page and save your preferred configuration",
     "homeyReboot": "The App is disabled for 15 minutes after a power loss was detected to help Homey to recover.",
     "notEnabled": "The App has not been activated yet. Please enter the app settings to activate the app.",
     "noDevices": "Please select at least one device to be controlled",
     "savingWait": "Saving, please wait...",
     "savingFailed": "Failed to save, This should not happen, please notify the developer so this can be fixed",
-    "noPriceApi": "You have to install the app 'no.almli.utilitycost' to get the electricity prices to work",
-    "noPriceApiDevice": "You have to install the corresponding device to the app 'no.almli.utilitycost' in order to get the electricity prices from the app",
+    "noPriceApi": "You have to install the app 'no.almli.utilitycost' to get the electricity prices to work. Alternatively set the price point from flows.",
+    "noPriceApiDevice": "You have to install the corresponding device to the app 'no.almli.utilitycost' in order to get the electricity prices from the app. Alternatively set the price point from flows.",
     "notPMfromFlow": "In order to set price points with flows you first have to enable price control using flows in the app setup",
     "rememberToSave": "Remember to save!",
     "appDisabled": "The app operating mode is set to disabled. Please turn it on in app settings or with a flow.",
