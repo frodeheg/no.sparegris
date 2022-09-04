@@ -1535,12 +1535,12 @@ class PiggyBank extends Homey.App {
         const gridcosts = await this.elPriceApi.get('gridcosts');
         if (this.apiState === c.PRICE_API_NO_APP) this.updateLog('No Api or wrong version');
         if (this.apiState === c.PRICE_API_NO_DEVICE) this.updateLog('No device found');
-        this.updateLog(`ApiState: ${apiState}`);
-        this.updateLog(`Installed: ${installed}`);
-        this.updateLog(`Version: ${version}`);
-        this.updateLog(`Prices: ${JSON.stringify(prices)}`);
-        this.updateLog(`GridCosts: ${JSON.stringify(gridcosts)}`);
-        this.updateLog('======== UTILITYCOST INTEGRATION ========', LOG_ALL);
+        this.updateLog(`ApiState: ${apiState}`, LOG_ALL);
+        this.updateLog(`Installed: ${installed}`, LOG_ALL);
+        this.updateLog(`Version: ${version}`, LOG_ALL);
+        this.updateLog(`Prices: ${JSON.stringify(prices)}`, LOG_ALL);
+        this.updateLog(`GridCosts: ${JSON.stringify(gridcosts)}`, LOG_ALL);
+        this.updateLog('======== UTILITYCOST INTEGRATION END ========', LOG_ALL);
         this.homey.settings.set('showPriceApi', '');
       }
     });
