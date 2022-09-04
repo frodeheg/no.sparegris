@@ -100,6 +100,7 @@
           "--></ol>"],
       "carCharger": "Lading av Elbil info",
       "carChargerHint": ["<p>Avhengig av dine preferanser er det to metoder som kan benyttes for å la denne appen styre en elbil-lader:</p><!--",
+          "--><p style='color:red;'>(Det jobbes med å gi direkte integrasjon med Easee elbillader så det vil snart komme en ny måte å styre dette på).</p><!--",
           "--><ol><!--",
           "-->  <li><b>Effektstyrt</b><!--",
           "-->      <p>Med denne metoden skal ikke elbil-laderen velges som kontrollerbar. Istedenfor må du bruke flows til å behandle signaler fra appen til å styre laderen.</p><!--",

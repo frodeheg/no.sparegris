@@ -100,6 +100,7 @@
           "--></ol>"],
       "carCharger": "Car Charger Howto",
       "carChargerHint": ["<p>Depending on your preferences, there are two methods that can be used to let this app control an electric car charger:</p><!--",
+          "--><p style='color:red;'>(Direct integration with the Easee charger is being developed so watch out for a new option soon).</p><!--",
           "--><ol><!--",
           "-->  <li><b>Performance controlled</b><!--",
           "-->      <p>With this method, the electric car charger should not be selected as controllable. Instead, you have to use flows to process signals from the app to control the charger.</p><!--",
