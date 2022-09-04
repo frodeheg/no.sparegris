@@ -902,12 +902,10 @@ class PiggyBank extends Homey.App {
     const listOfUsedDevices = this.homey.settings.get('frostList') || {};
     const numDevices = Object.keys(listOfUsedDevices).length;
     const percentDevicesOn = (this.__num_off_devices === this.__num_forced_off_devices) ? 100 : (100 * (this.__num_off_devices / numDevices));
-    if (powerDiff < 0) {
-      this.__free_capacity = 0;
-    } else if (percentDevicesOn >= freeThreshold) {
+    if (percentDevicesOn >= freeThreshold) {
       this.__free_capacity = powerDiff;
     } else {
-      this.__free_capacity = powerDiff;
+      this.__free_capacity = 0;
     }
     // Prevent the trigger from triggering more than once a minute
     const now = new Date();
@@ -1623,8 +1621,8 @@ class PiggyBank extends Homey.App {
   /** ****************************************************************************************************
    *  DEVICE API's
    ** **************************************************************************************************** */
-  getState() {
-    let listOfUsedDevices = this.homey.settings.get('frostList');
+  async getState() {
+    let listOfUsedDevices = await this.homey.settings.get('frostList');
     if (listOfUsedDevices === null) {
       listOfUsedDevices = {};
     }
@@ -1638,13 +1636,13 @@ class PiggyBank extends Homey.App {
     return {
       power_last_hour: parseInt(this.__power_last_hour, 10),
       power_estimated: this.__power_estimated === undefined ? undefined : parseInt(this.__power_estimated.toFixed(2), 10),
-      price_point: this.homey.settings.get('pricePoint'),
-      operating_mode: +this.homey.settings.get('operatingMode'),
+      price_point: await this.homey.settings.get('pricePoint'),
+      operating_mode: +await this.homey.settings.get('operatingMode'),
       alarm_overshoot: this.__alarm_overshoot,
       free_capacity: this.__free_capacity,
       num_devices: Object.keys(listOfUsedDevices).length,
       num_devices_off: this.__num_off_devices,
-      safety_power: parseInt(this.homey.settings.get('safetyPower'), 10),
+      safety_power: parseInt(await this.homey.settings.get('safetyPower'), 10),
       num_fail_on: this.__stats_failed_turn_on,
       num_fail_off: this.__stats_failed_turn_off,
       num_fail_temp: this.__stats_failed_temp_change,
@@ -1657,7 +1655,7 @@ class PiggyBank extends Homey.App {
       power_last_month: this.__stats_last_month_max,
       num_restarts: this.__stats_app_restarts,
 
-      average_price: +this.homey.settings.get('averagePrice') || undefined,
+      average_price: +await this.homey.settings.get('averagePrice') || undefined,
       current_price: this.__current_prices[this.__current_price_index],
       low_price_limit: this.__low_price_limit,
       high_price_limit: this.__high_price_limit,
@@ -1666,7 +1664,7 @@ class PiggyBank extends Homey.App {
       savings_all_time_use: this.__stats_savings_all_time_use,
       savings_all_time_power_part: this.__stats_savings_all_time_power_part,
 
-      app_ready: appState
+      appState
     };
   }
 

@@ -18,7 +18,7 @@ class MyDevice extends Device {
     // Fetch poll interval and set up timer
     const settings = this.getSettings();
     this.setPollIntervalTime(settings['refreshRate']);
-    this.intervalID = setTimeout(() => this.updateState(), this.__pollIntervalTime);
+    this.updateState();
     // this.deviceId = await this.getDeviceId();
     this.updateCapabilities(settings);
     this.homey.app.updateLog('MyDevice has been initialized', 1);
@@ -250,13 +250,15 @@ class MyDevice extends Device {
    */
   async updateState() {
     try {
-      const piggyState = this.homey.app.getState();
+      const piggyState = await this.homey.app.getState();
       if (piggyState.appState === c.APP_NOT_READY) {
         this.setUnavailable(this.homey.__('warnings.homeyApiNotResponding'));
       } else if (piggyState.appState === c.APP_MISSING_PRICE_API) {
         this.setUnavailable(this.homey.__('warnings.noPriceApi'));
       } else if (piggyState.appState === c.APP_MISSING_PRICE_DEVICE) {
         this.setUnavailable(this.homey.__('warnings.noPriceApiDevice'));
+      } else if (+piggyState.operating_mode === 0) {
+        this.setUnavailable(this.homey.__('warnings.appDisabled'));
       } else {
         this.setAvailable();
       }
@@ -296,11 +298,6 @@ class MyDevice extends Device {
       this.setCapabilityValue('piggy_mode', String(piggyState.operating_mode));
       if (+piggyState.operating_mode !== +prevMode) {
         this.setStoreValue('piggy_mode', +piggyState.operating_mode);
-        if (+piggyState.operating_mode === 0) {
-          this.setUnavailable(this.homey.__('warnings.appDisabled'));
-        } else {
-          this.setAvailable();
-        }
         switch (+piggyState.operating_mode) {
           case 0: this.toggleCapability('piggy_mode_disabled'); break;
           case 1: this.toggleCapability('piggy_mode_normal'); break;
