@@ -292,5 +292,8 @@
   },
   "0.11.8": {
     "en": "Fixed a bug where the app state was incorrectly transferred to the insights device + Fixed a bug where the app reported free power when it was not supposed to + Now the insights device will show as unavailable if the app is incorrectly configured"
+  },
+  "0.11.9": {
+    "en": "Added function in the log page to report what is returned from the price api."
   }
 }
