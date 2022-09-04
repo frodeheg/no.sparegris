@@ -298,5 +298,8 @@
   },
   "0.11.10": {
     "en": "Added information about the Easee car charger"
+  },
+  "0.11.11": {
+    "en": "New warning when the Utilitycost app use price from flows"
   }
 }
