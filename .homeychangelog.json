@@ -310,5 +310,8 @@
   },
   "0.12.2": {
     "en": "Fixed a bug as reported by @Krisch2 in the forum (Incorrectly reported error messages"
+  },
+  "0.12.3": {
+    "en": "Fixed crash bug when price point was set to disabled."
   }
 }
