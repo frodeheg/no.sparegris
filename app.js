@@ -1153,7 +1153,7 @@ class PiggyBank extends Homey.App {
         // Apparently the stored settings are invalid and need to be refreshed
         continue;
       }
-      const { operation } = (currentPriceMode === c.PRICE_MODE_DISABLED) ? undefined : currentActions[deviceId];
+      const operation = (currentPriceMode === c.PRICE_MODE_DISABLED) ? undefined : currentActions[deviceId].operation;
       switch (operation) {
         case TURN_ON:
         case TURN_OFF:
