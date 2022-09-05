@@ -304,5 +304,8 @@
   },
   "0.12.0": {
     "en": "Added capability \"enabled\" to the onoff-detection. This should add the Easee car charger"
+  },
+  "0.12.1": {
+    "en": "After optional temperature setting was added no temperature was set on any device regardless of setting"
   }
 }
