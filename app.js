@@ -1658,10 +1658,11 @@ class PiggyBank extends Homey.App {
     if (this.apiState !== c.PRICE_API_OK) {
       this.apiState = await this._checkApi();
     }
+    const priceMode = +this.homey.settings.get('priceMode');
     const appState = (this.__deviceList === undefined) ? c.APP_NOT_READY
-      : (this.apiState === c.PRICE_API_NO_APP) ? c.APP_MISSING_PRICE_API
-        : (this.apiState === c.PRICE_API_NO_DEVICE) ? c.APP_MISSING_PRICE_DEVICE
-          : (this.apiState === c.PRICE_API_NO_DATA) ? c.APP_MISSING_PRICE_DATA
+      : ((priceMode === c.PRICE_MODE_INTERNAL) && (this.apiState === c.PRICE_API_NO_APP)) ? c.APP_MISSING_PRICE_API
+        : ((priceMode === c.PRICE_MODE_INTERNAL) && (this.apiState === c.PRICE_API_NO_DEVICE)) ? c.APP_MISSING_PRICE_DEVICE
+          : ((priceMode === c.PRICE_MODE_INTERNAL) && (this.apiState === c.PRICE_API_NO_DATA)) ? c.APP_MISSING_PRICE_DATA
             : c.APP_READY;
     return {
       power_last_hour: parseInt(this.__power_last_hour, 10),
