@@ -904,8 +904,10 @@ class PiggyBank extends Homey.App {
     const freeThreshold = +this.homey.settings.get('freeThreshold') || 100;
     const listOfUsedDevices = this.homey.settings.get('frostList') || {};
     const numDevices = Object.keys(listOfUsedDevices).length;
-    const percentDevicesOn = (this.__num_off_devices === this.__num_forced_off_devices) ? 100 : (100 * (this.__num_off_devices / numDevices));
-    if (percentDevicesOn >= freeThreshold) {
+    const percentDevicesOn = (this.__num_off_devices === this.__num_forced_off_devices) ? 100 : (100 * ((numDevices - this.__num_off_devices) / numDevices));
+    if (powerDiff < 0) {
+      this.__free_capacity = 0;
+    } else if (percentDevicesOn >= freeThreshold) {
       this.__free_capacity = powerDiff;
     } else {
       this.__free_capacity = 0;
