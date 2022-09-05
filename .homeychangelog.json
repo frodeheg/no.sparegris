@@ -307,5 +307,8 @@
   },
   "0.12.1": {
     "en": "After optional temperature setting was added no temperature was set on any device regardless of setting"
+  },
+  "0.12.2": {
+    "en": "Fixed a bug as reported by @Krisch2 in the forum (Incorrectly reported error messages"
   }
 }
