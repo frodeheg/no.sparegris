@@ -85,7 +85,7 @@
       "freeThreshold": "Terskelverdi ledig kapasitet",
       "freeThresholdHint": "Ledig effekt vil kun bli rapportert dersom den indikerte mengden av kontrollerbare enheter er påslått. Dette kan brukes for å gi prioritet til enheter som styres utenfor appen som for eksempel lading av elbil. 0% Vil gi høyest prioritet mens 100% vil gi minst prioritet.",
       "controllableDevices": "Kontrollerbare enheter",
-      "deviceListHint1" : "Bare valgte enheter kan kontrolleres av appen.",
+      "deviceListHint1" : "Bare valgte enheter kan kontrolleres av appen. Hvis du har enheter som ikke er listet men som burde vært det kan du følge instruksjonene under Hjelpe-menyen.",
       "deviceListHint2" : "Tips: For optimal styring, sørg for at kraftige justerbare strømtrekk er satt til en effekt som ikke overstiger ønsket effekttariff. Hvis ikke vil det resultere i hyppig av/på slåing."
     },
     "help": {
@@ -94,7 +94,7 @@
           "--><ol><!--",
           "-->  <li>Klikk på linken på bunnen av denne siden.</li><!--",
           "-->  <li>Klikk på følgende knapp: ”Info om vanskelige enheter” og vent til loggen fylles ut</li><!--",
-          "-->  <li>Klikk på Send-knappen (eller alternativt finn enheten din i listen og send detaljene for den i en melding til utvikleren hvis du ikke vil avsløre alle de ignorerte enhetene dine.)</li><!--",
+          "-->  <li>Klikk på Send-knappen (eller alternativt finn enheten din i listen og send detaljene for den i en melding til utvikleren hvis du ikke vil avsløre de listede enhetene dine.)</li><!--",
           "-->  <li>Send utvikleren en personlig melding for å informere om rapporten (levetiden til rapporten er bare 24 timer, så dette er viktig ellers kan rapporten gå tapt).</li><!--",
           "-->  <li>Vent på en ny testversjon og installer den.</li><!--",
           "-->  <li>Rapporter tilbake til utvikleren hvorvidt den aktuelle enheten fungerer i testversjonen så endringen kan offentliggjøres.</li><!--",

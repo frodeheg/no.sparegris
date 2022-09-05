@@ -85,7 +85,7 @@
       "freeThreshold": "Free capacity threshold",
       "freeThresholdHint": "Free power will only be reported if the indicated amount of controllable units are switched on. This can be used to give priority to devices that are controlled outside the app, such as charging an electric car. 0% will give the highest priority while 100% will give the lowest priority.",
       "controllableDevices": "Controllable devices",
-      "deviceListHint1" : "Only selected devices can be controlled by the app.",
+      "deviceListHint1" : "Only selected devices can be controlled by the app. If your device is not listed then follow the instructions in the Help panel.",
       "deviceListHint2" : "Tip: For optimal control, ensure that heavy adjustable current draws are set to a power that does not exceed the desired power tariff. Otherwise it will result in frequent switching on/off."
     },
     "help": {
@@ -94,7 +94,7 @@
           "--><ol><!--",
           "-->  <li>Click the link at the bottom of this page</li><!--",
           "-->  <li>Click the button named “Info about difficult devices” and wait for the log to populate</li><!--",
-          "-->  <li>Click the Send button (or alternatively find your device in the list and send the capability list for it in a message the developer if you don’t want to expose all your ignored devices.)</li><!--",
+          "-->  <li>Click the Send button (or alternatively find your device in the list and send the capability list for it in a message the developer if you don’t want to expose all your listed devices.)</li><!--",
           "-->  <li>Send the developer a personal message to inform about the report (the lifetime of the report is only 24 hours so this is essential or the report might be lost).</li><!--",
           "-->  <li>Wait for a new test version and install it.</li><!--",
           "-->  <li>Report back to the developer whether the test version works or not in order for the change to go public.</li><!--",
