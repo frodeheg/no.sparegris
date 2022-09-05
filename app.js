@@ -117,6 +117,10 @@ class PiggyBank extends Homey.App {
       this.log(maxPowerText);
       this.homey.notifications.createNotification({ excerpt: maxPowerText });
     }
+    // Version 0.12.1 : An earlier version added an option to disregard temperature, this should default to 1 or problems arise
+    if (this.homey.settings.get('controlTemp') === null) {
+      this.homey.settings.set('controlTemp', 1);
+    }
     // ===== BREAKING CHANGES END =====
 
     /* DEBUG_BEGIN
