@@ -106,6 +106,7 @@ class PiggyBank extends Homey.App {
    */
   async onInit() {
     this.log('OnInit');
+    this.homey.on('unload', () => this.onUninit());
 
     // ===== BREAKING CHANGES =====
     // Version 0.10.8 changes from having maxPower per mode to one global setting
@@ -134,9 +135,23 @@ class PiggyBank extends Homey.App {
       // }
     }
     DEBUG_END */
-    // this.log(`modeList: ${JSON.stringify(this.homey.settings.get('modeList'))}`);
-    // this.log(`priceActionList: ${JSON.stringify(this.homey.settings.get('priceActionList'))}`);
-    // this.log(`frostList: ${JSON.stringify(this.homey.settings.get('frostList'))}`);
+
+    // ===== KEEPING STATE ACROSS RESTARTS =====
+    if (this.homey.settings.get('safeShutdown__current_power') !== null) {
+      // For onPowerUpdate + onNewHour
+      this.__accum_energy = +await this.homey.settings.get('safeShutdown__accum_energy');
+      this.__current_power = +await this.homey.settings.get('safeShutdown__current_power');
+      this.__current_power_time = new Date(await this.homey.settings.get('safeShutdown__current_power_time'));
+      this.__power_last_hour = +await this.homey.settings.get('safeShutdown__power_last_hour');
+      this.homey.settings.unset('safeShutdown__accum_energy');
+      this.homey.settings.unset('safeShutdown__current_power');
+      this.homey.settings.unset('safeShutdown__current_power_time');
+      this.homey.settings.unset('safeShutdown__power_last_hour');
+      this.updateLog(`Restored state from safe shutdown values ${this.__accum_energy} ${this.__current_power} ${this.__current_power_time} ${this.__power_last_hour}`, LOG_INFO);
+    } else {
+      this.updateLog('No state from previous shutown? Powerloss, deactivated or forced restart.', LOG_INFO);
+    }
+    // ===== KEEPING STATE ACROSS RESTARTS END =====
     this.logInit();
     this.__intervalID = undefined;
     this.__newHourID = undefined;
@@ -346,17 +361,32 @@ class PiggyBank extends Homey.App {
 
   /**
    * onUninit() is called when the app is destroyed
+   * Note. Due to a bug in HomeyAPI this function is not called automatically and is instead triggered
+   * by the app itself, thus when the HomeyAPI bug is fixed it might be that this function will be called twice.
+   * It is for this reason essential that the code is safe t
    */
   async onUninit() {
+    this.log('OnUnInit');
     // Make sure the interval is cleared if it was started, otherwise it will continue to
     // trigger but on an unknown app.
     if (this.__intervalID !== undefined) {
       clearInterval(this.__intervalID);
+      this.__intervalID = undefined;
     }
     if (this.__newHourID !== undefined) {
       clearTimeout(this.__newHourID);
+      this.__newHourID = undefined;
     }
     this.statsUnInit();
+
+    // ===== KEEPING STATE ACROSS RESTARTS =====
+    // For onPowerUpdate + onNewHour
+    this.homey.settings.set('safeShutdown__accum_energy', this.__accum_energy);
+    this.homey.settings.set('safeShutdown__current_power', this.__current_power);
+    this.homey.settings.set('safeShutdown__current_power_time', this.__current_power_time);
+    this.homey.settings.set('safeShutdown__power_last_hour', this.__power_last_hour);
+    // ===== KEEPING STATE ACROSS RESTARTS END =====
+
     this.updateLog('PiggyBank has been uninitialized', LOG_INFO);
   }
 
@@ -607,33 +637,48 @@ class PiggyBank extends Homey.App {
    */
   async onNewHour() {
     const now = new Date();
+    const timeWithinHour = 1000 * 60 * 60 - this.timeToNextHour(now);
     try {
       if (this.__current_power === undefined) {
         // First hour after app was started
         // Reserve energy for the time we have no data on
         const maxPower = this.homey.settings.get('maxPower');
         const errorMargin = this.homey.settings.get('errorMargin') ? (parseInt(this.homey.settings.get('errorMargin'), 10) / 100) : 1;
-        const lapsedTime = 1000 * 60 * 60 - this.timeToNextHour(now);
+        const lapsedTime = timeWithinHour;
         // Assume 100% use this hour up until now (except for the errorMargin so we gett less warnings the first hour)
         this.__reserved_energy = (1 - errorMargin) * ((maxPower * lapsedTime) / (1000 * 60 * 60));
         if (Number.isNaN(this.__reserved_energy)) {
           this.__reserved_energy = 0;
         }
+        this.__accum_energy = 0;
       } else {
-        // Add up last part of previous hour
+        // Add up last part of previous hour. Note that in case an app restart is in progress then the delta from last time might cross the hour so we need to distinguish.
         const lapsedTime = now - this.__current_power_time;
-        const energyUsed = (this.__current_power * lapsedTime) / (1000 * 60 * 60);
+        const timeLeftInHour = this.timeToNextHour(this.__current_power_time);
+        let timeToProcess = lapsedTime;
+        if (lapsedTime > timeLeftInHour) {
+          timeToProcess = timeLeftInHour;
+        }
+        const energyUsed = (this.__current_power * timeToProcess) / (1000 * 60 * 60);
         this.__accum_energy += energyUsed;
         this.__reserved_energy = 0;
-        if (this.__power_last_hour !== undefined) {
-          // The first time the data is not for a full hour, so skip adding to statistics
-          await this.statsSetLastHourEnergy(this.__accum_energy);
+        if (timeToProcess < lapsedTime || timeWithinHour === 0) {
+          // Crossed into new hour
+          if (this.__power_last_hour !== undefined) {
+            // The first time the data is not for a full hour, so skip adding to statistics
+            await this.statsSetLastHourEnergy(this.__accum_energy);
+          }
+          this.__power_last_hour = this.__accum_energy;
+          this.updateLog(`Hour finalized: ${String(this.__accum_energy)} Wh`, LOG_INFO);
+          // Add up initial part of next hour (only necessary for app restarts as otherwise the number will be close to 0).
+          const energyUsedNewHour = (this.__current_power * timeWithinHour) / (1000 * 60 * 60);
+          this.__accum_energy = energyUsedNewHour;
+          this.log(`NewHour energy: ${this.__accum_energy}`);
+        } else {
+          // Still within the same hour (happens on app restart only)
         }
-        this.__power_last_hour = this.__accum_energy;
-        this.updateLog(`Hour finalized: ${String(this.__accum_energy)} Wh`, LOG_INFO);
       }
       this.__current_power_time = now;
-      this.__accum_energy = 0;
       if (+this.homey.settings.get('operatingMode') !== MODE_DISABLED) {
         this.doPriceCalculations()
           .catch(err => {
