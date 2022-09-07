@@ -319,5 +319,8 @@
   },
   "0.12.5": {
     "en": "Fixed bug as reported by Torbjorn_Melbye in the forum. (incorrect display of price point)"
+  },
+  "0.12.6": {
+    "en": "Fixed spelling mistake in alarm capability"
   }
 }
