@@ -318,6 +318,6 @@
     "en": "Made sure the energy state is kept across app restarts / every new version."
   },
   "0.12.5": {
-    "en": "Fixed bug as reported by Alf_Jonny_Nokling in the forum. (incorrect display of price point)"
+    "en": "Fixed bug as reported by Torbjorn_Melbye in the forum. (incorrect display of price point)"
   }
 }

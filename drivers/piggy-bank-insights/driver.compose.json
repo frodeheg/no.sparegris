@@ -125,7 +125,7 @@
     "alarm_generic.overshoot": {
       "title": {
         "en": "Manual powerdown required!",
-        "no": "Manuall nedstegning påkrevd!"
+        "no": "Manuell nedstegning påkrevd!"
       },
       "insightsTitleTrue": {
         "en": "Unable to maintain power limit!",
