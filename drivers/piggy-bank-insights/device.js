@@ -281,7 +281,8 @@ class MyDevice extends Device {
 
       // Set Price point capability + update timeline using boolean workaround capabilities
       const prevPricePoint = await this.getStoreValue('piggy_price');
-      if (piggyState.price_point) {
+      this.log(`Device price point is: ${piggyState.price_point}`);
+      if (piggyState.price_point !== null && piggyState !== undefined) {
         this.setCapabilityValue('piggy_price', String(piggyState.price_point));
       }
       if (+piggyState.price_point !== +prevPricePoint) {

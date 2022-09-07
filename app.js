@@ -240,7 +240,7 @@ class PiggyBank extends Homey.App {
       if (+this.homey.settings.get('operatingMode') === MODE_DISABLED) return Promise.reject(new Error(this.homey.__('warnings.notEnabled')));
       if (+this.homey.settings.get('priceMode') !== c.PRICE_MODE_FLOW) return Promise.reject(new Error(this.homey.__('warnings.notPMfromFlow')));
       if (+args.mode === PP_EXTREME && this.homey.settings.get('priceActionList').length === 3) return Promise.reject(new Error(this.homey.__('warnings.notConfigured'))); // Added in version 0.8.15
-      return this.onPricePointUpdate(args.mode);
+      return this.onPricePointUpdate(+args.mode);
     });
     const cardActionMaxUsageUpdate = this.homey.flow.getActionCard('change-piggy-bank-max-usage');
     cardActionMaxUsageUpdate.registerRunListener(async args => {
@@ -1399,12 +1399,12 @@ class PiggyBank extends Homey.App {
     this.updateLog(`Stats last energy time: ${this.__stats_energy_time}`, LOG_INFO);
     this.__stats_energy = energy;
 
-    // Find todays max
+    // Find todays max - TODO check if correct interval
     if (this.__stats_tmp_max_power_today === null || energy > +this.__stats_tmp_max_power_today) {
       this.__stats_tmp_max_power_today = energy;
     }
 
-    // If new day has begun
+    // If new day has begun - TODO swap first hour with first active hour
     if (this.toLocalTime(this.__stats_energy_time).getHours() === 0) {
       await this.statsSetLastDayMaxEnergy(this.__stats_tmp_max_power_today);
       this.__stats_tmp_max_power_today = 0;
@@ -1712,7 +1712,7 @@ class PiggyBank extends Homey.App {
     return {
       power_last_hour: parseInt(this.__power_last_hour, 10),
       power_estimated: this.__power_estimated === undefined ? undefined : parseInt(this.__power_estimated.toFixed(2), 10),
-      price_point: await this.homey.settings.get('pricePoint'),
+      price_point: +await this.homey.settings.get('pricePoint'),
       operating_mode: +await this.homey.settings.get('operatingMode'),
       alarm_overshoot: this.__alarm_overshoot,
       free_capacity: this.__free_capacity,
