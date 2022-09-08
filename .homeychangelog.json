@@ -328,5 +328,8 @@
   },
   "0.12.8": {
     "en": "Fixed the capability that calculate average usage during extremely expensive hours. This was not set at reboot. + Removed experimental feature Easee car charger to prevent confusion when it is not working."
+  },
+  "0.12.9": {
+    "en": "Added crash protection to the logging mechanism. If there is a failure it will now just disable logging until it works again."
   }
 }
