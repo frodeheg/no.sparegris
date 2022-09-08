@@ -407,10 +407,10 @@ class PiggyBank extends Homey.App {
       // Unfortunately some devices like the SensiboSky heat pump controller invented their own onoff capability
       // so unless specially handled the capability might not be detected. The generic detection mechanism below
       // has only been tested on SensiboSky devices so there might be problems with other devices with custom onoff capabilities
-      let onoffCap = device.capabilities.includes('onoff') ? 'onoff' : device.capabilities.find(cap => cap.includes('onoff'));
-      if ((onoffCap === undefined) && device.capabilities.includes('enabled')) {
-        onoffCap = 'enabled';
-      }
+      const onoffCap = device.capabilities.includes('onoff') ? 'onoff' : device.capabilities.find(cap => cap.includes('onoff'));
+      // if ((onoffCap === undefined) && device.capabilities.includes('enabled')) {
+      //   onoffCap = 'enabled';
+      // }
       if (onoffCap === undefined) {
         this.updateLog(`ignoring: ${device.name}`, LOG_DEBUG);
         if (device.name === 'Varmepumpe') {
