@@ -445,7 +445,9 @@ class PiggyBank extends Homey.App {
       this.updateLog(`Device: ${String(priority)} ${device.id} ${device.name} ${device.class}`, LOG_DEBUG);
       const thermostatCap = device.capabilities.includes('target_temperature')
         && device.capabilities.includes('measure_temperature');
-      const targetTemp = thermostatCap ? +device.capabilitiesObj['target_temperature'].value : 24;
+      // device.capabilitiesObj should be available but in case homey timed out it could be incomplete
+      const targetTemp = (thermostatCap && device.capabilitiesObj && ('target_temperature' in device.capabilitiesObj))
+        ? +device.capabilitiesObj['target_temperature'].value : 24;
       const relevantDevice = {
         priority: (priority > 0) ? 1 : 0,
         name: device.name,
@@ -1532,7 +1534,7 @@ class PiggyBank extends Homey.App {
       }
       if (setting === 'showState' && (showState === '1')) {
         const frostList = this.homey.settings.get('frostList');
-        const numControlledDevices = Object.keys(frostList).length;
+        const numControlledDevices = Array.isArray(frostList) ? Object.keys(frostList).length : 0;
         this.updateLog('========== INTERNAL STATE ==========', LOG_ALL);
         this.updateLog(`Number of devices under control: ${numControlledDevices}`, LOG_ALL);
         this.updateLog(`Current operating mode: ${this.homey.settings.get('operatingMode')}`, LOG_ALL);
@@ -1567,15 +1569,20 @@ class PiggyBank extends Homey.App {
       }
       if (setting === 'showCaps' && (showCaps === '1')) {
         this.updateLog('========== LIST OF IGNORED DEVICES ==========', LOG_ALL);
-        const devices = await this.homeyApi.devices.getDevices(); // Error thrown is catched by caller of createDeviceList
-        // Loop all devices
-        for (const device of Object.values(devices)) {
-          const onoffCap = device.capabilities.includes('onoff') ? 'onoff' : device.capabilities.find(cap => cap.includes('onoff'));
-          if (onoffCap === undefined) {
-            this.updateLog(`Device: ${device.name}`, LOG_ALL);
-            this.updateLog(`Capabilities: ${String(device.capabilities)}`, LOG_ALL);
-          }
-        }
+        await this.homeyApi.devices.getDevices()
+          .then(devices => {
+            // Loop all devices
+            for (const device of Object.values(devices)) {
+              const onoffCap = device.capabilities.includes('onoff') ? 'onoff' : device.capabilities.find(cap => cap.includes('onoff'));
+              if (onoffCap === undefined) {
+                this.updateLog(`Device: ${device.name}`, LOG_ALL);
+                this.updateLog(`Capabilities: ${String(device.capabilities)}`, LOG_ALL);
+              }
+            }
+          })
+          .catch(err => {
+            this.log(`Failed to fetch devicelist: ${err}`);
+          });
         this.updateLog('======== IGNORED DEVICES END ========', LOG_ALL);
         this.homey.settings.set('showCaps', '');
       }
