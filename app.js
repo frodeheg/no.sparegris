@@ -152,7 +152,10 @@ class PiggyBank extends Homey.App {
       this.updateLog('No state from previous shutown? Powerloss, deactivated or forced restart.', LOG_INFO);
     }
     // ===== KEEPING STATE ACROSS RESTARTS END =====
-    this.logInit();
+    await this.logInit()
+      .catch(() => {
+        // Just ignore logging errors, this should not affect normal users.
+      });
     this.__intervalID = undefined;
     this.__newHourID = undefined;
     this.__current_power = undefined;
@@ -1512,8 +1515,12 @@ class PiggyBank extends Homey.App {
    *  LOGGING
    ** **************************************************************************************************** */
 
-  logInit() {
-    this.homeyLog = new Log({ homey: this.homey });
+  async logInit() {
+    this.homeyLog = await new Log({ homey: this.homey })
+      .catch(err => {
+        this.logInitDone = false;
+        return Promise.reject(err);
+      });
     // Reset logging
     this.homey.settings.set('diagLog', '');
     this.homey.settings.set('sendLog', '');
@@ -1531,7 +1538,7 @@ class PiggyBank extends Homey.App {
       const showPriceApi = this.homey.settings.get('showPriceApi');
       const LOG_ALL = LOG_ERROR; // Send as ERROR just to make it visible regardless
       if (setting === 'sendLog' && (sendLog === 'send') && (diagLog !== '')) {
-        this.sendLog();
+        await this.sendLog();
       }
       if (setting === 'showState' && (showState === '1')) {
         const frostList = this.homey.settings.get('frostList');
@@ -1608,7 +1615,15 @@ class PiggyBank extends Homey.App {
     });
   }
 
-  updateLog(newMessage, ignoreSetting = LOG_INFO) {
+  async updateLog(newMessage, ignoreSetting = LOG_INFO) {
+    if (!this.logInitDone) {
+      await this.logInit()
+        .catch(err => {
+          this.log(`Unable to initialize logging: ${err}`);
+          return Promise.resolve(); // Skip sending log
+        });
+    }
+
     let logLevel = +this.homey.settings.get('logLevel');
     if (!Number.isInteger(logLevel)) logLevel = 0;
     if (ignoreSetting > logLevel) {
@@ -1652,6 +1667,13 @@ class PiggyBank extends Homey.App {
   }
 
   async sendLog() {
+    if (!this.logInitDone) {
+      await this.logInit()
+        .catch(err => {
+          this.log(`Unable to initialize logging: ${err}`);
+          return Promise.resolve(); // Skip sending log
+        });
+    }
     let tries = 5;
 
     while (tries-- > 0) {
