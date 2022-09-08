@@ -331,5 +331,8 @@
   },
   "0.12.9": {
     "en": "Added crash protection to the logging mechanism. If there is a failure it will now just disable logging until it works again."
+  },
+  "0.12.10": {
+    "en": "The crash protection mechanism for the logging was incomplete. Now it should work"
   }
 }
