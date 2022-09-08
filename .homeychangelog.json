@@ -334,5 +334,8 @@
   },
   "0.12.10": {
     "en": "The crash protection mechanism for the logging was incomplete. Now it should work"
+  },
+  "0.12.11": {
+    "en": "Additional fixes regarded to logging"
   }
 }
