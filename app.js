@@ -1301,6 +1301,7 @@ class PiggyBank extends Homey.App {
     this.__stats_low_energy = this.homey.settings.get('stats_low_energy');
     this.__stats_norm_energy = this.homey.settings.get('stats_norm_energy');
     this.__stats_high_energy = this.homey.settings.get('stats_high_energy');
+    this.__stats_extreme_energy = this.homey.settings.get('stats_extreme_energy');
     this.__stats_last_day_max = undefined;
     this.__stats_tmp_max_power_today = this.homey.settings.get('stats_tmp_max_power_today'); // Todo: reject if the time is too far away
     this.__stats_this_month_maxes = this.homey.settings.get('stats_this_month_maxes'); // Todo: reject if the time is too far away
