@@ -1613,6 +1613,7 @@ class PiggyBank extends Homey.App {
         this.homey.settings.set('showPriceApi', '');
       }
     });
+    this.logInitDone = true;
   }
 
   async updateLog(newMessage, ignoreSetting = LOG_INFO) {
