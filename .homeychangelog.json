@@ -322,5 +322,8 @@
   },
   "0.12.6": {
     "en": "Fixed spelling mistake in alarm capability"
+  },
+  "0.12.7": {
+    "en": "Fixed two small crash bugs"
   }
 }
