@@ -1,3 +1,4 @@
+/* eslint-disable no-loop-func */
 /* eslint-disable no-nested-ternary */
 /* eslint-disable no-prototype-builtins */
 /* eslint-disable guard-for-in */
@@ -28,11 +29,6 @@ const WAIT_TIME_TO_POWER_ON_AFTER_POWEROFF_MIN = 1 * 60 * 1000; // Wait 1 minute
 const WAIT_TIME_TO_POWER_ON_AFTER_POWEROFF_MAX = 5 * 60 * 1000; // Wait 5 minutes
 const TIME_FOR_POWERCYCLE_MIN = 5 * 60 * 1000; // 5 minutes left
 const TIME_FOR_POWERCYCLE_MAX = 30 * 60 * 1000; // more than 30 minutes left
-
-// Logging classes
-const LOG_ERROR = 0;
-const LOG_INFO = 1;
-const LOG_DEBUG = 2;
 
 // Operations for controlled devices
 const ALWAYS_OFF = 0;
@@ -147,9 +143,9 @@ class PiggyBank extends Homey.App {
       this.homey.settings.unset('safeShutdown__current_power');
       this.homey.settings.unset('safeShutdown__current_power_time');
       this.homey.settings.unset('safeShutdown__power_last_hour');
-      this.updateLog(`Restored state from safe shutdown values ${this.__accum_energy} ${this.__current_power} ${this.__current_power_time} ${this.__power_last_hour}`, LOG_INFO);
+      this.updateLog(`Restored state from safe shutdown values ${this.__accum_energy} ${this.__current_power} ${this.__current_power_time} ${this.__power_last_hour}`, c.LOG_INFO);
     } else {
-      this.updateLog('No state from previous shutown? Powerloss, deactivated or forced restart.', LOG_INFO);
+      this.updateLog('No state from previous shutown? Powerloss, deactivated or forced restart.', c.LOG_INFO);
     }
     // ===== KEEPING STATE ACROSS RESTARTS END =====
     try {
@@ -191,9 +187,9 @@ class PiggyBank extends Homey.App {
     const timeToPreventZigbee = Math.min(15 * 60 - os.uptime(), 15 * 60);
     if (timeToPreventZigbee > 0) {
       preventZigbee = true;
-      this.updateLog(`Homey reboot detected. Delaying device control by ${timeToPreventZigbee} seconds to improve Zigbee recovery.`, LOG_ERROR);
+      this.updateLog(`Homey reboot detected. Delaying device control by ${timeToPreventZigbee} seconds to improve Zigbee recovery.`, c.LOG_ERROR);
       setTimeout(() => {
-        this.updateLog('Device constrol is once again enabled.', LOG_INFO);
+        this.updateLog('Device constrol is once again enabled.', c.LOG_INFO);
         preventZigbee = false;
       }, timeToPreventZigbee * 1000);
     }
@@ -222,7 +218,7 @@ class PiggyBank extends Homey.App {
     const cardActionEnergyUpdate = this.homey.flow.getActionCard('update-meter-energy'); // Marked as deprecated so nobody will see it yet
     cardActionEnergyUpdate.registerRunListener(async args => {
       const newTotal = args.TotalEnergyUsage;
-      this.updateLog(`Total energy changed to: ${String(newTotal)}`, LOG_INFO);
+      this.updateLog(`Total energy changed to: ${String(newTotal)}`, c.LOG_INFO);
     });
     const cardActionPowerUpdate = this.homey.flow.getActionCard('update-meter-power');
     cardActionPowerUpdate.registerRunListener(async args => {
@@ -290,7 +286,7 @@ class PiggyBank extends Homey.App {
       } else if (setting === 'settingsSaved') {
         const doRefresh = this.homey.settings.get('settingsSaved');
         if (doRefresh === 'true') {
-          this.updateLog('Settings saved, refreshing all devices.', LOG_INFO);
+          this.updateLog('Settings saved, refreshing all devices.', c.LOG_INFO);
           this.app_is_configured = this.validateSettings();
           if (!this.app_is_configured) {
             throw (new Error('This should never happen, please contact the developer and the bug will be fixed'));
@@ -317,7 +313,7 @@ class PiggyBank extends Homey.App {
       this.onMonitor();
     }, 1000 * 60 * 5);
 
-    this.updateLog('PiggyBank has been initialized', LOG_INFO);
+    this.updateLog('PiggyBank has been initialized', c.LOG_INFO);
     return Promise.resolve();
   }
 
@@ -391,7 +387,7 @@ class PiggyBank extends Homey.App {
     this.homey.settings.set('safeShutdown__power_last_hour', this.__power_last_hour);
     // ===== KEEPING STATE ACROSS RESTARTS END =====
 
-    this.updateLog('PiggyBank has been uninitialized', LOG_INFO);
+    this.updateLog('PiggyBank has been uninitialized', c.LOG_INFO);
   }
 
   /**
@@ -416,10 +412,10 @@ class PiggyBank extends Homey.App {
       //   onoffCap = 'enabled';
       // }
       if (onoffCap === undefined) {
-        this.updateLog(`ignoring: ${device.name}`, LOG_DEBUG);
+        this.updateLog(`ignoring: ${device.name}`, c.LOG_DEBUG);
         if (device.name === 'Varmepumpe') {
-          this.updateLog('Capabilities ======', LOG_DEBUG);
-          this.updateLog(String(device.capabilities), LOG_DEBUG);
+          this.updateLog('Capabilities ======', c.LOG_DEBUG);
+          this.updateLog(String(device.capabilities), c.LOG_DEBUG);
         }
         continue;
       }
@@ -446,7 +442,7 @@ class PiggyBank extends Homey.App {
         zoneId = zones[zoneId].parent;
       }
 
-      this.updateLog(`Device: ${String(priority)} ${device.id} ${device.name} ${device.class}`, LOG_DEBUG);
+      this.updateLog(`Device: ${String(priority)} ${device.id} ${device.name} ${device.class}`, c.LOG_DEBUG);
       const thermostatCap = device.capabilities.includes('target_temperature')
         && device.capabilities.includes('measure_temperature');
       // device.capabilitiesObj should be available but in case homey timed out it could be incomplete
@@ -568,7 +564,7 @@ class PiggyBank extends Homey.App {
       device = await promiseDevice;
     } catch (err) {
       // Most likely timeout
-      this.updateLog(`Device cannot be fetched. ${String(err)}`, LOG_ERROR);
+      this.updateLog(`Device cannot be fetched. ${String(err)}`, c.LOG_ERROR);
       this.__current_state[deviceId].nComError += 10; // Big error so wait more until retry than smaller errors
       return Promise.resolve([false, false]); // The unhandled device is solved by the later nComError handling
     }
@@ -586,13 +582,13 @@ class PiggyBank extends Homey.App {
 
     this.__current_state[deviceId].isOn = newStateOn;
     if (newStateOn === undefined) {
-      this.updateLog(`isOn was set to undefined ${frostGuardActive}`, LOG_ERROR);
+      this.updateLog(`isOn was set to undefined ${frostGuardActive}`, c.LOG_ERROR);
     }
     this.__current_state[deviceId].ongoing = false; // If already ongoing then it should already have been completed, try again
     if (newStateOn && !isOn) {
       // Turn on
       const deviceName = this.__deviceList[deviceId].name;
-      this.updateLog(`Turning on device: ${deviceName}`, LOG_INFO);
+      this.updateLog(`Turning on device: ${deviceName}`, c.LOG_INFO);
       this.__current_state[deviceId].ongoing = true;
       this.__current_state[deviceId].confirmed = false;
       return device.setCapabilityValue({ capabilityId: this.__deviceList[deviceId].onoff_cap, value: true })
@@ -607,7 +603,7 @@ class PiggyBank extends Homey.App {
           this.statsCountFailedTurnOn();
           this.__current_state[deviceId].ongoing = undefined;
           this.__current_state[deviceId].nComError += 1;
-          this.updateLog(`Failed to turn on device ${deviceName}, will retry later`, LOG_ERROR);
+          this.updateLog(`Failed to turn on device ${deviceName}, will retry later`, c.LOG_ERROR);
           return Promise.resolve([false, false]); // The unresolved part is solved by the later nComError handling
         });
     } // ignore case !wantOn && isOn
@@ -615,7 +611,7 @@ class PiggyBank extends Homey.App {
     if (!newStateOn && isOn) {
       // Turn off
       const deviceName = this.__deviceList[deviceId].name;
-      this.updateLog(`Turning off device: ${deviceName}`, LOG_INFO);
+      this.updateLog(`Turning off device: ${deviceName}`, c.LOG_INFO);
       this.__current_state[deviceId].ongoing = true;
       this.__current_state[deviceId].confirmed = false;
       return device.setCapabilityValue({ capabilityId: this.__deviceList[deviceId].onoff_cap, value: false })
@@ -629,7 +625,7 @@ class PiggyBank extends Homey.App {
           this.__current_state[deviceId].ongoing = undefined;
           this.statsCountFailedTurnOff();
           this.__current_state[deviceId].nComError += 1;
-          this.updateLog(`Failed to turn off device ${deviceName}, will try to turn off other devices instead. (${error})`, LOG_ERROR);
+          this.updateLog(`Failed to turn off device ${deviceName}, will try to turn off other devices instead. (${error})`, c.LOG_ERROR);
           return Promise.resolve([false, false]); // The unresolved part is solved by the later nComError handling
         });
     }
@@ -675,7 +671,7 @@ class PiggyBank extends Homey.App {
             await this.statsSetLastHourEnergy(this.__accum_energy);
           }
           this.__power_last_hour = this.__accum_energy;
-          this.updateLog(`Hour finalized: ${String(this.__accum_energy)} Wh`, LOG_INFO);
+          this.updateLog(`Hour finalized: ${String(this.__accum_energy)} Wh`, c.LOG_INFO);
           // Add up initial part of next hour (only necessary for app restarts as otherwise the number will be close to 0).
           const energyUsedNewHour = (this.__current_power * timeWithinHour) / (1000 * 60 * 60);
           this.__accum_energy = energyUsedNewHour;
@@ -700,7 +696,7 @@ class PiggyBank extends Homey.App {
       // Start timer to start exactly when a new hour starts
       const timeToNextTrigger = this.timeToNextHour(now);
       this.__newHourID = setTimeout(() => this.onNewHour(), timeToNextTrigger);
-      this.updateLog(`New hour in ${String(timeToNextTrigger)} ms (now is: ${String(now)})`, LOG_DEBUG);
+      this.updateLog(`New hour in ${String(timeToNextTrigger)} ms (now is: ${String(now)})`, c.LOG_DEBUG);
     }
   }
 
@@ -709,7 +705,7 @@ class PiggyBank extends Homey.App {
    * Similar to refreshAllDevices(), but it will only refresh states that are not correct
    */
   async onMonitor() {
-    this.updateLog('onMonitor()', LOG_INFO);
+    this.updateLog('onMonitor()', c.LOG_INFO);
     if (!this.app_is_configured) {
       // Early exit if the app is not configured
       return Promise.resolve(false);
@@ -789,12 +785,12 @@ class PiggyBank extends Homey.App {
         for (let i = 0; i < values.length; i++) {
           allOk &&= values[i];
         }
-        this.updateLog(`Monitor completed with state: ${allOk}`, LOG_DEBUG);
+        this.updateLog(`Monitor completed with state: ${allOk}`, c.LOG_DEBUG);
         return Promise.resolve(allOk);
       })
       .catch(error => {
         this.__monitorError += 1;
-        this.updateLog(`Monitor failed to inspect devices: ${error}`, LOG_ERROR);
+        this.updateLog(`Monitor failed to inspect devices: ${error}`, c.LOG_ERROR);
         return Promise.resolve(false); // Ignore errors as this is for monitoring
       });
   }
@@ -837,7 +833,7 @@ class PiggyBank extends Homey.App {
       + `Accum: ${String(this.__accum_energy.toFixed(2))} Wh, `
       + `Limit: ${String(maxPower)} Wh, `
       + `Reserved: ${String(Math.ceil(this.__reserved_energy + safetyPower))}W, `
-      + `(Estimated end: ${String(this.__power_estimated.toFixed(2))})`, LOG_DEBUG);
+      + `(Estimated end: ${String(this.__power_estimated.toFixed(2))})`, c.LOG_DEBUG);
 
     // Try to control devices if the power is outside of the preferred bounds
     let powerDiff = (((maxPower - this.__accum_energy - this.__reserved_energy) * (1000 * 60 * 60)) / remainingTime) - newPower - safetyPower;
@@ -871,7 +867,7 @@ class PiggyBank extends Homey.App {
     if (newMode === oldMode) {
       return Promise.resolve();
     }
-    this.updateLog(`Changing the current mode to: ${String(newMode)}`, LOG_INFO);
+    this.updateLog(`Changing the current mode to: ${String(newMode)}`, c.LOG_INFO);
     this.homey.settings.set('operatingMode', newMode);
     if (+newMode === MODE_DISABLED) {
       return Promise.resolve([true, true]);
@@ -883,7 +879,7 @@ class PiggyBank extends Homey.App {
    * onZoneUpdate is called whenever a zone is turned on/off
    */
   async onZoneUpdate(zone, enabled) {
-    this.updateLog(`Changing zone ${zone.name} (ID: ${zone.id}) to ${String(enabled)}`, LOG_INFO);
+    this.updateLog(`Changing zone ${zone.name} (ID: ${zone.id}) to ${String(enabled)}`, c.LOG_INFO);
     let activeZones = this.homey.settings.get('zones');
     if (activeZones === null) {
       activeZones = {};
@@ -930,7 +926,7 @@ class PiggyBank extends Homey.App {
     if (+newMode === +oldPricePoint) {
       return Promise.resolve();
     }
-    this.updateLog(`Changing the current price point to: ${String(newMode)}`, LOG_INFO);
+    this.updateLog(`Changing the current price point to: ${String(newMode)}`, c.LOG_INFO);
     this.homey.settings.set('pricePoint', newMode);
     return this.refreshAllDevices();
   }
@@ -939,7 +935,7 @@ class PiggyBank extends Homey.App {
    * onMaxUsageUpdate is called whenever the max usage per hour is changed
    */
   async onMaxUsageUpdate(newVal) {
-    this.updateLog(`Changing the max usage per hour to: ${String(newVal)}`, LOG_INFO);
+    this.updateLog(`Changing the max usage per hour to: ${String(newVal)}`, c.LOG_INFO);
     this.homey.settings.set('maxPower', newVal);
   }
 
@@ -947,7 +943,7 @@ class PiggyBank extends Homey.App {
    * onSafetyPowerUpdate is called whenever the safety power is changed
    */
   async onSafetyPowerUpdate(newVal) {
-    this.updateLog(`Changing the current safety power to: ${String(newVal)}`, LOG_INFO);
+    this.updateLog(`Changing the current safety power to: ${String(newVal)}`, c.LOG_INFO);
     this.homey.settings.set('safetyPower', newVal);
   }
 
@@ -1001,10 +997,10 @@ class PiggyBank extends Homey.App {
     const timeSincePowerOff = this.__last_power_on_time - this.__last_power_off_time;
     if (timeSincePowerOff < powerCycleInterval) {
       this.updateLog(`Could use ${String(morePower)} W more power but was aborted due to recent turn off activity. Remaining wait = ${String((5 * 60 * 1000 - timeSincePowerOff) / 1000)} s`,
-        LOG_DEBUG);
+        c.LOG_DEBUG);
       return Promise.resolve();
     }
-    this.updateLog(`Can use ${String(morePower)}W more power`, LOG_DEBUG);
+    this.updateLog(`Can use ${String(morePower)}W more power`, c.LOG_DEBUG);
 
     const modeList = this.homey.settings.get('modeList');
     const currentMode = +this.homey.settings.get('operatingMode');
@@ -1103,7 +1099,7 @@ class PiggyBank extends Homey.App {
 
     // If this point was reached then all devices are off and still above power limit
     const errorString = `Failed to reduce power usage by ${String(lessPower)}W (number of forced on devices: ${String(numForcedOnDevices)})`;
-    this.updateLog(errorString, LOG_ERROR);
+    this.updateLog(errorString, c.LOG_ERROR);
     // Alert the user, but not if first hour since app was started or we are within the error margin. Only send one alert before it has been resolved
     // const firstHourEver = this.__reserved_energy > 0;
     if (/* !firstHourEver && */ (lessPower > marginWatts) && !this.__alarm_overshoot) {
@@ -1157,7 +1153,7 @@ class PiggyBank extends Homey.App {
         const isOn = device.capabilitiesObj[this.__deviceList[deviceId].onoff_cap].value;
         this.__current_state[deviceId].isOn = isOn;
         if (isOn === undefined) {
-          this.updateLog(`Refreshtemp: isOn was set to undefined ${isOn}`, LOG_ERROR);
+          this.updateLog(`Refreshtemp: isOn was set to undefined ${isOn}`, c.LOG_ERROR);
         }
         if (!isOn) return Promise.resolve([true, true]);
         const hasTargetTemp = device.capabilities.includes('target_temperature');
@@ -1182,7 +1178,7 @@ class PiggyBank extends Homey.App {
         this.statsCountFailedTempChange();
         this.__current_state[deviceId].nComError += 1;
         this.__current_state[deviceId].ongoing = undefined;
-        this.updateLog(`Failed to set temperature for device ${this.__deviceList[deviceId].name}, will retry later (${error})`, LOG_ERROR);
+        this.updateLog(`Failed to set temperature for device ${this.__deviceList[deviceId].name}, will retry later (${error})`, c.LOG_ERROR);
         return Promise.resolve([false, false]); // The unresolved part is solved by the later nComError handling
       });
   }
@@ -1403,7 +1399,7 @@ class PiggyBank extends Homey.App {
 
   async statsSetLastHourEnergy(energy) {
     this.__stats_energy_time = this.roundToNearestHour(new Date());
-    this.updateLog(`Stats last energy time: ${this.__stats_energy_time}`, LOG_INFO);
+    this.updateLog(`Stats last energy time: ${this.__stats_energy_time}`, c.LOG_INFO);
     this.__stats_energy = energy;
 
     // Find todays max - TODO check if correct interval
@@ -1422,7 +1418,7 @@ class PiggyBank extends Homey.App {
 
   statsSetLastHourPrice(price) {
     this.__stats_price_time = new Date();
-    this.updateLog(`Stats price set to: ${this.__stats_price}`, LOG_INFO);
+    this.updateLog(`Stats price set to: ${this.__stats_price}`, c.LOG_INFO);
     this.__stats_price = price;
   }
 
@@ -1523,106 +1519,21 @@ class PiggyBank extends Homey.App {
     }
     try {
       this.homeyLog = new Log({ homey: this.homey });
+      this.mylog = {};
+      this.mylog.diagLog = '';
+      this.logInitDone = true;
+      this.logLevel = c.LOG_ERROR;
     } catch (err) {
       this.logInitDone = false;
-      return;
     }
-    // Reset logging
-    this.homey.settings.set('diagLog', '');
-    this.homey.settings.set('sendLog', '');
-    this.homey.settings.set('showState', '');
-    this.homey.settings.set('showCaps', '');
-    this.homey.settings.set('showPriceApi', '');
-
-    // When sendLog is clicked, send the log
-    this.homey.settings.on('set', async setting => {
-      if (setting === 'diagLog') return;
-      const diagLog = this.homey.settings.get('diagLog');
-      const sendLog = this.homey.settings.get('sendLog');
-      const showState = this.homey.settings.get('showState');
-      const showCaps = this.homey.settings.get('showCaps');
-      const showPriceApi = this.homey.settings.get('showPriceApi');
-      const LOG_ALL = LOG_ERROR; // Send as ERROR just to make it visible regardless
-      if (setting === 'sendLog' && (sendLog === 'send') && (diagLog !== '')) {
-        this.sendLog();
-      }
-      if (setting === 'showState' && (showState === '1')) {
-        const frostList = this.homey.settings.get('frostList');
-        const numControlledDevices = Array.isArray(frostList) ? Object.keys(frostList).length : 0;
-        this.updateLog('========== INTERNAL STATE ==========', LOG_ALL);
-        this.updateLog(`Number of devices under control: ${numControlledDevices}`, LOG_ALL);
-        this.updateLog(`Current operating mode: ${this.homey.settings.get('operatingMode')}`, LOG_ALL);
-        this.updateLog(`Current price mode: ${this.homey.settings.get('priceMode')}`, LOG_ALL);
-        this.updateLog(`Current price point: ${this.homey.settings.get('pricePoint')}`, LOG_ALL);
-        this.updateLog(`Total signal failures On:${this.__stats_failed_turn_on} Off:${this.__stats_failed_turn_off} Temp:${this.__stats_failed_temp_change}`, LOG_ALL);
-        this.updateLog(`Total number of monitor errors: ${this.__monitorError}`, LOG_ALL);
-        this.updateLog('Device Name               | Location        | Is On      | Temperature | Com errors | Ongoing', LOG_ALL);
-        for (const deviceId in frostList) {
-          if (!(deviceId in this.__deviceList) || this.__deviceList[deviceId].use === false) continue;
-          const { name, room } = this.__deviceList[deviceId];
-          const { isOn, nComError } = this.__current_state[deviceId];
-          const { temp, ongoing, confirmed } = this.__current_state[deviceId];
-          const { __monitorError, __monitorFixTemp, __monitorFixOn } = this.__current_state[deviceId];
-          this.homeyApi.devices.getDevice({ id: deviceId })
-            .then(device => {
-              const isOnActual = (this.__deviceList[deviceId].onoff_cap === undefined) ? undefined : device.capabilitiesObj[this.__deviceList[deviceId].onoff_cap].value;
-              const tempActualTarget = ('target_temperature' in device.capabilitiesObj) ? device.capabilitiesObj['target_temperature'].value : 'undef';
-              const tempActualMeasure = ('measure_temperature' in device.capabilitiesObj) ? device.capabilitiesObj['measure_temperature'].value : 'undef';
-              this.updateLog(`${String(name).padEnd(25)} | ${String(room).padEnd(15)} | ${String(isOn).padEnd(10)} | ${
-                String(temp).padStart(11)} | ${String(nComError).padStart(10)} | ${String(ongoing).padEnd(7)}`, LOG_ALL);
-              this.updateLog(`${String('--->Actual').padEnd(13)} - Errs: ${String(__monitorError).padEnd(3)} | ${
-                String(__monitorFixOn).padEnd(7)},${String(__monitorFixTemp).padEnd(7)} | ${String(isOnActual).padEnd(10)} | ${
-                String(tempActualMeasure).padStart(5)}/${String(tempActualTarget).padStart(5)} | ${''.padStart(10)} | ${String(confirmed).padEnd(7)}`, LOG_ALL);
-            })
-            .catch(err => {
-              this.log(`Error log failed for device with name: ${name}`);
-            });
-        }
-        this.updateLog('======== INTERNAL STATE END ========', LOG_ALL);
-        this.homey.settings.set('showState', '');
-      }
-      if (setting === 'showCaps' && (showCaps === '1')) {
-        this.updateLog('========== LIST OF IGNORED DEVICES ==========', LOG_ALL);
-        await this.homeyApi.devices.getDevices()
-          .then(devices => {
-            // Loop all devices
-            for (const device of Object.values(devices)) {
-              const onoffCap = device.capabilities.includes('onoff') ? 'onoff' : device.capabilities.find(cap => cap.includes('onoff'));
-              if (onoffCap === undefined) {
-                this.updateLog(`Device: ${device.name}`, LOG_ALL);
-                this.updateLog(`Capabilities: ${String(device.capabilities)}`, LOG_ALL);
-              }
-            }
-          })
-          .catch(err => {
-            this.log(`Failed to fetch devicelist: ${err}`);
-          });
-        this.updateLog('======== IGNORED DEVICES END ========', LOG_ALL);
-        this.homey.settings.set('showCaps', '');
-      }
-
-      if (setting === 'showPriceApi' && (showPriceApi === '1')) {
-        this.updateLog('========== UTILITYCOST INTEGRATION ==========', LOG_ALL);
-        const apiState = await this._checkApi();
-        const installed = await this.elPriceApi.getInstalled();
-        const version = await this.elPriceApi.getVersion();
-        const prices = await this.elPriceApi.get('/prices');
-        const gridcosts = await this.elPriceApi.get('gridcosts');
-        if (this.apiState === c.PRICE_API_NO_APP) this.updateLog('No Api or wrong version');
-        if (this.apiState === c.PRICE_API_NO_DEVICE) this.updateLog('No device found');
-        this.updateLog(`ApiState: ${apiState}`, LOG_ALL);
-        this.updateLog(`Installed: ${installed}`, LOG_ALL);
-        this.updateLog(`Version: ${version}`, LOG_ALL);
-        this.updateLog(`Prices: ${JSON.stringify(prices)}`, LOG_ALL);
-        this.updateLog(`GridCosts: ${JSON.stringify(gridcosts)}`, LOG_ALL);
-        this.updateLog('======== UTILITYCOST INTEGRATION END ========', LOG_ALL);
-        this.homey.settings.set('showPriceApi', '');
-      }
-    });
-    this.logInitDone = true;
   }
 
-  updateLog(newMessage, ignoreSetting = LOG_INFO) {
+  setLogLevel(newLevel) {
+    this.logLevel = +newLevel;
+    if (!Number.isInteger(this.logLevel)) this.logLevel = c.LOG_ERROR;
+  }
+
+  updateLog(newMessage, ignoreSetting = c.LOG_INFO) {
     if (!this.logInitDone) {
       try {
         this.logInit();
@@ -1632,62 +1543,80 @@ class PiggyBank extends Homey.App {
       }
     }
 
-    let logLevel = +this.homey.settings.get('logLevel');
-    if (!Number.isInteger(logLevel)) logLevel = 0;
-    if (ignoreSetting > logLevel) {
+    if (ignoreSetting > this.logLevel) {
       return;
     }
 
-    this.log(newMessage);
+    if (newMessage !== '') {
+      this.log(newMessage);
 
-    let oldText = this.homey.settings.get('diagLog') || '';
-    if (oldText.length > 10000) {
-      // Remove the first 5000 characters.
-      oldText = oldText.substring(5000);
-      const n = oldText.indexOf('\n');
-      if (n >= 0) {
-        // Remove up to and including the first \n so the log starts on a whole line
-        oldText = oldText.substring(n + 1);
+      let oldText = this.mylog.diagLog || '';
+      if (oldText.length > 10000) {
+        // Remove the first 5000 characters.
+        oldText = oldText.substring(5000);
+        const n = oldText.indexOf('\n');
+        if (n >= 0) {
+          // Remove up to and including the first \n so the log starts on a whole line
+          oldText = oldText.substring(n + 1);
+        }
       }
+
+      const nowTime = new Date(Date.now());
+
+      if (oldText.length === 0) {
+        oldText = `Log ID: ${nowTime.toJSON()}\r\n`;
+        oldText += `App version ${Homey.manifest.version}\r\n\r\n`;
+      }
+
+      let milliText = nowTime.getMilliseconds().toString();
+      if (milliText.length === 2) {
+        milliText = `0${milliText}`;
+      } else if (milliText.length === 1) {
+        milliText = `00${milliText}`;
+      }
+
+      oldText += `+${nowTime.getHours()}:${nowTime.getMinutes()}:${nowTime.getSeconds()}.${milliText}: ${newMessage}\r\n`;
+
+      this.mylog.diagLog = oldText;
+      this.homeyLog.setExtra({
+        diagLog: this.mylog.diagLog
+      });
     }
 
-    const nowTime = new Date(Date.now());
-
-    if (oldText.length === 0) {
-      oldText = `Log ID: ${nowTime.toJSON()}\r\n`;
-      oldText += `App version ${Homey.manifest.version}\r\n\r\n`;
-    }
-
-    let milliText = nowTime.getMilliseconds().toString();
-    if (milliText.length === 2) {
-      milliText = `0${milliText}`;
-    } else if (milliText.length === 1) {
-      milliText = `00${milliText}`;
-    }
-
-    oldText += `+${nowTime.getHours()}:${nowTime.getMinutes()}:${nowTime.getSeconds()}.${milliText}: ${newMessage}\r\n`;
-
-    this.homey.settings.set('diagLog', oldText);
-    this.homeyLog.setExtra({
-      diagLog: this.homey.settings.get('diagLog')
-    });
-    this.homey.settings.set('sendLog', '');
+    this.homey.api.realtime('logUpdate', this.mylog.diagLog);
   }
 
-  sendLog() {
+  clearLog() {
     if (!this.logInitDone) {
       try {
         this.logInit();
       } catch (err) {
         this.log(`Unable to initialize logging: ${err}`);
-        return ''; // Skip sending log
+        return;
       }
     }
-    let tries = 5;
+    this.mylog.diagLog = '';
+    this.homey.api.realtime('logUpdate', this.mylog.diagLog);
+  }
 
+  async sendLog() {
+    if (!this.logInitDone) {
+      try {
+        this.logInit();
+      } catch (err) {
+        this.log(`Unable to initialize logging: ${err}`);
+        return; // Skip sending log
+      }
+    }
+    // Do not send empty logs
+    if (this.mylog.diagLog === '') {
+      return;
+    }
+
+    let tries = 5;
     while (tries-- > 0) {
       try {
-        this.updateLog('Sending log', LOG_ERROR);
+        this.updateLog('Sending log', c.LOG_ERROR);
         // create reusable transporter object using the default SMTP transport
         const transporter = nodemailer.createTransport(
           {
@@ -1709,26 +1638,107 @@ class PiggyBank extends Homey.App {
         );
 
         // send mail with defined transport object
-        const info = transporter.sendMail(
-          {
-            from: `"Homey User" <${Homey.env.MAIL_USER}>`, // sender address
-            to: Homey.env.MAIL_RECIPIENT, // list of receivers
-            subject: 'Sparegris log', // Subject line
-            text: this.homey.settings.get('diagLog') // plain text body
-          }
-        );
+        const mailMessage = {
+          from: `"Homey User" <${Homey.env.MAIL_USER}>`, // sender address
+          to: Homey.env.MAIL_RECIPIENT, // list of receivers
+          subject: 'Sparegris log', // Subject line
+          text: String(this.mylog.diagLog) // plain text body
+        };
+        this.log(`message: ${JSON.stringify(mailMessage)}`);
+        const info = await transporter.sendMail(mailMessage);
 
-        this.updateLog(`Message sent: ${info.messageId}`, LOG_INFO);
-
+        this.updateLog(`Message sent: ${info.messageId}`, c.LOG_INFO);
         // Preview only available when sending through an Ethereal account
         this.log('Preview URL: ', nodemailer.getTestMessageUrl(info));
-        return '';
+        return;
       } catch (err) {
-        this.updateLog(`Send log error: ${err.stack}`, LOG_ERROR);
+        this.updateLog(`Send log error: ${err.stack}`, c.LOG_ERROR);
       }
     }
-    this.updateLog('Send log FAILED', LOG_ERROR);
-    return '';
+    this.updateLog('Send log FAILED', c.LOG_ERROR);
+  }
+
+  async logShowState() {
+    const frostList = this.homey.settings.get('frostList');
+    const numControlledDevices = Array.isArray(frostList) ? Object.keys(frostList).length : 0;
+    this.updateLog('========== INTERNAL STATE ==========', c.LOG_ALL);
+    this.updateLog(`Number of devices under control: ${numControlledDevices}`, c.LOG_ALL);
+    this.updateLog(`Current operating mode: ${this.homey.settings.get('operatingMode')}`, c.LOG_ALL);
+    this.updateLog(`Current price mode: ${this.homey.settings.get('priceMode')}`, c.LOG_ALL);
+    this.updateLog(`Current price point: ${this.homey.settings.get('pricePoint')}`, c.LOG_ALL);
+    this.updateLog(`Total signal failures On:${this.__stats_failed_turn_on} Off:${this.__stats_failed_turn_off} Temp:${this.__stats_failed_temp_change}`, c.LOG_ALL);
+    this.updateLog(`Total number of monitor errors: ${this.__monitorError}`, c.LOG_ALL);
+    this.updateLog('Device Name               | Location        | Is On      | Temperature | Com errors | Ongoing', c.LOG_ALL);
+    for (const deviceId in frostList) {
+      if (!(deviceId in this.__deviceList) || this.__deviceList[deviceId].use === false) continue;
+      const { name, room } = this.__deviceList[deviceId];
+      const { isOn, nComError } = this.__current_state[deviceId];
+      const { temp, ongoing, confirmed } = this.__current_state[deviceId];
+      const { __monitorError, __monitorFixTemp, __monitorFixOn } = this.__current_state[deviceId];
+      this.homeyApi.devices.getDevice({ id: deviceId })
+        .then(device => {
+          const isOnActual = (this.__deviceList[deviceId].onoff_cap === undefined) ? undefined : device.capabilitiesObj[this.__deviceList[deviceId].onoff_cap].value;
+          const tempActualTarget = ('target_temperature' in device.capabilitiesObj) ? device.capabilitiesObj['target_temperature'].value : 'undef';
+          const tempActualMeasure = ('measure_temperature' in device.capabilitiesObj) ? device.capabilitiesObj['measure_temperature'].value : 'undef';
+          this.updateLog(`${String(name).padEnd(25)} | ${String(room).padEnd(15)} | ${String(isOn).padEnd(10)} | ${
+            String(temp).padStart(11)} | ${String(nComError).padStart(10)} | ${String(ongoing).padEnd(7)}`, c.LOG_ALL);
+          this.updateLog(`${String('--->Actual').padEnd(13)} - Errs: ${String(__monitorError).padEnd(3)} | ${
+            String(__monitorFixOn).padEnd(7)},${String(__monitorFixTemp).padEnd(7)} | ${String(isOnActual).padEnd(10)} | ${
+            String(tempActualMeasure).padStart(5)}/${String(tempActualTarget).padStart(5)} | ${''.padStart(10)} | ${String(confirmed).padEnd(7)}`, c.LOG_ALL);
+        })
+        .catch(err => {
+          this.log(`Error log failed for device with name: ${name}`);
+        });
+    }
+    this.updateLog('======== INTERNAL STATE END ========', c.LOG_ALL);
+  }
+
+  async logShowCaps(deviceId) {
+    await this.homeyApi.devices.getDevice({ id: deviceId })
+      .then(device => {
+        this.updateLog('----- ANALYZING DEVICE -----', c.LOG_ALL);
+        this.updateLog(`Device ID:   ${deviceId}`, c.LOG_ALL);
+        this.updateLog(`Device Name: ${device.name}`, c.LOG_ALL);
+        try {
+          this.updateLog(`Found onoff cap: ${this.__deviceList[deviceId].onoff_cap}`, c.LOG_ALL);
+          this.updateLog(`Found temp cap: ${this.__deviceList[deviceId].thermostat_cap}`, c.LOG_ALL);
+        } catch (err) {} // Ignore
+
+        this.updateLog(`Capabilities: ${String(device.capabilities)}`, c.LOG_ALL);
+        for (const capIdx in Object.keys(device.capabilities)) {
+          const cap = device.capabilities[capIdx];
+          let opts;
+          try {
+            opts = JSON.stringify(device.capabilitiesObj[cap]);
+          } catch (err) {
+            opts = `Error: ${err}`;
+          }
+          this.updateLog(`Options for '${cap}': ${opts}`, c.LOG_ALL);
+        }
+      })
+      .catch(err => {
+        this.log(`Failed to fetch devicelist: ${err}`);
+      })
+      .finally(done => {
+        this.updateLog('--- ANALYZING DEVICE DONE ---', c.LOG_ALL);
+      });
+  }
+
+  async logShowPriceApi() {
+    this.updateLog('========== UTILITYCOST INTEGRATION ==========', c.LOG_ALL);
+    const apiState = await this._checkApi();
+    const installed = await this.elPriceApi.getInstalled();
+    const version = await this.elPriceApi.getVersion();
+    const prices = await this.elPriceApi.get('/prices');
+    const gridcosts = await this.elPriceApi.get('gridcosts');
+    if (this.apiState === c.PRICE_API_NO_APP) this.updateLog('No Api or wrong version');
+    if (this.apiState === c.PRICE_API_NO_DEVICE) this.updateLog('No device found');
+    this.updateLog(`ApiState: ${apiState}`, c.LOG_ALL);
+    this.updateLog(`Installed: ${installed}`, c.LOG_ALL);
+    this.updateLog(`Version: ${version}`, c.LOG_ALL);
+    this.updateLog(`Prices: ${JSON.stringify(prices)}`, c.LOG_ALL);
+    this.updateLog(`GridCosts: ${JSON.stringify(gridcosts)}`, c.LOG_ALL);
+    this.updateLog('======== UTILITYCOST INTEGRATION END ========', c.LOG_ALL);
   }
 
   /** ****************************************************************************************************
@@ -1783,6 +1793,32 @@ class PiggyBank extends Homey.App {
     };
   }
 
+  /**
+   * API part developed for internal use
+   */
+  async getDevices(type) {
+    const retval = [];
+    await this.homeyApi.devices.getDevices()
+      .then(devices => {
+        // Loop all devices
+        for (const device of Object.values(devices)) {
+          const deviceId = device.id;
+          const onoffCap = (deviceId in this.__deviceList) ? this.__deviceList[deviceId].onoff_cap : undefined;
+          const termoCap = (deviceId in this.__deviceList) ? this.__deviceList[deviceId].thermostat_cap : false;
+          if ((onoffCap === undefined && +type === 3) // Not listed
+            || (onoffCap !== undefined && +type === 1) // Onoff problem
+            || (onoffCap !== undefined && +type === 2 && termoCap) // Temp problem
+          ) {
+            retval.push({ name: device.name, value: device.id });
+          }
+        }
+      })
+      .catch(err => {
+        this.log(`Failed to fetch devicelist: ${err}`);
+      });
+    return retval;
+  }
+
   /** ****************************************************************************************************
    *  Price Handling
    ** **************************************************************************************************** */
@@ -1798,12 +1834,12 @@ class PiggyBank extends Homey.App {
         const deviceOk = apiOk ? (testData !== undefined) : false;
         const dataOk = deviceOk ? (Array.isArray(testData) && testData.length > 0) : false;
         this.updateLog(`Electricity price api version ${version} installed${apiOk ? ' and version is ok' : ', but wrong version'}. Device ${deviceOk ? 'is installed and ok'
-          : 'must be installed'}. Data ${dataOk ? 'was returned' : 'was not returned'}.`, LOG_INFO);
+          : 'must be installed'}. Data ${dataOk ? 'was returned' : 'was not returned'}.`, c.LOG_INFO);
         return dataOk ? c.PRICE_API_OK : deviceOk ? c.PRICE_API_NO_DATA : apiOk ? c.PRICE_API_NO_DEVICE : c.PRICE_API_NO_APP;
       }
-      this.updateLog('Electricity price api not installed', LOG_ERROR);
+      this.updateLog('Electricity price api not installed', c.LOG_ERROR);
     } catch (err) {
-      this.updateLog(`Failed checking electricity price API: ${err.message}`, LOG_ERROR);
+      this.updateLog(`Failed checking electricity price API: ${err.message}`, c.LOG_ERROR);
     }
     return c.PRICE_API_NO_APP;
   }
@@ -1862,7 +1898,7 @@ class PiggyBank extends Homey.App {
       }
       return { prices: pricesOnly, now: currentIndex };
     } catch (err) {
-      this.updateLog(`Electricity price api failed: ${err.message}`, LOG_ERROR);
+      this.updateLog(`Electricity price api failed: ${err.message}`, c.LOG_ERROR);
       return { prices: [], now: undefined };
     }
   }

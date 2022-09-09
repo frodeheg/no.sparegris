@@ -11,7 +11,6 @@ New features I want input from others before I do anything:
 TODO list:
 * Add zone-control for mode changes.
 * Improve handling of AC devices (not sure how yet - might need more discussions requested by @dooniem)
-* Improve power-usage calculation over the time the app is restarted / inactive.
 * Add number of cheap/expensive/normal hours to the device capability list
 * Add calculation of what is best, higher tariff or money saved by moving electricity between price points
 * Allow the insights data to be tracked even when the app is disabled.

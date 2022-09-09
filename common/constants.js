@@ -18,6 +18,12 @@ const PRICE_MODE_FLOW = 0;
 const PRICE_MODE_INTERNAL = 1;
 const PRICE_MODE_DISABLED = 2;
 
+// Logging classes
+const LOG_ERROR = 0;
+const LOG_INFO = 1;
+const LOG_DEBUG = 2;
+const LOG_ALL = LOG_ERROR;
+
 module.exports = {
   APP_NOT_READY,
   APP_READY,
@@ -31,4 +37,8 @@ module.exports = {
   PRICE_MODE_DISABLED,
   PRICE_MODE_FLOW,
   PRICE_MODE_INTERNAL,
+  LOG_ERROR,
+  LOG_INFO,
+  LOG_DEBUG,
+  LOG_ALL,
 };

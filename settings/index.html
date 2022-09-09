@@ -528,6 +528,17 @@
           setVisible('taskNone', 'none');
         }
       }
+
+      function refreshDeviceSelector(devices) {
+        const devSel = document.getElementById("deviceInfoSelector");
+        var selectedPoint = 0
+        var options = '';
+        for (var i = 0; i < devices.length; i++) {
+          options += '<option value="' + devices[i].value + '" '
+            + ((selectedPoint==i) ? 'selected' : '') + '>' + devices[i].name + '</option>';
+        }
+        devSel.innerHTML = options;
+      }
     </script>
   </head>
 
@@ -737,6 +748,12 @@
               </select>
             </td>
           </tr>
+          <tr>
+            <td class="settings_row_name"><label data-i18n="settings.global.missing">global.missing</label>:</td>
+            <td class="settings_row_input">
+              <a href="#ShowLog" data-i18n="settings.global.problemsolver" onclick="changeTab(event, 'helpNotFoundPage');return false;">global.problemsolver</a>
+            </td>
+          </tr>
         </table>
 
         <span id="highPriDevices">High Priority devices should be listed here, if not it is a bug</span>
@@ -749,22 +766,40 @@
     <!-- Log page -->
     <div id="logPage" class="tabcontent">
       <fieldset>
+        <legend data-i18n="settings.deviceinfo.header">deviceinfo.header</legend>
+        <label for="deviceFilter"><span data-i18n="settings.deviceinfo.filter">deviceinfo.filter</span>:</label>
+        <select id="deviceFilter">
+          <option value=0 data-i18n="settings.deviceinfo.noDevice" selected>No device</option>
+          <option value=1 data-i18n="settings.deviceinfo.listedDevice">Device is not being turned on/off</option>
+          <option value=2 data-i18n="settings.deviceinfo.listedTempDevice">Device does not set temperature</option>
+          <option value=3 data-i18n="settings.deviceinfo.unlistedDevice">Device is not listed</option>
+        </select><br>
+        <label for="deviceInfoSelector"><span data-i18n="settings.deviceinfo.selector">deviceinfo.selector</span>:</label>
+        <select id="deviceInfoSelector" disabled>
+          <option value=0 selected>Please wait while populating</option>
+        </select><br>
+        <label for="showCaps"><span data-i18n="settings.deviceinfo.getinfo">deviceinfo.getinfo</span>:</label>
+        <button id="showCaps" data-i18n="settings.deviceinfo.analyze" disabled>deviceinfo.analyze</button>
+      </fieldset>
+      <fieldset>
+        <legend data-i18n="settings.log.generic">log.generic</legend>
+        <button id="showPriceApi" data-i18n="settings.log.showPriceApi">log.showPriceApi</button>
+        <button id="showState" data-i18n="settings.log.showState">log.showState</button>
+      </fieldset>
+      <fieldset>
         <legend data-i18n="settings.log.header">log.header</legend>
-          <label for="logLevel"><span data-i18n="settings.log.level">log.level</span>:</label>
-          <select id="logLevel">
-            <option value=0 data-i18n="settings.log.error">log.error</option>
-            <option value=1 data-i18n="settings.log.basic">log.basic</option>
-            <option value=2 data-i18n="settings.log.full">log.full</option>
-          </select>
-          <p>
-            <button id="showCaps" data-i18n="settings.log.showCaps">log.showCaps</button>
-            <button id="showPriceApi" data-i18n="settings.log.showPriceApi">log.showPriceApi</button>
-            <button id="showState" data-i18n="settings.log.showState">log.showState</button>
-            <button id="clearLog" data-i18n="settings.log.clearLog">log.clearLog</button>
-            <button id="sendLog" data-i18n="settings.log.sendLog">log.sendLog</button>
-          </p>
-            <textarea id="diagLog"></textarea>
-          <a href="#ExitLog" data-i18n="settings.log.exit" onclick="changeTab(event, 'welcomePage');return false;">log.exit</a>
+        <label for="logLevel"><span data-i18n="settings.log.level">log.level</span>:</label>
+        <select id="logLevel">
+          <option value=0 data-i18n="settings.log.error">log.error</option>
+          <option value=1 data-i18n="settings.log.basic">log.basic</option>
+          <option value=2 data-i18n="settings.log.full">log.full</option>
+        </select>
+        <p>
+          <button id="clearLog" data-i18n="settings.log.clearLog">log.clearLog</button>
+          <button id="sendLog" data-i18n="settings.log.sendLog">log.sendLog</button>
+        </p>
+          <textarea id="diagLog"></textarea>
+        <a href="#ExitLog" data-i18n="settings.log.exit" onclick="changeTab(event, 'helpNotFoundPage');return false;">log.exit</a>
       </fieldset>
     </div>
     <!-- Log page end -->
@@ -974,6 +1009,8 @@
       var showPriceApiElement = document.getElementById('showPriceApi');
       var clearLogElement = document.getElementById('clearLog');
       var sendLogElement = document.getElementById('sendLog');
+      var deviceFilterElement = document.getElementById('deviceFilter');
+      var deviceInfoSelectorElement = document.getElementById('deviceInfoSelector');
 
       // Load control
       var operatingModeLoaded = false;
@@ -1111,6 +1148,7 @@
             Homey.get('deviceListRefresh', function (err, refreshDone) {
               if (err) Homey.alert(err);
               if (refreshDone === 'done') {
+                // Refresh device list
                 Homey.get("deviceList", function (err, myDevices) {
                   if (err) return Homey.alert(err);
                   if (myDevices) {
@@ -1125,6 +1163,44 @@
                     // user to try again later.
                   }
                 })
+                // Refresh price data
+                Homey.get("futurePriceOptions", function (err, options) {
+                  if (err) return Homey.alert(err);
+                  if (options) {
+                    futurePriceOptions = options;
+                  } else {
+                    futurePriceOptions = {}
+                  }
+                  if (!futurePriceOptions.hasOwnProperty("minCheapTime")) futurePriceOptions.minCheapTime = 4;
+                  if (!futurePriceOptions.hasOwnProperty("minExpensiveTime")) futurePriceOptions.minExpensiveTime = 4;
+                  if (!futurePriceOptions.hasOwnProperty("averageTime")) futurePriceOptions.averageTime = 0;
+                  if (!futurePriceOptions.hasOwnProperty("lowPriceModifier")) futurePriceOptions.lowPriceModifier = -10;
+                  if (!futurePriceOptions.hasOwnProperty("highPriceModifier")) futurePriceOptions.highPriceModifier = 10;
+                  if (!futurePriceOptions.hasOwnProperty("extremePriceModifier")) futurePriceOptions.extremePriceModifier = 100;
+                  futurePriceOptionsLoaded = true;
+                  checkLoadingDone();
+                });
+                // Refresh API configuration progress
+                Homey.get("appConfigProgress", function (err, options) {
+                  if (err) return Homey.alert(err);
+                  if (options) {
+                    appConfigProgress = options;
+                  } else {
+                    appConfigProgress = {}
+                  }
+                  if (!appConfigProgress.hasOwnProperty("gotPPFromFlow")) appConfigProgress.gotPPFromFlow = false;
+                  if (!appConfigProgress.hasOwnProperty("timeSinceEnergyMeter")) appConfigProgress.timeSinceEnergyMeter = Infinity;
+                  if (!appConfigProgress.hasOwnProperty("energyMeterNotConnected")) appConfigProgress.energyMeterNotConnected = true;
+                  if (!appConfigProgress.hasOwnProperty("ApiStatus")) appConfigProgress.ApiStatus = 0;
+                  appConfigProgressLoaded = true;
+                  checkLoadingDone();
+                });
+
+
+
+
+
+
               }
             });
           }
@@ -1264,45 +1340,12 @@
           checkLoadingDone();
         });
         // Refresh log data
-        Homey.get('logLevel', function (err, logLevel) {
+        Homey.api('GET', '/apiCommand?cmd=getLogLevel', null, function (err, logLevel) {
           if (err || !Number.isInteger(+logLevel)) logLevel = 0;
           logLevelElement.value = logLevel;
         });
-        Homey.get('diagLog', function (err, diagLog) {
-          if (err) diagLog = "Error fetching log";
-          diagLogElement.value = diagLog;
-        });
-        // Refresh price data
-        Homey.get("futurePriceOptions", function (err, options) {
-          if (err) return Homey.alert(err);
-          if (options) {
-            futurePriceOptions = options;
-          } else {
-            futurePriceOptions = {}
-          }
-          if (!futurePriceOptions.hasOwnProperty("minCheapTime")) futurePriceOptions.minCheapTime = 4;
-          if (!futurePriceOptions.hasOwnProperty("minExpensiveTime")) futurePriceOptions.minExpensiveTime = 4;
-          if (!futurePriceOptions.hasOwnProperty("averageTime")) futurePriceOptions.averageTime = 0;
-          if (!futurePriceOptions.hasOwnProperty("lowPriceModifier")) futurePriceOptions.lowPriceModifier = -10;
-          if (!futurePriceOptions.hasOwnProperty("highPriceModifier")) futurePriceOptions.highPriceModifier = 10;
-          if (!futurePriceOptions.hasOwnProperty("extremePriceModifier")) futurePriceOptions.extremePriceModifier = 100;
-          futurePriceOptionsLoaded = true;
-          checkLoadingDone();
-        });
-        // Refresh API configuration progress
-        Homey.get("appConfigProgress", function (err, options) {
-          if (err) return Homey.alert(err);
-          if (options) {
-            appConfigProgress = options;
-          } else {
-            appConfigProgress = {}
-          }
-          if (!appConfigProgress.hasOwnProperty("gotPPFromFlow")) appConfigProgress.gotPPFromFlow = false;
-          if (!appConfigProgress.hasOwnProperty("timeSinceEnergyMeter")) appConfigProgress.timeSinceEnergyMeter = Infinity;
-          if (!appConfigProgress.hasOwnProperty("energyMeterNotConnected")) appConfigProgress.energyMeterNotConnected = true;
-          if (!appConfigProgress.hasOwnProperty("ApiStatus")) appConfigProgress.ApiStatus = 0;
-          appConfigProgressLoaded = true;
-          checkLoadingDone();
+        Homey.api('GET', '/apiCommand?cmd=requestLog', null, function (err, result) {
+          if (err) Homey.alert(err);
         });
 
         // This error function is a bit deciving because it only returns err on success
@@ -1355,51 +1398,64 @@
         });
 
         // -- Log page -- //
-        Homey.on('settings.set', function (setting) {
-          if (setting === 'diagLog') {
-            Homey.get('diagLog', function (err, diagLog) {
-              if (err) diagLog = ""; //Homey.alert(err);
-              diagLogElement.value = diagLog;
+        Homey.on('logUpdate', function (log) {
+          diagLogElement.value = log;
+        });
+
+        deviceFilterElement.addEventListener('change', function (e) {
+          if (+deviceFilterElement.value === 0) {
+            showCapsElement.disabled = true;
+            deviceInfoSelectorElement.disabled = true;
+          } else {
+            Homey.api('GET', `/getDevices?type=${deviceFilterElement.value}`, null, function (err, result) {
+              if (err) return Homey.alert(err);
+              else {
+                refreshDeviceSelector(result);
+                if (result.length > 0) {
+                  showCapsElement.disabled = false;
+                  deviceInfoSelectorElement.disabled = false;
+                }
+              }
             });
           }
         });
 
         logLevelElement.addEventListener('change', function (e) {
-          Homey.set('logLevel', logLevelElement.value, function (err) {
-            //if (err) return Homey.alert(err);
+          Homey.api('GET', `/apiCommand?cmd=setLogLevel&logLevel=${logLevelElement.value}`, null, function (err, result) {
+            if (err) return Homey.alert(err);
           });
         });
 
         showStateElement.addEventListener('click', function (e) {
-          Homey.set('showState', "1", function (err) {
-            //if (err) return Homey.alert(err);
+          Homey.api('GET', '/apiCommand?cmd=logShowState', null, function (err, result) {
+            if (err) return Homey.alert(err);
           });
         });
 
         showCapsElement.addEventListener('click', function (e) {
-          Homey.set('showCaps', "1", function (err) {
-            //if (err) return Homey.alert(err);
+          const deviceId = deviceInfoSelectorElement.value;
+          Homey.api('GET', `/apiCommand?cmd=logShowCaps&deviceId=${deviceId}`, null, function (err, result) {
+            if (err) return Homey.alert(err);
           });
         });
 
         showPriceApiElement.addEventListener('click', function (e) {
-          Homey.set('showPriceApi', "1", function (err) {
-            //if (err) return Homey.alert(err);
+          Homey.api('GET', '/apiCommand?cmd=logShowPriceApi', null, function (err, result) {
+            if (err) return Homey.alert(err);
           });
         });
 
         clearLogElement.addEventListener('click', function (e) {
-          Homey.set('diagLog', "", function (err) {
-            //if (err) return Homey.alert(err);
+          Homey.api('GET', '/apiCommand?cmd=clearLog', null, function (err, result) {
+            if (err) return Homey.alert(err);
           });
-          diagLogElement.value = "";
         });
 
         sendLogElement.addEventListener('click', function (e) {
           Homey.confirm("Send the log contents to the developer?", null, function (e, ok) {
             if (ok) {
-              Homey.set('sendLog', "send", function (err) {
-                //if (err) return Homey.alert(err);
+              Homey.api('GET', '/apiCommand?cmd=sendLog', null, function (err, result) {
+                if (err) return Homey.alert(err);
               });
             }
           });

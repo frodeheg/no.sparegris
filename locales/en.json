@@ -86,16 +86,31 @@
       "freeThresholdHint": "Free power will only be reported if the indicated amount of controllable units are switched on. This can be used to give priority to devices that are controlled outside the app, such as charging an electric car. 0% will give the highest priority while 100% will give the lowest priority.",
       "controllableDevices": "Controllable devices",
       "deviceListHint1" : "Only selected devices can be controlled by the app. If your device is not listed then follow the instructions in the Help panel.",
-      "deviceListHint2" : "Tip: For optimal control, ensure that heavy adjustable current draws are set to a power that does not exceed the desired power tariff. Otherwise it will result in frequent switching on/off."
+      "deviceListHint2" : "Tip: For optimal control, ensure that heavy adjustable current draws are set to a power that does not exceed the desired power tariff. Otherwise it will result in frequent switching on/off.",
+      "missing" : "Missing device?",
+      "problemsolver" : "Troubleshoot"
+    },
+    "deviceinfo": {
+      "header": "Device troubleshooting",
+      "filter": "Filter",
+      "noDevice": "Select filter",
+      "listedDevice": "On/off does not work",
+      "listedTempDevice": "Temperature does not work",
+      "unlistedDevice": "Device is not listed / missing",
+      "selector": "Device",
+      "getinfo": "Get info",
+      "analyze": "Analyze"
     },
     "help": {
       "notFound": "Instructions for non-supported devices",
-      "notFoundHint": ["<p>Unfortunately, there are some devices that do not use the standard mechanism to switch on and off. These will therefore not be detected as controllable by this app. To get these devices supported you can help as follows:</p><!--",
+      "notFoundHint": ["<p>Unfortunately, there are some devices that do not use the standard mechanisms to be controlled. These will therefore not be detected as controllable by this app. To get these devices supported you can help as follows:</p><!--",
           "--><ol><!--",
           "-->  <li>Click the link at the bottom of this page</li><!--",
-          "-->  <li>Click the button named “Info about difficult devices” and wait for the log to populate</li><!--",
-          "-->  <li>Click the Send button (or alternatively find your device in the list and send the capability list for it in a message the developer if you don’t want to expose all your listed devices.)</li><!--",
-          "-->  <li>Send the developer a personal message to inform about the report (the lifetime of the report is only 24 hours so this is essential or the report might be lost).</li><!--",
+          "-->  <li>Select the apropriate device filter for your situation.</li><!--",
+          "-->  <li>Select the device with problems.</li><!--",
+          "-->  <li>Click the button named “Analyze device” and wait for the log to populate</li><!--",
+          "-->  <li>Click the Send button (or alternatively copy paste the report to include it in the next step.)</li><!--",
+          "-->  <li>Send the developer a personal message to inform about the report (the lifetime of the report in previous step is only 24 hours so this is essential or the report might be lost).</li><!--",
           "-->  <li>Wait for a new test version and install it.</li><!--",
           "-->  <li>Report back to the developer whether the test version works or not in order for the change to go public.</li><!--",
           "--></ol>"],
@@ -243,8 +258,8 @@
       "clearLog": "Clear",
       "sendLog": "Send",
       "showState": "State",
-      "showCaps": "Info about difficult devices",
-      "showPriceApi": "Info from Utilitycost"
+      "showPriceApi": "Info from Utilitycost",
+      "generic": "Generic Troubleshooting"
     }
   },
   "newdevice" : {

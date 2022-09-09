@@ -1,0 +1,3 @@
+GitHub code: https://github.com/ricott/homey-no.easee
+Easee Dev Platform: https://developer.easee.cloud/docs/load-balancing
+Easee forum: https://community.homey.app/t/app-pro-easee-charger/31647

@@ -125,6 +125,16 @@
       "method": "GET",
       "path": "/getVersion",
       "public": true
+    },
+    "getDevices": {
+      "method": "GET",
+      "path": "/getDevices",
+      "public": false
+    },
+    "apiCommand": {
+      "method": "GET",
+      "path": "/apiCommand",
+      "public": false
     }
   }
 }
