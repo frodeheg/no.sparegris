@@ -337,5 +337,8 @@
   },
   "0.12.11": {
     "en": "Additional fixes regarded to logging"
+  },
+  "0.12.12": {
+    "en": "Added device troubleshooting interface + Changed the logging interface to reduce wear on the homey disk"
   }
 }
