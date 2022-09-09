@@ -1,0 +1,51 @@
+Log ID: 2022-09-09T20:11:21.489Z
+App version 0.12.12
+
++20:11:21.489: ----- ANALYZING DEVICE -----
++20:11:21.491: Device ID: faff2c08-1b1a-4bc6-9778-aa1bcbd55e05
++20:11:21.493: Device Name: Easee Lader (EH861484)
++20:11:21.497: Capabilities: charger_status,enabled,measure_current.offered,measure_power,measure_current.p1,measure_current.p2,measure_current.p3,measure_voltage,meter_power.lastCharge,meter_power,button.reconnect,button.organize
++20:11:21.501: Options for 'charger_status': {"value":"Car connected","lastUpdated":"2022-09-09T18:16:23.908Z","type":"string","getable":true,"setable":false,"title":"Status","desc":null,"units":null,"iconObj":{"id":"514d59bcce8209f116fb4bbebd8679b9","url":"/icon/514d59bcce8209f116fb4bbebd8679b9/icon.svg"},"id":"charger_status","options":{}}
++20:11:21.504: Options for 'enabled': {"value":true,"lastUpdated":"2022-08-15T20:20:59.567Z","type":"boolean","getable":true,"setable":false,"title":"Enabled","desc":null,"units":null,"iconObj":{"id":"213b78c392bf914fa4c2289febdee574","url":"/icon/213b78c392bf914fa4c2289febdee574/icon.svg"},"id":"enabled","options":{}}
++20:11:21.508: Options for 'measure_current.offered': {"value":16,"lastUpdated":"2022-09-09T18:16:23.902Z","type":"number","getable":true,"setable":false,"title":"Current allocated","desc":"Elektrisk strøm (A)","units":"A","decimals":2,"chartType":"stepLine","id":"measure_current.offered","options":{"title":{"en":"Current allocated","sv":"Allokerad ström"}}}
++20:11:21.512: Options for 'measure_power': {"value":0,"lastUpdated":"2022-09-09T17:39:52.363Z","type":"number","getable":true,"setable":false,"title":"Effekt","desc":"Effekt i watt (W)","units":"W","decimals":2,"chartType":"stepLine","id":"measure_power","options":{}}
++20:11:21.515: Options for 'measure_current.p1': {"value":0.01,"lastUpdated":"2022-09-09T19:59:28.423Z","type":"number","getable":true,"setable":false,"title":"Current P1","desc":"Elektrisk strøm (A)","units":"A","decimals":2,"chartType":"stepLine","id":"measure_current.p1","options":{"title":{"en":"Current P1","sv":"Ström L1"}}}
++20:11:21.517: Options for 'measure_current.p2': {"value":0.01,"lastUpdated":"2022-09-09T19:29:27.015Z","type":"number","getable":true,"setable":false,"title":"Current P2","desc":"Elektrisk strøm (A)","units":"A","decimals":2,"chartType":"stepLine","id":"measure_current.p2","options":{"title":{"en":"Current P2","sv":"Ström L2"}}}
++20:11:21.519: Options for 'measure_current.p3': {"value":0.01,"lastUpdated":"2022-09-09T19:29:27.021Z","type":"number","getable":true,"setable":false,"title":"Current P3","desc":"Elektrisk strøm (A)","units":"A","decimals":2,"chartType":"stepLine","id":"measure_current.p3","options":{"title":{"en":"Current P3","sv":"Ström L3"}}}
++20:11:21.520: Options for 'measure_voltage': {"value":230,"lastUpdated":"2022-09-09T19:58:28.412Z","type":"number","getable":true,"setable":false,"title":"Spenning","desc":"Spenning (V)","units":"V","decimals":2,"chartType":"stepLine","id":"measure_voltage","options":{}}
++20:11:21.523: Options for 'meter_power.lastCharge': {"value":0,"lastUpdated":"2022-09-09T18:15:23.819Z","type":"number","getable":true,"setable":false,"title":"Last charge session","desc":"Energiforbruk i kilowattimer (kWh)","units":"kWh","decimals":2,"chartType":"spline","id":"meter_power.lastCharge","options":{"title":{"en":"Last charge session","sv":"Senaste laddsessionen"}}}
++20:11:21.525: Options for 'meter_power': {"value":3470.66,"lastUpdated":"2022-09-09T18:04:53.571Z","type":"number","getable":true,"setable":false,"title":"Lifetime","desc":"Energiforbruk i kilowattimer (kWh)","units":"kWh","decimals":2,"chartType":"spline","id":"meter_power","options":{"title":{"en":"Lifetime","sv":"Livstid"}}}
++20:11:21.528: Options for 'button.reconnect': {"value":null,"lastUpdated":null,"type":"boolean","getable":false,"setable":true,"title":"Reconnect","desc":"Reconnect to Easee Cloud API","units":null,"id":"button.reconnect","options":{"maintenanceAction":true,"title":{"en":"Reconnect","sv":"Återskapa uppkoppling"},"desc":{"en":"Reconnect to Easee Cloud API","sv":"Återskapa uppkoppling till Easee Cloud API"}}}
++20:11:21.531: Options for 'button.organize': {"value":null,"lastUpdated":null,"type":"boolean","getable":false,"setable":true,"title":"Reorder capabilities","desc":"Reorder capabilities in the intended order.","units":null,"id":"button.organize","options":{"maintenanceAction":true,"title":{"en":"Reorder capabilities","sv":"Reorganisera egenskaperna"},"desc":{"en":"Reorder capabilities in the intended order.","sv":"Flytta egenskaperna till den tänkta ordningen."}}}
++20:11:21.533: --- ANALYZING DEVICE DONE ---
++20:11:29.826: Sending log
+
++20:14:48.380: Signal failures *On:5969 Off:119 Temp:4
++20:14:48.442: Failed to turn on device Gang termostat, will retry later
++20:14:49.609: Monitor completed with state: false
++20:19:47.113: onMonitor()
++20:19:47.127: Monitor completed with state: true
++20:20:22.386: Settings saved, refreshing all devices.
++20:22:46.232: Settings saved, refreshing all devices.
++20:23:13.293: Settings saved, refreshing all devices.
++20:23:43.087: Settings saved, refreshing all devices.
++20:24:47.217: onMonitor()
++20:24:47.225: Monitor completed with state: true
++20:25:34.388: ----- ANALYZING DEVICE -----
++20:25:34.396: Device ID: faff2c08-1b1a-4bc6-9778-aa1bcbd55e05
++20:25:34.405: Device Name: Easee Lader (EH861484)
++20:25:34.412: Capabilities: charger_status,enabled,measure_current.offered,measure_power,measure_current.p1,measure_current.p2,measure_current.p3,measure_voltage,meter_power.lastCharge,meter_power,button.reconnect,button.organize
++20:25:34.421: Options for 'charger_status': {"value":"Charging","lastUpdated":"2022-09-09T20:15:29.629Z","type":"string","getable":true,"setable":false,"title":"Status","desc":null,"units":null,"iconObj":{"id":"514d59bcce8209f116fb4bbebd8679b9","url":"/icon/514d59bcce8209f116fb4bbebd8679b9/icon.svg"},"id":"charger_status","options":{}}
++20:25:34.429: Options for 'enabled': {"value":true,"lastUpdated":"2022-08-15T20:20:59.567Z","type":"boolean","getable":true,"setable":false,"title":"Enabled","desc":null,"units":null,"iconObj":{"id":"213b78c392bf914fa4c2289febdee574","url":"/icon/213b78c392bf914fa4c2289febdee574/icon.svg"},"id":"enabled","options":{}}
++20:25:34.438: Options for 'measure_current.offered': {"value":12,"lastUpdated":"2022-09-09T20:19:59.467Z","type":"number","getable":true,"setable":false,"title":"Current allocated","desc":"Elektrisk strøm (A)","units":"A","decimals":2,"chartType":"stepLine","id":"measure_current.offered","options":{"title":{"en":"Current allocated","sv":"Allokerad ström"}}}
++20:25:34.445: Options for 'measure_power': {"value":8299,"lastUpdated":"2022-09-09T20:19:59.468Z","type":"number","getable":true,"setable":false,"title":"Effekt","desc":"Effekt i watt (W)","units":"W","decimals":2,"chartType":"stepLine","id":"measure_power","options":{}}
++20:25:34.458: Options for 'measure_current.p1': {"value":11.91,"lastUpdated":"2022-09-09T20:19:59.469Z","type":"number","getable":true,"setable":false,"title":"Current P1","desc":"Elektrisk strøm (A)","units":"A","decimals":2,"chartType":"stepLine","id":"measure_current.p1","options":{"title":{"en":"Current P1","sv":"Ström L1"}}}
++20:25:34.466: Options for 'measure_current.p2': {"value":12,"lastUpdated":"2022-09-09T20:19:59.490Z","type":"number","getable":true,"setable":false,"title":"Current P2","desc":"Elektrisk strøm (A)","units":"A","decimals":2,"chartType":"stepLine","id":"measure_current.p2","options":{"title":{"en":"Current P2","sv":"Ström L2"}}}
++20:25:34.474: Options for 'measure_current.p3': {"value":12.95,"lastUpdated":"2022-09-09T20:19:29.376Z","type":"number","getable":true,"setable":false,"title":"Current P3","desc":"Elektrisk strøm (A)","units":"A","decimals":2,"chartType":"stepLine","id":"measure_current.p3","options":{"title":{"en":"Current P3","sv":"Ström L3"}}}
++20:25:34.480: Options for 'measure_voltage': {"value":230,"lastUpdated":"2022-09-09T19:58:28.412Z","type":"number","getable":true,"setable":false,"title":"Spenning","desc":"Spenning (V)","units":"V","decimals":2,"chartType":"stepLine","id":"measure_voltage","options":{}}
++20:25:34.483: Options for 'meter_power.lastCharge': {"value":1,"lastUpdated":"2022-09-09T20:21:59.530Z","type":"number","getable":true,"setable":false,"title":"Last charge session","desc":"Energiforbruk i kilowattimer (kWh)","units":"kWh","decimals":2,"chartType":"spline","id":"meter_power.lastCharge","options":{"title":{"en":"Last charge session","sv":"Senaste laddsessionen"}}}
++20:25:34.488: Options for 'meter_power': {"value":3470.66,"lastUpdated":"2022-09-09T18:04:53.571Z","type":"number","getable":true,"setable":false,"title":"Lifetime","desc":"Energiforbruk i kilowattimer (kWh)","units":"kWh","decimals":2,"chartType":"spline","id":"meter_power","options":{"title":{"en":"Lifetime","sv":"Livstid"}}}
++20:25:34.490: Options for 'button.reconnect': {"value":null,"lastUpdated":null,"type":"boolean","getable":false,"setable":true,"title":"Reconnect","desc":"Reconnect to Easee Cloud API","units":null,"id":"button.reconnect","options":{"maintenanceAction":true,"title":{"en":"Reconnect","sv":"Återskapa uppkoppling"},"desc":{"en":"Reconnect to Easee Cloud API","sv":"Återskapa uppkoppling till Easee Cloud API"}}}
++20:25:34.495: Options for 'button.organize': {"value":null,"lastUpdated":null,"type":"boolean","getable":false,"setable":true,"title":"Reorder capabilities","desc":"Reorder capabilities in the intended order.","units":null,"id":"button.organize","options":{"maintenanceAction":true,"title":{"en":"Reorder capabilities","sv":"Reorganisera egenskaperna"},"desc":{"en":"Reorder capabilities in the intended order.","sv":"Flytta egenskaperna till den tänkta ordningen."}}}
++20:25:34.506: --- ANALYZING DEVICE DONE ---
++20:25:45.531: Sending log
