@@ -358,5 +358,8 @@
   },
   "0.12.18": {
     "en": "Crash bug fix"
+  },
+  "0.12.19": {
+    "en": "Added more logging"
   }
 }
