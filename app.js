@@ -1702,6 +1702,28 @@ class PiggyBank extends Homey.App {
         try {
           this.updateLog(`Driver Uri: ${device.driverUri}`, c.LOG_ALL);
           this.updateLog(`Driver Id: ${device.driverId}`, c.LOG_ALL);
+
+          // Method 1:
+          const otherApi = this.homey.api.getApiApp(`${device.driverUri.split(':').at(-1)}`);
+          let isInstalled1; let version1;
+          let isInstalled2; let version2;
+          await otherApi.getInstalled()
+            .then(resp => { isInstalled1 = resp; })
+            .catch(err => { isInstalled1 = err; });
+          await otherApi.getVersion()
+            .then(resp => { version1 = resp; })
+            .catch(err => { version1 = err; });
+          await this.homey.apps.getInstalled(otherApi)
+            .then(resp => { isInstalled2 = resp; })
+            .catch(err => { isInstalled2 = err; });
+          await this.homey.apps.getVersion(otherApi)
+            .then(resp => { version2 = resp; })
+            .catch(err => { version2 = err; });
+          this.updateLog(`Check1: ${isInstalled1}, ${version1}`, c.LOG_ALL);
+          this.updateLog(`Check2: ${isInstalled2}, ${version2}`);
+
+          this.updateLog(`App installed: ${this.homey.app.getInstalled()}`, c.LOG_ALL);
+          this.updateLog(`App version: ${this.homey.app.getVersion()}`, c.LOG_ALL);
           this.updateLog(`Found onoff cap: ${this.__deviceList[deviceId].onoff_cap}`, c.LOG_ALL);
           this.updateLog(`Found temp cap: ${this.__deviceList[deviceId].thermostat_cap}`, c.LOG_ALL);
         } catch (err) {
