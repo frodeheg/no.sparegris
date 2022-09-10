@@ -1705,18 +1705,20 @@ class PiggyBank extends Homey.App {
         let isInstalled2; let version2;
         otherApi.getInstalled()
           .then(resp => { isInstalled1 = resp; })
-          .catch(err => { isInstalled1 = err; });
+          .catch(err => { isInstalled1 = err; })
+          .finally(final => { this.updateLog(`Installed1: ${isInstalled1}`, c.LOG_ALL); });
         otherApi.getVersion()
           .then(resp => { version1 = resp; })
           .catch(err => { version1 = err; });
+          .finally(final => { this.updateLog(`version1: ${version1}`, c.LOG_ALL); });
         this.homey.apps.getInstalled(otherApi)
           .then(resp => { isInstalled2 = resp; })
           .catch(err => { isInstalled2 = err; });
+          .finally(final => { this.updateLog(`Installed2: ${isInstalled2}`, c.LOG_ALL); });
         this.homey.apps.getVersion(otherApi)
           .then(resp => { version2 = resp; })
           .catch(err => { version2 = err; });
-        this.updateLog(`Check1: ${isInstalled1}, ${version1}`, c.LOG_ALL);
-        this.updateLog(`Check2: ${isInstalled2}, ${version2}`, c.LOG_ALL);
+          .finally(final => { this.updateLog(`version2: ${version2}`, c.LOG_ALL); });
 
         try {
           this.updateLog(`Driver Uri: ${device.driverUri}`, c.LOG_ALL);
