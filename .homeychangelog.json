@@ -361,5 +361,8 @@
   },
   "0.12.19": {
     "en": "Added more logging"
+  },
+  "0.12.20": {
+    "en": "Crash fix"
   }
 }
