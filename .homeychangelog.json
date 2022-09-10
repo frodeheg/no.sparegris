@@ -349,5 +349,8 @@
   },
   "0.12.15": {
     "en": "Changed printing of driver manifest to driver Uri and Id for device troubleshooting"
+  },
+  "0.12.16": {
+    "en": "Added printing on app version in device troubleshooting"
   }
 }
