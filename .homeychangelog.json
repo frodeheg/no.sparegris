@@ -355,5 +355,8 @@
   },
   "0.12.17": {
     "en": "Fixed crash bug in previous checkin"
+  },
+  "0.12.18": {
+    "en": "Crash bug fix"
   }
 }
