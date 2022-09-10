@@ -343,5 +343,8 @@
   },
   "0.12.13": {
     "en": "Added driver manifest to device troubleshooting page"
+  },
+  "0.12.14": {
+    "en": "Added error printout for device manifest"
   }
 }
