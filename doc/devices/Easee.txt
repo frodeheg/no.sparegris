@@ -49,3 +49,36 @@ App version 0.12.12
 +20:25:34.495: Options for 'button.organize': {"value":null,"lastUpdated":null,"type":"boolean","getable":false,"setable":true,"title":"Reorder capabilities","desc":"Reorder capabilities in the intended order.","units":null,"id":"button.organize","options":{"maintenanceAction":true,"title":{"en":"Reorder capabilities","sv":"Reorganisera egenskaperna"},"desc":{"en":"Reorder capabilities in the intended order.","sv":"Flytta egenskaperna till den tänkta ordningen."}}}
 +20:25:34.506: --- ANALYZING DEVICE DONE ---
 +20:25:45.531: Sending log
+
+Log ID: 2022-09-10T17:56:58.350Z
+App version 0.12.20
+
++17:56:58.350: ----- ANALYZING DEVICE -----
++17:56:58.355: Device ID: 1b4c29dc-02f9-48ad-b010-c4e00456f3b7
++17:56:58.356: Device Name: EL-billader
++17:56:58.361: Driver Uri: homey:app:no.easee
++17:56:58.363: Driver Id: charger
++17:56:58.366: Error: TypeError: Cannot read properties of undefined (reading 'onoff_cap')
++17:56:58.367: Capabilities: charger_status,enabled,measure_current.offered,measure_power,measure_current.p1,measure_current.p2,measure_current.p3,measure_voltage,meter_power.lastCharge,meter_power,button.reconnect,button.organize
++17:56:58.369: Options for 'charger_status': {"value":"Standby","lastUpdated":"2022-09-08T05:55:55.330Z","type":"string","getable":true,"setable":false,"title":"Status","desc":null,"units":null,"iconObj":{"id":"514d59bcce8209f116fb4bbebd8679b9","url":"/icon/514d59bcce8209f116fb4bbebd8679b9/icon.svg"},"id":"charger_status","options":{}}
++17:56:58.371: Options for 'enabled': {"value":true,"lastUpdated":"2022-08-25T16:51:23.534Z","type":"boolean","getable":true,"setable":false,"title":"Enabled","desc":null,"units":null,"iconObj":{"id":"213b78c392bf914fa4c2289febdee574","url":"/icon/213b78c392bf914fa4c2289febdee574/icon.svg"},"id":"enabled","options":{}}
++17:56:58.373: Options for 'measure_current.offered': {"value":0,"lastUpdated":"2022-09-08T05:56:25.142Z","type":"number","getable":true,"setable":false,"title":"Current allocated","desc":"Elektrisk strøm (A)","units":"A","decimals":2,"chartType":"stepLine","id":"measure_current.offered","options":{"title":{"en":"Current allocated","sv":"Allokerad ström"}}}
++17:56:58.374: Options for 'measure_power': {"value":0,"lastUpdated":"2022-09-08T00:55:06.424Z","type":"number","getable":true,"setable":false,"title":"Effekt","desc":"Effekt i watt (W)","units":"W","decimals":2,"chartType":"stepLine","id":"measure_power","options":{}}
++17:56:58.376: Options for 'measure_current.p1': {"value":0,"lastUpdated":"2022-09-08T05:55:55.331Z","type":"number","getable":true,"setable":false,"title":"Current P1","desc":"Elektrisk strøm (A)","units":"A","decimals":2,"chartType":"stepLine","id":"measure_current.p1","options":{"title":{"en":"Current P1","sv":"Ström L1"}}}
++17:56:58.378: Options for 'measure_current.p2': {"value":0,"lastUpdated":"2022-09-08T05:55:55.332Z","type":"number","getable":true,"setable":false,"title":"Current P2","desc":"Elektrisk strøm (A)","units":"A","decimals":2,"chartType":"stepLine","id":"measure_current.p2","options":{"title":{"en":"Current P2","sv":"Ström L2"}}}
++17:56:58.382: Options for 'measure_current.p3': {"value":0,"lastUpdated":"2022-09-08T05:55:55.332Z","type":"number","getable":true,"setable":false,"title":"Current P3","desc":"Elektrisk strøm (A)","units":"A","decimals":2,"chartType":"stepLine","id":"measure_current.p3","options":{"title":{"en":"Current P3","sv":"Ström L3"}}}
++17:56:58.384: Options for 'measure_voltage': {"value":241,"lastUpdated":"2022-09-10T16:49:29.962Z","type":"number","getable":true,"setable":false,"title":"Spenning","desc":"Spenning (V)","units":"V","decimals":2,"chartType":"stepLine","id":"measure_voltage","options":{}}
++17:56:58.386: Options for 'meter_power.lastCharge': {"value":10.78,"lastUpdated":"2022-09-08T05:55:55.321Z","type":"number","getable":true,"setable":false,"title":"Last charge session","desc":"Energiforbruk i kilowattimer (kWh)","units":"kWh","decimals":2,"chartType":"spline","id":"meter_power.lastCharge","options":{"title":{"en":"Last charge session","sv":"Senaste laddsessionen"}}}
++17:56:58.388: Options for 'meter_power': {"value":1766.16,"lastUpdated":"2022-09-08T01:13:06.348Z","type":"number","getable":true,"setable":false,"title":"Lifetime","desc":"Energiforbruk i kilowattimer (kWh)","units":"kWh","decimals":2,"chartType":"spline","id":"meter_power","options":{"title":{"en":"Lifetime","sv":"Livstid"}}}
++17:56:58.390: Options for 'button.reconnect': {"value":null,"lastUpdated":null,"type":"boolean","getable":false,"setable":true,"title":"Reconnect","desc":"Reconnect to Easee Cloud API","units":null,"id":"button.reconnect","options":{"maintenanceAction":true,"title":{"en":"Reconnect","sv":"Återskapa uppkoppling"},"desc":{"en":"Reconnect to Easee Cloud API","sv":"Återskapa uppkoppling till Easee Cloud API"}}}
++17:56:58.392: Options for 'button.organize': {"value":null,"lastUpdated":null,"type":"boolean","getable":false,"setable":true,"title":"Reorder capabilities","desc":"Reorder capabilities in the intended order.","units":null,"id":"button.organize","options":{"maintenanceAction":true,"title":{"en":"Reorder capabilities","sv":"Reorganisera egenskaperna"},"desc":{"en":"Reorder capabilities in the intended order.","sv":"Flytta egenskaperna till den tänkta ordningen."}}}
++17:56:58.395: --- ANALYZING DEVICE DONE ---
++17:56:58.404: Installed1: Error: missing_permission:homey:app:no.easee
++17:56:58.407: version1: Error: missing_permission:homey:app:no.easee
++17:56:58.409: Installed2: Error: missing_permission:homey:app:no.easee
++17:56:58.412: version2: Error: missing_permission:homey:app:no.easee
++17:56:59.342: onPowerUpdate: Using: 404W, Accum: 677.76 Wh, Limit: 4750 Wh, Reserved: 500W, (Estimated end: 698.03)
++17:56:59.344: Can use 24693W more power
++17:57:34.108: onPowerUpdate: Using: 342W, Accum: 681.66 Wh, Limit: 4750 Wh, Reserved: 500W, (Estimated end: 695.52)
++17:57:34.110: Can use 24755W more power
++17:58:3.063: Sending log

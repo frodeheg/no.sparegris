@@ -1,0 +1,27 @@
+Log ID: 2022-09-10T22:15:48.177Z
+App version 0.12.20
+
++22:15:48.177: ----- ANALYZING DEVICE -----
++22:15:48.179: Device ID:   b4788083-9606-49a2-99d4-9efce7a4656d
++22:15:48.181: Device Name: Varmepumpe
++22:15:48.186: Driver Uri: homey:app:com.sensibo
++22:15:48.188: Driver Id: Sensibo
++22:15:48.191: Found onoff cap: se_onoff
++22:15:48.194: Found temp cap: true
++22:15:48.196: Capabilities: se_onoff,target_temperature,thermostat_mode,se_fanlevel,se_fandirection,measure_temperature,measure_humidity,se_last_seen,se_last_seen_seconds,se_climate_react,se_horizontal_swing
++22:15:48.198: Options for 'se_onoff': {"value":false,"lastUpdated":"2022-09-09T15:14:05.829Z","type":"boolean","getable":true,"setable":true,"title":"State","desc":"State of the device","units":null,"id":"se_onoff","options":{"greyout":true}}
++22:15:48.200: Options for 'target_temperature': {"value":22,"lastUpdated":"2022-09-01T15:30:15.088Z","type":"number","getable":true,"setable":true,"title":"Ønsket temperatur","desc":null,"units":"°C","decimals":0,"min":10,"max":30,"step":1,"chartType":"stepLine","id":"target_temperature","options":{"decimals":0,"min":10,"max":30,"step":1}}
++22:15:48.202: Options for 'thermostat_mode': {"value":"off","lastUpdated":"2022-09-09T15:14:05.818Z","type":"enum","getable":true,"setable":true,"title":"Termostatmodus","desc":"Modus for termostaten","units":null,"values":[{"id":"auto","title":"Automatisk"},{"id":"heat","title":"Varme"},{"id":"cool","title":"Avkjøle"},{"id":"off","title":"Av"}],"id":"thermostat_mode","options":{}}
++22:15:48.204: Options for 'se_fanlevel': {"value":"medium","lastUpdated":"2022-07-01T19:33:41.611Z","type":"enum","getable":true,"setable":true,"title":"Fan level","desc":"Fan level","units":null,"values":[{"id":"auto","title":"Auto"},{"id":"high","title":"High"},{"id":"medium_high","title":"Medium high"},{"id":"medium","title":"Medium"},{"id":"medium_low","title":"Medium low"},{"id":"low","title":"Low"},{"id":"quiet","title":"Quiet"}],"id":"se_fanlevel","options":{}}
++22:15:48.205: Options for 'se_fandirection': {"value":"stopped","lastUpdated":"2022-06-12T10:51:27.412Z","type":"enum","getable":true,"setable":true,"title":"Swing","desc":"Swing","units":null,"values":[{"id":"stopped","title":"Stopped"},{"id":"fixedBottom","title":"Fixed bottom"},{"id":"fixedMiddleBottom","title":"Fixed middle bottom"},{"id":"fixedMiddle","title":"Fixed middle"},{"id":"fixedMiddleTop","title":"Fixed middle top"},{"id":"fixedTop","title":"Fixed top"},{"id":"rangeBottom","title":"Range bottom"},{"id":"rangeMiddle","title":"Range middle"},{"id":"rangeTop","title":"Range top"},{"id":"rangeFull","title":"Range full"},{"id":"horizontal","title":"Horizontal"},{"id":"both","title":"Both"}],"id":"se_fandirection","options":{}}
++22:15:48.207: Options for 'measure_temperature': {"value":20.1,"lastUpdated":"2022-09-10T21:59:17.717Z","type":"number","getable":true,"setable":false,"title":"Temperatur","desc":"Temperatur i grader Celsius (°C)","units":"°C","decimals":2,"chartType":"spline","id":"measure_temperature","options":{}}
++22:15:48.209: Options for 'measure_humidity': {"value":40.4,"lastUpdated":"2022-09-10T22:14:24.169Z","type":"number","getable":true,"setable":false,"title":"Luftfuktighet","desc":"Luftfuktighet i prosent (%)","units":"%","decimals":2,"chartType":"spline","id":"measure_humidity","options":{}}
++22:15:48.211: Options for 'se_last_seen': {"value":"22:14:06","lastUpdated":"2022-09-10T22:14:24.188Z","type":"string","getable":true,"setable":false,"title":"Last seen","desc":"Last seen","units":null,"iconObj":{"id":"d8701f8d5abcac37bfdd31940317b742","url":"/icon/d8701f8d5abcac37bfdd31940317b742/icon.svg"},"id":"se_last_seen","options":{}}
++22:15:48.214: Options for 'se_last_seen_seconds': {"value":78,"lastUpdated":"2022-09-10T22:15:24.556Z","type":"number","getable":true,"setable":false,"title":"Last seen seconds ago","desc":"Last seen seconds ago","units":null,"id":"se_last_seen_seconds","options":{}}
++22:15:48.216: Options for 'se_climate_react': {"value":"off","lastUpdated":"2022-06-12T10:51:28.351Z","type":"enum","getable":true,"setable":true,"title":"Climate React","desc":"Climate React","units":null,"values":[{"id":"off","title":"Off"},{"id":"on","title":"On"}],"id":"se_climate_react","options":{}}
++22:15:48.218: Options for 'se_horizontal_swing': {"value":"stopped","lastUpdated":"2022-06-12T10:51:27.420Z","type":"enum","getable":true,"setable":true,"title":"Horizontal swing","desc":"Horizontal swing","units":null,"values":[{"id":"stopped","title":"Stopped"},{"id":"fixedLeft","title":"Fixed left"},{"id":"fixedCenterLeft","title":"Fixed center left"},{"id":"fixedCenter","title":"Fixed center"},{"id":"fixedCenterRight","title":"Fixed center right"},{"id":"fixedRight","title":"Fixed right"},{"id":"fixedLeftRight","title":"Fixed left right"},{"id":"rangeCenter","title":"Range center"},{"id":"rangeFull","title":"Range full"}],"id":"se_horizontal_swing","options":{}}
++22:15:48.220: --- ANALYZING DEVICE DONE ---
++22:15:48.234: Installed1: Error: missing_permission:homey:app:com.sensibo
++22:15:48.237: version1: Error: missing_permission:homey:app:com.sensibo
++22:15:48.239: Installed2: Error: missing_permission:homey:app:com.sensibo
++22:15:48.241: version2: Error: missing_permission:homey:app:com.sensibo

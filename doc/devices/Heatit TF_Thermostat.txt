@@ -1,0 +1,27 @@
+Log ID: 2022-09-10T20:48:00.689Z
+App version 0.12.20
+
++20:48:0.689: ----- ANALYZING DEVICE -----
++20:48:0.696: Device ID: e66b3ae0-a5af-4b59-8a85-27df7854cfbe
++20:48:0.701: Device Name: Hybel termostat
++20:48:0.712: Driver Uri: homey:app:no.thermofloor
++20:48:0.720: Driver Id: TF_Thermostat
++20:48:0.721: Found onoff cap: thermofloor_onoff
++20:48:0.723: Found temp cap: true
++20:48:0.726: Capabilities: measure_temperature,thermofloor_onoff,thermofloor_mode,target_temperature
++20:48:0.728: Options for 'measure_temperature': {"value":21.5,"lastUpdated":"2022-09-10T17:37:13.311Z","type":"number","getable":true,"setable":false,"title":"Temperatur","desc":"Temperatur i grader Celsius (°C)","units":"°C","decimals":2,"chartType":"spline","id":"measure_temperature","options":{}}
++20:48:0.730: Options for 'thermofloor_onoff': {"value":false,"lastUpdated":"2022-09-10T16:56:00.701Z","type":"boolean","getable":true,"setable":false,"title":"Heating","desc":"State of the thermostat","units":null,"iconObj":{"id":"d70e240e9c132a13227d8589d97b5519","url":"/icon/d70e240e9c132a13227d8589d97b5519/icon.svg"},"id":"thermofloor_onoff","options":{"greyout":true,"titleTrue":{"en":"Active"},"titleFalse":{"en":"Idle"}},"titleTrue":"Active","titleFalse":"Idle"}
++20:48:0.740: Options for 'thermofloor_mode': {"value":"Heat","lastUpdated":"2021-12-06T11:28:17.672Z","type":"enum","getable":true,"setable":true,"title":"Thermostat mode","desc":"Mode of the thermostat","units":null,"values":[{"id":"Heat","title":"Comfort"},{"id":"Energy Save Heat","title":"Energy Saving"},{"id":"Off","title":"Off"},{"id":"Cool","title":"Cooling"}],"id":"thermofloor_mode","options":{}}
++20:48:0.746: Options for 'target_temperature': {"value":20,"lastUpdated":"2022-07-28T12:37:05.517Z","type":"number","getable":true,"setable":true,"title":"Ønsket temperatur","desc":null,"units":"°C","decimals":2,"min":5,"max":40,"step":0.5,"chartType":"stepLine","id":"target_temperature","options":{"min":5,"max":40,"step":0.5}}
++20:48:0.748: --- ANALYZING DEVICE DONE ---
++20:48:0.763: Installed1: Error: missing_permission:homey:app:no.thermofloor
++20:48:0.769: version1: Error: missing_permission:homey:app:no.thermofloor
++20:48:0.780: Installed2: Error: missing_permission:homey:app:no.thermofloor
++20:48:0.785: version2: Error: missing_permission:homey:app:no.thermofloor
++20:48:7.330: Failed to turn on device TV-stue Termostat, will retry later
++20:48:7.433: Failed to turn on device Bad termostat, will retry later
++20:48:7.514: Failed to turn on device Gang termostat, will retry later
++20:48:7.649: Failed to turn on device Vaskerom Termostat, will retry later
++20:48:7.839: Failed to turn on device Hanna Thermostat, will retry later
++20:48:7.871: Failed to turn on device Magnus Termostat, will retry later
++20:48:11.678: Sending log

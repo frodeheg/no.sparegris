@@ -1,0 +1,27 @@
+Log ID: 2022-09-10T22:10:40.540Z
+App version 0.12.20
+
++22:10:40.540: ----- ANALYZING DEVICE -----
++22:10:40.542: Device ID:   eb3be21c-bcb2-47b2-9393-eae2d33737dc
++22:10:40.543: Device Name: Høiax CONNECTED
++22:10:40.548: Driver Uri: homey:app:no.hoiax
++22:10:40.550: Driver Id: hiax-connected-200
++22:10:40.552: Found onoff cap: onoff
++22:10:40.553: Found temp cap: true
++22:10:40.555: Capabilities: max_power,meter_power.accumulated,meter_power.in_tank,measure_power,target_temperature,measure_temperature,onoff,measure_humidity.fill_level,meter_power.leak_accum,measure_power.leak,measure_humidity.leak_relation
++22:10:40.557: Options for 'max_power': {"value":"high_power","lastUpdated":"2022-08-23T22:34:59.718Z","type":"enum","getable":true,"setable":true,"title":"Max effekt","desc":null,"units":null,"values":[{"id":"low_power","title":"Lav effekt - 700 W"},{"id":"medium_power","title":"Middels effekt - 1300 W"},{"id":"high_power","title":"Maks effekt - 2000 W"}],"id":"max_power","options":{}}
++22:10:40.559: Options for 'meter_power.accumulated': {"value":1017.4,"lastUpdated":"2022-09-09T23:15:52.232Z","type":"number","getable":true,"setable":false,"title":"Totalt forbruk","desc":"Energiforbruk i kilowattimer (kWh)","units":"kWh","decimals":2,"chartType":"spline","id":"meter_power.accumulated","options":{"title":{"en":"Total usage","no":"Totalt forbruk"}}}
++22:10:40.561: Options for 'meter_power.in_tank': {"value":12.54,"lastUpdated":"2022-09-10T22:05:08.983Z","type":"number","getable":true,"setable":false,"title":"I tanken","desc":"Energiforbruk i kilowattimer (kWh)","units":"kWh","decimals":2,"chartType":"spline","id":"meter_power.in_tank","options":{"title":{"en":"Energy in tank","no":"I tanken"}}}
++22:10:40.563: Options for 'measure_power': {"value":0,"lastUpdated":"2022-09-09T01:20:31.240Z","type":"number","getable":true,"setable":false,"title":"Effekt","desc":"Effekt i watt (W)","units":"W","decimals":2,"chartType":"stepLine","id":"measure_power","options":{}}
++22:10:40.565: Options for 'target_temperature': {"value":35,"lastUpdated":"2022-09-10T22:02:03.758Z","type":"number","getable":true,"setable":true,"title":"Ønsket temperatur","desc":null,"units":"°C","decimals":2,"min":20,"max":85,"step":0.5,"chartType":"stepLine","id":"target_temperature","options":{"step":0.5,"min":20,"max":85}}
++22:10:40.566: Options for 'measure_temperature': {"value":67.6,"lastUpdated":"2022-09-10T22:05:09.000Z","type":"number","getable":true,"setable":false,"title":"Temperatur","desc":"Temperatur i grader Celsius (°C)","units":"°C","decimals":2,"chartType":"spline","id":"measure_temperature","options":{}}
++22:10:40.568: Options for 'onoff': {"value":true,"lastUpdated":"2022-09-10T02:15:51.913Z","type":"boolean","getable":true,"setable":true,"title":"Slått på","desc":null,"units":null,"id":"onoff","options":{}}
++22:10:40.571: Options for 'measure_humidity.fill_level': {"value":100,"lastUpdated":"2022-09-08T22:40:08.962Z","type":"number","getable":true,"setable":false,"title":"Fyllingsgrad","desc":"Luftfuktighet i prosent (%)","units":"%","decimals":2,"chartType":"spline","id":"measure_humidity.fill_level","options":{"title":{"en":"Fill level","no":"Fyllingsgrad"}}}
++22:10:40.573: Options for 'meter_power.leak_accum': {"value":109.27,"lastUpdated":"2022-09-10T22:10:09.057Z","type":"number","getable":true,"setable":false,"title":"Akkumulert varmetap","desc":"Energiforbruk i kilowattimer (kWh)","units":"kWh","decimals":2,"chartType":"spline","id":"meter_power.leak_accum","options":{"title":{"en":"Total heat leakage","no":"Akkumulert varmetap"}}}
++22:10:40.574: Options for 'measure_power.leak': {"value":64.62,"lastUpdated":"2022-09-10T22:10:09.050Z","type":"number","getable":true,"setable":false,"title":"Passivt varmetap","desc":"Effekt i watt (W)","units":"W","decimals":2,"chartType":"stepLine","id":"measure_power.leak","options":{"title":{"en":"Passive heat leakage","no":"Passivt varmetap"}}}
++22:10:40.576: Options for 'measure_humidity.leak_relation': {"value":23.7,"lastUpdated":"2022-09-09T00:45:24.362Z","type":"number","getable":true,"setable":false,"title":"Andel strømbruk tapt i går","desc":"Luftfuktighet i prosent (%)","units":"%","decimals":2,"chartType":"spline","id":"measure_humidity.leak_relation","options":{"title":{"en":"Energy leaked yesterday","no":"Andel strømbruk tapt i går"}}}
++22:10:40.579: --- ANALYZING DEVICE DONE ---
++22:10:40.587: Installed1: Error: missing_permission:homey:app:no.hoiax
++22:10:40.589: version1: Error: missing_permission:homey:app:no.hoiax
++22:10:40.591: Installed2: Error: missing_permission:homey:app:no.hoiax
++22:10:40.593: version2: Error: missing_permission:homey:app:no.hoiax
