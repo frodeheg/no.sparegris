@@ -352,5 +352,8 @@
   },
   "0.12.16": {
     "en": "Added printing on app version in device troubleshooting"
+  },
+  "0.12.17": {
+    "en": "Fixed crash bug in previous checkin"
   }
 }
