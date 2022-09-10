@@ -1700,11 +1700,12 @@ class PiggyBank extends Homey.App {
         this.updateLog(`Device ID:   ${deviceId}`, c.LOG_ALL);
         this.updateLog(`Device Name: ${device.name}`, c.LOG_ALL);
         try {
-          this.updateLog(`Device Driver: ${JSON.stringify(device.driver.manifest)}`, c.LOG_ALL);
+          this.updateLog(`Driver Uri: ${device.driverUri}`, c.LOG_ALL);
+          this.updateLog(`Driver Id: ${device.driverId}`, c.LOG_ALL);
           this.updateLog(`Found onoff cap: ${this.__deviceList[deviceId].onoff_cap}`, c.LOG_ALL);
           this.updateLog(`Found temp cap: ${this.__deviceList[deviceId].thermostat_cap}`, c.LOG_ALL);
         } catch (err) {
-          this.updateLog(`Error: ${err}`);
+          this.updateLog(`Error: ${err}`, c.LOG_ERROR);
         } // Ignore
 
         this.updateLog(`Capabilities: ${String(device.capabilities)}`, c.LOG_ALL);
