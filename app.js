@@ -1709,15 +1709,15 @@ class PiggyBank extends Homey.App {
           .finally(final => { this.updateLog(`Installed1: ${isInstalled1}`, c.LOG_ALL); });
         otherApi.getVersion()
           .then(resp => { version1 = resp; })
-          .catch(err => { version1 = err; });
+          .catch(err => { version1 = err; })
           .finally(final => { this.updateLog(`version1: ${version1}`, c.LOG_ALL); });
         this.homey.apps.getInstalled(otherApi)
           .then(resp => { isInstalled2 = resp; })
-          .catch(err => { isInstalled2 = err; });
+          .catch(err => { isInstalled2 = err; })
           .finally(final => { this.updateLog(`Installed2: ${isInstalled2}`, c.LOG_ALL); });
         this.homey.apps.getVersion(otherApi)
           .then(resp => { version2 = resp; })
-          .catch(err => { version2 = err; });
+          .catch(err => { version2 = err; })
           .finally(final => { this.updateLog(`version2: ${version2}`, c.LOG_ALL); });
 
         try {
