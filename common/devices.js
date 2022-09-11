@@ -7,6 +7,8 @@
 //   setOnOffCap    - Capability for turning on and off
 //   setOnValue     - Value for setOnOffCap to turn device on
 //   setOffValue    - Value for setOnOffCap to turn devie off
+//   beta           - true if not fully supported yet, undefined otherwise
+//   default        - true if the device is default, undefined otherwise
 // HEATER : Additional parameters
 //   readTempCap    - Capability for reading temperature
 //   setTempCap     - Capability for setting temperature
@@ -34,7 +36,8 @@ const DEFAULT_SWITCH = {
   type: DEVICE_TYPE.SWITCH,
   setOnOffCap: 'onoff',
   setOnValue: true,
-  setOffValue: false
+  setOffValue: false,
+  default: true
 };
 
 // Default heating device:
@@ -47,11 +50,11 @@ const DEFAULT_HEATER = {
   setTempCap: 'target_temperature',
   tempMin: 5,
   tempMax: 40,
-  tempStep: 0.5
+  tempStep: 0.5,
+  default: true
 };
 
 // Supported devices and how to use them
-// Devices marked with beta=true are not fully supported yet
 const DEVICE_CMD = {
   'no.easee:charger': {
     type: DEVICE_TYPE.CHARGER,
