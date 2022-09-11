@@ -4,6 +4,8 @@
   <head>
     <!-- The '/homey.js' script must be included in your settings view to work -->
     <script type="text/javascript" src="/homey.js" data-origin="settings"></script>
+    <script type="text/javascript" src="../common/constants.js" data-origin="settings"></script>
+    <script type="text/javascript" src="../common/devices.js" data-origin="settings"></script>
     <link href="style.css" rel="stylesheet" type="text/css">
     <script type="text/javascript">
 
@@ -1143,8 +1145,10 @@
 
         // Request devicelist refresh
         Homey.api('GET', '/apiCommand?cmd=createDeviceList', null, function (err, response) {
-          if (err || !Array.isArray(response)) {
+          if (err) {
             Homey.alert(`Could not load device list (${err})`);
+          } else if (Object.keys(response).length === 0) {
+            Homey.alert('No controllable devices found (check help section for instructions)');
           } else {
             deviceList = response;
             deviceListLoaded = true;
@@ -1169,7 +1173,7 @@
           futurePriceOptionsLoaded = true;
           checkLoadingDone();
         });
-        
+
         // Refresh API configuration progress
         Homey.api('GET', '/apiCommand?cmd=getAppConfigProgress', null, function (err, options) {
           if (err) return Homey.alert(err);
@@ -1229,7 +1233,7 @@
         });
         Homey.get("maxPower", function (err, maxPower) {
           if (err) return Homey.alert(err);
-          if (Number.isInteger(+maxPower)) {
+          if (maxPower !== null && Number.isInteger(+maxPower)) {
             document.getElementById("maxPower").value = +maxPower;
             document.getElementById("forMaxPower").value = +maxPower;
           } // else use defaults set from the top (this is the first time)
