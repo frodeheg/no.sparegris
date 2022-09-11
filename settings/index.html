@@ -1141,75 +1141,52 @@
           pricePoints[i].name = Homey.__(pricePoints[i].name);
         }
 
-
-        // When done refreshing device list then refresh screen
-        Homey.on('settings.set', function (setting) {
-          if (setting === 'deviceListRefresh') {
-            Homey.get('deviceListRefresh', function (err, refreshDone) {
-              if (err) Homey.alert(err);
-              if (refreshDone === 'done') {
-                // Refresh device list
-                Homey.get("deviceList", function (err, myDevices) {
-                  if (err) return Homey.alert(err);
-                  if (myDevices) {
-                    deviceList = myDevices;
-                    deviceListLoaded = true;
-                    checkLoadingDone();
-                  } else {
-                    // In case myDevices was not set this means that
-                    // the app onInit has not completed... that is the first
-                    // attempt to create a device list did not finish yet.
-                    // Having this else will enforce a timeout and as such tell the
-                    // user to try again later.
-                  }
-                })
-                // Refresh price data
-                Homey.get("futurePriceOptions", function (err, options) {
-                  if (err) return Homey.alert(err);
-                  if (options) {
-                    futurePriceOptions = options;
-                  } else {
-                    futurePriceOptions = {}
-                  }
-                  if (!futurePriceOptions.hasOwnProperty("minCheapTime")) futurePriceOptions.minCheapTime = 4;
-                  if (!futurePriceOptions.hasOwnProperty("minExpensiveTime")) futurePriceOptions.minExpensiveTime = 4;
-                  if (!futurePriceOptions.hasOwnProperty("averageTime")) futurePriceOptions.averageTime = 0;
-                  if (!futurePriceOptions.hasOwnProperty("lowPriceModifier")) futurePriceOptions.lowPriceModifier = -10;
-                  if (!futurePriceOptions.hasOwnProperty("highPriceModifier")) futurePriceOptions.highPriceModifier = 10;
-                  if (!futurePriceOptions.hasOwnProperty("extremePriceModifier")) futurePriceOptions.extremePriceModifier = 100;
-                  futurePriceOptionsLoaded = true;
-                  checkLoadingDone();
-                });
-                // Refresh API configuration progress
-                Homey.get("appConfigProgress", function (err, options) {
-                  if (err) return Homey.alert(err);
-                  if (options) {
-                    appConfigProgress = options;
-                  } else {
-                    appConfigProgress = {}
-                  }
-                  if (!appConfigProgress.hasOwnProperty("gotPPFromFlow")) appConfigProgress.gotPPFromFlow = false;
-                  if (!appConfigProgress.hasOwnProperty("timeSinceEnergyMeter")) appConfigProgress.timeSinceEnergyMeter = Infinity;
-                  if (!appConfigProgress.hasOwnProperty("energyMeterNotConnected")) appConfigProgress.energyMeterNotConnected = true;
-                  if (!appConfigProgress.hasOwnProperty("ApiStatus")) appConfigProgress.ApiStatus = 0;
-                  appConfigProgressLoaded = true;
-                  checkLoadingDone();
-                });
-
-
-
-
-
-
-              }
-            });
+        // Request devicelist refresh
+        Homey.api('GET', '/apiCommand?cmd=createDeviceList', null, function (err, response) {
+          if (err || !Array.isArray(response)) {
+            Homey.alert(`Could not load device list (${err})`);
+          } else {
+            deviceList = response;
+            deviceListLoaded = true;
+            checkLoadingDone();
           }
         });
-        // Request devicelist refresh
-        Homey.set("deviceListRefresh", 'true', function (err) {
-          //if (err) return Homey.alert(err);
+
+        // Refresh price data
+        Homey.get("futurePriceOptions", function (err, options) {
+          if (err) return Homey.alert(err);
+          if (options) {
+            futurePriceOptions = options;
+          } else {
+            futurePriceOptions = {}
+          }
+          if (!futurePriceOptions.hasOwnProperty("minCheapTime")) futurePriceOptions.minCheapTime = 4;
+          if (!futurePriceOptions.hasOwnProperty("minExpensiveTime")) futurePriceOptions.minExpensiveTime = 4;
+          if (!futurePriceOptions.hasOwnProperty("averageTime")) futurePriceOptions.averageTime = 0;
+          if (!futurePriceOptions.hasOwnProperty("lowPriceModifier")) futurePriceOptions.lowPriceModifier = -10;
+          if (!futurePriceOptions.hasOwnProperty("highPriceModifier")) futurePriceOptions.highPriceModifier = 10;
+          if (!futurePriceOptions.hasOwnProperty("extremePriceModifier")) futurePriceOptions.extremePriceModifier = 100;
+          futurePriceOptionsLoaded = true;
+          checkLoadingDone();
+        });
+        
+        // Refresh API configuration progress
+        Homey.api('GET', '/apiCommand?cmd=getAppConfigProgress', null, function (err, options) {
+          if (err) return Homey.alert(err);
+          if (options) {
+            appConfigProgress = options;
+          } else {
+            appConfigProgress = {}
+          }
+          if (!appConfigProgress.hasOwnProperty("gotPPFromFlow")) appConfigProgress.gotPPFromFlow = false;
+          if (!appConfigProgress.hasOwnProperty("timeSinceEnergyMeter")) appConfigProgress.timeSinceEnergyMeter = Infinity;
+          if (!appConfigProgress.hasOwnProperty("energyMeterNotConnected")) appConfigProgress.energyMeterNotConnected = true;
+          if (!appConfigProgress.hasOwnProperty("ApiStatus")) appConfigProgress.ApiStatus = 0;
+          appConfigProgressLoaded = true;
+          checkLoadingDone();
         });
 
+        // Get the mode list
         Homey.get("modeList", function (err, myModeList) {
           if (err) return Homey.alert(err);
           if (Array.isArray(myModeList)) {

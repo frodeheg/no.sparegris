@@ -24,6 +24,7 @@ const { Mutex } = require('async-mutex');
 const { HomeyAPIApp } = require('homey-api');
 const { resolve } = require('path');
 const c = require('./common/constants');
+const d = require('./common/devices');
 
 const WAIT_TIME_TO_POWER_ON_AFTER_POWEROFF_MIN = 1 * 60 * 1000; // Wait 1 minute
 const WAIT_TIME_TO_POWER_ON_AFTER_POWEROFF_MAX = 5 * 60 * 1000; // Wait 5 minutes
@@ -132,6 +133,9 @@ class PiggyBank extends Homey.App {
     }
     DEBUG_END */
 
+    // Logging
+    this.logInit().catch(err => {}); // Ignore logging errors, normal users don't care
+
     // ===== KEEPING STATE ACROSS RESTARTS =====
     if (this.homey.settings.get('safeShutdown__current_power') !== null) {
       // For onPowerUpdate + onNewHour
@@ -148,11 +152,15 @@ class PiggyBank extends Homey.App {
       this.updateLog('No state from previous shutown? Powerloss, deactivated or forced restart.', c.LOG_INFO);
     }
     // ===== KEEPING STATE ACROSS RESTARTS END =====
-    try {
-      this.logInit();
-    } catch (err) {
-      // Just ignore logging errors, this should not affect normal users.
+
+    // Initialize missing settings
+    let futurePriceOptions = this.homey.settings.get('futurePriceOptions');
+    if (!futurePriceOptions) {
+      futurePriceOptions = {};
+      this.homey.settings.set('futurePriceOptions', futurePriceOptions);
     }
+
+    // Initialize current state
     this.__intervalID = undefined;
     this.__newHourID = undefined;
     this.__current_power = undefined;
@@ -274,15 +282,8 @@ class PiggyBank extends Homey.App {
     });
 
     this.homey.settings.on('set', setting => {
-      if (setting === 'deviceListRefresh') {
-        const doRefresh = this.homey.settings.get('deviceListRefresh');
-        if (doRefresh === 'true') {
-          try {
-            this.createDeviceList();
-          } catch (err) {
-            // In case refreshing the devicelist failed we just reuse the device list from when the app was initialized
-          }
-        }
+      if (setting === 'deviceList') {
+        this.__deviceList = this.homey.settings.get('deviceList');
       } else if (setting === 'settingsSaved') {
         const doRefresh = this.homey.settings.get('settingsSaved');
         if (doRefresh === 'true') {
@@ -399,6 +400,7 @@ class PiggyBank extends Homey.App {
     const zones = await this.homeyApi.zones.getZones(); // Error thrown is catched by caller of createDeviceList
     // Note: The API calls above might time out, in which case the rest of the function will never be executed.
 
+    const oldDeviceList = this.homey.settings.get('deviceList');
     const relevantDevices = {};
 
     // Loop all devices
@@ -426,7 +428,6 @@ class PiggyBank extends Homey.App {
 
       // Filter out irrelevant devices (check old device list if possible)
       let useDevice = false;
-      const oldDeviceList = this.homey.settings.get('deviceList');
       if (oldDeviceList !== null && device.id in oldDeviceList) {
         useDevice = oldDeviceList[device.id].use;
       } else {
@@ -464,9 +465,7 @@ class PiggyBank extends Homey.App {
     }
     this.__deviceList = relevantDevices;
 
-    this.homey.settings.set('deviceList', this.__deviceList);
-
-    // Refresh current state:
+    // Refresh current state for monitoring:
     if (!this.__current_state) {
       this.__current_state = {};
     }
@@ -483,21 +482,20 @@ class PiggyBank extends Homey.App {
         };
       }
     }
+    return this.__deviceList;
+  }
 
-    // This shouldn't be done here but is needed as the ApiStatus must be sent to the setup page
-    let futurePriceOptions = this.homey.settings.get('futurePriceOptions');
-    if (!futurePriceOptions) futurePriceOptions = {};
-    this.homey.settings.set('futurePriceOptions', futurePriceOptions);
-
+  /**
+   * Return a tooken describing how well the app has been configured
+   */
+  async getAppConfigProgress() {
     const appConfigProgress = {};
     this.apiState = await this._checkApi();
     appConfigProgress.energyMeterNotConnected = (this.__energy_meter_detected_time === undefined);
     appConfigProgress.timeSinceEnergyMeter = ((new Date() - this.__energy_meter_detected_time) / 1000);
     appConfigProgress.gotPPFromFlow = this.homey.settings.get('gotPPFromFlow') === 'true';
     appConfigProgress.ApiStatus = this.apiState;
-    this.homey.settings.set('appConfigProgress', appConfigProgress);
-
-    this.homey.settings.set('deviceListRefresh', 'done');
+    return appConfigProgress;
   }
 
   /**
@@ -919,7 +917,11 @@ class PiggyBank extends Homey.App {
     if (+this.homey.settings.get('priceMode') === c.PRICE_MODE_DISABLED) {
       return Promise.resolve();
     }
-    this.homey.settings.set('gotPPFromFlow', true);
+    if (this.gotPPFromFlow === undefined) {
+      // Store it in settings as well so it is remembered across reboots, but don't save settings all the time
+      this.homey.settings.set('gotPPFromFlow', true);
+      this.gotPPFromFlow = true;
+    }
     // Do not continue if the price point did not change
     const oldPricePoint = +this.homey.settings.get('pricePoint');
     this.statsSetLastHourPricePoint(oldPricePoint);

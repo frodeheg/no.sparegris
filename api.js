@@ -35,6 +35,10 @@ module.exports = {
         return homey.app.setLogLevel(query.logLevel);
       case 'getLogLevel':
         return homey.app.logLevel;
+      case 'createDeviceList':
+        return homey.app.createDeviceList();
+      case 'getAppConfigProgress':
+        return homey.app.getAppConfigProgress();
       default:
         throw (new Error(`Incorrect api command: ${query.cmd}`));
     }
