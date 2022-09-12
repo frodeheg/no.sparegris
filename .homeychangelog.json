@@ -367,5 +367,8 @@
   },
   "0.13.0": {
     "en": "Added support for Heatit TF_Thermostat and Z-TRM2fx + baseline for supporting other units + Fixed bug in default maxpower + Added visible feedback for experimental devices"
+  },
+  "0.13.1": {
+    "en": "Fixed temperature changes on mode changes (when price points are disabled) + Removed amount of warnings in app setup when the app is disabled."
   }
 }
