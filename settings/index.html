@@ -40,6 +40,7 @@
       var timeoutText = "warnings.timeout";
       var energyFlowRateText = "settings.welcome.taskEnergyFlowRate";
       var experimentalText = "settings.welcome.taskExperimental";
+      var onGoingText = "settings.help.ongoing";
 
       const KEEP = -1;
       const ALWAYS_OFF = 0;
@@ -606,6 +607,7 @@
             <a href="#" data-i18n="settings.menu.help.save" onclick="changeTab(event, 'helpHowToPage')">How To Save Money</a>
             <a href="#" data-i18n="settings.menu.help.notfound" onclick="changeTab(event, 'helpNotFoundPage')">Not Found</a>
             <a href="#" data-i18n="settings.menu.help.charger" onclick="changeTab(event, 'helpChargerPage')">Car Chargers</a>
+            <a href="#" data-i18n="settings.menu.help.supported" onclick="changeTab(event, 'helpSupportedPage')">Supported Devices</a>
             <a href="#" data-i18n="settings.menu.help.about" onclick="changeTab(event, 'helpAboutPage')">About</a>
           </div>
         </td>
@@ -700,6 +702,17 @@
       <fieldset>
         <legend data-i18n="settings.help.carCharger">help.carCharger</legend>
         <p data-i18n="settings.help.carChargerHint">help.carChargerHint</p>
+      </fieldset>
+    </div>
+
+
+    <!-- Help page: Supported Devices -->
+    <div id="helpSupportedPage" class="tabcontent">
+      <fieldset>
+        <legend data-i18n="settings.help.supportedDevices">help.supportedDevices</legend>
+        <div id="supportedDevicesList">This list should have been populated by supported devices, if you can see this text it is a bug.</div>
+        <p data-i18n="settings.help.supportedDevicesHint">help.supportedDevicesHint</p>
+        <a href="#ShowLog" data-i18n="settings.global.problemsolver" onclick="changeTab(event, 'helpNotFoundPage');return false;">global.problemsolver</a>
       </fieldset>
     </div>
 
@@ -1179,6 +1192,7 @@
         timeoutText = Homey.__(timeoutText);
         energyFlowRateText = Homey.__(energyFlowRateText);
         experimentalText = Homey.__(experimentalText);
+        onGoingText = Homey.__(onGoingText);
 
 
         for (var i = 0; i < pricePoints.length; i++) {
@@ -1592,7 +1606,21 @@
         }
       }
 
-        // -- Tab control -- //
+      function generateSupportedList() {
+        let theList = '<table>';
+        let allKeys = Object.keys(DEVICE_CMD);
+        for (const devid in allKeys) {
+          let isExperimental = DEVICE_CMD[allKeys[devid]].beta === true;
+          theList += '<tr>';
+          theList +=   '<td>' + allKeys[devid] + '</td>';
+          theList +=   '<td><b>' + (isExperimental?onGoingText:'') + '</b></td>';
+          theList += '</tr>'
+        }
+        theList += '</table>';
+        return theList;
+      }
+
+      // -- Tab control -- //
       function changeTab(evt, tabPage, modeId = undefined) {
         var i, tabcontent, tablinks;
 
@@ -1644,6 +1672,10 @@
           // Make the log text area fill the page
           diagLogElement.setAttribute('cols', (diagLogElement.parentElement.clientWidth-20) / 8);
           diagLogElement.style.height = (window.innerHeight - diagLogElement.offsetTop - 120) + 'px';
+        }
+
+        if (tabPage == 'helpSupportedPage') {
+          document.getElementById('supportedDevicesList').innerHTML = generateSupportedList();
         }
       };
 

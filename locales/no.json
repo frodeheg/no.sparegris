@@ -35,6 +35,7 @@
         "save": "Hvordan spare penger",
         "notfound": "Appen finner ikke enheten min",
         "charger": "Lading av elbil",
+        "supported": "Støttede enheter",
         "about": "Om"
       }
     },
@@ -135,6 +136,9 @@
           "-->  </li><!--",
           "-->  <p style='color:red;'>NB! Det bes om hjelp til å verifisere at overstående metoder kan benyttes til lading av elbil ettersom utvikleren av appen ikke har elbil. Om du kan gi utvikleren av appen tilbakemelding om det fungerer hadde det vært supert.</p><!--",
           "--></ol>"],
+      "supportedDevices": "Bekreftet støttede enheter",
+      "supportedDevicesHint": "Dersom din enhet ikke er listet, vennligst følg instruksjonene på denne siden:",
+      "ongoing": "Pågående arbeid",
       "aboutInfo": "Om Sparegris",
       "aboutInfoHint": ["<p>Denne appen er laget for at alle skal kunne styre strømmen sin på en enkel måte og samtidig spare så mye penger som mulig på det.</p><!--",
           "--><p>Det har gått fryktelig mye fritid med for å fullføre dette prosjektet, så dersom du er fornøyd med det du sparer kan du gjerne støtte prosjektet på følgende måter: (helt frivillig)</p><!--",

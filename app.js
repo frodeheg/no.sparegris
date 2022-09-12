@@ -573,10 +573,10 @@ class PiggyBank extends Homey.App {
     }
     const frostList = this.homey.settings.get('frostList');
     const frostGuardActive = this.__deviceList[deviceId].thermostat_cap
-      ? (device.capabilitiesObj['measure_temperature'].value < frostList[deviceId].minTemp) : false;
+      ? (device.capabilitiesObj[this.getTempGetCap(deviceId)].value < frostList[deviceId].minTemp) : false;
 
     if (this.__deviceList[deviceId].onoff_cap === undefined) return Promise.reject(new Error('onoff capability does not exist, this should not happen'));
-    const isOn = await device.capabilitiesObj[this.__deviceList[deviceId].onoff_cap].value;
+    const isOn = this.getIsOn(device, deviceId);
     const activeZones = this.homey.settings.get('zones');
     const newStateOn = frostGuardActive
       || (currentActionOp !== TURN_OFF && currentActionOp !== EMERGENCY_OFF
@@ -594,7 +594,7 @@ class PiggyBank extends Homey.App {
       this.updateLog(`Turning on device: ${deviceName}`, c.LOG_INFO);
       this.__current_state[deviceId].ongoing = true;
       this.__current_state[deviceId].confirmed = false;
-      return device.setCapabilityValue({ capabilityId: this.__deviceList[deviceId].onoff_cap, value: true })
+      return device.setCapabilityValue({ capabilityId: this.getOnOffCap(deviceId), value: this.getOnOffTrue(deviceId) })
         .then(() => {
           this.__current_state[deviceId].nComError = 0;
           this.__num_off_devices--;
@@ -617,7 +617,7 @@ class PiggyBank extends Homey.App {
       this.updateLog(`Turning off device: ${deviceName}`, c.LOG_INFO);
       this.__current_state[deviceId].ongoing = true;
       this.__current_state[deviceId].confirmed = false;
-      return device.setCapabilityValue({ capabilityId: this.__deviceList[deviceId].onoff_cap, value: false })
+      return device.setCapabilityValue({ capabilityId: this.getOnOffCap(deviceId), value: this.getOnOffFalse(deviceId) })
         .then(() => {
           this.__current_state[deviceId].nComError = 0;
           this.__current_state[deviceId].ongoing = false;
@@ -743,7 +743,7 @@ class PiggyBank extends Homey.App {
           if (this.__deviceList[deviceId].onoff_cap === undefined) {
             return Promise.reject(new Error('The onoff capability is non-existing, this should never happen.'));
           }
-          const isOn = device.capabilitiesObj[this.__deviceList[deviceId].onoff_cap].value;
+          const isOn = this.getIsOn(device, deviceId);
           const onConfirmed = (this.__current_state[deviceId].isOn === isOn);
           if (!onConfirmed) {
             // Try to change the on state.....
@@ -761,7 +761,7 @@ class PiggyBank extends Homey.App {
             return Promise.resolve(true);
           }
           // Thermostat capabilities
-          const tempConfirmed = this.__current_state[deviceId].temp && (device.capabilitiesObj['target_temperature'].value === this.__current_state[deviceId].temp);
+          const tempConfirmed = this.__current_state[deviceId].temp && (device.capabilitiesObj[this.getTempSetCap(deviceId)].value === this.__current_state[deviceId].temp);
           if (tempConfirmed) {
             this.__current_state[deviceId].confirmed = 3;
             return Promise.resolve(true);
@@ -1157,7 +1157,7 @@ class PiggyBank extends Homey.App {
         if (this.__deviceList[deviceId].onoff_cap === undefined) {
           return Promise.reject(new Error('The onoff capability is non-existing, this should never happen.'));
         }
-        const isOn = device.capabilitiesObj[this.__deviceList[deviceId].onoff_cap].value;
+        const isOn = this.getIsOn(device, deviceId);
         this.__current_state[deviceId].isOn = isOn;
         if (isOn === undefined) {
           this.updateLog(`Refreshtemp: isOn was set to undefined ${isOn}`, c.LOG_ERROR);
@@ -1168,13 +1168,18 @@ class PiggyBank extends Homey.App {
         const hasMeasureTemp = device.capabilities.includes('measure_temperature');
         if (!hasMeasureTemp) return Promise.resolve([true, true]);
         const frostGuardActive = this.__deviceList[deviceId].thermostat_cap
-          ? (device.capabilitiesObj['measure_temperature'].value < frostList[deviceId].minTemp) : false;
-        const newTemp = frostGuardActive ? frostList[deviceId].minTemp : (modeTemp + deltaTemp);
+          ? (device.capabilitiesObj[this.getTempGetCap(deviceId)].value < frostList[deviceId].minTemp) : false;
+        let newTemp = frostGuardActive ? frostList[deviceId].minTemp : (modeTemp + deltaTemp);
+        const minTemp = this.getTempCapMin(deviceId);
+        const maxTemp = this.getTempCapMax(deviceId);
+        if (newTemp < minTemp) newTemp = minTemp;
+        if (newTemp > maxTemp) newTemp = maxTemp;
         this.__current_state[deviceId].temp = newTemp;
-        if (device.capabilitiesObj['target_temperature'].value === newTemp) return Promise.resolve([true, true]);
+        const tempSetCap = this.getTempSetCap(deviceId);
+        if (device.capabilitiesObj[tempSetCap].value === newTemp) return Promise.resolve([true, true]);
         this.__current_state[deviceId].ongoing = true;
         this.__current_state[deviceId].confirmed = false;
-        return device.setCapabilityValue({ capabilityId: 'target_temperature', value: newTemp })
+        return device.setCapabilityValue({ capabilityId: tempSetCap, value: newTemp })
           .then(() => Promise.resolve([true, false]));
       })
       .then(([success, noChange]) => {
@@ -1235,6 +1240,73 @@ class PiggyBank extends Homey.App {
         return Promise.resolve(allOk);
       })
       .catch(error => Promise.reject(error));
+  }
+
+  /** ****************************************************************************************************
+   * Device handling
+   ** ****************************************************************************************************
+   */
+  getTempSetCap(deviceId) {
+    try {
+      return d.DEVICE_CMD[this.__deviceList[deviceId].driverId].setTempCap;
+    } catch (err) {
+      return 'target_temperature';
+    }
+  }
+
+  getTempCapMin(deviceId) {
+    try {
+      return d.DEVICE_CMD[this.__deviceList[deviceId].driverId].tempMin;
+    } catch (err) {
+      return 5;
+    }
+  }
+
+  getTempCapMax(deviceId) {
+    try {
+      return d.DEVICE_CMD[this.__deviceList[deviceId].driverId].tempMax;
+    } catch (err) {
+      return 40;
+    }
+  }
+
+  getTempGetCap(deviceId) {
+    try {
+      return d.DEVICE_CMD[this.__deviceList[deviceId].driverId].readTempCap;
+    } catch (err) {
+      return 'measure_temperature';
+    }
+  }
+
+  getOnOffCap(deviceId) {
+    try {
+      return d.DEVICE_CMD[this.__deviceList[deviceId].driverId].setOnOffCap;
+    } catch (err) {
+      return this.__deviceList[deviceId].onoff_cap;
+    }
+  }
+
+  getOnOffTrue(deviceId) {
+    try {
+      return d.DEVICE_CMD[this.__deviceList[deviceId].driverId].setOnValue;
+    } catch (err) {
+      return true;
+    }
+  }
+
+  getOnOffFalse(deviceId) {
+    try {
+      return d.DEVICE_CMD[this.__deviceList[deviceId].driverId].setOffValue;
+    } catch (err) {
+      return false;
+    }
+  }
+
+  getIsOn(device, deviceId) {
+    const onValue = device.capabilitiesObj[this.getOnOffCap(deviceId)].value;
+    if (onValue === this.getOnOffTrue(deviceId)) return true;
+    if (onValue === this.getOnOffFalse(deviceId)) return false;
+    return undefined;
   }
 
   /** ****************************************************************************************************
@@ -1684,9 +1756,11 @@ class PiggyBank extends Homey.App {
       const { __monitorError, __monitorFixTemp, __monitorFixOn } = this.__current_state[deviceId];
       this.homeyApi.devices.getDevice({ id: deviceId })
         .then(device => {
-          const isOnActual = (this.__deviceList[deviceId].onoff_cap === undefined) ? undefined : device.capabilitiesObj[this.__deviceList[deviceId].onoff_cap].value;
-          const tempActualTarget = ('target_temperature' in device.capabilitiesObj) ? device.capabilitiesObj['target_temperature'].value : 'undef';
-          const tempActualMeasure = ('measure_temperature' in device.capabilitiesObj) ? device.capabilitiesObj['measure_temperature'].value : 'undef';
+          const isOnActual = (this.__deviceList[deviceId].onoff_cap === undefined) ? undefined : this.getIsOn(device, deviceId);
+          const tempTargetCap = this.getTempSetCap(deviceId);
+          const tempMeasureCap = this.getTempGetCap(deviceId);
+          const tempActualTarget = (tempTargetCap in device.capabilitiesObj) ? device.capabilitiesObj[tempTargetCap].value : 'undef';
+          const tempActualMeasure = (tempMeasureCap in device.capabilitiesObj) ? device.capabilitiesObj[tempMeasureCap].value : 'undef';
           this.updateLog(`${String(name).padEnd(25)} | ${String(room).padEnd(15)} | ${String(isOn).padEnd(10)} | ${
             String(temp).padStart(11)} | ${String(nComError).padStart(10)} | ${String(ongoing).padEnd(7)}`, c.LOG_ALL);
           this.updateLog(`${String('--->Actual').padEnd(13)} - Errs: ${String(__monitorError).padEnd(3)} | ${

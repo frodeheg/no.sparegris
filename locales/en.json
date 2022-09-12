@@ -35,6 +35,7 @@
         "save": "How to save money",
         "notfound": "The app can't find my device",
         "charger": "Car chargers",
+        "supported": "Supported Devices",
         "about": "About"
       }
     },
@@ -135,6 +136,9 @@
           "-->  </li><!--",
           "-->  <p style='color:red;'>NB! Help is requested to verify that the above methods can be used to charge an electric car, as the developer of the app does not have an electric car. If you could give the developer of the app feedback on whether it works, that would be great.</p><!--",
           "--></ol>"],
+      "supportedDevices": "Confirmed Supported Devices",
+      "supportedDevicesHint": "If your device is not listed, please follow the instructions here:",
+      "ongoing": "Ongoing work",
       "aboutInfo": "About Piggy Bank",
       "aboutInfoHint": ["<p>This app was made in order for everyone to control their energy usage in a simple way and at the same time save as much money as possible on it.</p><!--",
           "--><p>A lot of free time has gone into developing this app. If you're hgappy with what you save then please feel free to support the development of the app in the following ways: (completely optional)</p><!--",
