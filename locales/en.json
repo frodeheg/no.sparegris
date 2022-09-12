@@ -67,6 +67,7 @@
       "taskNoPriceAPIData": "You have selected internal price calculation, but the Utilitycost app has been configured for price from flows, and as such it will not forward the prices to this app...",
       "taskNoPriceEnabled": "You have not activated price control of your devices yet. This could possibly save you some more money.",
       "taskDisableLogging": "You have enabled extended logging, which slows down the app significantly. Please disable extended logging for better performance.",
+      "taskExperimental" : "You have chosen to control a unit that the app has not been verified to handle. Please report the status for this device to the developer in order to get any problems fixed and this message removed.",
       "taskNone": "Well done, the app is correctly configured."
     },
     "global": {
@@ -110,7 +111,7 @@
           "-->  <li>Select the device with problems.</li><!--",
           "-->  <li>Click the button named “Analyze device” and wait for the log to populate</li><!--",
           "-->  <li>Click the Send button (or alternatively copy paste the report to include it in the next step.)</li><!--",
-          "-->  <li>Send the developer a personal message to inform about the report (the lifetime of the report in previous step is only 24 hours so this is essential or the report might be lost).</li><!--",
+          "-->  <li>Send the developer a personal message to inform about the report (the lifetime of the report in previous step is only a few hours so this is essential or the report might be lost).</li><!--",
           "-->  <li>Wait for a new test version and install it.</li><!--",
           "-->  <li>Report back to the developer whether the test version works or not in order for the change to go public.</li><!--",
           "--></ol>"],

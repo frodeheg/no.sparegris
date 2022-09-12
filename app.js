@@ -105,6 +105,24 @@ class PiggyBank extends Homey.App {
     this.log('OnInit');
     this.homey.on('unload', () => this.onUninit());
 
+    /* DEBUG_BEGIN
+    // Reset settings to simulate fresh device in case of debug
+    if (this.homey.app.manifest.id === 'no.sparegris2') {
+      this.log('===== DEBUG MODE =====');
+      const settings = this.homey.settings.getKeys();
+      this.log(`Settings available: ${JSON.stringify(settings)}`);
+      // this.log('Deleting all settings...');
+      // for (let i = 0; i < settings.length; i++) {
+      //   this.homey.settings.unset(settings[i]);
+      // }
+    }
+    DEBUG_END */
+
+    // Logging
+    try {
+      this.logInit();
+    } catch (err) {} // Ignore logging errors, normal users don't care
+
     // ===== BREAKING CHANGES =====
     // Version 0.10.8 changes from having maxPower per mode to one global setting
     if (Array.isArray(this.homey.settings.get('maxPowerList'))) {
@@ -120,21 +138,6 @@ class PiggyBank extends Homey.App {
       this.homey.settings.set('controlTemp', 1);
     }
     // ===== BREAKING CHANGES END =====
-
-    /* DEBUG_BEGIN
-    // // In case of debug
-    if (this.homey.app.manifest.id === 'no.sparegris2') {
-      this.log('===== DEBUG MODE =====');
-      // const settings = this.homey.settings.getKeys();
-      // this.log(`Settings being deleted: ${JSON.stringify(settings)}`);
-      // for (let i = 0; i < settings.length; i++) {
-      //   this.homey.settings.unset(settings[i]);
-      // }
-    }
-    DEBUG_END */
-
-    // Logging
-    this.logInit().catch(err => {}); // Ignore logging errors, normal users don't care
 
     // ===== KEEPING STATE ACROSS RESTARTS =====
     if (this.homey.settings.get('safeShutdown__current_power') !== null) {
@@ -449,6 +452,7 @@ class PiggyBank extends Homey.App {
       // device.capabilitiesObj should be available but in case homey timed out it could be incomplete
       const targetTemp = (thermostatCap && device.capabilitiesObj && ('target_temperature' in device.capabilitiesObj))
         ? +device.capabilitiesObj['target_temperature'].value : 24;
+      const driverId = `${device.driverUri.split(':').at(-1)}:${device.driverId}`;
       const relevantDevice = {
         priority: (priority > 0) ? 1 : 0,
         name: device.name,
@@ -458,8 +462,9 @@ class PiggyBank extends Homey.App {
         image: device.iconObj == null ? null : device.iconObj.url,
         onoff_cap: onoffCap,
         thermostat_cap: thermostatCap,
-        targetTemp,
-        use: useDevice
+        targetTemp, // Default target temp for use when setting up for the first time
+        driverId, // If this is found in the supported device list then onoff_cap and thermostat_cap are ignored
+        use: useDevice // Actually only parameter that is kept across reboots
       };
       relevantDevices[device.id] = relevantDevice;
     }
@@ -1701,7 +1706,6 @@ class PiggyBank extends Homey.App {
         this.updateLog('----- ANALYZING DEVICE -----', c.LOG_ALL);
         this.updateLog(`Device ID:   ${deviceId}`, c.LOG_ALL);
         this.updateLog(`Device Name: ${device.name}`, c.LOG_ALL);
-        // const otherApp = `${device.driverUri.split(':').at(-1)}`;
         try {
           this.updateLog(`Driver Uri: ${device.driverUri}`, c.LOG_ALL);
           this.updateLog(`Driver Id: ${device.driverId}`, c.LOG_ALL);

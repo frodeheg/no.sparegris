@@ -111,7 +111,7 @@ p {
   
   .settings_table {
     width: 100%;
-    border:0
+    border:0;
   }
 
   .settings_row_name {
@@ -304,6 +304,7 @@ p {
   border-left: 0.80em solid transparent;
   border-right: 0.80em solid transparent;
   top: -1em;          /* Correction because of the CSS Triangle trick*/
+  vertical-align: text-top;
 }
   .⚠.err {
     border-bottom: 1.35em solid red;

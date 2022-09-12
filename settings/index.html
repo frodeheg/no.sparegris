@@ -4,8 +4,8 @@
   <head>
     <!-- The '/homey.js' script must be included in your settings view to work -->
     <script type="text/javascript" src="/homey.js" data-origin="settings"></script>
-    <script type="text/javascript" src="../common/constants.js" data-origin="settings"></script>
-    <script type="text/javascript" src="../common/devices.js" data-origin="settings"></script>
+    <script type="text/javascript" src="./constants.js" data-origin="settings"></script>
+    <script type="text/javascript" src="./devices.js" data-origin="settings"></script>
     <link href="style.css" rel="stylesheet" type="text/css">
     <script type="text/javascript">
 
@@ -39,6 +39,7 @@
       var helpButtonIgnore = "settings.price.buttons.helpIgnore";
       var timeoutText = "warnings.timeout";
       var energyFlowRateText = "settings.welcome.taskEnergyFlowRate";
+      var experimentalText = "settings.welcome.taskExperimental";
 
       const KEEP = -1;
       const ALWAYS_OFF = 0;
@@ -54,16 +55,18 @@
       const MAXLEN_DEVICETEXT = 12
 
       var deviceList = {
-        id_a: { name:"DeviceNamenamenamenamename 1", room: "Stue",    image: "https://as2.ftcdn.net/v2/jpg/02/49/76/93/1000_F_249769389_7su5tYXOvcjcehNCcWTwcjnHvSMkLocJ.jpg", use: true, priority: 0, thermostat_cap: true },
-        id_b: { name:"DeviceName 2", room: "Kjøkken", image: "https://as2.ftcdn.net/v2/jpg/02/49/76/93/1000_F_249769389_7su5tYXOvcjcehNCcWTwcjnHvSMkLocJ.jpg", use: true, priority: 1, thermostat_cap: true },
-        id_c: { name:"DeviceName 3", room: "Bad",     image: "https://as2.ftcdn.net/v2/jpg/02/49/76/93/1000_F_249769389_7su5tYXOvcjcehNCcWTwcjnHvSMkLocJ.jpg", use: true, priority: 0, thermostat_cap: false }
+        id_a: { name:"DeviceNamenamenamenamename 1", room: "Stue",    image: "https://as2.ftcdn.net/v2/jpg/02/49/76/93/1000_F_249769389_7su5tYXOvcjcehNCcWTwcjnHvSMkLocJ.jpg", use: true, priority: 0, thermostat_cap: true, driverId: 'no.thermofloor:TF_Thermostat' },
+        id_b: { name:"DeviceName 2", room: "Kjøkken", image: "https://as2.ftcdn.net/v2/jpg/02/49/76/93/1000_F_249769389_7su5tYXOvcjcehNCcWTwcjnHvSMkLocJ.jpg", use: true, priority: 1, thermostat_cap: true, driverId: 'no.thermofloor:Z-TRM2fx' },
+        id_c: { name:"DeviceName 3", room: "Bad",     image: "https://as2.ftcdn.net/v2/jpg/02/49/76/93/1000_F_249769389_7su5tYXOvcjcehNCcWTwcjnHvSMkLocJ.jpg", use: true, priority: 0, thermostat_cap: false, driverId: 'default_switch' },
+        id_d: { name:"DeviceName 4", room: "Bad",     image: "https://as2.ftcdn.net/v2/jpg/02/49/76/93/1000_F_249769389_7su5tYXOvcjcehNCcWTwcjnHvSMkLocJ.jpg", use: false, priority: 1, thermostat_cap: true, driverId: 'unsupported' }
       }
       // The modelist is not indexed by id because it uses the index to sort the list
       var modeList = [
         // Normal
         [ { id: "id_a", operation: CONTROLLED, targetTemp: 24 },
           { id: "id_b", operation: ALWAYS_OFF, targetTemp: 15 },
-          { id: "id_c", operation: CONTROLLED, targetTemp: 20 }
+          { id: "id_c", operation: CONTROLLED, targetTemp: 20 },
+          { id: "id_d", operation: CONTROLLED, targetTemp: 20 }
         ],
         [], // Night
         [], // Away
@@ -109,27 +112,34 @@
       function generateEnableList(listName, priority) {
         var list = document.getElementById(listName);
         var gen_list = "<table class=device-list>";
+        let found_experimental_on = false;
+        let experimentalId = 'experimental' + priority;
         for (var key in deviceList) {
           var device = deviceList[key];
           if (device.priority != priority)
             continue;
-          var enabledImg = device.use ? "enabled.png" : "disabled.png";
+          let experimental = !(device.driverId in DEVICE_CMD) || ("beta" in DEVICE_CMD[device.driverId]);
+          found_experimental_on |= device.use && experimental;
+          let enabledImg = device.use ? experimental ? "experimental.png" : "enabled.png" : "disabled.png";
+          let experimentalCmd = experimental ? 'document.getElementById(\'' + experimentalId + '\').style.display=\'block\';' : '';
           gen_list +=
             '<tr>' +
             '  <td><img src="' + device.image + '" alt="icon"></td>' +
-            '  <td><input type="image" width="40" height="20" src="' + enabledImg + '" onclick="toggleEnableDevice(event, \'' + String(key) + '\');displaySaveHint()" id="enableDevice' + String(key) + '"></td>' +
+            '  <td><input type="image" width="40" height="20" src="' + enabledImg + '" onclick="' + experimentalCmd + 'toggleEnableDevice(event, \'' + String(key) + '\');displaySaveHint()" id="enableDevice' + String(key) + '"></td>' +
             '  <td><h3>' + limitText(device.name) + '</h3></td>' +
             '  <td><p>' + device.room + '</p></td>' +
             '</tr>';
         }
         gen_list += "</table>";
+        gen_list += '<div id="' + experimentalId + '" style="display:' + (found_experimental_on?'block':'none') + ';">' + experimentalText + '</div>';
         list.innerHTML = gen_list;
       }
       
       function toggleEnableDevice(event, device_id) {
         var button = document.getElementById('enableDevice' + String(device_id))
         deviceList[device_id].use ^= true;
-        button.src = deviceList[device_id].use ? "enabled.png" : "disabled.png";
+        var experimental = !(deviceList[device_id].driverId in DEVICE_CMD) || ("beta" in DEVICE_CMD[deviceList[device_id].driverId]);
+        button.src = deviceList[device_id].use ? experimental ? "experimental.png" : "enabled.png" : "disabled.png";
       }
 
       function updateOperatingModes(selectedMode) {
@@ -223,7 +233,7 @@
         var priceTabText =
           '<fieldset>' +
             '<legend>' + legendText + ' <div class="hintButton" onclick="toggle(this,\'priceActionHint\');return false;">i</div></legend>' +
-            '<p id="priceActionHint" class="hint" data-i18n="hola">' + helpButtons + ':<br>' +
+            '<p id="priceActionHint" class="hint">' + helpButtons + ':<br>' +
               '<span class="imgButtonText" id="demoButton1" onclick="return false;">N/A</span> ' + helpButtonOn + '<br>' +
               '<span class="imgButtonText" id="demoButton2" onclick="return false;">N/A</span> ' + helpButtonOff + '<br>' +
               '<span class="imgButtonText" id="demoButton3" onclick="return false;">N/A</span> ' + helpButtonDelta + '<br>' +
@@ -468,6 +478,12 @@
       }
 
       function refreshTodoList() {
+        let experimentalEnabled = false;
+        for (var key in deviceList) {
+          var device = deviceList[key];
+          var experimental = !(device.driverId in DEVICE_CMD) || ("beta" in DEVICE_CMD[device.driverId]);
+          experimentalEnabled |= device.use && experimental;
+        }
         let haveTasks = false;
         if (document.getElementById("appEnabled").value == '0') {
           setVisible('taskEnableApp');
@@ -523,6 +539,12 @@
           haveTasks = true;
         } else {
           setVisible('taskDisableLogging', 'none');
+        }
+        if (experimentalEnabled) {
+          setVisible('taskExperimental');
+          haveTasks = true;
+        } else {
+          setVisible('taskExperimental', 'none');
         }
         if (!haveTasks) {
           setVisible('taskNone');
@@ -640,17 +662,18 @@
         <legend data-i18n="settings.app.myTasks">app.myTasks</legend>
 
         <table class="settings_table">
-          <tr id="taskEnableApp"><td><span class="⚠ warn"></span></td><td><span data-i18n="settings.welcome.taskEnableApp">taskEnableApp</span></td></tr>
-          <tr id="taskCreateEnergyFlow"><td><span class="⚠ err"></span></td><td><span data-i18n="settings.welcome.taskCreateEnergyFlow">taskCreateEnergyFlow</span></td></tr>
-          <tr id="taskEnergyFlowRate"><td><span class="⚠ warn"></span></td><td><span id="energyFlowRateText">taskEnergyFlowRate</span></td></tr>
-          <tr id="taskNoPriceFlow"><td><span class="⚠ warn"></span></td><td><span data-i18n="settings.welcome.taskNoPriceFlow">taskNoPriceFlow</span></td></tr>
-          <tr id="taskNoPriceAPI"><td><span class="⚠ err"></span></td><td><span data-i18n="settings.welcome.taskNoPriceAPI">taskNoPriceAPI</span></td></tr>
-          <tr id="taskNoPriceAPIDevice"><td><span class="⚠ err"></span></td><td><span data-i18n="settings.welcome.taskNoPriceAPIDevice">taskNoPriceAPIDevice</span></td></tr>
-          <tr id="taskNoPriceAPIData"><td><span class="⚠ err"></span></td><td><span data-i18n="settings.welcome.taskNoPriceAPIData">taskNoPriceAPIData</span></td></tr>
-          <tr id="taskNoPriceEnabled"><td><span class="⚠ info"></span></td><td><span data-i18n="settings.welcome.taskNoPriceEnabled">taskNoPriceEnabled</span></td></tr>
-          <tr id="taskDisableLogging"><td><span class="⚠ warn"></span></td><td><span data-i18n="settings.welcome.taskDisableLogging">taskDisableLogging</span></td></tr>
-          <tr id="taskNone"><td><span class="⚠ info"></span></td><td><span data-i18n="settings.welcome.taskNone">taskNone</span></td></tr>
-            </table>
+          <tr id="taskCreateEnergyFlow"><td style="vertical-align:top;"><span class="⚠ err"></span></td><td><span data-i18n="settings.welcome.taskCreateEnergyFlow">taskCreateEnergyFlow</span></td></tr>
+          <tr id="taskNoPriceAPI"><td style="vertical-align:top;"><span class="⚠ err"></span></td><td><span data-i18n="settings.welcome.taskNoPriceAPI">taskNoPriceAPI</span></td></tr>
+          <tr id="taskNoPriceAPIDevice"><td style="vertical-align:top;"><span class="⚠ err"></span></td><td><span data-i18n="settings.welcome.taskNoPriceAPIDevice">taskNoPriceAPIDevice</span></td></tr>
+          <tr id="taskNoPriceAPIData"><td style="vertical-align:top;"><span class="⚠ err"></span></td><td><span data-i18n="settings.welcome.taskNoPriceAPIData">taskNoPriceAPIData</span></td></tr>
+          <tr id="taskEnableApp"><td style="vertical-align:top;"><span class="⚠ warn"></span></td><td><span data-i18n="settings.welcome.taskEnableApp">taskEnableApp</span></td></tr>
+          <tr id="taskEnergyFlowRate"><td style="vertical-align:top;"><span class="⚠ warn"></span></td><td><span id="energyFlowRateText">taskEnergyFlowRate</span></td></tr>
+          <tr id="taskNoPriceFlow"><td style="vertical-align:top;"><span class="⚠ warn"></span></td><td><span data-i18n="settings.welcome.taskNoPriceFlow">taskNoPriceFlow</span></td></tr>
+          <tr id="taskDisableLogging"><td style="vertical-align:top;"><span class="⚠ warn"></span></td><td><span data-i18n="settings.welcome.taskDisableLogging">taskDisableLogging</span></td></tr>
+          <tr id="taskExperimental"><td style="vertical-align:top;"><span class="⚠ warn"></span></td><td><span data-i18n="settings.welcome.taskExperimental">taskExperimental</span></td></tr>
+          <tr id="taskNoPriceEnabled"><td style="vertical-align:top;"><span class="⚠ info"></span></td><td><span data-i18n="settings.welcome.taskNoPriceEnabled">taskNoPriceEnabled</span></td></tr>
+          <tr id="taskNone"><td style="vertical-align:top;"><span class="⚠ info"></span></td><td><span data-i18n="settings.welcome.taskNone">taskNone</span></td></tr>
+        </table>
 
       </fieldset>
     </div>
@@ -1036,6 +1059,24 @@
       // Called whenever things has been loaded
       function checkLoadingDone() {
         var loadElement = document.getElementById("loadingPage");
+/*        loadElement.innerHTML =
+          `maxPowerLoaded: ${maxPowerLoaded}<br>` +
+          `deviceListLoaded: ${deviceListLoaded}<br>` +
+          `modeListLoaded: ${modeListLoaded}<br>` +
+          `operatingModeLoaded: ${operatingModeLoaded}<br>` +
+          `errorMarginLoaded: ${errorMarginLoaded}<br>` +
+          `controlTempLoaded: ${controlTempLoaded}<br>` +
+          `freeThresholdLoaded: ${freeThresholdLoaded}<br>` +
+          `safetyPowerLoaded: ${safetyPowerLoaded}<br>` +
+          `priceModeLoaded: ${priceModeLoaded}<br>` +
+          `pricePointLoaded: ${pricePointLoaded}<br>` +
+          `priceActionListLoaded: ${priceActionListLoaded}<br>` +
+          `frostListLoaded: ${frostListLoaded}<br>` +
+          `zoneListLoaded: ${zoneListLoaded}<br>` +
+          `mainFuseLoaded: ${mainFuseLoaded}<br>` +
+          `futurePriceOptionsLoaded: ${futurePriceOptionsLoaded}<br>` +
+          `appConfigProgressLoaded: ${appConfigProgressLoaded}<br>` +
+          `onHomeyReadyCompleted: ${onHomeyReadyCompleted}<br>`;*/
         if (maxPowerLoaded
           && deviceListLoaded
           && modeListLoaded
@@ -1137,6 +1178,7 @@
         helpButtonIgnore = Homey.__(helpButtonIgnore);
         timeoutText = Homey.__(timeoutText);
         energyFlowRateText = Homey.__(energyFlowRateText);
+        experimentalText = Homey.__(experimentalText);
 
 
         for (var i = 0; i < pricePoints.length; i++) {

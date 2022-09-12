@@ -1,0 +1,1 @@
+../common/devices.js

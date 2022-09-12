@@ -67,6 +67,7 @@
       "taskNoPriceAPIData": "Du har valgt internt prispunkt, men Strømregning-appen er innstillt på pris fra flow, så da videresender den ikke prisen til denne appen...",
       "taskNoPriceEnabled": "Du har ikke aktivert prisstyring av enhetene enda. Det kan være litt å spare på å slå det på.",
       "taskDisableLogging": "Du har slått på utvidet logging, noe som sinker appen betydelig. Vennligst slå av utvidet logging for bedre ytelse.",
+      "taskExperimental" : "Du har valgt å styre en enhet som ikke er verifisert at appen håndterer enda. Dersom du rapporterer status for denne enheten til utvikleren kan eventuelle feil fikses og denne meldingen fjernes.",
       "taskNone": "Supert, appen er riktig konfigurert."
     },
     "global": {
@@ -110,7 +111,7 @@
           "-->  <li>Velg hvilken enhet som er problematisk.</li><!--",
           "-->  <li>Klikk på knappen ”Analyser enhet” og vent mens loggen fylles ut</li><!--",
           "-->  <li>Klikk på Send-knappen (eller alternativt kopier ut teksten og legg den ved i neste steg.)</li><!--",
-          "-->  <li>Send utvikleren en personlig melding for å informere om rapporten (levetiden til rapporten fra forrige steg er bare 24 timer, så dette er viktig ellers kan rapporten gå tapt).</li><!--",
+          "-->  <li>Send utvikleren en personlig melding for å informere om rapporten (levetiden til rapporten fra forrige steg er bare noen timer, så dette er viktig ellers kan rapporten gå tapt).</li><!--",
           "-->  <li>Vent på en ny testversjon og installer den.</li><!--",
           "-->  <li>Rapporter tilbake til utvikleren hvorvidt den aktuelle enheten fungerer i testversjonen så endringen kan offentliggjøres.</li><!--",
           "--></ol>"],
