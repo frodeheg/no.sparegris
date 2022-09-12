@@ -370,5 +370,8 @@
   },
   "0.13.1": {
     "en": "Fixed temperature changes on mode changes (when price points are disabled) + Removed amount of warnings in app setup when the app is disabled."
+  },
+  "0.13.2": {
+    "en": "Added support for com.aeotec:ZW078 and com.mill:mill devices"
   }
 }
