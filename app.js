@@ -575,7 +575,7 @@ class PiggyBank extends Homey.App {
     const frostGuardActive = this.__deviceList[deviceId].thermostat_cap
       ? (device.capabilitiesObj[this.getTempGetCap(deviceId)].value < frostList[deviceId].minTemp) : false;
 
-    if (this.__deviceList[deviceId].onoff_cap === undefined) return Promise.reject(new Error('onoff capability does not exist, this should not happen'));
+    if (this.getOnOffCap(deviceId) === undefined) return Promise.reject(new Error('onoff capability does not exist, this should not happen'));
     const isOn = this.getIsOn(device, deviceId);
     const activeZones = this.homey.settings.get('zones');
     const newStateOn = frostGuardActive
@@ -632,6 +632,12 @@ class PiggyBank extends Homey.App {
           return Promise.resolve([false, false]); // The unresolved part is solved by the later nComError handling
         });
     }
+
+    if (newStateOn && isOn) {
+      // Temperature might be broken so check that it is ok
+      return this.refreshTemp(deviceId);
+    }
+
     // Nothing happened
     return Promise.resolve([newStateOn === (newState === TURN_ON), isOn === (newState === TURN_ON)]);
   }
@@ -740,7 +746,7 @@ class PiggyBank extends Homey.App {
           return this.homeyApi.devices.getDevice({ id: deviceId });
         })
         .then(device => {
-          if (this.__deviceList[deviceId].onoff_cap === undefined) {
+          if (this.getOnOffCap(deviceId) === undefined) {
             return Promise.reject(new Error('The onoff capability is non-existing, this should never happen.'));
           }
           const isOn = this.getIsOn(device, deviceId);
@@ -1154,7 +1160,7 @@ class PiggyBank extends Homey.App {
     const deltaTemp = ((currentPriceMode !== c.PRICE_MODE_DISABLED) && (currentAction.operation === DELTA_TEMP)) ? parseInt(currentAction.delta, 10) : 0;
     return this.homeyApi.devices.getDevice({ id: deviceId })
       .then(device => {
-        if (this.__deviceList[deviceId].onoff_cap === undefined) {
+        if (this.getOnOffCap(deviceId) === undefined) {
           return Promise.reject(new Error('The onoff capability is non-existing, this should never happen.'));
         }
         const isOn = this.getIsOn(device, deviceId);
@@ -1210,6 +1216,7 @@ class PiggyBank extends Homey.App {
     for (const deviceId in currentActions) {
       if (!(deviceId in this.__deviceList)) {
         // Apparently the stored settings are invalid and need to be refreshed
+        this.updateLog('A device has been deleted after setup was saved last time, please enter the setup and save the updated config');
         continue;
       }
       const operation = (currentPriceMode === c.PRICE_MODE_DISABLED) ? undefined : currentActions[deviceId].operation;
@@ -1756,7 +1763,7 @@ class PiggyBank extends Homey.App {
       const { __monitorError, __monitorFixTemp, __monitorFixOn } = this.__current_state[deviceId];
       this.homeyApi.devices.getDevice({ id: deviceId })
         .then(device => {
-          const isOnActual = (this.__deviceList[deviceId].onoff_cap === undefined) ? undefined : this.getIsOn(device, deviceId);
+          const isOnActual = (this.getOnOffCap(deviceId) === undefined) ? undefined : this.getIsOn(device, deviceId);
           const tempTargetCap = this.getTempSetCap(deviceId);
           const tempMeasureCap = this.getTempGetCap(deviceId);
           const tempActualTarget = (tempTargetCap in device.capabilitiesObj) ? device.capabilitiesObj[tempTargetCap].value : 'undef';

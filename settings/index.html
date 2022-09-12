@@ -485,51 +485,52 @@
           var experimental = !(device.driverId in DEVICE_CMD) || ("beta" in DEVICE_CMD[device.driverId]);
           experimentalEnabled |= device.use && experimental;
         }
+        let appIsDisabled = (document.getElementById("appEnabled").value == '0');
         let haveTasks = false;
-        if (document.getElementById("appEnabled").value == '0') {
+        if (appIsDisabled) {
           setVisible('taskEnableApp');
           haveTasks = true;
         } else {
           setVisible('taskEnableApp', 'none');
         }
-        if (appConfigProgress.energyMeterNotConnected) {
+        if (!appIsDisabled && appConfigProgress.energyMeterNotConnected) {
           setVisible('taskCreateEnergyFlow');
           haveTasks = true;
         } else {
           setVisible('taskCreateEnergyFlow', 'none');
         }
-        if (!appConfigProgress.energyMeterNotConnected && (+appConfigProgress.timeSinceEnergyMeter > 120)) {
+        if (!appIsDisabled && !appConfigProgress.energyMeterNotConnected && (+appConfigProgress.timeSinceEnergyMeter > 120)) {
           setVisible('taskEnergyFlowRate');
           haveTasks = true;
         } else {
           setVisible('taskEnergyFlowRate', 'none');
         }
         const priceMode = document.getElementById("priceMode").value;
-        if (priceMode == 0 && !appConfigProgress.gotPPFromFlow) {
+        if (!appIsDisabled && priceMode == 0 && !appConfigProgress.gotPPFromFlow) {
           setVisible('taskNoPriceFlow');
           haveTasks = true;
         } else {
           setVisible('taskNoPriceFlow', 'none');
         }
-        if (priceMode == 1 && appConfigProgress.ApiStatus == 0) {
+        if (!appIsDisabled && priceMode == 1 && appConfigProgress.ApiStatus == 0) {
           setVisible('taskNoPriceAPI');
           haveTasks = true;
         } else {
           setVisible('taskNoPriceAPI', 'none');
         }
-        if (priceMode == 1 && appConfigProgress.ApiStatus == 1) {
+        if (!appIsDisabled && priceMode == 1 && appConfigProgress.ApiStatus == 1) {
           setVisible('taskNoPriceAPIDevice');
           haveTasks = true;
         } else {
           setVisible('taskNoPriceAPIDevice', 'none');
         }
-        if (priceMode == 1 && appConfigProgress.ApiStatus == 3) {
+        if (!appIsDisabled && priceMode == 1 && appConfigProgress.ApiStatus == 3) {
           setVisible('taskNoPriceAPIData');
           haveTasks = true;
         } else {
           setVisible('taskNoPriceAPIData', 'none');
         }
-        if (priceMode == 2) {
+        if (!appIsDisabled && priceMode == 2) {
           setVisible('taskNoPriceEnabled');
           haveTasks = true;
         } else {
