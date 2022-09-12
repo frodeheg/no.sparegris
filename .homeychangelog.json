@@ -364,5 +364,8 @@
   },
   "0.12.20": {
     "en": "Crash fix"
+  },
+  "0.13.0": {
+    "en": "Added support for Heatit TF_Thermostat and Z-TRM2fx + baseline for supporting other units + Fixed bug in default maxpower + Added visible feedback for experimental devices"
   }
 }
