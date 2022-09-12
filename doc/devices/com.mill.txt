@@ -1,0 +1,19 @@
+Log ID: 2022-09-12T09:17:41.190Z
+App version 0.13.0
+
++9:17:41.190: ----- ANALYZING DEVICE -----
++9:17:41.191: Device ID:   98f96c78-e69d-47b1-817c-84010ce67123
++9:17:41.193: Device Name: TV-Stue Varmovn
++9:17:41.195: Driver Uri: homey:app:com.mill
++9:17:41.196: Driver Id: mill
++9:17:41.198: Found onoff cap: onoff
++9:17:41.199: Found temp cap: true
++9:17:41.201: Capabilities: onoff,measure_temperature,target_temperature,mill_onoff,mill_mode,measure_power
++9:17:41.202: Options for 'onoff': {"value":true,"lastUpdated":"2022-09-12T09:16:51.922Z","type":"boolean","getable":true,"setable":true,"title":"Slått på","desc":null,"units":null,"id":"onoff","options":{}}
++9:17:41.204: Options for 'measure_temperature': {"value":2023,"lastUpdated":"2022-09-12T09:16:51.912Z","type":"number","getable":true,"setable":false,"title":"Temperatur","desc":"Temperatur i grader Celsius (°C)","units":"°C","decimals":2,"chartType":"spline","id":"measure_temperature","options":{}}
++9:17:41.205: Options for 'target_temperature': {"value":20,"lastUpdated":"2022-09-12T09:16:51.922Z","type":"number","getable":true,"setable":true,"title":"Ønsket temperatur","desc":null,"units":"°C","decimals":2,"min":4,"max":35,"chartType":"stepLine","id":"target_temperature","options":{}}
++9:17:41.207: Options for 'mill_onoff': {"value":false,"lastUpdated":"2022-09-12T09:16:51.916Z","type":"boolean","getable":true,"setable":false,"title":"Status","desc":"Termostatstatus","units":null,"iconObj":{"id":"95ae53880c6153d24ae77950a3a3f00b","url":"/icon/95ae53880c6153d24ae77950a3a3f00b/icon.svg"},"id":"mill_onoff","options":{}}
++9:17:41.209: Options for 'mill_mode': {"value":"Away","lastUpdated":"2022-09-12T09:16:51.915Z","type":"enum","getable":true,"setable":true,"title":"Termostatmodus","desc":"Termostatmodus","units":null,"values":[{"id":"Program","title":"Program"},{"id":"Comfort","title":"Komfort"},{"id":"Sleep","title":"Sover"},{"id":"Away","title":"Borte"},{"id":"Off","title":"Av"}],"id":"mill_mode","options":{}}
++9:17:41.210: Options for 'measure_power': {"value":2,"lastUpdated":"2022-09-12T09:16:51.922Z","type":"number","getable":true,"setable":false,"title":"Effekt","desc":"Effekt i watt (W)","units":"W","decimals":2,"chartType":"stepLine","id":"measure_power","options":{"approximated":true}}
++9:17:41.212: --- ANALYZING DEVICE DONE ---
++9:17:48.544: Sending log

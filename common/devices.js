@@ -56,6 +56,7 @@ const DEFAULT_HEATER = {
 
 // Supported devices and how to use them
 const DEVICE_CMD = {
+  'com.aeotec:ZW078': DEFAULT_SWITCH,
   'com.everspring:AN179': DEFAULT_SWITCH,
   'com.philips.hue.zigbee:LCL001': DEFAULT_SWITCH,
   'com.sensibo:Sensibo': {
@@ -74,6 +75,17 @@ const DEVICE_CMD = {
     setModeAutoValue: 'auto'
   },
   'com.tuya.cloud:tuyalight': DEFAULT_SWITCH,
+  'com.mill:mill': {
+    type: DEVICE_TYPE.HEATER,
+    setOnOffCap: 'onoff',
+    setOnValue: true,
+    setOffValue: false,
+    readTempCap: 'measure_temperature',
+    setTempCap: 'target_temperature',
+    tempMin: 4,
+    tempMax: 35,
+    tempStep: 0.5
+  },
   'me.nanoleaf:shapes': DEFAULT_SWITCH,
   'nl.klikaanklikuit:ACC-250': DEFAULT_SWITCH,
   'nl.klikaanklikuit:AWMR-210': DEFAULT_SWITCH,
