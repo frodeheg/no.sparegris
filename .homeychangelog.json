@@ -376,5 +376,8 @@
   },
   "0.13.3": {
     "en": "Improved the interface for reporting unsupported and experimental devices"
+  },
+  "0.13.4": {
+    "en": "Minor fix for incorrect log-level introduced in previous version"
   }
 }
