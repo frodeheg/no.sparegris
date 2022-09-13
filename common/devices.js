@@ -27,8 +27,9 @@
 const DEVICE_TYPE = {
   SWITCH: 0,
   HEATER: 1,
-  AC: 2,
-  CHARGER: 3
+  WATERHEATER: 2,
+  AC: 3,
+  CHARGER: 4
 };
 
 // Default onoff device:
@@ -95,7 +96,7 @@ const DEVICE_CMD = {
     beta: true
   },
   'no.hoiax:hiax-connected-200': {
-    type: DEVICE_TYPE.HEATER,
+    type: DEVICE_TYPE.WATERHEATER,
     setOnOffCap: 'onoff',
     setOnValue: true,
     setOffValue: false,

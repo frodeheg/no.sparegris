@@ -11,7 +11,7 @@ module.exports = {
   },
 
   async getDevices({ homey, query }) {
-    if ('type' in query && query.type >= 1 && query.type <= 3) {
+    if ('type' in query && query.type >= 1 && query.type <= 4) {
       return homey.app.getDevices(query.type);
     }
     throw (new Error(`Incorrect usage of getDevices(), query was: ${JSON.stringify(query)}`));
@@ -28,7 +28,7 @@ module.exports = {
       case 'logShowState':
         return homey.app.logShowState();
       case 'logShowCaps':
-        return homey.app.logShowCaps(query.deviceId);
+        return homey.app.logShowCaps(query.deviceId, query.filter);
       case 'logShowPriceApi':
         return homey.app.logShowPriceApi();
       case 'setLogLevel':

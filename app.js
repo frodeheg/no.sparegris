@@ -1781,10 +1781,19 @@ class PiggyBank extends Homey.App {
     this.updateLog('======== INTERNAL STATE END ========', c.LOG_ALL);
   }
 
-  async logShowCaps(deviceId) {
+  async logShowCaps(deviceId, filter) {
+    const problems = [
+      'No device',
+      'Experimental device is working',
+      'Device is not being turned on/off',
+      'Device does not set temperature',
+      'Device is not listed'
+    ];
+    const flows = await this.homeyApi.flow.getFlowCardActions(); // TBD: Remove???
     await this.homeyApi.devices.getDevice({ id: deviceId })
       .then(device => {
         this.updateLog('----- ANALYZING DEVICE -----', c.LOG_ALL);
+        this.updateLog(`Report type: ${problems[filter]}`, c.LOG_ALL);
         this.updateLog(`Device ID:   ${deviceId}`, c.LOG_ALL);
         this.updateLog(`Device Name: ${device.name}`, c.LOG_ALL);
         try {
@@ -1806,6 +1815,13 @@ class PiggyBank extends Homey.App {
             opts = `Error: ${err}`;
           }
           this.updateLog(`Options for '${cap}': ${opts}`, c.LOG_ALL);
+        }
+
+        this.updateLog('Actions:', c.LOG_ALL); // TBD: Remove???
+        for (let i = 0; i < flows.length; i++) {
+          if (flows[i].uri === `homey:device:${deviceId}` || flows[i].uri === `${device.driverUri}`) {
+            this.log(`URI: ${JSON.stringify(flows[i])}`);
+          }
         }
       })
       .catch(err => {
@@ -1896,10 +1912,13 @@ class PiggyBank extends Homey.App {
         for (const device of Object.values(devices)) {
           const deviceId = device.id;
           const onoffCap = (deviceId in this.__deviceList) ? this.__deviceList[deviceId].onoff_cap : undefined;
-          const termoCap = (deviceId in this.__deviceList) ? this.__deviceList[deviceId].thermostat_cap : false;
-          if ((onoffCap === undefined && +type === 3) // Not listed
-            || (onoffCap !== undefined && +type === 1) // Onoff problem
-            || (onoffCap !== undefined && +type === 2 && termoCap) // Temp problem
+          const isExperimental = (deviceId in this.__deviceList)
+            && (!(this.__deviceList[deviceId].driverId in d.DEVICE_CMD)
+              || (d.DEVICE_CMD[this.__deviceList[deviceId].driverId].beta === true));
+          if ((onoffCap === undefined && +type === 4) // Not listed
+            || (onoffCap !== undefined && +type === 2) // Onoff problem
+            || (onoffCap !== undefined && +type === 1 && isExperimental) // Experimental device
+            || (onoffCap !== undefined && +type === 3) // Temp problem
           ) {
             retval.push({ name: device.name, value: device.id });
           }

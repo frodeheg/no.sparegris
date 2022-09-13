@@ -41,6 +41,13 @@
       var energyFlowRateText = "settings.welcome.taskEnergyFlowRate";
       var experimentalText = "settings.welcome.taskExperimental";
       var onGoingText = "settings.help.ongoing";
+      var deviceTypeText = [
+        "settings.help.deviceTypeSwitch",
+        "settings.help.deviceTypeHeater",
+        "settings.help.deviceTypeWaterHeater",
+        "settings.help.deviceTypeAC",
+        "settings.help.deviceTypeCharger",
+      ];
 
       const KEEP = -1;
       const ALWAYS_OFF = 0;
@@ -711,7 +718,7 @@
     <div id="helpSupportedPage" class="tabcontent">
       <fieldset>
         <legend data-i18n="settings.help.supportedDevices">help.supportedDevices</legend>
-        <div id="supportedDevicesList">This list should have been populated by supported devices, if you can see this text it is a bug.</div>
+        <div id="supportedDevicesList">This list should have been populated by supported devices, if you can see this text it is a bug.</div><br>
         <p data-i18n="settings.help.supportedDevicesHint">help.supportedDevicesHint</p>
         <a href="#ShowLog" data-i18n="settings.global.problemsolver" onclick="changeTab(event, 'helpNotFoundPage');return false;">global.problemsolver</a>
       </fieldset>
@@ -812,9 +819,10 @@
         <label for="deviceFilter"><span data-i18n="settings.deviceinfo.filter">deviceinfo.filter</span>:</label>
         <select id="deviceFilter">
           <option value=0 data-i18n="settings.deviceinfo.noDevice" selected>No device</option>
-          <option value=1 data-i18n="settings.deviceinfo.listedDevice">Device is not being turned on/off</option>
-          <option value=2 data-i18n="settings.deviceinfo.listedTempDevice">Device does not set temperature</option>
-          <option value=3 data-i18n="settings.deviceinfo.unlistedDevice">Device is not listed</option>
+          <option value=1 data-i18n="settings.deviceinfo.listedExperimental">Experimental device is working</option>
+          <option value=2 data-i18n="settings.deviceinfo.listedDevice">Device is not being turned on/off</option>
+          <option value=3 data-i18n="settings.deviceinfo.listedTempDevice">Device does not set temperature</option>
+          <option value=4 data-i18n="settings.deviceinfo.unlistedDevice">Device is not listed</option>
         </select><br>
         <label for="deviceInfoSelector"><span data-i18n="settings.deviceinfo.selector">deviceinfo.selector</span>:</label>
         <select id="deviceInfoSelector" disabled>
@@ -823,19 +831,21 @@
         <label for="showCaps"><span data-i18n="settings.deviceinfo.getinfo">deviceinfo.getinfo</span>:</label>
         <button id="showCaps" data-i18n="settings.deviceinfo.analyze" disabled>deviceinfo.analyze</button>
       </fieldset>
-      <fieldset>
+      <fieldset id="logGeneric" style="display:none">
         <legend data-i18n="settings.log.generic">log.generic</legend>
         <button id="showPriceApi" data-i18n="settings.log.showPriceApi">log.showPriceApi</button>
         <button id="showState" data-i18n="settings.log.showState">log.showState</button>
       </fieldset>
       <fieldset>
         <legend data-i18n="settings.log.header">log.header</legend>
-        <label for="logLevel"><span data-i18n="settings.log.level">log.level</span>:</label>
-        <select id="logLevel">
-          <option value=0 data-i18n="settings.log.error">log.error</option>
-          <option value=1 data-i18n="settings.log.basic">log.basic</option>
-          <option value=2 data-i18n="settings.log.full">log.full</option>
-        </select>
+        <div id="logExtended" style="display:none">
+          <label for="logLevel"><span data-i18n="settings.log.level">log.level</span>:</label>
+          <select id="logLevel">
+            <option value=0 data-i18n="settings.log.error">log.error</option>
+            <option value=1 data-i18n="settings.log.basic">log.basic</option>
+            <option value=2 data-i18n="settings.log.full">log.full</option>
+          </select>
+        </div>
         <p>
           <button id="clearLog" data-i18n="settings.log.clearLog">log.clearLog</button>
           <button id="sendLog" data-i18n="settings.log.sendLog">log.sendLog</button>
@@ -1197,7 +1207,11 @@
         energyFlowRateText = Homey.__(energyFlowRateText);
         experimentalText = Homey.__(experimentalText);
         onGoingText = Homey.__(onGoingText);
-
+        deviceTypeText[0] = Homey.__(deviceTypeText[0]);
+        deviceTypeText[1] = Homey.__(deviceTypeText[1]);
+        deviceTypeText[2] = Homey.__(deviceTypeText[2]);
+        deviceTypeText[3] = Homey.__(deviceTypeText[3]);
+        deviceTypeText[4] = Homey.__(deviceTypeText[4]);
 
         for (var i = 0; i < pricePoints.length; i++) {
           pricePoints[i].name = Homey.__(pricePoints[i].name);
@@ -1475,7 +1489,8 @@
 
         showCapsElement.addEventListener('click', function (e) {
           const deviceId = deviceInfoSelectorElement.value;
-          Homey.api('GET', `/apiCommand?cmd=logShowCaps&deviceId=${deviceId}`, null, function (err, result) {
+          const deviceFilter = deviceFilterElement.value;
+          Homey.api('GET', `/apiCommand?cmd=logShowCaps&deviceId=${deviceId}&filter=${deviceFilter}`, null, function (err, result) {
             if (err) return Homey.alert(err);
           });
         });
@@ -1493,11 +1508,12 @@
         });
 
         sendLogElement.addEventListener('click', function (e) {
-          Homey.confirm("Send the log contents to the developer?", null, function (e, ok) {
+          Homey.confirm(Homey.__("settings.log.sendConfirm"), null, function (e, ok) {
             if (ok) {
               Homey.api('GET', '/apiCommand?cmd=sendLog', null, function (err, result) {
                 if (err) return Homey.alert(err);
               });
+              Homey.alert(Homey.__("settings.log.thankYou"));
             }
           });
         });
@@ -1611,16 +1627,23 @@
       }
 
       function generateSupportedList() {
-        let theList = '<table>';
-        let allKeys = Object.keys(DEVICE_CMD);
-        for (const devid in allKeys) {
-          let isExperimental = DEVICE_CMD[allKeys[devid]].beta === true;
-          theList += '<tr>';
-          theList +=   '<td>' + allKeys[devid] + '</td>';
-          theList +=   '<td><b>' + (isExperimental?onGoingText:'') + '</b></td>';
-          theList += '</tr>'
+        let theList = '';
+        for (let devType in DEVICE_TYPE) {
+          let devTypeId = DEVICE_TYPE[devType];
+          theList += `<h3>${deviceTypeText[devTypeId]}</h3>`;
+          theList += '<table>';
+          let allKeys = Object.keys(DEVICE_CMD);
+          for (const devid in allKeys) {
+            if (DEVICE_CMD[allKeys[devid]].type !== devTypeId)
+              continue;
+            let isExperimental = DEVICE_CMD[allKeys[devid]].beta === true;
+            theList += '<tr>';
+            theList +=   '<td>' + allKeys[devid] + '</td>';
+            theList +=   '<td><b>' + (isExperimental?onGoingText:'') + '</b></td>';
+            theList += '</tr>'
+          }
+          theList += '</table>';
         }
-        theList += '</table>';
         return theList;
       }
 
