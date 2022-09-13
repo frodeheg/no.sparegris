@@ -373,5 +373,8 @@
   },
   "0.13.2": {
     "en": "Added support for com.aeotec:ZW078 and com.mill:mill devices"
+  },
+  "0.13.3": {
+    "en": "Improved the interface for reporting unsupported and experimental devices"
   }
 }
