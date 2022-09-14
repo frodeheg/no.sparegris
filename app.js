@@ -370,6 +370,15 @@ class PiggyBank extends Homey.App {
    * It is for this reason essential that the code is safe t
    */
   async onUninit() {
+    // ===== KEEPING STATE ACROSS RESTARTS =====
+    // We only got 1s to do this so need to save state before anything else
+    // For onPowerUpdate + onNewHour
+    this.homey.settings.set('safeShutdown__accum_energy', this.__accum_energy);
+    this.homey.settings.set('safeShutdown__current_power', this.__current_power);
+    this.homey.settings.set('safeShutdown__current_power_time', this.__current_power_time);
+    this.homey.settings.set('safeShutdown__power_last_hour', this.__power_last_hour);
+    // ===== KEEPING STATE ACROSS RESTARTS END =====
+
     this.log('OnUnInit');
     // Make sure the interval is cleared if it was started, otherwise it will continue to
     // trigger but on an unknown app.
@@ -382,14 +391,6 @@ class PiggyBank extends Homey.App {
       this.__newHourID = undefined;
     }
     this.statsUnInit();
-
-    // ===== KEEPING STATE ACROSS RESTARTS =====
-    // For onPowerUpdate + onNewHour
-    this.homey.settings.set('safeShutdown__accum_energy', this.__accum_energy);
-    this.homey.settings.set('safeShutdown__current_power', this.__current_power);
-    this.homey.settings.set('safeShutdown__current_power_time', this.__current_power_time);
-    this.homey.settings.set('safeShutdown__power_last_hour', this.__power_last_hour);
-    // ===== KEEPING STATE ACROSS RESTARTS END =====
 
     this.updateLog('PiggyBank has been uninitialized', c.LOG_INFO);
   }
