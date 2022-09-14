@@ -543,13 +543,13 @@
         } else {
           setVisible('taskNoPriceEnabled', 'none');
         }
-        if (document.getElementById('logLevel').value != 0) {
+        if (!appIsDisabled && document.getElementById('logLevel').value != 0) {
           setVisible('taskDisableLogging');
           haveTasks = true;
         } else {
           setVisible('taskDisableLogging', 'none');
         }
-        if (experimentalEnabled) {
+        if (!appIsDisabled && experimentalEnabled) {
           setVisible('taskExperimental');
           haveTasks = true;
         } else {
