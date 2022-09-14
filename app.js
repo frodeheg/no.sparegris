@@ -367,7 +367,7 @@ class PiggyBank extends Homey.App {
    * onUninit() is called when the app is destroyed
    * Note. Due to a bug in HomeyAPI this function is not called automatically and is instead triggered
    * by the app itself, thus when the HomeyAPI bug is fixed it might be that this function will be called twice.
-   * It is for this reason essential that the code is safe t
+   * It is for this reason essential that the code is safe to run twice.
    */
   async onUninit() {
     // ===== KEEPING STATE ACROSS RESTARTS =====
