@@ -518,7 +518,7 @@ class PiggyBank extends Homey.App {
    * @return [success, noChange] - success means that the result is as requested, noChange indicate if the result was already as requested
    * @throw error in case of failure
    */
-  async changeDeviceState(deviceId, newState) {
+  async changeDeviceState(deviceId, targetState) {
     if (!(deviceId in this.__deviceList)) {
       // Apparently the stored settings are invalid and need to be refreshed
       return Promise.resolve([false, false]);
@@ -545,7 +545,8 @@ class PiggyBank extends Homey.App {
     // This can happen for 2 cases:
     // - priceMode is DISABLED
     // - zone control turns on devices again
-    if (newState === undefined) {
+    let newState;
+    if (targetState === undefined) {
       switch (currentActionOp) {
         case DELTA_TEMP:
           // Override as changedevicestate only handles onoff
@@ -554,6 +555,8 @@ class PiggyBank extends Homey.App {
         default:
           newState = currentActionOp;
       }
+    } else {
+      newState = targetState;
     }
 
     // Do not attempt to change the device state if it is in IGNORE
@@ -634,8 +637,8 @@ class PiggyBank extends Homey.App {
         });
     }
 
-    if (newStateOn && isOn) {
-      // Temperature might be broken so check that it is ok
+    if (newStateOn && isOn && (targetState === undefined || targetState === DELTA_TEMP)) {
+      // Temperature could have changed
       return this.refreshTemp(deviceId);
     }
 
