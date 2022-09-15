@@ -401,18 +401,22 @@
 
       function checkPriceMode(source) {
         var priceControl = document.getElementById('priceControl');
+        var priceUpperPart = document.getElementById('priceUpperPart');
         var priceLowerPart = document.getElementById('priceLowerPart');
         if (source.value == "1") {
           // Internal use
           priceControl.style.display = 'block';
+          priceUpperPart.style.display = 'block';
           priceLowerPart.style.display = 'block';
         } else if (source.value == "0") {
           // External
           priceControl.style.display = 'none';
+          priceUpperPart.style.display = 'block';
           priceLowerPart.style.display = 'block';
         } else {
           // Disabled
           priceControl.style.display = 'none';
+          priceUpperPart.style.display = 'none';
           priceLowerPart.style.display = 'none';
         }
       }
@@ -875,17 +879,19 @@
         </table>
         <p id="hintp1" class="hint" data-i18n="settings.price.priceHint1">price.priceHint1</p>
 
-        <table class="settings_table">
-          <tr>
-            <td class="settings_row_name"><label for="pricePoint" data-i18n="settings.price.pricePoint">price.pricePoint</label>:</td>
-            <td class="settings_row_input">
-              <select id="pricePoint" onchange="displaySaveHint()">
-                <option value="0" selected>Price point disabled</option>
-              </select>
-              <div class="hintButton" onclick="toggle(this,'hintpp');return false;">i</div></td>
-          </tr>
-        </table>
-        <p id="hintpp" class="hint" data-i18n="settings.price.pricePointHint">price.pricePointHint</p>
+        <span id="priceUpperPart" style="display: none">
+          <table class="settings_table">
+            <tr>
+              <td class="settings_row_name"><label for="pricePoint" data-i18n="settings.price.pricePoint">price.pricePoint</label>:</td>
+              <td class="settings_row_input">
+                <select id="pricePoint" onchange="displaySaveHint()">
+                  <option value="0" selected>Price point disabled</option>
+                </select>
+                <div class="hintButton" onclick="toggle(this,'hintpp');return false;">i</div></td>
+            </tr>
+          </table>
+          <p id="hintpp" class="hint" data-i18n="settings.price.pricePointHint">price.pricePointHint</p>
+        </span>
 
         <span id="priceControl" style="display: none">
           <p id="errp1" class="error" data-i18n="settings.price.priceErr1">price.priceErr1</p>
