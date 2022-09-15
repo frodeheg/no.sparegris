@@ -1969,6 +1969,7 @@ class PiggyBank extends Homey.App {
       this.updateLog('Electricity price api not installed', c.LOG_ERROR);
     } catch (err) {
       this.updateLog(`Failed checking electricity price API: ${err.message}`, c.LOG_ERROR);
+      this.updateLog('Please install the app "Strømregning" to fetch electricity prices', c.LOG_ERROR);
     }
     return c.PRICE_API_NO_APP;
   }
