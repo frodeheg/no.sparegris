@@ -1,3 +1,4 @@
+/* eslint-disable node/no-unsupported-features/es-syntax */
 /* eslint-disable comma-dangle */
 
 'use strict';
@@ -90,6 +91,12 @@ const DEVICE_CMD = {
   'me.nanoleaf:shapes': DEFAULT_SWITCH,
   'nl.klikaanklikuit:ACC-250': DEFAULT_SWITCH,
   'nl.klikaanklikuit:AWMR-210': DEFAULT_SWITCH,
+  'no.almli.thermostat:VThermo': {
+    ...DEFAULT_HEATER,
+    tempMin: 4,
+    tempMax: 35,
+    default: false
+  },
   'no.connecte:smart_socket': DEFAULT_SWITCH,
   'no.easee:charger': {
     type: DEVICE_TYPE.CHARGER,
