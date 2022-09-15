@@ -379,5 +379,8 @@
   },
   "0.13.4": {
     "en": "Minor fix for incorrect log-level introduced in previous version"
+  },
+  "0.14.0": {
+    "en": "Fixed a bug where a device did not turn on again after being turned off and the next action command was delta_temp + Added new trigger for when the price point changes + Added support for no.almli.thermostat:VThermo + Minor interface changes."
   }
 }
