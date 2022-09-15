@@ -1,3 +1,5 @@
+/* eslint-disable brace-style */
+/* eslint-disable node/no-unsupported-features/es-syntax */
 /* eslint-disable no-loop-func */
 /* eslint-disable no-nested-ternary */
 /* eslint-disable no-prototype-builtins */
@@ -943,6 +945,20 @@ class PiggyBank extends Homey.App {
     if (+newMode === +oldPricePoint) {
       return Promise.resolve();
     }
+
+    // Find the translation table for price points from the app manifest
+    let ppTriggerId = 0;
+    const keys = this.manifest.flow.actions;
+    for (let key = 0; key < keys.length; key++) if (keys[key].id === 'change-piggy-bank-price-point') ppTriggerId = key;
+    const keys2 = this.manifest.flow.actions[ppTriggerId].args[0].values;
+    const ppTable = keys2.reduce((outTable, item) => { return { ...outTable, [item.id]: item.label }; }, []);
+
+    // Send price point trigger
+    const pricePointTrigger = this.homey.flow.getTriggerCard('price-point-changed');
+    const pricePointString = this.homey.__(ppTable[newMode]);
+    const tokens = { pricePoint: pricePointString };
+    pricePointTrigger.trigger(tokens);
+
     this.updateLog(`Changing the current price point to: ${String(newMode)}`, c.LOG_INFO);
     this.homey.settings.set('pricePoint', newMode);
     return this.refreshAllDevices();

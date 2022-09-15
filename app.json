@@ -184,6 +184,35 @@
       },
       {
         "title": {
+          "en": "Price point changed",
+          "no": "Prispunkt endret seg"
+        },
+        "titleFormatted": {
+          "en": "The price point changed.",
+          "no": "Prispunkt endret seg."
+        },
+        "hint": {
+          "en": "Use this trigger if you want the internal price control of PiggyBank to control external events.",
+          "no": "Bruk denne triggeren dersom du ønsker at den interne prisstyringen i Sparegris skal styre eksterne hendelser."
+        },
+        "tokens": [
+          {
+            "type": "string",
+            "name": "pricePoint",
+            "title": {
+              "en": "Price point",
+              "no": "Prispunkt"
+            },
+            "example": {
+              "en": "Can be 'Low', 'Normal', 'High' or 'Extremely high'",
+              "no": "Kan være 'Lav', 'Normal', 'Høy' eller 'Ekstremt høy'"
+            }
+          }
+        ],
+        "id": "price-point-changed"
+      },
+      {
+        "title": {
           "en": "Unable to limit power",
           "no": "Klarer ikke å begrense strømforbruket"
         },
