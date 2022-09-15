@@ -548,7 +548,7 @@ class PiggyBank extends Homey.App {
     // - priceMode is DISABLED
     // - zone control turns on devices again
     let newState;
-    if (targetState === undefined) {
+    if ((targetState === undefined) || (targetState === DELTA_TEMP)) {
       switch (currentActionOp) {
         case DELTA_TEMP:
           // Override as changedevicestate only handles onoff
@@ -1243,11 +1243,9 @@ class PiggyBank extends Homey.App {
       switch (operation) {
         case TURN_ON:
         case TURN_OFF:
+        case DELTA_TEMP: // Delta temp will abort if the device is off so run changeDevicestate instead
         case undefined: // undefined only means leave it to the changeDeviceState function to decide the operation
           promises.push(this.changeDeviceState(deviceId, operation));
-          break;
-        case DELTA_TEMP:
-          promises.push(this.refreshTemp(deviceId));
           break;
         case IGNORE:
         case EMERGENCY_OFF:
