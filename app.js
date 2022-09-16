@@ -578,7 +578,7 @@ class PiggyBank extends Homey.App {
       return Promise.resolve([false, false]); // The unhandled device is solved by the later nComError handling
     }
     const frostList = this.homey.settings.get('frostList');
-    const frostGuardActive = this.__deviceList[deviceId].thermostat_cap
+    const frostGuardActive = (this.__deviceList[deviceId].thermostat_cap && (device.capabilitiesObj !== null))
       ? (device.capabilitiesObj[this.getTempGetCap(deviceId)].value < frostList[deviceId].minTemp) : false;
 
     if (this.getOnOffCap(deviceId) === undefined) return Promise.reject(new Error('onoff capability does not exist, this should not happen'));
