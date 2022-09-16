@@ -382,5 +382,8 @@
   },
   "0.14.0": {
     "en": "Fixed a bug where a device did not turn on again after being turned off and the next action command was delta_temp + Added new trigger for when the price point changes + Added support for no.almli.thermostat:VThermo + Minor interface changes."
+  },
+  "0.14.1": {
+    "en": "Improved feedback for people with PriceAPI problems + Minor UI fixes + Fixed crash bug when the Homey API returned invalid state + Added support for com.fibaro:FGS-213 and no.thermofloor:ZM-Single-Relay-16A"
   }
 }
