@@ -1,0 +1,22 @@
+Log ID: 2022-09-16T07:44:07.823Z
+App version 0.14.0
+
++7:44:7.823: ----- ANALYZING DEVICE -----
++7:44:7.826: Report type: Device is not being turned on/off
++7:44:7.827: Device ID:   b593c9ba-c186-441c-8f73-d05f0e497b29
++7:44:7.829: Device Name: Vaskeromsgulv
++7:44:7.831: Driver Uri: homey:app:com.fibaro
++7:44:7.832: Driver Id: FGS-213
++7:44:7.833: Found onoff cap: onoff
++7:44:7.835: Found temp cap: false
++7:44:7.836: Capabilities: measure_power,meter_power,onoff
++7:44:7.838: Options for 'measure_power': {"value":0,"lastUpdated":"2022-09-03T17:10:44.526Z","type":"number","getable":true,"setable":false,"title":"Effekt","desc":"Effekt i watt (W)","units":"W","decimals":2,"chartType":"stepLine","id":"measure_power","options":{}}
++7:44:7.840: Options for 'meter_power': {"value":1.14,"lastUpdated":"2022-09-03T18:09:21.515Z","type":"number","getable":true,"setable":false,"title":"Energi","desc":"Energiforbruk i kilowattimer (kWh)","units":"kWh","decimals":2,"chartType":"spline","id":"meter_power","options":{}}
++7:44:7.841: Options for 'onoff': {"value":false,"lastUpdated":"2022-09-16T04:00:01.372Z","type":"boolean","getable":true,"setable":true,"title":"Slått på","desc":null,"units":null,"id":"onoff","options":{}}
++7:44:7.843: Actions:
++7:44:7.845: URI: {"uri":"homey:device:b593c9ba-c186-441c-8f73-d05f0e497b29","uriObj":{"type":"device","id":"b593c9ba-c186-441c-8f73-d05f0e497b29","name":"Vaskeromsgulv","color":"#000000","meta":{"zoneId":"0420c059-fba8-4885-b274-e2fe984a21c6","zoneName":"Vaskerommet","driverUri":"homey:app:com.fibaro"},"iconObj":{"id":"4ce818f4d0186f1eefb0dc30fdc11fb9","url":"/icon/4ce818f4d0186f1eefb0dc30fdc11fb9/icon.svg"}},"title":"Slå på","titleFormatted":null,"hint":null,"id":"on","args":null,"highlight":true}
++7:44:7.847: URI: {"uri":"homey:device:b593c9ba-c186-441c-8f73-d05f0e497b29","uriObj":{"type":"device","id":"b593c9ba-c186-441c-8f73-d05f0e497b29","name":"Vaskeromsgulv","color":"#000000","meta":{"zoneId":"0420c059-fba8-4885-b274-e2fe984a21c6","zoneName":"Vaskerommet","driverUri":"homey:app:com.fibaro"},"iconObj":{"id":"4ce818f4d0186f1eefb0dc30fdc11fb9","url":"/icon/4ce818f4d0186f1eefb0dc30fdc11fb9/icon.svg"}},"title":"Slå av","titleFormatted":null,"hint":null,"id":"off","args":null,"highlight":true}
++7:44:7.849: URI: {"uri":"homey:device:b593c9ba-c186-441c-8f73-d05f0e497b29","uriObj":{"type":"device","id":"b593c9ba-c186-441c-8f73-d05f0e497b29","name":"Vaskeromsgulv","color":"#000000","meta":{"zoneId":"0420c059-fba8-4885-b274-e2fe984a21c6","zoneName":"Vaskerommet","driverUri":"homey:app:com.fibaro"},"iconObj":{"id":"4ce818f4d0186f1eefb0dc30fdc11fb9","url":"/icon/4ce818f4d0186f1eefb0dc30fdc11fb9/icon.svg"}},"title":"Veksle mellom på og av","titleFormatted":null,"hint":null,"id":"toggle","args":null}
++7:44:7.851: URI: {"uri":"homey:device:b593c9ba-c186-441c-8f73-d05f0e497b29","uriObj":{"type":"device","id":"b593c9ba-c186-441c-8f73-d05f0e497b29","name":"Vaskeromsgulv","color":"#000000","meta":{"zoneId":"0420c059-fba8-4885-b274-e2fe984a21c6","zoneName":"Vaskerommet","driverUri":"homey:app:com.fibaro"},"iconObj":{"id":"4ce818f4d0186f1eefb0dc30fdc11fb9","url":"/icon/4ce818f4d0186f1eefb0dc30fdc11fb9/icon.svg"}},"title":"Reset meter values","titleFormatted":"Reset meter values","hint":"Reset the accumulated power usage (kWh). Can not be reversed.","id":"FGS-213_reset_meter","args":[]}
++7:44:7.853: --- ANALYZING DEVICE DONE ---
++7:45:15.308: Sending log

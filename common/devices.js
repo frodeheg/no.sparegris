@@ -60,6 +60,7 @@ const DEFAULT_HEATER = {
 const DEVICE_CMD = {
   'com.aeotec:ZW078': DEFAULT_SWITCH,
   'com.everspring:AN179': DEFAULT_SWITCH,
+  'com.fibaro:FGS-213': DEFAULT_SWITCH,
   'com.philips.hue.zigbee:LCL001': DEFAULT_SWITCH,
   'com.sensibo:Sensibo': {
     type: DEVICE_TYPE.AC,
@@ -136,6 +137,7 @@ const DEVICE_CMD = {
     tempStep: 0.5
   },
   'no.thermofloor:Z-TRM3': DEFAULT_HEATER,
+  'no.thermofloor:ZM-Single-Relay-16A': DEFAULT_SWITCH,
   'se.nexa:EYCR-2300': DEFAULT_SWITCH,
   'vdevice:virtual_socket': DEFAULT_SWITCH, // Under homey:manager, not homey:app:
   'vdevice:zwavebasic': DEFAULT_SWITCH, // Under homey:manager, not homey:app:

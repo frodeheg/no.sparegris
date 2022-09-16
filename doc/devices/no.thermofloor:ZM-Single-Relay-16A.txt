@@ -1,0 +1,21 @@
+Log ID: 2022-09-16T07:41:49.297Z
+App version 0.14.0
+
++7:41:49.297: ----- ANALYZING DEVICE -----
++7:41:49.300: Report type: Device is not being turned on/off
++7:41:49.302: Device ID:   449fe67f-cf71-46fc-8fe1-10538f3cba84
++7:41:49.303: Device Name: Varmtvannsbereder
++7:41:49.305: Driver Uri: homey:app:no.thermofloor
++7:41:49.309: Driver Id: ZM-Single-Relay-16A
++7:41:49.319: Found onoff cap: onoff
++7:41:49.321: Found temp cap: false
++7:41:49.323: Capabilities: measure_power,meter_power,onoff
++7:41:49.326: Options for 'measure_power': {"value":0,"lastUpdated":"2022-09-15T22:23:41.336Z","type":"number","getable":true,"setable":false,"title":"Effekt","desc":"Effekt i watt (W)","units":"W","decimals":2,"chartType":"stepLine","id":"measure_power","options":{}}
++7:41:49.328: Options for 'meter_power': {"value":208.52,"lastUpdated":"2022-09-15T22:23:40.357Z","type":"number","getable":true,"setable":false,"title":"Energi","desc":"Energiforbruk i kilowattimer (kWh)","units":"kWh","decimals":2,"chartType":"spline","id":"meter_power","options":{}}
++7:41:49.330: Options for 'onoff': {"value":false,"lastUpdated":"2022-09-16T04:00:01.191Z","type":"boolean","getable":true,"setable":true,"title":"Slått på","desc":null,"units":null,"id":"onoff","options":{}}
++7:41:49.331: Actions:
++7:41:49.334: URI: {"uri":"homey:device:449fe67f-cf71-46fc-8fe1-10538f3cba84","uriObj":{"type":"device","id":"449fe67f-cf71-46fc-8fe1-10538f3cba84","name":"Varmtvannsbereder","color":"#cc3333","meta":{"zoneId":"0420c059-fba8-4885-b274-e2fe984a21c6","zoneName":"Vaskerommet","driverUri":"homey:app:no.thermofloor"},"iconObj":{"id":"f551b12bb0a5ee1adca6c88cc928288d","url":"/icon/f551b12bb0a5ee1adca6c88cc928288d/icon.svg"}},"title":"Slå på","titleFormatted":null,"hint":null,"id":"on","args":null,"highlight":true}
++7:41:49.335: URI: {"uri":"homey:device:449fe67f-cf71-46fc-8fe1-10538f3cba84","uriObj":{"type":"device","id":"449fe67f-cf71-46fc-8fe1-10538f3cba84","name":"Varmtvannsbereder","color":"#cc3333","meta":{"zoneId":"0420c059-fba8-4885-b274-e2fe984a21c6","zoneName":"Vaskerommet","driverUri":"homey:app:no.thermofloor"},"iconObj":{"id":"f551b12bb0a5ee1adca6c88cc928288d","url":"/icon/f551b12bb0a5ee1adca6c88cc928288d/icon.svg"}},"title":"Slå av","titleFormatted":null,"hint":null,"id":"off","args":null,"highlight":true}
++7:41:49.337: URI: {"uri":"homey:device:449fe67f-cf71-46fc-8fe1-10538f3cba84","uriObj":{"type":"device","id":"449fe67f-cf71-46fc-8fe1-10538f3cba84","name":"Varmtvannsbereder","color":"#cc3333","meta":{"zoneId":"0420c059-fba8-4885-b274-e2fe984a21c6","zoneName":"Vaskerommet","driverUri":"homey:app:no.thermofloor"},"iconObj":{"id":"f551b12bb0a5ee1adca6c88cc928288d","url":"/icon/f551b12bb0a5ee1adca6c88cc928288d/icon.svg"}},"title":"Veksle mellom på og av","titleFormatted":null,"hint":null,"id":"toggle","args":null}
++7:41:49.339: --- ANALYZING DEVICE DONE ---
++7:42:24.195: Sending log
