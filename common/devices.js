@@ -61,6 +61,7 @@ const DEVICE_CMD = {
   'com.aeotec:ZW078': DEFAULT_SWITCH,
   'com.everspring:AN179': DEFAULT_SWITCH,
   'com.fibaro:FGS-213': DEFAULT_SWITCH,
+  'com.neo:NAS-WR02ZE': DEFAULT_SWITCH,
   'com.philips.hue.zigbee:LCL001': DEFAULT_SWITCH,
   'com.sensibo:Sensibo': {
     type: DEVICE_TYPE.AC,
@@ -90,6 +91,12 @@ const DEVICE_CMD = {
     tempStep: 0.5
   },
   'me.nanoleaf:shapes': DEFAULT_SWITCH,
+  'net.filllip-namron:4512744': {
+    ...DEFAULT_HEATER,
+    tempMin: 4,
+    tempMax: 35,
+    default: false
+  },
   'nl.klikaanklikuit:ACC-250': DEFAULT_SWITCH,
   'nl.klikaanklikuit:AWMR-210': DEFAULT_SWITCH,
   'no.almli.thermostat:VThermo': {

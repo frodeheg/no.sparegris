@@ -1,0 +1,24 @@
+Log ID: 2022-09-16T20:39:12.938Z
+App version 0.14.0
+
++20:39:12.938: ----- ANALYZING DEVICE -----
++20:39:12.939: Report type: Experimental device is working
++20:39:12.941: Device ID:   e3dbbd30-3738-44fc-9f9b-d48b66d652a5
++20:39:12.943: Device Name: Varmepumpe Kjellerstue
++20:39:12.944: Driver Uri: homey:app:com.neo
++20:39:12.946: Driver Id: NAS-WR02ZE
++20:39:12.950: Found onoff cap: onoff
++20:39:12.953: Found temp cap: false
++20:39:12.955: Capabilities: onoff,meter_power,measure_power,measure_current,measure_voltage
++20:39:12.957: Options for 'onoff': {"value":true,"lastUpdated":"2022-09-16T02:13:42.843Z","type":"boolean","getable":true,"setable":true,"title":"Slått på","desc":null,"units":null,"id":"onoff","options":{}}
++20:39:12.959: Options for 'meter_power': {"value":5395,"lastUpdated":"2022-09-16T20:39:09.605Z","type":"number","getable":true,"setable":false,"title":"Energi","desc":"Energiforbruk i kilowattimer (kWh)","units":"kWh","decimals":2,"chartType":"spline","id":"meter_power","options":{}}
++20:39:12.962: Options for 'measure_power': {"value":171.14,"lastUpdated":"2022-09-16T20:39:09.803Z","type":"number","getable":true,"setable":false,"title":"Effekt","desc":"Effekt i watt (W)","units":"W","decimals":2,"chartType":"stepLine","id":"measure_power","options":{}}
++20:39:12.971: Options for 'measure_current': {"value":0.83,"lastUpdated":"2022-09-16T20:39:10.621Z","type":"number","getable":true,"setable":false,"title":"Strøm","desc":"Elektrisk strøm (A)","units":"A","decimals":2,"chartType":"stepLine","id":"measure_current","options":{}}
++20:39:12.972: Options for 'measure_voltage': {"value":234.45,"lastUpdated":"2022-09-16T20:39:10.403Z","type":"number","getable":true,"setable":false,"title":"Spenning","desc":"Spenning (V)","units":"V","decimals":2,"chartType":"stepLine","id":"measure_voltage","options":{}}
++20:39:12.974: Actions:
++20:39:12.975: URI: {"uri":"homey:device:e3dbbd30-3738-44fc-9f9b-d48b66d652a5","uriObj":{"type":"device","id":"e3dbbd30-3738-44fc-9f9b-d48b66d652a5","name":"Varmepumpe Kjellerstue","color":"#ff66cc","meta":{"zoneId":"b840a982-a3a7-4513-9d96-902d81128f5c","zoneName":"Kjeller","driverUri":"homey:app:com.neo"},"iconObj":{"id":"247c6a866eede5a63eb32c2c1de59f93","url":"/icon/247c6a866eede5a63eb32c2c1de59f93/icon.svg"}},"title":"Slå på","titleFormatted":null,"hint":null,"id":"on","args":null,"highlight":true}
++20:39:12.977: URI: {"uri":"homey:device:e3dbbd30-3738-44fc-9f9b-d48b66d652a5","uriObj":{"type":"device","id":"e3dbbd30-3738-44fc-9f9b-d48b66d652a5","name":"Varmepumpe Kjellerstue","color":"#ff66cc","meta":{"zoneId":"b840a982-a3a7-4513-9d96-902d81128f5c","zoneName":"Kjeller","driverUri":"homey:app:com.neo"},"iconObj":{"id":"247c6a866eede5a63eb32c2c1de59f93","url":"/icon/247c6a866eede5a63eb32c2c1de59f93/icon.svg"}},"title":"Slå av","titleFormatted":null,"hint":null,"id":"off","args":null,"highlight":true}
++20:39:12.979: URI: {"uri":"homey:device:e3dbbd30-3738-44fc-9f9b-d48b66d652a5","uriObj":{"type":"device","id":"e3dbbd30-3738-44fc-9f9b-d48b66d652a5","name":"Varmepumpe Kjellerstue","color":"#ff66cc","meta":{"zoneId":"b840a982-a3a7-4513-9d96-902d81128f5c","zoneName":"Kjeller","driverUri":"homey:app:com.neo"},"iconObj":{"id":"247c6a866eede5a63eb32c2c1de59f93","url":"/icon/247c6a866eede5a63eb32c2c1de59f93/icon.svg"}},"title":"Veksle mellom på og av","titleFormatted":null,"hint":null,"id":"toggle","args":null}
++20:39:12.981: URI: {"uri":"homey:device:e3dbbd30-3738-44fc-9f9b-d48b66d652a5","uriObj":{"type":"device","id":"e3dbbd30-3738-44fc-9f9b-d48b66d652a5","name":"Varmepumpe Kjellerstue","color":"#ff66cc","meta":{"zoneId":"b840a982-a3a7-4513-9d96-902d81128f5c","zoneName":"Kjeller","driverUri":"homey:app:com.neo"},"iconObj":{"id":"247c6a866eede5a63eb32c2c1de59f93","url":"/icon/247c6a866eede5a63eb32c2c1de59f93/icon.svg"}},"title":"Reset meter values","titleFormatted":null,"hint":"Reset the accumulated power usage value (kWh), note that this can not be reversed.","id":"WR02Z_reset_meter","args":[]}
++20:39:12.983: --- ANALYZING DEVICE DONE ---
++20:39:36.637: Sending log
