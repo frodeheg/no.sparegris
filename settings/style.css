@@ -82,7 +82,7 @@ p {
     cursor: pointer;
     padding: 0px 10px;
     line-height: 30px;
-    min-width: 40px;
+    min-width: 20px;
     height: 30px;
     transition: 0.3s;
     font-size: 10px !important;

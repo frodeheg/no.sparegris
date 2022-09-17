@@ -18,6 +18,7 @@
       var minTempText = "settings.frost.minTemp";
       var priorityText = "settings.mode.priority";
       var alwaysOnText = "settings.mode.alwaysOn";
+      var priceDirtCheapText = "settings.price.actionDirtCheap";
       var priceLowText = "settings.price.actionLow";
       var alwaysOffText = "settings.mode.alwaysOff";
       var priceHighText = "settings.price.actionHigh";
@@ -82,7 +83,7 @@
       ]
       var frostList = {} // Indexed by deviceId
       var zoneList = {} // Indexed by zone-id
-      var priceActionList = [ {}, {}, {}, {} ] // Indexed by deviceId
+      var priceActionList = [ {}, {}, {}, {}, {} ] // Indexed by deviceId
       var currentPricePoint = 1; // Normal
       var currentOperatingMode = 0; // Disabled
       var currentErrorMargin = 5;
@@ -94,10 +95,11 @@
       var currentModeTab = 0; // Normal
 
       var pricePoints = [
-        { name:"settings.pricetab.cheap", value: 0 },
-        { name:"settings.pricetab.normal", value: 1 },
-        { name:"settings.pricetab.expensive", value: 2 },
-        { name:"settings.pricetab.extreme", value: 3 }
+        { name:"settings.pricetab.dirtcheap", value: PP_DIRTCHEAP },
+        { name:"settings.pricetab.cheap", value: PP_LOW },
+        { name:"settings.pricetab.normal", value: PP_NORM },
+        { name:"settings.pricetab.expensive", value: PP_HIGH },
+        { name:"settings.pricetab.extreme", value: PP_EXTREME }
       ]
 
       function limitText(text) {
@@ -232,10 +234,11 @@
         // Generate page
         var legendText = "";
         switch (tabPage) {
-          case 0: legendText = priceLowText; break;
-          case 1: legendText = priceNormalText; break;
-          case 2: legendText = priceHighText; break;
-          case 3: legendText = priceExtremeText; break;
+          case PP_LOW: legendText = priceLowText; break;
+          case PP_NORM: legendText = priceNormalText; break;
+          case PP_HIGH: legendText = priceHighText; break;
+          case PP_EXTREME: legendText = priceExtremeText; break;
+          case PP_DIRTCHEAP: legendText = priceDirtCheapText; break;
         }
         var displayTemp = document.getElementById("controlTemp").value == 1;
         var priceTabText =
@@ -935,6 +938,16 @@
 
           <table class="settings_table">
             <tr>
+              <td class="settings_row_name"><label for="dirtCheapPriceModifier" data-i18n="settings.price.internal.dirtCheapPriceModifier">price.internal.dirtCheapPriceModifier</label>:</td>
+              <td class="settings_row_input">
+                <input id="dirtCheapPriceModifier" data-i18n="settings.price.internal.hour1" type="number" size="10" min="-100" max="-50" value="-50" onchange="displaySaveHint()">%
+                <div class="hintButton" onclick="toggle(this,'dirtCheapPriceModifierHint');return false;">i</div></td>
+            </tr>
+          </table>
+          <p id="dirtCheapPriceModifierHint" class="hint" data-i18n="settings.price.internal.dirtCheapPriceModifierHint">price.internal.dirtCheapPriceModifierHint</p>
+
+          <table class="settings_table">
+            <tr>
               <td class="settings_row_name"><label for="lowPriceModifier" data-i18n="settings.price.internal.lowPriceModifier">price.internal.lowPriceModifier</label>:</td>
               <td class="settings_row_input">
                 <input id="lowPriceModifier" data-i18n="settings.price.internal.hour1" type="number" size="10" min="-50" max="-10" value="-10" onchange="displaySaveHint()">%
@@ -968,13 +981,15 @@
       <div id="priceLowerPart">
         <table width="100%" id="sub_tab_selector" class="tab">
           <tr>
-            <td class="subtablinks" onclick="changePriceTab(event, 0)" id="subTabCheap">
+            <td class="subtablinks" onclick="changePriceTab(event, PP_DIRTCHEAP)" id="subTabDirtCheap">
+              <span data-i18n="settings.pricetab.dirtcheap">pricetab.dirtcheap</span></td>
+            <td class="subtablinks" onclick="changePriceTab(event, PP_LOW)" id="subTabCheap">
               <span data-i18n="settings.pricetab.cheap">pricetab.cheap</span></td>
-            <td class="subtablinks" onclick="changePriceTab(event, 1)" id="subTabNormal">
+            <td class="subtablinks" onclick="changePriceTab(event, PP_NORM)" id="subTabNormal">
               <span data-i18n="settings.pricetab.normal">pricetab.normal</span></td>
-            <td class="subtablinks" onclick="changePriceTab(event, 2)" id="subTabExpensive">
+            <td class="subtablinks" onclick="changePriceTab(event, PP_HIGH)" id="subTabExpensive">
               <span data-i18n="settings.pricetab.expensive">pricetab.expensive</span></td>
-            <td class="subtablinks" onclick="changePriceTab(event, 3)" id="subTabExtreme">
+            <td class="subtablinks" onclick="changePriceTab(event, PP_EXTREME)" id="subTabExtreme">
               <span data-i18n="settings.pricetab.extreme">pricetab.extreme</span></td>
           </tr>
         </table>
@@ -1146,6 +1161,7 @@
           document.getElementById("averageTime").value = futurePriceOptions.averageTime;
           document.getElementById("minCheapTime").value = futurePriceOptions.minCheapTime;
           document.getElementById("minExpensiveTime").value = futurePriceOptions.minExpensiveTime;
+          document.getElementById("dirtCheapPriceModifier").value = futurePriceOptions.dirtCheapPriceModifier;
           document.getElementById("lowPriceModifier").value = futurePriceOptions.lowPriceModifier;
           document.getElementById("highPriceModifier").value = futurePriceOptions.highPriceModifier;
           document.getElementById("extremePriceModifier").value = futurePriceOptions.extremePriceModifier;
@@ -1175,6 +1191,7 @@
         var averageTimeElement = document.getElementById("averageTime");
         var minCheapTimeElement = document.getElementById("minCheapTime");
         var minExpensiveTimeElement =  document.getElementById("minExpensiveTime");
+        var dirtCheapPriceModifierElement = document.getElementById("dirtCheapPriceModifier");
         var lowPriceModifierElement =  document.getElementById("lowPriceModifier");
         var highPriceModifierElement =  document.getElementById("highPriceModifier");
         var extremePriceModifierElement =  document.getElementById("extremePriceModifier");
@@ -1190,6 +1207,7 @@
         minTempText = Homey.__(minTempText);
         priorityText = Homey.__(priorityText);
         alwaysOnText = Homey.__(alwaysOnText);
+        priceDirtCheapText = Homey.__(priceDirtCheapText);
         priceLowText = Homey.__(priceLowText);
         deltaTempText = Homey.__(deltaTempText);
         emergencyOffText = Homey.__(emergencyOffText);
@@ -1247,6 +1265,7 @@
           if (!futurePriceOptions.hasOwnProperty("minCheapTime")) futurePriceOptions.minCheapTime = 4;
           if (!futurePriceOptions.hasOwnProperty("minExpensiveTime")) futurePriceOptions.minExpensiveTime = 4;
           if (!futurePriceOptions.hasOwnProperty("averageTime")) futurePriceOptions.averageTime = 0;
+          if (!futurePriceOptions.hasOwnProperty("dirtCheapPriceModifier")) futurePriceOptions.dirtCheapPriceModifier = -50;
           if (!futurePriceOptions.hasOwnProperty("lowPriceModifier")) futurePriceOptions.lowPriceModifier = -10;
           if (!futurePriceOptions.hasOwnProperty("highPriceModifier")) futurePriceOptions.highPriceModifier = 10;
           if (!futurePriceOptions.hasOwnProperty("extremePriceModifier")) futurePriceOptions.extremePriceModifier = 100;
@@ -1430,6 +1449,7 @@
               futurePriceOptions.averageTime = averageTimeElement.value;
               futurePriceOptions.minCheapTime = minCheapTimeElement.value;
               futurePriceOptions.minExpensiveTime = minExpensiveTimeElement.value;
+              futurePriceOptions.dirtCheapPriceModifier = dirtCheapPriceModifierElement.value;
               futurePriceOptions.lowPriceModifier = lowPriceModifierElement.value;
               futurePriceOptions.highPriceModifier = highPriceModifierElement.value;
               futurePriceOptions.extremePriceModifier = extremePriceModifierElement.value;
@@ -1538,7 +1558,7 @@
       }
 
       function refreshPriceActionList() {
-        for (var tabPage = 0; tabPage < 4; tabPage++) {
+        for (var tabPage = 0; tabPage < 5; tabPage++) {
           if (priceActionList[tabPage] === undefined) {
             priceActionList[tabPage] = {};
           }
@@ -1554,19 +1574,22 @@
               var new_op = DELTA_TEMP;
               if (!deviceList[key].thermostat_cap) {
                 switch (tabPage) {
-                  case 0:
-                  case 1: new_op = EMERGENCY_OFF; break;
-                  case 2:
-                  case 3: new_op = TURN_OFF; break;
+                  case PP_DIRTCHEAP:
+                  case PP_LOW:
+                  case PP_NORM: new_op = EMERGENCY_OFF; break;
+                  case PP_HIGH:
+                  case PP_EXTREME: new_op = TURN_OFF; break;
                 }
               }
-              const tempChangeCheapPrice = (deviceList[key].targetTemp > 50) ? 20 : Math.round(deviceList[key].targetTemp * 3 / 24);
+              const tempChangeDirtCheapPrice = (deviceList[key].targetTemp > 50) ? 20 : Math.round(deviceList[key].targetTemp * 4 / 24);
+              const tempChangeCheapPrice = (deviceList[key].targetTemp > 50) ? 15 : Math.round(deviceList[key].targetTemp * 3 / 24);
               const tempChangeHighPrice = (deviceList[key].targetTemp > 50) ? -10 : -Math.round(deviceList[key].targetTemp * 5 / 24);
               const tempChangeInsanePrice = (deviceList[key].targetTemp > 50) ? -30 : -Math.round(deviceList[key].targetTemp * 10 / 24);
-              var new_delta = (tabPage == 0) ? tempChangeCheapPrice
-                : (tabPage == 1) ?  0
-                : (tabPage == 2) ? tempChangeHighPrice
-                : tempChangeInsanePrice;
+              var new_delta = (tabPage == PP_LOW) ? tempChangeCheapPrice
+                : (tabPage == PP_NORM) ?  0
+                : (tabPage == PP_HIGH) ? tempChangeHighPrice
+                : (tabPage == PP_EXTREME) ? tempChangeInsanePrice
+                : tempChangeDirtCheapPrice;
               priceActionList[tabPage][key] = { delta: new_delta, operation: new_op }
             }
           }
@@ -1675,7 +1698,7 @@
 
         // Update price page in case it has not been updated before
         if (tabPage == 'pricePage') {
-          changePriceTab(evt, 1);
+          changePriceTab(evt, PP_NORM);
         }
         
         // Refresh the mode lists

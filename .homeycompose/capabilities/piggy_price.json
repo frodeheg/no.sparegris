@@ -8,6 +8,13 @@
     "setable": false,
     "values": [
       {
+        "id": "4",
+        "title": {
+          "en": "Dirt cheap",
+          "no": "Grisebillig"
+        }
+      },
+      {
         "id": "0",
         "title": {
           "en": "Cheap",

@@ -71,6 +71,11 @@ class MyDevice extends Device {
     if (this.hasCapability('piggy_price_extreme') === false) {
       this.addCapability('piggy_price_extreme');
     }
+
+    // Added capabilities in version 0.14.3
+    if (this.hasCapability('piggy_price_dirt_cheap') === false) {
+      this.addCapability('piggy_price_dirt_cheap');
+    }
     // === Athom seem to have disabled permission for apps to delete logs even for their own devices ===
     // if (this.homey.app.homeyApi.insights.getLog({ uri: `homey:device:${this.deviceId}`, id: 'piggy_money.acceptable_price' })) {
     //   this.homey.app.homeyApi.insights.deleteLog({ uri: `homey:device:${this.deviceId}`, id: 'piggy_money.acceptable_price' });
@@ -101,6 +106,9 @@ class MyDevice extends Device {
 
     // New extended capabilities
     if (settings['extendedCap'] === true) {
+      if (this.hasCapability('meter_power.dirt_cheap_energy_avg') === false) {
+        this.addCapability('meter_power.dirt_cheap_energy_avg');
+      }
       if (this.hasCapability('meter_power.low_energy_avg') === false) {
         this.addCapability('meter_power.low_energy_avg');
       }
@@ -119,6 +127,9 @@ class MyDevice extends Device {
       if (this.hasCapability('piggy_money.current_price') === false) {
         this.addCapability('piggy_money.current_price');
       }
+      if (this.hasCapability('piggy_money.dirt_cheap_price_limit') === false) {
+        this.addCapability('piggy_money.dirt_cheap_price_limit');
+      }
       if (this.hasCapability('piggy_money.low_price_limit') === false) {
         this.addCapability('piggy_money.low_price_limit');
       }
@@ -129,6 +140,9 @@ class MyDevice extends Device {
         this.addCapability('piggy_money.extreme_price_limit');
       }
     } else if (settings['extendedCap'] === false) {
+      if (this.hasCapability('meter_power.dirt_cheap_energy_avg') === true) {
+        this.removeCapability('meter_power.dirt_cheap_energy_avg');
+      }
       if (this.hasCapability('meter_power.low_energy_avg') === true) {
         this.removeCapability('meter_power.low_energy_avg');
       }
@@ -146,6 +160,9 @@ class MyDevice extends Device {
       }
       if (this.hasCapability('piggy_money.current_price') === true) {
         this.removeCapability('piggy_money.current_price');
+      }
+      if (this.hasCapability('piggy_money.dirt_cheap_price_limit') === true) {
+        this.removeCapability('piggy_money.dirt_cheap_price_limit');
       }
       if (this.hasCapability('piggy_money.low_price_limit') === true) {
         this.removeCapability('piggy_money.low_price_limit');
@@ -287,10 +304,11 @@ class MyDevice extends Device {
       if (+piggyState.price_point !== +prevPricePoint) {
         this.setStoreValue('piggy_price', piggyState.price_point);
         switch (+piggyState.price_point) {
-          case 0: this.toggleCapability('piggy_price_low'); break;
-          case 1: this.toggleCapability('piggy_price_normal'); break;
-          case 2: this.toggleCapability('piggy_price_expensive'); break;
-          case 3: this.toggleCapability('piggy_price_extreme'); break;
+          case c.PP_LOW: this.toggleCapability('piggy_price_low'); break;
+          case c.PP_NORM: this.toggleCapability('piggy_price_normal'); break;
+          case c.PP_HIGH: this.toggleCapability('piggy_price_expensive'); break;
+          case c.PP_EXTREME: this.toggleCapability('piggy_price_extreme'); break;
+          case c.PP_DIRTCHEAP: this.toggleCapability('piggy_price_dirt_cheap'); break;
           default: /* Broken input should not happen */ break;
         }
       }
@@ -340,6 +358,9 @@ class MyDevice extends Device {
       }
 
       // Extended capabilities so only update if they exist
+      if (this.hasCapability('meter_power.dirt_cheap_energy_avg') === true && piggyState.dirtcheap_price_energy_avg) {
+        this.setCapabilityValue('meter_power.dirt_cheap_energy_avg', piggyState.dirtcheap_price_energy_avg);
+      }
       if (this.hasCapability('meter_power.low_energy_avg') === true && piggyState.low_price_energy_avg) {
         this.setCapabilityValue('meter_power.low_energy_avg', piggyState.low_price_energy_avg);
       }
@@ -357,6 +378,9 @@ class MyDevice extends Device {
       }
       if (this.hasCapability('piggy_money.current_price') === true && piggyState.current_price) {
         this.setCapabilityValue('piggy_money.current_price', piggyState.current_price);
+      }
+      if (this.hasCapability('piggy_money.dirt_cheap_price_limit') === true && piggyState.dirtcheap_price_limit) {
+        this.setCapabilityValue('piggy_money.dirt_cheap_price_limit', piggyState.dirtcheap_price_limit);
       }
       if (this.hasCapability('piggy_money.low_price_limit') === true && piggyState.low_price_limit) {
         this.setCapabilityValue('piggy_money.low_price_limit', piggyState.low_price_limit);

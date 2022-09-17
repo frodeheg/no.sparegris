@@ -46,6 +46,7 @@
       "custom": "Egen"
     },
     "pricetab": {
+      "dirtcheap": "Grisebillig",
       "cheap": "Billig",
       "normal": "Normal",
       "expensive": "Dyrt",
@@ -168,6 +169,7 @@
         "helpEmergency": "Slå av kun som en siste utvei for å komme under effekttariffen (ingen frostsikring)",
         "helpIgnore": "Ignorer enheten under alle omstendigheter (ingen frostsikring)"
       },
+      "actionDirtCheap": "Handling når strømprisen blir grisebillig",
       "actionLow": "Handling når strømprisen blir lav",
       "actionHigh": "Handling når strømprisen blir høy",
       "actionExtreme": "Handling når strømprisen blir ekstremt høy",
@@ -188,6 +190,8 @@
         "minCheapTimeHint": "Uavhengig av faktisk pris kan du kreve at de x billigste timene i døgnet alltid skal sette prispunkt til billig.",
         "minExpensiveTime": "Minimum antall dyre timer",
         "minExpensiveTimeHint": "Uavhengig av faktisk pris kan du kreve at de x dyreste timene i døgnet alltid skal sette prispunkt til dyrt.",
+        "dirtCheapPriceModifier": "Grense for ekstremt lav pris",
+        "dirtCheapPriceModifierHint": "Dersom den gjeldende timeprisen faller x% under grunnlaget for prissammenligning blir prispunkt alltid satt til grisebillig",
         "lowPriceModifier": "Grense for lav pris",
         "lowPriceModifierHint": "Dersom den gjeldende timeprisen faller x% under grunnlaget for prissammenligning blir prispunkt alltid satt til billig",
         "highPriceModifier": "Grense for høy pris",

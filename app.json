@@ -530,6 +530,7 @@
         "piggy_mode_night",
         "piggy_mode_holiday",
         "piggy_mode_custom",
+        "piggy_price_dirt_cheap",
         "piggy_price_low",
         "piggy_price_normal",
         "piggy_price_expensive",
@@ -593,6 +594,17 @@
           "title": {
             "en": "Acceptable price",
             "no": "Akseptabel pris"
+          },
+          "decimals": 5,
+          "units": {
+            "en": "NOK/kWh",
+            "no": "kr/kWh"
+          }
+        },
+        "piggy_money.dirt_cheap_price_limit": {
+          "title": {
+            "en": "Limit for dirt cheap prices",
+            "no": "Grense for grisebillig pris"
           },
           "decimals": 5,
           "units": {
@@ -716,13 +728,24 @@
           },
           "approximated": true
         },
+        "meter_power.dirt_cheap_energy_avg": {
+          "units": {
+            "en": "Wh",
+            "no": "Wh"
+          },
+          "title": {
+            "en": "Average Power for dirt cheap hours",
+            "no": "Snitt Energibruk for grisebillige timer"
+          },
+          "approximated": true
+        },
         "meter_power.low_energy_avg": {
           "units": {
             "en": "Wh",
             "no": "Wh"
           },
           "title": {
-            "en": "Average Power for low price hours",
+            "en": "Average Power for cheap hours",
             "no": "Snitt Energibruk for billige timer"
           },
           "approximated": true
@@ -744,7 +767,7 @@
             "no": "Wh"
           },
           "title": {
-            "en": "Average Power for expensive price hours",
+            "en": "Average Power for expensive hours",
             "no": "Snitt Energibruk for dyre timer"
           },
           "approximated": true
@@ -1098,6 +1121,13 @@
       "setable": false,
       "values": [
         {
+          "id": "4",
+          "title": {
+            "en": "Dirt cheap",
+            "no": "Grisebillig"
+          }
+        },
+        {
           "id": "0",
           "title": {
             "en": "Cheap",
@@ -1129,6 +1159,26 @@
       "icon": "/assets/price.svg",
       "uiComponent": "sensor",
       "uiQuickAction": false
+    },
+    "piggy_price_dirt_cheap": {
+      "type": "boolean",
+      "title": {
+        "en": "Price Point",
+        "no": "Prispunkt"
+      },
+      "getable": true,
+      "setable": false,
+      "uiComponent": null,
+      "uiQuickAction": false,
+      "insightsTitleTrue": {
+        "en": "Price Point changed to dirt cheap",
+        "no": "Prispunkt endret til grisebillig"
+      },
+      "insights": true,
+      "insightsTitleFalse": {
+        "en": "Price Point changed to dirt cheap",
+        "no": "Prispunkt endret til grisebillig"
+      }
     },
     "piggy_price_expensive": {
       "type": "boolean",

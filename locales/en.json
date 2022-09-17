@@ -46,6 +46,7 @@
       "custom": "Custom"
     },
     "pricetab": {
+      "dirtcheap": "Dirt cheap",
       "cheap": "Cheap",
       "normal": "Normal",
       "expensive": "Expensive",
@@ -168,6 +169,7 @@
         "helpEmergency": "Turn off only as a last resort to get below the power tariff (no frost guard)",
         "helpIgnore": "Ignore the unit completely (no frost guard)"
       },
+      "actionDirtCheap": "Actions when price is dirt cheap",
       "actionLow": "Actions when price is low",
       "actionHigh": "Actions when price is high",
       "actionExtreme": "Actions when price is extremely high",
@@ -188,6 +190,8 @@
         "minCheapTimeHint": "Regardless of the actual price, you can demand that the x cheapest hours of the day always set the price point to cheap.",
         "minExpensiveTime": "Minimum amount of expensive hours",
         "minExpensiveTimeHint": "Regardless of the actual price, you can demand that the x most expensive hours of the day should always set the price point to expensive.",
+        "dirtCheapPriceModifier": "Limit for dirt cheap price",
+        "dirtCheapPriceModifierHint": "If the current hourly price falls x% below the basis for price comparison, the price point is always set to Dirt cheap",
         "lowPriceModifier": "Limit for low price",
         "lowPriceModifierHint": "If the current hourly price falls x% below the basis for price comparison, the price point is always set to Low",
         "highPriceModifier": "Limit for expensive price",

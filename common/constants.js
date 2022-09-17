@@ -18,6 +18,13 @@ const PRICE_MODE_FLOW = 0;
 const PRICE_MODE_INTERNAL = 1;
 const PRICE_MODE_DISABLED = 2;
 
+// Price points
+const PP_LOW = 0;
+const PP_NORM = 1;
+const PP_HIGH = 2;
+const PP_EXTREME = 3;
+const PP_DIRTCHEAP = 4;
+
 // Logging classes
 const LOG_ERROR = 0;
 const LOG_INFO = 1;
@@ -37,6 +44,11 @@ module.exports = {
   PRICE_MODE_DISABLED,
   PRICE_MODE_FLOW,
   PRICE_MODE_INTERNAL,
+  PP_LOW,
+  PP_NORM,
+  PP_HIGH,
+  PP_EXTREME,
+  PP_DIRTCHEAP,
   LOG_ERROR,
   LOG_INFO,
   LOG_DEBUG,
