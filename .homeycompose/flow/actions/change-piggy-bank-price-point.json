@@ -17,6 +17,13 @@
       "name": "mode",
       "values": [
         {
+          "id": "4",
+          "label": {
+            "en": "Dirt cheap",
+            "no": "Grisebillig"
+          }
+        },
+        {
           "id": "0",
           "label": {
             "en": "Low",

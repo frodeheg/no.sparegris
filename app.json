@@ -204,8 +204,8 @@
               "no": "Prispunkt"
             },
             "example": {
-              "en": "Can be 'Low', 'Normal', 'High' or 'Extremely high'",
-              "no": "Kan være 'Lav', 'Normal', 'Høy' eller 'Ekstremt høy'"
+              "en": "Can be 'Dirt cheap', 'Low', 'Normal', 'High' or 'Extremely high'",
+              "no": "Kan være 'Grisebillig', 'Lav', 'Normal', 'Høy' eller 'Ekstremt høy'"
             }
           }
         ],
@@ -349,6 +349,13 @@
             "type": "dropdown",
             "name": "mode",
             "values": [
+              {
+                "id": "4",
+                "label": {
+                  "en": "Dirt cheap",
+                  "no": "Grisebillig"
+                }
+              },
               {
                 "id": "0",
                 "label": {
