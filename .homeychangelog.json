@@ -388,5 +388,8 @@
   },
   "0.14.2": {
     "en": "Added support for com.neo:NAS-WR02ZE and net.filllip-namron:4512744"
+  },
+  "0.14.3": {
+    "en": "Added support for Dirt cheap prices as requested by @Torbjorn_Melbye in the forum."
   }
 }
