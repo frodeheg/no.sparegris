@@ -391,5 +391,8 @@
   },
   "0.14.3": {
     "en": "Added support for Dirt cheap prices as requested by @Torbjorn_Melbye in the forum."
+  },
+  "0.14.4": {
+    "en": "Fixed crash bug introduced in version '0.14.3' for trigger 'price-point-changed'"
   }
 }
