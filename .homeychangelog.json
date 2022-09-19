@@ -403,5 +403,8 @@
   },
   "0.15.1": {
     "en": "The insight device can now display the new custom modes correctly."
+  },
+  "0.15.2": {
+    "en": "Removed debug function that should not have been enabled"
   }
 }
