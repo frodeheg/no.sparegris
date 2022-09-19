@@ -136,7 +136,7 @@ class PiggyBank extends Homey.App {
 
     // Version 0.8.15 and 0.14.3: Added new price modes
     const oldPriceActionList = this.homey.settings.get('priceActionList');
-    if (oldPriceActionList.length < 5) {
+    if (oldPriceActionList !== null && oldPriceActionList.length < 5) {
       const cheapActionList = oldPriceActionList[0];
       const normalActionList = oldPriceActionList[1];
       const highActionList = oldPriceActionList[2];
