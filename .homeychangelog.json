@@ -397,5 +397,8 @@
   },
   "0.14.5": {
     "en": "Added custom modes (up to 8 modes in total). Old action card for setting mode is now deprecated for new users but will still work for old users. If you want the new mode names to show up in the action cards you need to replace the action card with a new one."
+  },
+  "0.15.0": {
+    "en": "Bumped version (forgot to bump minor version in previous commit) + fixed spelling in the new action card for mode changes"
   }
 }
