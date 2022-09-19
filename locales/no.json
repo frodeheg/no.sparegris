@@ -39,12 +39,6 @@
         "about": "Om"
       }
     },
-    "tab": {
-      "normal": "Normal",
-      "night": "Natt",
-      "holiday": "Borte",
-      "custom": "Egen"
-    },
     "pricetab": {
       "dirtcheap": "Grisebillig",
       "cheap": "Billig",
@@ -53,10 +47,10 @@
       "extreme": "Ekstremt"
     },
     "opMode": {
-      "normal": "Normal",
+      "normal": "Dag",
       "night": "Natt",
-      "holiday": "Borte",
-      "custom": "Egen"
+      "holiday": "Ferie",
+      "custom": "Egendefinert"
     },
     "welcome": {
       "remaining": "Gjenværende oppgaver",
@@ -247,7 +241,8 @@
       "alwaysOff": "Alltid av",
       "device": "Enhet",
       "priority": "Prioritet",
-      "targetTemp": "Målverdi"
+      "targetTemp": "Målverdi",
+      "modeName": "Modus navn"
     },
     "saveButton": "Lagre Endringer",
     "alert": {

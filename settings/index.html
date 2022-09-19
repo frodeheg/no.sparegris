@@ -7,6 +7,7 @@
     <script type="text/javascript" src="./constants.js" data-origin="settings"></script>
     <script type="text/javascript" src="./devices.js" data-origin="settings"></script>
     <link href="style.css" rel="stylesheet" type="text/css">
+    <link href="trashcan.css" rel="stylesheet" type="text/css">
     <script type="text/javascript">
 
       // Text strings that must be fetched from homey
@@ -42,6 +43,10 @@
       var energyFlowRateText = "settings.welcome.taskEnergyFlowRate";
       var experimentalText = "settings.welcome.taskExperimental";
       var onGoingText = "settings.help.ongoing";
+      var modeNameDayText = "settings.opMode.normal";
+      var modeNameNightText = "settings.opMode.night";
+      var modeNameHolidayText = "settings.opMode.holiday";
+      var modeNameCustomText = "settings.opMode.custom";
       var deviceTypeText = [
         "settings.help.deviceTypeSwitch",
         "settings.help.deviceTypeHeater",
@@ -49,6 +54,8 @@
         "settings.help.deviceTypeAC",
         "settings.help.deviceTypeCharger",
       ];
+
+      var needModeRefresh = true;
 
       const KEEP = -1;
       const ALWAYS_OFF = 0;
@@ -69,7 +76,7 @@
         id_c: { name:"DeviceName 3", room: "Bad",     image: "https://as2.ftcdn.net/v2/jpg/02/49/76/93/1000_F_249769389_7su5tYXOvcjcehNCcWTwcjnHvSMkLocJ.jpg", use: true, priority: 0, thermostat_cap: false, driverId: 'default_switch' },
         id_d: { name:"DeviceName 4", room: "Bad",     image: "https://as2.ftcdn.net/v2/jpg/02/49/76/93/1000_F_249769389_7su5tYXOvcjcehNCcWTwcjnHvSMkLocJ.jpg", use: false, priority: 1, thermostat_cap: true, driverId: 'unsupported' }
       }
-      // The modelist is not indexed by id because it uses the index to sort the list
+      // The modeList is not indexed by id because it uses the index to sort the list
       var modeList = [
         // Normal
         [ { id: "id_a", operation: CONTROLLED, targetTemp: 24 },
@@ -78,9 +85,9 @@
           { id: "id_d", operation: CONTROLLED, targetTemp: 20 }
         ],
         [], // Night
-        [], // Away
-        []  // Custom
-      ]
+        [] // Away
+      ];
+      var modeNames = []
       var frostList = {} // Indexed by deviceId
       var zoneList = {} // Indexed by zone-id
       var priceActionList = [ {}, {}, {}, {}, {} ] // Indexed by deviceId
@@ -484,6 +491,13 @@
             object.value = object.max;
           }
           modeList[listNum][device_id]['targetTemp'] = object.value
+        }
+      }
+
+      function setModeName(object, mode) {
+        if (object.value != "") {
+          modeNames[mode] = object.value;
+          needModeRefresh = true;
         }
       }
 
@@ -979,17 +993,17 @@
       </fieldset>
 
       <div id="priceLowerPart">
-        <table width="100%" id="sub_tab_selector" class="tab">
+        <table width="100%" class="tab">
           <tr>
-            <td class="subtablinks" onclick="changePriceTab(event, PP_DIRTCHEAP)" id="subTabDirtCheap">
+            <td class="subtablinks" onclick="changePriceTab(event, PP_DIRTCHEAP)" id="subtablink0">
               <span data-i18n="settings.pricetab.dirtcheap">pricetab.dirtcheap</span></td>
-            <td class="subtablinks" onclick="changePriceTab(event, PP_LOW)" id="subTabCheap">
+            <td class="subtablinks" onclick="changePriceTab(event, PP_LOW)" id="subtablink1">
               <span data-i18n="settings.pricetab.cheap">pricetab.cheap</span></td>
-            <td class="subtablinks" onclick="changePriceTab(event, PP_NORM)" id="subTabNormal">
+            <td class="subtablinks" onclick="changePriceTab(event, PP_NORM)" id="subtablink2">
               <span data-i18n="settings.pricetab.normal">pricetab.normal</span></td>
-            <td class="subtablinks" onclick="changePriceTab(event, PP_HIGH)" id="subTabExpensive">
+            <td class="subtablinks" onclick="changePriceTab(event, PP_HIGH)" id="subtablink3">
               <span data-i18n="settings.pricetab.expensive">pricetab.expensive</span></td>
-            <td class="subtablinks" onclick="changePriceTab(event, PP_EXTREME)" id="subTabExtreme">
+            <td class="subtablinks" onclick="changePriceTab(event, PP_EXTREME)" id="subtablink4">
               <span data-i18n="settings.pricetab.extreme">pricetab.extreme</span></td>
           </tr>
         </table>
@@ -1045,15 +1059,15 @@
         <p id="operatingModeHint" class="hint" data-i18n="settings.mode.operatingModeHint">mode.operatingModeHint</p>
       </fieldset>
 
-      <table width="100%" id="tab_selector" class="tab">
+      <table width="100%" id="modeSelector" class="tab">
         <tr>
-          <td class="tablinks" onclick="changeTab(event, 'priorityPage', 0)" id="normalTab">
+          <td id="tablink0" class="tablinks" onclick="changeTab(event, 'priorityPage', 0);displaySaveHint();" id="normalTab">
             <span data-i18n="settings.tab.normal">tab.normal</span></td>
-          <td class="tablinks" onclick="changeTab(event, 'priorityPage', 1)" id="nightTab">
+          <td id="tablink1" class="tablinks" onclick="changeTab(event, 'priorityPage', 1);displaySaveHint();" id="nightTab">
             <span data-i18n="settings.tab.night">tab.night</span></td>
-          <td class="tablinks" onclick="changeTab(event, 'priorityPage', 2)" id="holidayTab">
+          <td id="tablink2" class="tablinks" onclick="changeTab(event, 'priorityPage', 2);displaySaveHint();" id="holidayTab">
             <span data-i18n="settings.tab.holiday">tab.holiday</span></td>
-          <td class="tablinks" onclick="changeTab(event, 'priorityPage', 3)" id="customTab">
+          <td id="tablink3" class="tablinks" onclick="changeTab(event, 'priorityPage', 3);displaySaveHint();" id="customTab">
             <span data-i18n="settings.tab.custom">tab.custom</span></td>
         </tr>
       </table>
@@ -1061,10 +1075,25 @@
       <fieldset>
         <legend><div class="blockHeader" data-i18n="settings.mode.priorities">mode.priorities</div> 
           <div class="hintButton" onclick="toggle(this,'hint6');toggle(this,'hint7');toggle(this,'hint8');return false;">i</div>
+          <div id="modeTrashCan" class="icon-trash" style="float:right;display:none" onClick="changeTab(event, 'priorityPage', -1);displaySaveHint();">
+            <div class="trash-lid" style="background-color: #e44"></div>
+            <div class="trash-container" style="background-color: #e44"></div>
+            <div class="trash-line-1"></div>
+            <div class="trash-line-2"></div>
+            <div class="trash-line-3"></div>
+          </div>
         </legend>
         <p id="hint6" class="hint" data-i18n="settings.mode.priorityHint1">mode.priorityHint1</p>
         <p id="hint7" class="hint" data-i18n="settings.mode.priorityHint2">mode.priorityHint2</p>
         <p id="hint8" class="hint" data-i18n="settings.mode.priorityHint3">mode.priorityHint3</p>
+        <div id="customModeFlags" style="display:none">
+          <table class="settings_table">
+            <tr>
+              <td class="settings_row_name"><label for="customModeName" data-i18n="settings.mode.modeName">mode.modeName</label>:</td>
+              <td class="settings_row_input"><input id="customModeName" type="text" onchange="setModeName(this, currentModeTab-3);displaySaveHint()"></td>
+            </tr>
+          </table>
+        </div>
         <span id="priorityList">List of devices should have been generated here, if you see this text it is a bug...</span>
       </fieldset>
     </div>
@@ -1094,6 +1123,7 @@
       var maxPowerLoaded = false;
       var deviceListLoaded = false;
       var modeListLoaded = false;
+      var modeNamesLoaded = false;
       var priceModeLoaded = false;
       var pricePointLoaded = false;
       var priceActionListLoaded = false;
@@ -1111,6 +1141,7 @@
           `maxPowerLoaded: ${maxPowerLoaded}<br>` +
           `deviceListLoaded: ${deviceListLoaded}<br>` +
           `modeListLoaded: ${modeListLoaded}<br>` +
+          `modeNamesLoaded: ${modeNamesLoaded}<br>` +
           `operatingModeLoaded: ${operatingModeLoaded}<br>` +
           `errorMarginLoaded: ${errorMarginLoaded}<br>` +
           `controlTempLoaded: ${controlTempLoaded}<br>` +
@@ -1128,6 +1159,7 @@
         if (maxPowerLoaded
           && deviceListLoaded
           && modeListLoaded
+          && modeNamesLoaded
           && operatingModeLoaded
           && errorMarginLoaded
           && controlTempLoaded
@@ -1151,7 +1183,6 @@
           updatePricePoints(currentPricePoint);
           loadElement.style.display = "none";
           document.getElementById("main_menu").style.display = "table";
-          document.getElementById("tab_selector").style.display = "inline-block";
           document.getElementById("save").style.display = "inline-block";
           document.getElementById("errorMargin").value = currentErrorMargin;
           document.getElementById("freeThreshold").value = currentfreeThreshold;
@@ -1231,6 +1262,10 @@
         energyFlowRateText = Homey.__(energyFlowRateText);
         experimentalText = Homey.__(experimentalText);
         onGoingText = Homey.__(onGoingText);
+        modeNameDayText = Homey.__(modeNameDayText);
+        modeNameNightText = Homey.__(modeNameNightText);
+        modeNameHolidayText = Homey.__(modeNameHolidayText);
+        modeNameCustomText = Homey.__(modeNameCustomText);
         deviceTypeText[0] = Homey.__(deviceTypeText[0]);
         deviceTypeText[1] = Homey.__(deviceTypeText[1]);
         deviceTypeText[2] = Homey.__(deviceTypeText[2]);
@@ -1299,11 +1334,22 @@
             modeList = [
               [], // Normal
               [], // Night
-              [], // Holiday
-              []  // Custom
+              []  // Holiday
             ]
           }
           modeListLoaded = true;
+          checkLoadingDone();
+        })
+        // Get the mode names
+        Homey.get("modeNames", function (err, myModeNames) {
+          if (err) return Homey.alert(err);
+          if (Array.isArray(myModeNames)) {
+            modeNames = myModeNames;
+          } else {
+            // First time called
+            modeNames = modeList.slice(3,8).map(x => `Custom mode`);
+          }
+          modeNamesLoaded = true;
           checkLoadingDone();
         })
         Homey.get("frostList", function (err, myFrostList) {
@@ -1457,6 +1503,7 @@
               Homey.set("futurePriceOptions", futurePriceOptions, errFunc);
               Homey.set("deviceList", deviceList, errFunc);
               Homey.set("modeList", modeList, errFunc);
+              Homey.set("modeNames", modeNames, errFunc);
               Homey.set("frostList", frostList, errFunc);
               Homey.set("zones", zoneList, errFunc);
               Homey.set("maxPower", maxPowerElement.value, errFunc);
@@ -1609,14 +1656,27 @@
         }
 
         // Show the current tab, and add an "active" class to the button that opened the tab
-        if (evt) evt.currentTarget.className += " active";
+        const currentTarget = document.getElementById(`subtablink${tabPage+1}`);
+        if (currentTarget) currentTarget.className += " active";
       }
 
-      function refreshModeLists() {
-        for (var modeId = 0; modeId < modeList.length; modeId++) {
+      // -- Mode Tab control -- //
+      function refreshModeLists(newMode) {
+        // add one new mode if '+' buttin is pressed
+        const addMode = (newMode >= modeList.length && modeList.length < 8);
+        const removeMode = (newMode == -1 && modeList.length > 3)
+        if (addMode) {
+          modeList.push([ ...modeList[0] ]);
+          modeNames.push(`${modeNameCustomText} ${modeList.length-3}`);
+        }
+        if (removeMode) {
+          modeList.pop();
+          modeNames = modeNames.slice(0,modeList.length-3);
+        }
+        for (let modeId = 0; modeId < modeList.length; modeId++) {
           var up_to_date_elements = {};
           // First remove devices that are no longer in use.
-          for (var i = modeList[modeId].length-1; i >= 0 ; i--) {
+          for (let i = modeList[modeId].length-1; i >= 0 ; i--) {
             if (!(modeList[modeId][i].id in deviceList) || !deviceList[modeList[modeId][i].id].use) {
               modeList[modeId].splice(i, 1);
             } else {
@@ -1624,7 +1684,7 @@
             }
           }
           // Add new devices
-          for (var key in deviceList) {
+          for (let key in deviceList) {
             if (deviceList[key].use && !(key in up_to_date_elements)) {
               // Adjust target to accomodate for both mode, water heaters and make room for price point deltas
               let targetTemp = deviceList[key].targetTemp;
@@ -1632,11 +1692,55 @@
                 case 0: targetTemp = (targetTemp > 50) ? 65 : targetTemp; break; // Normal
                 case 1: targetTemp = (targetTemp > 50) ? 65 : Math.round(targetTemp*0.8); break; // Night
                 case 2: targetTemp = (targetTemp > 50) ? 30 : Math.round(targetTemp*0.25); break; // Away
+                default:
                 case 3: targetTemp = (targetTemp > 50) ? 65 : Math.round(targetTemp*0.5); break; // Custom
               }
               modeList[modeId].push({ id: key, operation: CONTROLLED, targetTemp: targetTemp });
             }
           }
+        }
+        if (addMode || removeMode || needModeRefresh) {
+          // Aquire Mode names
+          const allModeNames = [
+            modeNameDayText,
+            modeNameNightText,
+            modeNameHolidayText
+          ];
+          for (let i = 0; i < modeList.length-3; i++) {
+            allModeNames.push(modeNames[i]);
+          }
+          if (modeList.length < 8) {
+            allModeNames.push('+');
+          }
+          // Update Current mode selector
+          const currentModeElement = document.getElementById('operatingMode');
+          let newOperationModeText = '';
+          for (let modeId = 1; modeId <= modeList.length; modeId++) {
+            let selectedText = (currentOperatingMode === modeId) ? " selected": "";
+            newOperationModeText +=
+              `<option value="${modeId}"${selectedText}>${allModeNames[modeId-1]}</option>`;
+          }
+          currentModeElement.innerHTML = newOperationModeText;
+          // Update Mode list selector
+          const modeSelectorElement = document.getElementById('modeSelector');
+          const numRows = (modeList.length === 3) ? 1 : 2;
+          let newModeSelectorText = '';
+          for (let row=0; row < numRows; row++) {
+            newModeSelectorText += '<tr>';
+            for (let col=0; col < 4; col++) {
+              let modeId = row*4 + col + 1;
+              let active = modeId <= allModeNames.length;
+              let saveHint = modeId == (modeList.length+1) ? 'displaySaveHint();' : '';
+              let onClick = ` onclick="changeTab(event, 'priorityPage', ${modeId-1});${saveHint}"`;
+              newModeSelectorText += active ?
+                `<td id="tablink${modeId-1}" class="tablinks"${onClick}>${allModeNames[modeId-1]}</td>`
+                  : '<td class="emptytab">&nbsp;</td>';
+
+            }
+            newModeSelectorText += '</tr>';
+          }
+          modeSelectorElement.innerHTML = newModeSelectorText;
+          needModeRefresh = false;
         }
       }
 
@@ -1679,6 +1783,8 @@
       // -- Tab control -- //
       function changeTab(evt, tabPage, modeId = undefined) {
         var i, tabcontent, tablinks;
+        let currentTarget;
+        if (evt) currentTarget = evt.currentTarget;
 
         // Update notifications in Welcome Page
         if (tabPage == 'welcomePage') {
@@ -1703,9 +1809,28 @@
         
         // Refresh the mode lists
         if (tabPage == 'priorityPage') {
-          refreshModeLists();
+          refreshModeLists(modeId);
+          if (modeId == -1 && currentModeTab < modeList.length) {
+            document.getElementById("debug").innerHTML = `<br><br><br>LT: ${modeId} ${modeList.length} ${currentModeTab}`;
+            modeId = currentModeTab;
+          } else if (modeId == -1) {
+            modeId = modeList.length - 1;
+          }
           generatePriorityList(modeId);
           currentModeTab = modeId;
+
+          currentTarget = document.getElementById(`tablink${modeId}`);
+          if (modeId > 2 && modeId == modeList.length -1) {
+            document.getElementById('modeTrashCan').style.display = 'block';
+          } else {
+            document.getElementById('modeTrashCan').style.display = 'none';
+          }
+          if (modeId > 2) {
+            document.getElementById('customModeFlags').style.display = 'block';
+            document.getElementById('customModeName').value = modeNames[modeId-3];
+          } else {
+            document.getElementById('customModeFlags').style.display = 'none';
+          }
         }
 
         // Get all elements with class="tabcontent" and hide them
@@ -1722,7 +1847,7 @@
 
         // Show the current tab, and add an "active" class to the button that opened the tab
         document.getElementById(tabPage).style.display = "block";
-        if (evt) evt.currentTarget.className += " active";
+        if (evt) currentTarget.className += " active";
 
         if (tabPage == 'logPage') {
           // Make the log text area fill the page
@@ -1737,11 +1862,12 @@
 
       // For testing only -
       // Remove when used on homey
-      /*if (navigator.userAgent == "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:101.0) Gecko/20100101 Firefox/101.0") {
+      if (navigator.userAgent == "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:101.0) Gecko/20100101 Firefox/101.0") {
         // Not homey, but debug mode
         maxPowerLoaded = true;
         deviceListLoaded = true;
         modeListLoaded = true;
+        modeNamesLoaded = true;
         frostListLoaded = true;
         zoneListLoaded = true;
         operatingModeLoaded = true;
@@ -1759,7 +1885,7 @@
         setTimeout(function () {
           checkLoadingDone();
         }, 1 * 1000);
-      }*/
+      }
     </script>
   </body>
 </html>

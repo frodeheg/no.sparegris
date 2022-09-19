@@ -1,0 +1,28 @@
+{
+  "title": {
+    "en": "Change Piggy Bank mode",
+    "no": "Endre Sparegris modus"
+  },
+  "titleFormatted": {
+    "en": "Set the Piggy Bank operation mode to [[mode]]",
+    "no": "Sett Sparegris driftsmodus til [[mode]]"
+  },
+  "hint": {
+    "en": "Allows you to switch between night, normal and other operation modes",
+    "no": "Lar deg bytte mellom natt, normal og andre driftsmoduser"
+  },
+  "args": [
+    {
+      "type": "autocomplete",
+      "name": "mode",
+      "title": {
+        "en": "Mode",
+        "no": "Modus"
+      },
+      "placeholder": {
+        "en": "Operation mode",
+        "no": "Driftsmodus"
+      }
+    }
+  ]
+}

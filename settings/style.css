@@ -88,12 +88,13 @@ p {
     font-size: 10px !important;
   }
   
-  /* Change background color of buttons on hover */
-  .tab td:hover {
+/* Change background color of buttons on hover */
+  .subtablinks:hover,
+  .tablinks:hover {
     font-weight: bold;
     background-color: #ddd;
   }
-  
+
   /* Create an active/current tablink class */
   .tab td.active {
     background-color: #ccc;
@@ -199,10 +200,6 @@ p {
 }
 
 #save {
-  display: none;
-}
-
-#tab_selector {
   display: none;
 }
 

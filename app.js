@@ -84,11 +84,11 @@ class PiggyBank extends Homey.App {
       if (modeList[0].length !== numControlledDevices
         || modeList[1].length !== numControlledDevices
         || modeList[2].length !== numControlledDevices
-        || modeList[3].length !== numControlledDevices
         || Object.keys(actionList[0]).length !== numControlledDevices
         || Object.keys(actionList[1]).length !== numControlledDevices
         || Object.keys(actionList[2]).length !== numControlledDevices) return false;
     } catch (err) {
+      this.updateLog(`Validate error: ${err}`, c.LOG_ERROR);
       return false;
     }
     return true;
@@ -144,6 +144,14 @@ class PiggyBank extends Homey.App {
       const dirtCheapActionList = oldPriceActionList[4] || cheapActionList; // Added in version 0.14.3
       const newPriceActionList = [cheapActionList, normalActionList, highActionList, extremeActionList, dirtCheapActionList];
       this.homey.settings.set('priceActionList', newPriceActionList);
+    }
+
+    // Version 0.14.5 Adds custom Modes
+    const modeNames = this.homey.settings.get('modeNames');
+    const modeList = this.homey.settings.get('modeList');
+    if (Array.isArray(modeList) && !Array.isArray(modeNames)) {
+      const modeNames = modeList.slice(3, 8).map(x => this.homey.__('settings.opMode.custom'));
+      this.homey.settings.set('modeNames', modeNames);
     }
 
     // ===== BREAKING CHANGES END =====
@@ -268,6 +276,18 @@ class PiggyBank extends Homey.App {
       if (!this.app_is_configured) return Promise.reject(new Error(this.homey.__('warnings.notConfigured')));
       return this.onModeUpdate(+args.mode);
     });
+    const cardActionModeUpdate2 = this.homey.flow.getActionCard('change-piggy-bank-mode2');
+    cardActionModeUpdate2.registerRunListener(async args => {
+      if (preventZigbee) return Promise.reject(new Error(this.homey.__('warnings.homeyReboot')));
+      if (!this.app_is_configured) return Promise.reject(new Error(this.homey.__('warnings.notConfigured')));
+      return this.onModeUpdate(+args.mode.id);
+    });
+    cardActionModeUpdate2.registerArgumentAutocompleteListener(
+      'mode',
+      async (query, args) => {
+        return this.generateModeList(query, args);
+      }
+    );
     const cardActionPricePointUpdate = this.homey.flow.getActionCard('change-piggy-bank-price-point');
     cardActionPricePointUpdate.registerRunListener(async args => {
       if (preventZigbee) return Promise.reject(new Error(this.homey.__('warnings.homeyReboot')));
@@ -342,6 +362,32 @@ class PiggyBank extends Homey.App {
 
     this.updateLog('PiggyBank has been initialized', c.LOG_INFO);
     return Promise.resolve();
+  }
+
+  /**
+   * Warning: homey does not report any errors if this function crashes, so make sure it doesn't crash
+   */
+  async generateModeList(query, args) {
+    const results = [
+      { name: this.homey.__('settings.app.disabled'), description: '', id: '0' },
+      { name: this.homey.__('settings.opMode.normal'), description: '', id: '1' },
+      { name: this.homey.__('settings.opMode.night'), description: '', id: '2' },
+      { name: this.homey.__('settings.opMode.holiday'), description: '', id: '3' }
+    ];
+    const modeNames = this.homey.settings.get('modeNames');
+    if (Array.isArray(modeNames)) {
+      for (const nameId in modeNames) {
+        const mode = {
+          name: modeNames[nameId],
+          description: `${this.homey.__('settings.opMode.custom')} ${+nameId + 1}`,
+          id: `${4 + nameId}`
+        };
+        results.push(mode);
+      }
+    }
+    return results.filter(result => {
+      return result.name.toLowerCase().includes(query.toLowerCase());
+    });
   }
 
   /**
@@ -897,9 +943,18 @@ class PiggyBank extends Homey.App {
 
   /**
    * onModeUpdate is called whenever the operation mode is changed
+   * 0 = off
+   * 1+ = modes 0+
    */
   async onModeUpdate(newMode) {
     const oldMode = +this.homey.settings.get('operatingMode');
+    const modeList = this.homey.settings.get('modeList');
+    if (newMode < 0) {
+      newMode = 0;
+    }
+    if (newMode > modeList.length) {
+      newMode = modeList.length;
+    }
     if (newMode === oldMode) {
       return Promise.resolve();
     }

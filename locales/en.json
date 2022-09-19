@@ -39,12 +39,6 @@
         "about": "About"
       }
     },
-    "tab": {
-      "normal": "Normal",
-      "night": "Night",
-      "holiday": "Away",
-      "custom": "Custom"
-    },
     "pricetab": {
       "dirtcheap": "Dirt cheap",
       "cheap": "Cheap",
@@ -53,9 +47,9 @@
       "extreme": "Extreme"
     },
     "opMode": {
-      "normal": "Normal",
+      "normal": "Day",
       "night": "Night",
-      "holiday": "Away",
+      "holiday": "Vacation",
       "custom": "Custom"
     },
     "welcome": {
@@ -247,7 +241,8 @@
       "alwaysOff": "Always Off",
       "device": "Device",
       "priority": "Priority",
-      "targetTemp": "Target"
+      "targetTemp": "Target",
+      "modeName": "Mode name"
     },
     "saveButton": "Save changes",
     "alert": {

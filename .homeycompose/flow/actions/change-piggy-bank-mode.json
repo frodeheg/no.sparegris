@@ -1,4 +1,5 @@
 {
+  "deprecated": true,
   "title": {
     "en": "Change Piggy Bank mode",
     "no": "Endre Sparegris modus"
@@ -8,8 +9,8 @@
     "no": "Sett Sparegris driftsmodus til [[mode]]"
   },
   "hint": {
-    "en": "Allows you to switch between night, normal and other operation modes",
-    "no": "Lar deg bytte mellom natt, normal og andre driftsmoduser"
+    "en": "This action card has been deprecated, please replace it to get custom modes with custom names",
+    "no": "Dette kortet er utdatert, vennligst bytt det ut for å få egendefinerte navn på moduser"
   },
   "args": [
     {
@@ -26,8 +27,8 @@
         {
           "id": "1",
           "label": {
-            "en": "Normal",
-            "no": "Normal"
+            "en": "Day",
+            "no": "Dag"
           }
         },
         {
@@ -40,15 +41,43 @@
         {
           "id": "3",
           "label": {
-            "en": "Away",
-            "no": "Bortreist"
+            "en": "Vacation",
+            "no": "Ferie"
           }
         },
         {
           "id": "4",
           "label": {
-            "en": "Custom",
-            "no": "Egendefinert"
+            "en": "Custom 1",
+            "no": "Egendefinert 1"
+          }
+        },
+        {
+          "id": "5",
+          "label": {
+            "en": "Custom 2",
+            "no": "Egendefinert 2"
+          }
+        },
+        {
+          "id": "6",
+          "label": {
+            "en": "Custom 3",
+            "no": "Egendefinert 3"
+          }
+        },
+        {
+          "id": "7",
+          "label": {
+            "en": "Custom 4",
+            "no": "Egendefinert 4"
+          }
+        },
+        {
+          "id": "8",
+          "label": {
+            "en": "Custom 5",
+            "no": "Egendefinert 5"
           }
         }
       ]
