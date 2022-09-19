@@ -406,5 +406,8 @@
   },
   "0.15.2": {
     "en": "Removed debug function that should not have been enabled"
+  },
+  "0.15.3": {
+    "en": "Fixed crash bug for new users as reported by Solvik"
   }
 }
