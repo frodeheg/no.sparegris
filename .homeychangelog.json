@@ -400,5 +400,8 @@
   },
   "0.15.0": {
     "en": "Bumped version (forgot to bump minor version in previous commit) + fixed spelling in the new action card for mode changes"
+  },
+  "0.15.1": {
+    "en": "The insight device can now display the new custom modes correctly."
   }
 }
