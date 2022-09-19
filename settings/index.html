@@ -6,6 +6,7 @@
     <script type="text/javascript" src="/homey.js" data-origin="settings"></script>
     <script type="text/javascript" src="./constants.js" data-origin="settings"></script>
     <script type="text/javascript" src="./devices.js" data-origin="settings"></script>
+    <script type="text/javascript" src="./chart.js" data-origin="settings"></script>
     <link href="style.css" rel="stylesheet" type="text/css">
     <link href="trashcan.css" rel="stylesheet" type="text/css">
     <script type="text/javascript">
@@ -707,6 +708,9 @@
         </table>
 
       </fieldset>
+
+      <canvas id="tariffGuideChart" style="width:100%;max-width:700px;display:none"></canvas>
+
     </div>
 
     <!-- Help page: How to save money -->
@@ -1133,6 +1137,56 @@
       var futurePriceOptionsLoaded = false;
       var appConfigProgressLoaded = false;
       var onHomeyReadyCompleted = false;
+
+      /*
+      // DEBUG CODE FOR GRAHPS - NOT READY TO BE ENABLED YET
+      var dailyMax = [4000, 4900, 4300, 4800, 4500];
+
+      new Chart("tariffGuideChart", {
+        data: {
+          labels: [1, 2, 3, 4, 5],
+          datasets: [{
+            type: 'line',
+            label: 'Trinn 3',
+            borderColor: "black",
+            pointBackgroundColor: "black",
+            data: [5000, 5000, 5000, 5000, 5000],
+          }, {
+            type: 'line',
+            label: 'Trinn 2',
+            borderColor: "black",
+            pointBackgroundColor: "black",
+            data: [2500, 2500, 2500, 2500, 2500],
+          }, {
+            type: 'line',
+            label: 'Estimert tariffguide',
+            borderDash: [10, 20],
+            borderColor: "gray",
+            pointBackgroundColor: "gray",
+            data: [4500, 4500, 4500, 4500, 4500],
+          }, {
+            type: "bar",
+            label: 'Høyeste time',
+            backgroundColor: ["green", "green","red","green","green"],
+            borderColor: ["black", "blue", "black"],
+            borderWidth: 4,
+            data: dailyMax
+          }]
+        },
+        options: {
+          plugins: {
+            legend: {
+              display: true,
+              position: 'bottom'
+            },
+            title: {
+              display: true,
+              text: 'Månedens høyeste timer'
+            }
+          }
+        }
+      });
+      document.getElementById("tariffGuideChart").style.display='block';*/
 
       // Called whenever things has been loaded
       function checkLoadingDone() {
