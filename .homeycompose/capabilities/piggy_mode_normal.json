@@ -9,12 +9,12 @@
     "uiComponent": null,
     "uiQuickAction": false,
     "insightsTitleTrue": {
-      "en": "Changed to Normal mode",
-      "no": "Endret til Normal modus"
+      "en": "Changed to Day mode",
+      "no": "Endret til Dagsmodus"
     },
     "insights": true,
     "insightsTitleFalse": {
-      "en": "Changed to Normal mode",
-      "no": "Endret til Normal modus"
+      "en": "Changed to Day mode",
+      "no": "Endret til Dagsmodus"
     }
 }

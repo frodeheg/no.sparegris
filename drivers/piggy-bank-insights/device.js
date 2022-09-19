@@ -76,6 +76,21 @@ class MyDevice extends Device {
     if (this.hasCapability('piggy_price_dirt_cheap') === false) {
       this.addCapability('piggy_price_dirt_cheap');
     }
+
+    // Added capabilities in version 0.15.1
+    if (this.hasCapability('piggy_mode_custom2') === false) {
+      this.addCapability('piggy_mode_custom2');
+    }
+    if (this.hasCapability('piggy_mode_custom3') === false) {
+      this.addCapability('piggy_mode_custom3');
+    }
+    if (this.hasCapability('piggy_mode_custom4') === false) {
+      this.addCapability('piggy_mode_custom4');
+    }
+    if (this.hasCapability('piggy_mode_custom5') === false) {
+      this.addCapability('piggy_mode_custom5');
+    }
+
     // === Athom seem to have disabled permission for apps to delete logs even for their own devices ===
     // if (this.homey.app.homeyApi.insights.getLog({ uri: `homey:device:${this.deviceId}`, id: 'piggy_money.acceptable_price' })) {
     //   this.homey.app.homeyApi.insights.deleteLog({ uri: `homey:device:${this.deviceId}`, id: 'piggy_money.acceptable_price' });
@@ -324,6 +339,10 @@ class MyDevice extends Device {
           case 2: this.toggleCapability('piggy_mode_night'); break;
           case 3: this.toggleCapability('piggy_mode_holiday'); break;
           case 4: this.toggleCapability('piggy_mode_custom'); break;
+          case 5: this.toggleCapability('piggy_mode_custom2'); break;
+          case 6: this.toggleCapability('piggy_mode_custom3'); break;
+          case 7: this.toggleCapability('piggy_mode_custom4'); break;
+          case 8: this.toggleCapability('piggy_mode_custom5'); break;
           default: /* Broken input should not happen */ break;
         }
       }

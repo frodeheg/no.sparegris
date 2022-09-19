@@ -595,6 +595,10 @@
         "piggy_mode_night",
         "piggy_mode_holiday",
         "piggy_mode_custom",
+        "piggy_mode_custom2",
+        "piggy_mode_custom3",
+        "piggy_mode_custom4",
+        "piggy_mode_custom5",
         "piggy_price_dirt_cheap",
         "piggy_price_low",
         "piggy_price_normal",
@@ -986,8 +990,8 @@
         {
           "id": "1",
           "title": {
-            "en": "Normal",
-            "no": "Normal"
+            "en": "Day",
+            "no": "Dag"
           }
         },
         {
@@ -1000,15 +1004,43 @@
         {
           "id": "3",
           "title": {
-            "en": "Away",
-            "no": "Borte"
+            "en": "Vacation",
+            "no": "Ferie"
           }
         },
         {
           "id": "4",
           "title": {
-            "en": "Custom",
-            "no": "Egen"
+            "en": "Custom 1",
+            "no": "Egendefinert 1"
+          }
+        },
+        {
+          "id": "5",
+          "title": {
+            "en": "Custom 2",
+            "no": "Egendefinert 2"
+          }
+        },
+        {
+          "id": "6",
+          "title": {
+            "en": "Custom 3",
+            "no": "Egendefinert 3"
+          }
+        },
+        {
+          "id": "7",
+          "title": {
+            "en": "Custom 4",
+            "no": "Egendefinert 4"
+          }
+        },
+        {
+          "id": "8",
+          "title": {
+            "en": "Custom 5",
+            "no": "Egendefinert 5"
           }
         }
       ],
@@ -1027,13 +1059,93 @@
       "uiComponent": null,
       "uiQuickAction": false,
       "insightsTitleTrue": {
-        "en": "Changed to Custom mode",
-        "no": "Endret til Egendefinert modus"
+        "en": "Changed to Custom mode 1",
+        "no": "Endret til Egendefinert modus 1"
       },
       "insights": true,
       "insightsTitleFalse": {
-        "en": "Changed to Custom mode",
-        "no": "Endret til Egendefinert modus"
+        "en": "Changed to Custom mode 1",
+        "no": "Endret til Egendefinert modus 1"
+      }
+    },
+    "piggy_mode_custom2": {
+      "type": "boolean",
+      "title": {
+        "en": "Mode",
+        "no": "Driftsmodus"
+      },
+      "getable": true,
+      "setable": false,
+      "uiComponent": null,
+      "uiQuickAction": false,
+      "insightsTitleTrue": {
+        "en": "Changed to Custom mode 2",
+        "no": "Endret til Egendefinert modus 2"
+      },
+      "insights": true,
+      "insightsTitleFalse": {
+        "en": "Changed to Custom mode 2",
+        "no": "Endret til Egendefinert modus 2"
+      }
+    },
+    "piggy_mode_custom3": {
+      "type": "boolean",
+      "title": {
+        "en": "Mode",
+        "no": "Driftsmodus"
+      },
+      "getable": true,
+      "setable": false,
+      "uiComponent": null,
+      "uiQuickAction": false,
+      "insightsTitleTrue": {
+        "en": "Changed to Custom mode 3",
+        "no": "Endret til Egendefinert modus 3"
+      },
+      "insights": true,
+      "insightsTitleFalse": {
+        "en": "Changed to Custom mode 3",
+        "no": "Endret til Egendefinert modus 3"
+      }
+    },
+    "piggy_mode_custom4": {
+      "type": "boolean",
+      "title": {
+        "en": "Mode",
+        "no": "Driftsmodus"
+      },
+      "getable": true,
+      "setable": false,
+      "uiComponent": null,
+      "uiQuickAction": false,
+      "insightsTitleTrue": {
+        "en": "Changed to Custom mode 4",
+        "no": "Endret til Egendefinert modus 4"
+      },
+      "insights": true,
+      "insightsTitleFalse": {
+        "en": "Changed to Custom mode 4",
+        "no": "Endret til Egendefinert modus 4"
+      }
+    },
+    "piggy_mode_custom5": {
+      "type": "boolean",
+      "title": {
+        "en": "Mode",
+        "no": "Driftsmodus"
+      },
+      "getable": true,
+      "setable": false,
+      "uiComponent": null,
+      "uiQuickAction": false,
+      "insightsTitleTrue": {
+        "en": "Changed to Custom mode 5",
+        "no": "Endret til Egendefinert modus 5"
+      },
+      "insights": true,
+      "insightsTitleFalse": {
+        "en": "Changed to Custom mode 5",
+        "no": "Endret til Egendefinert modus 5"
       }
     },
     "piggy_mode_disabled": {
@@ -1067,13 +1179,13 @@
       "uiComponent": null,
       "uiQuickAction": false,
       "insightsTitleTrue": {
-        "en": "Changed to Away mode",
-        "no": "Endret til Bortreist modus"
+        "en": "Changed to Vacation mode",
+        "no": "Endret til Feriemodus"
       },
       "insights": true,
       "insightsTitleFalse": {
-        "en": "Changed to Away mode",
-        "no": "Endret til Bortreist modus"
+        "en": "Changed to Vacation mode",
+        "no": "Endret til Feriemodus"
       }
     },
     "piggy_mode_night": {
@@ -1107,13 +1219,13 @@
       "uiComponent": null,
       "uiQuickAction": false,
       "insightsTitleTrue": {
-        "en": "Changed to Normal mode",
-        "no": "Endret til Normal modus"
+        "en": "Changed to Day mode",
+        "no": "Endret til Dagsmodus"
       },
       "insights": true,
       "insightsTitleFalse": {
-        "en": "Changed to Normal mode",
-        "no": "Endret til Normal modus"
+        "en": "Changed to Day mode",
+        "no": "Endret til Dagsmodus"
       }
     },
     "piggy_money": {

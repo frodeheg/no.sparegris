@@ -17,8 +17,8 @@
       {
         "id": "1",
         "title": {
-          "en": "Normal",
-          "no": "Normal"
+          "en": "Day",
+          "no": "Dag"
         }
       },
       {
@@ -31,15 +31,43 @@
       {
         "id": "3",
         "title": {
-          "en": "Away",
-          "no": "Borte"
+          "en": "Vacation",
+          "no": "Ferie"
         }
       },
       {
         "id": "4",
         "title": {
-          "en": "Custom",
-          "no": "Egen"
+          "en": "Custom 1",
+          "no": "Egendefinert 1"
+        }
+      },
+      {
+        "id": "5",
+        "title": {
+          "en": "Custom 2",
+          "no": "Egendefinert 2"
+        }
+      },
+      {
+        "id": "6",
+        "title": {
+          "en": "Custom 3",
+          "no": "Egendefinert 3"
+        }
+      },
+      {
+        "id": "7",
+        "title": {
+          "en": "Custom 4",
+          "no": "Egendefinert 4"
+        }
+      },
+      {
+        "id": "8",
+        "title": {
+          "en": "Custom 5",
+          "no": "Egendefinert 5"
         }
       }
     ],

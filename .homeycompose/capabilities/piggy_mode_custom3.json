@@ -9,12 +9,12 @@
     "uiComponent": null,
     "uiQuickAction": false,
     "insightsTitleTrue": {
-      "en": "Changed to Custom mode 1",
-      "no": "Endret til Egendefinert modus 1"
+      "en": "Changed to Custom mode 3",
+      "no": "Endret til Egendefinert modus 3"
     },
     "insights": true,
     "insightsTitleFalse": {
-      "en": "Changed to Custom mode 1",
-      "no": "Endret til Egendefinert modus 1"
+      "en": "Changed to Custom mode 3",
+      "no": "Endret til Egendefinert modus 3"
     }
 }
