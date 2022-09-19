@@ -409,5 +409,8 @@
   },
   "0.15.3": {
     "en": "Fixed crash bug for new users as reported by Solvik"
+  },
+  "0.15.4": {
+    "en": "Fixed a bug that alerted new users that there was an error when saving the settings."
   }
 }
