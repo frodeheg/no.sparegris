@@ -370,8 +370,8 @@
           "no": "Sett Sparegris driftsmodus til [[mode]]"
         },
         "hint": {
-          "en": "Allows you to switch between night, normal and other operation modes",
-          "no": "Lar deg bytte mellom natt, normal og andre driftsmoduser"
+          "en": "Allows you to switch between day, night and other operation modes",
+          "no": "Lar deg bytte mellom dag, natt og andre driftsmoduser"
         },
         "args": [
           {
