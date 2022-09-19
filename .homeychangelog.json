@@ -394,5 +394,8 @@
   },
   "0.14.4": {
     "en": "Fixed crash bug introduced in version '0.14.3' for trigger 'price-point-changed'"
+  },
+  "0.14.5": {
+    "en": "Added custom modes (up to 8 modes in total). Old action card for setting mode is now deprecated for new users but will still work for old users. If you want the new mode names to show up in the action cards you need to replace the action card with a new one."
   }
 }
