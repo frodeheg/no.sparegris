@@ -1,0 +1,28 @@
+{
+  "title": {
+    "en": "The mode !{{is|isn't}}",
+    "no": "Driftsmodus !{{er|er ikke}}"
+  },
+  "titleFormatted": {
+    "en": "The mode is equal to [[mode]]",
+    "no": "Driftsmodus er lik [[mode]]"
+  },
+  "hint": {
+    "en": "Use this card to check when the app operation mode is equal to a certain value.",
+    "no": "Bruk dette flytkortet til å sjekke om appens driftsmodus er lik en bestemt verdi."
+  },
+  "args": [
+    {
+      "type": "autocomplete",
+      "name": "mode",
+      "title": {
+        "en": "Mode",
+        "no": "Modus"
+      },
+      "placeholder": {
+        "en": "Operation mode",
+        "no": "Driftsmodus"
+      }
+    }
+  ]
+}

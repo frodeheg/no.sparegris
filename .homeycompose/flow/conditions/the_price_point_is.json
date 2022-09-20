@@ -1,0 +1,57 @@
+{
+  "title": {
+    "en": "The price point !{{is|isn't}}",
+    "no": "Prispunkt !{{er|er ikke}}"
+  },
+  "titleFormatted": {
+    "en": "The price point is equal to [[mode]]",
+    "no": "Prispunktet er lik [[mode]]"
+  },
+  "hint": {
+    "en": "Use this flow card to check if the price point is a certain value.",
+    "no": "Bruk dette flytkortet til å sjekke om prispunktet er en bestemt verdi."
+  },
+  "args": [
+    {
+      "type": "dropdown",
+      "name": "mode",
+      "values": [
+        {
+          "id": "4",
+          "label": {
+            "en": "Dirt cheap",
+            "no": "Grisebillig"
+          }
+        },
+        {
+          "id": "0",
+          "label": {
+            "en": "Low",
+            "no": "Lav"
+          }
+        },
+        {
+          "id": "1",
+          "label": {
+            "en": "Normal",
+            "no": "Normal"
+          }
+        },
+        {
+          "id": "2",
+          "label": {
+            "en": "High",
+            "no": "Høy"
+          }
+        },
+        {
+          "id": "3",
+          "label": {
+            "en": "Extremely high",
+            "no": "Ekstremt høy"
+          }
+        }
+      ]
+    }
+  ]
+}

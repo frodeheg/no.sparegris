@@ -326,6 +326,22 @@ class PiggyBank extends Homey.App {
       if (+this.homey.settings.get('operatingMode') === MODE_DISABLED) return Promise.reject(new Error(this.homey.__('warnings.notEnabled')));
       return this.onZoneUpdate(args.zone, args.enabled);
     });
+    const priceCondition = this.homey.flow.getConditionCard('the_price_point_is');
+    priceCondition.registerRunListener(async (args, state) => {
+      const priceIsEqual = +args.mode === +this.homey.settings.get('pricePoint');
+      return priceIsEqual;
+    });
+    const modeCondition = this.homey.flow.getConditionCard('the_mode_is');
+    modeCondition.registerRunListener(async (args, state) => {
+      const modeIsEqual = +args.mode.id === +this.homey.settings.get('operatingMode');
+      return modeIsEqual;
+    });
+    modeCondition.registerArgumentAutocompleteListener(
+      'mode',
+      async (query, args) => {
+        return this.generateModeList(query, args);
+      }
+    );
 
     this.homey.settings.on('set', setting => {
       if (setting === 'deviceList') {
