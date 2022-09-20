@@ -412,5 +412,8 @@
   },
   "0.15.4": {
     "en": "Fixed a bug that alerted new users that there was an error when saving the settings."
+  },
+  "0.16.0": {
+    "en": "Added condition cards for mode and price point"
   }
 }
