@@ -1138,7 +1138,7 @@
       var appConfigProgressLoaded = false;
       var onHomeyReadyCompleted = false;
 
-      /*
+      /* DEBUG_BEGIN
       // DEBUG CODE FOR GRAHPS - NOT READY TO BE ENABLED YET
       var dailyMax = [4000, 4900, 4300, 4800, 4500];
 
@@ -1186,7 +1186,8 @@
           }
         }
       });
-      document.getElementById("tariffGuideChart").style.display='block';*/
+      document.getElementById("tariffGuideChart").style.display='block';
+      DEBUG_END */
 
       // Called whenever things has been loaded
       function checkLoadingDone() {
@@ -1916,7 +1917,8 @@
 
       // For testing only -
       // Remove when used on homey
-      /* if (navigator.userAgent == "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:101.0) Gecko/20100101 Firefox/101.0") {
+      /* DEBUG_BEGIN
+      if (navigator.userAgent == "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:101.0) Gecko/20100101 Firefox/101.0") {
         // Not homey, but debug mode
         maxPowerLoaded = true;
         deviceListLoaded = true;
@@ -1939,7 +1941,8 @@
         setTimeout(function () {
           checkLoadingDone();
         }, 1 * 1000);
-      } */
+      }
+      DEBUG_END */
     </script>
   </body>
 </html>
