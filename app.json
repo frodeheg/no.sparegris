@@ -248,8 +248,8 @@
           "no": "Driftsmodus !{{er|er ikke}}"
         },
         "titleFormatted": {
-          "en": "The mode is equal to [[mode]]",
-          "no": "Driftsmodus er lik [[mode]]"
+          "en": "The mode !{{is|isn't}} equal to [[mode]]",
+          "no": "Driftsmodus !{{er|er ikke}} lik [[mode]]"
         },
         "hint": {
           "en": "Use this card to check when the app operation mode is equal to a certain value.",
@@ -277,8 +277,8 @@
           "no": "Prispunkt !{{er|er ikke}}"
         },
         "titleFormatted": {
-          "en": "The price point is equal to [[mode]]",
-          "no": "Prispunktet er lik [[mode]]"
+          "en": "The price point !{{is|isn't}} equal to [[mode]]",
+          "no": "Prispunktet !{{er|er ikke}} lik [[mode]]"
         },
         "hint": {
           "en": "Use this flow card to check if the price point is a certain value.",

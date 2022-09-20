@@ -4,8 +4,8 @@
     "no": "Prispunkt !{{er|er ikke}}"
   },
   "titleFormatted": {
-    "en": "The price point is equal to [[mode]]",
-    "no": "Prispunktet er lik [[mode]]"
+    "en": "The price point !{{is|isn't}} equal to [[mode]]",
+    "no": "Prispunktet !{{er|er ikke}} lik [[mode]]"
   },
   "hint": {
     "en": "Use this flow card to check if the price point is a certain value.",
