@@ -415,5 +415,8 @@
   },
   "0.16.0": {
     "en": "Added condition cards for mode and price point"
+  },
+  "0.16.1": {
+    "en": "Minor change to the new flow cards as requested by Athom. + Attempt to fix the unknown crash bug."
   }
 }
