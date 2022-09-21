@@ -2239,14 +2239,24 @@ class PiggyBank extends Homey.App {
       { limit: 500000, price: 9743 },
       { limit: Infinity, price: 11821 }
     ];
-    this.apiState = await this._checkApi();
-    if (this.apiState === c.PRICE_API_OK) {
-      const gridFromApi = await this.elPriceApi.get('/gridcosts');
-      if (Array.isArray(gridFromApi) && gridFromApi.length > 0) {
-        return gridFromApi;
+    try {
+      this.apiState = await this._checkApi();
+      if (this.apiState === c.PRICE_API_OK) {
+        const gridFromApi = await this.elPriceApi.get('/gridcosts');
+        if (Array.isArray(gridFromApi) && gridFromApi.length > 0) {
+          this.homey.settings.set('gridCosts', gridFromApi);
+          return gridFromApi;
+        }
+      }
+    } catch (err) {
+      // API call probably timed out
+      const oldGridCost = this.homey.settings.get('gridCosts');
+      if (oldGridCost !== null) {
+        return oldGridCost;
       }
     }
     // Could not fetch the table, using tensio price table instead.
+    this.homey.settings.set('gridCosts', tensioGridCosts);
     return tensioGridCosts;
   }
 
