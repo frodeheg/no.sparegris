@@ -42,5 +42,9 @@ module.exports = {
       default:
         throw (new Error(`Incorrect api command: ${query.cmd}`));
     }
+  },
+
+  async getStats({ homey, query }) {
+    return homey.app.getStats();
   }
 };

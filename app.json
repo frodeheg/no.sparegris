@@ -136,6 +136,11 @@
       "method": "GET",
       "path": "/apiCommand",
       "public": false
+    },
+    "getStats": {
+      "method": "GET",
+      "path": "/getStats",
+      "public": false
     }
   },
   "flow": {

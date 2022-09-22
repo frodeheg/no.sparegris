@@ -7,6 +7,8 @@
     <script type="text/javascript" src="./constants.js" data-origin="settings"></script>
     <script type="text/javascript" src="./devices.js" data-origin="settings"></script>
     <script type="text/javascript" src="./chart.js" data-origin="settings"></script>
+    <script type="text/javascript" src="./tools.js" data-origin="settings"></script>
+    <script type="text/javascript" src="./gridcost.js" data-origin="settings"></script>
     <link href="style.css" rel="stylesheet" type="text/css">
     <link href="trashcan.css" rel="stylesheet" type="text/css">
     <script type="text/javascript">
@@ -709,7 +711,7 @@
 
       </fieldset>
 
-      <canvas id="tariffGuideChart" style="width:100%;max-width:700px;display:none"></canvas>
+      <canvas id="tariffGuideChart" style="width:100%;max-width:700px;max-height:400px;display:none"></canvas>
 
     </div>
 
@@ -1134,60 +1136,105 @@
       var frostListLoaded = false;
       var zoneListLoaded = false;
       var mainFuseLoaded = false;
+      var graphLoaded = false;
       var futurePriceOptionsLoaded = false;
       var appConfigProgressLoaded = false;
       var onHomeyReadyCompleted = false;
 
-      /* DEBUG_BEGIN
-      // DEBUG CODE FOR GRAHPS - NOT READY TO BE ENABLED YET
-      var dailyMax = [4000, 4900, 4300, 4800, 4500];
+      function updateGraph(stats) {
+        // Calculate values
+        let maxDays = getMax3(stats.dailyMax);
+        let tariffGuide = averageOfElements(stats.dailyMax, maxDays);
+        let tariffAbove = getGridAbove(tariffGuide);
+        let tariffBelow = getGridBelow(tariffGuide);
+        // Generate data
+        let dataDays = Array.from(Array(stats.daysInMonth+1).keys()).slice(1);
+        let dataTariffAbove = Array(stats.daysInMonth).fill(tariffAbove);
+        let dataTariffBelow = Array(stats.daysInMonth).fill(tariffBelow);
+        let dataTariffGuide = Array(stats.daysInMonth).fill(tariffGuide);
+        let colorBars = Array(stats.daysInMonth).fill(`pink`);
+        let colorBarLines = Array(stats.daysInMonth).fill('black');
+        for (let i = 0; i < stats.daysInMonth; i++) {
+          let barCol = '80,160,80';
+          let barAlpha = 1;
+          let lineCol = '0,0,0';
+          let lineAlpha = 1;
+          if (maxDays.includes(i)) {
+            lineCol = '0,0,128';
+            barCol = '80,210,80';
+          }
+          if (!stats.dailyMaxGood[i]) {
+            barCol = '170,80,80';
+          }
+          if (i === stats.dailyMax.length-1) {
+            barAlpha = 0.3;
+            lineAlpha = 0.3;
+          }
+          colorBars[i] = `rgb(${barCol},${barAlpha})`;
+          colorBarLines[i] = `rgb(${lineCol},${lineAlpha})`;
+        }
 
-      new Chart("tariffGuideChart", {
-        data: {
-          labels: [1, 2, 3, 4, 5],
-          datasets: [{
-            type: 'line',
-            label: 'Trinn 3',
-            borderColor: "black",
-            pointBackgroundColor: "black",
-            data: [5000, 5000, 5000, 5000, 5000],
-          }, {
-            type: 'line',
-            label: 'Trinn 2',
-            borderColor: "black",
-            pointBackgroundColor: "black",
-            data: [2500, 2500, 2500, 2500, 2500],
-          }, {
-            type: 'line',
-            label: 'Estimert tariffguide',
-            borderDash: [10, 20],
-            borderColor: "gray",
-            pointBackgroundColor: "gray",
-            data: [4500, 4500, 4500, 4500, 4500],
-          }, {
-            type: "bar",
-            label: 'Høyeste time',
-            backgroundColor: ["green", "green","red","green","green"],
-            borderColor: ["black", "blue", "black"],
-            borderWidth: 4,
-            data: dailyMax
-          }]
-        },
-        options: {
-          plugins: {
-            legend: {
-              display: true,
-              position: 'bottom'
-            },
-            title: {
-              display: true,
-              text: 'Månedens høyeste timer'
+        new Chart("tariffGuideChart", {
+          data: {
+            labels: dataDays,
+            datasets: [{
+              type: 'line',
+              label: 'Trinn 3',
+              borderColor: "black",
+              pointBackgroundColor: "black",
+              data: dataTariffAbove,
+              borderWidth: 1,
+              pointRadius: 0,
+            }, {
+              type: 'line',
+              label: 'Trinn 2',
+              borderColor: "black",
+              pointBackgroundColor: "black",
+              data: dataTariffBelow,
+              borderWidth: 1,
+              pointRadius: 0,
+            }, {
+              type: 'line',
+              label: 'Estimert tariff',
+              borderDash: [10, 5],
+              borderColor: "gray",
+              pointBackgroundColor: "gray",
+              borderWidth: 1.5,
+              pointRadius: 0,
+              data: dataTariffGuide,
+            }, {
+              type: "bar",
+              label: 'Høyeste time',
+              backgroundColor: colorBars,
+              borderColor: colorBarLines,
+              borderWidth: 1,
+              data: stats.dailyMax
+            }]
+          },
+          options: {
+            plugins: {
+              legend: {
+                display: false,
+                position: 'right',
+                labels: {
+                  boxWidth: 10,
+                  font: {
+                    size: 9
+                  }
+                }
+              },
+              title: {
+                display: true,
+                text: 'Månedens høyeste timer',
+                font: {
+                  size: 15
+                }
+              }
             }
           }
-        }
-      });
-      document.getElementById("tariffGuideChart").style.display='block';
-      DEBUG_END */
+        });
+        document.getElementById("tariffGuideChart").style.display='block';
+      }
 
       // Called whenever things has been loaded
       function checkLoadingDone() {
@@ -1208,6 +1255,7 @@
           `frostListLoaded: ${frostListLoaded}<br>` +
           `zoneListLoaded: ${zoneListLoaded}<br>` +
           `mainFuseLoaded: ${mainFuseLoaded}<br>` +
+          `graphLoaded: ${graphLoaded}<br>` +
           `futurePriceOptionsLoaded: ${futurePriceOptionsLoaded}<br>` +
           `appConfigProgressLoaded: ${appConfigProgressLoaded}<br>` +
           `onHomeyReadyCompleted: ${onHomeyReadyCompleted}<br>`;*/
@@ -1226,6 +1274,7 @@
           && frostListLoaded
           && zoneListLoaded
           && mainFuseLoaded
+          && graphLoaded
           && futurePriceOptionsLoaded
           && appConfigProgressLoaded
           && onHomeyReadyCompleted) {
@@ -1519,6 +1568,12 @@
           }
           mainFuseLoaded = true;
           checkLoadingDone();
+        });
+        // Aquire graphs
+        Homey.api('GET', '/getStats', null, function (err, data) {
+          setGridCost(data.gridCosts);
+          updateGraph(data);
+          graphLoaded = true;
         });
         // Refresh log data
         Homey.api('GET', '/apiCommand?cmd=getLogLevel', null, function (err, logLevel) {
@@ -1918,7 +1973,7 @@
       // For testing only -
       // Remove when used on homey
       /* DEBUG_BEGIN
-      if (navigator.userAgent == "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:101.0) Gecko/20100101 Firefox/101.0") {
+      if (navigator.userAgent == "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:104.0) Gecko/20100101 Firefox/104.0") {
         // Not homey, but debug mode
         maxPowerLoaded = true;
         deviceListLoaded = true;
@@ -1935,12 +1990,18 @@
         freeThresholdLoaded = true;
         safetyPowerLoaded = true;
         mainFuseLoaded = true;
+        graphLoaded = true;
         futurePriceOptionsLoaded = true;
         appConfigProgressLoaded = true;
         onHomeyReadyCompleted = true;
         setTimeout(function () {
           checkLoadingDone();
         }, 1 * 1000);
+        updateGraph({
+          daysInMonth: 31,
+          dailyMax: [4000, 4900, 4300, 4800, 4500, 4400, 4200, 3200, 1023, 4300],
+          dailyMaxGood: [true, true, false, true, true]
+        });
       }
       DEBUG_END */
     </script>

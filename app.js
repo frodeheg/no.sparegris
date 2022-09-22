@@ -154,6 +154,9 @@ class PiggyBank extends Homey.App {
       this.homey.settings.set('modeNames', modeNames);
     }
 
+    // Version 0.16.2 removed some settings:
+    this.homey.settings.unset('stats_tmp_max_power_today');
+
     // ===== BREAKING CHANGES END =====
 
     // ===== KEEPING STATE ACROSS RESTARTS =====
@@ -162,7 +165,8 @@ class PiggyBank extends Homey.App {
       this.__accum_energy = +await this.homey.settings.get('safeShutdown__accum_energy');
       this.__current_power = +await this.homey.settings.get('safeShutdown__current_power');
       this.__current_power_time = new Date(await this.homey.settings.get('safeShutdown__current_power_time'));
-      this.__power_last_hour = +await this.homey.settings.get('safeShutdown__power_last_hour');
+      this.__power_last_hour = await this.homey.settings.get('safeShutdown__power_last_hour');
+      if (this.__power_last_hour === null) this.__power_last_hour = undefined;
       this.homey.settings.unset('safeShutdown__accum_energy');
       this.homey.settings.unset('safeShutdown__current_power');
       this.homey.settings.unset('safeShutdown__current_power_time');
@@ -764,16 +768,14 @@ class PiggyBank extends Homey.App {
         this.__reserved_energy = 0;
         if (timeToProcess < lapsedTime || timeWithinHour === 0) {
           // Crossed into new hour
-          if (this.__power_last_hour !== undefined) {
-            // The first time the data is not for a full hour, so skip adding to statistics
-            await this.statsSetLastHourEnergy(this.__accum_energy);
-          }
+          const energyOk = this.__power_last_hour !== undefined; // If undefined then this is not for the full hour
+          await this.statsSetLastHourEnergy(this.__accum_energy, energyOk, now);
           this.__power_last_hour = this.__accum_energy;
           this.updateLog(`Hour finalized: ${String(this.__accum_energy)} Wh`, c.LOG_INFO);
           // Add up initial part of next hour (only necessary for app restarts as otherwise the number will be close to 0).
           const energyUsedNewHour = (this.__current_power * timeWithinHour) / (1000 * 60 * 60);
           this.__accum_energy = energyUsedNewHour;
-          this.log(`NewHour energy: ${this.__accum_energy}`);
+          this.log(`NewHour energy: ${this.__accum_energy}`, c.LOG_INFO);
         } else {
           // Still within the same hour (happens on app restart only)
         }
@@ -1500,7 +1502,6 @@ class PiggyBank extends Homey.App {
     this.__stats_high_energy = this.homey.settings.get('stats_high_energy');
     this.__stats_extreme_energy = this.homey.settings.get('stats_extreme_energy');
     this.__stats_last_day_max = undefined;
-    this.__stats_tmp_max_power_today = this.homey.settings.get('stats_tmp_max_power_today'); // Todo: reject if the time is too far away
     this.__stats_this_month_maxes = this.homey.settings.get('stats_this_month_maxes'); // Todo: reject if the time is too far away
 
     this.__stats_cost_if_smooth = undefined;
@@ -1559,58 +1560,86 @@ class PiggyBank extends Homey.App {
 
   // Must only be called once every month
   async statsSetLastMonthPower(energy) {
+    const maxPower = this.homey.settings.get('maxPower');
+    const overShootAvoided = this.homey.settings.get('overShootAvoided');
     this.__stats_last_month_max = energy;
     this.homey.settings.set('stats_last_month_max', this.__stats_last_month_max);
 
     // Add savings for power tariff, always assume one step down
     const tariffTable = await this.fetchTariffTable();
     const tariffIndex = this.findTariffIndex(tariffTable, energy);
-    if (tariffIndex < tariffTable.length - 1) {
-      this.__stats_savings_all_time_power_part += tariffTable[tariffIndex + 1].price - tariffTable[tariffIndex].price;
+    const didMeetTariff = (energy < maxPower);
+    const avoidedOvershooting = (overShootAvoided <= maxPower);
+    if (didMeetTariff && avoidedOvershooting && (tariffIndex < tariffTable.length - 2)) {
+      const newSaving = tariffTable[tariffIndex + 1].price - tariffTable[tariffIndex].price;
+      this.__stats_savings_all_time_power_part += newSaving;
       this.homey.settings.set('stats_savings_all_time_power_part', this.__stats_savings_all_time_power_part);
     } // else max tariff, nothing saved
   }
 
-  async statsSetLastDayMaxEnergy(energy) {
-    this.__stats_last_day_time = this.roundToNearestHour(new Date());
-    this.__stats_last_day_max = energy;
+  async statsSetLastDayMaxEnergy(timeLastUpdatedUTC, newMonthTriggered) {
+    const dailyMax = this.homey.settings.get('stats_daily_max');
+    const lastDayLocal = this.toLocalTime(timeLastUpdatedUTC).getDate() - 1;
+    this.__stats_last_day_max = dailyMax[lastDayLocal];
 
     // Keep largest 3 days:
-    this.__stats_this_month_maxes.push(energy);
+    this.__stats_this_month_maxes.push(dailyMax[lastDayLocal]);
     this.__stats_this_month_maxes.sort((a, b) => b - a);
     if (this.__stats_this_month_maxes.length > 3) {
       this.__stats_this_month_maxes.pop();
     }
     this.__stats_this_month_average = this.__stats_this_month_maxes.reduce((a, b) => a + b, 0) / this.__stats_this_month_maxes.length;
     // On new month:
-    const dayOfMonth = this.toLocalTime(this.__stats_last_day_time).getDate();
-    if (dayOfMonth === 0) {
+    if (newMonthTriggered) {
       await this.statsSetLastMonthPower(this.__stats_this_month_average);
       this.__stats_this_month_maxes = [];
       this.__stats_app_restarts = 0;
       this.homey.settings.set('stats_app_restarts', 0);
+      this.homey.settings.set('overShootAvoided', 0);
     }
     this.homey.settings.set('stats_this_month_maxes', this.__stats_this_month_maxes);
     this.homey.settings.set('stats_this_month_average', this.__stats_this_month_average);
   }
 
-  async statsSetLastHourEnergy(energy) {
-    this.__stats_energy_time = this.roundToNearestHour(new Date());
-    this.updateLog(`Stats last energy time: ${this.__stats_energy_time}`, c.LOG_INFO);
-    this.__stats_energy = energy;
-
-    // Find todays max - TODO check if correct interval
-    if (this.__stats_tmp_max_power_today === null || energy > +this.__stats_tmp_max_power_today) {
-      this.__stats_tmp_max_power_today = energy;
+  /**
+   * Called when we have crossed into a new hour
+   */
+  async statsSetLastHourEnergy(energy, energyOk, timeOfNewHourUTC) {
+    if (energyOk) {
+      this.__stats_energy_time = this.roundToNearestHour(new Date());
+      this.updateLog(`Stats last energy time: ${this.__stats_energy_time}`, c.LOG_INFO);
+      this.__stats_energy = energy;
     }
 
-    // If new day has begun - TODO swap first hour with first active hour
-    if (this.toLocalTime(this.__stats_energy_time).getHours() === 0) {
-      await this.statsSetLastDayMaxEnergy(this.__stats_tmp_max_power_today);
-      this.__stats_tmp_max_power_today = 0;
-    }
+    const hourAgoUTC = new Date(timeOfNewHourUTC.getTime() - (1000 * 60 * 60));
+    const lastHourDateLocal = this.toLocalTime(hourAgoUTC).getDate() - 1; // 0-30
 
-    this.homey.settings.set('stats_tmp_max_power_today', this.__stats_tmp_max_power_today);
+    let dailyMax = this.homey.settings.get('stats_daily_max');
+    let dailyMaxOk = this.homey.settings.get('stats_daily_max_ok');
+    let overShootAvoided = this.homey.settings.get('overShootAvoided');
+    const maxPower = this.homey.settings.get('maxPower');
+    const dailyMaxPrevUpdateUTC = new Date(this.homey.settings.get('stats_daily_max_last_update_time'));
+    const lastHourMissed = (hourAgoUTC - dailyMaxPrevUpdateUTC) > (1000 * 60 * 90); // More than 90 minutes ago
+    const firstEverHour = !Array.isArray(dailyMax);
+    const newDayTriggered = ((hourAgoUTC - dailyMaxPrevUpdateUTC) > (1000 * 60 * 60 * 24) // More than 24 hours or different day
+      || (this.toLocalTime(hourAgoUTC).getDate() !== this.toLocalTime(dailyMaxPrevUpdateUTC).getDate()));
+    const newMonthTriggered = ((hourAgoUTC - dailyMaxPrevUpdateUTC) > (1000 * 60 * 60 * 24 * 31) // More than 31 days or different month
+      || (this.toLocalTime(hourAgoUTC).getMonth() !== this.toLocalTime(dailyMaxPrevUpdateUTC).getMonth()));
+    if (newDayTriggered && !firstEverHour) {
+      await this.statsSetLastDayMaxEnergy(dailyMaxPrevUpdateUTC, newMonthTriggered);
+    }
+    if (firstEverHour || newMonthTriggered) {
+      dailyMax = [];
+      dailyMaxOk = [];
+    }
+    dailyMax[lastHourDateLocal] = (dailyMax[lastHourDateLocal] > energy) ? dailyMax[lastHourDateLocal] : energy; // Also set to energy if previous value is undefined
+    dailyMaxOk[lastHourDateLocal] ||= energyOk | lastHourMissed;
+    const timeSincePowerOff = this.__last_power_on_time - this.__last_power_off_time;
+    overShootAvoided = (energyOk && (energy < maxPower) && (energy > maxPower * 0.9) && (timeSincePowerOff < 1000 * 60 * 15) && (maxPower > +overShootAvoided)) ? maxPower : overShootAvoided;
+    this.homey.settings.set('stats_daily_max', dailyMax);
+    this.homey.settings.set('stats_daily_max_ok', dailyMaxOk);
+    this.homey.settings.set('stats_daily_max_last_update_time', hourAgoUTC);
+    this.homey.settings.set('overShootAvoided', overShootAvoided);
   }
 
   statsSetLastHourPrice(price) {
@@ -1707,6 +1736,24 @@ class PiggyBank extends Homey.App {
     this.homey.settings.set('stats_failed_turn_off', this.__stats_failed_turn_off);
     this.homey.settings.set('stats_failed_temp_change', this.__stats_failed_temp_change);
     return Promise.resolve();
+  }
+
+  /**
+   * Set up arrays for graph generation and return
+   * @returns Statistics to generate graphs
+   */
+  async getStats() {
+    const dailyMax = this.homey.settings.get('stats_daily_max');
+    const dailyMaxGood = this.homey.settings.get('stats_daily_max_ok');
+    const statsTimeUTC = new Date(this.homey.settings.get('stats_daily_max_last_update_time'));
+    const daysInStatsMonth = new Date(statsTimeUTC.getFullYear(), statsTimeUTC.getMonth() + 1, 0).getDate();
+    const stats = {
+      daysInMonth: daysInStatsMonth,
+      dailyMax: Array.isArray(dailyMax) ? dailyMax : [],
+      dailyMaxGood: Array.isArray(dailyMaxGood) ? dailyMaxGood : [],
+      gridCosts: await this.fetchTariffTable()
+    };
+    return stats;
   }
 
   /** ****************************************************************************************************
