@@ -1633,7 +1633,7 @@ class PiggyBank extends Homey.App {
       dailyMaxOk = [];
     }
     dailyMax[lastHourDateLocal] = (dailyMax[lastHourDateLocal] > energy) ? dailyMax[lastHourDateLocal] : energy; // Also set to energy if previous value is undefined
-    dailyMaxOk[lastHourDateLocal] ||= energyOk | lastHourMissed;
+    dailyMaxOk[lastHourDateLocal] = (dailyMaxOk[lastHourDateLocal] !== false) && (energyOk === true) && (lastHourMissed === false); // Need !== false on first to ensure undefined goes to true
     const timeSincePowerOff = this.__last_power_on_time - this.__last_power_off_time;
     overShootAvoided = (energyOk && (energy < maxPower) && (energy > maxPower * 0.9) && (timeSincePowerOff < 1000 * 60 * 15) && (maxPower > +overShootAvoided)) ? maxPower : overShootAvoided;
     this.homey.settings.set('stats_daily_max', dailyMax);

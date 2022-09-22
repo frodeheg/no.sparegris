@@ -17,6 +17,8 @@ function getMax3(ar) {
     }
     max.sort((a, b) => a.value - b.value);
   }
+  if (max.length === 0) return [];
+  if (max.length === 1) return [max[0].index];
   return max.reduce((a, b) => (Array.isArray(a) ? [...a, b.index] : [a.index, b.index]));
 }
 
