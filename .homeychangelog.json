@@ -418,5 +418,8 @@
   },
   "0.16.1": {
     "en": "Minor change to the new flow cards as requested by Athom. + Attempt to fix the unknown crash bug."
+  },
+  "0.16.2": {
+    "en": "Added graph to display estimated Power tariff"
   }
 }
