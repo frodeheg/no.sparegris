@@ -251,7 +251,9 @@ class PiggyBank extends Homey.App {
       try {
         await this.createDeviceList();
       } catch (err) {
-        // Ignore the error and try to refresh the devicelist once more
+        // Ignore the error and try to refresh the devicelist once more in 1 sec
+        const delay = ms => new Promise(res => setTimeout(res, ms));
+        await delay(1 * 1000);
       }
     }
 
@@ -612,7 +614,6 @@ class PiggyBank extends Homey.App {
       // Apparently the stored settings are invalid and need to be refreshed
       return Promise.resolve([false, false]);
     }
-    const promiseDevice = this.homeyApi.devices.getDevice({ id: deviceId });
     const actionLists = this.homey.settings.get('priceActionList');
     const priceMode = +this.homey.settings.get('priceMode');
     const actionListIdx = +this.homey.settings.get('pricePoint');
@@ -657,7 +658,7 @@ class PiggyBank extends Homey.App {
 
     let device;
     try {
-      device = await promiseDevice;
+      device = await this.homeyApi.devices.getDevice({ id: deviceId });
     } catch (err) {
       // Most likely timeout
       this.updateLog(`Device cannot be fetched. ${String(err)}`, c.LOG_ERROR);
@@ -2001,7 +2002,7 @@ class PiggyBank extends Homey.App {
     const installed = await this.elPriceApi.getInstalled();
     const version = await this.elPriceApi.getVersion();
     const prices = await this.elPriceApi.get('/prices');
-    const gridcosts = await this.elPriceApi.get('gridcosts');
+    const gridcosts = await this.elPriceApi.get('/gridcosts');
     if (this.apiState === c.PRICE_API_NO_APP) this.updateLog('No Api or wrong version');
     if (this.apiState === c.PRICE_API_NO_DEVICE) this.updateLog('No device found');
     this.updateLog(`ApiState: ${apiState}`, c.LOG_ALL);

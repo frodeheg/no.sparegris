@@ -1642,6 +1642,7 @@
         });
         // Aquire graphs
         Homey.api('GET', '/getStats', null, function (err, data) {
+          if (err) return Homey.alert(err);
           setGridCost(data.gridCosts);
           updateGraph(data);
           graphLoaded = true;
