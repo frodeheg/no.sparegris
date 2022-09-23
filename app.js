@@ -1745,10 +1745,11 @@ class PiggyBank extends Homey.App {
   async getStats() {
     const dailyMax = this.homey.settings.get('stats_daily_max');
     const dailyMaxGood = this.homey.settings.get('stats_daily_max_ok');
-    const statsTimeUTC = new Date(this.homey.settings.get('stats_daily_max_last_update_time'));
-    const daysInStatsMonth = new Date(statsTimeUTC.getFullYear(), statsTimeUTC.getMonth() + 1, 0).getDate();
+    const statsTimeLocal = this.toLocalTime(new Date(this.homey.settings.get('stats_daily_max_last_update_time')));
+    const daysInStatsMonth = new Date(statsTimeLocal.getFullYear(), statsTimeLocal.getMonth() + 1, 0).getDate();
     const stats = {
       daysInMonth: daysInStatsMonth,
+      month: statsTimeLocal.getMonth(),
       dailyMax: Array.isArray(dailyMax) ? dailyMax : [],
       dailyMaxGood: Array.isArray(dailyMaxGood) ? dailyMaxGood : [],
       gridCosts: await this.fetchTariffTable()

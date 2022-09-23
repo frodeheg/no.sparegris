@@ -288,5 +288,29 @@
   },
   "breaking": {
     "maxPower": "Important change for **Piggy Bank**: Max Power is now a single global setting instead of per mode. Please check that the new setting is ok. The new setting is "
+  },
+  "maxUsageGraph": {
+    "title": "Max Hourly usage per day",
+    "yaxis": "kWh",
+    "xaxis": "Day",
+    "tariff": "Estimated power tariff",
+    "highest": "Highest hourly usage",
+    "missing": "Missing data (the app was not activated).",
+    "inaccurate": "Inaccurate data (reboot or app restart detected).",
+    "incomplete": "Incomplete data, day not finished."
+  },
+  "month": {
+    "jan": "January",
+    "feb": "February",
+    "mar": "March",
+    "apr": "April",
+    "may": "May",
+    "jun": "June",
+    "jul": "July",
+    "aug": "August",
+    "sep": "September",
+    "oct": "October",
+    "nov": "November",
+    "dec": "December"
   }
 }

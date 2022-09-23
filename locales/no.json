@@ -288,5 +288,29 @@
   },
   "breaking": {
     "maxPower": "Viktig endring for **Sparegris**: Maks effekt er nå en enkelt global verdi istedenfor en for hver operasjonsmodus. Vennligst sjekk at den nye innstillingen passer for deg. Den nye innstillingen er:"
+  },
+  "maxUsageGraph": {
+    "title": "Maks timeforbruk per dag",
+    "yaxis": "kWh",
+    "xaxis": "Dag",
+    "tariff": "Estimert effekttariff",
+    "highest": "Høyeste timeforbruk",
+    "missing": "Manglende data (appen var ikke aktivert).",
+    "inaccurate": "Unøyaktige data (omstart ble detektert).",
+    "incomplete": "Ufullstendige data, dagen er ikke ferdig enda."
+  },
+  "month": {
+    "jan": "Januar",
+    "feb": "Februar",
+    "mar": "Mars",
+    "apr": "April",
+    "may": "Mai",
+    "jun": "Juni",
+    "jul": "Juli",
+    "aug": "August",
+    "sep": "September",
+    "oct": "Oktober",
+    "nov": "November",
+    "dec": "Desember"
   }
 }

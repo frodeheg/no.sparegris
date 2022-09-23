@@ -57,6 +57,28 @@
         "settings.help.deviceTypeAC",
         "settings.help.deviceTypeCharger",
       ];
+      var graphTitle = "maxUsageGraph.title";
+      var graphYAxis = "maxUsageGraph.yaxis";
+      var graphXAxis = "maxUsageGraph.xaxis";
+      var graphTariff = "maxUsageGraph.tariff";
+      var graphHighest = "maxUsageGraph.highest";
+      var graphMissing = "maxUsageGraph.missing";
+      var graphInaccurate = "maxUsageGraph.inaccurate";
+      var graphIncomplete = "maxUsageGraph.incomplete";
+      var monthText = [
+        "month.jan",
+        "month.feb",
+        "month.mar",
+        "month.apr",
+        "month.may",
+        "month.jun",
+        "month.jul",
+        "month.aug",
+        "month.sep",
+        "month.oct",
+        "month.nov",
+        "month.dec"
+      ]
 
       var needModeRefresh = true;
 
@@ -692,6 +714,9 @@
         </table>
         <p id="maxPowHint" class="hint" data-i18n="settings.app.maxPowHint">app.maxPowHint</p>
       </fieldset>
+
+      <canvas id="tariffGuideChart" style="max-height:250px;min-height:250px;display:none"></canvas>
+
       <fieldset>
         <legend data-i18n="settings.app.myTasks">app.myTasks</legend>
 
@@ -710,8 +735,6 @@
         </table>
 
       </fieldset>
-
-      <canvas id="tariffGuideChart" style="width:100%;max-width:700px;max-height:400px;display:none"></canvas>
 
     </div>
 
@@ -1144,7 +1167,7 @@
       function updateGraph(stats) {
         // Calculate values
         let maxDays = getMax3(stats.dailyMax);
-        let tariffGuide = averageOfElements(stats.dailyMax, maxDays);
+        let tariffGuide = Math.round(averageOfElements(stats.dailyMax, maxDays));
         let tariffAbove = getGridAbove(tariffGuide);
         let tariffBelow = getGridBelow(tariffGuide);
         // Generate data
@@ -1195,7 +1218,7 @@
               pointRadius: 0,
             }, {
               type: 'line',
-              label: 'Estimert tariff',
+              label: graphTariff,
               borderDash: [10, 5],
               borderColor: "gray",
               pointBackgroundColor: "gray",
@@ -1204,15 +1227,51 @@
               data: dataTariffGuide,
             }, {
               type: "bar",
-              label: 'Høyeste time',
+              label: graphHighest,
               backgroundColor: colorBars,
               borderColor: colorBarLines,
               borderWidth: 1,
-              data: stats.dailyMax
+              data: stats.dailyMax.map((x)=>Math.round(x))
             }]
           },
           options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              y: {
+                title: {
+                  display: true,
+                  text: graphYAxis
+                },
+                ticks: {
+                  callback: function(value, index, ticks) {
+                    return `${Math.round(value/100)/10}`;
+                  }
+                }
+              }
+            },
+            interaction: {
+              intersect: false,
+              mode: 'index'
+            },
             plugins: {
+              tooltip: {
+                callbacks: {
+                  title: function(context) {
+                    return `${monthText[stats.month]} ${context[0].label}`;
+                  },
+                  beforeFooter: function(context) {
+                    console.log(context);
+                    if (!stats.dailyMax[context[0].dataIndex]) return graphMissing;
+                    if (stats.dailyMaxGood[context[0].dataIndex] !== true) return graphInaccurate;
+                    if (context[0].dataIndex === stats.dailyMax.length-1) return graphIncomplete;
+                  }
+                },
+                filter: function(context) {
+                  if (context.dataset.label.startsWith('Trinn')) return false;
+                  return true;
+                }
+              },
               legend: {
                 display: false,
                 position: 'right',
@@ -1225,7 +1284,7 @@
               },
               title: {
                 display: true,
-                text: 'Månedens høyeste timer',
+                text: graphTitle,
                 font: {
                   size: 15
                 }
@@ -1375,6 +1434,18 @@
         deviceTypeText[2] = Homey.__(deviceTypeText[2]);
         deviceTypeText[3] = Homey.__(deviceTypeText[3]);
         deviceTypeText[4] = Homey.__(deviceTypeText[4]);
+        graphTitle = Homey.__(graphTitle);
+        graphYAxis = Homey.__(graphYAxis);
+        graphXAxis = Homey.__(graphXAxis);
+        graphTariff = Homey.__(graphTariff);
+        graphHighest = Homey.__(graphHighest);
+        graphMissing = Homey.__(graphMissing);
+        graphInaccurate = Homey.__(graphInaccurate);
+        graphIncomplete = Homey.__(graphIncomplete);
+
+        for (var i = 0; i < monthText.length; i++) {
+          monthText[i] = Homey.__(monthText[i]);
+        }
 
         for (var i = 0; i < pricePoints.length; i++) {
           pricePoints[i].name = Homey.__(pricePoints[i].name);
@@ -1973,7 +2044,9 @@
       // For testing only -
       // Remove when used on homey
       /* DEBUG_BEGIN
-      if (navigator.userAgent == "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:104.0) Gecko/20100101 Firefox/104.0") {
+      const queryString = window.location.search;
+      const urlParams = new URLSearchParams(queryString);
+      if (urlParams.get('debug')=="1") {
         // Not homey, but debug mode
         maxPowerLoaded = true;
         deviceListLoaded = true;
@@ -1999,6 +2072,7 @@
         }, 1 * 1000);
         updateGraph({
           daysInMonth: 31,
+          month: 2,
           dailyMax: [4000, 4900, 4300, 4800, 4500, 4400, 4200, 3200, 1023, 4300],
           dailyMaxGood: [true, true, false, true, true]
         });

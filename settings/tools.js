@@ -8,7 +8,7 @@
 function getMax3(ar) {
   const max = [];
   for (let i = 0; i < ar.length; i++) {
-    if (Number.isNaN(+ar[i])) {
+    if (Number.isNaN(+ar[i]) || ar[i] === null) {
       continue;
     } else if (max.length < 3) {
       max.push({ value: +ar[i], index: i });
