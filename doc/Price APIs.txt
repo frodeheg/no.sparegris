@@ -1,4 +1,8 @@
 API for nettleie: https://github.com/digin-energi/API-nettleie-for-styring
 Nordpool spotpris: https://www.nordpoolgroup.com/api/marketdata/page/23?currency=NOK
 Europeisk spotpris: https://m-transparency.entsoe.eu/transmission-domain/r2/dayAheadPrices/show?name=&defaultValue=false&viewType=GRAPH&areaType=BZN&atch=false&dateTime.dateTime=08.11.2021+00:00|CET|DAY&dateTime.timezone=CET_CEST&dateTime.timezone_input=CET+(UTC+1)+/+CEST+(UTC+2)&biddingZone.values=CTY|10YNO-0--------C!BZN|10YNO-1--------2&resolution.values=PT60M
-Valuta API: ????
+
+Entsoe api: https://transparency.entsoe.eu/content/static_content/Static%20content/web%20api/Guide.html
+Entsoe - node.js: https://github.com/zoernert/node-entsoe-api
+
+Valuta API: https://data.norges-bank.no/api/data/EXR/B.GBP+EUR+SEK+DKK+RUB+PLN.NOK.SP?format=sdmx-json&startPeriod=2022-01-01&endPeriod=2022-02-02&locale=no

@@ -1,4 +1,6 @@
 sources/*
 doc/*
+common/test.js
 /app.js.bak
 /.homeycompose/app.json.bak
+
