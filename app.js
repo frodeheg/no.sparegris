@@ -27,6 +27,7 @@ const { HomeyAPIApp } = require('homey-api');
 const { resolve } = require('path');
 const c = require('./common/constants');
 const d = require('./common/devices');
+// const p = require('./common/prices');
 
 const WAIT_TIME_TO_POWER_ON_AFTER_POWEROFF_MIN = 1 * 60 * 1000; // Wait 1 minute
 const WAIT_TIME_TO_POWER_ON_AFTER_POWEROFF_MAX = 5 * 60 * 1000; // Wait 5 minutes
@@ -682,7 +683,7 @@ class PiggyBank extends Homey.App {
       this.updateLog(`isOn was set to undefined ${frostGuardActive}`, c.LOG_ERROR);
     }
     this.__current_state[deviceId].ongoing = false; // If already ongoing then it should already have been completed, try again
-    if (newStateOn && !isOn) {
+    if (newStateOn && ((isOn === undefined) || !isOn)) {
       // Turn on
       const deviceName = this.__deviceList[deviceId].name;
       this.updateLog(`Turning on device: ${deviceName}`, c.LOG_INFO);
@@ -705,7 +706,7 @@ class PiggyBank extends Homey.App {
         });
     } // ignore case !wantOn && isOn
 
-    if (!newStateOn && isOn) {
+    if (!newStateOn && ((isOn === undefined) || isOn)) {
       // Turn off
       const deviceName = this.__deviceList[deviceId].name;
       this.updateLog(`Turning off device: ${deviceName}`, c.LOG_INFO);
@@ -1423,6 +1424,7 @@ class PiggyBank extends Homey.App {
   }
 
   getIsOn(device, deviceId) {
+    if (device.capabilitiesObj === null) return undefined;
     const onValue = device.capabilitiesObj[this.getOnOffCap(deviceId)].value;
     if (onValue === this.getOnOffTrue(deviceId)) return true;
     if (onValue === this.getOnOffFalse(deviceId)) return false;
