@@ -174,7 +174,7 @@ class PiggyBank extends Homey.App {
       this.homey.settings.unset('safeShutdown__power_last_hour');
       this.updateLog(`Restored state from safe shutdown values ${this.__accum_energy} ${this.__current_power} ${this.__current_power_time} ${this.__power_last_hour}`, c.LOG_INFO);
     } else {
-      this.updateLog('No state from previous shutown? Powerloss, deactivated or forced restart.', c.LOG_INFO);
+      this.updateLog('No state from previous shutdown? Powerloss, deactivated or forced restart.', c.LOG_INFO);
     }
     // ===== KEEPING STATE ACROSS RESTARTS END =====
 
@@ -253,6 +253,7 @@ class PiggyBank extends Homey.App {
         await this.createDeviceList();
       } catch (err) {
         // Ignore the error and try to refresh the devicelist once more in 1 sec
+        this.updateLog(`Could not create device list on init. Retrying ${err}`, c.LOG_ERROR);
         const delay = ms => new Promise(res => setTimeout(res, ms));
         await delay(1 * 1000);
       }
