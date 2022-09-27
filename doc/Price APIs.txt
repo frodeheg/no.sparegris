@@ -1,4 +1,5 @@
 API for nettleie: https://github.com/digin-energi/API-nettleie-for-styring
+API for nettleie: https://tadata.no/products/56ad81f9-8c13-405d-9511-97776e7a1a98
 Nordpool spotpris: https://www.nordpoolgroup.com/api/marketdata/page/23?currency=NOK
 Europeisk spotpris: https://m-transparency.entsoe.eu/transmission-domain/r2/dayAheadPrices/show?name=&defaultValue=false&viewType=GRAPH&areaType=BZN&atch=false&dateTime.dateTime=08.11.2021+00:00|CET|DAY&dateTime.timezone=CET_CEST&dateTime.timezone_input=CET+(UTC+1)+/+CEST+(UTC+2)&biddingZone.values=CTY|10YNO-0--------C!BZN|10YNO-1--------2&resolution.values=PT60M
 

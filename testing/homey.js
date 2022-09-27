@@ -1,9 +1,11 @@
+/* eslint-disable node/no-unpublished-require */
 /* eslint-disable max-classes-per-file */
 /* eslint-disable no-console */
 
 'use strict';
 
 const manifest = { version: '1.0' };
+const env = require('../env.json');
 
 /**
  * Fake settings class
@@ -128,6 +130,7 @@ class FakeHomeyClass {
     this.api = new FakeApiClass();
     this.flow = new FakeFlowClass();
     this.manifest = manifest;
+    this.env = env;
   }
 
   on(event, callback) {
@@ -142,7 +145,7 @@ class FakeHomeyClass {
 class App {
 
   constructor() {
-    this.fakeHomeyInstance = new FakeHomeyClass();
+    this.homey = new FakeHomeyClass();
     this.log('Replacement for Homey Api Initialized');
   }
 
@@ -150,13 +153,10 @@ class App {
     console.log(value);
   }
 
-  get homey() {
-    return this.fakeHomeyInstance;
-  }
-
 }
 
 module.exports = {
   App,
-  manifest
+  manifest,
+  env,
 };

@@ -2,7 +2,7 @@
 
 'use strict';
 
-require('entsoe-api');
+const { XMLParser } = require('fast-xml-parser');
 const { request } = require('urllib'); // This adds 512kB (1.4MB debug) to the app
 
 // =============================================================================
@@ -41,8 +41,8 @@ async function fetchCurrencyTable(from = 'NOK') {
   const now = new Date();
   const someDaysAgo = new Date();
   someDaysAgo.setDate(someDaysAgo.getDate() - 4);
-  const startDate = `${String(someDaysAgo.getFullYear())}-${String(someDaysAgo.getMonth() + 1).padStart(2, '0')}-${String(someDaysAgo.getDate()).padStart(2, '0')}`;
-  const endDate = `${String(now.getFullYear())}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+  const startDate = `${String(someDaysAgo.getUTCFullYear())}-${String(someDaysAgo.getUTCMonth() + 1).padStart(2, '0')}-${String(someDaysAgo.getUTCDate()).padStart(2, '0')}`;
+  const endDate = `${String(now.getUTCFullYear())}-${String(now.getUTCMonth() + 1).padStart(2, '0')}-${String(now.getUTCDate()).padStart(2, '0')}`;
   const webAddress = WWW_NORGES_BANK_CURRENCY
     .replace('{startDate}', startDate)
     .replace('{endDate}', endDate);
@@ -72,6 +72,81 @@ async function fetchCurrencyTable(from = 'NOK') {
   return currencyCopy;
 }
 
+async function getCurrencyModifier(fromCurrency, toCurrency) {
+  const currencyTable = await fetchCurrencyTable(toCurrency);
+  return currencyTable[fromCurrency].rate;
+}
+
+// =============================================================================
+// = ENTSOE
+// =============================================================================
+
+const WWW_ENTSOE_DAYAHEAD = 'https://web-api.tp.entsoe.eu/api?securityToken={apiKey}&documentType=A44&processType=A01&In_Domain={biddingZone}&Out_Domain={biddingZone}&periodStart={startDate}&periodEnd={endDate}';
+
+let entsoeApiKey; // Updated on request
+
+async function entsoeApiInit(apiKey) {
+  entsoeApiKey = apiKey;
+}
+
+/**
+ * Should check for the following:
+ * Parameters described at: https://transparency.entsoe.eu/content/static_content/Static%20content/web%20api/Guide.html
+ * documentType = A44 // Price Document
+ * processType  = A01 // Day Ahead
+ * Out_Domain   = 10YNO-3--------J // Midt-Norge
+ * periodStart  = YYYYMMDD0000
+ * periodEnd    = YYYYMMDD2300
+ *
+ * Contract_MarketAgreement = A13 (Hourly)
+ * ProcessType = A01 (Day ahead)
+ */
+async function entsoeGetData(startTime, currency = 'NOK') {
+  const biddingZone = '10YNO-3--------J';
+
+  const tomorrow = new Date(startTime.getTime());
+  tomorrow.setDate(tomorrow.getDate() + 2);
+  // tomorrow.setHours(tomorrow.getHours() + 23);
+  const startDate = `${String(startTime.getUTCFullYear())}${String(startTime.getUTCMonth() + 1).padStart(2, '0')}${String(startTime.getUTCDate()).padStart(2, '0')}0000`;
+  const endDate = `${String(tomorrow.getUTCFullYear())}${String(tomorrow.getUTCMonth() + 1).padStart(2, '0')}${String(tomorrow.getUTCDate()).padStart(2, '0')}2300`;
+  const webAddress = WWW_ENTSOE_DAYAHEAD
+    .replace('{startDate}', startDate)
+    .replace('{endDate}', endDate)
+    .replace(/{biddingZone}/g, biddingZone)
+    .replace('{apiKey}', entsoeApiKey);
+  const priceData = [];
+  try {
+    const { data, res } = await request(webAddress, { dataType: 'xml' });
+    if (res.status === 200) {
+      const parser = new XMLParser();
+      const jsonData = parser.parse(data);
+      const timeSeries = jsonData.Publication_MarketDocument.TimeSeries;
+      for (let serie = 0; serie < timeSeries.length; serie++) {
+        const fromCurrency = timeSeries[serie]['currency_Unit.name'];
+        const unitName = timeSeries[serie]['price_Measure_Unit.name'];
+        if (unitName !== 'MWH') throw new Error(`Invalid unit in price data: ${unitName}`);
+        const currencyModifier = await getCurrencyModifier(fromCurrency, currency);
+
+        const serieTimeUTC = new Date(timeSeries[serie].Period.timeInterval.start);
+        const serieData = timeSeries[serie].Period.Point;
+        for (let item = 0; item < serieData.length; item++) {
+          const timeUTC = new Date(serieTimeUTC.getTime());
+          timeUTC.setHours(timeUTC.getHours() + serieData[item].position - 1);
+          const price = serieData[item]['price.amount'] / (1000 * currencyModifier);
+          if (timeUTC >= startTime) {
+            priceData.push({ time: timeUTC, price });
+          }
+        }
+      }
+    }
+  } catch (err) {
+    // Ignore errors.
+    console.log(`Error: ${err}`);
+  }
+
+  return priceData;
+}
+
 // =============================================================================
 // = OTHER
 // =============================================================================
@@ -87,10 +162,7 @@ const ERROR_COULD_NOT_PARSE_WEB_PAGE = 'Invalid price data, (could not parse web
 const ERROR_COULD_NOT_FETCH_WEB_PAGE = 'Could not fetch price data, server down';
 
 let biddingZones = {
-  'Albania (AL)': {
-    id: 'CTY|10YAL-KESH-----5|SINGLE',
-    zones: [{ id: 'CTY|10YAL-KESH-----5!BZN|10YAL-KESH-----5', name: 'BZN|AL' }],
-  },
+  'Albania (AL)': { id: 'CTY|10YAL-KESH-----5|SINGLE', zones: [{ id: 'CTY|10YAL-KESH-----5!BZN|10YAL-KESH-----5', name: 'BZN|AL' }] },
   'Austria (AT)': { id: 'CTY|10YAT-APG------L|SINGLE', zones: [{ id: 'CTY|10YAT-APG------L!BZN|10YAT-APG------L', name: 'BZN|AT' }, { id: 'CTY|10YAT-APG------L!BZN|10Y1001A1001A63L', name: 'BZN|DE-AT-LU' }] },
   'Belgium (BE)': { id: 'CTY|10YBE----------2|SINGLE', zones: [{ id: 'CTY|10YBE----------2!BZN|10YBE----------2', name: 'BZN|BE' }] },
   'Bosnia and Herz. (BA)': { id: 'CTY|10YBA-JPCC-----D|SINGLE', zones: [{ id: 'CTY|10YBA-JPCC-----D!BZN|10YBA-JPCC-----D', name: 'BZN|BA' }] },
@@ -195,7 +267,7 @@ async function getEntsoeBiddingZones() {
 // Fetch prices
 async function fetchFromEntsoe() {
   const date = '26.09.2022';
-  let webAddress = WWW_ENTSOE.replace('{date}', date);
+  const webAddress = WWW_ENTSOE.replace('{date}', date);
   try {
     const { data, res } = await request(webAddress, { dataType: 'text' });
     if (res.status === 200) {
@@ -224,5 +296,8 @@ fetchFromEntsoe();
 
 module.exports = {
   fetchCurrencyTable,
+  entsoeApiInit,
+  entsoeGetData,
+
   fetchFromEntsoe,
 };
