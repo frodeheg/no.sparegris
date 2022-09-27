@@ -27,6 +27,9 @@ const { HomeyAPIApp } = require('homey-api');
 const { resolve } = require('path');
 const c = require('./common/constants');
 const d = require('./common/devices');
+const {
+  toLocalTime, timeToNextHour, roundToNearestHour, roundToStartOfDay
+} = require('./common/homeytime');
 // const p = require('./common/prices');
 
 const WAIT_TIME_TO_POWER_ON_AFTER_POWEROFF_MIN = 1 * 60 * 1000; // Wait 1 minute
@@ -744,7 +747,7 @@ class PiggyBank extends Homey.App {
    */
   async onNewHour() {
     const now = new Date();
-    const timeWithinHour = 1000 * 60 * 60 - this.timeToNextHour(now);
+    const timeWithinHour = 1000 * 60 * 60 - timeToNextHour(now);
     try {
       if (this.__current_power === undefined) {
         // First hour after app was started
@@ -761,7 +764,7 @@ class PiggyBank extends Homey.App {
       } else {
         // Add up last part of previous hour. Note that in case an app restart is in progress then the delta from last time might cross the hour so we need to distinguish.
         const lapsedTime = now - this.__current_power_time;
-        const timeLeftInHour = this.timeToNextHour(this.__current_power_time);
+        const timeLeftInHour = timeToNextHour(this.__current_power_time);
         let timeToProcess = lapsedTime;
         if (lapsedTime > timeLeftInHour) {
           timeToProcess = timeLeftInHour;
@@ -797,7 +800,7 @@ class PiggyBank extends Homey.App {
       this.__num_forced_off_devices = 0;
     } finally {
       // Start timer to start exactly when a new hour starts
-      const timeToNextTrigger = this.timeToNextHour(now);
+      const timeToNextTrigger = timeToNextHour(now);
       this.__newHourID = setTimeout(() => this.onNewHour(), timeToNextTrigger);
       this.updateLog(`New hour in ${String(timeToNextTrigger)} ms (now is: ${String(now)})`, c.LOG_DEBUG);
     }
@@ -909,7 +912,7 @@ class PiggyBank extends Homey.App {
       return Promise.resolve();
     }
     const now = new Date();
-    const remainingTime = this.timeToNextHour(now);
+    const remainingTime = timeToNextHour(now);
     if (this.__current_power === undefined) {
       // First time called ever
       this.__accum_energy = 0;
@@ -1118,7 +1121,7 @@ class PiggyBank extends Homey.App {
     // The waiting time is 5 minutes at the beginning of an hour and reduces gradually to 1 minute for the last 5 minutes
     // This is to avoid excessive on/off cycles of high power devices such as electric car chargers
     this.__last_power_on_time = new Date();
-    const timeLeftInHour = this.timeToNextHour(this.__last_power_on_time);
+    const timeLeftInHour = timeToNextHour(this.__last_power_on_time);
     const powerCycleInterval = (timeLeftInHour > TIME_FOR_POWERCYCLE_MAX) ? WAIT_TIME_TO_POWER_ON_AFTER_POWEROFF_MAX
       : (timeLeftInHour < TIME_FOR_POWERCYCLE_MIN) ? WAIT_TIME_TO_POWER_ON_AFTER_POWEROFF_MIN
         : (WAIT_TIME_TO_POWER_ON_AFTER_POWEROFF_MIN + (WAIT_TIME_TO_POWER_ON_AFTER_POWEROFF_MAX - WAIT_TIME_TO_POWER_ON_AFTER_POWEROFF_MIN)
@@ -1433,47 +1436,6 @@ class PiggyBank extends Homey.App {
   }
 
   /** ****************************************************************************************************
-   * HomeyTime
-   ** ****************************************************************************************************
-   * Handling of insane localtime implementation for Homey.
-   * Do NOT use this for anything other than display as it offset the UTC time!!!
-   */
-  toLocalTime(homeyTime) {
-    const tz = this.homey.clock.getTimezone();
-    const localTime = new Date(homeyTime.toLocaleString('en-US', { timeZone: tz }));
-    return localTime;
-  }
-
-  /**
-   * Returns the number of milliseconds until next hour
-   */
-  timeToNextHour(inputTime) {
-    return 60 * 60 * 1000
-    - inputTime.getMinutes() * 60 * 1000
-    - inputTime.getSeconds() * 1000
-    - inputTime.getMilliseconds();
-  }
-
-  /**
-   * Rounds a time object to nearest hour
-   */
-  roundToNearestHour(date) {
-    date.setMinutes(date.getMinutes() + 30);
-    date.setMinutes(0, 0, 0);
-    return date;
-  }
-
-  /**
-   * Rounds a time object to start of the day in local time
-   */
-  roundToStartOfDay(time) {
-    const localTime = this.toLocalTime(time);
-    const localTimeDiff = Math.round((time.getTime() - localTime.getTime()) / (60 * 60 * 1000));
-    localTime.setHours(localTimeDiff, 0, 0, 0);
-    return localTime;
-  }
-
-  /** ****************************************************************************************************
    * Statistics
    ** ****************************************************************************************************
    * Tracked date:
@@ -1583,7 +1545,7 @@ class PiggyBank extends Homey.App {
 
   async statsSetLastDayMaxEnergy(timeLastUpdatedUTC, newMonthTriggered) {
     const dailyMax = this.homey.settings.get('stats_daily_max');
-    const lastDayLocal = this.toLocalTime(timeLastUpdatedUTC).getDate() - 1;
+    const lastDayLocal = toLocalTime(timeLastUpdatedUTC, this.homey).getDate() - 1;
     this.__stats_last_day_max = dailyMax[lastDayLocal];
 
     // Keep largest 3 days:
@@ -1610,13 +1572,13 @@ class PiggyBank extends Homey.App {
    */
   async statsSetLastHourEnergy(energy, energyOk, timeOfNewHourUTC) {
     if (energyOk) {
-      this.__stats_energy_time = this.roundToNearestHour(new Date());
+      this.__stats_energy_time = roundToNearestHour(new Date());
       this.updateLog(`Stats last energy time: ${this.__stats_energy_time}`, c.LOG_INFO);
       this.__stats_energy = energy;
     }
 
     const hourAgoUTC = new Date(timeOfNewHourUTC.getTime() - (1000 * 60 * 60));
-    const lastHourDateLocal = this.toLocalTime(hourAgoUTC).getDate() - 1; // 0-30
+    const lastHourDateLocal = toLocalTime(hourAgoUTC, this.homey).getDate() - 1; // 0-30
 
     let dailyMax = this.homey.settings.get('stats_daily_max');
     let dailyMaxOk = this.homey.settings.get('stats_daily_max_ok');
@@ -1626,9 +1588,9 @@ class PiggyBank extends Homey.App {
     const lastHourMissed = (hourAgoUTC - dailyMaxPrevUpdateUTC) > (1000 * 60 * 90); // More than 90 minutes ago
     const firstEverHour = !Array.isArray(dailyMax);
     const newDayTriggered = ((hourAgoUTC - dailyMaxPrevUpdateUTC) > (1000 * 60 * 60 * 24) // More than 24 hours or different day
-      || (this.toLocalTime(hourAgoUTC).getDate() !== this.toLocalTime(dailyMaxPrevUpdateUTC).getDate()));
+      || (toLocalTime(hourAgoUTC, this.homey).getDate() !== toLocalTime(dailyMaxPrevUpdateUTC, this.homey).getDate()));
     const newMonthTriggered = ((hourAgoUTC - dailyMaxPrevUpdateUTC) > (1000 * 60 * 60 * 24 * 31) // More than 31 days or different month
-      || (this.toLocalTime(hourAgoUTC).getMonth() !== this.toLocalTime(dailyMaxPrevUpdateUTC).getMonth()));
+      || (toLocalTime(hourAgoUTC, this.homey).getMonth() !== toLocalTime(dailyMaxPrevUpdateUTC, this.homey).getMonth()));
     if (newDayTriggered && !firstEverHour) {
       await this.statsSetLastDayMaxEnergy(dailyMaxPrevUpdateUTC, newMonthTriggered);
     }
@@ -1707,7 +1669,7 @@ class PiggyBank extends Homey.App {
         this.__stats_accum_use_today += this.__stats_energy;
         this.__stats_actual_cost += (this.__stats_price * this.__stats_energy) / 1000;
         // If new day
-        if (this.toLocalTime(this.__stats_price_time).getHours() === 0
+        if (toLocalTime(this.__stats_price_time, this.homey).getHours() === 0
           && this.__stats_n_hours_today > 0) {
           // Accumulate and reset dayliy stats:
           this.__stats_cost_if_smooth = (this.__stats_accum_use_today * (this.__stats_accum_price_today / this.__stats_n_hours_today)) / 1000;
@@ -1724,7 +1686,7 @@ class PiggyBank extends Homey.App {
       }
     } finally {
       // Start timer to start exactly 5 minutes after the next hour starts
-      const timeToNextTrigger = this.timeToNextHour(now) + 5 * 60 * 1000;
+      const timeToNextTrigger = timeToNextHour(now) + 5 * 60 * 1000;
       this.__statsIntervalID = setTimeout(() => this.statsNewHour(), timeToNextTrigger);
     }
   }
@@ -1749,7 +1711,7 @@ class PiggyBank extends Homey.App {
   async getStats() {
     const dailyMax = this.homey.settings.get('stats_daily_max');
     const dailyMaxGood = this.homey.settings.get('stats_daily_max_ok');
-    const statsTimeLocal = this.toLocalTime(new Date(this.homey.settings.get('stats_daily_max_last_update_time')));
+    const statsTimeLocal = toLocalTime(new Date(this.homey.settings.get('stats_daily_max_last_update_time')), this.homey);
     const daysInStatsMonth = new Date(statsTimeLocal.getFullYear(), statsTimeLocal.getMonth() + 1, 0).getDate();
     const stats = {
       daysInMonth: daysInStatsMonth,
@@ -2133,7 +2095,7 @@ class PiggyBank extends Homey.App {
     try {
       const now = new Date();
       const nowSeconds = now.getTime() / 1000;
-      const todayStart = this.roundToStartOfDay(now).getTime() / 1000;
+      const todayStart = roundToStartOfDay(now).getTime() / 1000;
       let newestPriceWeGot = 0;
       // First delete prices older than today
       if (!Array.isArray(this.__all_prices)) {
