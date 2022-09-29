@@ -36,8 +36,8 @@ function roundToNearestHour(date) {
 /**
  * Rounds a time object to start of the day in local time
  */
-function roundToStartOfDay(time) {
-  const localTime = this.toLocalTime(time);
+function roundToStartOfDay(time, homey) {
+  const localTime = toLocalTime(time, homey);
   const localTimeDiff = Math.round((time.getTime() - localTime.getTime()) / (60 * 60 * 1000));
   localTime.setHours(localTimeDiff, 0, 0, 0);
   return localTime;

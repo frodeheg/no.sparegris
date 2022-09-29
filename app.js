@@ -2095,7 +2095,7 @@ class PiggyBank extends Homey.App {
     try {
       const now = new Date();
       const nowSeconds = now.getTime() / 1000;
-      const todayStart = roundToStartOfDay(now).getTime() / 1000;
+      const todayStart = roundToStartOfDay(now, this.homey).getTime() / 1000;
       let newestPriceWeGot = 0;
       // First delete prices older than today
       if (!Array.isArray(this.__all_prices)) {

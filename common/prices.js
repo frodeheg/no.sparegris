@@ -4,6 +4,8 @@
 
 const { XMLParser } = require('fast-xml-parser');
 const { request } = require('urllib'); // This adds 512kB (1.4MB debug) to the app
+const { PP_LOW } = require('./constants');
+const { toLocalTime } = require('./homeytime');
 
 // =============================================================================
 // = CURRENCY
@@ -17,7 +19,7 @@ const currencyTable = {
   DKK: { rate: 137.610, date: '2022-09-23', name: 'Danish krone' },
   RUB: { rate: 545.750, date: '2022-09-23', name: 'российские рубли' },
   PLN: { rate: 2.15250, date: '2022-09-23', name: 'Polski złoty' },
-  NOK: { rate: 100.000, date: '2022-09-23', name: 'Norske Kroner' },
+  NOK: { rate: 1.00000, date: '2022-09-23', name: 'Norske Kroner' },
 };
 
 const homeyCodeToCurrency = {
@@ -37,10 +39,10 @@ const homeyCodeToCurrency = {
 // Fetch the newest currency conversions
 // When failed, return the last known currencies
 // @param from - Sets the reference currency
-async function fetchCurrencyTable(from = 'NOK') {
-  const now = new Date();
+async function fetchCurrencyTable(from = 'NOK', date) {
+  const now = (date === undefined) ? new Date() : new Date(date);
   const someDaysAgo = new Date();
-  someDaysAgo.setDate(someDaysAgo.getDate() - 4);
+  someDaysAgo.setDate(now.getDate() - 4);
   const startDate = `${String(someDaysAgo.getUTCFullYear())}-${String(someDaysAgo.getUTCMonth() + 1).padStart(2, '0')}-${String(someDaysAgo.getUTCDate()).padStart(2, '0')}`;
   const endDate = `${String(now.getUTCFullYear())}-${String(now.getUTCMonth() + 1).padStart(2, '0')}-${String(now.getUTCDate()).padStart(2, '0')}`;
   const webAddress = WWW_NORGES_BANK_CURRENCY
@@ -54,7 +56,22 @@ async function fetchCurrencyTable(from = 'NOK') {
       const latestDateIndex = data.data.structure.dimensions.observation[0].values.length - 1;
       const currencyNames = data.data.structure.dimensions.series[1].values;
       for (let i = 0; i < currencyNames.length; i++) {
-        const exchangeRate = +data.data.dataSets[0].series[`0:${i}:0:0`].observations[latestDateIndex][0];
+        const attribIndices = data.data.dataSets[0].series[`0:${i}:0:0`].attributes;
+        const attribs = data.data.structure.attributes.series;
+        let multiplier;
+        for (let attribIdx = 0; attribIdx < attribIndices.length; attribIdx++) {
+          switch (attribs[attribIdx].id) {
+            case 'UNIT_MULT':
+              multiplier = 10 ** attribs[attribIdx].values[+attribIndices[attribIdx]].id;
+              break;
+            case 'DECIMALS':
+            case 'CALCULATED':
+            case 'COLLECTION':
+            default:
+              break; // Ignore
+          }
+        }
+        const exchangeRate = +data.data.dataSets[0].series[`0:${i}:0:0`].observations[latestDateIndex][0] / multiplier;
         const exchangeDate = data.data.structure.dimensions.observation[0].values[latestDateIndex].start.substring(0, 10);
         currencyTable[currencyNames[i].id].rate = exchangeRate;
         currencyTable[currencyNames[i].id].date = exchangeDate;
@@ -72,8 +89,8 @@ async function fetchCurrencyTable(from = 'NOK') {
   return currencyCopy;
 }
 
-async function getCurrencyModifier(fromCurrency, toCurrency) {
-  const currencyTable = await fetchCurrencyTable(toCurrency);
+async function getCurrencyModifier(fromCurrency, toCurrency, date) {
+  const currencyTable = await fetchCurrencyTable(toCurrency, date);
   return currencyTable[fromCurrency].rate;
 }
 
@@ -124,17 +141,18 @@ async function entsoeGetData(startTime, currency = 'NOK') {
       for (let serie = 0; serie < timeSeries.length; serie++) {
         const fromCurrency = timeSeries[serie]['currency_Unit.name'];
         const unitName = timeSeries[serie]['price_Measure_Unit.name'];
+        const seriesStartTime = timeSeries[serie].Period.timeInterval.start;
         if (unitName !== 'MWH') throw new Error(`Invalid unit in price data: ${unitName}`);
-        const currencyModifier = await getCurrencyModifier(fromCurrency, currency);
+        const currencyModifier = await getCurrencyModifier(fromCurrency, currency, seriesStartTime);
 
         const serieTimeUTC = new Date(timeSeries[serie].Period.timeInterval.start);
         const serieData = timeSeries[serie].Period.Point;
         for (let item = 0; item < serieData.length; item++) {
           const timeUTC = new Date(serieTimeUTC.getTime());
           timeUTC.setHours(timeUTC.getHours() + serieData[item].position - 1);
-          const price = serieData[item]['price.amount'] / (1000 * currencyModifier);
+          const price = (serieData[item]['price.amount'] * currencyModifier) / 1000; // serieData is EUR/MW
           if (timeUTC >= startTime) {
-            priceData.push({ time: timeUTC, price });
+            priceData.push({ time: timeUTC.getTime() / 1000, price });
           }
         }
       }
@@ -145,6 +163,20 @@ async function entsoeGetData(startTime, currency = 'NOK') {
   }
 
   return priceData;
+}
+
+/**
+ * Add taxes to the spot prices
+ */
+async function applyTaxesOnSpotprice(spotprices, surcharge, VAT, gridTaxDay, gridTaxNight, homey) {
+  const taxedData = [...spotprices];
+  for (let item = 0; item < spotprices.length; item++) {
+    const timeUTC = new Date(spotprices[item].time * 1000);
+    const localTime = toLocalTime(timeUTC, homey);
+    const gridTax = (localTime.getHours() >= 6 && localTime.getHours() < 22) ? gridTaxDay : gridTaxNight;
+    taxedData[item].price = spotprices[item].price * (1 + VAT) + gridTax + surcharge;
+  }
+  return taxedData;
 }
 
 // =============================================================================
@@ -161,49 +193,7 @@ const WWW_ENTSOE = 'https://transparency.entsoe.eu/transmission-domain/r2/dayAhe
 const ERROR_COULD_NOT_PARSE_WEB_PAGE = 'Invalid price data, (could not parse web page)';
 const ERROR_COULD_NOT_FETCH_WEB_PAGE = 'Could not fetch price data, server down';
 
-let biddingZones = {
-  'Albania (AL)': { id: 'CTY|10YAL-KESH-----5|SINGLE', zones: [{ id: 'CTY|10YAL-KESH-----5!BZN|10YAL-KESH-----5', name: 'BZN|AL' }] },
-  'Austria (AT)': { id: 'CTY|10YAT-APG------L|SINGLE', zones: [{ id: 'CTY|10YAT-APG------L!BZN|10YAT-APG------L', name: 'BZN|AT' }, { id: 'CTY|10YAT-APG------L!BZN|10Y1001A1001A63L', name: 'BZN|DE-AT-LU' }] },
-  'Belgium (BE)': { id: 'CTY|10YBE----------2|SINGLE', zones: [{ id: 'CTY|10YBE----------2!BZN|10YBE----------2', name: 'BZN|BE' }] },
-  'Bosnia and Herz. (BA)': { id: 'CTY|10YBA-JPCC-----D|SINGLE', zones: [{ id: 'CTY|10YBA-JPCC-----D!BZN|10YBA-JPCC-----D', name: 'BZN|BA' }] },
-  'Bulgaria (BG)': { id: 'CTY|10YCA-BULGARIA-R|SINGLE', zones: [{ id: 'CTY|10YCA-BULGARIA-R!BZN|10YCA-BULGARIA-R', name: 'BZN|BG' }] },
-  'Croatia (HR)': { id: 'CTY|10YHR-HEP------M|SINGLE', zones: [{ id: 'CTY|10YHR-HEP------M!BZN|10YHR-HEP------M', name: 'BZN|HR' }] },
-  'Cyprus (CY)': { id: 'CTY|10YCY-1001A0003J|SINGLE', zones: [{ id: 'CTY|10YCY-1001A0003J!BZN|10YCY-1001A0003J', name: 'BZN|CY' }] },
-  'Czech Republic (CZ)': { id: 'CTY|10YCZ-CEPS-----N|SINGLE', zones: [{ id: 'CTY|10YCZ-CEPS-----N!BZN|10YCZ-CEPS-----N', name: 'BZN|CZ' }, { id: 'CTY|10YCZ-CEPS-----N!BZN|10YDOM-CZ-DE-SKK', name: 'BZN|CZ+DE+SK' }] },
-  'Denmark (DK)': { id: 'CTY|10Y1001A1001A65H|SINGLE', zones: [{ id: 'CTY|10Y1001A1001A65H!BZN|10YDK-1--------W', name: 'BZN|DK1' }, { id: 'CTY|10Y1001A1001A65H!BZN|10YDK-2--------M', name: 'BZN|DK2' }] },
-  'Estonia (EE)': { id: 'CTY|10Y1001A1001A39I|SINGLE', zones: [{ id: 'CTY|10Y1001A1001A39I!BZN|10Y1001A1001A39I', name: 'BZN|EE' }] },
-  'Finland (FI)': { id: 'CTY|10YFI-1--------U|SINGLE', zones: [{ id: 'CTY|10YFI-1--------U!BZN|10YFI-1--------U', name: 'BZN|FI' }] },
-  'France (FR)': { id: 'CTY|10YFR-RTE------C|SINGLE', zones: [{ id: 'CTY|10YFR-RTE------C!BZN|10YFR-RTE------C', name: 'BZN|FR' }] },
-  'Georgia (GE)': { id: 'CTY|10Y1001A1001B012|SINGLE', zones: [{ id: 'CTY|10Y1001A1001B012!BZN|10Y1001A1001B012', name: 'BZN|GE' }] },
-  'Germany (DE)': { id: 'CTY|10Y1001A1001A83F|SINGLE', zones: [{ id: 'CTY|10Y1001A1001A83F!BZN|10YDOM-CZ-DE-SKK', name: 'BZN|CZ+DE+SK' }, { id: 'CTY|10Y1001A1001A83F!BZN|10Y1001A1001A63L', name: 'BZN|DE-AT-LU' }, { id: 'CTY|10Y1001A1001A83F!BZN|10Y1001A1001A82H', name: 'BZN|DE-LU' }] },
-  'Greece (GR)': { id: 'CTY|10YGR-HTSO-----Y|SINGLE', zones: [{ id: 'CTY|10YGR-HTSO-----Y!BZN|10YGR-HTSO-----Y', name: 'BZN|GR' }] },
-  'Hungary (HU)': { id: 'CTY|10YHU-MAVIR----U|SINGLE', zones: [{ id: 'CTY|10YHU-MAVIR----U!BZN|10YHU-MAVIR----U', name: 'BZN|HU' }] },
-  'Ireland (IE)': { id: 'CTY|10YIE-1001A00010|SINGLE', zones: [{ id: 'CTY|10YIE-1001A00010!BZN|10Y1001A1001A59C', name: 'BZN|IE(SEM)' }] },
-  'Italy (IT)': { id: 'CTY|10YIT-GRTN-----B|SINGLE', zones: [{ id: 'CTY|10YIT-GRTN-----B!BZN|10Y1001A1001A699', name: 'BZN|IT-Brindisi' }, { id: 'CTY|10YIT-GRTN-----B!BZN|10Y1001C--00096J', name: 'BZN|IT-Calabria' }, { id: 'CTY|10YIT-GRTN-----B!BZN|10Y1001A1001A70O', name: 'BZN|IT-Centre-North' }, { id: 'CTY|10YIT-GRTN-----B!BZN|10Y1001A1001A71M', name: 'BZN|IT-Centre-South' }, { id: 'CTY|10YIT-GRTN-----B!BZN|10Y1001A1001A72K', name: 'BZN|IT-Foggia' }, { id: 'CTY|10YIT-GRTN-----B!BZN|10Y1001A1001A66F', name: 'BZN|IT-GR' }, { id: 'CTY|10YIT-GRTN-----B!BZN|10Y1001A1001A877', name: 'BZN|IT-Malta' }, { id: 'CTY|10YIT-GRTN-----B!BZN|10Y1001A1001A73I', name: 'BZN|IT-North' }, { id: 'CTY|10YIT-GRTN-----B!BZN|10Y1001A1001A80L', name: 'BZN|IT-North-AT' }, { id: 'CTY|10YIT-GRTN-----B!BZN|10Y1001A1001A68B', name: 'BZN|IT-North-CH' }, { id: 'CTY|10YIT-GRTN-----B!BZN|10Y1001A1001A81J', name: 'BZN|IT-North-FR' }, { id: 'CTY|10YIT-GRTN-----B!BZN|10Y1001A1001A67D', name: 'BZN|IT-North-SI' }, { id: 'CTY|10YIT-GRTN-----B!BZN|10Y1001A1001A76C', name: 'BZN|IT-Priolo' }, { id: 'CTY|10YIT-GRTN-----B!BZN|10Y1001A1001A77A', name: 'BZN|IT-Rossano' }, { id: 'CTY|10YIT-GRTN-----B!BZN|10Y1001A1001A885', name: 'BZN|IT-SACOAC' }, { id: 'CTY|10YIT-GRTN-----B!BZN|10Y1001A1001A893', name: 'BZN|IT-SACODC' }, { id: 'CTY|10YIT-GRTN-----B!BZN|10Y1001A1001A74G', name: 'BZN|IT-Sardinia' }, { id: 'CTY|10YIT-GRTN-----B!BZN|10Y1001A1001A75E', name: 'BZN|IT-Sicily' }, { id: 'CTY|10YIT-GRTN-----B!BZN|10Y1001A1001A788', name: 'BZN|IT-South' }] },
-  'Kosovo (XK)': { id: 'CTY|10Y1001C--00100H|SINGLE', zones: [{ id: 'CTY|10Y1001C--00100H!BZN|10Y1001C--00100H', name: 'BZN|XK' }] },
-  'Latvia (LV)': { id: 'CTY|10YLV-1001A00074|SINGLE', zones: [{ id: 'CTY|10YLV-1001A00074!BZN|10YLV-1001A00074', name: 'BZN|LV' }] },
-  'Lithuania (LT)': { id: 'CTY|10YLT-1001A0008Q|SINGLE', zones: [{ id: 'CTY|10YLT-1001A0008Q!BZN|10YLT-1001A0008Q', name: 'BZN|LT' }] },
-  'Luxembourg (LU)': { id: 'CTY|10YLU-CEGEDEL-NQ|SINGLE', zones: [{ id: 'CTY|10YLU-CEGEDEL-NQ!BZN|10Y1001A1001A63L', name: 'BZN|DE-AT-LU' }, { id: 'CTY|10YLU-CEGEDEL-NQ!BZN|10Y1001A1001A82H', name: 'BZN|DE-LU' }] },
-  'Malta (MT)': { id: 'CTY|10Y1001A1001A93C|SINGLE', zones: [{ id: 'CTY|10Y1001A1001A93C!BZN|10Y1001A1001A93C', name: 'BZN|MT' }] },
-  'Moldova (MD)': { id: 'CTY|10Y1001A1001A990|SINGLE', zones: [{ id: 'CTY|10Y1001A1001A990!BZN|10Y1001A1001A990', name: 'BZN|MD' }] },
-  'Montenegro (ME)': { id: 'CTY|10YCS-CG-TSO---S|SINGLE', zones: [{ id: 'CTY|10YCS-CG-TSO---S!BZN|10YCS-CG-TSO---S', name: 'BZN|ME' }] },
-  'Netherlands (NL)': { id: 'CTY|10YNL----------L|SINGLE', zones: [{ id: 'CTY|10YNL----------L!BZN|10YNL----------L', name: 'BZN|NL' }] },
-  'North Macedonia (MK)': { id: 'CTY|10YMK-MEPSO----8|SINGLE', zones: [{ id: 'CTY|10YMK-MEPSO----8!BZN|10YMK-MEPSO----8', name: 'BZN|MK' }] },
-  'Norway (NO)': { id: 'CTY|10YNO-0--------C|SINGLE', zones: [{ id: 'CTY|10YNO-0--------C!BZN|10YNO-1--------2', name: 'BZN|NO1' }, { id: 'CTY|10YNO-0--------C!BZN|10YNO-2--------T', name: 'BZN|NO2' }, { id: 'CTY|10YNO-0--------C!BZN|50Y0JVU59B4JWQCU', name: 'BZN|NO2NSL' }, { id: 'CTY|10YNO-0--------C!BZN|10YNO-3--------J', name: 'BZN|NO3' }, { id: 'CTY|10YNO-0--------C!BZN|10YNO-4--------9', name: 'BZN|NO4' }, { id: 'CTY|10YNO-0--------C!BZN|10Y1001A1001A48H', name: 'BZN|NO5' }] },
-  'Poland (PL)': { id: 'CTY|10YPL-AREA-----S|SINGLE', zones: [{ id: 'CTY|10YPL-AREA-----S!BZN|10YPL-AREA-----S', name: 'BZN|PL' }] },
-  'Portugal (PT)': { id: 'CTY|10YPT-REN------W|SINGLE', zones: [{ id: 'CTY|10YPT-REN------W!BZN|10YPT-REN------W', name: 'BZN|PT' }] },
-  'Romania (RO)': { id: 'CTY|10YRO-TEL------P|SINGLE', zones: [{ id: 'CTY|10YRO-TEL------P!BZN|10YRO-TEL------P', name: 'BZN|RO' }] },
-  'Serbia (RS)': { id: 'CTY|10YCS-SERBIATSOV|SINGLE', zones: [{ id: 'CTY|10YCS-SERBIATSOV!BZN|10YCS-SERBIATSOV', name: 'BZN|RS' }] },
-  'Slovakia (SK)': { id: 'CTY|10YSK-SEPS-----K|SINGLE', zones: [{ id: 'CTY|10YSK-SEPS-----K!BZN|10YDOM-CZ-DE-SKK', name: 'BZN|CZ+DE+SK' }, { id: 'CTY|10YSK-SEPS-----K!BZN|10YSK-SEPS-----K', name: 'BZN|SK' }] },
-  'Slovenia (SI)': { id: 'CTY|10YSI-ELES-----O|SINGLE', zones: [{ id: 'CTY|10YSI-ELES-----O!BZN|10YSI-ELES-----O', name: 'BZN|SI' }] },
-  'Spain (ES)': { id: 'CTY|10YES-REE------0|SINGLE', zones: [{ id: 'CTY|10YES-REE------0!BZN|10YES-REE------0', name: 'BZN|ES' }] },
-  'Sweden (SE)': { id: 'CTY|10YSE-1--------K|SINGLE', zones: [{ id: 'CTY|10YSE-1--------K!BZN|10Y1001A1001A44P', name: 'BZN|SE1' }, { id: 'CTY|10YSE-1--------K!BZN|10Y1001A1001A45N', name: 'BZN|SE2' }, { id: 'CTY|10YSE-1--------K!BZN|10Y1001A1001A46L', name: 'BZN|SE3' }, { id: 'CTY|10YSE-1--------K!BZN|10Y1001A1001A47J', name: 'BZN|SE4' }] },
-  'Switzerland (CH)': { id: 'CTY|10YCH-SWISSGRIDZ|SINGLE', zones: [{ id: 'CTY|10YCH-SWISSGRIDZ!BZN|10YCH-SWISSGRIDZ', name: 'BZN|CH' }] },
-  'Turkey (TR)': { id: 'CTY|10YTR-TEIAS----W|SINGLE', zones: [{ id: 'CTY|10YTR-TEIAS----W!BZN|10YTR-TEIAS----W', name: 'BZN|TR' }] },
-  'Ukraine (UA)': { id: 'CTY|10Y1001C--00003F|SINGLE', zones: [{ id: 'CTY|10Y1001C--00003F!BZN|10Y1001C--00003F', name: 'BZN|UA' }, { id: 'CTY|10Y1001C--00003F!BZN|10YUA-WEPS-----0', name: 'BZN|UA-BEI' }, { id: 'CTY|10Y1001C--00003F!BZN|10Y1001A1001A869', name: 'BZN|UA-DobTPP' }, { id: 'CTY|10Y1001C--00003F!BZN|10Y1001C--000182', name: 'BZN|UA-IPS' }] },
-  'United Kingdom (UK)': { id: 'CTY|10Y1001A1001A92E|SINGLE', zones: [{ id: 'CTY|10Y1001A1001A92E!BZN|10YGB----------A', name: 'BZN|GB' }, { id: 'CTY|10Y1001A1001A92E!BZN|11Y0-0000-0265-K', name: 'BZN|GB(ElecLink)' }, { id: 'CTY|10Y1001A1001A92E!BZN|10Y1001C--00098F', name: 'BZN|GB(IFA)' }, { id: 'CTY|10Y1001A1001A92E!BZN|17Y0000009369493', name: 'BZN|GB(IFA2)' }, { id: 'CTY|10Y1001A1001A92E!BZN|10Y1001A1001A59C', name: 'BZN|IE(SEM)' }] },
-};
-
+/*
 // Find first tag of a given type
 async function findData(data, pre, post, fromindex) {
   const startPos = data.indexOf(pre, fromindex);
@@ -292,12 +282,11 @@ async function fetchFromEntsoe() {
   }
 }
 
-fetchFromEntsoe();
+fetchFromEntsoe(); */
 
 module.exports = {
   fetchCurrencyTable,
   entsoeApiInit,
   entsoeGetData,
-
-  fetchFromEntsoe,
+  applyTaxesOnSpotprice,
 };

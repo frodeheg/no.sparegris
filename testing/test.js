@@ -21,7 +21,7 @@ async function testCurrencyConverter() {
     const sampleTime = new Date(currencyTable[currency].date);
     if ((currency === 'NOK') || (currency === 'RUB')) continue;
     if (now - sampleTime > 4 * 24 * 60 * 60 * 1000) {
-      throw new Error(`No recent samples for currency ${currency}`);
+      throw new Error(`No recent samples for currency ${currency}, last sample time: ${sampleTime}`);
     }
   }
   console.log('Testing Currency Converter - Passed');
@@ -39,11 +39,21 @@ async function testApp() {
 // Test Entsoe Integration
 async function testEntsoe() {
   console.log('Testing Entsoe');
+  const app = new PiggyBank();
+  await app.onInit();
   await prices.entsoeApiInit(Homey.env.ENTSOE_TOKEN);
   const todayStart = new Date();
   todayStart.setHours(0, 0, 0, 0);
-  let priceData = await prices.entsoeGetData(todayStart, 'NOK');
-  console.log(priceData);
+  const priceData = await prices.entsoeGetData(todayStart, 'NOK');
+  // console.log(priceData);
+  const surcharge = 0.0198;// Network provider provision
+  const VAT = 0.25; // 25% moms
+  const gridTaxDay = 0.3626; // Between 6-22
+  const gridTaxNight = 0.2839; // Between 22-6
+  const finalPrices = await prices.applyTaxesOnSpotprice(priceData, surcharge, VAT, gridTaxDay, gridTaxNight, app.homey);
+  console.log(finalPrices);
+
+  await app.onUninit();
   console.log('Testing Entsoe - Passed');
 }
 

@@ -151,9 +151,14 @@
       "header": "Price control",
       "priceMode": "Mode",
       "mode": {
-        "flow": "From Flow",
-        "internal": "Internal control",
+        "flow": "Manually from flows",
+        "external": "Automatically with prices from external app",
+        "internal": "Automatically spot price",
         "disabled": "Disabled"
+      },
+      "spotPrice": {
+        "country": "Country",
+        "region": "Price Region"
       },
       "buttons": {
         "help": "Frost guard and zone control will override all actions. Frost guard will override everything with a thermostat and zone control turns off everything without frost guard. Other than that the actions have the following effect",
@@ -168,7 +173,10 @@
       "actionHigh": "Actions when price is high",
       "actionExtreme": "Actions when price is extremely high",
       "actionNormal": "Actions when price is normal",
-      "priceHint1": "The Mode allows you to choose whether to feed the app with manually crafted price points or if the price points should be set automatically. If neither is used (deactivated) then the app will only control max power.",
+      "priceHint1": ["<p>The Mode allows you to choose whether to feed the app with manually crafted price points or if the price points should be set automatically. If neither is used (deactivated) then the app will only control max power.</p><!--",
+      "--><p>Manual control from flow cards give you greatest flexibility but leave all the responsibility to interpret the electricity price to you.</p><!--",
+      "--><p>Automatically with prices from external app fetches and interprets the prices from the app 'Utilitycost'.</p><!--",
+      "--><p>Automatically spot price fetches and interprets the prices from the european electricity marketplace.</p>"],
       "priceErr1": "Note! You have to install the app no.almli.utilitycost and acompanying device in order to use the internal price control. The prices are fetched seamlessly, flow cards are not necessary.",
       "pricePoint": "Price point",
       "pricePointHint": "The behaviour of each price point is defined below. Price points can be changed by using flows.",

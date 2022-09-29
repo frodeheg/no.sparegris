@@ -151,9 +151,14 @@
       "header": "Priskontroll",
       "priceMode": "Modus",
       "mode": {
-        "flow": "Fra flytkort",
-        "internal": "Intern Styring",
+        "flow": "Manuelt fra flytkort",
+        "external": "Automatisk med priser fra ekstern app",
+        "internal": "Automatisk Spotpris",
         "disabled": "Deaktivert"
+      },
+      "spotPrice": {
+        "country": "Land",
+        "region": "Prisområde"
       },
       "buttons": {
         "help": "Frostsikring og sonestyring vil overstyre alle handlinger. Frostsikring overstyrer alt som har termostat og Sonestyring slår av alt som ikke har frostsikring. For øvrig får handlingene følgende effekt",
@@ -168,7 +173,10 @@
       "actionHigh": "Handling når strømprisen blir høy",
       "actionExtreme": "Handling når strømprisen blir ekstremt høy",
       "actionNormal": "Handling når strømprisen blir normal",
-      "priceHint1": "Modus lar deg velge om du skal fore appen med prispunkt manuelt via flows eller om det skal gjøres automatisk. Dersom ingen av delene benyttes (deaktivert) vil appen bare styre maks effekt.",
+      "priceHint1": ["<p>Modus lar deg velge om du skal fore appen med prispunkt manuelt via flows eller om det skal gjøres automatisk. Dersom ingen av delene benyttes (deaktivert) vil appen bare styre maks effekt.</p><!--",
+           "--><p>Manuell styring fra flytkort gir deg størst fleksibilitet men overlater alt ansvaret for å tolke strømprisen til deg.</p><!--",
+           "--><p>Automatisk med priser fra ekstern app henter og tolker prisene fra appen 'Strømregning'.</p><!--",
+           "--><p>Automatisk Spotpris henter og tolker prisene fra den europeiske strømbørsen.</p>"],
       "priceErr1": "NB! Du må installere appen no.almli.utilitycost og tilhørende enhet for å bruke den interne priskontrollen. Strømprisen hentes sømløst uten å benytte flytkort.",
       "pricePoint": "Prispunkt",
       "pricePointHint": "Oppførsel for hvert prispunkt kan endres nedenfor. Man kan bytte mellom ulike prispunkt ved hjelp av flows.",

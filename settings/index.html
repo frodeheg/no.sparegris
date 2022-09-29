@@ -117,6 +117,8 @@
       var zoneList = {} // Indexed by zone-id
       var priceActionList = [ {}, {}, {}, {}, {} ] // Indexed by deviceId
       var currentPricePoint = 1; // Normal
+      var currentCountry = 'Norway (NO)';
+      var currentRegion = 0;
       var currentOperatingMode = 0; // Disabled
       var currentErrorMargin = 5;
       var currentfreeThreshold = 100;
@@ -203,6 +205,28 @@
         for (var i = 0; i < pricePoints.length; i++) {
           options += '<option value="' + pricePoints[i].value + '" ' 
             + ((selectedPoint==i) ? 'selected' : '') + '>' + pricePoints[i].name + '</option>';
+        }
+        list.innerHTML = options;
+      }
+
+      function updateCountries(selectedCountry) {
+        var list = document.getElementById('priceCountry');
+        var options = '';
+        const countries = Object.keys(ENTSOE_BIDDING_ZONES);
+        for (var i = 0; i < countries.length; i++) {
+          options += '<option value="' + countries[i] + '" '
+            + ((selectedCountry==countries[i]) ? 'selected' : '') + '>' + countries[i] + '</option>';
+        }
+        list.innerHTML = options;
+      }
+
+      function updateRegions(selectedCountry, selectedRegion) {
+        var list = document.getElementById('priceRegion');
+        var options = '';
+        const regions = ENTSOE_BIDDING_ZONES[selectedCountry];
+        for (var i = 0; i < regions.length; i++) {
+          options += '<option value="' + i + '" '
+            + ((selectedRegion==i) ? 'selected' : '') + '>' + regions[i].name + '</option>';
         }
         list.innerHTML = options;
       }
@@ -917,13 +941,35 @@
             <td class="settings_row_input">
               <select id="priceMode" onchange="checkPriceMode(this);displaySaveHint()">
                 <option value="0" data-i18n="settings.price.mode.flow">From flows</option>
-                <option value="1" data-i18n="settings.price.mode.internal">Internally</option>
+                <option value="1" data-i18n="settings.price.mode.external">From app Utilitycost</option>
+                <option value="3" data-i18n="settings.price.mode.internal" selected>Internally</option>
                 <option value="2" data-i18n="settings.price.mode.disabled" selected>Disabled</option>
               </select>
               <div class="hintButton" onclick="toggle(this,'hintp1');return false;">i</div></td>
           </tr>
         </table>
         <p id="hintp1" class="hint" data-i18n="settings.price.priceHint1">price.priceHint1</p>
+
+        <span id="priceSpotPart" style=""display: block">
+          <table class="settings_table">
+            <tr>
+              <td class="settings_row_name"><label for="priceCountry" data-i18n="settings.price.spotPrice.country">spotPrice.country</label>:</td>
+              <td class="settings_row_input">
+                <select id="priceCountry" onchange="displaySaveHint()">
+                  <option value="0" selected>Country selector</option>
+                </select>
+              </td>
+            </tr>
+            <tr>
+              <td class="settings_row_name"><label for="priceRegion" data-i18n="settings.price.spotPrice.region">spotPrice.region</label>:</td>
+              <td class="settings_row_input">
+                <select id="priceRegion" onchange="displaySaveHint()">
+                  <option value="0" selected>Region selector</option>
+                </select>
+              </td>
+            </tr>
+          </table>
+        </span>
 
         <span id="priceUpperPart" style="display: none">
           <table class="settings_table">
@@ -1344,6 +1390,8 @@
           // Initialize state and show the welcome page:
           updateOperatingModes(currentOperatingMode);
           updatePricePoints(currentPricePoint);
+          updateCountries(currentCountry);
+          updateRegions(currentCountry, currentRegion);
           loadElement.style.display = "none";
           document.getElementById("main_menu").style.display = "table";
           document.getElementById("save").style.display = "inline-block";
