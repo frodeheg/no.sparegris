@@ -66,7 +66,7 @@ const ENTSOE_BIDDING_ZONES = {
   'Montenegro (ME)': [{ id: '10YCS-CG-TSO---S', name: 'ME' }],
   'Netherlands (NL)': [{ id: '10YNL----------L', name: 'NL' }],
   'North Macedonia (MK)': [{ id: '10YMK-MEPSO----8', name: 'MK' }],
-  'Norway (NO)': [{ id: '10YNO-1--------2', name: 'Øst (NO1)' }, { id: '10YNO-2--------T', name: 'Sør (NO2)' }, { id: '50Y0JVU59B4JWQCU', name: 'NO2NSL' },
+  'Norway (NO)': [{ id: '10YNO-1--------2', name: 'Øst (NO1)' }, { id: '10YNO-2--------T', name: 'Sør (NO2)' }, // { id: '50Y0JVU59B4JWQCU', name: 'NO2NSL' },
     { id: '10YNO-3--------J', name: 'Midt (NO3)' }, { id: '10YNO-4--------9', name: 'Nord (NO4)' }, { id: '10Y1001A1001A48H', name: 'Vest (NO5)' }],
   'Poland (PL)': [{ id: '10YPL-AREA-----S', name: 'PL' }],
   'Portugal (PT)': [{ id: '10YPT-REN------W', name: 'PT' }],
