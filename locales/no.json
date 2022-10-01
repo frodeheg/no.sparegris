@@ -89,6 +89,18 @@
       "missing" : "Manglende eller trøblete enhet?",
       "problemsolver" : "Feilsøking"
     },
+    "cost" : {
+      "header": "Kostnadsdetaljer"
+    },
+    "cost" : {
+      "header": "Kostnader",
+      "surcharge": "Påslag strømleverandør",
+      "VAT": "Moms",
+      "gridTaxDay": "Nettleie 06-22",
+      "gridTaxNight": "Nettleie 22-06",
+      "gridLimit": "Nettleie steg (kWh)",
+      "gridCost": "Kostnad (GBP)"
+    },
     "deviceinfo": {
       "header": "Rapportering av enheter",
       "filter": "Rapport",
@@ -152,10 +164,15 @@
       "priceMode": "Modus",
       "mode": {
         "flow": "Manuelt fra flytkort",
-        "external": "Automatisk med priser fra ekstern app",
-        "internal": "Automatisk Spotpris",
+        "internal": "Automatisk",
         "disabled": "Deaktivert"
       },
+      "priceKind": "Pris type",
+      "priceKindUtil": "Ekstern",
+      "priceKindSpot": "Spotpris",
+      "priceKindFixed": "Fastpris",
+      "priceKindHint": "<p>Valget 'Ekstern' henter prisen fra appen 'Strømregning' dersom den er installert.</p><p>'Spotpris' hentes fra den europeiske strømbørsen.</p><p>'Fastpris' lar deg legge inn en fast pris per kWh. Totalprisen vil likevel variere gjennom døgnet pga. nettleien.</p>",
+      "fixed": "Fastpris",
       "spotPrice": {
         "country": "Land",
         "region": "Prisområde"
@@ -175,9 +192,9 @@
       "actionNormal": "Handling når strømprisen blir normal",
       "priceHint1": ["<p>Modus lar deg velge om du skal fore appen med prispunkt manuelt via flows eller om det skal gjøres automatisk. Dersom ingen av delene benyttes (deaktivert) vil appen bare styre maks effekt.</p><!--",
            "--><p>Manuell styring fra flytkort gir deg størst fleksibilitet men overlater alt ansvaret for å tolke strømprisen til deg.</p><!--",
-           "--><p>Automatisk med priser fra ekstern app henter og tolker prisene fra appen 'Strømregning'.</p><!--",
-           "--><p>Automatisk Spotpris henter og tolker prisene fra den europeiske strømbørsen.</p>"],
+           "--><p>Automatisk tolker strømprisen etter preferansene i appen.</p>"],
       "priceErr1": "NB! Du må installere appen no.almli.utilitycost og tilhørende enhet for å bruke den interne priskontrollen. Strømprisen hentes sømløst uten å benytte flytkort.",
+      "priceAdvanced": "Avansert priskontroll",
       "pricePoint": "Prispunkt",
       "pricePointHint": "Oppførsel for hvert prispunkt kan endres nedenfor. Man kan bytte mellom ulike prispunkt ved hjelp av flows.",
       "action": "Handling",

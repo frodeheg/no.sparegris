@@ -89,6 +89,15 @@
       "missing" : "Missing or broken device?",
       "problemsolver" : "Troubleshoot"
     },
+    "cost" : {
+      "header": "Cost settings",
+      "surcharge": "Surcharge electricity provider",
+      "VAT": "VAT",
+      "gridTaxDay": "Grid charge 06-22",
+      "gridTaxNight": "Grid charge 22-06",
+      "gridLimit": "Grid step (kWh)",
+      "gridCost": "Cost (GBP)"
+    },
     "deviceinfo": {
       "header": "Device reporting",
       "filter": "Report",
@@ -152,10 +161,15 @@
       "priceMode": "Mode",
       "mode": {
         "flow": "Manually from flows",
-        "external": "Automatically with prices from external app",
-        "internal": "Automatically spot price",
+        "internal": "Automatic",
         "disabled": "Disabled"
       },
+      "priceKind": "Price kind",
+      "priceKindUtil": "External",
+      "priceKindSpot": "Spot price",
+      "priceKindFixed": "Fixed price",
+      "priceKindHint": "<p>The option 'External' retrieves the price from the app 'Norwegian Electricity Bill' if it is installed.</p><p>'Spot price' is retrieved from the European electricity exchange.</p><p>'Fixed price' allows you to enter a fixed price per kWh. The total price will still vary throghout the day due to grid cost.</p>",
+      "fixed": "Fixed price",
       "spotPrice": {
         "country": "Country",
         "region": "Price Region"
@@ -175,9 +189,9 @@
       "actionNormal": "Actions when price is normal",
       "priceHint1": ["<p>The Mode allows you to choose whether to feed the app with manually crafted price points or if the price points should be set automatically. If neither is used (deactivated) then the app will only control max power.</p><!--",
       "--><p>Manual control from flow cards give you greatest flexibility but leave all the responsibility to interpret the electricity price to you.</p><!--",
-      "--><p>Automatically with prices from external app fetches and interprets the prices from the app 'Utilitycost'.</p><!--",
-      "--><p>Automatically spot price fetches and interprets the prices from the european electricity marketplace.</p>"],
+      "--><p>Automatic interprets the prices according to the preferences set in the app.</p>"],
       "priceErr1": "Note! You have to install the app no.almli.utilitycost and acompanying device in order to use the internal price control. The prices are fetched seamlessly, flow cards are not necessary.",
+      "priceAdvanced": "Advanced price settings",
       "pricePoint": "Price point",
       "pricePointHint": "The behaviour of each price point is defined below. Price points can be changed by using flows.",
       "action": "Action",
