@@ -95,6 +95,7 @@
       "VAT": "VAT",
       "gridTaxDay": "Grid charge 06-22",
       "gridTaxNight": "Grid charge 22-06",
+      "gridheader": "Grid capacity costs",
       "gridLimit": "Grid step (kWh)",
       "gridCost": "Cost (GBP)"
     },

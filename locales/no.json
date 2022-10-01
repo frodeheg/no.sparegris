@@ -90,14 +90,12 @@
       "problemsolver" : "Feilsøking"
     },
     "cost" : {
-      "header": "Kostnadsdetaljer"
-    },
-    "cost" : {
       "header": "Kostnader",
       "surcharge": "Påslag strømleverandør",
       "VAT": "Moms",
       "gridTaxDay": "Nettleie 06-22",
       "gridTaxNight": "Nettleie 22-06",
+      "gridheader": "Nettleie kapasitetsledd",
       "gridLimit": "Nettleie steg (kWh)",
       "gridCost": "Kostnad (GBP)"
     },
