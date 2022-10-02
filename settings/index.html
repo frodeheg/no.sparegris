@@ -578,6 +578,8 @@
         let newRow = table.insertRow(-1);
         let newCell1 = newRow.insertCell(0);
         let newCell2 = newRow.insertCell(1);
+        newCell1.className = "settings_row_input";
+        newCell2.className = "settings_row_input";
         let { limit, price } = gridCost[newId-1];
         let min = (newId <= 1) ? 0 : gridCost[newId-2].limit;
         let max = (newId >= gridCost.length-1) ? 100000 : gridCost[newId].limit;
@@ -826,20 +828,20 @@
               </select> <div class="edit icon" onclick="updateMaxPowerEditor();toggle(this,'gridCostsEdit');"></div><div class="hintButton" onclick="toggle(this,'maxPowHint');return false;">i</div></td>
           </tr>
         </table>
+        <p id="maxPowHint" class="hint" data-i18n="settings.app.maxPowHint">app.maxPowHint</p>
 
         <fieldset id="gridCostsEdit" style="display:none;">
           <legend data-i18n="settings.cost.gridheader">cost.gridheader</legend>
           <p data-i18n="settings.cost.gridLimitHint">cost.gridLimitHint</p>
           <table id = "gridCostsTable" class="settings_table">
             <tr>
-              <th class="settings_row_name"><label for="gridLimit1" data-i18n="settings.cost.gridLimit">cost.gridLimit</label></th>
+              <th class="settings_row_input"><label for="gridLimit1" data-i18n="settings.cost.gridLimit">cost.gridLimit</label></th>
               <th class="settings_row_input"><label for="gridCost1" data-i18n="settings.cost.gridCost">cost.gridCost</label></th>
             </tr>
           </table>
           <input type="button" value="-" onclick="removeMaxPowerElement();">
           <input type="button" value="+" onclick="addMaxPowerElement();">
         </fieldset>
-        <p id="maxPowHint" class="hint" data-i18n="settings.app.maxPowHint">app.maxPowHint</p>
       </fieldset>
 
       <canvas id="tariffGuideChart" style="max-height:250px;min-height:250px;display:none"></canvas>
@@ -1568,7 +1570,6 @@
           document.getElementById("gridTaxDay").value = futurePriceOptions.gridTaxDay;
           document.getElementById("gridTaxNight").value = futurePriceOptions.gridTaxNight;
           document.getElementById("VAT").value = futurePriceOptions.VAT;
-          // setGridCost(futurePriceOptions.gridCosts); // Already called by before graph update
           document.getElementById("energyFlowRateText").innerHTML = energyFlowRateText.replace("${interval}", Math.round(appConfigProgress.timeSinceEnergyMeter / 60));
           checkPriceMode(document.getElementById("priceMode")); // not called automatically when programatically changed
           checkPriceKind(document.getElementById("priceKind")); // not called automatically when programatically changed
@@ -1676,8 +1677,26 @@
           } else {
             futurePriceOptions = {}
           }
+          setGridCost(futurePriceOptions.gridCosts);
           futurePriceOptionsLoaded = true;
-          checkLoadingDone();
+
+          // Maxpower cannot be updated before after setGridCost has been called
+          Homey.get("maxPower", function (err, maxPower) {
+            if (err) return Homey.alert(err);
+            if (maxPower !== null && Number.isInteger(+maxPower)) {
+              setMaxPower(+maxPower, 0, Infinity);
+            } // else use defaults set from the top (this is the first time)
+            maxPowerLoaded = true;
+            checkLoadingDone();
+          });
+
+          // Aquire graphs (must be after setGridCost)
+          Homey.api('GET', '/getStats', null, function (err, data) {
+            if (err) return Homey.alert(err);
+            updateGraph(data);
+            graphLoaded = true;
+          });
+
         });
 
         // Refresh API configuration progress
@@ -1828,21 +1847,6 @@
           mainFuseLoaded = true;
           checkLoadingDone();
         });
-        // Aquire graphs
-        Homey.api('GET', '/getStats', null, function (err, data) {
-          if (err) return Homey.alert(err);
-          setGridCost(data.gridCosts);
-          updateGraph(data);
-          graphLoaded = true;
-          Homey.get("maxPower", function (err, maxPower) {
-            if (err) return Homey.alert(err);
-            if (maxPower !== null && Number.isInteger(+maxPower)) {
-              setMaxPower(+maxPower, 0, Infinity);
-            } // else use defaults set from the top (this is the first time)
-            maxPowerLoaded = true;
-            checkLoadingDone();
-          });
-        });
         // Refresh log data
         Homey.api('GET', '/apiCommand?cmd=getLogLevel', null, function (err, logLevel) {
           if (err || !Number.isInteger(+logLevel)) logLevel = 0;
@@ -1885,7 +1889,7 @@
               futurePriceOptions.gridTaxDay = document.getElementById("gridTaxDay").value;
               futurePriceOptions.gridTaxNight = document.getElementById("gridTaxNight").value;
               futurePriceOptions.VAT = document.getElementById("VAT").value;
-              futurePriceOptions.gridCost = gridCost;
+              futurePriceOptions.gridCosts = gridCost;
               let opModeValue = (appEnabledElement.value === "1") ? operatingModeElement.value : 0
               Homey.set("futurePriceOptions", futurePriceOptions, errFunc);
               Homey.set("deviceList", deviceList, errFunc);
@@ -1988,7 +1992,7 @@
           if (loadElement.style.display !== "none") {
             loadElement.innerHTML = timeoutText;
           }
-        }, 7 * 1000);
+        }, 8 * 1000);
       }
 
       function refreshPriceActionList() {
@@ -2226,6 +2230,17 @@
           tabcontent[i].style.display = "none";
         }
 
+        // Hide the drop down menu
+        let menuitem = document.getElementsByClassName("dropdown-content");
+        for (i = 0; i < menuitem.length; i++) {
+          menuitem[i].classList.add("active");
+        }
+        setTimeout(function () {
+          for (i = 0; i < menuitem.length; i++) {
+            menuitem[i].classList.remove("active");
+          }
+        }, 100);
+
         // Get all elements with class="tablinks" and remove the class "active"
         tablinks = document.getElementsByClassName("tablinks");
         for (i = 0; i < tablinks.length; i++) {
@@ -2289,12 +2304,13 @@
           gridTaxDay: 0.3626, // Tensio default
           gridTaxNight: 0.2839, // Tensio default
           VAT: 25,
-          gridCost: [{ limit: 2000, price: 73 }, { limit: 5000, price: 128 }, { limit: 10000, price: 219 }]
+          gridCosts: [{ limit: 2000, price: 73 }, { limit: 5000, price: 128 }, { limit: 10000, price: 219 }]
         }
         setTimeout(function () {
           setMaxPower("5000", "0", "100000");
           checkLoadingDone();
         }, 1 * 1000);
+        setGridCost(futurePriceOptions.gridCosts);
         updateGraph({
           daysInMonth: 31,
           month: 2,

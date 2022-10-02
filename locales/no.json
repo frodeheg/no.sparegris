@@ -97,7 +97,8 @@
       "gridTaxNight": "Nettleie 22-06",
       "gridheader": "Nettleie kapasitetsledd",
       "gridLimit": "Kapasitetsledd (Wh)",
-      "gridCost": "Kostnad per mnd."
+      "gridCost": "Kostnad per mnd.",
+      "gridLimitHint": "Dersom du legger inn kostnad per kapasitetsledd fra din nettleverandør vil appen regne ut hvor mye du sparer over tid."
     },
     "deviceinfo": {
       "header": "Rapportering av enheter",

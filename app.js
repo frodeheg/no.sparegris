@@ -198,7 +198,7 @@ class PiggyBank extends Homey.App {
       || !('gridTaxDay' in futurePriceOptions)
       || !('gridTaxNight' in futurePriceOptions)
       || !('VAT' in futurePriceOptions)
-      || !(Array.isArray(futurePriceOptions.gridCost))) {
+      || !(Array.isArray(futurePriceOptions.gridCosts))) {
       if (!futurePriceOptions) futurePriceOptions = {};
       if (!('minCheapTime' in futurePriceOptions)) futurePriceOptions.minCheapTime = 4;
       if (!('minExpensiveTime' in futurePriceOptions)) futurePriceOptions.minExpensiveTime = 4;
@@ -215,7 +215,7 @@ class PiggyBank extends Homey.App {
       if (!('gridTaxDay' in futurePriceOptions)) futurePriceOptions.gridTaxDay = 0.3626; // Tensio default
       if (!('gridTaxNight' in futurePriceOptions)) futurePriceOptions.gridTaxNight = 0.2839; // Tensio default
       if (!('VAT' in futurePriceOptions)) futurePriceOptions.VAT = 25;
-      if (!(Array.isArray(futurePriceOptions.gridCost))) futurePriceOptions.gridCost = [{ limit: 2000, price: 73 }, { limit: 5000, price: 128 }, { limit: 10000, price: 219 }];
+      if (!(Array.isArray(futurePriceOptions.gridCosts))) futurePriceOptions.gridCosts = this.fetchTariffTable();
       this.log(`Resetting futurePriceOptions to ${JSON.stringify(futurePriceOptions)}`);
       this.homey.settings.set('futurePriceOptions', futurePriceOptions);
     }
@@ -1734,8 +1734,7 @@ class PiggyBank extends Homey.App {
       daysInMonth: daysInStatsMonth,
       month: statsTimeLocal.getMonth(),
       dailyMax: Array.isArray(dailyMax) ? dailyMax : [],
-      dailyMaxGood: Array.isArray(dailyMaxGood) ? dailyMaxGood : [],
-      gridCosts: await this.fetchTariffTable()
+      dailyMaxGood: Array.isArray(dailyMaxGood) ? dailyMaxGood : []
     };
     return stats;
   }
@@ -2281,9 +2280,9 @@ class PiggyBank extends Homey.App {
       }
     } catch (err) {
       // API call probably timed out
-      const oldGridCost = this.homey.settings.get('gridCosts');
-      if (oldGridCost !== null) {
-        return oldGridCost;
+      const oldGridCosts = this.homey.settings.get('gridCosts');
+      if (oldGridCosts !== null) {
+        return oldGridCosts;
       }
     }
     // Could not fetch the table, using tensio price table instead.

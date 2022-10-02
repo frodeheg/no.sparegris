@@ -301,6 +301,10 @@ p {
   display: block;
 }
 
+.dropdown:hover .dropdown-content.active {
+  display: none;
+}
+
 
 .⚠ {
   position: relative; /* So we can position the content as absolute */
