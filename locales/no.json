@@ -96,8 +96,8 @@
       "gridTaxDay": "Nettleie 06-22",
       "gridTaxNight": "Nettleie 22-06",
       "gridheader": "Nettleie kapasitetsledd",
-      "gridLimit": "Nettleie steg (kWh)",
-      "gridCost": "Kostnad (GBP)"
+      "gridLimit": "Kapasitetsledd (Wh)",
+      "gridCost": "Kostnad per mnd."
     },
     "deviceinfo": {
       "header": "Rapportering av enheter",
@@ -244,16 +244,7 @@
       "operatingMode" : "Driftsmodus",
       "operatingModeHint": "Hint: Du kan bruke flytkort for å endre driftsmodus.",
       "powerSettings": "Strøminnstillinger",
-      "powerLimit1" : "Trinn 1 - 0-2 kW",
-      "powerLimit2" : "Trinn 2 - 2-5 kW",
-      "powerLimit3" : "Trinn 3 - 5-10 kW",
-      "powerLimit4" : "Trinn 4 - 10-15 kW",
-      "powerLimit5" : "Trinn 5 - 15-20 kW",
-      "powerLimit6" : "Trinn 6 - 20-25 kW",
-      "powerLimit7" : "Trinn 7 - 25-50 kW",
-      "powerLimit8" : "Trinn 8 - 50-75 kW",
-      "powerLimit9" : "Trinn 9 - 75-100 kW",
-      "powerLimit10" : "Trinn 10 - 100+ kW",
+      "powerStep" : "Trinn",
       "maxPower": "Maks timeforbruk",
       "priorities" : "Prioriteringer",
       "priorityHint1": "Ved overforbruk av strøm begynner appen å skru av enheter fra bunnen av listen. Enheter på toppen av listen blir de siste til å bli slått av.",

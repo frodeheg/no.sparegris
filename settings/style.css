@@ -192,6 +192,7 @@ p {
   width:120px;
 }
 
+.inputElem,
 #surcharge,
 #VAT,
 #gridTaxDay,
@@ -257,6 +258,7 @@ p {
   cursor: pointer;
   border-collapse: collapse;
   border: 0px solid black;
+  z-index: 1;
 }
 
 .menuitem .dropdown{
@@ -274,7 +276,7 @@ p {
 }
 
 .menuitem td:hover/*, .dropdown:hover .dropbtn*/ {
-  background-color: rgb(50, 102, 98);
+  background-color: rgb(70, 122, 118);
 }
 
 .dropdown-content {
@@ -283,7 +285,6 @@ p {
   background-color: #f9f9f9;
   min-width: 160px;
   box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-  z-index: 1;
 }
 
 .dropdown-content a {
@@ -352,3 +353,51 @@ input[type='checkbox'] { display: none; }
 .content-inner { background: rgba(0, 105, 255, .2); border-bottom: 1px solid rgba(0, 105, 255, .45); border-bottom-left-radius: 7px; border-bottom-right-radius: 7px; padding: .5rem 1rem; }
 
 .collapsible-content p { margin-bottom: 0; }
+
+
+/* --- Edit icon --- */
+.edit.icon {
+  cursor: zoom-in;
+  display: inline-block;
+  position: relative;
+  color: black;
+  background-color: palegoldenrod;
+  width: 16px;
+  height: 16px;
+  margin: 1px 1px 1px 1px;
+  border-left: solid 1px currentColor;
+  border-right: solid 1px currentColor;
+  border-top: solid 1px currentColor;
+  border-bottom: solid 1px currentColor;
+  transform: translate(0px, 3px);
+  z-index: 0;
+}
+
+.edit.icon::before {
+  content: '';
+  color: black;
+  background-color: orange;
+  position: absolute;
+  width: 12px;
+  height: 2px;
+  border-radius: 1px;
+  border: solid 1px currentColor;
+  transform: translate(2px,5px) rotate(-45deg);
+  box-shadow: -2px 2px 2px gray;
+}
+
+.edit.icon::after {
+  content: '';
+  position: absolute;
+  width: 0px;
+  height: 0px;
+  border-left: solid 5px transparent;
+  border-right: solid 5px currentColor;
+  border-top: solid 2px transparent;
+  border-bottom: solid 2px transparent;
+  transform: translate(-4px,13px) rotate(-45deg);
+}
+
+.edit.icon:hover {
+  box-shadow: 0px 0px 10px 2px gold;
+}

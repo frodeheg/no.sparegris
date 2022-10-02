@@ -180,7 +180,6 @@ class PiggyBank extends Homey.App {
       this.updateLog('No state from previous shutdown? Powerloss, deactivated or forced restart.', c.LOG_INFO);
     }
     // ===== KEEPING STATE ACROSS RESTARTS END =====
-
     // Initialize missing settings
     let futurePriceOptions = this.homey.settings.get('futurePriceOptions');
     if (!futurePriceOptions
@@ -190,7 +189,16 @@ class PiggyBank extends Homey.App {
       || !('dirtCheapPriceModifier' in futurePriceOptions)
       || !('lowPriceModifier' in futurePriceOptions)
       || !('highPriceModifier' in futurePriceOptions)
-      || !('extremePriceModifier' in futurePriceOptions)) {
+      || !('extremePriceModifier' in futurePriceOptions)
+      || !('priceKind' in futurePriceOptions)
+      || !('priceCountry' in futurePriceOptions)
+      || !('priceRegion' in futurePriceOptions)
+      || !('surcharge' in futurePriceOptions)
+      || !('priceFixed' in futurePriceOptions)
+      || !('gridTaxDay' in futurePriceOptions)
+      || !('gridTaxNight' in futurePriceOptions)
+      || !('VAT' in futurePriceOptions)
+      || !(Array.isArray(futurePriceOptions.gridCost))) {
       if (!futurePriceOptions) futurePriceOptions = {};
       if (!('minCheapTime' in futurePriceOptions)) futurePriceOptions.minCheapTime = 4;
       if (!('minExpensiveTime' in futurePriceOptions)) futurePriceOptions.minExpensiveTime = 4;
@@ -199,6 +207,15 @@ class PiggyBank extends Homey.App {
       if (!('lowPriceModifier' in futurePriceOptions)) futurePriceOptions.lowPriceModifier = -10;
       if (!('highPriceModifier' in futurePriceOptions)) futurePriceOptions.highPriceModifier = 10;
       if (!('extremePriceModifier' in futurePriceOptions)) futurePriceOptions.extremePriceModifier = 100;
+      if (!('priceKind' in futurePriceOptions)) futurePriceOptions.priceKind = 1; // Spot
+      if (!('priceCountry' in futurePriceOptions)) futurePriceOptions.priceCountry = 'Norway (NO)';
+      if (!('priceRegion' in futurePriceOptions)) futurePriceOptions.priceRegion = 0;
+      if (!('surcharge' in futurePriceOptions)) futurePriceOptions.surcharge = 0.0198; // Ramua kraft energi web
+      if (!('priceFixed' in futurePriceOptions)) futurePriceOptions.priceFixed = 0.6;
+      if (!('gridTaxDay' in futurePriceOptions)) futurePriceOptions.gridTaxDay = 0.3626; // Tensio default
+      if (!('gridTaxNight' in futurePriceOptions)) futurePriceOptions.gridTaxNight = 0.2839; // Tensio default
+      if (!('VAT' in futurePriceOptions)) futurePriceOptions.VAT = 25;
+      if (!(Array.isArray(futurePriceOptions.gridCost))) futurePriceOptions.gridCost = [{ limit: 2000, price: 73 }, { limit: 5000, price: 128 }, { limit: 10000, price: 219 }];
       this.log(`Resetting futurePriceOptions to ${JSON.stringify(futurePriceOptions)}`);
       this.homey.settings.set('futurePriceOptions', futurePriceOptions);
     }

@@ -10,15 +10,6 @@ let gridCost = [
   { limit: 15000, price: 323 },
   { limit: 20000, price: 426 },
   { limit: 25000, price: 530 },
-  { limit: 50000, price: 911 },
-  { limit: 75000, price: 1430 },
-  { limit: 100000, price: 1950 },
-  { limit: 150000, price: 2816 },
-  { limit: 200000, price: 3855 },
-  { limit: 300000, price: 5586 },
-  { limit: 400000, price: 7665 },
-  { limit: 500000, price: 9743 },
-  { limit: Infinity, price: 11821 },
 ];
 
 function setGridCost(costTable) {
