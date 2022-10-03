@@ -22,7 +22,7 @@
         "title": "Enheter",
         "controllable": "Kontrollerbare enheter",
         "modes": "Modus og prioritet",
-        "prices": "Priskontroll"
+        "prices": "Prisstyring"
       },
       "advanced": {
         "title": "Avansert",
@@ -117,7 +117,7 @@
       "notFoundHint": "<p>Dessverre finnes det enkelte enheter som ikke bruker standard mekanismer for å styres. Disse vil dermed ikke detekteres som kontrollerbare av denne appen. Heldigvis er dette lett å fikse, bare trykk på linken under, generer en rapport og send loggen til utvikleren:</p>",
       "carCharger": "Lading av Elbil info",
       "carChargerHint": ["<p>Avhengig av dine preferanser er det to metoder som kan benyttes for å la denne appen styre en elbil-lader:</p><!--",
-          "--><p style='color:red;'>(Det jobbes med å gi direkte integrasjon med Easee elbillader så det vil snart komme en ny måte å styre dette på).</p><!--",
+          "--><p style='color:red;'>(Det jobbes med å gi direkte integrasjon med Easee elbillader - dette vil komme snart etter at Easee appen har rullet ut versjon 1.4.7).</p><!--",
           "--><ol><!--",
           "-->  <li><b>Effektstyrt</b><!--",
           "-->      <p>Med denne metoden skal ikke elbil-laderen velges som kontrollerbar. Istedenfor må du bruke flows til å behandle signaler fra appen til å styre laderen.</p><!--",
@@ -159,7 +159,7 @@
       "saveMoneyHint": "Mer hjelp kommer snart...."
     },
     "price": {
-      "header": "Priskontroll",
+      "header": "Prisstyring",
       "priceMode": "Modus",
       "mode": {
         "flow": "Manuelt fra flytkort",
@@ -193,7 +193,7 @@
            "--><p>Manuell styring fra flytkort gir deg størst fleksibilitet men overlater alt ansvaret for å tolke strømprisen til deg.</p><!--",
            "--><p>Automatisk tolker strømprisen etter preferansene i appen.</p>"],
       "priceErr1": "NB! Du må installere appen 'Strømregning' og tilhørende enhet for å velge eksterne priser. Strømprisen hentes sømløst uten å benytte flytkort.",
-      "priceAdvanced": "Avansert priskontroll",
+      "priceAdvanced": "Avansert prisstyring",
       "pricePoint": "Prispunkt",
       "pricePointHint": "Oppførsel for hvert prispunkt kan endres nedenfor. Man kan bytte mellom ulike prispunkt ved hjelp av flows.",
       "action": "Handling",

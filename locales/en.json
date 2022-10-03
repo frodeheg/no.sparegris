@@ -22,7 +22,7 @@
         "title": "Devices",
         "controllable": "Controllable devices",
         "modes": "Modes and priority",
-        "prices": "Price control"
+        "prices": "Price management"
       },
       "advanced": {
         "title": "Advanced",
@@ -61,7 +61,7 @@
       "taskNoPriceAPI": "You have chosen to fetch prices from an external app, which require the app 'Norwegian Electricity Bill' to be installed, but it can not be found or the version is too old. Maybe you should use the setting spot price instead.",
       "taskNoPriceAPIDevice": "Your choice to fetch prices from an external app require the app 'Norwegian Electricity Bill' to be installed. The app is found but prices can only be retrieved when the apps corresponding device has been installed.",
       "taskNoPriceAPIData": "You have chosen to fetch prices from an external app, but the 'Norwegian Electricity Bill' app has been configured for price from flows, and as such it will not forward the prices to this app...",
-      "taskNoPriceEnabled": "You have not activated price control of your devices yet. This could possibly save you some more money.",
+      "taskNoPriceEnabled": "You have not activated price management yet. This could possibly save you some more money.",
       "taskDisableLogging": "You have enabled extended logging, which slows down the app significantly. Please disable extended logging for better performance.",
       "taskExperimental" : ["You have chosen to control a unit that the app has not been verified to handle. <!--",
           "-->Please <a href=\"ShowLog\" onclick=\"changeTab(event, 'logPage');return false;\">report</a> the status <!--",
@@ -159,7 +159,7 @@
       "saveMoneyHint": "More help is coming...."
     },
     "price": {
-      "header": "Price control",
+      "header": "Price management",
       "priceMode": "Mode",
       "mode": {
         "flow": "Manually from flows",
@@ -296,7 +296,7 @@
     "noPriceApi": "You have to install the app 'no.almli.utilitycost' to get the electricity prices to work. Alternatively set the price point from flows.",
     "noPriceApiDevice": "You have to install the corresponding device to the app 'no.almli.utilitycost' in order to get the electricity prices from the app. Alternatively set the price point from flows.",
     "noPriceApiData": "The Utilitycost app is set to use price from flows. Thus it will not forward the cost. Change to spot price in the Utilitycost app or set the price point from flows here.",
-    "notPMfromFlow": "In order to set price points with flows you first have to enable price control using flows in the app setup",
+    "notPMfromFlow": "In order to set price points with flows you first have to enable price management using flows in the app setup",
     "rememberToSave": "Remember to save!",
     "appDisabled": "The app operating mode is set to disabled. Please turn it on in app settings or with a flow.",
     "timeout": "Timeout! Homey is busy. Please wait some more, retry later or contact the App developer if the problem persist. If you're running from a browser then it usually helps to refresh the page."
