@@ -433,5 +433,8 @@
   },
   "0.17.2": {
     "en": "Fixed a minor bug in the setup of grid cost tables where no limits could cause odd and unintended behaviour."
+  },
+  "0.17.3": {
+    "en": "Fixed a bug when displaying a grid step below the current as reported by dooniem"
   }
 }
