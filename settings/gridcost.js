@@ -17,12 +17,12 @@ function setGridCost(costTable) {
 }
 
 function getGridAbove(usage) {
-  const item = gridCost.reduce((a, b) => (a.limit > usage ? a : b.limit > usage ? b : NaN));
+  const item = gridCost.reduce((a, b) => (+a.limit > +usage ? a : +b.limit > +usage ? b : { limit: NaN, price: NaN }));
   return item.limit;
 }
 
 function getGridBelow(usage) {
-  const item = gridCost.reduce((a, b) => (b.limit < usage ? b : a.limit < usage ? a : NaN));
+  const item = gridCost.reduce((a, b) => (+b.limit < +usage ? b : +a.limit < +usage ? a : { limit: NaN, price: NaN }));
   return item.limit;
 }
 
