@@ -439,5 +439,8 @@
   },
   "0.17.4": {
     "en": "Reduced amount of logging when reporting devices as some devices was causing the log to wrap around."
+  },
+  "0.17.5": {
+    "en": "Updated app store text to be more up to date + minor translation fixes"
   }
 }
