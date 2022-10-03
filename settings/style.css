@@ -405,3 +405,10 @@ input[type='checkbox'] { display: none; }
 .edit.icon:hover {
   box-shadow: 0px 0px 10px 2px gold;
 }
+
+#priceActionList {
+  display:block;
+  overflow: hidden;
+  opacity: 1;
+  transition: opacity 0.25s ease-in-out;
+}

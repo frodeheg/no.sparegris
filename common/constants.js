@@ -18,6 +18,11 @@ const PRICE_MODE_FLOW = 0;
 const PRICE_MODE_INTERNAL = 1;
 const PRICE_MODE_DISABLED = 2;
 
+// Price Kinds
+const PRICE_KIND_EXTERNAL = 0;
+const PRICE_KIND_SPOT = 1;
+const PRICE_KIND_FIXED = 2;
+
 // Price points
 const PP_LOW = 0;
 const PP_NORM = 1;
@@ -96,6 +101,9 @@ module.exports = {
   PRICE_MODE_DISABLED,
   PRICE_MODE_FLOW,
   PRICE_MODE_INTERNAL,
+  PRICE_KIND_EXTERNAL,
+  PRICE_KIND_SPOT,
+  PRICE_KIND_FIXED,
   PP_LOW,
   PP_NORM,
   PP_HIGH,

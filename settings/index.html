@@ -287,61 +287,65 @@
       }
 
       function generatePriceActionList(tabPage) {
-        // Generate page
-        var legendText = "";
-        switch (tabPage) {
-          case PP_LOW: legendText = priceLowText; break;
-          case PP_NORM: legendText = priceNormalText; break;
-          case PP_HIGH: legendText = priceHighText; break;
-          case PP_EXTREME: legendText = priceExtremeText; break;
-          case PP_DIRTCHEAP: legendText = priceDirtCheapText; break;
-        }
-        var displayTemp = document.getElementById("controlTemp").value == 1;
-        var priceTabText =
-          '<fieldset>' +
-            '<legend>' + legendText + ' <div class="hintButton" onclick="toggle(this,\'priceActionHint\');return false;">i</div></legend>' +
-            '<p id="priceActionHint" class="hint">' + helpButtons + ':<br>' +
-              '<span class="imgButtonText" id="demoButton1" onclick="return false;">N/A</span> ' + helpButtonOn + '<br>' +
-              '<span class="imgButtonText" id="demoButton2" onclick="return false;">N/A</span> ' + helpButtonOff + '<br>' +
-              '<span class="imgButtonText" id="demoButton3" onclick="return false;">N/A</span> ' + helpButtonDelta + '<br>' +
-              '<span class="imgButtonText" id="demoButton4" onclick="return false;">N/A</span> ' + helpButtonEmergency + '<br>' +
-              '<span class="imgButtonText" id="demoButton5" onclick="return false;">N/A</span> ' + helpButtonIgnore + '<br>' +
-              '' +
-              '' +
-            '</p>' +
-            '<table class="device-list">' +
+        document.getElementById("priceActionList").style.opacity = "0";
+        setTimeout(function () {
+          // Generate page
+          var legendText = "";
+          switch (tabPage) {
+            case PP_LOW: legendText = priceLowText; break;
+            case PP_NORM: legendText = priceNormalText; break;
+            case PP_HIGH: legendText = priceHighText; break;
+            case PP_EXTREME: legendText = priceExtremeText; break;
+            case PP_DIRTCHEAP: legendText = priceDirtCheapText; break;
+          }
+          var displayTemp = document.getElementById("controlTemp").value == 1;
+          var priceTabText =
+            '<fieldset>' +
+              '<legend>' + legendText + ' <div class="hintButton" onclick="toggle(this,\'priceActionHint\');return false;">i</div></legend>' +
+              '<p id="priceActionHint" class="hint">' + helpButtons + ':<br>' +
+                '<span class="imgButtonText" id="demoButton1" onclick="return false;">N/A</span> ' + helpButtonOn + '<br>' +
+                '<span class="imgButtonText" id="demoButton2" onclick="return false;">N/A</span> ' + helpButtonOff + '<br>' +
+                '<span class="imgButtonText" id="demoButton3" onclick="return false;">N/A</span> ' + helpButtonDelta + '<br>' +
+                '<span class="imgButtonText" id="demoButton4" onclick="return false;">N/A</span> ' + helpButtonEmergency + '<br>' +
+                '<span class="imgButtonText" id="demoButton5" onclick="return false;">N/A</span> ' + helpButtonIgnore + '<br>' +
+                '' +
+                '' +
+              '</p>' +
+              '<table class="device-list">' +
+                '<tr>' +
+                '<th>&nbsp;</th>' +
+                '<th align="left">' + deviceText + '</th>' +
+                '<th align="left">' + actionText + '</th>' +
+                (displayTemp ? `<th align="left">${deltaText}</th>` : '') +
+              '</tr>';
+          for (var deviceId in priceActionList[tabPage]) {
+            var device = deviceList[deviceId]; // refreshPriceActionList already called so indexing by deviceId should be safe
+            var price_temp_input = device.thermostat_cap ? '<input type="number" id="deltaTemp' + String(deviceId) + '" min=-30 max=30 size="4" step="0.5" onchange="setDeltaTemp(this, ' + String(tabPage) + ', \'' + String(deviceId) + '\');displaySaveHint()" value="' + String(priceActionList[tabPage][deviceId].delta) + '">°C' : '-';
+            priceTabText +=
               '<tr>' +
-              '<th>&nbsp;</th>' +
-              '<th align="left">' + deviceText + '</th>' +
-              '<th align="left">' + actionText + '</th>' +
-              (displayTemp ? `<th align="left">${deltaText}</th>` : '') +
-            '</tr>';
-        for (var deviceId in priceActionList[tabPage]) {
-          var device = deviceList[deviceId]; // refreshPriceActionList already called so indexing by deviceId should be safe
-          var price_temp_input = device.thermostat_cap ? '<input type="number" id="deltaTemp' + String(deviceId) + '" min=-30 max=30 size="4" step="0.5" onchange="setDeltaTemp(this, ' + String(tabPage) + ', \'' + String(deviceId) + '\');displaySaveHint()" value="' + String(priceActionList[tabPage][deviceId].delta) + '">°C' : '-';
+                '<td><img src="' + device.image + '" alt="icon" width="auto" height="50"></td>' +
+                '<td><h3>' + limitText(device.name) + '</h3>' +
+                  '<p>' + device.room + '</p></td>' +
+                '<td><div class="imgButtonText" id="priceActionButton' + String(deviceId) + '" onclick="updatePriceAction(this, ' + String(tabPage) + ', \'' + String(deviceId) + '\');displaySaveHint()">N/A</div></td>' +
+                (displayTemp ? `<td>${price_temp_input}</td>` : '') +
+              '</tr>';
+          }
           priceTabText +=
-            '<tr>' +
-              '<td><img src="' + device.image + '" alt="icon" width="auto" height="50"></td>' +
-              '<td><h3>' + limitText(device.name) + '</h3>' +
-                '<p>' + device.room + '</p></td>' +
-              '<td><div class="imgButtonText" id="priceActionButton' + String(deviceId) + '" onclick="updatePriceAction(this, ' + String(tabPage) + ', \'' + String(deviceId) + '\');displaySaveHint()">N/A</div></td>' +
-              (displayTemp ? `<td>${price_temp_input}</td>` : '') +
-            '</tr>';
-        }
-        priceTabText +=
-            '</table>' +
-          '</fieldset>';
-        document.getElementById("priceActionList").innerHTML = priceTabText;
+              '</table>' +
+            '</fieldset>';
+          document.getElementById("priceActionList").innerHTML = priceTabText;
+          document.getElementById("priceActionList").style.opacity = "1";
 
-        // Refresh states on list elements
-        updatePriceAction(document.getElementById('demoButton1'), undefined, undefined, TURN_ON);
-        updatePriceAction(document.getElementById('demoButton2'), undefined, undefined, TURN_OFF);
-        updatePriceAction(document.getElementById('demoButton3'), undefined, undefined, DELTA_TEMP);
-        updatePriceAction(document.getElementById('demoButton4'), undefined, undefined, EMERGENCY_OFF);
-        updatePriceAction(document.getElementById('demoButton5'), undefined, undefined, IGNORE);
-        for (var deviceId in priceActionList[tabPage]) {
-          updatePriceAction(document.getElementById('priceActionButton' + String(deviceId)), tabPage, deviceId, KEEP);
-        }
+          // Refresh states on list elements
+          updatePriceAction(document.getElementById('demoButton1'), undefined, undefined, TURN_ON);
+          updatePriceAction(document.getElementById('demoButton2'), undefined, undefined, TURN_OFF);
+          updatePriceAction(document.getElementById('demoButton3'), undefined, undefined, DELTA_TEMP);
+          updatePriceAction(document.getElementById('demoButton4'), undefined, undefined, EMERGENCY_OFF);
+          updatePriceAction(document.getElementById('demoButton5'), undefined, undefined, IGNORE);
+          for (var deviceId in priceActionList[tabPage]) {
+            updatePriceAction(document.getElementById('priceActionButton' + String(deviceId)), tabPage, deviceId, KEEP);
+          }
+        }, 250);
       }
 
       function generatePriorityList(listNum) {
@@ -462,17 +466,17 @@
         var priceControl = document.getElementById('priceControl');
         var priceUpperPart = document.getElementById('priceUpperPart');
         var priceLowerPart = document.getElementById('priceLowerPart');
-        if (source.value == "1") {
+        if (+source.value == PRICE_MODE_INTERNAL) {
           // Automatic - Prices from Utilitycost
           priceControl.style.display = 'block';
           priceUpperPart.style.display = 'block';
           priceLowerPart.style.display = 'block';
-        } else if (source.value == "0") {
+        } else if (+source.value == PRICE_MODE_FLOW) {
           // Manual - External price point
           priceControl.style.display = 'none';
           priceUpperPart.style.display = 'block';
           priceLowerPart.style.display = 'block';
-        } else { // Value = 2
+        } else { // Value = PRICE_MODE_DISABLED
           // Disabled
           priceControl.style.display = 'none';
           priceUpperPart.style.display = 'none';
@@ -490,7 +494,7 @@
         var pp3Part = document.getElementById('subtablink3');
         var pp4Part = document.getElementById('subtablink4');
 
-        if (source.value == "1") {
+        if (+source.value == PRICE_KIND_SPOT) {
           // Spot price
           priceSpotPart.style.display = 'block';
           priceFixedPart.style.display = 'none';
@@ -500,7 +504,7 @@
           pp2Part.style.display = 'table-cell';
           pp3Part.style.display = 'table-cell';
           pp4Part.style.display = 'table-cell';
-        } else if (source.value == "0") {
+        } else if (+source.value == PRICE_KIND_EXTERNAL) {
           // External app Utility bill
           priceSpotPart.style.display = 'none';
           priceFixedPart.style.display = 'none';
@@ -510,7 +514,7 @@
           pp2Part.style.display = 'table-cell';
           pp3Part.style.display = 'table-cell';
           pp4Part.style.display = 'table-cell';
-        } else { // Value = 2
+        } else { // Value = PRICE_KIND_FIXED
           // Fixded price
           priceSpotPart.style.display = 'none';
           priceFixedPart.style.display = 'block';
@@ -686,31 +690,32 @@
           setVisible('taskEnergyFlowRate', 'none');
         }
         const priceMode = document.getElementById("priceMode").value;
-        if (!appIsDisabled && priceMode == 0 && !appConfigProgress.gotPPFromFlow) {
+        const priceKind = document.getElementById("priceKind").value;
+        if (!appIsDisabled && priceMode == PRICE_MODE_FLOW && !appConfigProgress.gotPPFromFlow) {
           setVisible('taskNoPriceFlow');
           haveTasks = true;
         } else {
           setVisible('taskNoPriceFlow', 'none');
         }
-        if (!appIsDisabled && priceMode == 1 && appConfigProgress.ApiStatus == 0) {
+        if (!appIsDisabled && priceMode == PRICE_MODE_INTERNAL && priceKind == PRICE_KIND_EXTERNAL && appConfigProgress.ApiStatus == PRICE_API_NO_APP) {
           setVisible('taskNoPriceAPI');
           haveTasks = true;
         } else {
           setVisible('taskNoPriceAPI', 'none');
         }
-        if (!appIsDisabled && priceMode == 1 && appConfigProgress.ApiStatus == 1) {
+        if (!appIsDisabled && priceMode == PRICE_MODE_INTERNAL && priceKind == PRICE_KIND_EXTERNAL && appConfigProgress.ApiStatus == PRICE_API_NO_DEVICE) {
           setVisible('taskNoPriceAPIDevice');
           haveTasks = true;
         } else {
           setVisible('taskNoPriceAPIDevice', 'none');
         }
-        if (!appIsDisabled && priceMode == 1 && appConfigProgress.ApiStatus == 3) {
+        if (!appIsDisabled && priceMode == PRICE_MODE_INTERNAL && priceKind == PRICE_KIND_EXTERNAL && appConfigProgress.ApiStatus == PRICE_API_NO_DATA) {
           setVisible('taskNoPriceAPIData');
           haveTasks = true;
         } else {
           setVisible('taskNoPriceAPIData', 'none');
         }
-        if (!appIsDisabled && priceMode == 2) {
+        if (!appIsDisabled && priceMode == PRICE_MODE_DISABLED) {
           setVisible('taskNoPriceEnabled');
           haveTasks = true;
         } else {
@@ -766,7 +771,7 @@
       <tbody class="menuitem">
       <tr>
         <td><a href="#home" data-i18n="settings.menu.home.title" onclick="changeTab(event, 'welcomePage')">Home</a></td>
-        <td class="dropdown">
+        <td class="dropdown" onclick="allowDropdown();">
           <a href="javascript:void(0)" class="dropbtn" data-i18n="settings.menu.devices.title">Devices</a>
           <div class="dropdown-content">
             <a href="#" data-i18n="settings.menu.devices.controllable" onclick="changeTab(event, 'devicePage')">Controllable devices</a>
@@ -774,7 +779,7 @@
             <a href="#" data-i18n="settings.menu.devices.prices" onclick="changeTab(event, 'pricePage')">Price control</a>
           </div>
         </td>
-        <td class="dropdown">
+        <td class="dropdown" onclick="allowDropdown();">
           <a href="javascript:void(0)" class="dropbtn" data-i18n="settings.menu.advanced.title">Advanced</a>
           <div class="dropdown-content">
             <a href="#" data-i18n="settings.menu.advanced.settings" onclick="changeTab(event, 'advancedPage')">Advanced settings</a>
@@ -782,7 +787,7 @@
             <a href="#" data-i18n="settings.menu.advanced.zones" onclick="changeTab(event, 'zonePage')">Zone control</a>
           </div>
         </td>
-        <td class="dropdown" style="text-align:right">
+        <td class="dropdown" style="text-align:right" onclick="allowDropdown();">
           <a href="javascript:void(0)" class="dropbtn" data-i18n="settings.menu.help.title">Help</a>
           <div class="dropdown-content" style="position:fixed;right:0">
             <a href="#" data-i18n="settings.menu.help.save" onclick="changeTab(event, 'helpHowToPage')">How To Save Money</a>
@@ -1240,7 +1245,7 @@
               <span data-i18n="settings.pricetab.extreme">pricetab.extreme</span></td>
           </tr>
         </table>
-        <span id="priceActionList">List of devices should have been generated here, if you see this text it is a bug...</span>
+        <div id="priceActionList">List of devices should have been generated here, if you see this text it is a bug...</div>
       </div>
     </div>
     <!-- Price page end -->
@@ -2171,6 +2176,13 @@
         return theList;
       }
 
+      function allowDropdown() {
+        let menuitem = document.getElementsByClassName("dropdown-content");
+        for (let i = 0; i < menuitem.length; i++) {
+          menuitem[i].classList.remove("active");
+        }
+      }
+
       // -- Tab control -- //
       function changeTab(evt, tabPage, modeId = undefined) {
         var i, tabcontent, tablinks;
@@ -2235,11 +2247,6 @@
         for (i = 0; i < menuitem.length; i++) {
           menuitem[i].classList.add("active");
         }
-        setTimeout(function () {
-          for (i = 0; i < menuitem.length; i++) {
-            menuitem[i].classList.remove("active");
-          }
-        }, 100);
 
         // Get all elements with class="tablinks" and remove the class "active"
         tablinks = document.getElementsByClassName("tablinks");
@@ -2260,6 +2267,8 @@
         if (tabPage == 'helpSupportedPage') {
           document.getElementById('supportedDevicesList').innerHTML = generateSupportedList();
         }
+
+        if (evt) evt.stopPropagation();
       };
 
       // For testing only -

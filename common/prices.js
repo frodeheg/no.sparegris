@@ -169,12 +169,12 @@ async function entsoeGetData(startTime, currency = 'NOK') {
  * Add taxes to the spot prices
  */
 async function applyTaxesOnSpotprice(spotprices, surcharge, VAT, gridTaxDay, gridTaxNight, homey) {
-  const taxedData = [...spotprices];
+  const taxedData = [];
   for (let item = 0; item < spotprices.length; item++) {
     const timeUTC = new Date(spotprices[item].time * 1000);
     const localTime = toLocalTime(timeUTC, homey);
-    const gridTax = (localTime.getHours() >= 6 && localTime.getHours() < 22) ? gridTaxDay : gridTaxNight;
-    taxedData[item].price = spotprices[item].price * (1 + VAT) + gridTax + surcharge;
+    const gridTax = (localTime.getHours() >= 6 && localTime.getHours() < 22) ? +gridTaxDay : +gridTaxNight;
+    taxedData.push({ time: spotprices[item].time, price: spotprices[item].price * (1 + +VAT) + gridTax + +surcharge });
   }
   return taxedData;
 }
