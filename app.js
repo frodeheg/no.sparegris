@@ -1981,7 +1981,9 @@ class PiggyBank extends Homey.App {
         this.updateLog('Actions:', c.LOG_ALL); // TBD: Remove???
         for (let i = 0; i < flows.length; i++) {
           if (flows[i].uri === `homey:device:${deviceId}` || flows[i].uri === `${device.driverUri}`) {
-            this.updateLog(`URI: ${JSON.stringify(flows[i])}`, c.LOG_ALL);
+            this.updateLog(`ID: ${flows[i].id}`, c.LOG_ALL);
+            this.updateLog(`Title: ${flows[i].title}`, c.LOG_ALL);
+            this.updateLog(`Args: ${JSON.stringify(flows[i].args)}`, c.LOG_ALL);
           }
         }
       })
