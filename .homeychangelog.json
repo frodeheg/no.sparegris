@@ -424,5 +424,8 @@
   },
   "0.16.3": {
     "en": "Fixed crash bug in background zombie process. Nobody probably noticed as the process was already set up to die."
+  },
+  "0.17.0": {
+    "en": "New feature: Fetches prices directly instead of through the app \"Strømregning\" + Fixed crash bug when homey was overloaded + Interface improvements"
   }
 }
