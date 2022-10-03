@@ -436,5 +436,8 @@
   },
   "0.17.3": {
     "en": "Fixed a bug when displaying a grid step below the current as reported by dooniem"
+  },
+  "0.17.4": {
+    "en": "Reduced amount of logging when reporting devices as some devices was causing the log to wrap around."
   }
 }
