@@ -427,5 +427,8 @@
   },
   "0.17.0": {
     "en": "New feature: Fetches prices directly instead of through the app \"Strømregning\" + Fixed crash bug when homey was overloaded + Interface improvements"
+  },
+  "0.17.1": {
+    "en": "Fixed backward compatability for users using the Strømregning API"
   }
 }
