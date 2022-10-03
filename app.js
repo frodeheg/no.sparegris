@@ -1950,7 +1950,7 @@ class PiggyBank extends Homey.App {
       'Device does not set temperature',
       'Device is not listed'
     ];
-    const flows = await this.homeyApi.flow.getFlowCardActions(); // TBD: Remove???
+    // const flows = await this.homeyApi.flow.getFlowCardActions(); // TBD: Remove???
     await this.homeyApi.devices.getDevice({ id: deviceId })
       .then(device => {
         this.updateLog('----- ANALYZING DEVICE -----', c.LOG_ALL);
@@ -1978,14 +1978,14 @@ class PiggyBank extends Homey.App {
           this.updateLog(`Options for '${cap}': ${opts}`, c.LOG_ALL);
         }
 
-        this.updateLog('Actions:', c.LOG_ALL); // TBD: Remove???
-        for (let i = 0; i < flows.length; i++) {
-          if (flows[i].uri === `homey:device:${deviceId}` || flows[i].uri === `${device.driverUri}`) {
-            this.updateLog(`ID: ${flows[i].id}`, c.LOG_ALL);
-            this.updateLog(`Title: ${flows[i].title}`, c.LOG_ALL);
-            this.updateLog(`Args: ${JSON.stringify(flows[i].args)}`, c.LOG_ALL);
-          }
-        }
+        // this.updateLog('Actions:', c.LOG_ALL); // TBD: Remove???
+        // for (let i = 0; i < flows.length; i++) {
+        //   if (flows[i].uri === `homey:device:${deviceId}` || flows[i].uri === `${device.driverUri}`) {
+        //     this.updateLog(`ID: ${flows[i].id}`, c.LOG_ALL);
+        //     this.updateLog(`Title: ${flows[i].title}`, c.LOG_ALL);
+        //     this.updateLog(`Args: ${JSON.stringify(flows[i].args)}`, c.LOG_ALL);
+        //   }
+        // }
       })
       .catch(err => {
         this.log(`Failed to fetch devicelist: ${err}`);
