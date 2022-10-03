@@ -165,9 +165,9 @@ class PiggyBank extends Homey.App {
 
     // Version 0.17.0 Added direct support for spot price
     let futureData = this.homey.settings.get('futurePriceOptions');
-    const oldPriceKind = !futureData ? null : futureData.priceKind;
+    const oldPriceKind = !futureData ? undefined : futureData.priceKind;
     if ((+this.homey.settings.get('priceMode') === c.PRICE_MODE_INTERNAL)
-      && (oldPriceKind === null)) {
+      && (oldPriceKind === undefined)) {
       // The old setting was Spot price from external app, keep it that way
       if (!futureData) futureData = {};
       futureData.priceKind = c.PRICE_KIND_EXTERNAL; // The new default is SPOT, just set to EXTERNAL for those that used it
