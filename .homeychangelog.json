@@ -430,5 +430,8 @@
   },
   "0.17.1": {
     "en": "Fixed backward compatability for users using the Strømregning API"
+  },
+  "0.17.2": {
+    "en": "Fixed a minor bug in the setup of grid cost tables where no limits could cause odd and unintended behaviour."
   }
 }
