@@ -589,12 +589,17 @@
         let max = (newId >= gridCost.length-1) ? 100000 : gridCost[newId].limit;
         newCell1.innerHTML = `<input class="inputElem" id="gridLimit${newId}" type="number" min="${min}" max="${max}" step="100" value="${limit}" onchange="updateMaxPowerElement(this,${newId});displaySaveHint()">Wh`;
         newCell2.innerHTML = `<input class="inputElem" id="gridCost${newId}" type="number" min="0" max="100000" step="1" value="${price}" onchange="limitElement(this);gridCost[${newId-1}].price=this.value;displaySaveHint()">`;
+        updateMaxPowerElement(document.getElementById(`gridLimit${newId}`), newId);
       }
 
       function removeMaxPowerElement() {
         let table = document.getElementById('gridCostsTable');
+        if (gridCost.length <= 1) return;
         gridCost.pop();
         table.deleteRow(-1);
+        let objectAtBottom = document.getElementById(`gridLimit${gridCost.length}`);
+        if (objectAtBottom) objectAtBottom.max = 100000;
+        updateMaxPowerList();
       }
 
       function updateMaxPowerElement(object, id) {
@@ -619,7 +624,7 @@
       }
 
       function limitElement(object) {
-        if(object.value != ""){
+        if(object.value != "") {
           if(parseInt(object.value) < parseInt(object.min)){
             object.value = object.min;
           }
@@ -630,21 +635,21 @@
       }
 
       function setFrostTemp(object, device_id) {
-        if(object.value != ""){
+        if(object.value != "") {
           limitElement(object);
           frostList[device_id]['minTemp'] = object.value
         }
       }
 
       function setDeltaTemp(object, price_point, deviceId) {
-        if(object.value != ""){
+        if(object.value != "") {
           limitElement(object);
           priceActionList[price_point][deviceId]['delta'] = object.value
         }
       }
 
       function setTargetTemp(object, listNum, device_id) {
-        if(object.value != ""){
+        if(object.value != "") {
           limitElement(object);
           modeList[listNum][device_id]['targetTemp'] = object.value
         }
