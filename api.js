@@ -25,6 +25,8 @@ module.exports = {
         return homey.app.updateLog('', c.LOG_ALL);
       case 'sendLog':
         return homey.app.sendLog();
+      case 'log':
+        return homey.app.updateLog(query.text, c.LOG_ALL);
       case 'logShowState':
         return homey.app.logShowState();
       case 'logShowCaps':

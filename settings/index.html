@@ -58,6 +58,7 @@
         "settings.help.deviceTypeWaterHeater",
         "settings.help.deviceTypeAC",
         "settings.help.deviceTypeCharger",
+        "settings.help.deviceTypeIgnore",
       ];
       var graphTitle = "maxUsageGraph.title";
       var graphYAxis = "maxUsageGraph.yaxis";
@@ -160,8 +161,10 @@
         let experimentalId = 'experimental' + priority;
         for (var key in deviceList) {
           var device = deviceList[key];
-          if (device.priority != priority)
+          if ((device.priority != priority)
+            || (device.driverId in DEVICE_CMD && DEVICE_CMD[device.driverId].type === DEVICE_TYPE.IGNORE)) {
             continue;
+          }
           let experimental = !(device.driverId in DEVICE_CMD) || ("beta" in DEVICE_CMD[device.driverId]);
           found_experimental_on |= device.use && experimental;
           let enabledImg = device.use ? experimental ? "experimental.png" : "enabled.png" : "disabled.png";
@@ -1026,6 +1029,10 @@
         <select id="deviceInfoSelector" disabled>
           <option value=0 selected>Please wait while populating</option>
         </select><br>
+        <label for="email"><span data-i18n="settings.log.email">log.email</span>:</label>
+        <input id="email" type="text" value="optional.email@for.feedback" onfocus="if (this.value=='optional.email@for.feedback') this.value=''">
+        <label for="comment"><span data-i18n="settings.log.comment">log.comment</span>:</label>
+        <input id="comment" type="text" value="Optional" onfocus="if (this.value=='Optional') this.value=''">
         <label for="showCaps"><span data-i18n="settings.deviceinfo.getinfo">deviceinfo.getinfo</span>:</label>
         <button id="showCaps" data-i18n="settings.deviceinfo.analyze" disabled>deviceinfo.analyze</button>
       </fieldset>
@@ -1649,6 +1656,7 @@
         deviceTypeText[2] = Homey.__(deviceTypeText[2]);
         deviceTypeText[3] = Homey.__(deviceTypeText[3]);
         deviceTypeText[4] = Homey.__(deviceTypeText[4]);
+        deviceTypeText[5] = Homey.__(deviceTypeText[5]);
         graphTitle = Homey.__(graphTitle);
         graphYAxis = Homey.__(graphYAxis);
         graphXAxis = Homey.__(graphXAxis);
@@ -1964,6 +1972,11 @@
         showCapsElement.addEventListener('click', function (e) {
           const deviceId = deviceInfoSelectorElement.value;
           const deviceFilter = deviceFilterElement.value;
+          const email = document.getElementById('email').value;
+          const comment = document.getElementById('comment').value;
+          Homey.api('GET', `/apiCommand?cmd=log&text=Email:%20${email}%0AComment:${comment}`, null, function (err, result) {
+            if (err) return Homey.alert(err);
+          });
           Homey.api('GET', `/apiCommand?cmd=logShowCaps&deviceId=${deviceId}&filter=${deviceFilter}`, null, function (err, result) {
             if (err) return Homey.alert(err);
           });

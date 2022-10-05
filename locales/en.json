@@ -142,6 +142,7 @@
       "deviceTypeWaterHeater": "Water Heaters",
       "deviceTypeAC": "Air Condition",
       "deviceTypeCharger": "Chargers",
+      "deviceTypeIgnore": "Ignored devices",
       "ongoing": "Ongoing work",
       "aboutInfo": "About Piggy Bank",
       "aboutInfoHint": ["<p>This app was made in order for everyone to control their energy usage in a simple way and at the same time save as much money as possible on it.</p><!--",
@@ -278,7 +279,9 @@
       "thankYou": "Thank you!",
       "showState": "State",
       "showPriceApi": "Info from Utilitycost",
-      "generic": "Generic Troubleshooting"
+      "generic": "Generic Troubleshooting",
+      "email": "Email",
+      "comment": "Comment"
     }
   },
   "newdevice" : {

@@ -23,6 +23,7 @@
 //   setModeAutoValue   - Value for setModeCap to enter auto mode
 //   +all HEATER parameters
 // CHARGER : TBD
+//
 
 // Device types
 const DEVICE_TYPE = {
@@ -30,7 +31,8 @@ const DEVICE_TYPE = {
   HEATER: 1,
   WATERHEATER: 2,
   AC: 3,
-  CHARGER: 4
+  CHARGER: 4,
+  IGNORE: 5
 };
 
 // Default onoff device:
@@ -56,11 +58,17 @@ const DEFAULT_HEATER = {
   default: true
 };
 
+// Default Ignored device:
+const DEFAULT_IGNORED = {
+  type: DEVICE_TYPE.IGNORE
+};
+
 // Supported devices and how to use them
 const DEVICE_CMD = {
   'com.aeotec:ZW078': DEFAULT_SWITCH,
   'com.everspring:AN179': DEFAULT_SWITCH,
   'com.fibaro:FGS-213': DEFAULT_SWITCH,
+  'com.gardena:water-control': DEFAULT_IGNORED,
   'com.neo:NAS-WR02ZE': DEFAULT_SWITCH,
   'com.philips.hue.zigbee:LCL001': DEFAULT_SWITCH,
   'com.sensibo:Sensibo': {
@@ -146,11 +154,12 @@ const DEVICE_CMD = {
   'no.thermofloor:Z-TRM3': DEFAULT_HEATER,
   'no.thermofloor:ZM-Single-Relay-16A': DEFAULT_SWITCH,
   'se.nexa:EYCR-2300': DEFAULT_SWITCH,
+  'vdevice:homey': DEFAULT_IGNORED, // Under homey:manager, not homey:app:
   'vdevice:virtual_socket': DEFAULT_SWITCH, // Under homey:manager, not homey:app:
   'vdevice:zwavebasic': DEFAULT_SWITCH, // Under homey:manager, not homey:app:
   'vdevice:zigbeebasic': DEFAULT_SWITCH, // Under homey:manager, not homey:app:
   default_heater: DEFAULT_HEATER,
-  default_switch: DEFAULT_SWITCH
+  default_switch: DEFAULT_SWITCH,
 };
 
 module.exports = {
