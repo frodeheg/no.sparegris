@@ -52,6 +52,8 @@
       var modeNameHolidayText = "settings.opMode.holiday";
       var modeNameCustomText = "settings.opMode.custom";
       var stepText = 'settings.mode.powerStep';
+      var reliabilityText = 'settings.welcome.reliability';
+      var reliabilityHelp = 'settings.welcome.reliabilityHelp';
       var deviceTypeText = [
         "settings.help.deviceTypeSwitch",
         "settings.help.deviceTypeHeater",
@@ -84,6 +86,7 @@
       ]
 
       var needModeRefresh = true;
+      var numErrorDevices = 0;
 
       const KEEP = -1;
       const ALWAYS_OFF = 0;
@@ -100,9 +103,9 @@
 
       var deviceList = {
         id_a: { name:"DeviceNamenamenamenamename 1", room: "Stue",    image: "https://as2.ftcdn.net/v2/jpg/02/49/76/93/1000_F_249769389_7su5tYXOvcjcehNCcWTwcjnHvSMkLocJ.jpg", use: true, priority: 0, thermostat_cap: true, driverId: 'no.thermofloor:TF_Thermostat' },
-        id_b: { name:"DeviceName 2", room: "Kjøkken", image: "https://as2.ftcdn.net/v2/jpg/02/49/76/93/1000_F_249769389_7su5tYXOvcjcehNCcWTwcjnHvSMkLocJ.jpg", use: true, priority: 1, thermostat_cap: true, driverId: 'no.thermofloor:Z-TRM2fx' },
-        id_c: { name:"DeviceName 3", room: "Bad",     image: "https://as2.ftcdn.net/v2/jpg/02/49/76/93/1000_F_249769389_7su5tYXOvcjcehNCcWTwcjnHvSMkLocJ.jpg", use: true, priority: 0, thermostat_cap: false, driverId: 'default_switch' },
-        id_d: { name:"DeviceName 4", room: "Bad",     image: "https://as2.ftcdn.net/v2/jpg/02/49/76/93/1000_F_249769389_7su5tYXOvcjcehNCcWTwcjnHvSMkLocJ.jpg", use: false, priority: 1, thermostat_cap: true, driverId: 'unsupported' }
+        id_b: { name:"DeviceName 2", room: "Kjøkken", image: "https://as2.ftcdn.net/v2/jpg/02/49/76/93/1000_F_249769389_7su5tYXOvcjcehNCcWTwcjnHvSMkLocJ.jpg", use: true, priority: 1, thermostat_cap: true, reliability: 0.5, driverId: 'no.thermofloor:Z-TRM2fx' },
+        id_c: { name:"DeviceName 3", room: "Bad",     image: "https://as2.ftcdn.net/v2/jpg/02/49/76/93/1000_F_249769389_7su5tYXOvcjcehNCcWTwcjnHvSMkLocJ.jpg", use: true, priority: 0, thermostat_cap: false, reliability: 0.6, driverId: 'no.thermofloor:Z-TRM3' },
+        id_d: { name:"DeviceName 4", room: "Bad",     image: "https://as2.ftcdn.net/v2/jpg/02/49/76/93/1000_F_249769389_7su5tYXOvcjcehNCcWTwcjnHvSMkLocJ.jpg", use: false, priority: 1, thermostat_cap: true, reliability: 0.7, driverId: 'unsupported' }
       }
       // The modeList is not indexed by id because it uses the index to sort the list
       var modeList = [
@@ -180,6 +183,29 @@
         gen_list += "</table>";
         gen_list += '<div id="' + experimentalId + '" style="display:' + (found_experimental_on?'block':'none') + ';">' + experimentalText + '</div>';
         list.innerHTML = gen_list;
+      }
+
+      function generateReliabilityList() {
+        var list = document.getElementById('errorDeviceList');
+        var genList = '<table class=device-list>';
+        for (var key in deviceList) {
+          let device = deviceList[key];
+          if (device.use && device.reliability < 0.9) {
+            numErrorDevices += 1;
+            let helptext = reliabilityHelp;
+            if (device.driverId in DEVICE_CMD && 'workaround' in DEVICE_CMD[device.driverId]) {
+              helptext = DEVICE_CMD[device.driverId].workaround;
+            }
+            genList +=
+              `<tr onclick="toggle(this,'reliability_${key}');">` +
+                `<td valign="top"><b>${device.name} <span style="background-color: #f1f1f1;border: 1px solid black;">&#8628;</span></b></td>` +
+                `<td valign="top">${reliabilityText} : ${Math.round(device.reliability*100)}%` +
+                  `<div class="hint" id="reliability_${key}" style="display:none;">${device.name} - ${device.room}<br>${helptext}</div></td>` +
+              '</tr>';
+          }
+        }
+        genList += '</table>';
+        list.innerHTML = genList;
       }
       
       function toggleEnableDevice(event, device_id) {
@@ -741,6 +767,12 @@
         } else {
           setVisible('taskExperimental', 'none');
         }
+        if (!appIsDisabled && numErrorDevices > 0) {
+          setVisible('errorDevices');
+          haveTasks = true;
+        } else {
+          setVisible('errorDevices', 'none');
+        }
         if (!haveTasks) {
           setVisible('taskNone');
         } else {
@@ -874,6 +906,7 @@
           <tr id="taskExperimental"><td style="vertical-align:top;"><span class="⚠ warn"></span></td><td><span data-i18n="settings.welcome.taskExperimental">taskExperimental</span></td></tr>
           <tr id="taskNoPriceEnabled"><td style="vertical-align:top;"><span class="⚠ info"></span></td><td><span data-i18n="settings.welcome.taskNoPriceEnabled">taskNoPriceEnabled</span></td></tr>
           <tr id="taskNone"><td style="vertical-align:top;"><span class="⚠ info"></span></td><td><span data-i18n="settings.welcome.taskNone">taskNone</span></td></tr>
+          <tr id="errorDevices"><td style="vertical-align:top;"><span class="⚠ warn"></span></td><td><span data-i18n="settings.welcome.errorDevices">errorDevices</span><div id="errorDeviceList"></div></td></tr>
         </table>
 
       </fieldset>
@@ -1560,6 +1593,7 @@
           // Update device enable list:
           generateEnableList('highPriDevices', 1);
           generateEnableList('lowPriDevices', 0);
+          generateReliabilityList();
 
           // Initialize state and show the welcome page:
           updateOperatingModes(currentOperatingMode);
@@ -1651,6 +1685,8 @@
         modeNameHolidayText = Homey.__(modeNameHolidayText);
         modeNameCustomText = Homey.__(modeNameCustomText);
         stepText = Homey.__(stepText);
+        reliabilityText = Homey.__(reliabilityText);
+        reliabilityHelp = Homey.__(reliabilityHelp);
         deviceTypeText[0] = Homey.__(deviceTypeText[0]);
         deviceTypeText[1] = Homey.__(deviceTypeText[1]);
         deviceTypeText[2] = Homey.__(deviceTypeText[2]);
@@ -1972,11 +2008,6 @@
         showCapsElement.addEventListener('click', function (e) {
           const deviceId = deviceInfoSelectorElement.value;
           const deviceFilter = deviceFilterElement.value;
-          const email = document.getElementById('email').value;
-          const comment = document.getElementById('comment').value;
-          Homey.api('GET', `/apiCommand?cmd=log&text=Email:%20${email}%0AComment:${comment}`, null, function (err, result) {
-            if (err) return Homey.alert(err);
-          });
           Homey.api('GET', `/apiCommand?cmd=logShowCaps&deviceId=${deviceId}&filter=${deviceFilter}`, null, function (err, result) {
             if (err) return Homey.alert(err);
           });
@@ -1995,12 +2026,20 @@
         });
 
         sendLogElement.addEventListener('click', function (e) {
+          // Ask for permission
           Homey.confirm(Homey.__("settings.log.sendConfirm"), null, function (e, ok) {
             if (ok) {
-              Homey.api('GET', '/apiCommand?cmd=sendLog', null, function (err, result) {
+              // Add user comment before sending
+              const email = document.getElementById('email').value;
+              const comment = document.getElementById('comment').value;
+              Homey.api('GET', `/apiCommand?cmd=log&text=Email:%20${email}%0AComment:${comment}&loglevel=${LOG_ALL}`, null, function (err, result) {
                 if (err) return Homey.alert(err);
               });
-              Homey.alert(Homey.__("settings.log.thankYou"));
+              // Send the log
+              Homey.api('GET', '/apiCommand?cmd=sendLog', null, function (err, result) {
+                if (err) return Homey.alert(Homey.__('settings.log.sendError') + err);
+                Homey.alert(Homey.__("settings.log.thankYou"));
+              });
             }
           });
         });

@@ -66,7 +66,13 @@
       "taskExperimental" : ["You have chosen to control a unit that the app has not been verified to handle. <!--",
           "-->Please <a href=\"ShowLog\" onclick=\"changeTab(event, 'logPage');return false;\">report</a> the status <!--",
           "-->for this device to the developer in order to get any problems fixed and this message removed."],
-      "taskNone": "Well done, the app is correctly configured."
+      "taskNone": "Well done, the app is correctly configured.",
+      "errorDevices": "The following devices are very unreliable, please follow the instructions when clicking on them to improve reliability.",
+      "reliability": "Reliability",
+      "reliabilityHelp": ["The wireless signals might be weak. Please try to improve the line of sight to homey, <!--",
+          "-->boost the signal or making sure there are sufficient repeaters in the signal grid. This might enhance its reliability. <!--",
+          "-->If you believe the reliability issues are caused by this app and not the device driver itself or weak signals <!--",
+          "-->please submit a <a href=\"ShowLog\" onclick=\"changeTab(event, 'logPage');return false;\">device report.</a>"]
     },
     "global": {
       "controlTemp": "Allow temperature control",
@@ -277,6 +283,7 @@
       "sendLog": "Send",
       "sendConfirm": "Send the log contents to the developer?",
       "thankYou": "Thank you!",
+      "sendError": "Failed sending the log, please try again later or wait for app update. ",
       "showState": "State",
       "showPriceApi": "Info from Utilitycost",
       "generic": "Generic Troubleshooting",

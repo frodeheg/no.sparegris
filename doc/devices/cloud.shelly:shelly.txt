@@ -1,0 +1,48 @@
++21:21:41.990: ----- ANALYZING DEVICE -----
++21:21:41.992: Report type: Experimental device is working
++21:21:41.994: Device ID:   9338bfc4-c245-48be-a7e5-6e4713bd2dc4
++21:21:41.996: Device Name: Varmtvann
++21:21:41.999: Driver Uri: homey:app:cloud.shelly
++21:21:42.002: Driver Id: shelly
++21:21:42.004: Found onoff cap: onoff
++21:21:42.006: Found temp cap: false
++21:21:42.013: Capabilities: onoff,measure_power,meter_power,measure_voltage,measure_current,measure_temperature,input_1,rssi
++21:21:42.015: Options for 'onoff': {"value":false,"lastUpdated":"2022-10-04T21:19:53.888Z","type":"boolean","getable":true,"setable":true,"title":"Slått på","desc":null,"units":null,"id":"onoff","options":{}}
++21:21:42.019: Options for 'measure_power': {"value":0,"lastUpdated":"2022-10-04T21:19:53.892Z","type":"number","getable":true,"setable":false,"title":"Effekt","desc":"Effekt i watt (W)","units":"W","decimals":2,"chartType":"stepLine","id":"measure_power","options":{}}
++21:21:42.023: Options for 'meter_power': {"value":77.68,"lastUpdated":"2022-10-04T21:19:53.575Z","type":"number","getable":true,"setable":false,"title":"Energi","desc":"Energiforbruk i kilowattimer (kWh)","units":"kWh","decimals":2,"chartType":"spline","id":"meter_power","options":{}}
++21:21:42.033: Options for 'measure_voltage': {"value":238.3,"lastUpdated":"2022-10-04T21:20:53.509Z","type":"number","getable":true,"setable":false,"title":"Spenning","desc":"Spenning (V)","units":"V","decimals":2,"chartType":"stepLine","id":"measure_voltage","options":{}}
++21:21:42.036: Options for 'measure_current': {"value":0,"lastUpdated":"2022-10-04T21:19:53.893Z","type":"number","getable":true,"setable":false,"title":"Strøm","desc":"Elektrisk strøm (A)","units":"A","decimals":2,"chartType":"stepLine","id":"measure_current","options":{}}
++21:21:42.038: Options for 'measure_temperature': {"value":47.5,"lastUpdated":"2022-10-04T21:20:53.510Z","type":"number","getable":true,"setable":false,"title":"Device Temperature","desc":"Temperatur i grader Celsius (°C)","units":"°C","decimals":2,"chartType":"spline","id":"measure_temperature","options":{"title":{"en":"Device Temperature","nl":"Apparaat temperatuur"}}}
++21:21:42.040: Options for 'input_1': {"value":true,"lastUpdated":"2022-08-18T14:58:24.262Z","type":"boolean","getable":true,"setable":false,"title":"State of Input 1","desc":null,"units":null,"iconObj":{"id":"ba99ded7a229f0094511a900ba9fa83c","url":"/icon/ba99ded7a229f0094511a900ba9fa83c/icon.svg"},"id":"input_1","options":{}}
++21:21:42.042: Options for 'rssi': {"value":-69,"lastUpdated":"2022-10-04T21:20:53.511Z","type":"number","getable":true,"setable":false,"title":"WiFi Signal","desc":null,"units":"RSSI","iconObj":{"id":"578b9a15bac6d805046a993acaa175fa","url":"/icon/578b9a15bac6d805046a993acaa175fa/icon.svg"},"id":"rssi","options":{}}
++21:21:42.044: --- ANALYZING DEVICE DONE ---
+
++12:37:18.131: ----- ANALYZING DEVICE -----
++12:37:18.135: Report type: Device is not being turned on/off
++12:37:18.136: Device ID:   2c1485d9-c02f-4f95-b173-e704d2a1ac95
++12:37:18.138: Device Name: Nobø Eco
++12:37:18.142: Driver Uri: homey:app:cloud.shelly
++12:37:18.144: Driver Id: shelly
++12:37:18.148: Found onoff cap: onoff
++12:37:18.152: Found temp cap: false
++12:37:18.154: Capabilities: onoff,input_1,rssi
++12:37:18.158: Options for 'onoff': {"value":false,"lastUpdated":"2022-10-05T11:05:50.051Z","type":"boolean","getable":true,"setable":true,"title":"Slått på","desc":null,"units":null,"id":"onoff","options":{}}
++12:37:18.164: Options for 'input_1': {"value":false,"lastUpdated":"2022-08-09T07:47:25.303Z","type":"boolean","getable":true,"setable":false,"title":"State of Input 1","desc":null,"units":null,"iconObj":{"id":"ba99ded7a229f0094511a900ba9fa83c","url":"/icon/ba99ded7a229f0094511a900ba9fa83c/icon.svg"},"id":"input_1","options":{}}
++12:37:18.167: Options for 'rssi': {"value":-73,"lastUpdated":"2022-10-05T12:36:59.664Z","type":"number","getable":true,"setable":false,"title":"WiFi Signal","desc":null,"units":"RSSI","iconObj":{"id":"578b9a15bac6d805046a993acaa175fa","url":"/icon/578b9a15bac6d805046a993acaa175fa/icon.svg"},"id":"rssi","options":{}}
++12:37:18.168: --- ANALYZING DEVICE DONE ---
+
++12:51:53.785: ----- ANALYZING DEVICE -----
++12:51:53.786: Report type: Device is not being turned on/off
++12:51:53.788: Device ID:   21d87c9c-471b-4819-b407-cdc39fc65263
++12:51:53.789: Device Name: Shelly Plug S
++12:51:53.791: Driver Uri: homey:app:cloud.shelly
++12:51:53.793: Driver Id: shelly
++12:51:53.795: Found onoff cap: onoff
++12:51:53.797: Found temp cap: false
++12:51:53.799: Capabilities: onoff,measure_power,meter_power,measure_temperature,rssi
++12:51:53.801: Options for 'onoff': {"value":true,"lastUpdated":"2022-10-05T11:04:56.119Z","type":"boolean","getable":true,"setable":true,"title":"Slått på","desc":null,"units":null,"id":"onoff","options":{}}
++12:51:53.803: Options for 'measure_power': {"value":110.54,"lastUpdated":"2022-10-05T12:51:44.466Z","type":"number","getable":true,"setable":false,"title":"Effekt","desc":"Effekt i watt (W)","units":"W","decimals":2,"chartType":"stepLine","id":"measure_power","options":{}}
++12:51:53.805: Options for 'meter_power': {"value":4.7,"lastUpdated":"2022-10-05T12:50:59.614Z","type":"number","getable":true,"setable":false,"title":"Energi","desc":"Energiforbruk i kilowattimer (kWh)","units":"kWh","decimals":2,"chartType":"spline","id":"meter_power","options":{}}
++12:51:53.807: Options for 'measure_temperature': {"value":29.58,"lastUpdated":"2022-10-05T12:51:44.484Z","type":"number","getable":true,"setable":false,"title":"Device Temperature","desc":"Temperatur i grader Celsius (°C)","units":"°C","decimals":2,"chartType":"spline","id":"measure_temperature","options":{"title":{"en":"Device Temperature","nl":"Apparaat temperatuur"}}}
++12:51:53.809: Options for 'rssi': {"value":-40,"lastUpdated":"2022-10-05T12:50:59.615Z","type":"number","getable":true,"setable":false,"title":"WiFi Signal","desc":null,"units":"RSSI","iconObj":{"id":"578b9a15bac6d805046a993acaa175fa","url":"/icon/578b9a15bac6d805046a993acaa175fa/icon.svg"},"id":"rssi","options":{}}
++12:51:53.811: --- ANALYZING DEVICE DONE ---

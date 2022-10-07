@@ -10,6 +10,7 @@
 //   setOffValue    - Value for setOnOffCap to turn devie off
 //   beta           - true if not fully supported yet, undefined otherwise
 //   default        - true if the device is default, undefined otherwise
+//   workaround     - undefined except if the device is known to be unreliable and have a workaround
 // HEATER : Additional parameters
 //   readTempCap    - Capability for reading temperature
 //   setTempCap     - Capability for setting temperature
@@ -22,8 +23,8 @@
 //   setModeCoolValue   - Value for setModeCap to enter cool mode
 //   setModeAutoValue   - Value for setModeCap to enter auto mode
 //   +all HEATER parameters
-// CHARGER : TBD
-//
+// CHARGER : Additional parameters
+//   setCurrentCap - Capability for changing the charging current (in Amps)
 
 // Device types
 const DEVICE_TYPE = {
@@ -65,10 +66,13 @@ const DEFAULT_IGNORED = {
 
 // Supported devices and how to use them
 const DEVICE_CMD = {
+  'cloud.shelly:shelly': DEFAULT_SWITCH,
   'com.aeotec:ZW078': DEFAULT_SWITCH,
+  'com.arjankranenburg.virtual:mode': DEFAULT_SWITCH,
   'com.everspring:AN179': DEFAULT_SWITCH,
   'com.fibaro:FGS-213': DEFAULT_SWITCH,
   'com.gardena:water-control': DEFAULT_IGNORED,
+  'com.ikea.tradfri:control_outlet': DEFAULT_SWITCH, // Not confirmed
   'com.neo:NAS-WR02ZE': DEFAULT_SWITCH,
   'com.philips.hue.zigbee:LCL001': DEFAULT_SWITCH,
   'com.sensibo:Sensibo': {
@@ -116,6 +120,10 @@ const DEVICE_CMD = {
   'no.connecte:smart_socket': DEFAULT_SWITCH,
   'no.easee:charger': {
     type: DEVICE_TYPE.CHARGER,
+    setOnOffCap: 'onoff',
+    setOnValue: true,
+    setOffValue: false,
+    setCurrentCap: 'target_circuit_current',
     beta: true
   },
   'no.hoiax:hiax-connected-200': {
@@ -151,7 +159,11 @@ const DEVICE_CMD = {
     tempMax: 40,
     tempStep: 0.5
   },
-  'no.thermofloor:Z-TRM3': DEFAULT_HEATER,
+  'no.thermofloor:Z-TRM3': {
+    ...DEFAULT_HEATER,
+    workaround: 'The Z-TRM3 devices are known to lose connection with homey when using encryption. You can try to pair it again with code 0000 to make it unencrypted as this is much more reliable.',
+    default: false
+  },
   'no.thermofloor:ZM-Single-Relay-16A': DEFAULT_SWITCH,
   'se.nexa:EYCR-2300': DEFAULT_SWITCH,
   'vdevice:homey': DEFAULT_IGNORED, // Under homey:manager, not homey:app:

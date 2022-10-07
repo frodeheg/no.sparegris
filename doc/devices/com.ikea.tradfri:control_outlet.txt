@@ -1,0 +1,11 @@
++12:50:41.693: ----- ANALYZING DEVICE -----
++12:50:41.695: Report type: Device is not being turned on/off
++12:50:41.696: Device ID:   edc85c9e-3918-4083-9640-5f030b26ef95
++12:50:41.698: Device Name: Charger
++12:50:41.699: Driver Uri: homey:app:com.ikea.tradfri
++12:50:41.701: Driver Id: control_outlet
++12:50:41.702: Found onoff cap: onoff
++12:50:41.704: Found temp cap: false
++12:50:41.706: Capabilities: onoff
++12:50:41.707: Options for 'onoff': {"value":true,"lastUpdated":"2022-10-05T11:04:56.134Z","type":"boolean","getable":true,"setable":true,"title":"Slått på","desc":null,"units":null,"id":"onoff","options":{}}
++12:50:41.710: --- ANALYZING DEVICE DONE ---

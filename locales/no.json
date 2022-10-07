@@ -66,7 +66,13 @@
       "taskExperimental" : ["Du har valgt å styre en enhet som ikke er verifisert at appen håndterer enda. <!--",
           "-->Dersom du <a href=\"ShowLog\" onclick=\"changeTab(event, 'logPage');return false;\">rapporterer</a> <!--",
           "-->status for denne enheten til utvikleren kan eventuelle feil fikses og denne meldingen fjernes."],
-      "taskNone": "Supert, appen er riktig konfigurert."
+      "taskNone": "Supert, appen er riktig konfigurert.",
+      "errorDevices": "Følgende enheter er svært upålitelige, vennligst følg innstruksjonene som kommer når du klikker på dem for å øke påliteligheten.",
+      "reliability": "Pålitelighet",
+      "reliabilityHelp": ["Signalforholdet til denne enheten kan være svakt. Vennligst prøv å fjerne eventuelle hindringer for signalet <!--",
+          "-->eller sørg for at det er tilstrekkelig med rekkeviddeforlengere. Dette kan forbedre påliteligheten. <!--",
+          "-->Dersom du mener problemet ligger i denne appen og ikke i påliteligheten til enheten <!--",
+          "-->vennligst send en <a href=\"ShowLog\" onclick=\"changeTab(event, 'logPage');return false;\">enhetsrapport.</a>"]
     },
     "global": {
       "controlTemp": "Tillat temperatursyring",
@@ -277,6 +283,7 @@
       "sendLog": "Send",
       "sendConfirm": "Send loggen til utvikleren?",
       "thankYou": "Tusen takk!",
+      "sendError": "Kunne ikke sende loggen, prøv igjen senere eller vent på en ny versjon av appen. ",
       "showState": "Status",
       "showPriceApi": "Info fra Strømregning",
       "generic": "Generell feilsøking",

@@ -561,11 +561,16 @@ class PiggyBank extends Homey.App {
 
       // Filter out irrelevant devices (check old device list if possible)
       let useDevice = false;
+      let reliability;
       if (oldDeviceList !== null && device.id in oldDeviceList) {
         useDevice = oldDeviceList[device.id].use;
+        reliability = oldDeviceList[device.id].reliability;
       } else {
         // Never seen before device, set usage based on priority
         useDevice = (priority > 0);
+      }
+      if (reliability === undefined) {
+        reliability = 1;
       }
 
       // Find which zones the device are within:
@@ -594,7 +599,8 @@ class PiggyBank extends Homey.App {
         thermostat_cap: thermostatCap,
         targetTemp, // Default target temp for use when setting up for the first time
         driverId, // If this is found in the supported device list then onoff_cap and thermostat_cap are ignored
-        use: useDevice // Actually only parameter that is kept across reboots
+        use: useDevice, // Actually only parameter that is kept across reboots (+ reliability)
+        reliability // Inherit reliability as devicelist is refreshed whenever setup shows
       };
       relevantDevices[device.id] = relevantDevice;
     }
@@ -618,6 +624,16 @@ class PiggyBank extends Homey.App {
       }
     }
     return this.__deviceList;
+  }
+
+  /**
+   * Updates the reliability measure of a device
+   * This is a floating measure gradually moving to the new state
+   * - Old state is given a weight of 99%
+   * - New state is given a weight of 1%
+   */
+  async updateReliability(deviceId, newstate) {
+    this.__deviceList[deviceId].reliability = (0.99 * this.__deviceList[deviceId].reliability) + (0.01 * newstate);
   }
 
   /**
@@ -697,10 +713,12 @@ class PiggyBank extends Homey.App {
     let device;
     try {
       device = await this.homeyApi.devices.getDevice({ id: deviceId });
+      this.updateReliability(deviceId, 1);
     } catch (err) {
       // Most likely timeout
       this.updateLog(`Device cannot be fetched. ${String(err)}`, c.LOG_ERROR);
       this.__current_state[deviceId].nComError += 10; // Big error so wait more until retry than smaller errors
+      this.updateReliability(deviceId, 0);
       return Promise.resolve([false, false]); // The unhandled device is solved by the later nComError handling
     }
     const frostList = this.homey.settings.get('frostList');
@@ -728,6 +746,7 @@ class PiggyBank extends Homey.App {
       this.__current_state[deviceId].confirmed = false;
       return device.setCapabilityValue({ capabilityId: this.getOnOffCap(deviceId), value: this.getOnOffTrue(deviceId) })
         .then(() => {
+          this.updateReliability(deviceId, 1);
           this.__current_state[deviceId].nComError = 0;
           this.__num_off_devices--;
           // Always change temperature when turning on
@@ -735,6 +754,7 @@ class PiggyBank extends Homey.App {
         })
         .then(() => Promise.resolve([newState === TURN_ON, false]))
         .catch(error => {
+          this.updateReliability(deviceId, 0);
           this.statsCountFailedTurnOn();
           this.__current_state[deviceId].ongoing = undefined;
           this.__current_state[deviceId].nComError += 1;
@@ -751,12 +771,14 @@ class PiggyBank extends Homey.App {
       this.__current_state[deviceId].confirmed = false;
       return device.setCapabilityValue({ capabilityId: this.getOnOffCap(deviceId), value: this.getOnOffFalse(deviceId) })
         .then(() => {
+          this.updateReliability(deviceId, 1);
           this.__current_state[deviceId].nComError = 0;
           this.__current_state[deviceId].ongoing = false;
           this.__num_off_devices++;
           return Promise.resolve([newState === TURN_OFF, false]);
         })
         .catch(error => {
+          this.updateReliability(deviceId, 0);
           this.__current_state[deviceId].ongoing = undefined;
           this.statsCountFailedTurnOff();
           this.__current_state[deviceId].nComError += 1;
@@ -1342,11 +1364,13 @@ class PiggyBank extends Homey.App {
           .then(() => Promise.resolve([true, false]));
       })
       .then(([success, noChange]) => {
+        this.updateReliability(deviceId, 1);
         this.__current_state[deviceId].nComError = 0;
         this.__current_state[deviceId].ongoing = false;
         return Promise.resolve([success, noChange]);
       }).catch(error => {
         this.statsCountFailedTempChange();
+        this.updateReliability(deviceId, 0);
         this.__current_state[deviceId].nComError += 1;
         this.__current_state[deviceId].ongoing = undefined;
         this.updateLog(`Failed to set temperature for device ${this.__deviceList[deviceId].name}, will retry later (${error})`, c.LOG_ERROR);
@@ -1852,12 +1876,12 @@ class PiggyBank extends Homey.App {
         this.logInit();
       } catch (err) {
         this.log(`Unable to initialize logging: ${err}`);
-        return; // Skip sending log
+        throw (err); // Skip sending log
       }
     }
     // Do not send empty logs
     if (this.mylog.diagLog === '') {
-      return;
+      throw (new Error('Empty log will not be sent'));
     }
 
     let tries = 5;
@@ -1899,10 +1923,13 @@ class PiggyBank extends Homey.App {
         this.log('Preview URL: ', nodemailer.getTestMessageUrl(info));
         return;
       } catch (err) {
-        this.updateLog(`Send log error: ${err.stack}`, c.LOG_ERROR);
+        this.updateLog(`Send log error: ${err}`, c.LOG_ERROR);
+        this.log(`Error stack: ${err.stack}`);
+        throw (err);
       }
     }
     this.updateLog('Send log FAILED', c.LOG_ERROR);
+    throw new Error('Failed sending the log, please try again later or wait for app update');
   }
 
   async logShowState() {
@@ -1956,7 +1983,8 @@ class PiggyBank extends Homey.App {
         this.updateLog('----- ANALYZING DEVICE -----', c.LOG_ALL);
         this.updateLog(`Report type: ${problems[filter]}`, c.LOG_ALL);
         this.updateLog(`Device ID:   ${deviceId}`, c.LOG_ALL);
-        this.updateLog(`Device Name: ${device.name}`, c.LOG_ALL);
+        this.updateLog(`Device name: ${device.name}`, c.LOG_ALL);
+        this.updateLog(`Device reliability: ${device.reliability}`, c.LOG_ALL);
         try {
           this.updateLog(`Driver Uri: ${device.driverUri}`, c.LOG_ALL);
           this.updateLog(`Driver Id: ${device.driverId}`, c.LOG_ALL);
