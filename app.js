@@ -463,7 +463,6 @@ class PiggyBank extends Homey.App {
         results.push(mode);
       }
     }
-    this.log(results);
     return results.filter(result => {
       return result.name.toLowerCase().includes(query.toLowerCase());
     });
@@ -1131,6 +1130,19 @@ class PiggyBank extends Homey.App {
     if (newMode < 0) {
       newMode = 0;
     }
+    // ===== Workaround code #1, remove in a future version =====
+    if (+newMode >= 40 && +newMode <= 44) {
+      const modeNames = this.homey.settings.get('modeNames');
+      const modeId = +newMode % 40;
+      this.homey.notifications.createNotification({
+        excerpt: 'The flow card you\'re using for setting operating mode is broken. '
+        + 'The bug has been fixed but you need to delete the old flow card and recreate it in order for correct operation in the future. '
+        + `The flow card in question is trying to change mode to ${modeNames[modeId]}`
+      });
+      newMode = 4 + +modeId;
+      this.updateLog(`Bugfix for broken flow card, changed mode to: ${newMode} (was 4${modeId})`, c.LOG_ERROR);
+    }
+    // ===== Workaround code #1 end =====
     if (newMode > modeList.length) {
       newMode = modeList.length;
     }
