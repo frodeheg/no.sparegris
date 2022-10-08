@@ -10,6 +10,7 @@
     <script type="text/javascript" src="./chart.js" data-origin="settings"></script>
     <script type="text/javascript" src="./tools.js" data-origin="settings"></script>
     <script type="text/javascript" src="./gridcost.js" data-origin="settings"></script>
+    <script type="text/javascript" src="subpages/advanced.js" data-origin="settings/advanced"></script>
     <link href="style.css" rel="stylesheet" type="text/css">
     <link href="trashcan.css" rel="stylesheet" type="text/css">
     <script type="text/javascript">
@@ -105,7 +106,8 @@
         id_a: { name:"DeviceNamenamenamenamename 1", room: "Stue",    image: "https://as2.ftcdn.net/v2/jpg/02/49/76/93/1000_F_249769389_7su5tYXOvcjcehNCcWTwcjnHvSMkLocJ.jpg", use: true, priority: 0, thermostat_cap: true, driverId: 'no.thermofloor:TF_Thermostat' },
         id_b: { name:"DeviceName 2", room: "Kjøkken", image: "https://as2.ftcdn.net/v2/jpg/02/49/76/93/1000_F_249769389_7su5tYXOvcjcehNCcWTwcjnHvSMkLocJ.jpg", use: true, priority: 1, thermostat_cap: true, reliability: 0.5, driverId: 'no.thermofloor:Z-TRM2fx' },
         id_c: { name:"DeviceName 3", room: "Bad",     image: "https://as2.ftcdn.net/v2/jpg/02/49/76/93/1000_F_249769389_7su5tYXOvcjcehNCcWTwcjnHvSMkLocJ.jpg", use: true, priority: 0, thermostat_cap: false, reliability: 0.6, driverId: 'no.thermofloor:Z-TRM3' },
-        id_d: { name:"DeviceName 4", room: "Bad",     image: "https://as2.ftcdn.net/v2/jpg/02/49/76/93/1000_F_249769389_7su5tYXOvcjcehNCcWTwcjnHvSMkLocJ.jpg", use: false, priority: 1, thermostat_cap: true, reliability: 0.7, driverId: 'unsupported' }
+        id_d: { name:"DeviceName 4", room: "Bad",     image: "https://as2.ftcdn.net/v2/jpg/02/49/76/93/1000_F_249769389_7su5tYXOvcjcehNCcWTwcjnHvSMkLocJ.jpg", use: false, priority: 1, thermostat_cap: true, reliability: 0.7, driverId: 'unsupported' },
+        id_e: { name:"DeviceName 3", room: "Bad",     image: "https://as2.ftcdn.net/v2/jpg/02/49/76/93/1000_F_249769389_7su5tYXOvcjcehNCcWTwcjnHvSMkLocJ.jpg", use: true, priority: 0, thermostat_cap: false, reliability: 0.6, driverId: 'com.everspring:AN179' }
       }
       // The modeList is not indexed by id because it uses the index to sort the list
       var modeList = [
@@ -129,6 +131,7 @@
       var currentSafetyPower = 500;
       var currentMainFuse = 63;
       var futurePriceOptions = {};
+      var chargerOptions = {};
       var appConfigProgress = {ApiStatus:0};
       var currentModeTab = 0; // Normal
 
@@ -188,6 +191,7 @@
       function generateReliabilityList() {
         var list = document.getElementById('errorDeviceList');
         var genList = '<table class=device-list>';
+        numErrorDevices = 0;
         for (var key in deviceList) {
           let device = deviceList[key];
           if (device.use && device.reliability < 0.9) {
@@ -199,8 +203,10 @@
             genList +=
               `<tr onclick="toggle(this,'reliability_${key}');">` +
                 `<td valign="top"><b>${device.name} <span style="background-color: #f1f1f1;border: 1px solid black;">&#8628;</span></b></td>` +
-                `<td valign="top">${reliabilityText} : ${Math.round(device.reliability*100)}%` +
-                  `<div class="hint" id="reliability_${key}" style="display:none;">${device.name} - ${device.room}<br>${helptext}</div></td>` +
+                `<td valign="top">${reliabilityText} : ${Math.round(device.reliability*100)}%</td>` +
+              '</tr>' +
+              '<tr>' +
+                `<td colspan=2><div id="reliability_${key}" style="display:none;" class="hint">${device.name} - ${device.room}<br>${helptext}</div></td>` +
               '</tr>';
           }
         }
@@ -562,10 +568,10 @@
         var visible = (element.style.display != "") && (element.style.display != "none");
         if (visible) {
           element.style.display = 'none';
-          source.style.cursor = "zoom-in";
+          if (source) source.style.cursor = "zoom-in";
         } else {
           element.style.display = type;
-          source.style.cursor = "zoom-out";
+          if (source) source.style.cursor = "zoom-out";
         }
         return false; // For onclick not to follow the link
       }
@@ -810,7 +816,8 @@
     <table id="main_menu" class="menu" style="display:none;top:0px;position:fixed;">
       <tbody class="menuitem">
       <tr>
-        <td><a href="#home" data-i18n="settings.menu.home.title" onclick="changeTab(event, 'welcomePage')">Home</a></td>
+        <td onclick="changeTab(event, 'welcomePage')">
+          <a href="#home" data-i18n="settings.menu.home.title">Home</a></td>
         <td class="dropdown" onclick="allowDropdown();">
           <a href="javascript:void(0)" class="dropbtn" data-i18n="settings.menu.devices.title">Devices</a>
           <div class="dropdown-content">
@@ -1004,7 +1011,42 @@
         <table class="settings_table">
           <tr>
             <td class="settings_row_name"><label for="VAT" data-i18n="settings.cost.VAT">cost.VAT</label>:</td>
-            <td class="settings_row_input"><input id="VAT" type="number" min="0" max="100" value="25" onchange="displaySaveHint()">%</td>
+            <td class="settings_row_input"><input id="VAT" class="inputElem" type="number" min="0" max="100" value="25" onchange="displaySaveHint()">%</td>
+          </tr>
+        </table>
+      </fieldset>
+      <fieldset>
+        <legend data-i18n="settings.charge.header">charge.header</legend>
+        <table class="settings_table">
+          <tr>
+            <td class="settings_row_name"><label for="chargeTarget" data-i18n="settings.charge.chargeTarget">charge.chargeTarget</label>:</td>
+            <td class="settings_row_input"><select id="chargeTarget" class="inputElem" onchange="updateAdvancedSettings();displaySaveHint()">
+              <option value="1" data-i18n="settings.charge.chargeTargetAuto" selected >Auto</option>
+              <option value="2" data-i18n="settings.charge.chargeTargetManual">Manual</option>
+            </select></td>
+          </tr>
+          <tr id="chargeDeviceRow">
+            <td class="settings_row_name"><label for="chargeDevice" data-i18n="settings.charge.chargeDevice">charge.chargeDevice</label>:</td>
+            <td class="settings_row_input"><select id="chargeDevice" onchange="displaySaveHint()">
+              <option value="1" selected >Please wait for list to be expanded</option>
+            </select></td>
+          </tr>
+          <tr>
+            <td class="settings_row_name"><label for="chargeMin" data-i18n="settings.charge.chargeMin">charge.chargeMin</label>:</td>
+            <td class="settings_row_input"><input id="chargeMin" class="inputElem" type="number" min="1000" max="20000" step="500" value="2000"
+              onchange="limitElement(this);if (document.getElementById('chargeTarget').value == 2) {document.getElementById('chargeMax').value=this.value} document.getElementById('chargeMax').min=this.value;displaySaveHint()">W</td>
+          </tr>
+          <tr>
+            <td class="settings_row_name"><label for="chargeMax" data-i18n="settings.charge.chargeMax">charge.chargeMax</label>:</td>
+            <td class="settings_row_input"><input id="chargeMax" class="inputElem" type="number" min="1000" max="20000" step="500" value="10000" onchange="limitElement(this);document.getElementById('chargeMin').max=this.value;displaySaveHint()">W</td>
+          </tr>
+          <tr>
+            <td class="settings_row_name"><label for="chargeMargin" data-i18n="settings.charge.chargeMargin">charge.chargeMargin</label>:</td>
+            <td class="settings_row_input"><input id="chargeMargin" class="inputElem" type="number" min="0" max="5000" step="100" value="500" onchange="displaySaveHint()">W</td>
+          </tr>
+          <tr>
+            <td class="settings_row_name"><label for="minSwitchTime" data-i18n="settings.charge.minSwitchTime">charge.minSwitchTime</label>:</td>
+            <td class="settings_row_input"><input id="minSwitchTime" class="inputElem" type="number" min="1" max="15" step="1" value="5" onchange="displaySaveHint()">min</td>
           </tr>
         </table>
       </fieldset>
@@ -1415,6 +1457,7 @@
       var mainFuseLoaded = false;
       var graphLoaded = false;
       var futurePriceOptionsLoaded = false;
+      var chargerOptionsLoaded = false;
       var appConfigProgressLoaded = false;
       var onHomeyReadyCompleted = false;
 
@@ -1569,6 +1612,7 @@
           `mainFuseLoaded: ${mainFuseLoaded}<br>` +
           `graphLoaded: ${graphLoaded}<br>` +
           `futurePriceOptionsLoaded: ${futurePriceOptionsLoaded}<br>` +
+          `chargerOptionsLoaded: ${chargerOptionsLoaded}<br>` +
           `appConfigProgressLoaded: ${appConfigProgressLoaded}<br>` +
           `onHomeyReadyCompleted: ${onHomeyReadyCompleted}<br>`;*/
         if (maxPowerLoaded
@@ -1588,6 +1632,7 @@
           && mainFuseLoaded
           && graphLoaded
           && futurePriceOptionsLoaded
+          && chargerOptionsLoaded
           && appConfigProgressLoaded
           && onHomeyReadyCompleted) {
           // Update device enable list:
@@ -1621,6 +1666,12 @@
           document.getElementById("gridTaxDay").value = futurePriceOptions.gridTaxDay;
           document.getElementById("gridTaxNight").value = futurePriceOptions.gridTaxNight;
           document.getElementById("VAT").value = futurePriceOptions.VAT;
+          document.getElementById('chargeTarget').value = chargerOptions.chargeTarget;
+          document.getElementById('chargeDevice').value = chargerOptions.chargeDevice;
+          document.getElementById('chargeMin').value = chargerOptions.chargeMin;
+          document.getElementById('chargeMax').value = chargerOptions.chargeMax;
+          document.getElementById('chargeMargin').value = chargerOptions.chargeMargin;
+          document.getElementById('minSwitchTime').value = chargerOptions.minSwitchTime;
           document.getElementById("energyFlowRateText").innerHTML = energyFlowRateText.replace("${interval}", Math.round(appConfigProgress.timeSinceEnergyMeter / 60));
           checkPriceMode(document.getElementById("priceMode")); // not called automatically when programatically changed
           checkPriceKind(document.getElementById("priceKind")); // not called automatically when programatically changed
@@ -1751,6 +1802,17 @@
             graphLoaded = true;
           });
 
+        });
+
+        // Refresh charger data
+        Homey.get("chargerOptions", function (err, options) {
+          if (err) return Homey.alert(err);
+          if (options) {
+            chargerOptions = options;
+          } else {
+            chargerOptions = {}
+          }
+          chargerOptionsLoaded = true;
         });
 
         // Refresh API configuration progress
@@ -1944,8 +2006,15 @@
               futurePriceOptions.gridTaxNight = document.getElementById("gridTaxNight").value;
               futurePriceOptions.VAT = document.getElementById("VAT").value;
               futurePriceOptions.gridCosts = gridCost;
+              chargerOptions.chargeTarget = +document.getElementById('chargeTarget').value;
+              chargerOptions.chargeDevice = document.getElementById('chargeDevice').value;
+              chargerOptions.chargeMin = +document.getElementById('chargeMin').value;
+              chargerOptions.chargeMax = +document.getElementById('chargeMax').value;
+              chargerOptions.chargeMargin = +document.getElementById('chargeMargin').value;
+              chargerOptions.minSwitchTime = +document.getElementById('minSwitchTime').value;
               let opModeValue = (appEnabledElement.value === "1") ? operatingModeElement.value : 0
               Homey.set("futurePriceOptions", futurePriceOptions, errFunc);
+              Homey.set('chargerOptions', chargerOptions, errFunc);
               Homey.set("deviceList", deviceList, errFunc);
               Homey.set("modeList", modeList, errFunc);
               Homey.set("modeNames", modeNames, errFunc);
@@ -1961,6 +2030,7 @@
               Homey.set("freeThreshold",freeThresholdElement.value, errFunc);
               Homey.set("safetyPower", safetyPowerElement.value, errFunc);
               Homey.set("mainFuse", mainFuseElement.value, errFunc);
+              Homey.set("charger", chargerOptions, errFunc);
               Homey.set("settingsSaved", "", errFunc); // On settings is only called if the settings actually changed
               Homey.set("settingsSaved", "true", errFunc); // This one will throw the message settings.alert.settingssaved on success
             }
@@ -2266,6 +2336,11 @@
         if (tabPage == 'pricePage') {
           changePriceTab(evt, PP_NORM);
         }
+
+        // Update the advanced settings page
+        if (tabPage == 'advancedPage') {
+          updateAdvancedSettings();
+        }
         
         // Refresh the mode lists
         if (tabPage == 'priorityPage') {
@@ -2352,6 +2427,7 @@
         mainFuseLoaded = true;
         graphLoaded = true;
         futurePriceOptionsLoaded = true;
+        chargerOptionsLoaded = true;
         appConfigProgressLoaded = true;
         onHomeyReadyCompleted = true;
         futurePriceOptions = {

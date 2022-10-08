@@ -14,6 +14,16 @@
       "maxPowHint": "The maximum power can also be changed with flows for example when different maximums are wanted during winter and summer time.",
       "myTasks": "The App State"
     },
+    "charge": {
+      "header": "Car chargers",
+      "chargeMin": "Minimum charge power",
+      "chargeMax": "Maximum charge power",
+      "chargeMargin": "Charge margin",
+      "minSwitchTime": "Minimum toggle time",
+      "chargeTarget": "Charge Target",
+      "chargeTargetAuto": "Supported chargers",
+      "chargeTargetManual": "Manually selected (onoff only)"
+    },
     "menu": {
       "home": {
         "title": "Home"
@@ -71,7 +81,7 @@
       "reliability": "Reliability",
       "reliabilityHelp": ["The wireless signals might be weak. Please try to improve the line of sight to homey, <!--",
           "-->boost the signal or making sure there are sufficient repeaters in the signal grid. This might enhance its reliability. <!--",
-          "-->If you believe the reliability issues are caused by this app and not the device driver itself or weak signals <!--",
+          "-->If you believe the device is reliabile already and that the issues lies within this app <!--",
           "-->please submit a <a href=\"ShowLog\" onclick=\"changeTab(event, 'logPage');return false;\">device report.</a>"]
     },
     "global": {

@@ -233,6 +233,24 @@ class PiggyBank extends Homey.App {
       this.log(`Resetting futurePriceOptions to ${JSON.stringify(futurePriceOptions)}`);
       this.homey.settings.set('futurePriceOptions', futurePriceOptions);
     }
+    let chargerOptions = this.homey.settings.get('chargerOptions');
+    if (!chargerOptions
+      || !('chargeTarget' in chargerOptions)
+      || !('chargeDevice' in chargerOptions)
+      || !('chargeMin' in chargerOptions)
+      || !('chargeMax' in chargerOptions)
+      || !('chargeMargin' in chargerOptions)
+      || !('minSwitchTime' in chargerOptions)) {
+      if (!chargerOptions) chargerOptions = {};
+      if (!('chargeTarget' in chargerOptions)) chargerOptions.chargeTarget = c.CHARGE_TARGET_AUTO;
+      if (!('chargeDevice' in chargerOptions)) chargerOptions.chargeDevice = undefined;
+      if (!('chargeMin' in chargerOptions)) chargerOptions.chargeMin = 1000;
+      if (!('chargeMax' in chargerOptions)) chargerOptions.chargeMax = 10000;
+      if (!('chargeMargin' in chargerOptions)) chargerOptions.chargeMargin = 500;
+      if (!('minSwitchTime' in chargerOptions)) chargerOptions.minSwitchTime = 5;
+      this.log(`Resetting chargerOptions to ${JSON.stringify(chargerOptions)}`);
+      this.homey.settings.set('chargerOptions', chargerOptions);
+    }
 
     // Initialize current state
     this.__intervalID = undefined;
@@ -440,11 +458,12 @@ class PiggyBank extends Homey.App {
         const mode = {
           name: modeNames[nameId],
           description: `${this.homey.__('settings.opMode.custom')} ${+nameId + 1}`,
-          id: `${4 + nameId}`
+          id: `${4 + +nameId}`
         };
         results.push(mode);
       }
     }
+    this.log(results);
     return results.filter(result => {
       return result.name.toLowerCase().includes(query.toLowerCase());
     });
@@ -647,6 +666,87 @@ class PiggyBank extends Homey.App {
     appConfigProgress.gotPPFromFlow = this.homey.settings.get('gotPPFromFlow') === 'true';
     appConfigProgress.ApiStatus = this.apiState;
     return appConfigProgress;
+  }
+
+  /**
+   * Reduces the power usage for a charger device
+   * This function is only called if the device is a charger or a manually selected socket device
+   */
+  async changeDevicePower(deviceId, powerChange) {
+    const chargerOptions = this.homey.settings.get('chargerOptions');
+    if (powerChange < 0) powerChange -= chargerOptions.chargeMargin;
+    this.log(`Changing power by: ${powerChange}`);
+    let device;
+    try {
+      device = await this.homeyApi.devices.getDevice({ id: deviceId });
+      this.updateReliability(deviceId, 1);
+    } catch (err) {
+      // Most likely timeout
+      this.updateLog(`Charger device cannot be fetched. ${String(err)}`, c.LOG_ERROR);
+      this.__current_state[deviceId].nComError += 10; // Big error so wait more until retry than smaller errors
+      this.updateReliability(deviceId, 0);
+      return Promise.resolve([false, false]); // The unhandled device is solved by the later nComError handling
+    }
+
+    const { driverId } = this.__deviceList[deviceId];
+    const isOn = this.getIsOn(device, deviceId);
+    const hasPowerCap = (chargerOptions.chargerTarget === c.CHARGE_TARGET_AUTO)
+      && (driverId in d.DEVICE_CMD)
+      && (d.DEVICE_CMD[driverId].setCurrentCap !== undefined);
+    const powerInUse = !isOn || (device.capabilitiesObj === null) ? 0
+      : !hasPowerCap ? +chargerOptions.chargeMin
+        : (await device.capabilitiesObj[d.DEVICE_CMD[driverId].setCurrentCap].value) * 220 * Math.sqrt(2);
+    const isEmergency = (powerChange < 0) && (powerInUse > (-2 * powerChange));
+    const wantOn = (powerInUse + powerChange > +chargerOptions.chargeMin) && !isEmergency;
+    const now = new Date();
+    const timeLapsed = now - (this.prevChargerTime) / 60000; // Lapsed time in minutes
+    if (this.prevChargerTime !== undefined && (timeLapsed < chargerOptions.minSwitchTime) && !isEmergency) {
+      // Must wait a little bit more before changing
+      return Promise.resolve([false, false]);
+    }
+    this.prevChargerTime = now;
+    if (isEmergency) this.updateLog('Emergency turn off for charger device (minSwitchTime ignored)', c.LOG_WARNING);
+    if (wantOn) {
+      const turnOnPromise = hasPowerCap ? device.setCapabilityValue({ capabilityId: this.getOnOffCap(deviceId), value: this.getOnOffTrue(deviceId) }) : Promise.resolve();
+      return turnOnPromise
+        .then(() => {
+          this.updateReliability(deviceId, 1);
+          this.__num_off_devices += isOn ? 0 : -1;
+          this.__current_state[deviceId].nComError = 0;
+          if (!hasPowerCap) return Promise.resolve();
+          const resultPower = Math.min(Math.max(powerInUse + powerChange, +chargerOptions.chargeMin), +chargerOptions.chargeMax);
+          const resultCurrent = resultPower / (220 * Math.sqrt(2));
+          return device.setCapabilityValue({ capabilityId: d.DEVICE_CMD[driverId].setCurrentCap, value: resultCurrent });
+        })
+        .then(() => {
+          this.updateReliability(deviceId, 1);
+          if (!hasPowerCap) return Promise.resolve([true, isOn === wantOn]);
+          return Promise.resolve([true, false]);
+        })
+        .catch(err => {
+          this.updateLog(`Failed signalling charger: ${String(err)}`, c.LOG_ERROR);
+          this.__current_state[deviceId].nComError += 1;
+          this.updateReliability(deviceId, 0);
+          return Promise.resolve([false, false]);
+        });
+    }
+    if (isOn) { // && !wantOn
+      // Turn off
+      return device.setCapabilityValue({ capabilityId: this.getOnOffCap(deviceId), value: this.getOnOffFalse(deviceId) })
+        .then(() => {
+          this.updateReliability(deviceId, 1);
+          this.__num_off_devices--;
+          this.__current_state[deviceId].nComError = 0;
+          return Promise.resolve([true, false]);
+        })
+        .catch(err => {
+          this.updateLog(`Failed turning off charger: ${String(err)}`, c.LOG_ERROR);
+          this.__current_state[deviceId].nComError += 1;
+          this.updateReliability(deviceId, 0);
+          return Promise.resolve([false, false]);
+        });
+    } // Else is off and want off
+    return Promise.resolve([true, true]);
   }
 
   /**
@@ -1214,7 +1314,15 @@ class PiggyBank extends Homey.App {
         case ALWAYS_ON:
           // Always on is overridden by price actions
           try {
-            const [success, noChange] = await this.changeDeviceState(deviceId, TURN_ON);
+            let success; let noChange;
+            const { driverId } = this.__deviceList[deviceId];
+            const chargerOptions = this.homey.settings.get('chargerOptions');
+            if (((driverId in d.DEVICE_CMD) && (d.DEVICE_CMD[driverId].type === d.DEVICE_TYPE.CHARGER))
+              || (chargerOptions.chargeTarget === d.CHARGE_TARGET_MANUAL && deviceId === chargerOptions.chargeDevice)) {
+              [success, noChange] = await this.changeDevicePower(deviceId, morePower);
+            } else {
+              [success, noChange] = await this.changeDeviceState(deviceId, TURN_ON);
+            }
             if (success && !noChange) {
               // Sucessfully Turned on
               return Promise.resolve();
@@ -1271,7 +1379,15 @@ class PiggyBank extends Homey.App {
           continue;
         }
         try {
-          const [success, noChange] = await this.changeDeviceState(deviceId, operation);
+          let success; let noChange;
+          const { driverId } = this.__deviceList[deviceId];
+          const chargerOptions = this.homey.settings.get('chargerOptions');
+          if (((driverId in d.DEVICE_CMD) && (d.DEVICE_CMD[driverId].type === d.DEVICE_TYPE.CHARGER))
+            || (chargerOptions.chargeTarget === d.CHARGE_TARGET_MANUAL && deviceId === chargerOptions.chargeDevice)) {
+            [success, noChange] = await this.changeDevicePower(deviceId, -lessPower);
+          } else {
+            [success, noChange] = await this.changeDeviceState(deviceId, operation);
+          }
           if (success && !noChange) {
             // Sucessfully Turned off
             return Promise.resolve();

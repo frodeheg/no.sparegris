@@ -14,6 +14,16 @@
       "maxPowHint": "Maks forbruk per time kan endres via flows dersom det er ønskelig. For eksempel kan man ha ulikt maks forbruk på sommeren og vinteren.",
       "myTasks": "Appens Tilstand"
     },
+    "charge": {
+      "header": "Billadere",
+      "chargeMin": "Minste ladeeffekt",
+      "chargeMax": "Største ladeeffekt",
+      "chargeMargin": "Lademargin",
+      "minSwitchTime": "Minste ladetid",
+      "chargeTarget": "Ladeenhet",
+      "chargeTargetAuto": "Støttede ladere",
+      "chargeTargetManual": "Velg manuelt (kun av/på)"
+    },
     "menu": {
       "home": {
         "title": "Hjem"

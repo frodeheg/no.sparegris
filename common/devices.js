@@ -27,6 +27,9 @@
 //   setCurrentCap - Capability for changing the charging current (in Amps)
 
 // Device types
+// Note for CHARGER:
+// - A charger device will when power is too high or too low try to increase/decrease
+//   the charging current rather than turning the device on/off.
 const DEVICE_TYPE = {
   SWITCH: 0,
   HEATER: 1,
@@ -56,6 +59,15 @@ const DEFAULT_HEATER = {
   tempMin: 5,
   tempMax: 40,
   tempStep: 0.5,
+  default: true
+};
+
+// Default charger
+const DEFAULT_CHARGER = {
+  type: DEVICE_TYPE.CHARGER,
+  setOnOffCap: 'onoff',
+  setOnValue: true,
+  setOffValue: false,
   default: true
 };
 
@@ -119,12 +131,10 @@ const DEVICE_CMD = {
   },
   'no.connecte:smart_socket': DEFAULT_SWITCH,
   'no.easee:charger': {
-    type: DEVICE_TYPE.CHARGER,
-    setOnOffCap: 'onoff',
-    setOnValue: true,
-    setOffValue: false,
+    ...DEFAULT_CHARGER,
     setCurrentCap: 'target_circuit_current',
-    beta: true
+    beta: true,
+    default: false
   },
   'no.hoiax:hiax-connected-200': {
     type: DEVICE_TYPE.WATERHEATER,

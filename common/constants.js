@@ -36,6 +36,10 @@ const LOG_INFO = 1;
 const LOG_DEBUG = 2;
 const LOG_ALL = LOG_ERROR;
 
+// Charging targets
+const CHARGE_TARGET_AUTO = 1;
+const CHARGE_TARGET_MANUAL = 2;
+
 // Bidding zones for electricity prices
 const ENTSOE_BIDDING_ZONES = {
   'Albania (AL)': [{ id: '10YAL-KESH-----5', name: 'AL' }],
@@ -113,5 +117,7 @@ module.exports = {
   LOG_INFO,
   LOG_DEBUG,
   LOG_ALL,
+  CHARGE_TARGET_AUTO,
+  CHARGE_TARGET_MANUAL,
   ENTSOE_BIDDING_ZONES,
 };
