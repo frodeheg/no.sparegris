@@ -448,5 +448,8 @@
   },
   "0.17.7": {
     "en": "Fix for calculating the power of the Easee charger + Fix for turning on lower priority devices once charging completes."
+  },
+  "0.17.8": {
+    "en": "Attempted bugfix for a case where one hours electricity usage was registered in the next hour. This could corrupt the graphs and history. + Moved the device com.panasonic.PCC:comfortcloud into the list of supported devices + Added the device nl.climate.daikin:airairhp into the list of experimental devices (need code updates to allow it to function in other modes than heating)"
   }
 }
