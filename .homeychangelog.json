@@ -445,5 +445,8 @@
   },
   "0.17.6": {
     "en": "Added full support for car chargers - Settings can currently be obtained under Advanced settings. Added email+comment field for device feedback. Added 'cloud.shelly:shelly', 'com.arjankranenburg.virtual:mode' and 'com.ikea.tradfri:control_outlet' to the supported list. Added reliability report for devices (only for unreliable devices). Fixed bug where custom operating modes flow cards was wrong. User interface fixes."
+  },
+  "0.17.7": {
+    "en": "Fix for calculating the power of the Easee charger + Fix for turning on lower priority devices once charging completes."
   }
 }
