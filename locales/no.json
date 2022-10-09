@@ -19,7 +19,7 @@
       "chargeMin": "Minste ladeeffekt",
       "chargeMax": "Største ladeeffekt",
       "chargeMargin": "Lademargin",
-      "minSwitchTime": "Minste ladetid",
+      "minSwitchTime": "Minste tid for endring av effekt",
       "chargeTarget": "Ladeenhet",
       "chargeTargetAuto": "Støttede ladere",
       "chargeTargetManual": "Velg manuelt (kun av/på)"

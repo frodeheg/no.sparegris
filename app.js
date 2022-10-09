@@ -260,8 +260,6 @@ class PiggyBank extends Homey.App {
     this.__accum_energy = undefined;
     this.__reserved_energy = 0;
     this.__free_power_trigger_time = new Date();
-    this.__last_power_off_time = new Date();
-    this.__last_power_on_time = new Date();
     this.__power_last_hour = undefined;
     this.__power_estimated = undefined;
     this.__alarm_overshoot = false;
@@ -272,9 +270,10 @@ class PiggyBank extends Homey.App {
     this.__current_prices = [];
     this.__current_price_index = undefined;
     this.mutex = new Mutex();
-    this.homeyApi = new HomeyAPIApp({
-      homey: this.homey
-    });
+    this.homeyApi = new HomeyAPIApp({ homey: this.homey });
+    this.__last_power_off_time = new Date();
+    this.__last_power_on_time = new Date();
+    this.__last_power_off_time.setMinutes(this.__last_power_off_time.getMinutes() - 5); // Time in the past to allow turning on devices at app start
     // All elements of current_state will have the following:
     //  nComError: Number of communication errors since last time it worked - Used to depriorotize devices so we don't get stuck in an infinite retry loop
     //  isOn: If the device should be on
@@ -698,7 +697,7 @@ class PiggyBank extends Homey.App {
     const isEmergency = (powerChange < 0) && (powerInUse > (-2 * powerChange));
     const wantOn = (powerInUse + powerChange > +chargerOptions.chargeMin) && !isEmergency;
     const now = new Date();
-    const timeLapsed = now - (this.prevChargerTime) / 60000; // Lapsed time in minutes
+    const timeLapsed = (now - this.prevChargerTime) / 60000; // Lapsed time in minutes
     if (this.prevChargerTime !== undefined && (timeLapsed < chargerOptions.minSwitchTime) && !isEmergency) {
       // Must wait a little bit more before changing
       return Promise.resolve([false, false]);
@@ -706,7 +705,7 @@ class PiggyBank extends Homey.App {
     this.prevChargerTime = now;
     if (isEmergency) this.updateLog('Emergency turn off for charger device (minSwitchTime ignored)', c.LOG_WARNING);
     if (wantOn) {
-      const turnOnPromise = hasPowerCap ? device.setCapabilityValue({ capabilityId: this.getOnOffCap(deviceId), value: this.getOnOffTrue(deviceId) }) : Promise.resolve();
+      const turnOnPromise = !isOn ? device.setCapabilityValue({ capabilityId: this.getOnOffCap(deviceId), value: this.getOnOffTrue(deviceId) }) : Promise.resolve();
       return turnOnPromise
         .then(() => {
           this.updateReliability(deviceId, 1);
@@ -718,8 +717,8 @@ class PiggyBank extends Homey.App {
           return device.setCapabilityValue({ capabilityId: d.DEVICE_CMD[driverId].setCurrentCap, value: resultCurrent });
         })
         .then(() => {
-          this.updateReliability(deviceId, 1);
           if (!hasPowerCap) return Promise.resolve([true, isOn === wantOn]);
+          this.updateReliability(deviceId, 1);
           return Promise.resolve([true, false]);
         })
         .catch(err => {
@@ -1330,7 +1329,7 @@ class PiggyBank extends Homey.App {
             const { driverId } = this.__deviceList[deviceId];
             const chargerOptions = this.homey.settings.get('chargerOptions');
             if (((driverId in d.DEVICE_CMD) && (d.DEVICE_CMD[driverId].type === d.DEVICE_TYPE.CHARGER))
-              || (chargerOptions.chargeTarget === d.CHARGE_TARGET_MANUAL && deviceId === chargerOptions.chargeDevice)) {
+              || (chargerOptions.chargeTarget === c.CHARGE_TARGET_MANUAL && deviceId === chargerOptions.chargeDevice)) {
               [success, noChange] = await this.changeDevicePower(deviceId, morePower);
             } else {
               [success, noChange] = await this.changeDeviceState(deviceId, TURN_ON);
@@ -1395,7 +1394,7 @@ class PiggyBank extends Homey.App {
           const { driverId } = this.__deviceList[deviceId];
           const chargerOptions = this.homey.settings.get('chargerOptions');
           if (((driverId in d.DEVICE_CMD) && (d.DEVICE_CMD[driverId].type === d.DEVICE_TYPE.CHARGER))
-            || (chargerOptions.chargeTarget === d.CHARGE_TARGET_MANUAL && deviceId === chargerOptions.chargeDevice)) {
+            || (chargerOptions.chargeTarget === c.CHARGE_TARGET_MANUAL && deviceId === chargerOptions.chargeDevice)) {
             [success, noChange] = await this.changeDevicePower(deviceId, -lessPower);
           } else {
             [success, noChange] = await this.changeDeviceState(deviceId, operation);

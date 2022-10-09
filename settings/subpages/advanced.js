@@ -19,11 +19,12 @@ function updateAdvancedSettings() {
       // Only list selected devices
       if (!device.use) continue;
       // Do not list known devices that are not relays
-      if (device.driverId in DEVICE_CMD && DEVICE_CMD[device.driverId].type != DEVICE_TYPE.SWITCH) continue;
+      if (device.driverId in DEVICE_CMD && DEVICE_CMD[device.driverId].type !== DEVICE_TYPE.SWITCH) continue;
       // Only list unknown devices and relays that are selected
       options += `<option value="${key}">${device.name} - ${device.room}</option>`;
     }
     chargeDevice.innerHTML = options;
+    chargeDevice.value = chargerOptions.chargeDevice;
     chargeDeviceRow.style.display = 'table-row';
     chargeMax.disabled = true;
     chargeMax.value = chargeMin.value;
