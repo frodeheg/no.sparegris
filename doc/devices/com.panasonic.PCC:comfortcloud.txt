@@ -1,0 +1,34 @@
+Log ID: 2022-10-09T08:54:18.418Z
+App version 0.17.7
+
++9:2:52.216: ----- ANALYZING DEVICE -----
++9:2:52.218: Report type: Experimental device is working
++9:2:52.220: Device ID:   74ddc6be-4059-4fb4-87aa-5c809a0d87ec
++9:2:52.222: Device name: Varmepumpe
++9:2:52.224: Device reliability: undefined
++9:2:52.226: Driver Uri: homey:app:com.panasonic.PCC
++9:2:52.229: Driver Id: comfortcloud
++9:2:52.234: Found onoff cap: onoff
++9:2:52.236: Found temp cap: true
++9:2:52.239: Capabilities: sensor_onOff,sensor_targetTemperature,sensor_operationMode,sensor_fanSpeed,sensor_fanAutoMode,sensor_ecoMode,sensor_airLR,sensor_airUD,target_temperature,measure_temperature,onoff,airUpDown,airLeftRight,ecoMode,fanAutoMode,fanSpeed,operationMode
++9:2:52.243: Options for 'sensor_onOff': {"value":"On","lastUpdated":"2022-10-09T08:55:54.411Z","type":"string","getable":true,"setable":false,"title":"Power","desc":null,"units":null,"iconObj":{"id":"24426fa47549161a8c36736f54f86c07","url":"/icon/24426fa47549161a8c36736f54f86c07/icon.svg"},"id":"sensor_onOff","options":{}}
++9:2:52.245: Options for 'sensor_targetTemperature': {"value":18,"lastUpdated":"2022-10-09T08:54:56.014Z","type":"number","getable":true,"setable":false,"title":"Target Temperature","desc":null,"units":"°C","iconObj":{"id":"3001105244009889f33ceaeed1a50dfc","url":"/icon/3001105244009889f33ceaeed1a50dfc/icon.svg"},"id":"sensor_targetTemperature","options":{}}
++9:2:52.248: Options for 'sensor_operationMode': {"value":"Heat","lastUpdated":"2022-09-26T15:21:43.060Z","type":"string","getable":true,"setable":false,"title":"Operation Mode","desc":null,"units":null,"iconObj":{"id":"73ca43d7372f0c5de48908f0e0c50753","url":"/icon/73ca43d7372f0c5de48908f0e0c50753/icon.svg"},"id":"sensor_operationMode","options":{}}
++9:2:52.260: Options for 'sensor_fanSpeed': {"value":"Auto","lastUpdated":"2022-09-26T18:51:56.606Z","type":"string","getable":true,"setable":false,"title":"Fan Speed","desc":null,"units":null,"iconObj":{"id":"64a6f649008eb8f00e9f792eca2c282b","url":"/icon/64a6f649008eb8f00e9f792eca2c282b/icon.svg"},"id":"sensor_fanSpeed","options":{}}
++9:2:52.263: Options for 'sensor_fanAutoMode': {"value":"AirSwingUD","lastUpdated":"2022-09-26T15:32:43.466Z","type":"string","getable":true,"setable":false,"title":"Fan Auto Mode","desc":null,"units":null,"iconObj":{"id":"63a024e1336a443e37f4ad5c470cad76","url":"/icon/63a024e1336a443e37f4ad5c470cad76/icon.svg"},"id":"sensor_fanAutoMode","options":{}}
++9:2:52.275: Options for 'sensor_ecoMode': {"value":"Auto","lastUpdated":"2022-09-26T18:51:56.590Z","type":"string","getable":true,"setable":false,"title":"Eco Mode","desc":null,"units":null,"iconObj":{"id":"30612f688c6ce0210ee05763e37a8ed7","url":"/icon/30612f688c6ce0210ee05763e37a8ed7/icon.svg"},"id":"sensor_ecoMode","options":{}}
++9:2:52.290: Options for 'sensor_airLR': {"value":"Mid","lastUpdated":"2022-08-30T09:42:45.955Z","type":"string","getable":true,"setable":false,"title":"Air Left Right","desc":null,"units":null,"iconObj":{"id":"a39949d0f7e125c5e7d26e9d2f4241c0","url":"/icon/a39949d0f7e125c5e7d26e9d2f4241c0/icon.svg"},"id":"sensor_airLR","options":{}}
++9:2:52.292: Options for 'sensor_airUD': {"value":"Up","lastUpdated":"2022-09-26T15:31:48.946Z","type":"string","getable":true,"setable":false,"title":"Air Up Down","desc":null,"units":null,"iconObj":{"id":"90814cc9b0289dafa31ce3140c4d29dd","url":"/icon/90814cc9b0289dafa31ce3140c4d29dd/icon.svg"},"id":"sensor_airUD","options":{}}
++9:2:52.295: Options for 'target_temperature': {"value":18,"lastUpdated":"2022-10-09T08:54:22.029Z","type":"number","getable":true,"setable":true,"title":"Target temperature","desc":null,"units":"°C","decimals":2,"min":4,"max":35,"chartType":"stepLine","id":"target_temperature","options":{}}
++9:2:52.298: Options for 'measure_temperature': {"value":23,"lastUpdated":"2022-10-09T08:12:15.326Z","type":"number","getable":true,"setable":false,"title":"Temperature","desc":"Temperature in degrees Celsius (°C)","units":"°C","decimals":2,"chartType":"spline","id":"measure_temperature","options":{}}
++9:2:52.301: Options for 'onoff': {"value":true,"lastUpdated":"2022-10-09T08:54:59.875Z","type":"boolean","getable":true,"setable":true,"title":"Turned on","desc":null,"units":null,"id":"onoff","options":{}}
++9:2:52.307: Options for 'airUpDown': {"value":"Up","lastUpdated":"2022-09-26T15:31:48.938Z","type":"enum","getable":true,"setable":true,"title":"Air Up Down","desc":null,"units":null,"values":[{"id":"Up","title":"Up"},{"id":"UpMid","title":"UpMid"},{"id":"Mid","title":"Mid"},{"id":"DownMid","title":"DownMid"},{"id":"Down","title":"Down"}],"id":"airUpDown","options":{}}
++9:2:52.309: Options for 'airLeftRight': {"value":"Mid","lastUpdated":"2022-08-30T09:42:45.945Z","type":"enum","getable":true,"setable":true,"title":"Air Left Right","desc":null,"units":null,"values":[{"id":"Left","title":"Left"},{"id":"LeftMid","title":"LeftMid"},{"id":"Mid","title":"Mid"},{"id":"RightMid","title":"RightMid"},{"id":"Right","title":"Right"}],"id":"airLeftRight","options":{}}
++9:2:52.313: Options for 'ecoMode': {"value":"Auto","lastUpdated":"2022-09-26T18:51:56.581Z","type":"enum","getable":true,"setable":true,"title":"Eco Mode","desc":null,"units":null,"values":[{"id":"Auto","title":"Auto"},{"id":"Powerful","title":"Powerful"},{"id":"Quiet","title":"Quiet"}],"id":"ecoMode","options":{}}
++9:2:52.315: Options for 'fanAutoMode': {"value":"AirSwingUD","lastUpdated":"2022-09-26T15:32:43.458Z","type":"enum","getable":true,"setable":true,"title":"Fan Auto Mode","desc":null,"units":null,"values":[{"id":"Disabled","title":"Disabled"},{"id":"AirSwingAuto","title":"AirSwingAuto"},{"id":"AirSwingLR","title":"AirSwingLR"},{"id":"AirSwingUD","title":"AirSwingUD"}],"id":"fanAutoMode","options":{}}
++9:2:52.318: Options for 'fanSpeed': {"value":"Auto","lastUpdated":"2022-09-26T18:51:56.598Z","type":"enum","getable":true,"setable":true,"title":"Fan Speed","desc":null,"units":null,"values":[{"id":"Auto","title":"Auto"},{"id":"Low","title":"Low"},{"id":"LowMid","title":"LowMid"},{"id":"Mid","title":"Mid"},{"id":"HighMid","title":"HighMid"},{"id":"High","title":"High"}],"id":"fanSpeed","options":{}}
++9:2:52.320: Options for 'operationMode': {"value":"Heat","lastUpdated":"2022-09-26T15:21:43.049Z","type":"enum","getable":true,"setable":true,"title":"Operation Mode","desc":null,"units":null,"values":[{"id":"Auto","title":"Auto"},{"id":"Dry","title":"Dry"},{"id":"Cool","title":"Cool"},{"id":"Heat","title":"Heat"},{"id":"Fan","title":"Fan"}],"id":"operationMode","options":{}}
++9:2:52.322: --- ANALYZING DEVICE DONE ---
++9:4:46.997: Email: robert@schmidt-cisternas.net
+Comment:Litt usikker på feilene i loggen. Så vidt jeg kan se, virker av/på og temperatur ok.  
++9:4:49.199: Sending log

@@ -22,6 +22,8 @@
 //   setModeHeatValue   - Value for setModeCap to enter heat mode
 //   setModeCoolValue   - Value for setModeCap to enter cool mode
 //   setModeAutoValue   - Value for setModeCap to enter auto mode
+//   setModeDryValue    - undefined if unavailable value for setModeCap to enter dry mode else
+//   setModeFanValue    - undefined if unavailable value for setModeCap to enter fan mode else
 //   +all HEATER parameters
 // CHARGER : Additional parameters
 //   setCurrentCap     - Capability for changing the charging current (in Amps)
@@ -64,6 +66,23 @@ const DEFAULT_HEATER = {
   default: true
 };
 
+// Default AC
+const DEFAULT_AC = {
+  type: DEVICE_TYPE.AC,
+  setOnOffCap: 'onoff',
+  setOnValue: true,
+  setOffValue: false,
+  readTempCap: 'measure_temperature',
+  setTempCap: 'target_temperature',
+  tempMin: 10,
+  tempMax: 30,
+  tempStep: 1,
+  setModeCap: 'thermostat_mode',
+  setModeHeatValue: 'heat',
+  setModeCoolValue: 'cool',
+  setModeAutoValue: 'auto'
+};
+
 // Default charger
 const DEFAULT_CHARGER = {
   type: DEVICE_TYPE.CHARGER,
@@ -88,21 +107,24 @@ const DEVICE_CMD = {
   'com.gardena:water-control': DEFAULT_IGNORED,
   'com.ikea.tradfri:control_outlet': DEFAULT_SWITCH, // Not confirmed
   'com.neo:NAS-WR02ZE': DEFAULT_SWITCH,
+  'com.panasonic.PCC:comfortcloud': {
+    ...DEFAULT_AC,
+    tempMin: 4,
+    tempMax: 35,
+    tempStep: 0.5, // Actually 0.01 but this is pointless
+    setModeCap: 'operationMode',
+    setModeHeatValue: 'Heat',
+    setModeCoolValue: 'Cool',
+    setModeAutoValue: 'Auto',
+    setModeDryValue: 'Dry',
+    setModeFanValue: 'Fan',
+    default: false
+  },
   'com.philips.hue.zigbee:LCL001': DEFAULT_SWITCH,
   'com.sensibo:Sensibo': {
-    type: DEVICE_TYPE.AC,
+    ...DEFAULT_AC,
     setOnOffCap: 'se_onoff',
-    setOnValue: true,
-    setOffValue: false,
-    readTempCap: 'measure_temperature',
-    setTempCap: 'target_temperature',
-    tempMin: 10,
-    tempMax: 30,
-    tempStep: 1,
-    setModeCap: 'thermostat_mode',
-    setModeHeatValue: 'heat',
-    setModeCoolValue: 'cool',
-    setModeAutoValue: 'auto'
+    default: false
   },
   'com.tuya.cloud:tuyalight': DEFAULT_SWITCH,
   'com.mill:mill': {
@@ -121,6 +143,18 @@ const DEVICE_CMD = {
     ...DEFAULT_HEATER,
     tempMin: 4,
     tempMax: 35,
+    default: false
+  },
+  'nl.climate.daikin:airairhp': {
+    ...DEFAULT_AC,
+    setOnOffCap: 'thermostat_mode_std',
+    setOnValue: 'heat', // This is unfortunate
+    setOffValue: 'off',
+    tempMax: 32,
+    setModeCap: 'thermostat_mode_std',
+    setModeDryValue: 'dehumid',
+    setModeFanValue: 'fan',
+    beta: true, // Need to be in beta until fan modes is supported otherwise it's heating only
     default: false
   },
   'nl.klikaanklikuit:ACC-250': DEFAULT_SWITCH,

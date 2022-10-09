@@ -1,0 +1,24 @@
+Log ID: 2022-10-06T21:24:33.539Z
+App version 0.17.5
+
++21:11:19.145: ----- ANALYZING DEVICE -----
++21:11:19.154: Report type: Device is not listed
++21:11:19.160: Device ID:   e8d01c36-aa3c-40c8-af71-596df099e735
++21:11:19.166: Device Name: Daikin
++21:11:19.169: Driver Uri: homey:app:nl.climate.daikin
++21:11:19.172: Driver Id: airairhp
++21:11:19.175: Error: TypeError: Cannot read properties of undefined (reading 'onoff_cap')
++21:11:19.176: Capabilities: thermostat_mode_std,fan_rate,fan_direction,special_mode_eco,special_mode_pwr,special_mode_str,target_humidity,target_temperature,measure_temperature,measure_temperature.inside,measure_temperature.outside
++21:11:19.178: Options for 'thermostat_mode_std': {"value":"heat","lastUpdated":"2022-10-09T20:38:07.409Z","type":"enum","getable":true,"setable":true,"title":"Operation Mode","desc":null,"units":null,"values":[{"id":"off","title":"Off"},{"id":"cool","title":"Cooling"},{"id":"heat","title":"Heating"},{"id":"auto","title":"Auto"},{"id":"fan","title":"Fan"},{"id":"dehumid","title":"Dry"}],"id":"thermostat_mode_std","options":{}}
++21:11:19.180: Options for 'fan_rate': {"value":"level4","lastUpdated":"2022-10-09T20:43:48.801Z","type":"enum","getable":true,"setable":true,"title":"Fan speed","desc":null,"units":null,"values":[{"id":"auto","title":"Auto"},{"id":"quiet","title":"Quiet"},{"id":"level1","title":"Level 1"},{"id":"level2","title":"Level 2"},{"id":"level3","title":"Level 3"},{"id":"level4","title":"Level 4"},{"id":"level5","title":"Level 5"}],"id":"fan_rate","options":{}}
++21:11:19.183: Options for 'fan_direction': {"value":"stop","lastUpdated":"2022-10-09T20:43:28.752Z","type":"enum","getable":true,"setable":true,"title":"Airflow direction","desc":null,"units":null,"values":[{"id":"stop","title":"Stop"},{"id":"vertical","title":"Vertical"},{"id":"horizontal","title":"Horizontal"},{"id":"3d","title":"3D"}],"id":"fan_direction","options":{}}
++21:11:19.191: Options for 'special_mode_eco': {"value":"off","lastUpdated":"2022-01-03T16:24:44.038Z","type":"enum","getable":true,"setable":true,"title":"Econo","desc":null,"units":null,"values":[{"id":"off","title":"Off"},{"id":"on","title":"On"}],"id":"special_mode_eco","options":{}}
++21:11:19.194: Options for 'special_mode_pwr': {"value":"off","lastUpdated":"2022-01-03T16:24:44.038Z","type":"enum","getable":true,"setable":true,"title":"Powerful","desc":null,"units":null,"values":[{"id":"off","title":"Off"},{"id":"on","title":"On"}],"id":"special_mode_pwr","options":{}}
++21:11:19.196: Options for 'special_mode_str': {"value":"off","lastUpdated":"2022-01-03T16:24:44.039Z","type":"enum","getable":true,"setable":true,"title":"Streamer","desc":null,"units":null,"values":[{"id":"off","title":"Off"},{"id":"on","title":"On"}],"id":"special_mode_str","options":{}}
++21:11:19.198: Options for 'target_humidity': {"value":0,"lastUpdated":"2022-10-09T20:37:57.408Z","type":"number","getable":true,"setable":true,"title":"Target humidity","desc":null,"units":"%","decimals":0,"min":0,"max":50,"step":1,"chartType":"spline","id":"target_humidity","options":{}}
++21:11:19.200: Options for 'target_temperature': {"value":27,"lastUpdated":"2022-10-09T20:38:17.552Z","type":"number","getable":true,"setable":true,"title":"Target temperature","desc":null,"units":"°C","decimals":0,"min":10,"max":32,"chartType":"stepLine","id":"target_temperature","options":{}}
++21:11:19.202: Options for 'measure_temperature': {"value":28,"lastUpdated":"2022-10-09T21:09:36.074Z","type":"number","getable":true,"setable":false,"title":"Temperature","desc":null,"units":"°C","decimals":1,"chartType":"spline","id":"measure_temperature","options":{}}
++21:11:19.204: Options for 'measure_temperature.inside': {"value":28,"lastUpdated":"2022-10-09T21:09:36.087Z","type":"number","getable":true,"setable":false,"title":"Inside","desc":null,"units":"°C","decimals":1,"chartType":"spline","id":"measure_temperature.inside","options":{"title":{"en":"Inside","nl":"Binnen"},"units":{"en":"°C"},"insights":true,"decimals":1,"chartType":"spline","getable":true,"setable":false,"uiComponent":"sensor"}}
++21:11:19.206: Options for 'measure_temperature.outside': {"value":11,"lastUpdated":"2022-10-09T20:43:29.761Z","type":"number","getable":true,"setable":false,"title":"Outside","desc":null,"units":"°C","decimals":1,"chartType":"spline","id":"measure_temperature.outside","options":{"title":{"en":"Outside","nl":"Buiten"},"units":{"en":"°C"},"insights":true,"decimals":1,"chartType":"spline","getable":true,"setable":false,"uiComponent":"sensor"}}
++21:11:19.208: --- ANALYZING DEVICE DONE ---
++21:11:24.753: Sending log
