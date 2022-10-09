@@ -691,11 +691,14 @@ class PiggyBank extends Homey.App {
     const hasPowerCap = (chargerOptions.chargerTarget === c.CHARGE_TARGET_AUTO)
       && (driverId in d.DEVICE_CMD)
       && (d.DEVICE_CMD[driverId].setCurrentCap !== undefined);
-    const powerInUse = !isOn || (device.capabilitiesObj === null) ? 0
+    const powerUsed = !isOn || !hasPowerCap || (device.capabilitiesObj === null) ? 0
+      : +await device.capabilitiesObj[d.DEVICE_CMD[driverId].measurePowerCap];
+    const voltageUsed = !hasPowerCap || (device.capabilitiesObj === null) ? 230 : +await device.capabilitiesObj[d.DEVICE_CMD[driverId].measureVoltageCap].value;
+    const powerOffered = !isOn || (device.capabilitiesObj === null) ? 0
       : !hasPowerCap ? +chargerOptions.chargeMin
-        : (await device.capabilitiesObj[d.DEVICE_CMD[driverId].setCurrentCap].value) * 220 * Math.sqrt(2);
-    const isEmergency = (powerChange < 0) && (powerInUse > (-2 * powerChange));
-    const wantOn = (powerInUse + powerChange > +chargerOptions.chargeMin) && !isEmergency;
+        : (+await device.capabilitiesObj[d.DEVICE_CMD[driverId].setCurrentCap].value) * voltageUsed * 3;
+    const isEmergency = (powerChange < 0) && (powerUsed > (-2 * powerChange));
+    const wantOn = (powerOffered + powerChange > +chargerOptions.chargeMin) && !isEmergency;
     const now = new Date();
     const timeLapsed = (now - this.prevChargerTime) / 60000; // Lapsed time in minutes
     if (this.prevChargerTime !== undefined && (timeLapsed < chargerOptions.minSwitchTime) && !isEmergency) {
@@ -706,20 +709,21 @@ class PiggyBank extends Homey.App {
     if (isEmergency) this.updateLog('Emergency turn off for charger device (minSwitchTime ignored)', c.LOG_WARNING);
     if (wantOn) {
       const turnOnPromise = !isOn ? device.setCapabilityValue({ capabilityId: this.getOnOffCap(deviceId), value: this.getOnOffTrue(deviceId) }) : Promise.resolve();
+      let newOfferPower;
       return turnOnPromise
         .then(() => {
           this.updateReliability(deviceId, 1);
           this.__num_off_devices += isOn ? 0 : -1;
           this.__current_state[deviceId].nComError = 0;
           if (!hasPowerCap) return Promise.resolve();
-          const resultPower = Math.min(Math.max(powerInUse + powerChange, +chargerOptions.chargeMin), +chargerOptions.chargeMax);
-          const resultCurrent = resultPower / (220 * Math.sqrt(2));
-          return device.setCapabilityValue({ capabilityId: d.DEVICE_CMD[driverId].setCurrentCap, value: resultCurrent });
+          newOfferPower = Math.min(Math.max(powerOffered + +powerChange, +chargerOptions.chargeMin), +chargerOptions.chargeMax);
+          const newOfferCurrent = newOfferPower / (voltageUsed * 3);
+          return device.setCapabilityValue({ capabilityId: d.DEVICE_CMD[driverId].setCurrentCap, value: newOfferCurrent });
         })
         .then(() => {
           if (!hasPowerCap) return Promise.resolve([true, isOn === wantOn]);
           this.updateReliability(deviceId, 1);
-          return Promise.resolve([true, false]);
+          return Promise.resolve([true, powerUsed + +powerChange < newOfferPower]); // In case more power is offered but it doesn't get used, let the app turn on other devices
         })
         .catch(err => {
           this.updateLog(`Failed signalling charger: ${String(err)}`, c.LOG_ERROR);

@@ -24,7 +24,9 @@
 //   setModeAutoValue   - Value for setModeCap to enter auto mode
 //   +all HEATER parameters
 // CHARGER : Additional parameters
-//   setCurrentCap - Capability for changing the charging current (in Amps)
+//   setCurrentCap     - Capability for changing the charging current (in Amps)
+//   measurePowerCap   - Capability for reading used power
+//   measureVoltageCap - Capability for reading voltage
 
 // Device types
 // Note for CHARGER:
@@ -133,6 +135,8 @@ const DEVICE_CMD = {
   'no.easee:charger': {
     ...DEFAULT_CHARGER,
     setCurrentCap: 'target_circuit_current',
+    measurePowerCap: 'measure_power',
+    measureVoltageCap: 'measure_voltage',
     beta: true,
     default: false
   },
