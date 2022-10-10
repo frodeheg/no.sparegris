@@ -454,5 +454,8 @@
   },
   "0.17.9": {
     "en": "Interface changes and stability fixes for testing of car chargers to allow pushing the test version to stable ahead of time (due to the two other significant bugs that has been fixed)"
+  },
+  "0.17.10": {
+    "en": "Fix for bug #7: The onNewHour function was called to late many hours and as such got masked out. This lead to adding the power from previous hour on to the next one, which corrupted the graph. Many might have seen this already just by having red bars in the graph even though it didn't overshoot (or even noticed that all heating turned off for no reason the hour after this bug occured). Don't worry though, this doesn't mean that the app was unable to keep you below your max power limit, it's just an error in the graph."
   }
 }
