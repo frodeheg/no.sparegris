@@ -451,5 +451,8 @@
   },
   "0.17.8": {
     "en": "Attempted bugfix for a case where one hours electricity usage was registered in the next hour. This could corrupt the graphs and history. + Moved the device com.panasonic.PCC:comfortcloud into the list of supported devices + Added the device nl.climate.daikin:airairhp into the list of experimental devices (need code updates to allow it to function in other modes than heating)"
+  },
+  "0.17.9": {
+    "en": "Interface changes and stability fixes for testing of car chargers to allow pushing the test version to stable ahead of time (due to the two other significant bugs that has been fixed)"
   }
 }
