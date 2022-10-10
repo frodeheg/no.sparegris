@@ -180,7 +180,7 @@ class PiggyBank extends Homey.App {
       this.__current_power = undefined;
       this.__current_power_time = new Date();
       this.__power_last_hour = undefined;
-      this.updateLog('No state from previous shutdown? Powerloss, deactivated or forced restart.', c.LOG_INFO);
+      this.updateLog('No state from previous shutdown? Powerloss, deactivated or forced restart.', c.LOG_ALL);
     } else {
       // For onPowerUpdate + onNewHour
       this.__accum_energy = toNumber(await this.homey.settings.get('safeShutdown__accum_energy'));
@@ -191,7 +191,7 @@ class PiggyBank extends Homey.App {
       this.homey.settings.unset('safeShutdown__current_power');
       this.homey.settings.unset('safeShutdown__current_power_time');
       this.homey.settings.unset('safeShutdown__power_last_hour');
-      this.updateLog(`Restored state from safe shutdown values ${this.__accum_energy} ${this.__current_power} ${this.__current_power_time} ${this.__power_last_hour}`, c.LOG_INFO);
+      this.updateLog(`Restored state from safe shutdown values ${this.__accum_energy} ${this.__current_power} ${this.__current_power_time} ${this.__power_last_hour}`, c.LOG_ALL);
     }
     // ===== KEEPING STATE ACROSS RESTARTS END =====
     // Initialize missing settings
