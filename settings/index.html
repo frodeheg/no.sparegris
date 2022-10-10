@@ -830,6 +830,7 @@
           <a href="javascript:void(0)" class="dropbtn" data-i18n="settings.menu.advanced.title">Advanced</a>
           <div class="dropdown-content">
             <a href="#" data-i18n="settings.menu.advanced.settings" onclick="changeTab(event, 'advancedPage')">Advanced settings</a>
+            <a href="#" data-i18n="settings.menu.advanced.charger" onclick="changeTab(event, 'chargerPage')">Car Chargers</a>
             <a href="#" data-i18n="settings.menu.advanced.frost" onclick="changeTab(event, 'frostPage')">Frost guard</a>
             <a href="#" data-i18n="settings.menu.advanced.zones" onclick="changeTab(event, 'zonePage')">Zone control</a>
           </div>
@@ -839,7 +840,6 @@
           <div class="dropdown-content" style="position:fixed;right:0">
             <a href="#" data-i18n="settings.menu.help.save" onclick="changeTab(event, 'helpHowToPage')">How To Save Money</a>
             <a href="#" data-i18n="settings.menu.help.notfound" onclick="changeTab(event, 'helpNotFoundPage')">Not Found</a>
-            <a href="#" data-i18n="settings.menu.help.charger" onclick="changeTab(event, 'helpChargerPage')">Car Chargers</a>
             <a href="#" data-i18n="settings.menu.help.supported" onclick="changeTab(event, 'helpSupportedPage')">Supported Devices</a>
             <a href="#" data-i18n="settings.menu.help.about" onclick="changeTab(event, 'helpAboutPage')">About</a>
           </div>
@@ -937,15 +937,6 @@
       </fieldset>
     </div>
 
-    <!-- Help page: Car Chargers -->
-    <div id="helpChargerPage" class="tabcontent">
-      <fieldset>
-        <legend data-i18n="settings.help.carCharger">help.carCharger</legend>
-        <p data-i18n="settings.help.carChargerHint">help.carChargerHint</p>
-      </fieldset>
-    </div>
-
-
     <!-- Help page: Supported Devices -->
     <div id="helpSupportedPage" class="tabcontent">
       <fieldset>
@@ -1015,8 +1006,13 @@
           </tr>
         </table>
       </fieldset>
+    </div>
+
+    <!-- Advanced page: Car Chargers -->
+    <div id="chargerPage" class="tabcontent">
       <fieldset>
         <legend data-i18n="settings.charge.header">charge.header</legend>
+        <p data-i18n="settings.charge.carChargerHint">charge.carChargerHint</p>
         <table class="settings_table">
           <tr>
             <td class="settings_row_name"><label for="chargeTarget" data-i18n="settings.charge.chargeTarget">charge.chargeTarget</label>:</td>
@@ -2338,7 +2334,7 @@
         }
 
         // Update the advanced settings page
-        if (tabPage == 'advancedPage') {
+        if (tabPage == 'chargerPage') {
           updateAdvancedSettings();
         }
         

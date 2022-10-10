@@ -22,7 +22,9 @@
       "minSwitchTime": "Minimum toggle time",
       "chargeTarget": "Charge Target",
       "chargeTargetAuto": "Supported chargers",
-      "chargeTargetManual": "Manually selected (onoff only)"
+      "chargeTargetManual": "Manually selected (onoff only)",
+      "carChargerHint": ["<p style='color:red;'>Electric car charging is under development - there is no guarantee that this will work yet - (Work is being done on providing direct integration with the Easee electric car charger - this requires you to run a test version of the Easee app as version 1.4.9 has not been rolled out yet).</p><!--",
+       "--><p>Chargers that are controlled by relays are also being tested. More info will come here when this has been tested and verified.</p>"]
     },
     "menu": {
       "home": {
@@ -37,6 +39,7 @@
       "advanced": {
         "title": "Advanced",
         "settings": "Advanced settings",
+        "charger": "Car chargers",
         "frost": "Frost guard",
         "zones": "Zone control"
       },
@@ -44,7 +47,6 @@
         "title": "Help",
         "save": "How to save money",
         "notfound": "The app can't find my device",
-        "charger": "Car chargers",
         "supported": "Supported Devices",
         "about": "About"
       }
@@ -131,32 +133,12 @@
     "help": {
       "notFound": "Instructions for non-supported devices",
       "notFoundHint": "<p>Unfortunately, there are some devices that do not use the standard mechanisms to be controlled. These will therefore not be detected as controllable by this app. Luckilly this can be easilly supported, just click the link below, generate a report and send the log to the developer.</p>",
-      "carCharger": "Car Charger Howto",
-      "carChargerHint": ["<p>Depending on your preferences, there are two methods that can be used to let this app control an electric car charger:</p><!--",
-          "--><p style='color:red;'>(Direct integration with the Easee charger is being developed so watch out for a new option soon).</p><!--",
-          "--><ol><!--",
-          "-->  <li><b>Performance controlled</b><!--",
-          "-->      <p>With this method, the electric car charger should not be selected as controllable. Instead, you have to use flows to process signals from the app to control the charger.</p><!--",
-          "-->      <p>During times when you want to charge but are not charging, you set the reserved power equal to the desired charging power.</p><!--",
-          "-->      <p>When the app indicates that the desired wattage is available, you set the reserved power to 0 and start charging.</p><!--",
-          "-->      <p>If the app indicates that it will not be able to reach the power target, you must reduce the charging power by the indicated power. (if this happens, the reserved charging power may have been set too low)</p><!--",
-          "-->      <p>To obtain available power and that the power must be reduced, you must install the device PiggyBank insights.</p><!--",
-          "-->      <p>The priority of the charger can be set by changing the threshold value for free capacity.</p><!--",
-          "-->  </li><!--",
-          "-->  <li><b>On/Off controlled</b><!--",
-          "-->      <p>With this method, the electric car charger must be selected as controllable.</p><!--",
-          "-->      <p>The power of the electric car charger should be set to a value that is close to the power tariff you want to meet, minus a small margin.</p><!--",
-          "-->      <p>Set up the charger in a separate zone and use the zone management of the app+flows to decide what time of day the charger should charge.</p><!--",
-          "-->      <p>With this method, the charger may be turned off/on a few times during the charging cycle if the charging power is set too high or if other devices are used randomly during the time.</p><!--",
-          "-->  </li><!--",
-          "-->  <p style='color:red;'>NB! Help is requested to verify that the above methods can be used to charge an electric car, as the developer of the app does not have an electric car. If you could give the developer of the app feedback on whether it works, that would be great.</p><!--",
-          "--></ol>"],
       "supportedDevices": "Confirmed Supported Devices",
       "supportedDevicesHint": "If your device is not listed, please follow the instructions here:",
-      "deviceTypeSwitch": "Switches",
+      "deviceTypeSwitch": "Relays",
       "deviceTypeHeater": "Heaters",
       "deviceTypeWaterHeater": "Water Heaters",
-      "deviceTypeAC": "Air Condition",
+      "deviceTypeAC": "Air Conditions",
       "deviceTypeCharger": "Chargers",
       "deviceTypeIgnore": "Ignored devices",
       "ongoing": "Ongoing work",

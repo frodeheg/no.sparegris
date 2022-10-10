@@ -15,14 +15,16 @@
       "myTasks": "Appens Tilstand"
     },
     "charge": {
-      "header": "Billadere",
+      "header": "Lading av Elbil",
       "chargeMin": "Minste ladeeffekt",
       "chargeMax": "Største ladeeffekt",
       "chargeMargin": "Lademargin",
       "minSwitchTime": "Minste tid for endring av effekt",
       "chargeTarget": "Ladeenhet",
       "chargeTargetAuto": "Støttede ladere",
-      "chargeTargetManual": "Velg manuelt (kun av/på)"
+      "chargeTargetManual": "Velg manuelt (kun av/på)",
+      "carChargerHint": ["<p style='color:red;'>Lading av elbil er under utvikling - det er ingen garanti for at dette fungerer enda - (Det jobbes med å gi direkte integrasjon med Easee elbillader - dette krever at du kjører testversjon av Easee appen ettersom versjon 1.4.9 ikke har blitt rullet ut enda).</p><!--",
+          "--><p>Ladere som  er styrt av releer er også under testing. Mer info kommer her når dette er ferdig testet og verifisert.</p>"]
     },
     "menu": {
       "home": {
@@ -37,6 +39,7 @@
       "advanced": {
         "title": "Avansert",
         "settings": "Avanserte innstillinger",
+        "charger": "Lading av elbil",
         "frost": "Frostsikring",
         "zones": "Sonestyring"
       },
@@ -44,7 +47,6 @@
         "title": "Hjelp",
         "save": "Hvordan spare penger",
         "notfound": "Appen finner ikke enheten min",
-        "charger": "Lading av elbil",
         "supported": "Støttede enheter",
         "about": "Om"
       }
@@ -131,32 +133,12 @@
     "help": {
       "notFound": "Instruksjoner for manglende enheter",
       "notFoundHint": "<p>Dessverre finnes det enkelte enheter som ikke bruker standard mekanismer for å styres. Disse vil dermed ikke detekteres som kontrollerbare av denne appen. Heldigvis er dette lett å fikse, bare trykk på linken under, generer en rapport og send loggen til utvikleren:</p>",
-      "carCharger": "Lading av Elbil info",
-      "carChargerHint": ["<p>Avhengig av dine preferanser er det to metoder som kan benyttes for å la denne appen styre en elbil-lader:</p><!--",
-          "--><p style='color:red;'>(Det jobbes med å gi direkte integrasjon med Easee elbillader - dette vil komme snart etter at Easee appen har rullet ut versjon 1.4.7).</p><!--",
-          "--><ol><!--",
-          "-->  <li><b>Effektstyrt</b><!--",
-          "-->      <p>Med denne metoden skal ikke elbil-laderen velges som kontrollerbar. Istedenfor må du bruke flows til å behandle signaler fra appen til å styre laderen.</p><!--",
-          "-->      <p>På tidsrom du ønsker å lade men ikke lader setter du reservert effekt lik ønsket ladestyrke.</p><!--",
-          "-->      <p>Når appen indikerer at den ønskede effekten er ledig setter du reservert effekt til 0 og starter ladingen.</p><!--",
-          "-->      <p>Hvis appen indikerer at den ikke vil klare å nå effektmålet må du redusere ladestyrken med indikert effekt. (dersom dette skjer kan det hende reservert ladestyrke var satt for lavt)</p><!--",
-          "-->      <p>For å få tak i ledig effekt og at effekten må reduseres må du installere enheten Sparegris innsikt.</p><!--",
-          "-->      <p>Prioriteten til laderen kan settes ved å endre terskelverdien for ledig kapasitet.</p><!--",
-          "-->  </li><!--",
-          "-->  <li><b>Av/På styrt</b><!--",
-          "-->      <p>Med denne metoden skal elbil-laderen velges som kontrollerbar.</p><!--",
-          "-->      <p>Effektstyrken til elbilladeren bør settes til en verdi som ligger nært opp mot effekttariffen du ønsker å treffe, minus en liten margin.</p><!--",
-          "-->      <p>Sett opp laderen i en egen sone og bruk sonestyringen til appen+flows for å bestemme når på døgnet laderen skal lade.</p><!--",
-          "-->      <p>Med denne metoden kan laderen bli slått av/på en del ganger under ladesyklusen dersom ladeeffekten er satt for høyt eller dersom andre enheter benyttes tilfeldig i tidsrommet.</p><!--",
-          "-->  </li><!--",
-          "-->  <p style='color:red;'>NB! Det bes om hjelp til å verifisere at overstående metoder kan benyttes til lading av elbil ettersom utvikleren av appen ikke har elbil. Om du kan gi utvikleren av appen tilbakemelding om det fungerer hadde det vært supert.</p><!--",
-          "--></ol>"],
       "supportedDevices": "Bekreftet støttede enheter",
       "supportedDevicesHint": "Dersom din enhet ikke er listet, vennligst følg instruksjonene på denne siden:",
-      "deviceTypeSwitch": "Strømbrytere",
+      "deviceTypeSwitch": "Reléer",
       "deviceTypeHeater": "Varmeelementer",
       "deviceTypeWaterHeater": "Varmtvannstanker",
-      "deviceTypeAC": "Air Condition",
+      "deviceTypeAC": "Varmepumper",
       "deviceTypeCharger": "Ladere",
       "deviceTypeIgnore": "Ignorerte enheter",
       "ongoing": "Pågående arbeid",
