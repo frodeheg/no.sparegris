@@ -449,7 +449,7 @@ class PiggyBank extends Homey.App {
       this.__reserved_energy = 0;
       if (timeToProcess < lapsedTime || timeWithinHour === 0) {
         // Only call onNewHour if the app restart crossed into a new hour
-        this.onNewHour();
+        await this.onNewHour();
         // Add up initial part of next hour.
         const energyUsedNewHour = (this.__current_power * timeWithinHour) / (1000 * 60 * 60);
         this.__accum_energy = energyUsedNewHour;
