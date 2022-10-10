@@ -684,6 +684,11 @@ class PiggyBank extends Homey.App {
 
     const { driverId } = this.__deviceList[deviceId];
     const isOn = this.getIsOn(device, deviceId);
+    if (isOn === undefined) {
+      this.__current_state[deviceId].nComError += 10; // This should not happen
+      this.updateReliability(deviceId, 0);
+      return Promise.resolve([false, false]);
+    }
     const hasPowerCap = (chargerOptions.chargerTarget === c.CHARGE_TARGET_AUTO)
       && (driverId in d.DEVICE_CMD)
       && (d.DEVICE_CMD[driverId].setCurrentCap !== undefined);
@@ -1618,7 +1623,9 @@ class PiggyBank extends Homey.App {
 
   getIsOn(device, deviceId) {
     if (device.capabilitiesObj === null) return undefined;
-    const onValue = device.capabilitiesObj[this.getOnOffCap(deviceId)].value;
+    const idx = this.getOnOffCap(deviceId);
+    if (!(idx in device.capabilitiesObj)) return undefined;
+    const onValue = device.capabilitiesObj[idx].value;
     if (onValue === this.getOnOffTrue(deviceId)) return true;
     if (onValue === this.getOnOffFalse(deviceId)) return false;
     return undefined;
