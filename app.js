@@ -960,14 +960,13 @@ class PiggyBank extends Homey.App {
    */
   async onNewHour(now = new Date()) {
     // Crossed into new hour
-    now = roundToNearestHour(new Date(now.getTime()));
     const energyOk = this.__power_last_hour !== undefined; // If undefined then this is not for the full hour
     await this.statsSetLastHourEnergy(this.__accum_energy, energyOk, now);
     this.__power_last_hour = this.__accum_energy;
     this.updateLog(`Hour finalized: ${String(this.__accum_energy)} Wh`, c.LOG_INFO);
     this.__accum_energy = 0;
 
-    this.__current_power_time = now;
+    this.__current_power_time = new Date(now.getTime());
     if (+this.homey.settings.get('operatingMode') !== MODE_DISABLED) {
       this.doPriceCalculations()
         .catch(err => {
@@ -1777,7 +1776,7 @@ class PiggyBank extends Homey.App {
    */
   async statsSetLastHourEnergy(energy, energyOk, timeOfNewHourUTC) {
     if (energyOk) {
-      this.__stats_energy_time = new Date(timeOfNewHourUTC.getTime());
+      this.__stats_energy_time = roundToNearestHour(new Date(timeOfNewHourUTC.getTime()));
       this.updateLog(`Stats last energy time: ${this.__stats_energy_time}`, c.LOG_INFO);
       this.__stats_energy = energy;
     }
