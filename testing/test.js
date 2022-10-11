@@ -57,12 +57,50 @@ async function testEntsoe() {
   console.log('Testing Entsoe - Passed');
 }
 
+// Test OnNewHour
+async function testNewHour() {
+  console.log('Testin onNewHour');
+  const app = new PiggyBank();
+  await app.onInit();
+  let testAccum = 0;
+  const now = new Date();
+  console.log(`Start: ${testAccum} ?= ${app.__accum_energy} ||| ${now}`);
+  let oldPow = 0;
+  for (let i = 0; i < 20000; i++) {
+    const randomTime = Math.round((2 + (Math.random() * 30)) * 1000);
+    const randomPow = 300 + (Math.random() * 5000);
+    const hourBefore = now.getHours();
+    now.setMilliseconds(now.getMilliseconds() + randomTime);
+    const hourAfter = now.getHours();
+    if (hourBefore !== hourAfter) {
+      const marginLow = Math.floor(testAccum * 0.98);
+      const marginHigh = Math.ceil(testAccum * 1.02);
+      if ((app.__accum_energy < marginLow) || (app.__accum_energy > marginHigh)) {
+        throw new Error(`Accumulated energy not within bounds: ${app.__accum_energy} not in [${marginLow}, ${marginHigh}]`);
+      }
+      await app.onNewHour(now);
+      if (app.__power_last_hour === undefined) {
+        throw new Error('Last hour power is undefined');
+      }
+      testAccum = 0;
+    } else {
+      await app.onPowerUpdate(randomPow, now);
+      testAccum += (oldPow * randomTime) / (1000 * 60 * 60);
+      oldPow = randomPow;
+    }
+  }
+  console.log(`End: ${testAccum} ?= ${app.__accum_energy} ||| ${now}`);
+  await app.onUninit();
+  console.log('Testin onNewHour - Passed');
+}
+
 // Start all tests
 async function startAllTests() {
   try {
     await testCurrencyConverter();
     await testApp();
     await testEntsoe();
+    await testNewHour();
   } catch (err) {
     console.log(`Testing failed: ${err}`);
   }
