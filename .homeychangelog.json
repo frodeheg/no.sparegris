@@ -463,5 +463,8 @@
   },
   "0.17.12": {
     "en": "Further improvement for Bug #7 to allow more reliable logging of used power"
+  },
+  "0.17.13": {
+    "en": "Seems like the onNewHour at times is triggered some microsecconds before the new hour, which made the next trigger trigger in less than a seccond"
   }
 }
