@@ -466,5 +466,8 @@
   },
   "0.17.13": {
     "en": "Seems like the onNewHour at times is triggered some microsecconds before the new hour, which made the next trigger trigger in less than a seccond"
+  },
+  "0.17.14": {
+    "en": "Minor correction of previous version where rounding to nearest hour happened in the wrong place. (only affected power statistics when the app was restarted)"
   }
 }
