@@ -1029,20 +1029,24 @@
           </tr>
           <tr>
             <td class="settings_row_name"><label for="chargeMin" data-i18n="settings.charge.chargeMin">charge.chargeMin</label>:</td>
-            <td class="settings_row_input"><input id="chargeMin" class="inputElem" type="number" min="1000" max="20000" step="500" value="2000"
+            <td class="settings_row_input"><input id="chargeMin" class="inputElem" type="number" min="1500" max="20000" step="500" value="2000"
               onchange="limitElement(this);if (document.getElementById('chargeTarget').value == 2) {document.getElementById('chargeMax').value=this.value} document.getElementById('chargeMax').min=this.value;displaySaveHint()">W</td>
           </tr>
           <tr>
             <td class="settings_row_name"><label for="chargeMax" data-i18n="settings.charge.chargeMax">charge.chargeMax</label>:</td>
-            <td class="settings_row_input"><input id="chargeMax" class="inputElem" type="number" min="1000" max="20000" step="500" value="10000" onchange="limitElement(this);document.getElementById('chargeMin').max=this.value;displaySaveHint()">W</td>
+            <td class="settings_row_input"><input id="chargeMax" class="inputElem" type="number" min="1500" max="20000" step="500" value="10000" onchange="limitElement(this);document.getElementById('chargeMin').max=this.value;displaySaveHint()">W</td>
           </tr>
           <tr>
             <td class="settings_row_name"><label for="chargeMargin" data-i18n="settings.charge.chargeMargin">charge.chargeMargin</label>:</td>
             <td class="settings_row_input"><input id="chargeMargin" class="inputElem" type="number" min="0" max="5000" step="100" value="500" onchange="displaySaveHint()">W</td>
           </tr>
           <tr>
-            <td class="settings_row_name"><label for="minSwitchTime" data-i18n="settings.charge.minSwitchTime">charge.minSwitchTime</label>:</td>
-            <td class="settings_row_input"><input id="minSwitchTime" class="inputElem" type="number" min="1" max="15" step="1" value="5" onchange="displaySaveHint()">min</td>
+            <td class="settings_row_name"><label for="numPhases" data-i18n="settings.charge.numPhases">charge.numPhases</label>:</td>
+            <td class="settings_row_input"><select id="numPhases" class="inputElem" onchange="displaySaveHint()">
+              <option value="2">2 <div data-i18n="settings.charge.phases"></div></option>
+              <option value="3">3 <div data-i18n="settings.charge.phases"></div></option>
+              </select>
+            </td>
           </tr>
         </table>
       </fieldset>
@@ -1667,7 +1671,7 @@
           document.getElementById('chargeMin').value = chargerOptions.chargeMin;
           document.getElementById('chargeMax').value = chargerOptions.chargeMax;
           document.getElementById('chargeMargin').value = chargerOptions.chargeMargin;
-          document.getElementById('minSwitchTime').value = chargerOptions.minSwitchTime;
+          document.getElementById('numPhases').value = chargerOptions.numPhases;
           document.getElementById("energyFlowRateText").innerHTML = energyFlowRateText.replace("${interval}", Math.round(appConfigProgress.timeSinceEnergyMeter / 60));
           checkPriceMode(document.getElementById("priceMode")); // not called automatically when programatically changed
           checkPriceKind(document.getElementById("priceKind")); // not called automatically when programatically changed
@@ -2007,7 +2011,7 @@
               chargerOptions.chargeMin = +document.getElementById('chargeMin').value;
               chargerOptions.chargeMax = +document.getElementById('chargeMax').value;
               chargerOptions.chargeMargin = +document.getElementById('chargeMargin').value;
-              chargerOptions.minSwitchTime = +document.getElementById('minSwitchTime').value;
+              chargerOptions.numPhases = +document.getElementById('numPhases').value;
               let opModeValue = (appEnabledElement.value === "1") ? operatingModeElement.value : 0
               Homey.set("futurePriceOptions", futurePriceOptions, errFunc);
               Homey.set('chargerOptions', chargerOptions, errFunc);

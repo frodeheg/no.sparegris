@@ -19,7 +19,8 @@
       "chargeMin": "Minste ladeeffekt",
       "chargeMax": "Største ladeeffekt",
       "chargeMargin": "Lademargin",
-      "minSwitchTime": "Minste tid for endring av effekt",
+      "numPhases": "Antall faser",
+      "phases": "faser",
       "chargeTarget": "Ladeenhet",
       "chargeTargetAuto": "Støttede ladere",
       "chargeTargetManual": "Velg manuelt (kun av/på)",
@@ -304,7 +305,8 @@
     "timeout": "Timeout! Homey er opptatt, vennligst vent litt til, prøv igjen senere eller kontakt appens utvikler dersom problemet vedvarer. Hvis du kjører fra en browser bruker det å hjelpe å laste inn siden på nytt."
   },
   "breaking": {
-    "maxPower": "Viktig endring for **Sparegris**: Maks effekt er nå en enkelt global verdi istedenfor en for hver operasjonsmodus. Vennligst sjekk at den nye innstillingen passer for deg. Den nye innstillingen er:"
+    "maxPower": "Viktig endring for **Sparegris**: Maks effekt er nå en enkelt global verdi istedenfor en for hver operasjonsmodus. Vennligst sjekk at den nye innstillingen passer for deg. Den nye innstillingen er:",
+    "fixGraph": "**Sparegris** oppdatering: På grunn av en feil har noen dessverre fått rapportert et mye høyere timeforbruk enn det som faktisk var tilfelle på enkelte dager de to siste ukene. Dager som kan ha vært påvirket har blitt fjernet fra grafen og således vil ikke påvirke estimert månedstariff lenger. For å vite din korrekte tariff akkurat denne måneden anbefales det å sjekke på elhub.no, beklager ulempene."
   },
   "maxUsageGraph": {
     "title": "Maks timeforbruk per dag",

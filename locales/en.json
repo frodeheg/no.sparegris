@@ -19,7 +19,8 @@
       "chargeMin": "Minimum charge power",
       "chargeMax": "Maximum charge power",
       "chargeMargin": "Charge margin",
-      "minSwitchTime": "Minimum toggle time",
+      "numPhases": "Number of phases",
+      "phases": "phases",
       "chargeTarget": "Charge Target",
       "chargeTargetAuto": "Supported chargers",
       "chargeTargetManual": "Manually selected (onoff only)",
@@ -304,7 +305,8 @@
     "timeout": "Timeout! Homey is busy. Please wait some more, retry later or contact the App developer if the problem persist. If you're running from a browser then it usually helps to refresh the page."
   },
   "breaking": {
-    "maxPower": "Important change for **Piggy Bank**: Max Power is now a single global setting instead of per mode. Please check that the new setting is ok. The new setting is "
+    "maxPower": "Important change for **Piggy Bank**: Max Power is now a single global setting instead of per mode. Please check that the new setting is ok. The new setting is ",
+    "fixGraph": "**Piggy Bank** update: Unfortunately, due to an error, some of you may see a much higher hourly consumption than was actually the case on certain days in the last two weeks. Days that may have been affected have been removed from the graph and thus will no longer affect the estimated monthly tariff. To know your correct tariff for this particular month, it is recommended to check at elhub.no, sorry for the inconvenience."
   },
   "maxUsageGraph": {
     "title": "Max Hourly usage per day",

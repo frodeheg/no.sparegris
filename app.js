@@ -169,6 +169,30 @@ class PiggyBank extends Homey.App {
       this.log('priceKind was set to External for backward compatability');
     }
 
+    // Version 0.18.0 removed chargerOptions.minSwitchTime
+    // Also fix the broken history for the last few weeks + notify the user about the incident
+    const chargerOptionsRepair = this.homey.settings.get('chargerOptions');
+    if (chargerOptionsRepair && 'minSwitchTime' in chargerOptionsRepair) {
+      // Deprecate minSwitchTime
+      this.log('minSwitchTime has been deprecated and was removed from charger options');
+      delete chargerOptionsRepair.minSwitchTime;
+      this.homey.settings.set('chargerOptions', chargerOptionsRepair);
+      // Remove broken Graph elements
+      let dailyMax = this.homey.settings.get('stats_daily_max');
+      let dailyMaxOk = this.homey.settings.get('stats_daily_max_ok');
+      dailyMax = dailyMax.map((val, index) => (dailyMaxOk[index] ? val : undefined));
+      dailyMaxOk = dailyMaxOk.map(val => val || undefined);
+      this.homey.settings.set('stats_daily_max', dailyMax);
+      this.homey.settings.set('stats_daily_max_ok', dailyMaxOk);
+      // Recalculate this month maxes and average
+      const max3 = dailyMax.sort((a, b) => b - a).filter(data => data !== undefined).slice(0, 3);
+      const avg = max3.reduce((a, b) => a + b, 0) / max3.length;
+      this.homey.settings.set('stats_this_month_maxes', max3);
+      this.homey.settings.set('stats_this_month_average', avg || 0); // Set to 0 in case it is NaN
+      // Notify the user about the incident
+      this.homey.notifications.createNotification({ excerpt: this.homey.__('breaking.fixGraph') });
+    }
+
     // ===== BREAKING CHANGES END =====
 
     // ===== KEEPING STATE ACROSS RESTARTS =====
@@ -240,14 +264,14 @@ class PiggyBank extends Homey.App {
       || !('chargeMin' in chargerOptions)
       || !('chargeMax' in chargerOptions)
       || !('chargeMargin' in chargerOptions)
-      || !('minSwitchTime' in chargerOptions)) {
+      || !('numPhases' in chargerOptions)) {
       if (!chargerOptions) chargerOptions = {};
       if (!('chargeTarget' in chargerOptions)) chargerOptions.chargeTarget = c.CHARGE_TARGET_AUTO;
       if (!('chargeDevice' in chargerOptions)) chargerOptions.chargeDevice = undefined;
-      if (!('chargeMin' in chargerOptions)) chargerOptions.chargeMin = 1000;
+      if (!('chargeMin' in chargerOptions)) chargerOptions.chargeMin = 1500;
       if (!('chargeMax' in chargerOptions)) chargerOptions.chargeMax = 10000;
       if (!('chargeMargin' in chargerOptions)) chargerOptions.chargeMargin = 500;
-      if (!('minSwitchTime' in chargerOptions)) chargerOptions.minSwitchTime = 5;
+      if (!('numPhases' in chargerOptions)) chargerOptions.numPhases = (chargerOptions.chargeTarget === c.CHARGE_TARGET_AUTO) ? 3 : 2;
       this.log(`Resetting chargerOptions to ${JSON.stringify(chargerOptions)}`);
       this.homey.settings.set('chargerOptions', chargerOptions);
     }
@@ -699,6 +723,8 @@ class PiggyBank extends Homey.App {
   /**
    * Reduces the power usage for a charger device
    * This function is only called if the device is a charger or a manually selected socket device
+   * Note that this function is already throttled by onBelowPowerLimit such that it will not increase power
+   * immediately after it was decreased
    */
   async changeDevicePower(deviceId, powerChange) {
     const chargerOptions = this.homey.settings.get('chargerOptions');
@@ -723,8 +749,7 @@ class PiggyBank extends Homey.App {
       this.updateReliability(deviceId, 0);
       return Promise.resolve([false, false]);
     }
-    const hasPowerCap = (chargerOptions.chargerTarget === c.CHARGE_TARGET_AUTO)
-      && (driverId in d.DEVICE_CMD)
+    const hasPowerCap = (driverId in d.DEVICE_CMD)
       && (d.DEVICE_CMD[driverId].setCurrentCap !== undefined);
     const powerUsed = !isOn || !hasPowerCap || (device.capabilitiesObj === null) ? 0
       : +await device.capabilitiesObj[d.DEVICE_CMD[driverId].measurePowerCap];
@@ -734,14 +759,6 @@ class PiggyBank extends Homey.App {
         : (+await device.capabilitiesObj[d.DEVICE_CMD[driverId].setCurrentCap].value) * voltageUsed * 3;
     const isEmergency = (powerChange < 0) && (powerUsed > (-2 * powerChange));
     const wantOn = (powerOffered + powerChange > +chargerOptions.chargeMin) && !isEmergency;
-    const now = new Date();
-    const timeLapsed = (now - this.prevChargerTime) / 60000; // Lapsed time in minutes
-    if (this.prevChargerTime !== undefined && (timeLapsed < chargerOptions.minSwitchTime) && !isEmergency) {
-      // Must wait a little bit more before changing
-      return Promise.resolve([false, false]);
-    }
-    this.prevChargerTime = now;
-    if (isEmergency) this.updateLog('Emergency turn off for charger device (minSwitchTime ignored)', c.LOG_WARNING);
     if (wantOn) {
       const turnOnPromise = !isOn ? device.setCapabilityValue({ capabilityId: this.getOnOffCap(deviceId), value: this.getOnOffTrue(deviceId) }) : Promise.resolve();
       let newOfferPower;
@@ -752,7 +769,8 @@ class PiggyBank extends Homey.App {
           this.__current_state[deviceId].nComError = 0;
           if (!hasPowerCap) return Promise.resolve();
           newOfferPower = Math.min(Math.max(powerOffered + +powerChange, +chargerOptions.chargeMin), +chargerOptions.chargeMax);
-          const newOfferCurrent = newOfferPower / (voltageUsed * 3);
+          const currentMultiplier = (+chargerOptions.numPhases === 3) ? 3 : 1;
+          const newOfferCurrent = Math.ceil(newOfferPower / (voltageUsed * currentMultiplier));
           return device.setCapabilityValue({ capabilityId: d.DEVICE_CMD[driverId].setCurrentCap, value: newOfferCurrent });
         })
         .then(() => {
@@ -1781,7 +1799,7 @@ class PiggyBank extends Homey.App {
       this.__stats_energy = energy;
     }
 
-    const hourAgoUTC = new Date(timeOfNewHourUTC.getTime() - (1000 * 60 * 60));
+    const hourAgoUTC = roundToNearestHour(new Date(timeOfNewHourUTC.getTime()) - (1000 * 60 * 60));
     const lastHourDateLocal = toLocalTime(hourAgoUTC, this.homey).getDate() - 1; // 0-30
 
     let dailyMax = this.homey.settings.get('stats_daily_max');
