@@ -177,7 +177,8 @@ class PiggyBank extends Homey.App {
     this.__current_power = toNumber(await this.homey.settings.get('safeShutdown__current_power'));
     this.__current_power_time = new Date(await this.homey.settings.get('safeShutdown__current_power_time')); // When null then date is start of unix time
     this.__power_last_hour = toNumber(await this.homey.settings.get('safeShutdown__power_last_hour'));
-    if ((now - this.__current_power_time) > (1000 * 60 * 60)) {
+    if (((now - this.__current_power_time) > (1000 * 60 * 60))
+      || (this.__accum_energy === undefined)) {
       // More than an hour since safe shutdown, pointless to try to restore state
       this.__accum_energy = 0;
       this.__current_power = undefined;
@@ -951,9 +952,8 @@ class PiggyBank extends Homey.App {
    * onNewHour runs whenever a new hour starts + once at the app start
    * if and only if we crossed into a new hour while the app was restarting.
    */
-  async onNewHour() {
+  async onNewHour(now = new Date()) {
     // Crossed into new hour
-    const now = new Date();
     const energyOk = this.__power_last_hour !== undefined; // If undefined then this is not for the full hour
     await this.statsSetLastHourEnergy(this.__accum_energy, energyOk, now);
     this.__power_last_hour = this.__accum_energy;
@@ -1073,13 +1073,11 @@ class PiggyBank extends Homey.App {
    * onPowerUpdate is the action called whenever the power is updated from the power meter
    * Must never be called when operatingMode is set to Disabled
    */
-  async onPowerUpdate(newPower) {
-    // this.log(`OnPowerUpdate(${newPower})`);
+  async onPowerUpdate(newPower, now = new Date()) {
     if (Number.isNaN(+newPower)) {
       // If newPower is invalid or app is not configured just ignore it
       return Promise.resolve();
     }
-    const now = new Date();
     const remainingTime = timeToNextHour(now);
     if (this.__current_power === undefined) {
       // First time called ever
@@ -1089,8 +1087,8 @@ class PiggyBank extends Homey.App {
       const energyUsed = (this.__current_power * lapsedTime) / (1000 * 60 * 60);
       this.__accum_energy += energyUsed;
     }
-    this.__energy_meter_detected_time = now;
-    this.__current_power_time = now;
+    this.__energy_meter_detected_time = new Date(now.getTime());
+    this.__current_power_time = new Date(now.getTime());
     this.__current_power = newPower;
     this.__power_estimated = this.__accum_energy + (newPower * remainingTime) / (1000 * 60 * 60);
 
@@ -2204,7 +2202,7 @@ class PiggyBank extends Homey.App {
           : (apiNeeded && (this.apiState === c.PRICE_API_NO_DATA)) ? c.APP_MISSING_PRICE_DATA
             : c.APP_READY;
     return {
-      power_last_hour: parseInt(this.__power_last_hour, 10),
+      power_last_hour: parseInt(this.__power_last_hour, 10), // Actually NaN the first hour of operation
       power_estimated: this.__power_estimated === undefined ? undefined : parseInt(this.__power_estimated.toFixed(2), 10),
       price_point: +await this.homey.settings.get('pricePoint'),
       operating_mode: +await this.homey.settings.get('operatingMode'),

@@ -15,10 +15,12 @@ function isNumber(value) {
 
 /**
  * Convert text to numbers.
- * null and undefined will return undefined
+ * null, undefined and NaN will return undefined
  */
 function toNumber(value) {
-  if ((value === null) || (value === undefined)) return undefined;
+  if ((value === null)
+    || (value === undefined)
+    || (Number.isNaN(+value))) return undefined;
   return +value;
 }
 
