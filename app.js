@@ -452,7 +452,7 @@ class PiggyBank extends Homey.App {
         // Only call onNewHour if the app restart crossed into a new hour
         await this.onNewHour();
         // Add up initial part of next hour.
-        const energyUsedNewHour = (this.__current_power * timeWithinHour) / (1000 * 60 * 60);
+        const energyUsedNewHour = (this.__current_power * timeWithinHour) / (1000 * 60 * 60) + 100;
         this.__accum_energy = energyUsedNewHour;
         this.log(`NewHour energy from safe restart: ${this.__accum_energy}`, c.LOG_INFO);
       }
@@ -942,7 +942,13 @@ class PiggyBank extends Homey.App {
       .finally(() => {
         // Start timer to start exactly when a new hour starts
         const now = new Date();
-        const timeToNextTrigger = timeToNextHour(now);
+        let timeToNextTrigger = timeToNextHour(now) + 100; // Add 100 usec to make sure the trigger does not trigger too early
+        if (timeToNextTrigger < 60000) {
+          // If less than a minute to next hour then obviously the trigger has has fired too early
+          // See Bug #7 for details
+          // Hopefully this code never gets executed as 100 usec is added above
+          timeToNextTrigger += 60 * 60 * 1000;
+        }
         this.__newHourID = setTimeout(() => this.onNewHourWrapper(), timeToNextTrigger);
         this.updateLog(`New hour in ${String(timeToNextTrigger)} ms (now is: ${String(now)})`, c.LOG_DEBUG);
       });
@@ -954,6 +960,7 @@ class PiggyBank extends Homey.App {
    */
   async onNewHour(now = new Date()) {
     // Crossed into new hour
+    now = roundToNearestHour(new Date(now.getTime()));
     const energyOk = this.__power_last_hour !== undefined; // If undefined then this is not for the full hour
     await this.statsSetLastHourEnergy(this.__accum_energy, energyOk, now);
     this.__power_last_hour = this.__accum_energy;
@@ -1770,7 +1777,7 @@ class PiggyBank extends Homey.App {
    */
   async statsSetLastHourEnergy(energy, energyOk, timeOfNewHourUTC) {
     if (energyOk) {
-      this.__stats_energy_time = roundToNearestHour(timeOfNewHourUTC);
+      this.__stats_energy_time = new Date(timeOfNewHourUTC.getTime());
       this.updateLog(`Stats last energy time: ${this.__stats_energy_time}`, c.LOG_INFO);
       this.__stats_energy = energy;
     }
