@@ -460,5 +460,8 @@
   },
   "0.17.11": {
     "en": "Stability fix for when app is restarted (containing state across restarts)"
+  },
+  "0.17.12": {
+    "en": "Further improvement for Bug #7 to allow more reliable logging of used power"
   }
 }
