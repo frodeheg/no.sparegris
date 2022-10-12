@@ -9,7 +9,7 @@ const c = require('../common/constants');
 const prices = require('../common/prices');
 const Homey = require('./homey');
 const PiggyBank = require('../app');
-const { toLocalTime } = require('../common/homeytime');
+const { toLocalTime, timeToNextHour } = require('../common/homeytime');
 
 // Test Currency Converter
 // * Test that the date for the last currency fetched is recent... otherwise the API could have changed
@@ -58,7 +58,7 @@ async function testEntsoe() {
 }
 
 // Test OnNewHour
-async function testNewHour() {
+async function testNewHour(numTests) {
   console.log('Testin onNewHour');
   const app = new PiggyBank();
   await app.onInit();
@@ -66,7 +66,7 @@ async function testNewHour() {
   const now = new Date();
   console.log(`Start: ${testAccum} ?= ${app.__accum_energy} ||| ${now}`);
   let oldPow = 0;
-  for (let i = 0; i < 20000; i++) {
+  for (let i = 0; i < numTests; i++) {
     const randomTime = Math.round((2 + (Math.random() * 30)) * 1000);
     const randomPow = 300 + (Math.random() * 5000);
     const hourBefore = now.getHours();
@@ -100,7 +100,7 @@ async function startAllTests() {
     await testCurrencyConverter();
     await testApp();
     await testEntsoe();
-    await testNewHour();
+    await testNewHour(20000);
   } catch (err) {
     console.log(`Testing failed: ${err}`);
   }
