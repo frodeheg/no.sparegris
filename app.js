@@ -1799,7 +1799,7 @@ class PiggyBank extends Homey.App {
       this.__stats_energy = energy;
     }
 
-    const hourAgoUTC = roundToNearestHour(new Date(timeOfNewHourUTC.getTime()) - (1000 * 60 * 60));
+    const hourAgoUTC = roundToNearestHour(new Date(timeOfNewHourUTC.getTime() - (1000 * 60 * 60)));
     const lastHourDateLocal = toLocalTime(hourAgoUTC, this.homey).getDate() - 1; // 0-30
 
     let dailyMax = this.homey.settings.get('stats_daily_max');
