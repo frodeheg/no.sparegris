@@ -469,5 +469,8 @@
   },
   "0.17.14": {
     "en": "Minor correction of previous version where rounding to nearest hour happened in the wrong place. (only affected power statistics when the app was restarted)"
+  },
+  "0.18.0": {
+    "en": "Removes all of the broken history in the timeline due to bug #7 + Easee charger support so to speak complete."
   }
 }
