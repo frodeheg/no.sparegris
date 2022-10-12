@@ -472,5 +472,8 @@
   },
   "0.18.0": {
     "en": "Removes all of the broken history in the timeline due to bug #7 + Easee charger support so to speak complete."
+  },
+  "0.18.1": {
+    "en": "Fixed crash introduced in version 0.18.0"
   }
 }
