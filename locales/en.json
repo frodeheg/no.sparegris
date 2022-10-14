@@ -137,7 +137,8 @@
       "unlistedDevice": "Device is not listed / missing",
       "selector": "Device",
       "getinfo": "Get info",
-      "analyze": "Generate Report"
+      "analyze": "Generate Report",
+      "noDeviceSelected": "Please select device"
     },
     "help": {
       "notFound": "Instructions for non-supported devices",

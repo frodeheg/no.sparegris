@@ -2301,6 +2301,7 @@ class PiggyBank extends Homey.App {
    */
   async getDevices(type) {
     const retval = [];
+    retval.push({ name: this.homey.__('settings.deviceinfo.noDeviceSelected'), value: '' });
     await this.homeyApi.devices.getDevices()
       .then(devices => {
         // Loop all devices

@@ -2085,9 +2085,13 @@
         showCapsElement.addEventListener('click', function (e) {
           const deviceId = deviceInfoSelectorElement.value;
           const deviceFilter = deviceFilterElement.value;
-          Homey.api('GET', `/apiCommand?cmd=logShowCaps&deviceId=${deviceId}&filter=${deviceFilter}`, null, function (err, result) {
-            if (err) return Homey.alert(err);
-          });
+          if (deviceId == "") {
+            Homey.alert(Homey.__('settings.deviceinfo.noDeviceSelected'));
+          } else {
+            Homey.api('GET', `/apiCommand?cmd=logShowCaps&deviceId=${deviceId}&filter=${deviceFilter}`, null, function (err, result) {
+              if (err) return Homey.alert(err);
+            });
+          }
         });
 
         showPriceApiElement.addEventListener('click', function (e) {

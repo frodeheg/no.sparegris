@@ -137,7 +137,8 @@
       "unlistedDevice": "Enheten mangler",
       "selector": "Enhet",
       "getinfo": "Mer info",
-      "analyze": "Generer rapport"
+      "analyze": "Generer rapport",
+      "noDeviceSelected": "Vennligst velg enhet"
     },
     "help": {
       "notFound": "Instruksjoner for manglende enheter",
