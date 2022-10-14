@@ -204,6 +204,18 @@ class PiggyBank extends Homey.App {
       delete chargerOptionsRepair.chargeMargin;
       delete chargerOptionsRepair.chargeDevice;
       this.homey.settings.set('chargerOptions', chargerOptionsRepair);
+      // Remove broken Graph elements (again)
+      let dailyMax = this.homey.settings.get('stats_daily_max');
+      let dailyMaxOk = this.homey.settings.get('stats_daily_max_ok');
+      dailyMax = dailyMax.map((val, index) => (dailyMaxOk[index] ? val : undefined));
+      dailyMaxOk = dailyMaxOk.map(val => val || undefined);
+      this.homey.settings.set('stats_daily_max', dailyMax);
+      this.homey.settings.set('stats_daily_max_ok', dailyMaxOk);
+      // Recalculate this month maxes and average
+      const max3 = dailyMax.sort((a, b) => b - a).filter(data => data !== undefined).slice(0, 3);
+      const avg = max3.reduce((a, b) => a + b, 0) / max3.length;
+      this.homey.settings.set('stats_this_month_maxes', max3);
+      this.homey.settings.set('stats_this_month_average', avg || 0); // Set to 0 in case it is NaN
     }
 
     // ===== BREAKING CHANGES END =====
