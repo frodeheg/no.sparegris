@@ -2310,7 +2310,9 @@ class PiggyBank extends Homey.App {
           const isExperimental = (deviceId in this.__deviceList)
             && (!(this.__deviceList[deviceId].driverId in d.DEVICE_CMD)
               || (d.DEVICE_CMD[this.__deviceList[deviceId].driverId].beta === true));
-          if ((onoffCap === undefined && +type === 4) // Not listed
+          const driverId = `${device.driverUri.split(':').at(-1)}:${device.driverId}`;
+          const ignoreDevice = (driverId in d.DEVICE_CMD) && (d.DEVICE_CMD[driverId].type === d.DEVICE_TYPE.IGNORE);
+          if ((onoffCap === undefined && +type === 4 && !ignoreDevice) // Not listed
             || (onoffCap !== undefined && +type === 2) // Onoff problem
             || (onoffCap !== undefined && +type === 1 && isExperimental) // Experimental device
             || (onoffCap !== undefined && +type === 3) // Temp problem
