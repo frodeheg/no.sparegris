@@ -902,18 +902,18 @@
         <legend data-i18n="settings.app.myTasks">app.myTasks</legend>
 
         <table class="settings_table">
-          <tr id="taskCreateEnergyFlow"><td style="vertical-align:top;"><span class="⚠ err"></span></td><td><span data-i18n="settings.welcome.taskCreateEnergyFlow">taskCreateEnergyFlow</span></td></tr>
-          <tr id="taskNoPriceAPI"><td style="vertical-align:top;"><span class="⚠ err"></span></td><td><span data-i18n="settings.welcome.taskNoPriceAPI">taskNoPriceAPI</span></td></tr>
-          <tr id="taskNoPriceAPIDevice"><td style="vertical-align:top;"><span class="⚠ err"></span></td><td><span data-i18n="settings.welcome.taskNoPriceAPIDevice">taskNoPriceAPIDevice</span></td></tr>
-          <tr id="taskNoPriceAPIData"><td style="vertical-align:top;"><span class="⚠ err"></span></td><td><span data-i18n="settings.welcome.taskNoPriceAPIData">taskNoPriceAPIData</span></td></tr>
-          <tr id="taskEnableApp"><td style="vertical-align:top;"><span class="⚠ warn"></span></td><td><span data-i18n="settings.welcome.taskEnableApp">taskEnableApp</span></td></tr>
-          <tr id="taskEnergyFlowRate"><td style="vertical-align:top;"><span class="⚠ warn"></span></td><td><span id="energyFlowRateText">taskEnergyFlowRate</span></td></tr>
-          <tr id="taskNoPriceFlow"><td style="vertical-align:top;"><span class="⚠ warn"></span></td><td><span data-i18n="settings.welcome.taskNoPriceFlow">taskNoPriceFlow</span></td></tr>
-          <tr id="taskDisableLogging"><td style="vertical-align:top;"><span class="⚠ warn"></span></td><td><span data-i18n="settings.welcome.taskDisableLogging">taskDisableLogging</span></td></tr>
-          <tr id="taskExperimental"><td style="vertical-align:top;"><span class="⚠ warn"></span></td><td><span data-i18n="settings.welcome.taskExperimental">taskExperimental</span></td></tr>
-          <tr id="taskNoPriceEnabled"><td style="vertical-align:top;"><span class="⚠ info"></span></td><td><span data-i18n="settings.welcome.taskNoPriceEnabled">taskNoPriceEnabled</span></td></tr>
-          <tr id="taskNone"><td style="vertical-align:top;"><span class="⚠ info"></span></td><td><span data-i18n="settings.welcome.taskNone">taskNone</span></td></tr>
-          <tr id="errorDevices"><td style="vertical-align:top;"><span class="⚠ warn"></span></td><td><span data-i18n="settings.welcome.errorDevices">errorDevices</span><div id="errorDeviceList"></div></td></tr>
+          <tr id="taskCreateEnergyFlow"><td style="vertical-align:top;"><span id="icon1" class="⚠ err"></span></td><td><span data-i18n="settings.welcome.taskCreateEnergyFlow">taskCreateEnergyFlow</span></td></tr>
+          <tr id="taskNoPriceAPI"><td style="vertical-align:top;"><span id="icon2" class="⚠ err"></span></td><td><span data-i18n="settings.welcome.taskNoPriceAPI">taskNoPriceAPI</span></td></tr>
+          <tr id="taskNoPriceAPIDevice"><td style="vertical-align:top;"><span id="icon3" class="⚠ err"></span></td><td><span data-i18n="settings.welcome.taskNoPriceAPIDevice">taskNoPriceAPIDevice</span></td></tr>
+          <tr id="taskNoPriceAPIData"><td style="vertical-align:top;"><span id="icon4" class="⚠ err"></span></td><td><span data-i18n="settings.welcome.taskNoPriceAPIData">taskNoPriceAPIData</span></td></tr>
+          <tr id="taskEnableApp"><td style="vertical-align:top;"><span id="icon5" class="⚠ warn"></span></td><td><span data-i18n="settings.welcome.taskEnableApp">taskEnableApp</span></td></tr>
+          <tr id="taskEnergyFlowRate"><td style="vertical-align:top;"><span id="icon6" class="⚠ warn"></span></td><td><span id="energyFlowRateText">taskEnergyFlowRate</span></td></tr>
+          <tr id="taskNoPriceFlow"><td style="vertical-align:top;"><span id="icon7" class="⚠ warn"></span></td><td><span data-i18n="settings.welcome.taskNoPriceFlow">taskNoPriceFlow</span></td></tr>
+          <tr id="taskDisableLogging"><td style="vertical-align:top;"><span id="icon8" class="⚠ warn"></span></td><td><span data-i18n="settings.welcome.taskDisableLogging">taskDisableLogging</span></td></tr>
+          <tr id="taskExperimental"><td style="vertical-align:top;"><span id="icon9" class="⚠ warn"></span></td><td><span data-i18n="settings.welcome.taskExperimental">taskExperimental</span></td></tr>
+          <tr id="errorDevices"><td style="vertical-align:top;"><span id="icon10" class="⚠ warn"></span></td><td><span data-i18n="settings.welcome.errorDevices">errorDevices</span><div id="errorDeviceList"></div></td></tr>
+          <tr id="taskNoPriceEnabled"><td style="vertical-align:top;"><span id="icon11" class="⚠ info"></span></td><td><span data-i18n="settings.welcome.taskNoPriceEnabled">taskNoPriceEnabled</span></td></tr>
+          <tr id="taskNone"><td style="vertical-align:top;"><span id="icon12" class="⚠ info"></span></td><td><span data-i18n="settings.welcome.taskNone">taskNone</span></td></tr>
         </table>
 
       </fieldset>
@@ -1018,36 +1018,43 @@
             <td class="settings_row_name"><label for="chargeTarget" data-i18n="settings.charge.chargeTarget">charge.chargeTarget</label>:</td>
             <td class="settings_row_input"><select id="chargeTarget" class="inputElem" onchange="updateAdvancedSettings();displaySaveHint()">
               <option value="1" data-i18n="settings.charge.chargeTargetAuto" selected >Auto</option>
-              <option value="2" data-i18n="settings.charge.chargeTargetManual">Manual</option>
-            </select></td>
+              <option value="2" data-i18n="settings.charge.chargeTargetFlow">Manual</option>
+            </select><div class="hintButton" onclick="toggle(this,'chargeTargetHint', 'table-row');return false;">i</div></td>
           </tr>
-          <tr id="chargeDeviceRow">
-            <td class="settings_row_name"><label for="chargeDevice" data-i18n="settings.charge.chargeDevice">charge.chargeDevice</label>:</td>
-            <td class="settings_row_input"><select id="chargeDevice" onchange="displaySaveHint()">
-              <option value="1" selected >Please wait for list to be expanded</option>
-            </select></td>
-          </tr>
-          <tr>
+          <tr id="chargeTargetHint" class="hint"><td><p data-i18n="settings.charge.chargeTargetHint">charge.chargeTargetHint</p></td></tr>
+          <tr id ="chargeMinRow">
             <td class="settings_row_name"><label for="chargeMin" data-i18n="settings.charge.chargeMin">charge.chargeMin</label>:</td>
-            <td class="settings_row_input"><input id="chargeMin" class="inputElem" type="number" min="1500" max="20000" step="500" value="2000"
-              onchange="limitElement(this);if (document.getElementById('chargeTarget').value == 2) {document.getElementById('chargeMax').value=this.value} document.getElementById('chargeMax').min=this.value;displaySaveHint()">W</td>
+            <td class="settings_row_input"><input id="chargeMin" class="inputElem" type="number" min="1500" max="2000" step="500" value="2000"
+              onchange="limitElement(this); updateAdvancedSettings(); displaySaveHint()">W
+              <div class="hintButton" onclick="toggle(this,'chargeMinHint', 'table-row');return false;">i</div></td>
           </tr>
+          <tr id="chargeMinHint" class="hint"><td><p data-i18n="settings.charge.chargeMinHint">charge.chargeMinHint</p></td></tr>
           <tr>
-            <td class="settings_row_name"><label for="chargeMax" data-i18n="settings.charge.chargeMax">charge.chargeMax</label>:</td>
-            <td class="settings_row_input"><input id="chargeMax" class="inputElem" type="number" min="1500" max="20000" step="500" value="10000" onchange="limitElement(this);document.getElementById('chargeMin').max=this.value;displaySaveHint()">W</td>
+            <td class="settings_row_name"><label for="chargeThreshold" data-i18n="settings.charge.chargeThreshold">charge.chargeThreshold</label>:</td>
+            <td class="settings_row_input"><input id="chargeThreshold" class="inputElem" type="number" min="1500" max="20000" step="500" value="2000"
+              onchange="limitElement(this); updateAdvancedSettings(); displaySaveHint()">W
+              <div class="hintButton" onclick="toggle(this,'chargeThresholdHint', 'table-row');return false;">i</div></td>
           </tr>
+          <tr id="chargeThresholdHint" class="hint"><td><p data-i18n="settings.charge.chargeThresholdHint">charge.chargeThresholdHint</p></td></tr>
           <tr>
-            <td class="settings_row_name"><label for="chargeMargin" data-i18n="settings.charge.chargeMargin">charge.chargeMargin</label>:</td>
-            <td class="settings_row_input"><input id="chargeMargin" class="inputElem" type="number" min="0" max="5000" step="100" value="500" onchange="displaySaveHint()">W</td>
+            <td class="settings_row_name"><label for="minToggleTime" data-i18n="settings.charge.minToggleTime">charge.minToggleTime</label>:</td>
+            <td class="settings_row_input"><input id="minToggleTime" class="inputElem" type="number" min="10" max="300" step="1" value="30"
+              onchange="limitElement(this); displaySaveHint()">s
+              <div class="hintButton" onclick="toggle(this,'minToggleTimeHint', 'table-row');return false;">i</div></td>
           </tr>
+          <tr id="minToggleTimeHint" class="hint"><td><p data-i18n="settings.charge.minToggleTimeHint">charge.minToggleTimeHint</p></td></tr>
           <tr>
-            <td class="settings_row_name"><label for="numPhases" data-i18n="settings.charge.numPhases">charge.numPhases</label>:</td>
-            <td class="settings_row_input"><select id="numPhases" class="inputElem" onchange="displaySaveHint()">
-              <option value="2">2 <div data-i18n="settings.charge.phases"></div></option>
-              <option value="3">3 <div data-i18n="settings.charge.phases"></div></option>
-              </select>
-            </td>
+            <td class="settings_row_name"><label for="chargeRemaining" data-i18n="settings.charge.chargeRemaining">charge.chargeRemaining</label>:</td>
+            <td class="settings_row_input"><input disabled id="chargeRemaining" class="inputElem" type="number" min="0" max="100" step="1" value="0" onchange="displaySaveHint()">kWh
+              <div class="hintButton" onclick="toggle(this,'chargeRemainingHint', 'table-row');return false;">i</div></td>
           </tr>
+          <tr id="chargeRemainingHint" class="hint"><td><p data-i18n="settings.charge.chargeRemainingHint">charge.chargeRemainingHint</p></td></tr>
+          <tr>
+            <td class="settings_row_name"><label for="chargeEnd" data-i18n="settings.charge.chargeEnd">charge.chargeEnd</label>:</td>
+            <td class="settings_row_input"><input disabled id="chargeEnd" pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}" type="datetime-local" value="2022-10-13T20:00" onchange="displaySaveHint()">
+              <div class="hintButton" onclick="toggle(this,'chargeEndHint', 'table-row');return false;">i</div></td>
+          </tr>
+          <tr id="chargeEndHint" class="hint"><td><p data-i18n="settings.charge.chargeEndHint">charge.chargeEndHint</p></td></tr>
         </table>
       </fieldset>
     </div>
@@ -1667,11 +1674,11 @@
           document.getElementById("gridTaxNight").value = futurePriceOptions.gridTaxNight;
           document.getElementById("VAT").value = futurePriceOptions.VAT;
           document.getElementById('chargeTarget').value = chargerOptions.chargeTarget;
-          document.getElementById('chargeDevice').value = chargerOptions.chargeDevice;
           document.getElementById('chargeMin').value = chargerOptions.chargeMin;
-          document.getElementById('chargeMax').value = chargerOptions.chargeMax;
-          document.getElementById('chargeMargin').value = chargerOptions.chargeMargin;
-          document.getElementById('numPhases').value = chargerOptions.numPhases;
+          document.getElementById('chargeThreshold').value = chargerOptions.chargeThreshold;
+          document.getElementById('minToggleTime').value = chargerOptions.minToggleTime;
+          document.getElementById('chargeRemaining').value = chargerOptions.chargeRemaining;
+          document.getElementById('chargeEnd').value = chargerOptions.chargeEnd;
           document.getElementById("energyFlowRateText").innerHTML = energyFlowRateText.replace("${interval}", Math.round(appConfigProgress.timeSinceEnergyMeter / 60));
           checkPriceMode(document.getElementById("priceMode")); // not called automatically when programatically changed
           checkPriceKind(document.getElementById("priceKind")); // not called automatically when programatically changed
@@ -2007,11 +2014,11 @@
               futurePriceOptions.VAT = document.getElementById("VAT").value;
               futurePriceOptions.gridCosts = gridCost;
               chargerOptions.chargeTarget = +document.getElementById('chargeTarget').value;
-              chargerOptions.chargeDevice = document.getElementById('chargeDevice').value;
               chargerOptions.chargeMin = +document.getElementById('chargeMin').value;
-              chargerOptions.chargeMax = +document.getElementById('chargeMax').value;
-              chargerOptions.chargeMargin = +document.getElementById('chargeMargin').value;
-              chargerOptions.numPhases = +document.getElementById('numPhases').value;
+              chargerOptions.chargeThreshold = +document.getElementById('chargeThreshold').value;
+              chargerOptions.minToggleTime = +document.getElementById('minToggleTime').value;
+              chargerOptions.chargeRemaining = +document.getElementById('chargeRemaining').value;
+              chargerOptions.chargeEnd = +document.getElementById('chargeEnd').value;
               let opModeValue = (appEnabledElement.value === "1") ? operatingModeElement.value : 0
               Homey.set("futurePriceOptions", futurePriceOptions, errFunc);
               Homey.set('chargerOptions', chargerOptions, errFunc);

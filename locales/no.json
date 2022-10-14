@@ -11,21 +11,29 @@
       "disabled": "Deaktivert",
       "activationHint1": "Før du aktiverer appen må du passe på at det ikke er noen utestående oppgaver listet nedenfor.",
       "activationHint2": "Merk: For å unngå motstridende innstillinger bør du være forsiktig så ingen eksterne flytkort jobber mot denne appen før appen aktiveres.",
-      "maxPowHint": "Maks forbruk per time kan endres via flows dersom det er ønskelig. For eksempel kan man ha ulikt maks forbruk på sommeren og vinteren.",
+      "maxPowHint": "Maks forbruk per time kan endres med flytkort dersom det er ønskelig. For eksempel kan man ha ulikt maks forbruk på sommeren og vinteren.",
       "myTasks": "Appens Tilstand"
     },
     "charge": {
       "header": "Lading av Elbil",
+      "chargeTarget": "Ladestyring",
       "chargeMin": "Minste ladeeffekt",
-      "chargeMax": "Største ladeeffekt",
-      "chargeMargin": "Lademargin",
-      "numPhases": "Antall faser",
-      "phases": "faser",
-      "chargeTarget": "Ladeenhet",
-      "chargeTargetAuto": "Støttede ladere",
-      "chargeTargetManual": "Velg manuelt (kun av/på)",
+      "chargeThreshold": "Terskel for ladestart",
+      "minToggleTime": "Minste endringstid",
+      "chargeRemaining": "Gjenværende ladestrøm",
+      "chargeEnd": "Slutt på ladesyklus",
+      "chargeTargetAuto": "Helautomatisk",
+      "chargeTargetFlow": "Flytkort",
       "carChargerHint": ["<p style='color:red;'>Lading av elbil er under utvikling - det er ingen garanti for at dette fungerer enda - (Det jobbes med å gi direkte integrasjon med Easee elbillader - dette krever at du kjører testversjon av Easee appen ettersom versjon 1.4.9 ikke har blitt rullet ut enda).</p><!--",
-          "--><p>Ladere som  er styrt av releer er også under testing. Mer info kommer her når dette er ferdig testet og verifisert.</p>"]
+          "--><p>Andre ladere er også under testing men må styres av flytkort. Mer info kommer her når dette er ferdig testet og verifisert.</p>"],
+      "chargeTargetHint": ["Støttede ladere styres av appen automatisk forutsatt at de er lagt til som en kontrollerbar enhet. For ladere som ikke er støttet kan du enten bruke flytkort eller sende en <a href=\"ShowLog\" onclick=\"changeTab(event, 'logPage');return false;\">enhetsrapport</a>. <!--",
+          "--><p>Det gjøres oppmerksom på at ladere som blir listet opp under <a href=\"ShowDevices\" onclick=\"changeTab(event, 'helpSupportedPage');return false;\">ignorerte enheter</a> må styres via flows.</p><!--",
+          "--><p>For å styre via flows må du koble til følgende triggere i appen: 'Start lading' og 'Stopp lading', mens følgende er valgfrie: 'Øk ladestrøm' og 'Senk ladestrøm'</p>"],
+      "chargeMinHint": "Den minste ladestrømmen indikerer hvilken ladeeffekt laderen din bruker når du slår den på. Dersom laderen bare har en innstilling legger du den inn her. Hvis laderen kan styre strømmen legger du inn minste effekten den kan trekke.",
+      "chargeThresholdHint": "En ny ladesyklus starter kun når ledig effekt overstiger terskelverdien satt her. Denne bør være litt mer enn minste ladestrøm for å unngå at laderen slår seg av igjen med en gang.",
+      "minToggleTimeHint": "Denne verdien angir i sekunder hvor lenge det går mellom hver gang et signal sendes til laderen. Dersom responstiden til laderen overstiger denne verdien bør denne verdien økes tilsvarende.",
+      "chargeRemainingHint": "Denne verdien viser hvor mye energi som vil bli tilbydt til laderen før appen slutter å lade. Denne strømmen vil fordeles over all gjenværende tid frem til slutten på ladesyklusen. Du kan ikke sette denne verdien her, den må settes fra flytkortet for 'Start ladesyklus'.",
+      "chargeEndHint": "Dette feltet viser når nåværende ladesyklus vil slutte. Du kan ikke sette denne verdien her, den må settes fra flytkortet for 'Start ladesyklus'."
     },
     "menu": {
       "home": {

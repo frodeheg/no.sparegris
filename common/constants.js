@@ -38,7 +38,7 @@ const LOG_ALL = LOG_ERROR;
 
 // Charging targets
 const CHARGE_TARGET_AUTO = 1;
-const CHARGE_TARGET_MANUAL = 2;
+const CHARGE_TARGET_FLOW = 2;
 
 // Bidding zones for electricity prices
 const ENTSOE_BIDDING_ZONES = {
@@ -118,6 +118,6 @@ module.exports = {
   LOG_DEBUG,
   LOG_ALL,
   CHARGE_TARGET_AUTO,
-  CHARGE_TARGET_MANUAL,
+  CHARGE_TARGET_FLOW,
   ENTSOE_BIDDING_ZONES,
 };

@@ -193,6 +193,19 @@ class PiggyBank extends Homey.App {
       this.homey.notifications.createNotification({ excerpt: this.homey.__('breaking.fixGraph') });
     }
 
+    // Version 0.18.1 removed {numPhases, chargeMax, chargeMargin, chargeDevice} from chargerOptions
+    if (chargerOptionsRepair && 'numPhases' in chargerOptionsRepair) {
+      // Set correct value for new values
+      chargerOptionsRepair.chargeThreshold = chargerOptionsRepair.chargeMin + chargerOptionsRepair.chargeMargin;
+      // Deprecate numPhases, chargeMax, chargeMargin and chargeDevice
+      this.log('numPhases, chargeMax, chargeMargin and chargeDevice has been deprecated and was removed from charger options');
+      delete chargerOptionsRepair.numPhases;
+      delete chargerOptionsRepair.chargeMax;
+      delete chargerOptionsRepair.chargeMargin;
+      delete chargerOptionsRepair.chargeDevice;
+      this.homey.settings.set('chargerOptions', chargerOptionsRepair);
+    }
+
     // ===== BREAKING CHANGES END =====
 
     // ===== KEEPING STATE ACROSS RESTARTS =====
@@ -260,18 +273,18 @@ class PiggyBank extends Homey.App {
     let chargerOptions = this.homey.settings.get('chargerOptions');
     if (!chargerOptions
       || !('chargeTarget' in chargerOptions)
-      || !('chargeDevice' in chargerOptions)
       || !('chargeMin' in chargerOptions)
-      || !('chargeMax' in chargerOptions)
-      || !('chargeMargin' in chargerOptions)
-      || !('numPhases' in chargerOptions)) {
+      || !('chargeThreshold' in chargerOptions)
+      || !('minToggleTime' in chargerOptions)
+      || !('chargeRemaining' in chargerOptions)
+      || !('chargeEnd' in chargerOptions)) {
       if (!chargerOptions) chargerOptions = {};
       if (!('chargeTarget' in chargerOptions)) chargerOptions.chargeTarget = c.CHARGE_TARGET_AUTO;
-      if (!('chargeDevice' in chargerOptions)) chargerOptions.chargeDevice = undefined;
       if (!('chargeMin' in chargerOptions)) chargerOptions.chargeMin = 1500;
-      if (!('chargeMax' in chargerOptions)) chargerOptions.chargeMax = 10000;
-      if (!('chargeMargin' in chargerOptions)) chargerOptions.chargeMargin = 500;
-      if (!('numPhases' in chargerOptions)) chargerOptions.numPhases = (chargerOptions.chargeTarget === c.CHARGE_TARGET_AUTO) ? 3 : 2;
+      if (!('chargeThreshold' in chargerOptions)) chargerOptions.chargeThreshold = 2000;
+      if (!('minToggleTime' in chargerOptions)) chargerOptions.minToggleTime = 30;
+      if (!('chargeRemaining' in chargerOptions)) chargerOptions.chargeRemaining = 0;
+      if (!('chargeEnd' in chargerOptions)) chargerOptions.chargeEnd = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}T00:00`;
       this.log(`Resetting chargerOptions to ${JSON.stringify(chargerOptions)}`);
       this.homey.settings.set('chargerOptions', chargerOptions);
     }
@@ -725,10 +738,15 @@ class PiggyBank extends Homey.App {
    * This function is only called if the device is a charger or a manually selected socket device
    * Note that this function is already throttled by onBelowPowerLimit such that it will not increase power
    * immediately after it was decreased
+   * @return [success, noChange] - success means that the result is as requested, noChange indicate if the result was already as requested
+   * @throw error in case of failure
    */
   async changeDevicePower(deviceId, powerChange) {
     const chargerOptions = this.homey.settings.get('chargerOptions');
-    if (powerChange < 0) powerChange -= chargerOptions.chargeMargin;
+    if ((+chargerOptions.chargeRemaining <= 0)
+      || (chargerOptions.chargeTarget === c.CHARGE_TARGET_FLOW)) {
+      return Promise.resolve([true, true]);
+    }
     this.log(`Changing power by: ${powerChange}`);
     let device;
     try {
@@ -749,16 +767,30 @@ class PiggyBank extends Homey.App {
       this.updateReliability(deviceId, 0);
       return Promise.resolve([false, false]);
     }
+    if ((!isOn) && (powerChange < chargerOptions.chargeThreshold)) {
+      // The device should not be turned on if the available power is less than the charge threshold
+      return Promise.resolve([false, false]);
+    }
     const hasPowerCap = (driverId in d.DEVICE_CMD)
       && (d.DEVICE_CMD[driverId].setCurrentCap !== undefined);
     const powerUsed = !isOn || !hasPowerCap || (device.capabilitiesObj === null) ? 0
       : +await device.capabilitiesObj[d.DEVICE_CMD[driverId].measurePowerCap];
-    const voltageUsed = !hasPowerCap || (device.capabilitiesObj === null) ? 230 : +await device.capabilitiesObj[d.DEVICE_CMD[driverId].measureVoltageCap].value;
-    const powerOffered = !isOn || (device.capabilitiesObj === null) ? 0
+    const ampsOffered = !isOn || (device.capabilitiesObj === null) ? 0
       : !hasPowerCap ? +chargerOptions.chargeMin
-        : (+await device.capabilitiesObj[d.DEVICE_CMD[driverId].setCurrentCap].value) * voltageUsed * 3;
-    const isEmergency = (powerChange < 0) && (powerUsed > (-2 * powerChange));
-    const wantOn = (powerOffered + powerChange > +chargerOptions.chargeMin) && !isEmergency;
+        : +await device.capabilitiesObj[d.DEVICE_CMD[driverId].setCurrentCap].value;
+    const isEmergency = (powerChange < 0) && (
+      ((powerUsed + +powerChange) < 0) || (ampsOffered === chargerOptions.minCurrent));
+    const wantOn = (isOn || (powerChange > 0)) && !isEmergency;
+    // Check that we do not toggle the charger too often
+    const now = new Date();
+    const timeLapsed = (now - this.prevChargerTime) / 60000; // Lapsed time in minutes
+    if (this.prevChargerTime !== undefined && (timeLapsed < chargerOptions.minToggleTime) && !isEmergency) {
+      // Must wait a little bit more before changing
+      return Promise.resolve([false, false]);
+    }
+    this.prevChargerTime = now;
+    if (isEmergency) this.updateLog('Emergency turn off for charger device (minToggleTime ignored)', c.LOG_WARNING);
+    // Start signalling the charger
     if (wantOn) {
       const turnOnPromise = !isOn ? device.setCapabilityValue({ capabilityId: this.getOnOffCap(deviceId), value: this.getOnOffTrue(deviceId) }) : Promise.resolve();
       let newOfferPower;
@@ -768,9 +800,10 @@ class PiggyBank extends Homey.App {
           this.__num_off_devices += isOn ? 0 : -1;
           this.__current_state[deviceId].nComError = 0;
           if (!hasPowerCap) return Promise.resolve();
-          newOfferPower = Math.min(Math.max(powerOffered + +powerChange, +chargerOptions.chargeMin), +chargerOptions.chargeMax);
-          const currentMultiplier = (+chargerOptions.numPhases === 3) ? 3 : 1;
-          const newOfferCurrent = Math.ceil(newOfferPower / (voltageUsed * currentMultiplier));
+          const maxPower = +this.homey.settings.get('maxPower');
+          newOfferPower = Math.min(Math.max(powerUsed + +powerChange, +chargerOptions.chargeMin), maxPower);
+          const newOfferCurrent = (+powerUsed <= 0) ? chargerOptions.chargeMin
+            : Math.floor(Math.min(Math.max(ampsOffered * (newOfferPower / +powerUsed), chargerOptions.minCurrent), chargerOptions.maxCurrent));
           return device.setCapabilityValue({ capabilityId: d.DEVICE_CMD[driverId].setCurrentCap, value: newOfferCurrent });
         })
         .then(() => {
@@ -1298,6 +1331,11 @@ class PiggyBank extends Homey.App {
     } else {
       this.__free_capacity = 0;
     }
+    // Trigger charger flows
+    const chargerOptions = this.homey.settings.get('chargerOptions');
+    if (chargerOptions.chargeTarget === c.CHARGE_TARGET_FLOW) {
+      // TODO
+    }
     // Prevent the trigger from triggering more than once a minute
     const now = new Date();
     const timeSinceLastTrigger = now - this.__free_power_trigger_time;
@@ -1363,9 +1401,7 @@ class PiggyBank extends Homey.App {
           try {
             let success; let noChange;
             const { driverId } = this.__deviceList[deviceId];
-            const chargerOptions = this.homey.settings.get('chargerOptions');
-            if (((driverId in d.DEVICE_CMD) && (d.DEVICE_CMD[driverId].type === d.DEVICE_TYPE.CHARGER))
-              || (chargerOptions.chargeTarget === c.CHARGE_TARGET_MANUAL && deviceId === chargerOptions.chargeDevice)) {
+            if ((driverId in d.DEVICE_CMD) && (d.DEVICE_CMD[driverId].type === d.DEVICE_TYPE.CHARGER)) {
               [success, noChange] = await this.changeDevicePower(deviceId, morePower);
             } else {
               [success, noChange] = await this.changeDeviceState(deviceId, TURN_ON);
@@ -1428,9 +1464,7 @@ class PiggyBank extends Homey.App {
         try {
           let success; let noChange;
           const { driverId } = this.__deviceList[deviceId];
-          const chargerOptions = this.homey.settings.get('chargerOptions');
-          if (((driverId in d.DEVICE_CMD) && (d.DEVICE_CMD[driverId].type === d.DEVICE_TYPE.CHARGER))
-            || (chargerOptions.chargeTarget === c.CHARGE_TARGET_MANUAL && deviceId === chargerOptions.chargeDevice)) {
+          if ((driverId in d.DEVICE_CMD) && (d.DEVICE_CMD[driverId].type === d.DEVICE_TYPE.CHARGER)) {
             [success, noChange] = await this.changeDevicePower(deviceId, -lessPower);
           } else {
             [success, noChange] = await this.changeDeviceState(deviceId, operation);
