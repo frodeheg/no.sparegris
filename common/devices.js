@@ -161,6 +161,12 @@ const DEVICE_CMD = {
   },
   'nl.klikaanklikuit:ACC-250': DEFAULT_SWITCH,
   'nl.klikaanklikuit:AWMR-210': DEFAULT_SWITCH,
+  'no.adax.smart-heater.homey-app:heater-wt': {
+    ...DEFAULT_HEATER,
+    tempMax: 35,
+    tempStep: 1,
+    default: false
+  },
   'no.almli.thermostat:VThermo': {
     ...DEFAULT_HEATER,
     tempMin: 4,
