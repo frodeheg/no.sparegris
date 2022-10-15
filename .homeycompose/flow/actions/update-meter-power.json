@@ -11,6 +11,7 @@
     "en": "Attach the current power usage output of your energy meter to this action card in order to enable the app",
     "no": "Denne appen vil ikke virke med mindre du sender strømmålerens avlesning av nåværende effektbruk til denne appen"
   },
+  "highlight": true,
   "args": [
     {
       "type": "number",

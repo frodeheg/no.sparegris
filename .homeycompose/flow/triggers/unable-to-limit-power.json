@@ -11,6 +11,7 @@
     "en": "Use this condition as a last resort to limit energy. If the app turned off every controllable device the user can be alerted to do a manual powerdown if this was not enough.",
     "no": "Brukes som en siste utvei for å begrense energiforbruk. Dersom appen har slått av alt kan en melding sendes ut om å redusere forbruket manuelt dersom dette ikke var tilstrekkelig."
   },
+  "highlight": true,
   "tokens": [
     {
       "type": "number",

@@ -11,6 +11,7 @@
     "en": "Allows you to switch between day, night and other operation modes",
     "no": "Lar deg bytte mellom dag, natt og andre driftsmoduser"
   },
+  "highlight": true,
   "args": [
     {
       "type": "autocomplete",

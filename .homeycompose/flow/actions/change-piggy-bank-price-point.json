@@ -11,6 +11,7 @@
     "en": "Inform Piggy Bank whether the price on electricity is high or low",
     "no": "Informerer Sparegris om prisen på strøm er høy eller lav"
   },
+  "highlight": true,
   "args": [
     {
       "type": "dropdown",
