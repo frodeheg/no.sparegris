@@ -124,7 +124,19 @@ async function testCharging() {
   const now = new Date();
   console.log(`Start: ${now}`);
 
-  app.onChargingCycleStart(10, '08:00');
+  app.__current_prices = [
+    0.2, 0.3, 0.5, 0.3, 0.2, 0.5, 0.9, 0.8, 0.1, 0.2,
+    0.2, 0.3, 0.5, 0.3, 0.2, 0.5, 0.9, 0.8, 0.1, 0.2,
+    0.2, 0.3, 0.5, 0.3];
+  app.__current_price_index = 3;
+  const result_table = [undefined, 3750, undefined, undefined, undefined, 3750, 3750];
+  //app.onChargingCycleStart(10, '08:00');
+  app.onChargingCycleStart(undefined, '08:00', 3);
+  for (let i = 0; i < app.__charge_plan.length; i++) {
+    if (app.__charge_plan[i] != result_table[i]) {
+      throw new Error('Charging schedule failed');
+    }
+  }
 
   console.log(`End: ${now}`);
   await app.onUninit();
