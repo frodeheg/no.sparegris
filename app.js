@@ -818,9 +818,13 @@ class PiggyBank extends Homey.App {
     this.prevChargerTime = now;
     if (isEmergency) this.updateLog('Emergency turn off for charger device (minToggleTime ignored)', c.LOG_WARNING);
     // Start signalling the charger
+    this.__current_state[deviceId].isOn = wantOn;
+    this.__current_state[deviceId].ongoing = false; // If already ongoing then it should already have been completed, try again
     if (wantOn) {
       const turnOnPromise = !isOn ? device.setCapabilityValue({ capabilityId: this.getOnOffCap(deviceId), value: this.getOnOffTrue(deviceId) }) : Promise.resolve();
       let newOfferPower;
+      this.__current_state[deviceId].ongoing = true;
+      this.__current_state[deviceId].confirmed = false;
       return turnOnPromise
         .then(() => {
           this.updateReliability(deviceId, 1);
@@ -834,29 +838,35 @@ class PiggyBank extends Homey.App {
           return device.setCapabilityValue({ capabilityId: d.DEVICE_CMD[driverId].setCurrentCap, value: newOfferCurrent });
         })
         .then(() => {
+          this.__current_state[deviceId].ongoing = false;
           if (!hasPowerCap) return Promise.resolve([true, isOn === wantOn]);
           this.updateReliability(deviceId, 1);
           return Promise.resolve([true, powerUsed + +powerChange < newOfferPower]); // In case more power is offered but it doesn't get used, let the app turn on other devices
         })
         .catch(err => {
           this.updateLog(`Failed signalling charger: ${String(err)}`, c.LOG_ERROR);
+          this.__current_state[deviceId].ongoing = undefined;
           this.__current_state[deviceId].nComError += 1;
           this.updateReliability(deviceId, 0);
           return Promise.resolve([false, false]);
         });
     }
     if (isOn) { // && !wantOn
+      this.__current_state[deviceId].ongoing = true;
+      this.__current_state[deviceId].confirmed = false;
       // Turn off
       return device.setCapabilityValue({ capabilityId: this.getOnOffCap(deviceId), value: this.getOnOffFalse(deviceId) })
         .then(() => {
           this.__charge_power_active = 0;
           this.updateReliability(deviceId, 1);
           this.__num_off_devices--;
+          this.__current_state[deviceId].ongoing = false;
           this.__current_state[deviceId].nComError = 0;
           return Promise.resolve([true, false]);
         })
         .catch(err => {
           this.updateLog(`Failed turning off charger: ${String(err)}`, c.LOG_ERROR);
+          this.__current_state[deviceId].ongoing = undefined;
           this.__current_state[deviceId].nComError += 1;
           this.updateReliability(deviceId, 0);
           return Promise.resolve([false, false]);
