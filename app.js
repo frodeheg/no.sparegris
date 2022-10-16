@@ -453,7 +453,6 @@ class PiggyBank extends Homey.App {
       return this.onChargingCycleStart(args.offerEnergy, args.endTime);
     });
 
-
     this.homey.settings.on('set', setting => {
       if (setting === 'deviceList') {
         this.__deviceList = this.homey.settings.get('deviceList');
@@ -470,8 +469,12 @@ class PiggyBank extends Homey.App {
           if (!preventZigbee && currentMode !== c.MODE_DISABLED) {
             this.refreshAllDevices();
           }
-          this.__all_prices = undefined; // Prices might have changed, need to fetch them again
+          // Prices might have changed, need to fetch them again
+          this.__all_prices = undefined;
+          this.__current_prices = [];
+          this.__current_price_index = undefined;
           this.homey.settings.set('all_prices', this.__all_prices);
+          this.onNewHour(false); // Just to refresh prices and reschedule charging.
           this.homey.settings.set('settingsSaved', '');
           // The callback only returns on error so notify success with failure
           throw (new Error(this.homey.__('settings.alert.settingssaved')));
