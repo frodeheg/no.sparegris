@@ -2107,7 +2107,10 @@ class PiggyBank extends Homey.App {
       daysInMonth: daysInStatsMonth,
       month: statsTimeLocal.getMonth(),
       dailyMax: Array.isArray(dailyMax) ? dailyMax : [],
-      dailyMaxGood: Array.isArray(dailyMaxGood) ? dailyMaxGood : []
+      dailyMaxGood: Array.isArray(dailyMaxGood) ? dailyMaxGood : [],
+      chargeShedule: this.__charge_plan,
+      elPrices: this.__current_prices,
+      currentHour: this.__current_price_index
     };
     return stats;
   }

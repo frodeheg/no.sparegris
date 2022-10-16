@@ -328,6 +328,14 @@
     "inaccurate": "Unøyaktige data (omstart ble detektert).",
     "incomplete": "Ufullstendige data, dagen er ikke ferdig enda."
   },
+  "chargePlanGraph": {
+    "title": "Ladesyklus",
+    "yaxis": "Pris per kWh",
+    "price": "Pris",
+    "charging": "Lading aktivert",
+    "nocharge": "Lading deaktivert",
+    "noPrice": "Ingen prisdata tilgjengelig"
+  },
   "month": {
     "jan": "Januar",
     "feb": "Februar",

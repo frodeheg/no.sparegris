@@ -328,6 +328,14 @@
     "inaccurate": "Inaccurate data (reboot or app restart detected).",
     "incomplete": "Incomplete data, day not finished."
   },
+  "chargePlanGraph": {
+    "title": "Charge cycle plan",
+    "yaxis": "Price per kWh",
+    "price": "Price",
+    "charging": "Charging enabled",
+    "nocharge": "Charging disabled",
+    "noPrice": "No price data yet"
+  },
   "month": {
     "jan": "January",
     "feb": "February",

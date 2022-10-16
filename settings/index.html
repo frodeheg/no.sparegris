@@ -72,6 +72,12 @@
       var graphMissing = "maxUsageGraph.missing";
       var graphInaccurate = "maxUsageGraph.inaccurate";
       var graphIncomplete = "maxUsageGraph.incomplete";
+      var chargePlanGraphTitle = "chargePlanGraph.title";
+      var chargePlanGraphYAxis = "chargePlanGraph.yaxis";
+      var chargePlanGraphPrice = "chargePlanGraph.price";
+      var chargePlanGraphCharge = "chargePlanGraph.charging";
+      var chargePlanGraphNoCharge = "chargePlanGraph.nocharge";
+      var chargePlanGraphNoPrice = "chargePlanGraph.noPrice";
       var monthText = [
         "month.jan",
         "month.feb",
@@ -1058,6 +1064,8 @@
           <tr id="chargeEndHint" class="hint"><td colspan="2"><p data-i18n="settings.charge.chargeEndHint">charge.chargeEndHint</p></td></tr>
         </table>
       </fieldset>
+
+      <canvas id="chargeSheduleChart" style="max-height:250px;min-height:250px;display:none"></canvas>
     </div>
 
     <!-- Global page -->
@@ -1599,6 +1607,90 @@
         document.getElementById("tariffGuideChart").style.display='block';
       }
 
+      function updateCarSheduleGraph(stats) {
+        // Generate data
+        let dataHours = Array.from(Array(24).keys()).map((x)=>`${(x+stats.currentHour)%24}:00`);
+        let dataPrices = Array.from(Array(24).keys()).map((x)=>stats.elPrices[x+stats.currentHour] || 0);
+        let maxPrice = dataPrices.reduce((a,b) => { return !a ? b : !b ? a : a > b ? a : b });
+        let dataPlan = Array.from(Array(24).keys()).map((x)=>stats.chargeShedule[x] ? maxPrice : 0 );
+        let colorBars = Array(24).fill(`skyblue`);
+        let colorBarLines = Array(24).fill('black');
+
+        new Chart("chargeSheduleChart", {
+          data: {
+            labels: dataHours,
+            datasets: [{
+              type: 'line',
+              label: chargePlanGraphPrice,
+              borderColor: "black",
+              pointBackgroundColor: "black",
+              data: dataPrices,
+              borderWidth: 1,
+              pointRadius: 0,
+            }, {
+              type: "bar",
+              label: 'Charge',
+              backgroundColor: colorBars,
+              borderColor: colorBarLines,
+              borderWidth: 1,
+              data: dataPlan
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              y: {
+                title: {
+                  display: true,
+                  text: chargePlanGraphYAxis
+                }
+              }
+            },
+            interaction: {
+              intersect: false,
+              mode: 'index'
+            },
+            plugins: {
+              tooltip: {
+                callbacks: {
+                  title: function(context) {
+                    return `${dataHours[context[0].dataIndex]}`;
+                  },
+                  beforeFooter: function(context) {
+                    if (dataPrices[context[0].dataIndex] === 0) return chargePlanGraphNoPrice;
+                    if (dataPlan[context[0].dataIndex]) return chargePlanGraphCharge;
+                    return chargePlanGraphNoCharge;
+                  }
+                },
+                filter: function(context) {
+                  if (context.dataset.label.startsWith('Charge')) return false;
+                  return true;
+                }
+              },
+              legend: {
+                display: false,
+                position: 'right',
+                labels: {
+                  boxWidth: 10,
+                  font: {
+                    size: 9
+                  }
+                }
+              },
+              title: {
+                display: true,
+                text: chargePlanGraphTitle,
+                font: {
+                  size: 15
+                }
+              }
+            }
+          }
+        });
+        document.getElementById("chargeSheduleChart").style.display='block';
+      }
+
       // Called whenever things has been loaded
       function checkLoadingDone() {
         var loadElement = document.getElementById("loadingPage");
@@ -1760,6 +1852,12 @@
         graphMissing = Homey.__(graphMissing);
         graphInaccurate = Homey.__(graphInaccurate);
         graphIncomplete = Homey.__(graphIncomplete);
+        chargePlanGraphTitle = Homey.__(chargePlanGraphTitle);
+        chargePlanGraphYAxis = Homey.__(chargePlanGraphYAxis);
+        chargePlanGraphPrice = Homey.__(chargePlanGraphPrice);
+        chargePlanGraphCharge = Homey.__(chargePlanGraphCharge);
+        chargePlanGraphNoCharge = Homey.__(chargePlanGraphNoCharge);
+        chargePlanGraphNoPrice = Homey.__(chargePlanGraphNoPrice);
 
         for (var i = 0; i < monthText.length; i++) {
           monthText[i] = Homey.__(monthText[i]);
@@ -1807,6 +1905,7 @@
           Homey.api('GET', '/getStats', null, function (err, data) {
             if (err) return Homey.alert(err);
             updateGraph(data);
+            updateCarSheduleGraph(data);
             graphLoaded = true;
           });
 
@@ -2478,6 +2577,11 @@
           month: 2,
           dailyMax: [4000, 4900, 4300, 4800, 4500, 4400, 4200, 3200, 1023, 4300],
           dailyMaxGood: [true, true, false, true, true]
+        });
+        updateCarSheduleGraph({
+          chargeShedule: [4000, 4000, 0, 0, 4000],
+          elPrices: [0.5, 0.43, 0.33, 0.64, 0.93, 0.45, 0.22],
+          currentHour: 2
         });
       }
       DEBUG_END */
