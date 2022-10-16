@@ -493,6 +493,7 @@ class PiggyBank extends Homey.App {
       if (Number.isNaN(this.__reserved_energy)) {
         this.__reserved_energy = 0;
       }
+      await this.onNewHour(false); // Not a new hour, hense false
     } else {
       // Got some data from safe shutdown... Use this to calculate if new hour was crossed
       const lapsedTime = now - this.__current_power_time;
@@ -511,6 +512,8 @@ class PiggyBank extends Homey.App {
         const energyUsedNewHour = (this.__current_power * timeWithinHour) / (1000 * 60 * 60) + 100;
         this.__accum_energy = energyUsedNewHour;
         this.log(`NewHour energy from safe restart: ${this.__accum_energy}`, c.LOG_INFO);
+      } else {
+        await this.onNewHour(false); // Not a new hour, hense false
       }
     }
 
@@ -1031,15 +1034,17 @@ class PiggyBank extends Homey.App {
    * onNewHour runs whenever a new hour starts + once at the app start
    * if and only if we crossed into a new hour while the app was restarting.
    */
-  async onNewHour(now = new Date()) {
-    // Crossed into new hour
-    const energyOk = this.__power_last_hour !== undefined; // If undefined then this is not for the full hour
-    await this.statsSetLastHourEnergy(this.__accum_energy, energyOk, now);
-    this.__power_last_hour = this.__accum_energy;
-    this.updateLog(`Hour finalized: ${String(this.__accum_energy)} Wh`, c.LOG_INFO);
-    this.__accum_energy = 0;
+  async onNewHour(isNewHour = true, now = new Date()) {
+    if (isNewHour) {
+      // Crossed into new hour
+      const energyOk = this.__power_last_hour !== undefined; // If undefined then this is not for the full hour
+      await this.statsSetLastHourEnergy(this.__accum_energy, energyOk, now);
+      this.__power_last_hour = this.__accum_energy;
+      this.updateLog(`Hour finalized: ${String(this.__accum_energy)} Wh`, c.LOG_INFO);
+      this.__accum_energy = 0;
+      this.__current_power_time = new Date(now.getTime());
+    }
 
-    this.__current_power_time = new Date(now.getTime());
     if (+this.homey.settings.get('operatingMode') !== c.MODE_DISABLED) {
       this.doPriceCalculations()
         .then(() => this.rescheduleCharging())
@@ -2568,7 +2573,7 @@ class PiggyBank extends Homey.App {
   }
 
   /**
-   * Called once every hour (and when app starts)
+   * Called once every hour (and when app starts + when settings are changed)
    */
   async doPriceCalculations() {
     // Abort if prices are not available

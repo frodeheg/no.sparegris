@@ -78,7 +78,7 @@ async function testNewHour(numTests) {
       if ((app.__accum_energy < marginLow) || (app.__accum_energy > marginHigh)) {
         throw new Error(`Accumulated energy not within bounds: ${app.__accum_energy} not in [${marginLow}, ${marginHigh}]`);
       }
-      await app.onNewHour(now);
+      await app.onNewHour(true, now);
       if (app.__power_last_hour === undefined) {
         throw new Error('Last hour power is undefined');
       }
