@@ -324,7 +324,7 @@
     "xaxis": "Dag",
     "tariff": "Estimert effekttariff",
     "highest": "Høyeste timeforbruk",
-    "missing": "Manglende data (appen var ikke aktivert).",
+    "missing": "Manglende data.",
     "inaccurate": "Unøyaktige data (omstart ble detektert).",
     "incomplete": "Ufullstendige data, dagen er ikke ferdig enda."
   },

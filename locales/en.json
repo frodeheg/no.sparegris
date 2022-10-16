@@ -324,7 +324,7 @@
     "xaxis": "Day",
     "tariff": "Estimated power tariff",
     "highest": "Highest hourly usage",
-    "missing": "Missing data (the app was not activated).",
+    "missing": "Missing data.",
     "inaccurate": "Inaccurate data (reboot or app restart detected).",
     "incomplete": "Incomplete data, day not finished."
   },
