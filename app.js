@@ -1621,13 +1621,11 @@ class PiggyBank extends Homey.App {
     }
     const maxPower = this.homey.settings.get('maxPower');
     const priceSorted = Array.from(priceArray.keys()).sort((a, b) => priceArray[a] - priceArray[b]);
-    let chargerAvailability = this.homey.settings.get('chargerAvailability');
-    if (!Array.isArray(chargerAvailability)) chargerAvailability = [];
     this.__charge_plan = [];
     let scheduleRemaining = chargerOptions.chargeRemaining;
     for (let i = 0; (i < priceSorted.length) && (scheduleRemaining > 0); i++) {
       const idx = priceSorted[i];
-      const estimatedPower = chargerAvailability[idx] ? chargerAvailability[idx] : (maxPower * 0.75);
+      const estimatedPower = maxPower * 0.75; // Assume 75% available to the charger
       this.__charge_plan[idx] = estimatedPower;
       scheduleRemaining -= estimatedPower;
     }
