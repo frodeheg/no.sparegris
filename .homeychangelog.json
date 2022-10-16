@@ -481,5 +481,8 @@
   },
   "0.18.3": {
     "en": "Added new flow cards to start and stop charge cycles. Bugfix for when to stop charging"
+  },
+  "0.18.4": {
+    "en": "Bugfix fetching future prices, it was still not fetched early enough. + Fixed new start charging cycle flow card + minor translation improvements."
   }
 }
