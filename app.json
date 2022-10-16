@@ -695,8 +695,8 @@
           "no": "Start lading av billigste [[offerEnergy]] kWh før kl. [[endTime]]"
         },
         "hint": {
-          "en": "Tell Piggy bank to start a charging cycle. The offered energy will be distributed on the cheapest hours before the time runs out. When the given amount of energy has been offered to the car the charging cycle will stop.\n\nNote that for supported car chargers the offered energy and used energy will be the same. For unsupported car chargers this may not be the case.",
-          "no": "Be Sparegris om å starte en ladesyklus. Den tilbydde energien vil bli distribuert på de billigste timene før tiden går ut. Når den gitte mengden energi har blitt tilbydd bilen, vil ladesyklusen stoppe. Det samme skjer når tiden går ut\n\nMerk at for støttede billadere vil tilbudt energi og brukt energi være den samme. For billadere som ikke støttes, er dette kanskje ikke tilfelle."
+          "en": "Tell Piggy bank to start a charging cycle. The offered energy (kWh) will be distributed on the cheapest hours before the time runs out. When the given amount of energy has been offered to the car the charging cycle will stop.\n\nNote that for supported car chargers the offered energy and used energy will be the same. For unsupported car chargers this may not be the case.",
+          "no": "Be Sparegris om å starte en ladesyklus. Den tilbydde energien (kWh) vil bli distribuert på de billigste timene før tiden går ut. Når den gitte mengden energi har blitt tilbydd bilen, vil ladesyklusen stoppe. Det samme skjer når tiden går ut\n\nMerk at for støttede billadere vil tilbudt energi og brukt energi være den samme. For billadere som ikke støttes, er dette kanskje ikke tilfelle."
         },
         "args": [
           {
@@ -708,8 +708,8 @@
               "no": "energi å tilby"
             },
             "title": {
-              "en": "Offered energy",
-              "no": "Tilbydd energi"
+              "en": "Offered energy (kWh) ",
+              "no": "Tilbydd energi (kWh) "
             },
             "name": "offerEnergy"
           },
@@ -738,8 +738,8 @@
           "no": "Start lading [[offerHours]] billigste timer før kl. [[endTime]]"
         },
         "hint": {
-          "en": "Tell Piggy bank to start a charging cycle. It will only charge in the X cheapest hours (in addition to the current hour) before the time runs out.\n\nFor unsupported car chargers this may be the most deterministic starting function as they do not report used energy.",
-          "no": "Be Sparegris om å starte en ladesyklus. Ladingen vil kun bli tilbydt i de X billigste timene (i tillegg til inneværende time) før tiden går ut.\n\nDette er den mest deterministiske startfunsjonen for billadere som ikke støttes, ettersom appen ikke får rapportert energiforbruk."
+          "en": "Tell Piggy bank to start a charging cycle. It will only charge in the X cheapest hours before the time runs out. (Note that if the current hour is one of them then the charging time will be shorter)\n\nFor unsupported car chargers this may be the most deterministic starting function as they do not report used energy.",
+          "no": "Be Sparegris om å starte en ladesyklus. Ladingen vil kun bli tilbydt i de X billigste timene før tiden går ut. (NB! Dersom inneværende time er blant de billigste så vil ladetiden være kortere)\n\nDette er den mest deterministiske startfunsjonen for billadere som ikke støttes, ettersom appen ikke får rapportert energiforbruk."
         },
         "args": [
           {

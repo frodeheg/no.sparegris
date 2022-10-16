@@ -1602,7 +1602,7 @@ class PiggyBank extends Homey.App {
       const minutesDiff = timeDiff(nowLocal.getHours(), nowLocal.getMinutes(), hoursEnd, minutesEnd);
       const endTimeUTC = new Date();
       endTimeUTC.setMinutes(endTimeUTC.getMinutes() + minutesDiff, 0, 0);
-      chargerOptions.chargeRemaining = offerEnergy ? (offerEnergy * 1000) : (+offerHours + 1);
+      chargerOptions.chargeRemaining = offerEnergy ? (offerEnergy * 1000) : +offerHours;
       chargerOptions.chargeCycleType = offerEnergy ? c.OFFER_ENERGY : c.OFFER_HOURS;
       chargerOptions.chargeEnd = endTimeUTC;
       this.homey.settings.set('chargerOptions', chargerOptions);
@@ -2563,7 +2563,9 @@ class PiggyBank extends Homey.App {
         }
       }
       // Fetch new prices if needed and add them
-      if (this.__all_prices.length < 24) {
+      // Nordpool updates the prices around 13-14 every day, meaning that there is no point in
+      // fetching new prices before we have less than 12 hours with future prices left
+      if ((!this.__current_price_index) || (this.__all_prices.length - this.__current_price_index) < 12) {
         let futurePrices;
         if (priceMode === c.PRICE_MODE_INTERNAL) {
           const futurePriceOptions = await this.homey.settings.get('futurePriceOptions');
