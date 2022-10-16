@@ -478,5 +478,8 @@
   },
   "0.18.2": {
     "en": "Car charger support fully operational + added support for no.adax.smart-heater.homey-app:heater-wt + Future prices are now fetched long before midnight + Fixed bug not updating prices when changing price zone + added graph for planned charging."
+  },
+  "0.18.3": {
+    "en": "Added new flow cards to start and stop charge cycles. Bugfix for when to stop charging"
   }
 }
