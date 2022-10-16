@@ -1,11 +1,11 @@
 {
   "title": {
-    "en": "Start charging cycle",
-    "no": "Start ladesyklus"
+    "en": "Start charging cycle (kWh)",
+    "no": "Start ladesyklus (kWh)"
   },
   "titleFormatted": {
-    "en": "Start charging [[offerEnergy]] kWh before [[endTime]]",
-    "no": "Start lading av [[offerEnergy]] kWh før kl. [[endTime]]"
+    "en": "Start charging cheapest [[offerEnergy]] kWh before [[endTime]]",
+    "no": "Start lading av billigste [[offerEnergy]] kWh før kl. [[endTime]]"
   },
   "hint": {
     "en": "Tell Piggy bank to start a charging cycle. The offered energy will be distributed on the cheapest hours before the time runs out. When the given amount of energy has been offered to the car the charging cycle will stop.\n\nNote that for supported car chargers the offered energy and used energy will be the same. For unsupported car chargers this may not be the case.",

@@ -47,6 +47,10 @@ const LOG_ALL = LOG_ERROR;
 const CHARGE_TARGET_AUTO = 1;
 const CHARGE_TARGET_FLOW = 2;
 
+// Charging offers
+const OFFER_ENERGY = 1;
+const OFFER_HOURS = 2;
+
 // Bidding zones for electricity prices
 const ENTSOE_BIDDING_ZONES = {
   'Albania (AL)': [{ id: '10YAL-KESH-----5', name: 'AL' }],
@@ -131,5 +135,7 @@ module.exports = {
   LOG_ALL,
   CHARGE_TARGET_AUTO,
   CHARGE_TARGET_FLOW,
+  OFFER_ENERGY,
+  OFFER_HOURS,
   ENTSOE_BIDDING_ZONES,
 };

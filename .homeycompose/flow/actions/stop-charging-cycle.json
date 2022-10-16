@@ -1,0 +1,14 @@
+{
+  "title": {
+    "en": "Stop charging cycle ahead of time",
+    "no": "Stopp ladesyklus før tiden"
+  },
+  "titleFormatted": {
+    "en": "Stop the charging cycle ahead of time",
+    "no": "Stopp ladesyklus før tiden"
+  },
+  "hint": {
+    "en": "In case you need to stop the charging cycle ahead of time you can call this flow card in order to prevent the app from offering more energy.",
+    "no": "Dersom du ønsker å avbryte ladesyklusen før tiden kan du kalle dette flytkortet for å hindre appen i å tilby mer energi."
+  }
+}

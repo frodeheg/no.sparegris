@@ -285,6 +285,7 @@ class PiggyBank extends Homey.App {
       || !('chargeThreshold' in chargerOptions)
       || !('minToggleTime' in chargerOptions)
       || !('chargeRemaining' in chargerOptions)
+      || !('chargeCycleType' in chargerOptions)
       || !('chargeEnd' in chargerOptions)) {
       if (!chargerOptions) chargerOptions = {};
       if (!('chargeTarget' in chargerOptions)) chargerOptions.chargeTarget = c.CHARGE_TARGET_AUTO;
@@ -292,6 +293,7 @@ class PiggyBank extends Homey.App {
       if (!('chargeThreshold' in chargerOptions)) chargerOptions.chargeThreshold = 2000;
       if (!('minToggleTime' in chargerOptions)) chargerOptions.minToggleTime = 30;
       if (!('chargeRemaining' in chargerOptions)) chargerOptions.chargeRemaining = 0;
+      if (!('chargeCycleType' in chargerOptions)) chargerOptions.chargeCycleType = c.OFFER_HOURS;
       if (!('chargeEnd' in chargerOptions)) chargerOptions.chargeEnd = now;
       this.log(`Resetting chargerOptions to ${JSON.stringify(chargerOptions)}`);
       this.homey.settings.set('chargerOptions', chargerOptions);
@@ -451,6 +453,20 @@ class PiggyBank extends Homey.App {
       if (!this.app_is_configured) return Promise.reject(new Error(this.homey.__('warnings.notConfigured')));
       if (+this.homey.settings.get('operatingMode') === c.MODE_DISABLED) return Promise.reject(new Error(this.homey.__('warnings.notEnabled')));
       return this.onChargingCycleStart(args.offerEnergy, args.endTime);
+    });
+    const cardActionStartChargingCycle2 = this.homey.flow.getActionCard('start-charging-cycle2');
+    cardActionStartChargingCycle2.registerRunListener(async args => {
+      if (preventZigbee) return Promise.reject(new Error(this.homey.__('warnings.homeyReboot')));
+      if (!this.app_is_configured) return Promise.reject(new Error(this.homey.__('warnings.notConfigured')));
+      if (+this.homey.settings.get('operatingMode') === c.MODE_DISABLED) return Promise.reject(new Error(this.homey.__('warnings.notEnabled')));
+      return this.onChargingCycleStart(undefined, args.endTime, args.offerHours);
+    });
+    const cardActionStopChargingCycle = this.homey.flow.getActionCard('stop-charging-cycle');
+    cardActionStopChargingCycle.registerRunListener(async args => {
+      if (preventZigbee) return Promise.reject(new Error(this.homey.__('warnings.homeyReboot')));
+      if (!this.app_is_configured) return Promise.reject(new Error(this.homey.__('warnings.notConfigured')));
+      if (+this.homey.settings.get('operatingMode') === c.MODE_DISABLED) return Promise.reject(new Error(this.homey.__('warnings.notEnabled')));
+      return this.onChargingCycleStop();
     });
 
     this.homey.settings.on('set', setting => {
@@ -769,8 +785,7 @@ class PiggyBank extends Homey.App {
    */
   async changeDevicePower(deviceId, powerChange) {
     const chargerOptions = this.homey.settings.get('chargerOptions');
-    if ((+chargerOptions.chargeRemaining <= 0)
-      || (chargerOptions.chargeTarget === c.CHARGE_TARGET_FLOW)) {
+    if (chargerOptions.chargeTarget === c.CHARGE_TARGET_FLOW) {
       return Promise.resolve([true, true]);
     }
     this.log(`Changing power by: ${powerChange}`);
@@ -807,7 +822,10 @@ class PiggyBank extends Homey.App {
         : +await device.capabilitiesObj[d.DEVICE_CMD[driverId].setCurrentCap].value;
     const isEmergency = (powerChange < 0) && (
       ((powerUsed + +powerChange) < 0) || (ampsOffered === d.DEVICE_CMD[driverId].minCurrent));
-    const wantOn = (isOn || (powerChange > 0)) && (this.__charge_plan[0]) && !isEmergency;
+    const wantOn = (isOn || (powerChange > 0))
+      && (+chargerOptions.chargeRemaining > 0)
+      && (this.__charge_plan[0])
+      && !isEmergency;
     // Check that we do not toggle the charger too often
     const now = new Date();
     const timeLapsed = (now - this.prevChargerTime) / 60000; // Lapsed time in minutes
@@ -1060,7 +1078,7 @@ class PiggyBank extends Homey.App {
 
     if (+this.homey.settings.get('operatingMode') !== c.MODE_DISABLED) {
       this.doPriceCalculations()
-        .then(() => this.rescheduleCharging())
+        .then(() => this.rescheduleCharging(isNewHour))
         .catch(err => {
           // Either the app is not configured yet or the utility price API is not installed, just ignore
           return Promise.resolve();
@@ -1568,11 +1586,12 @@ class PiggyBank extends Homey.App {
 
   /**
    * Called when the user initiates a chargin cycles through a flow
-   * @param offerEnergy number of kWh to offer before time runs out
+   * @param offerEnergy number of kWh to offer before time runs out (will be undefined if offerHours)
    * @param endTime the localtime for when to end charging
+   * @param offerHours number of hours to offer energy before time runs out (will be undefined if offerEnergy)
    */
-  async onChargingCycleStart(offerEnergy, endTime) {
-    this.log('Charging cycle started');
+  async onChargingCycleStart(offerEnergy, endTime, offerHours = undefined) {
+    this.updateLog('Charging cycle started', c.LOG_INFO);
     const chargerOptions = this.homey.settings.get('chargerOptions');
     if (chargerOptions) {
       // Convert local end time to UTC
@@ -1583,23 +1602,46 @@ class PiggyBank extends Homey.App {
       const minutesDiff = timeDiff(nowLocal.getHours(), nowLocal.getMinutes(), hoursEnd, minutesEnd);
       const endTimeUTC = new Date();
       endTimeUTC.setMinutes(endTimeUTC.getMinutes() + minutesDiff, 0, 0);
-      chargerOptions.chargeRemaining = offerEnergy * 1000;
+      chargerOptions.chargeRemaining = offerEnergy ? (offerEnergy * 1000) : (+offerHours + 1);
+      chargerOptions.chargeCycleType = offerEnergy ? c.OFFER_ENERGY : c.OFFER_HOURS;
       chargerOptions.chargeEnd = endTimeUTC;
       this.homey.settings.set('chargerOptions', chargerOptions);
     }
-    await this.rescheduleCharging();
+    await this.rescheduleCharging(false);
+  }
+
+  /**
+   * Only called when stopping the charging cycle ahead of time
+   */
+  async onChargingCycleStop() {
+    this.updateLog('Charging cycle abruptly ended', c.LOG_INFO);
+    const chargerOptions = this.homey.settings.get('chargerOptions');
+    if (chargerOptions) {
+      chargerOptions.chargeRemaining = 0;
+      this.homey.settings.set('chargerOptions', chargerOptions);
+      this.rescheduleCharging(false);
+    } else {
+      this.__charge_plan = [];
+      throw new Error('No charging cycle was to stop');
+    }
   }
 
   /**
    * Called every hour to make sure the Charging is rescheduled most optimal.
    * Whenever a new hour passes, must be called _after_ doPriceCalculations to get correct current_price_index
    */
-  async rescheduleCharging() {
+  async rescheduleCharging(isNewHour) {
     const chargerOptions = this.homey.settings.get('chargerOptions');
-    chargerOptions.chargeRemaining -= this.__offeredEnergy;
-    if (chargerOptions.chargeRemaining < 0) chargerOptions.chargeRemaining = 0;
-    this.__offeredEnergy = 0;
-    this.homey.settings.set('chargerOptions', chargerOptions);
+    if (isNewHour) {
+      if (chargerOptions.chargeCycleType === c.OFFER_ENERGY) {
+        chargerOptions.chargeRemaining -= this.__offeredEnergy;
+        this.__offeredEnergy = 0;
+      } else { // OFFER_HOURS
+        chargerOptions.chargeRemaining -= 1;
+      }
+      if (chargerOptions.chargeRemaining < 0) chargerOptions.chargeRemaining = 0;
+      this.homey.settings.set('chargerOptions', chargerOptions);
+    }
 
     // Ignore charging if the process is complete
     if (chargerOptions.chargeRemaining === 0) return Promise.resolve();
@@ -1627,7 +1669,7 @@ class PiggyBank extends Homey.App {
       const idx = priceSorted[i];
       const estimatedPower = maxPower * 0.75; // Assume 75% available to the charger
       this.__charge_plan[idx] = estimatedPower;
-      scheduleRemaining -= estimatedPower;
+      scheduleRemaining -= chargerOptions.chargeCycleType === c.OFFER_ENERGY ? estimatedPower : 1;
     }
     return Promise.resolve();
   }

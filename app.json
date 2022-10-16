@@ -687,12 +687,12 @@
       },
       {
         "title": {
-          "en": "Start charging cycle",
-          "no": "Start ladesyklus"
+          "en": "Start charging cycle (kWh)",
+          "no": "Start ladesyklus (kWh)"
         },
         "titleFormatted": {
-          "en": "Start charging [[offerEnergy]] kWh before [[endTime]]",
-          "no": "Start lading av [[offerEnergy]] kWh før kl. [[endTime]]"
+          "en": "Start charging cheapest [[offerEnergy]] kWh before [[endTime]]",
+          "no": "Start lading av billigste [[offerEnergy]] kWh før kl. [[endTime]]"
         },
         "hint": {
           "en": "Tell Piggy bank to start a charging cycle. The offered energy will be distributed on the cheapest hours before the time runs out. When the given amount of energy has been offered to the car the charging cycle will stop.\n\nNote that for supported car chargers the offered energy and used energy will be the same. For unsupported car chargers this may not be the case.",
@@ -727,6 +727,64 @@
           }
         ],
         "id": "start-charging-cycle"
+      },
+      {
+        "title": {
+          "en": "Start charging cycle (hours)",
+          "no": "Start ladesyklus (timer)"
+        },
+        "titleFormatted": {
+          "en": "Start charging [[offerHours]] cheapest hours before [[endTime]]",
+          "no": "Start lading [[offerHours]] billigste timer før kl. [[endTime]]"
+        },
+        "hint": {
+          "en": "Tell Piggy bank to start a charging cycle. It will only charge in the X cheapest hours (in addition to the current hour) before the time runs out.\n\nFor unsupported car chargers this may be the most deterministic starting function as they do not report used energy.",
+          "no": "Be Sparegris om å starte en ladesyklus. Ladingen vil kun bli tilbydt i de X billigste timene (i tillegg til inneværende time) før tiden går ut.\n\nDette er den mest deterministiske startfunsjonen for billadere som ikke støttes, ettersom appen ikke får rapportert energiforbruk."
+        },
+        "args": [
+          {
+            "type": "number",
+            "min": 0,
+            "max": 24,
+            "placeholder": {
+              "en": "number of hours",
+              "no": "antall timer"
+            },
+            "title": {
+              "en": "Number of hours to offer energy",
+              "no": "Antall timer å tilby energi"
+            },
+            "name": "offerHours"
+          },
+          {
+            "type": "time",
+            "placeholder": {
+              "en": "end time",
+              "no": "sluttid"
+            },
+            "title": {
+              "en": "End time",
+              "no": "Sluttid"
+            },
+            "name": "endTime"
+          }
+        ],
+        "id": "start-charging-cycle2"
+      },
+      {
+        "title": {
+          "en": "Stop charging cycle ahead of time",
+          "no": "Stopp ladesyklus før tiden"
+        },
+        "titleFormatted": {
+          "en": "Stop the charging cycle ahead of time",
+          "no": "Stopp ladesyklus før tiden"
+        },
+        "hint": {
+          "en": "In case you need to stop the charging cycle ahead of time you can call this flow card in order to prevent the app from offering more energy.",
+          "no": "Dersom du ønsker å avbryte ladesyklusen før tiden kan du kalle dette flytkortet for å hindre appen i å tilby mer energi."
+        },
+        "id": "stop-charging-cycle"
       },
       {
         "title": {
