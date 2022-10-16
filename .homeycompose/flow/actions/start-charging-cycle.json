@@ -1,0 +1,42 @@
+{
+  "title": {
+    "en": "Start charging cycle",
+    "no": "Start ladesyklus"
+  },
+  "titleFormatted": {
+    "en": "Start charging [[offerEnergy]] kWh before [[endTime]]",
+    "no": "Start lading av [[offerEnergy]] kWh før kl. [[endTime]]"
+  },
+  "hint": {
+    "en": "Tell Piggy bank to start a charging cycle. The offered energy will be distributed on the cheapest hours before the time runs out. When the given amount of energy has been offered to the car the charging cycle will stop.\n\nNote that for supported car chargers the offered energy and used energy will be the same. For unsupported car chargers this may not be the case.",
+    "no": "Be Sparegris om å starte en ladesyklus. Den tilbydde energien vil bli distribuert på de billigste timene før tiden går ut. Når den gitte mengden energi har blitt tilbydd bilen, vil ladesyklusen stoppe. Det samme skjer når tiden går ut\n\nMerk at for støttede billadere vil tilbudt energi og brukt energi være den samme. For billadere som ikke støttes, er dette kanskje ikke tilfelle."
+  },
+  "args": [
+    {
+      "type": "number",
+      "min": 0,
+      "max": 100,
+      "placeholder": {
+        "en": "energy to offer",
+        "no": "energi å tilby"
+      },
+      "title": {
+        "en": "Offered energy",
+        "no": "Tilbydd energi"
+      },
+      "name": "offerEnergy"
+    },
+    {
+      "type": "time",
+      "placeholder": {
+        "en": "end time",
+        "no": "sluttid"
+      },
+      "title": {
+        "en": "End time",
+        "no": "Sluttid"
+      },
+      "name": "endTime"
+    }
+  ]
+}

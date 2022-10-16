@@ -9,7 +9,7 @@ const c = require('../common/constants');
 const prices = require('../common/prices');
 const Homey = require('./homey');
 const PiggyBank = require('../app');
-const { toLocalTime, timeToNextHour } = require('../common/homeytime');
+const { toLocalTime, fromLocalTime, timeToNextHour } = require('../common/homeytime');
 
 // Test Currency Converter
 // * Test that the date for the last currency fetched is recent... otherwise the API could have changed
@@ -94,13 +94,51 @@ async function testNewHour(numTests) {
   console.log('Testin onNewHour - Passed');
 }
 
+async function applyBasicConfig(app) {
+  app.homey.settings.set('operatingMode', c.MODE_NORMAL);
+  app.homey.settings.set('maxPower', 5000);
+  app.homey.settings.set('frostList', { id_a: { minTemp: 3 } });
+  app.homey.settings.set('modeList', [
+    // Normal
+    [{ id: 'id_a', operation: c.CONTROLLED, targetTemp: 24 }],
+    [{ id: 'id_a', operation: c.CONTROLLED, targetTemp: 24 }], // Night
+    [{ id: 'id_a', operation: c.CONTROLLED, targetTemp: 24 }], // Away
+  ]);
+  app.homey.settings.set('priceActionList', [
+    {id_a: {operation: c.EMERGENCY_OFF}}, {id_a: {operation: c.EMERGENCY_OFF}}, {id_a: {operation: c.EMERGENCY_OFF}}, {id_a: {operation: c.EMERGENCY_OFF}}, {id_a: {operation: c.EMERGENCY_OFF}}
+  ]);
+  app.homey.settings.set('priceMode', c.PRICE_MODE_INTERNAL);
+  const futureData = app.homey.settings.get('futurePriceOptions');
+  futureData.priceKind = c.PRICE_KIND_SPOT;
+  app.homey.settings.set('futurePriceOptions', futureData);
+  app.app_is_configured = app.validateSettings();
+  await app.doPriceCalculations();
+}
+
+// Test Charging
+async function testCharging() {
+  console.log('Testin charging');
+  const app = new PiggyBank();
+  await app.onInit();
+  await applyBasicConfig(app);
+  const now = new Date();
+  console.log(`Start: ${now}`);
+
+  app.onChargingCycleStart(10, '08:00');
+
+  console.log(`End: ${now}`);
+  await app.onUninit();
+  console.log('Testin charging - Passed');
+}
+
 // Start all tests
 async function startAllTests() {
   try {
-    await testCurrencyConverter();
+/*    await testCurrencyConverter();
     await testApp();
     await testEntsoe();
-    await testNewHour(20000);
+    await testNewHour(20000);*/
+    await testCharging();
   } catch (err) {
     console.log(`Testing failed: ${err}`);
   }

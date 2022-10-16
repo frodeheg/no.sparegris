@@ -1,0 +1,28 @@
+{
+  "title": {
+    "en": "Start Charging",
+    "no": "Start lading"
+  },
+  "titleFormatted": {
+    "en": "Turn on the charger, using lowest Power.",
+    "no": "Slå på laderen og bruk laveste ladestyrke."
+  },
+  "hint": {
+    "en": "This Trigger should be used to start the charger. It will be called on the best schedule after the action 'Start Charging Cycle' has been initiated.",
+    "no": "Denne triggeren skal brukes for å starte ladingen. Den blir trigget på optimale tidspunkt etter at handlingen 'Start ladesyklus' har blitt utført."
+  },
+  "tokens": [
+    {
+      "type": "number",
+      "name": "offeredPower",
+      "title": {
+        "en": "Offered Power",
+        "no": "Tilbydt Effekt"
+      },
+      "example": {
+        "en": "Number of Watts to set the initial charging power to (as configured in the app).",
+        "no": "Antall Watt å sette initsiell ladestyrke til (som konfigurert i appen)."
+      }
+    }
+  ]
+}

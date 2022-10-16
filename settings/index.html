@@ -10,6 +10,7 @@
     <script type="text/javascript" src="./chart.js" data-origin="settings"></script>
     <script type="text/javascript" src="./tools.js" data-origin="settings"></script>
     <script type="text/javascript" src="./gridcost.js" data-origin="settings"></script>
+    <script type="text/javascript" src="./homeytime.js" data-origin="settings"></script>
     <script type="text/javascript" src="subpages/advanced.js" data-origin="settings/advanced"></script>
     <link href="style.css" rel="stylesheet" type="text/css">
     <link href="trashcan.css" rel="stylesheet" type="text/css">
@@ -1677,8 +1678,8 @@
           document.getElementById('chargeMin').value = chargerOptions.chargeMin;
           document.getElementById('chargeThreshold').value = chargerOptions.chargeThreshold;
           document.getElementById('minToggleTime').value = chargerOptions.minToggleTime;
-          document.getElementById('chargeRemaining').value = chargerOptions.chargeRemaining;
-          document.getElementById('chargeEnd').value = chargerOptions.chargeEnd;
+          document.getElementById('chargeRemaining').value = chargerOptions.chargeRemaining / 1000;
+          document.getElementById('chargeEnd').value = toTimeString(new Date(chargerOptions.chargeEnd));
           document.getElementById("energyFlowRateText").innerHTML = energyFlowRateText.replace("${interval}", Math.round(appConfigProgress.timeSinceEnergyMeter / 60));
           checkPriceMode(document.getElementById("priceMode")); // not called automatically when programatically changed
           checkPriceKind(document.getElementById("priceKind")); // not called automatically when programatically changed
@@ -2017,8 +2018,8 @@
               chargerOptions.chargeMin = +document.getElementById('chargeMin').value;
               chargerOptions.chargeThreshold = +document.getElementById('chargeThreshold').value;
               chargerOptions.minToggleTime = +document.getElementById('minToggleTime').value;
-              chargerOptions.chargeRemaining = +document.getElementById('chargeRemaining').value;
-              chargerOptions.chargeEnd = +document.getElementById('chargeEnd').value;
+              // chargerOptions.chargeRemaining = +document.getElementById('chargeRemaining').value; // Ignore as it is read only
+              // chargerOptions.chargeEnd = +document.getElementById('chargeEnd').value; // Ignore as it is read only (and converted to localtime)
               let opModeValue = (appEnabledElement.value === "1") ? operatingModeElement.value : 0
               Homey.set("futurePriceOptions", futurePriceOptions, errFunc);
               Homey.set('chargerOptions', chargerOptions, errFunc);
@@ -2441,6 +2442,14 @@
         chargerOptionsLoaded = true;
         appConfigProgressLoaded = true;
         onHomeyReadyCompleted = true;
+        chargerOptions = {
+          chargeTarget: CHARGE_TARGET_AUTO,
+          chargeMin: 1500,
+          chargeThreshold: 2000,
+          minToggleTime: 30,
+          chargeRemaining: 0,
+          chargeEnd: '2022-10-15T06:00:08.708Z'
+        }
         futurePriceOptions = {
           minCheapTime: 4,
           minExpensiveTime: 4,

@@ -1,0 +1,28 @@
+{
+  "title": {
+    "en": "Change the charging power",
+    "no": "Endre ladestyrken"
+  },
+  "titleFormatted": {
+    "en": "Change the charging power to [[offeredPower]] W",
+    "no": "Endre ladestyrken til [[offeredPower]] W"
+  },
+  "hint": {
+    "en": "This Trigger should be used to change the charging power. It will be called on the best schedule after the action 'Start Charging Cycle' has been initiated.",
+    "no": "Denne triggeren skal brukes for å endre ladestyrken. Den blir trigget på optimale tidspunkt etter at handlingen 'Start ladesyklus' har blitt utført."
+  },
+  "tokens": [
+    {
+      "type": "number",
+      "name": "offeredPower",
+      "title": {
+        "en": "Offered Power",
+        "no": "Tilbydt Effekt"
+      },
+      "example": {
+        "en": "Number of Watts to set the charging power to.",
+        "no": "Antall Watt å sette ladestyrken til."
+      }
+    }
+  ]
+}

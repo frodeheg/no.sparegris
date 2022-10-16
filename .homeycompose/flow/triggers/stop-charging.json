@@ -1,0 +1,14 @@
+{
+  "title": {
+    "en": "Stop Charging",
+    "no": "Stopp lading"
+  },
+  "titleFormatted": {
+    "en": "Turn off the charger.",
+    "no": "Slå av laderen."
+  },
+  "hint": {
+    "en": "This Trigger should be used to stop the charger. It will be called on the best schedule after the action 'Start Charging Cycle' has been initiated.",
+    "no": "Denne triggeren skal brukes for å stoppe ladingen. Den blir trigget på optimale tidspunkt etter at handlingen 'Start ladesyklus' har blitt utført."
+  }
+}

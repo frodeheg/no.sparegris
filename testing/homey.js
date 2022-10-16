@@ -4,7 +4,15 @@
 
 'use strict';
 
-const manifest = { version: '1.0' };
+const manifest = {
+  version: '1.0',
+  flow: {
+    actions: [{
+      id: 'change-piggy-bank-price-point',
+      args: [{values: [{id: 'a', label: 'la'}, {id: 'b', label: 'lb'}, {id: 'c', label: 'lc'}]}],
+    }],
+  },
+};
 const env = require('../env.json');
 
 /**
@@ -20,11 +28,11 @@ class FakeSettingsClass {
     if (this.values[target] === undefined) {
       return null;
     }
-    return this.values[target];
+    return JSON.parse(this.values[target]);
   }
 
   set(target, value) {
-    this.values[target] = String(value);
+    this.values[target] = JSON.stringify(value);
   }
 
   on(target, callback) {
@@ -114,6 +122,10 @@ class FakeTriggerCardClass {
     console.log('TBD: Implement registerRunListener');
   }
 
+  trigger(tokens) {
+    console.log('TBD: Implement tokens');
+  }
+
 }
 
 /**
@@ -196,6 +208,10 @@ class FakeHomeyClass {
     this.flow = new FakeFlowClass();
     this.clock = new FakeClockClass();
     this.env = env;
+  }
+
+  __(languagestring) {
+    return `Languagestring: ${languagestring}`;
   }
 
   on(event, callback) {

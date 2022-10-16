@@ -147,6 +147,35 @@
     "triggers": [
       {
         "title": {
+          "en": "Change the charging power",
+          "no": "Endre ladestyrken"
+        },
+        "titleFormatted": {
+          "en": "Change the charging power to [[offeredPower]] W",
+          "no": "Endre ladestyrken til [[offeredPower]] W"
+        },
+        "hint": {
+          "en": "This Trigger should be used to change the charging power. It will be called on the best schedule after the action 'Start Charging Cycle' has been initiated.",
+          "no": "Denne triggeren skal brukes for å endre ladestyrken. Den blir trigget på optimale tidspunkt etter at handlingen 'Start ladesyklus' har blitt utført."
+        },
+        "tokens": [
+          {
+            "type": "number",
+            "name": "offeredPower",
+            "title": {
+              "en": "Offered Power",
+              "no": "Tilbydt Effekt"
+            },
+            "example": {
+              "en": "Number of Watts to set the charging power to.",
+              "no": "Antall Watt å sette ladestyrken til."
+            }
+          }
+        ],
+        "id": "change-charging-power"
+      },
+      {
+        "title": {
           "en": "Available power changed",
           "no": "Ledig effekt endret seg"
         },
@@ -218,6 +247,50 @@
       },
       {
         "title": {
+          "en": "Start Charging",
+          "no": "Start lading"
+        },
+        "titleFormatted": {
+          "en": "Turn on the charger, using lowest Power.",
+          "no": "Slå på laderen og bruk laveste ladestyrke."
+        },
+        "hint": {
+          "en": "This Trigger should be used to start the charger. It will be called on the best schedule after the action 'Start Charging Cycle' has been initiated.",
+          "no": "Denne triggeren skal brukes for å starte ladingen. Den blir trigget på optimale tidspunkt etter at handlingen 'Start ladesyklus' har blitt utført."
+        },
+        "tokens": [
+          {
+            "type": "number",
+            "name": "offeredPower",
+            "title": {
+              "en": "Offered Power",
+              "no": "Tilbydt Effekt"
+            },
+            "example": {
+              "en": "Number of Watts to set the initial charging power to (as configured in the app).",
+              "no": "Antall Watt å sette initsiell ladestyrke til (som konfigurert i appen)."
+            }
+          }
+        ],
+        "id": "start-charging"
+      },
+      {
+        "title": {
+          "en": "Stop Charging",
+          "no": "Stopp lading"
+        },
+        "titleFormatted": {
+          "en": "Turn off the charger.",
+          "no": "Slå av laderen."
+        },
+        "hint": {
+          "en": "This Trigger should be used to stop the charger. It will be called on the best schedule after the action 'Start Charging Cycle' has been initiated.",
+          "no": "Denne triggeren skal brukes for å stoppe ladingen. Den blir trigget på optimale tidspunkt etter at handlingen 'Start ladesyklus' har blitt utført."
+        },
+        "id": "stop-charging"
+      },
+      {
+        "title": {
           "en": "Unable to limit power",
           "no": "Klarer ikke å begrense strømforbruket"
         },
@@ -229,6 +302,7 @@
           "en": "Use this condition as a last resort to limit energy. If the app turned off every controllable device the user can be alerted to do a manual powerdown if this was not enough.",
           "no": "Brukes som en siste utvei for å begrense energiforbruk. Dersom appen har slått av alt kan en melding sendes ut om å redusere forbruket manuelt dersom dette ikke var tilstrekkelig."
         },
+        "highlight": true,
         "tokens": [
           {
             "type": "number",
@@ -467,6 +541,7 @@
           "en": "Allows you to switch between day, night and other operation modes",
           "no": "Lar deg bytte mellom dag, natt og andre driftsmoduser"
         },
+        "highlight": true,
         "args": [
           {
             "type": "autocomplete",
@@ -496,6 +571,7 @@
           "en": "Inform Piggy Bank whether the price on electricity is high or low",
           "no": "Informerer Sparegris om prisen på strøm er høy eller lav"
         },
+        "highlight": true,
         "args": [
           {
             "type": "dropdown",
@@ -611,6 +687,49 @@
       },
       {
         "title": {
+          "en": "Start charging cycle",
+          "no": "Start ladesyklus"
+        },
+        "titleFormatted": {
+          "en": "Start charging [[offerEnergy]] kWh before [[endTime]]",
+          "no": "Start lading av [[offerEnergy]] kWh før kl. [[endTime]]"
+        },
+        "hint": {
+          "en": "Tell Piggy bank to start a charging cycle. The offered energy will be distributed on the cheapest hours before the time runs out. When the given amount of energy has been offered to the car the charging cycle will stop.\n\nNote that for supported car chargers the offered energy and used energy will be the same. For unsupported car chargers this may not be the case.",
+          "no": "Be Sparegris om å starte en ladesyklus. Den tilbydde energien vil bli distribuert på de billigste timene før tiden går ut. Når den gitte mengden energi har blitt tilbydd bilen, vil ladesyklusen stoppe. Det samme skjer når tiden går ut\n\nMerk at for støttede billadere vil tilbudt energi og brukt energi være den samme. For billadere som ikke støttes, er dette kanskje ikke tilfelle."
+        },
+        "args": [
+          {
+            "type": "number",
+            "min": 0,
+            "max": 100,
+            "placeholder": {
+              "en": "energy to offer",
+              "no": "energi å tilby"
+            },
+            "title": {
+              "en": "Offered energy",
+              "no": "Tilbydd energi"
+            },
+            "name": "offerEnergy"
+          },
+          {
+            "type": "time",
+            "placeholder": {
+              "en": "end time",
+              "no": "sluttid"
+            },
+            "title": {
+              "en": "End time",
+              "no": "Sluttid"
+            },
+            "name": "endTime"
+          }
+        ],
+        "id": "start-charging-cycle"
+      },
+      {
+        "title": {
           "en": "Update PiggyBank with the total energy used",
           "no": "Oppdater Sparegris med totalt energiforbruk"
         },
@@ -650,6 +769,7 @@
           "en": "Attach the current power usage output of your energy meter to this action card in order to enable the app",
           "no": "Denne appen vil ikke virke med mindre du sender strømmålerens avlesning av nåværende effektbruk til denne appen"
         },
+        "highlight": true,
         "args": [
           {
             "type": "number",

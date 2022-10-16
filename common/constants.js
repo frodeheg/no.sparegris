@@ -1,5 +1,12 @@
 'use strict';
 
+// Modes
+const MODE_DISABLED = 0;
+const MODE_NORMAL = 1;
+const MODE_NIGHT = 2;
+const MODE_AWAY = 3;
+const MODE_CUSTOM = 4;
+
 // App enable
 const APP_NOT_READY = 0;
 const APP_READY = 1;
@@ -93,6 +100,11 @@ const ENTSOE_BIDDING_ZONES = {
 };
 
 module.exports = {
+  MODE_DISABLED,
+  MODE_NORMAL,
+  MODE_NIGHT,
+  MODE_AWAY,
+  MODE_CUSTOM,
   APP_NOT_READY,
   APP_READY,
   APP_MISSING_PRICE_API,
