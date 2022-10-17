@@ -106,7 +106,9 @@ const DEVICE_CMD = {
   'com.arjankranenburg.virtual:mode': DEFAULT_SWITCH,
   'com.everspring:AN179': DEFAULT_SWITCH,
   'com.fibaro:FGS-213': DEFAULT_SWITCH,
+  'com.fibaro:FGWPE-101': DEFAULT_SWITCH,
   'com.gardena:water-control': DEFAULT_IGNORED,
+  'com.home-connect:dryer': DEFAULT_IGNORED,
   'com.ikea.tradfri:control_outlet': DEFAULT_SWITCH, // Not confirmed
   'com.neo:NAS-WR02ZE': DEFAULT_SWITCH,
   'com.panasonic.PCC:comfortcloud': {
@@ -223,6 +225,17 @@ const DEVICE_CMD = {
     default: false
   },
   'no.thermofloor:ZM-Single-Relay-16A': DEFAULT_SWITCH,
+  'se.husdata:H60': {
+    type: DEVICE_TYPE.HEATER,
+    note: 'This device has no onOff capability and will emulate Off by turning the temperature to absolute minimum',
+    setOnOffCap: null, // There is no such capability for this device
+    readTempCap: 'RADIATOR_RETURN_TEMP', // Indoor temp does not work on the device in question...
+    setTempCap: 'target_temperature',
+    tempMin: 5, // Min is 4, but using 4 as emulated Off
+    tempMax: 35,
+    tempStep: 0.5,
+    beta: true
+  },
   'se.nexa:EYCR-2300': DEFAULT_SWITCH,
   'vdevice:homey': DEFAULT_IGNORED, // Under homey:manager, not homey:app:
   'vdevice:virtual_socket': DEFAULT_SWITCH, // Under homey:manager, not homey:app:

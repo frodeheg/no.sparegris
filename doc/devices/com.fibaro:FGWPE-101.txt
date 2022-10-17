@@ -1,0 +1,14 @@
++6:39:6.450: ----- ANALYZING DEVICE -----
++6:39:6.452: Report type: Experimental device is working
++6:39:6.454: Device ID:   6ff3eaa2-7e22-4225-ad45-54c7cd35b9d4
++6:39:6.455: Device name: Låveplugg
++6:39:6.457: Device reliability: undefined
++6:39:6.459: Driver Uri: homey:app:com.fibaro
++6:39:6.461: Driver Id: FGWPE-101
++6:39:6.463: Found onoff cap: onoff
++6:39:6.467: Found temp cap: false
++6:39:6.471: Capabilities: onoff,measure_power,meter_power
++6:39:6.474: Options for 'onoff': {"value":false,"lastUpdated":"2022-09-14T08:59:07.369Z","type":"boolean","getable":true,"setable":true,"title":"Slått på","desc":null,"units":null,"id":"onoff","options":{}}
++6:39:6.479: Options for 'measure_power': {"value":0,"lastUpdated":"2022-09-14T08:59:08.177Z","type":"number","getable":true,"setable":false,"title":"Effekt","desc":"Effekt i watt (W)","units":"W","decimals":2,"chartType":"stepLine","id":"measure_power","options":{}}
++6:39:6.485: Options for 'meter_power': {"value":296.69,"lastUpdated":"2022-09-17T09:21:17.369Z","type":"number","getable":true,"setable":false,"title":"Energi","desc":"Energiforbruk i kilowattimer (kWh)","units":"kWh","decimals":2,"chartType":"spline","id":"meter_power","options":{}}
++6:39:6.490: --- ANALYZING DEVICE DONE ---

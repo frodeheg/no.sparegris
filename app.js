@@ -79,7 +79,7 @@ class PiggyBank extends Homey.App {
         || Object.keys(actionList[1]).length !== numControlledDevices
         || Object.keys(actionList[2]).length !== numControlledDevices) return false;
     } catch (err) {
-      this.updateLog(`Validate error: ${err}`, c.LOG_ERROR);
+      this.updateLog(`Settings has not been saved yet, cannot enable app before it has been properly configured: (${err})`, c.LOG_ERROR);
       return false;
     }
     return true;
@@ -839,7 +839,7 @@ class PiggyBank extends Homey.App {
     this.__current_state[deviceId].isOn = wantOn;
     this.__current_state[deviceId].ongoing = false; // If already ongoing then it should already have been completed, try again
     if (wantOn) {
-      const turnOnPromise = !isOn ? device.setCapabilityValue({ capabilityId: this.getOnOffCap(deviceId), value: this.getOnOffTrue(deviceId) }) : Promise.resolve();
+      const turnOnPromise = !isOn ? this.setOnOff(device, deviceId, true) : Promise.resolve();
       let newOfferPower;
       this.__current_state[deviceId].ongoing = true;
       this.__current_state[deviceId].confirmed = false;
@@ -873,7 +873,7 @@ class PiggyBank extends Homey.App {
       this.__current_state[deviceId].ongoing = true;
       this.__current_state[deviceId].confirmed = false;
       // Turn off
-      return device.setCapabilityValue({ capabilityId: this.getOnOffCap(deviceId), value: this.getOnOffFalse(deviceId) })
+      return this.setOnOff(device, deviceId, false)
         .then(() => {
           this.__charge_power_active = 0;
           this.updateReliability(deviceId, 1);
@@ -988,7 +988,7 @@ class PiggyBank extends Homey.App {
       this.updateLog(`Turning on device: ${deviceName}`, c.LOG_INFO);
       this.__current_state[deviceId].ongoing = true;
       this.__current_state[deviceId].confirmed = false;
-      return device.setCapabilityValue({ capabilityId: this.getOnOffCap(deviceId), value: this.getOnOffTrue(deviceId) })
+      return this.setOnOff(device, deviceId, true)
         .then(() => {
           this.updateReliability(deviceId, 1);
           this.__current_state[deviceId].nComError = 0;
@@ -1013,7 +1013,7 @@ class PiggyBank extends Homey.App {
       this.updateLog(`Turning off device: ${deviceName}`, c.LOG_INFO);
       this.__current_state[deviceId].ongoing = true;
       this.__current_state[deviceId].confirmed = false;
-      return device.setCapabilityValue({ capabilityId: this.getOnOffCap(deviceId), value: this.getOnOffFalse(deviceId) })
+      return this.setOnOff(device, deviceId, false)
         .then(() => {
           this.updateReliability(deviceId, 1);
           this.__current_state[deviceId].nComError = 0;
@@ -1717,19 +1717,19 @@ class PiggyBank extends Homey.App {
           this.updateLog(`Refreshtemp: isOn was set to undefined ${isOn}`, c.LOG_ERROR);
         }
         if (!isOn) return Promise.resolve([true, true]);
-        const hasTargetTemp = device.capabilities.includes('target_temperature');
-        if (!hasTargetTemp) return Promise.resolve([true, true]);
-        const hasMeasureTemp = device.capabilities.includes('measure_temperature');
-        if (!hasMeasureTemp) return Promise.resolve([true, true]);
+        const tempSetCap = this.getTempSetCap(deviceId);
+        const tempGetCap = this.getTempGetCap(deviceId);
+        const hasTargetTemp = device.capabilities.includes(tempSetCap);
+        const hasMeasureTemp = device.capabilities.includes(tempGetCap);
+        if ((!hasTargetTemp) || (!hasMeasureTemp)) return Promise.resolve([true, true]);
         const frostGuardActive = this.__deviceList[deviceId].thermostat_cap
           ? (device.capabilitiesObj[this.getTempGetCap(deviceId)].value < frostList[deviceId].minTemp) : false;
-        let newTemp = frostGuardActive ? frostList[deviceId].minTemp : (modeTemp + deltaTemp);
-        const minTemp = this.getTempCapMin(deviceId);
-        const maxTemp = this.getTempCapMax(deviceId);
+        let newTemp = frostGuardActive ? parseInt(frostList[deviceId].minTemp, 10) : (modeTemp + deltaTemp);
+        const minTemp = this.getTempCapMin(device, deviceId);
+        const maxTemp = this.getTempCapMax(device, deviceId);
         if (newTemp < minTemp) newTemp = minTemp;
         if (newTemp > maxTemp) newTemp = maxTemp;
         this.__current_state[deviceId].temp = newTemp;
-        const tempSetCap = this.getTempSetCap(deviceId);
         if (device.capabilitiesObj[tempSetCap].value === newTemp) return Promise.resolve([true, true]);
         this.__current_state[deviceId].ongoing = true;
         this.__current_state[deviceId].confirmed = false;
@@ -1809,19 +1809,27 @@ class PiggyBank extends Homey.App {
     }
   }
 
-  getTempCapMin(deviceId) {
+  getTempCapMin(device, deviceId) {
     try {
       return d.DEVICE_CMD[this.__deviceList[deviceId].driverId].tempMin;
     } catch (err) {
-      return 5;
+      try {
+        return device.capabilitiesObj[this.getTempSetCap(deviceId)].min;
+      } catch (err2) {
+        return 5;
+      }
     }
   }
 
-  getTempCapMax(deviceId) {
+  getTempCapMax(device, deviceId) {
     try {
       return d.DEVICE_CMD[this.__deviceList[deviceId].driverId].tempMax;
     } catch (err) {
-      return 40;
+      try {
+        return device.capabilitiesObj[this.getTempSetCap(deviceId)].max;
+      } catch (err2) {
+        return 30;
+      }
     }
   }
 
@@ -1859,12 +1867,30 @@ class PiggyBank extends Homey.App {
 
   getIsOn(device, deviceId) {
     if (device.capabilitiesObj === null) return undefined;
-    const idx = this.getOnOffCap(deviceId);
-    if (!(idx in device.capabilitiesObj)) return undefined;
-    const onValue = device.capabilitiesObj[idx].value;
+    const onOffCap = this.getOnOffCap(deviceId);
+    if (onOffCap === null) {
+      // Heater without off option, treat off as min temperature
+      const targetTempCap = d.DEVICE_CMD[this.__deviceList[deviceId].driverId].setTempCap;
+      if (!(targetTempCap in device.capabilitiesObj)) return undefined;
+      const offTemp = (d.DEVICE_CMD[this.__deviceList[deviceId].driverId].tempMin - 1);
+      return device.capabilitiesObj[targetTempCap].value !== offTemp;
+    }
+    if (!(onOffCap in device.capabilitiesObj)) return undefined;
+    const onValue = device.capabilitiesObj[onOffCap].value;
     if (onValue === this.getOnOffTrue(deviceId)) return true;
     if (onValue === this.getOnOffFalse(deviceId)) return false;
     return undefined;
+  }
+
+  async setOnOff(device, deviceId, onOff) {
+    let onOffCap = this.getOnOffCap(deviceId);
+    let onOffValue = onOff ? this.getOnOffTrue(deviceId) : this.getOnOffFalse(deviceId);
+    if (onOffCap === null) {
+      onOffCap = d.DEVICE_CMD[this.__deviceList[deviceId].driverId].setTempCap;
+      onOffValue = onOff ? d.DEVICE_CMD[this.__deviceList[deviceId].driverId].tempMin
+        : (d.DEVICE_CMD[this.__deviceList[deviceId].driverId].tempMin - 1);
+    }
+    return device.setCapabilityValue({ capabilityId: onOffCap, value: onOffValue });
   }
 
   /** ****************************************************************************************************

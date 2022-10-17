@@ -113,7 +113,7 @@
         id_a: { name:"DeviceNamenamenamenamename 1", room: "Stue",    image: "https://as2.ftcdn.net/v2/jpg/02/49/76/93/1000_F_249769389_7su5tYXOvcjcehNCcWTwcjnHvSMkLocJ.jpg", use: true, priority: 0, thermostat_cap: true, driverId: 'no.thermofloor:TF_Thermostat' },
         id_b: { name:"DeviceName 2", room: "Kjøkken", image: "https://as2.ftcdn.net/v2/jpg/02/49/76/93/1000_F_249769389_7su5tYXOvcjcehNCcWTwcjnHvSMkLocJ.jpg", use: true, priority: 1, thermostat_cap: true, reliability: 0.5, driverId: 'no.thermofloor:Z-TRM2fx' },
         id_c: { name:"DeviceName 3", room: "Bad",     image: "https://as2.ftcdn.net/v2/jpg/02/49/76/93/1000_F_249769389_7su5tYXOvcjcehNCcWTwcjnHvSMkLocJ.jpg", use: true, priority: 0, thermostat_cap: false, reliability: 0.6, driverId: 'no.thermofloor:Z-TRM3' },
-        id_d: { name:"DeviceName 4", room: "Bad",     image: "https://as2.ftcdn.net/v2/jpg/02/49/76/93/1000_F_249769389_7su5tYXOvcjcehNCcWTwcjnHvSMkLocJ.jpg", use: false, priority: 1, thermostat_cap: true, reliability: 0.7, driverId: 'unsupported' },
+        id_d: { name:"DeviceName 4", room: "Bad",     image: "https://as2.ftcdn.net/v2/jpg/02/49/76/93/1000_F_249769389_7su5tYXOvcjcehNCcWTwcjnHvSMkLocJ.jpg", use: false, priority: 1, thermostat_cap: true, reliability: 0.7, driverId: 'se.husdata:H60' },
         id_e: { name:"DeviceName 3", room: "Bad",     image: "https://as2.ftcdn.net/v2/jpg/02/49/76/93/1000_F_249769389_7su5tYXOvcjcehNCcWTwcjnHvSMkLocJ.jpg", use: true, priority: 0, thermostat_cap: false, reliability: 0.6, driverId: 'com.everspring:AN179' }
       }
       // The modeList is not indexed by id because it uses the index to sort the list
@@ -179,16 +179,19 @@
             continue;
           }
           let experimental = !(device.driverId in DEVICE_CMD) || ("beta" in DEVICE_CMD[device.driverId]);
+          let hasNote = (device.driverId in DEVICE_CMD) && ("note" in DEVICE_CMD[device.driverId]);
           found_experimental_on |= device.use && experimental;
           let enabledImg = device.use ? experimental ? "experimental.png" : "enabled.png" : "disabled.png";
           let experimentalCmd = experimental ? 'document.getElementById(\'' + experimentalId + '\').style.display=\'block\';' : '';
+          let noteButton = hasNote ? `<div class="hintButton" onclick="toggle(this,'note${key}', 'table-row');return false;" style="display:inline-block">i</div>` : '';
+          let noteText = hasNote ? `<tr id="note${key}" class="hint"><td colspan=4><p>${DEVICE_CMD[device.driverId].note}</p></td></tr>` : '';
           gen_list +=
             '<tr>' +
             '  <td><img src="' + device.image + '" alt="icon"></td>' +
             '  <td><input type="image" width="40" height="20" src="' + enabledImg + '" onclick="' + experimentalCmd + 'toggleEnableDevice(event, \'' + String(key) + '\');displaySaveHint()" id="enableDevice' + String(key) + '"></td>' +
-            '  <td><h3>' + limitText(device.name) + '</h3></td>' +
+            '  <td><h3>' + limitText(device.name) + `${noteButton}</h3></td>` +
             '  <td><p>' + device.room + '</p></td>' +
-            '</tr>';
+            `</tr>${noteText}`;
         }
         gen_list += "</table>";
         gen_list += '<div id="' + experimentalId + '" style="display:' + (found_experimental_on?'block':'none') + ';">' + experimentalText + '</div>';
@@ -2188,6 +2191,11 @@
           if (deviceId == "") {
             Homey.alert(Homey.__('settings.deviceinfo.noDeviceSelected'));
           } else {
+            let reliability = deviceList[deviceId].reliability
+            if ((deviceId in deviceList) && (reliability < 1)) {
+              let alertMessage = Homey.__('settings.deviceinfo.unreliableDevice');
+              Homey.alert(alertMessage.replace("${reliability}", Math.round(reliability*100)));
+            }
             Homey.api('GET', `/apiCommand?cmd=logShowCaps&deviceId=${deviceId}&filter=${deviceFilter}`, null, function (err, result) {
               if (err) return Homey.alert(err);
             });

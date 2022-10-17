@@ -58,6 +58,7 @@ p {
     height: 19px;
     border: 1px solid black;
     border-radius: 15px;
+    color: black;
     background-image: radial-gradient(white, rgb(125, 125, 255), blue);
     box-shadow: 2px 2px 10px gray;
   }

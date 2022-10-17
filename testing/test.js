@@ -107,6 +107,13 @@ async function applyBasicConfig(app) {
   app.homey.settings.set('priceActionList', [
     {id_a: {operation: c.EMERGENCY_OFF}}, {id_a: {operation: c.EMERGENCY_OFF}}, {id_a: {operation: c.EMERGENCY_OFF}}, {id_a: {operation: c.EMERGENCY_OFF}}, {id_a: {operation: c.EMERGENCY_OFF}}
   ]);
+  app.__deviceList = {
+    id_a: { name:"DeviceNamenamenamenamename 1", room: "Stue",    image: "x.jpg", use: true, priority: 0, thermostat_cap: true, driverId: 'no.thermofloor:TF_Thermostat' },
+    id_b: { name:"DeviceName 2", room: "Kjøkken", image: "x.jpg", use: true, priority: 1, thermostat_cap: true, reliability: 0.5, driverId: 'no.thermofloor:Z-TRM2fx' },
+    id_c: { name:"DeviceName 3", room: "Bad",     image: "x.jpg", use: true, priority: 0, thermostat_cap: false, reliability: 0.6, driverId: 'no.thermofloor:Z-TRM3' },
+    id_d: { name:"DeviceName 4", room: "Bad",     image: "x.jpg", use: false, priority: 1, thermostat_cap: true, reliability: 0.7, driverId: 'se.husdata:H60' },
+    id_e: { name:"DeviceName 3", room: "Bad",     image: "x.jpg", use: true, priority: 0, thermostat_cap: false, reliability: 0.6, driverId: 'com.everspring:AN179' }
+  }
   app.homey.settings.set('priceMode', c.PRICE_MODE_INTERNAL);
   const futureData = app.homey.settings.get('futurePriceOptions');
   futureData.priceKind = c.PRICE_KIND_SPOT;
@@ -117,12 +124,10 @@ async function applyBasicConfig(app) {
 
 // Test Charging
 async function testCharging() {
-  console.log('Testin charging');
+  console.log('Testing charging');
   const app = new PiggyBank();
   await app.onInit();
   await applyBasicConfig(app);
-  const now = new Date();
-  console.log(`Start: ${now}`);
 
   app.__current_prices = [
     0.2, 0.3, 0.5, 0.3, 0.2, 0.5, 0.9, 0.8, 0.1, 0.2,
@@ -138,9 +143,27 @@ async function testCharging() {
     }
   }
 
-  console.log(`End: ${now}`);
   await app.onUninit();
-  console.log('Testin charging - Passed');
+  console.log('Testing charging - Passed');
+}
+
+// Test reliability
+async function testReliability() {
+  console.log('Testing reliability');
+  const app = new PiggyBank();
+  await app.onInit();
+  await applyBasicConfig(app);
+
+  for (const deviceId in app.__deviceList) {
+    const device = app.__deviceList[deviceId];
+    app.updateReliability(deviceId, 0);
+    app.updateReliability(deviceId, 1);
+    console.log(`Reliability: ${device.reliability}`);
+  }
+  //console.log(`Reliability: ${}`)
+
+  await app.onUninit();
+  console.log('Testing reliability - Passed');
 }
 
 // Start all tests
@@ -149,8 +172,9 @@ async function startAllTests() {
 /*    await testCurrencyConverter();
     await testApp();
     await testEntsoe();
-    await testNewHour(20000);*/
-    await testCharging();
+    await testNewHour(20000);
+    await testCharging();*/
+    await testReliability();
   } catch (err) {
     console.log(`Testing failed: ${err}`);
   }

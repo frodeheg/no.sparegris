@@ -139,7 +139,8 @@
       "selector": "Enhet",
       "getinfo": "Mer info",
       "analyze": "Generer rapport",
-      "noDeviceSelected": "Vennligst velg enhet"
+      "noDeviceSelected": "Vennligst velg enhet",
+      "unreliableDevice": "Den valgte enheten er bare ${reliability}% pålitelig. Kan dette forklare problemene du har? Hvis ikke, vennligst inkluder epost-adresse i rapporten så vi kan løse problemet sammen."
     },
     "help": {
       "notFound": "Instruksjoner for manglende enheter",

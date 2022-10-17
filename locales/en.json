@@ -139,7 +139,8 @@
       "selector": "Device",
       "getinfo": "Get info",
       "analyze": "Generate Report",
-      "noDeviceSelected": "Please select device"
+      "noDeviceSelected": "Please select device",
+      "unreliableDevice": "The selected device is only ${reliability}% reliable. Can this explain the problems you're having? If not, please include your email in the report so we can solve this together."
     },
     "help": {
       "notFound": "Instructions for non-supported devices",
