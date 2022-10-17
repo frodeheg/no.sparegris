@@ -2226,7 +2226,7 @@ class PiggyBank extends Homey.App {
       this.log(newMessage);
 
       let oldText = this.mylog.diagLog || '';
-      if (oldText.length > 10000) {
+      if (oldText.length > 20000) {
         // Remove the first 5000 characters.
         oldText = oldText.substring(5000);
         const n = oldText.indexOf('\n');
@@ -2388,8 +2388,8 @@ class PiggyBank extends Homey.App {
         this.updateLog(`Report type: ${problems[filter]}`, c.LOG_ALL);
         this.updateLog(`Device ID:   ${deviceId}`, c.LOG_ALL);
         this.updateLog(`Device name: ${device.name}`, c.LOG_ALL);
-        this.updateLog(`Device reliability: ${device.reliability}`, c.LOG_ALL);
         try {
+          this.updateLog(`Device reliability: ${this.__deviceList[deviceId].reliability}`, c.LOG_ALL);
           this.updateLog(`Driver Uri: ${device.driverUri}`, c.LOG_ALL);
           this.updateLog(`Driver Id: ${device.driverId}`, c.LOG_ALL);
           this.updateLog(`Found onoff cap: ${this.__deviceList[deviceId].onoff_cap}`, c.LOG_ALL);
