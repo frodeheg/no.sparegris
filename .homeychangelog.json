@@ -484,5 +484,8 @@
   },
   "0.18.4": {
     "en": "Bugfix fetching future prices, it was still not fetched early enough. + Fixed new start charging cycle flow card + minor translation improvements."
+  },
+  "0.18.5": {
+    "en": "Added com.fibaro:FGWPE-101 to the supported list. + Added com.home-connect:dryer to the ignored list. + Added se.husdata:H60 to the experimental devices list + Added support for getting min/max temperatures of unsupported devices + Improved various error messages to be more informative + Added feedback question when trying to report unreliable devices."
   }
 }
