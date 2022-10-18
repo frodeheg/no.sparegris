@@ -130,6 +130,7 @@ const DEVICE_CMD = {
     setOnOffCap: 'se_onoff',
     default: false
   },
+  'com.swttt.devicegroups:light': DEFAULT_SWITCH,
   'com.tuya.cloud:tuyalight': DEFAULT_SWITCH,
   'com.mill:mill': {
     type: DEVICE_TYPE.HEATER,

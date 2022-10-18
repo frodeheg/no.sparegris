@@ -1,0 +1,14 @@
++6:24:25.008: ----- ANALYZING DEVICE -----
++6:24:25.012: Report type: Experimental device is working
++6:24:25.014: Device ID:   df726bff-5b66-4267-884d-11451396967d
++6:24:25.018: Device name: Outdoor lights
++6:24:25.019: Device reliability: 1
++6:24:25.023: Driver Uri: homey:app:com.swttt.devicegroups
++6:24:25.027: Driver Id: light
++6:24:25.030: Found onoff cap: onoff
++6:24:25.031: Found temp cap: false
++6:24:25.033: Capabilities: onoff
++6:24:25.037: Options for 'onoff': {"value":false,"lastUpdated":"2022-10-18T06:04:04.644Z","type":"boolean","getable":true,"setable":true,"title":"Turned on","desc":null,"units":null,"id":"onoff","options":{}}
++6:24:25.039: --- ANALYZING DEVICE DONE ---
++6:25:16.569: Email: robert@schmidt-cisternas.net
+Comment:Virtual group device from "<group>" app. This controls 4 relays for 9 lights. App supports many device types, I've only used this one.
