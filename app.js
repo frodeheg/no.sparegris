@@ -113,6 +113,11 @@ class PiggyBank extends Homey.App {
     await prices.entsoeApiInit(Homey.env.ENTSOE_TOKEN);
 
     // ===== BREAKING CHANGES =====
+    // 1 person on 0.10.7 (2022.10.17)
+    // 1 person on 0.14.4 (2022.10.17)
+    // 1 person on 0.16.0 (2022.10.17)
+    // 3 persons on 0.17.14 (2022.10.19)
+    // 360 persons on 0.18.6 (2022.10.19)
     // Version 0.10.8 changes from having maxPower per mode to one global setting
     if (Array.isArray(this.homey.settings.get('maxPowerList'))) {
       const maxPowerList = this.homey.settings.get('maxPowerList');
@@ -321,7 +326,7 @@ class PiggyBank extends Homey.App {
     this.__charge_power_active = 0;
     // All elements of current_state will have the following:
     //  nComError: Number of communication errors since last time it worked - Used to depriorotize devices so we don't get stuck in an infinite retry loop
-    //  isOn: If the device should be on
+    //  lastCmd: The last onoff command that was sent to the device
     //  temp: The temperature of the device
     //  ongoing: true if the state has not been confirmed yet
     // Need to be refreshed whenever the device list is created
@@ -740,7 +745,7 @@ class PiggyBank extends Homey.App {
       if (!(deviceId in this.__current_state)) {
         this.__current_state[deviceId] = {
           nComError: 0,
-          isOn: undefined,
+          lastCmd: undefined,
           temp: undefined,
           ongoing: false,
           __monitorError: 0,
@@ -836,7 +841,7 @@ class PiggyBank extends Homey.App {
     this.prevChargerTime = now;
     if (isEmergency) this.updateLog('Emergency turn off for charger device (minToggleTime ignored)', c.LOG_WARNING);
     // Start signalling the charger
-    this.__current_state[deviceId].isOn = wantOn;
+    this.__current_state[deviceId].lastCmd = wantOn ? TURN_ON : TURN_OFF;
     this.__current_state[deviceId].ongoing = false; // If already ongoing then it should already have been completed, try again
     if (wantOn) {
       const turnOnPromise = !isOn ? this.setOnOff(device, deviceId, true) : Promise.resolve();
@@ -977,7 +982,7 @@ class PiggyBank extends Homey.App {
         && !this.__deviceList[deviceId].memberOf.some(z => (activeZones.hasOwnProperty(z) && !activeZones[z].enabled))
         && ((newState === TURN_ON && currentModeState !== ALWAYS_OFF) || (newState === TURN_OFF && currentModeState === ALWAYS_ON)));
 
-    this.__current_state[deviceId].isOn = newStateOn;
+    this.__current_state[deviceId].lastCmd = newStateOn ? TURN_ON : (newState === EMERGENCY_OFF) ? EMERGENCY_OFF : TURN_OFF;
     if (newStateOn === undefined) {
       this.updateLog(`isOn was set to undefined ${frostGuardActive}`, c.LOG_ERROR);
     }
@@ -1131,11 +1136,12 @@ class PiggyBank extends Homey.App {
             return Promise.reject(new Error('The onoff capability is non-existing, this should never happen.'));
           }
           const isOn = this.getIsOn(device, deviceId);
-          const onConfirmed = (this.__current_state[deviceId].isOn === isOn);
+          const { lastCmd } = this.__current_state[deviceId];
+          const onConfirmed = ((lastCmd === TURN_ON) && isOn) || ((lastCmd !== TURN_ON) && (!isOn));
           if (!onConfirmed) {
             // Try to change the on state.....
             this.__current_state[deviceId].__monitorFixOn += 1;
-            const newOp = this.__current_state[deviceId].isOn ? TURN_ON : TURN_OFF;
+            const newOp = this.__current_state[deviceId].lastCmd;
             return this.changeDeviceState(deviceId, newOp)
               .then(() => this.refreshTemp(deviceId))
               .then(() => {
@@ -1712,7 +1718,6 @@ class PiggyBank extends Homey.App {
           return Promise.reject(new Error('The onoff capability is non-existing, this should never happen.'));
         }
         const isOn = this.getIsOn(device, deviceId);
-        this.__current_state[deviceId].isOn = isOn;
         if (isOn === undefined) {
           this.updateLog(`Refreshtemp: isOn was set to undefined ${isOn}`, c.LOG_ERROR);
         }
@@ -2350,7 +2355,7 @@ class PiggyBank extends Homey.App {
     for (const deviceId in frostList) {
       if (!(deviceId in this.__deviceList) || this.__deviceList[deviceId].use === false) continue;
       const { name, room } = this.__deviceList[deviceId];
-      const { isOn, nComError } = this.__current_state[deviceId];
+      const { lastCmd, nComError } = this.__current_state[deviceId];
       const { temp, ongoing, confirmed } = this.__current_state[deviceId];
       const { __monitorError, __monitorFixTemp, __monitorFixOn } = this.__current_state[deviceId];
       this.homeyApi.devices.getDevice({ id: deviceId })
@@ -2360,7 +2365,7 @@ class PiggyBank extends Homey.App {
           const tempMeasureCap = this.getTempGetCap(deviceId);
           const tempActualTarget = (tempTargetCap in device.capabilitiesObj) ? device.capabilitiesObj[tempTargetCap].value : 'undef';
           const tempActualMeasure = (tempMeasureCap in device.capabilitiesObj) ? device.capabilitiesObj[tempMeasureCap].value : 'undef';
-          this.updateLog(`${String(name).padEnd(25)} | ${String(room).padEnd(15)} | ${String(isOn).padEnd(10)} | ${
+          this.updateLog(`${String(name).padEnd(25)} | ${String(room).padEnd(15)} | ${String(lastCmd).padEnd(10)} | ${
             String(temp).padStart(11)} | ${String(nComError).padStart(10)} | ${String(ongoing).padEnd(7)}`, c.LOG_ALL);
           this.updateLog(`${String('--->Actual').padEnd(13)} - Errs: ${String(__monitorError).padEnd(3)} | ${
             String(__monitorFixOn).padEnd(7)},${String(__monitorFixTemp).padEnd(7)} | ${String(isOnActual).padEnd(10)} | ${
