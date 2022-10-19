@@ -496,5 +496,8 @@
   },
   "0.18.8": {
     "en": "Critical bugfix for a bug introduced in version 0.18.6 where the power reserved for correct operation in the first hour of the app after a reboot was not reset to 0 ever, meaning that you would never get any power for your devices ever if the reboot happened right before a new hour."
+  },
+  "0.18.9": {
+    "en": "Improved accuracy of energy usage calculation for every new hour by approximately 0.3%"
   }
 }
