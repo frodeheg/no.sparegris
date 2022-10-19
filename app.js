@@ -1077,6 +1077,7 @@ class PiggyBank extends Homey.App {
       await this.statsSetLastHourEnergy(this.__accum_energy, energyOk, now);
       this.__power_last_hour = this.__accum_energy;
       this.updateLog(`Hour finalized: ${String(this.__accum_energy)} Wh`, c.LOG_INFO);
+      this.__reserved_energy = 0;
       this.__accum_energy = 0;
       this.__current_power_time = new Date(now.getTime());
     }
