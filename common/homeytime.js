@@ -46,13 +46,19 @@ function toTimeString(inputTime) {
 }
 
 /**
+ * Returns the number of milliseconds since last hour
+ */
+function timeSinceLastHour(inputTime) {
+  return (inputTime.getMinutes() * 60 * 1000)
+  + (inputTime.getSeconds() * 1000)
+  + inputTime.getMilliseconds();
+}
+
+/**
  * Returns the number of milliseconds until next hour
  */
 function timeToNextHour(inputTime) {
-  return 60 * 60 * 1000
-  - inputTime.getMinutes() * 60 * 1000
-  - inputTime.getSeconds() * 1000
-  - inputTime.getMilliseconds();
+  return (60 * 60 * 1000) - timeSinceLastHour(inputTime);
 }
 
 /**
@@ -75,12 +81,24 @@ function roundToStartOfDay(time, homey) {
   return localTime;
 }
 
+/**
+ * Checks if two time objects belong to the same hour or not
+ */
+function isSameHour(time1, time2) {
+  return (time1.getFullYear() === time2.getFullYear())
+    && (time1.getMonth() === time2.getMonth())
+    && (time1.getDate() === time2.getDate())
+    && (time1.getHours() === time2.getHours());
+}
+
 module.exports = {
   toLocalTime,
   fromLocalTime,
   timeDiff,
   toTimeString,
+  timeSinceLastHour,
   timeToNextHour,
   roundToNearestHour,
   roundToStartOfDay,
+  isSameHour,
 };
