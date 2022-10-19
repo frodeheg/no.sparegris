@@ -493,5 +493,8 @@
   },
   "0.18.7": {
     "en": "Added com.swttt.devicegroups:light to the supported list + Bugfix for devices that turned on too early after emergency off"
+  },
+  "0.18.8": {
+    "en": "Critical bugfix for a bug introduced in version 0.18.6 where the power reserved for correct operation in the first hour of the app after a reboot was not reset to 0 ever, meaning that you would never get any power for your devices ever if the reboot happened right before a new hour."
   }
 }
