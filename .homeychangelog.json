@@ -501,6 +501,6 @@
     "en": "Improved accuracy of energy usage calculation for every new hour by approximately 0.3%"
   },
   "0.18.10": {
-    "en": "Improved estimation of power when crossing into new hours + Made car chargers more visible in the device selection + Fixed bug: New thermostat devices appeared as enabled allthough they was not."
+    "en": "Improved estimation of power when crossing into new hours + Made car chargers more visible in the device selection + Fixed bug: New thermostat devices appeared as enabled allthough they was not. + Fix for bug when car charger was not raising power"
   }
 }
