@@ -831,7 +831,7 @@ class PiggyBank extends Homey.App {
     const hasPowerCap = (driverId in d.DEVICE_CMD)
       && (d.DEVICE_CMD[driverId].setCurrentCap !== undefined);
     const powerUsed = !isOn || !hasPowerCap || (device.capabilitiesObj === null) ? 0
-      : +await device.capabilitiesObj[d.DEVICE_CMD[driverId].measurePowerCap];
+      : +await device.capabilitiesObj[d.DEVICE_CMD[driverId].measurePowerCap].value;
     this.__charge_power_active = powerUsed;
     const ampsOffered = !isOn || (device.capabilitiesObj === null) ? 0
       : !hasPowerCap ? +chargerOptions.chargeMin
@@ -844,7 +844,7 @@ class PiggyBank extends Homey.App {
       && !isEmergency;
     // Check that we do not toggle the charger too often
     const now = new Date();
-    const timeLapsed = (now - this.prevChargerTime) / 60000; // Lapsed time in minutes
+    const timeLapsed = (now - this.prevChargerTime) / 1000; // Lapsed time in seconds
     if (this.prevChargerTime !== undefined && (timeLapsed < chargerOptions.minToggleTime) && !isEmergency) {
       // Must wait a little bit more before changing
       return Promise.resolve([false, false]);
