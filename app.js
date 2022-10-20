@@ -689,7 +689,13 @@ class PiggyBank extends Homey.App {
         continue;
       }
       // Priority 1 devices has class = thermostat & heater - capabilities ['target_temperature' + 'measure_temperature']
-      const priority = (device.capabilities.includes('target_temperature') ? 1 : 0)
+      const driverId = `${device.driverUri.split(':').at(-1)}:${device.driverId}`;
+      const priority = (((driverId in d.DEVICE_CMD)
+        && ((d.DEVICE_CMD[driverId].type === d.DEVICE_TYPE.CHARGER)
+        || (d.DEVICE_CMD[driverId].type === d.DEVICE_TYPE.HEATER)
+        || (d.DEVICE_CMD[driverId].type === d.DEVICE_TYPE.WATERHEATER)
+        || (d.DEVICE_CMD[driverId].type === d.DEVICE_TYPE.AC))) ? 1 : 0)
+        + (device.capabilities.includes('target_temperature') ? 1 : 0)
         + (device.capabilities.includes('measure_temperature') ? 1 : 0)
         + ((device.class === 'thermostat' || device.class === 'heater') ? 1 : 0);
 
@@ -699,9 +705,12 @@ class PiggyBank extends Homey.App {
       if (oldDeviceList !== null && device.id in oldDeviceList) {
         useDevice = oldDeviceList[device.id].use;
         reliability = oldDeviceList[device.id].reliability;
-      } else {
-        // Never seen before device, set usage based on priority
+      } else if (oldDeviceList === null) {
+        // App opened for the first time, set usage based on priority
         useDevice = (priority > 0);
+      } else {
+        // Never seen before device, disable by default
+        useDevice = false;
       }
       if (reliability === undefined) {
         reliability = 1;
@@ -721,7 +730,6 @@ class PiggyBank extends Homey.App {
       // device.capabilitiesObj should be available but in case homey timed out it could be incomplete
       const targetTemp = (thermostatCap && device.capabilitiesObj && ('target_temperature' in device.capabilitiesObj))
         ? +device.capabilitiesObj['target_temperature'].value : 24;
-      const driverId = `${device.driverUri.split(':').at(-1)}:${device.driverId}`;
       const relevantDevice = {
         priority: (priority > 0) ? 1 : 0,
         name: device.name,
