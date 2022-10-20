@@ -243,6 +243,8 @@ class PiggyBank extends Homey.App {
       this.homey.settings.unset('safeShutdown__offeredEnergy');
       this.updateLog(`Restored state from safe shutdown values ${this.__accum_energy} ${this.__current_power} ${this.__current_power_time} ${this.__power_last_hour}`, c.LOG_ALL);
     }
+    this.__accum_since = new Date(this.__current_power_time.getTime());
+    this.__accum_since.setHours(0, 0, 0, 0);
     // ===== KEEPING STATE ACROSS RESTARTS END =====
     // Initialize missing settings
     let futurePriceOptions = this.homey.settings.get('futurePriceOptions');
@@ -505,7 +507,7 @@ class PiggyBank extends Homey.App {
 
     // ============== ON NEW HOUR SAFETY GUARD WHEN RESTARTING ==============
     // Check if the onNewHour was missed due to a restart
-    const timeWithinHour = 1000 * 60 * 60 - timeToNextHour(now);
+    const timeWithinHour = timeSinceLastHour(now);
     if (this.__current_power === undefined) {
       // First time app was started or the time since restart exceeded an hour
       // Reserve energy for the time we have no data on
@@ -535,6 +537,7 @@ class PiggyBank extends Homey.App {
         // Add up initial part of next hour.
         const energyUsedNewHour = (this.__current_power * timeWithinHour) / (1000 * 60 * 60) + 100;
         this.__accum_energy = energyUsedNewHour;
+        this.__current_power_time = new Date(now.getTime()); // When adding to this.__accum_energy then last power time must be reset.
         this.log(`NewHour energy from safe restart: ${this.__accum_energy}`, c.LOG_INFO);
       } else {
         await this.onNewHour(false); // Not a new hour, hense false
@@ -1075,30 +1078,12 @@ class PiggyBank extends Homey.App {
       // Crossed into new hour
       const energyOk = this.__power_last_hour !== undefined; // If undefined then this is not for the full hour
 
-      // Need to adjust the accumulated energy to fit with the hour start.
-      let energyAfterReset;
-      const currentPower = this.__current_power || this.homey.settings.get('maxPower') || 0;
-      if (isSameHour(this.__current_power_time, now)) {
-        // Need to subtract some energy as too much was added.
-        const tooMuchTimeProcessed = timeSinceLastHour(this.__current_power_time);
-        const tooMuchEnergy = (currentPower * tooMuchTimeProcessed) / (1000 * 60 * 60);
-        this.__accum_energy = Math.max(0, this.__accum_energy - tooMuchEnergy);
-        energyAfterReset = tooMuchEnergy;
-      } else {
-        // Add up the last rest of power from last hour
-        const unprocessedTimeLastHour = timeToNextHour(this.__current_power_time);
-        const unprocessedTimeThisHour = timeSinceLastHour(now);
-        const unprocessedEnergyLastHour = (currentPower * unprocessedTimeLastHour) / (1000 * 60 * 60);
-        const unprocessedEnergyThisHour = (currentPower * unprocessedTimeThisHour) / (1000 * 60 * 60);
-        this.__accum_energy += unprocessedEnergyLastHour;
-        energyAfterReset = unprocessedEnergyThisHour;
-      }
       await this.statsSetLastHourEnergy(this.__accum_energy, energyOk, now);
-      this.__power_last_hour = this.__accum_energy;
       this.updateLog(`Hour finalized: ${String(this.__accum_energy)} Wh`, c.LOG_INFO);
+      this.__power_last_hour = this.__accum_energy;
       this.__reserved_energy = 0;
-      this.__accum_energy = energyAfterReset;
-      this.__current_power_time = new Date(now.getTime());
+      this.__accum_energy = 0;
+      this.__accum_since = new Date(now.getTime());
     }
 
     if (+this.homey.settings.get('operatingMode') !== c.MODE_DISABLED) {
@@ -1235,7 +1220,7 @@ class PiggyBank extends Homey.App {
     this.__energy_meter_detected_time = new Date(now.getTime());
     this.__current_power_time = new Date(now.getTime());
     this.__current_power = newPower;
-    this.__power_estimated = this.__accum_energy + (newPower * remainingTime) / (1000 * 60 * 60);
+    this.__power_estimated = (isSameHour(now, this.__accum_since) ? this.__accum_energy : 0) + (newPower * remainingTime) / (1000 * 60 * 60);
 
     // Check if power can be increased or reduced
     const errorMargin = this.homey.settings.get('errorMargin') ? (parseInt(this.homey.settings.get('errorMargin'), 10) / 100) : 0;
