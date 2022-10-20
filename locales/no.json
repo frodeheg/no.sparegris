@@ -79,6 +79,7 @@
       "taskEnableApp": "Appen må slås på for at du skal spare penger.",
       "taskCreateEnergyFlow": "Vennligst koble strømmålerens effektutgang inn til denne appens effektinngang.",
       "taskEnergyFlowRate": "Hyppigheten strømmålerens effekt oppdateres med virker å være for lav (forrige signal mottatt for ${interval} minutter siden). Vennligst øk hyppigheten om mulig.",
+      "taskChargerNotEnabled": "Du har startet en ladesyklus uten at en støttet lader er satt som kontrollerbar i appen. Enten må du velge laderen som kontrollerbar eller så må du sette ladestyringen til flytkort.",
       "taskNoPriceFlow": "Du har valgt prispunkt fra flytkort, men ingen slike signaler har blitt mottatt.",
       "taskNoPriceAPI": "Du har valgt å hente priser fra ekstern app, noe som krever at appen Strømregning er installert, men appen kan ikke finnes eller har en utdatert versjon. Kanskje valget spotpris er bedre for deg.",
       "taskNoPriceAPIDevice": "Du har valgt å hente priser fra ekstern app. Da hentes prisene fra Strømregning-appen, men for at dette skal virke må du også installere appens koresponderende enhet (Også kalt 'Strømregning').",

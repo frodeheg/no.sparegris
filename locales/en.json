@@ -79,6 +79,7 @@
       "taskEnableApp": "The app must be enabled in order to save money.",
       "taskCreateEnergyFlow": "Please connect the output of the house energy meter to the energy input of this app.",
       "taskEnergyFlowRate": "The rate of which the energy meter is reporting the energy is very low (last signal received ${interval} minutes ago). Please increase the rate if possible.",
+      "taskChargerNotEnabled": "You have started a charge cycle without a supported charger set to controllable in the app. You either have to select the charger as controllable or you have to set the charging control to flow cards.",
       "taskNoPriceFlow": "Your setting indicate prices should come from a flow, but no such flow seem to be active",
       "taskNoPriceAPI": "You have chosen to fetch prices from an external app, which require the app 'Norwegian Electricity Bill' to be installed, but it can not be found or the version is too old. Maybe you should use the setting spot price instead.",
       "taskNoPriceAPIDevice": "Your choice to fetch prices from an external app require the app 'Norwegian Electricity Bill' to be installed. The app is found but prices can only be retrieved when the apps corresponding device has been installed.",

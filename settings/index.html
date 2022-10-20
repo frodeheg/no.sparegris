@@ -712,6 +712,25 @@
         element.style.display = type;
       }
 
+      function isChargerControllable() {
+        for (var key in deviceList) {
+          var device = deviceList[key];
+          if ((device.use) && (device.driverId in DEVICE_CMD) && (DEVICE_CMD[device.driverId].type === DEVICE_TYPE.CHARGER)) {
+            return true;
+          }
+        }
+        return false;
+      }
+
+      function changeTaskVisibility(taksName, makeVisible) {
+        if (makeVisible) {
+          setVisible(taksName);
+        } else {
+          setVisible(taksName, 'none');
+        }
+        return makeVisible;
+      }
+
       function refreshTodoList() {
         let experimentalEnabled = false;
         for (var key in deviceList) {
@@ -721,79 +740,21 @@
         }
         let appIsDisabled = (document.getElementById("appEnabled").value == '0');
         let haveTasks = false;
-        if (appIsDisabled) {
-          setVisible('taskEnableApp');
-          haveTasks = true;
-        } else {
-          setVisible('taskEnableApp', 'none');
-        }
-        if (!appIsDisabled && appConfigProgress.energyMeterNotConnected) {
-          setVisible('taskCreateEnergyFlow');
-          haveTasks = true;
-        } else {
-          setVisible('taskCreateEnergyFlow', 'none');
-        }
-        if (!appIsDisabled && !appConfigProgress.energyMeterNotConnected && (+appConfigProgress.timeSinceEnergyMeter > 120)) {
-          setVisible('taskEnergyFlowRate');
-          haveTasks = true;
-        } else {
-          setVisible('taskEnergyFlowRate', 'none');
-        }
         const priceMode = document.getElementById("priceMode").value;
         const priceKind = document.getElementById("priceKind").value;
-        if (!appIsDisabled && priceMode == PRICE_MODE_FLOW && !appConfigProgress.gotPPFromFlow) {
-          setVisible('taskNoPriceFlow');
-          haveTasks = true;
-        } else {
-          setVisible('taskNoPriceFlow', 'none');
-        }
-        if (!appIsDisabled && priceMode == PRICE_MODE_INTERNAL && priceKind == PRICE_KIND_EXTERNAL && appConfigProgress.ApiStatus == PRICE_API_NO_APP) {
-          setVisible('taskNoPriceAPI');
-          haveTasks = true;
-        } else {
-          setVisible('taskNoPriceAPI', 'none');
-        }
-        if (!appIsDisabled && priceMode == PRICE_MODE_INTERNAL && priceKind == PRICE_KIND_EXTERNAL && appConfigProgress.ApiStatus == PRICE_API_NO_DEVICE) {
-          setVisible('taskNoPriceAPIDevice');
-          haveTasks = true;
-        } else {
-          setVisible('taskNoPriceAPIDevice', 'none');
-        }
-        if (!appIsDisabled && priceMode == PRICE_MODE_INTERNAL && priceKind == PRICE_KIND_EXTERNAL && appConfigProgress.ApiStatus == PRICE_API_NO_DATA) {
-          setVisible('taskNoPriceAPIData');
-          haveTasks = true;
-        } else {
-          setVisible('taskNoPriceAPIData', 'none');
-        }
-        if (!appIsDisabled && priceMode == PRICE_MODE_DISABLED) {
-          setVisible('taskNoPriceEnabled');
-          haveTasks = true;
-        } else {
-          setVisible('taskNoPriceEnabled', 'none');
-        }
-        if (!appIsDisabled && document.getElementById('logLevel').value != 0) {
-          setVisible('taskDisableLogging');
-          haveTasks = true;
-        } else {
-          setVisible('taskDisableLogging', 'none');
-        }
-        if (!appIsDisabled && experimentalEnabled) {
-          setVisible('taskExperimental');
-          haveTasks = true;
-        } else {
-          setVisible('taskExperimental', 'none');
-        }
-        if (!appIsDisabled && numErrorDevices > 0) {
-          setVisible('errorDevices');
-          haveTasks = true;
-        } else {
-          setVisible('errorDevices', 'none');
-        }
-        if (!haveTasks) {
-          setVisible('taskNone');
-        } else {
-          setVisible('taskNone', 'none');
-        }
+        haveTasks |= changeTaskVisibility('taskEnableApp', appIsDisabled);
+        haveTasks |= changeTaskVisibility('taskCreateEnergyFlow', !appIsDisabled && appConfigProgress.energyMeterNotConnected);
+        haveTasks |= changeTaskVisibility('taskEnergyFlowRate', !appIsDisabled && !appConfigProgress.energyMeterNotConnected && (+appConfigProgress.timeSinceEnergyMeter > 120));
+        haveTasks |= changeTaskVisibility('taskChargerNotEnabled', !appIsDisabled && (+document.getElementById('chargeTarget').value == CHARGE_TARGET_AUTO) && (!isChargerControllable()) && (new Date(chargerOptions.chargeEnd) > new Date()));
+        haveTasks |= changeTaskVisibility('taskNoPriceFlow', !appIsDisabled && priceMode == PRICE_MODE_FLOW && !appConfigProgress.gotPPFromFlow);
+        haveTasks |= changeTaskVisibility('taskNoPriceAPI', !appIsDisabled && priceMode == PRICE_MODE_INTERNAL && priceKind == PRICE_KIND_EXTERNAL && appConfigProgress.ApiStatus == PRICE_API_NO_APP);
+        haveTasks |= changeTaskVisibility('taskNoPriceAPIDevice', !appIsDisabled && priceMode == PRICE_MODE_INTERNAL && priceKind == PRICE_KIND_EXTERNAL && appConfigProgress.ApiStatus == PRICE_API_NO_DEVICE);
+        haveTasks |= changeTaskVisibility('taskNoPriceAPIData', !appIsDisabled && priceMode == PRICE_MODE_INTERNAL && priceKind == PRICE_KIND_EXTERNAL && appConfigProgress.ApiStatus == PRICE_API_NO_DATA);
+        haveTasks |= changeTaskVisibility('taskNoPriceEnabled', !appIsDisabled && priceMode == PRICE_MODE_DISABLED);
+        haveTasks |= changeTaskVisibility('taskDisableLogging', !appIsDisabled && document.getElementById('logLevel').value != 0);
+        haveTasks |= changeTaskVisibility('taskExperimental', !appIsDisabled && experimentalEnabled);
+        haveTasks |= changeTaskVisibility('errorDevices', !appIsDisabled && numErrorDevices > 0);
+        changeTaskVisibility('taskNone', !haveTasks);
       }
 
       function refreshDeviceSelector(devices) {
@@ -918,6 +879,7 @@
           <tr id="taskNoPriceAPIData"><td style="vertical-align:top;"><span id="icon4" class="⚠ err"></span></td><td><span data-i18n="settings.welcome.taskNoPriceAPIData">taskNoPriceAPIData</span></td></tr>
           <tr id="taskEnableApp"><td style="vertical-align:top;"><span id="icon5" class="⚠ warn"></span></td><td><span data-i18n="settings.welcome.taskEnableApp">taskEnableApp</span></td></tr>
           <tr id="taskEnergyFlowRate"><td style="vertical-align:top;"><span id="icon6" class="⚠ warn"></span></td><td><span id="energyFlowRateText">taskEnergyFlowRate</span></td></tr>
+          <tr id="taskChargerNotEnabled"><td style="vertical-align:top;"><span id="icon6" class="⚠ err"></span></td><td><span data-i18n="settings.welcome.taskChargerNotEnabled">taskChargerNotEnabled</span></td></tr>
           <tr id="taskNoPriceFlow"><td style="vertical-align:top;"><span id="icon7" class="⚠ warn"></span></td><td><span data-i18n="settings.welcome.taskNoPriceFlow">taskNoPriceFlow</span></td></tr>
           <tr id="taskDisableLogging"><td style="vertical-align:top;"><span id="icon8" class="⚠ warn"></span></td><td><span data-i18n="settings.welcome.taskDisableLogging">taskDisableLogging</span></td></tr>
           <tr id="taskExperimental"><td style="vertical-align:top;"><span id="icon9" class="⚠ warn"></span></td><td><span data-i18n="settings.welcome.taskExperimental">taskExperimental</span></td></tr>
