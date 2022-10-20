@@ -101,6 +101,16 @@ const DEFAULT_IGNORED = {
 
 // Supported devices and how to use them
 const DEVICE_CMD = {
+  'ady.smartthings:stDevice': {
+    ...DEFAULT_AC,
+    tempMin: 4,
+    tempMax: 35,
+    tempStep: 0.5,
+    setModeCap: 'aircon_mode',
+    setModeDryValue: 'dry',
+    setModeFanValue: 'wind',
+    default: false
+  },
   'cloud.shelly:shelly': DEFAULT_SWITCH,
   'com.aeotec:ZW078': DEFAULT_SWITCH,
   'com.arjankranenburg.virtual:mode': DEFAULT_SWITCH,

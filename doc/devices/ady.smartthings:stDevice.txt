@@ -1,0 +1,33 @@
+Log ID: 2022-10-19T19:05:51.714Z
+App version 0.18.8
+
++19:5:51.714: ----- ANALYZING DEVICE -----
++19:5:51.728: Report type: Experimental device is working
++19:5:51.733: Device ID:   4def0969-9711-4146-beac-696b09d3f7d9
++19:5:51.738: Device name: Room air conditioner: main
++19:5:51.746: Device reliability: 1
++19:5:51.751: Driver Uri: homey:app:ady.smartthings
++19:5:51.772: Driver Id: stDevice
++19:5:51.843: Found onoff cap: onoff
++19:5:51.851: Found temp cap: true
++19:5:51.857: Capabilities: onoff,aircon_mode,ac_lights_on,ac_lights_off,silent_mode,aircon_fan_mode,aircon_fan_oscillation_mode,measure_temperature,target_temperature,measure_humidity,measure_power,meter_power,meter_power.delta,aircon_option,aircon_auto_cleaning_mode,dust_filter_status
++19:5:51.866: Options for 'onoff': {"value":true,"lastUpdated":"2022-10-19T03:54:10.038Z","type":"boolean","getable":true,"setable":true,"title":"Turned on","desc":null,"units":null,"id":"onoff","options":{}}
++19:5:51.871: Options for 'aircon_mode': {"value":"heat","lastUpdated":"2022-10-08T17:53:42.794Z","type":"enum","getable":true,"setable":true,"title":"Mode","desc":null,"units":null,"values":[{"id":"auto","title":"Auto"},{"id":"aIComfort","title":"AI Auto"},{"id":"cool","title":"Cool"},{"id":"dry","title":"Dry"},{"id":"wind","title":"Fan Only"},{"id":"heat","title":"Heat"}],"id":"aircon_mode","options":{}}
++19:5:51.878: Options for 'ac_lights_on': {"value":null,"type":"boolean","getable":false,"setable":true,"title":"Lights On","desc":null,"units":null,"id":"ac_lights_on","options":{}}
++19:5:51.883: Options for 'ac_lights_off': {"value":null,"type":"boolean","getable":false,"setable":true,"title":"Lights Off","desc":null,"units":null,"id":"ac_lights_off","options":{}}
++19:5:51.888: Options for 'silent_mode': {"value":false,"lastUpdated":"2022-10-08T17:53:43.061Z","type":"boolean","getable":true,"setable":true,"title":"Silent Mode","desc":null,"units":null,"id":"silent_mode","options":{}}
++19:5:51.896: Options for 'aircon_fan_mode': {"value":"low","lastUpdated":"2022-10-19T18:17:17.955Z","type":"enum","getable":true,"setable":true,"title":"Wind Strength","desc":null,"units":null,"values":[{"id":"auto","title":"Auto"},{"id":"low","title":"Low"},{"id":"medium","title":"Medium"},{"id":"high","title":"High"},{"id":"turbo","title":"Turbo"}],"id":"aircon_fan_mode","options":{}}
++19:5:51.908: Options for 'aircon_fan_oscillation_mode': {"value":"all","lastUpdated":"2022-10-14T21:37:17.800Z","type":"enum","getable":true,"setable":true,"title":"Wind Direction","desc":null,"units":null,"values":[{"id":"vertical","title":"Vertical"},{"id":"horizontal","title":"Horizontal"},{"id":"fixed","title":"Fixed"},{"id":"all","title":"All"}],"id":"aircon_fan_oscillation_mode","options":{}}
++19:5:51.916: Options for 'measure_temperature': {"value":23,"lastUpdated":"2022-10-19T19:02:01.982Z","type":"number","getable":true,"setable":false,"title":"Temperature","desc":"Temperature in degrees Celsius (°C)","units":"°C","decimals":2,"chartType":"spline","id":"measure_temperature","options":{}}
++19:5:51.929: Options for 'target_temperature': {"value":22,"lastUpdated":"2022-10-19T18:58:48.095Z","type":"number","getable":true,"setable":true,"title":"Target temperature","desc":null,"units":"°C","decimals":2,"min":4,"max":35,"chartType":"stepLine","id":"target_temperature","options":{}}
++19:5:51.935: Options for 'measure_humidity': {"value":29,"lastUpdated":"2022-10-19T18:35:55.532Z","type":"number","getable":true,"setable":false,"title":"Humidity","desc":"Humidity in percent (%)","units":"%","decimals":2,"chartType":"spline","id":"measure_humidity","options":{}}
++19:5:51.945: Options for 'measure_power': {"value":845,"lastUpdated":"2022-10-19T18:59:31.224Z","type":"number","getable":true,"setable":false,"title":"Power","desc":"Power in watt (W)","units":"W","decimals":2,"chartType":"stepLine","id":"measure_power","options":{}}
++19:5:51.951: Options for 'meter_power': {"value":1730.86,"lastUpdated":"2022-10-19T18:59:31.240Z","type":"number","getable":true,"setable":false,"title":"Energy","desc":"Energy usage in kilowatt-hour (kWh)","units":"kWh","decimals":2,"chartType":"spline","id":"meter_power","options":{}}
++19:5:51.987: Options for 'meter_power.delta': {"value":0.14,"lastUpdated":"2022-10-19T18:59:31.255Z","type":"number","getable":true,"setable":false,"title":"Power Delta","desc":"Energy usage in kilowatt-hour (kWh)","units":"W","decimals":2,"chartType":"spline","id":"meter_power.delta","options":{"title":{"en":"Power Delta"},"units":{"en":"W"}}}
++19:5:52.000: Options for 'aircon_option': {"value":"off","lastUpdated":"2022-10-08T17:53:45.100Z","type":"enum","getable":true,"setable":true,"title":"Options","desc":null,"units":null,"values":[{"id":"off","title":"Off"},{"id":"sleep","title":"Sleep"},{"id":"quiet","title":"Quiet"},{"id":"smart","title":"Smart"},{"id":"speed","title":"Speed"},{"id":"windFree","title":"Wind Free"},{"id":"windFreeSleep","title":"Wind Free Sleep"}],"id":"aircon_option","options":{}}
++19:5:52.010: Options for 'aircon_auto_cleaning_mode': {"value":true,"lastUpdated":"2022-10-08T17:53:45.416Z","type":"boolean","getable":true,"setable":true,"title":"Cleaning Mode","desc":null,"units":null,"id":"aircon_auto_cleaning_mode","options":{}}
++19:5:52.025: Options for 'dust_filter_status': {"value":"normal","lastUpdated":"2022-10-09T21:29:22.154Z","type":"string","getable":true,"setable":false,"title":"Dust Filter Status","desc":null,"units":null,"iconObj":{"id":"89f0a8a73c35d5619f1d7b70ffd90134","url":"/icon/89f0a8a73c35d5619f1d7b70ffd90134/icon.svg"},"id":"dust_filter_status","options":{}}
++19:5:52.031: --- ANALYZING DEVICE DONE ---
++19:6:34.322: Email: optional.email@for.feedback
+Comment:Optional
++19:6:34.514: Sending log
