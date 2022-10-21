@@ -511,5 +511,8 @@
   },
   "0.18.13": {
     "en": "Fix for bug #34: Device reports for missing devices did not work properly."
+  },
+  "0.18.14": {
+    "en": "Added org.knx:knx_dimmer to the list of supported devices + Additional fix for device reporting on missing devices"
   }
 }
