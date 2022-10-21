@@ -505,5 +505,8 @@
   },
   "0.18.11": {
     "en": "Added ady.smartthings:stDevice to the list of supported devices + Improved feedback when sending logs + Fix for issue #32 Equal prices charged at random + Fix for bug #33: Charging flows did not work properly + reporting of free power has been broken after charging flows was added"
+  },
+  "0.18.12": {
+    "en": "Fix for bug #31: Easee did not turn off after ended charging cycle"
   }
 }
