@@ -1609,13 +1609,12 @@ class PiggyBank extends Homey.App {
    * @param endTime the localtime for when to end charging
    * @param offerHours number of hours to offer energy before time runs out (will be undefined if offerEnergy)
    */
-  async onChargingCycleStart(offerEnergy, endTime, offerHours = undefined) {
+  async onChargingCycleStart(offerEnergy, endTime, offerHours = undefined, now = new Date()) {
     this.updateLog('Charging cycle started', c.LOG_INFO);
     const chargerOptions = this.homey.settings.get('chargerOptions');
     if (chargerOptions) {
       // Convert local end time to UTC
-      const nowUTC = new Date();
-      const nowLocal = toLocalTime(nowUTC, this.homey);
+      const nowLocal = toLocalTime(now, this.homey);
       const hoursEnd = Number.parseInt(endTime.split(':').at(0), 10);
       const minutesEnd = Number.parseInt(endTime.split(':').at(1), 10);
       const minutesDiff = timeDiff(nowLocal.getHours(), nowLocal.getMinutes(), hoursEnd, minutesEnd);
@@ -1626,7 +1625,7 @@ class PiggyBank extends Homey.App {
       chargerOptions.chargeEnd = endTimeUTC;
       this.homey.settings.set('chargerOptions', chargerOptions);
     }
-    await this.rescheduleCharging(false);
+    await this.rescheduleCharging(false, now);
   }
 
   /**
@@ -1649,7 +1648,7 @@ class PiggyBank extends Homey.App {
    * Called every hour to make sure the Charging is rescheduled most optimal.
    * Whenever a new hour passes, must be called _after_ doPriceCalculations to get correct current_price_index
    */
-  async rescheduleCharging(isNewHour) {
+  async rescheduleCharging(isNewHour, now = new Date()) {
     const chargerOptions = this.homey.settings.get('chargerOptions');
     if (isNewHour) {
       if (chargerOptions.chargeCycleType === c.OFFER_ENERGY) {
@@ -1667,12 +1666,11 @@ class PiggyBank extends Homey.App {
 
     // Reset charge plan
     this.__charge_plan = [];
-    const now = new Date();
     const startOfHour = new Date(now.getTime());
     startOfHour.setMinutes(0, 0, 0);
     const end = new Date(chargerOptions.chargeEnd);
-    const timespan = Math.ceil((end - startOfHour) / (60 * 60 * 1000)); // in hours
-    const priceArray = this.__current_prices.slice(this.__current_price_index, this.__current_price_index + Math.ceil(timespan));
+    const timespan = Math.min(Math.floor((end - startOfHour) / (60 * 60 * 1000)), 24); // timespan to plan in hours
+    const priceArray = this.__current_prices.slice(this.__current_price_index, this.__current_price_index + timespan);
     if (priceArray.length < timespan) {
       // Too few prices available, use average as future
       const futurePrice = +this.homey.settings.get('averagePrice') || this.__current_prices[this.__current_price_index];
@@ -1681,7 +1679,7 @@ class PiggyBank extends Homey.App {
       }
     }
     const maxPower = this.homey.settings.get('maxPower');
-    const priceSorted = Array.from(priceArray.keys()).sort((a, b) => priceArray[a] - priceArray[b]);
+    const priceSorted = Array.from(priceArray.keys()).sort((a, b) => ((priceArray[a] === priceArray[b]) ? (a-b) : (priceArray[a] - priceArray[b])));
     this.__charge_plan = [];
     let scheduleRemaining = chargerOptions.chargeRemaining;
     for (let i = 0; (i < priceSorted.length) && (scheduleRemaining > 0); i++) {

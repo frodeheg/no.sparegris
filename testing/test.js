@@ -119,6 +119,7 @@ async function applyBasicConfig(app) {
   futureData.priceKind = c.PRICE_KIND_SPOT;
   app.homey.settings.set('futurePriceOptions', futureData);
   app.app_is_configured = app.validateSettings();
+  await app.createDeviceList(); // To initialize app.__current_state[...]
   await app.doPriceCalculations();
 }
 
@@ -136,9 +137,12 @@ async function testCharging() {
   app.__current_price_index = 3;
   const result_table = [undefined, 3750, undefined, undefined, undefined, 3750, 3750];
   //app.onChargingCycleStart(10, '08:00');
-  app.onChargingCycleStart(undefined, '08:00', 3);
+  let callTime = new Date();
+  callTime.setHours(3, 0, 0, 0);
+  app.onChargingCycleStart(undefined, '10:00', 3, callTime);
   for (let i = 0; i < app.__charge_plan.length; i++) {
-    if (app.__charge_plan[i] != result_table[i]) {
+    if (app.__charge_plan[i] !== result_table[i]) {
+      for (let j = 0; j < app.__charge_plan.length; j++) console.log(`Charge plan hour +${j}: plan ${app.__charge_plan[j]}, wanted: ${result_table[j]}`);
       throw new Error('Charging schedule failed');
     }
   }
@@ -166,17 +170,27 @@ async function testReliability() {
   console.log('Testing reliability - Passed');
 }
 
+// Test Mail
+async function testMail() {
+  const app = new PiggyBank();
+  await app.onInit();
+  await applyBasicConfig(app);
+  await app.sendLog();
+}
+
 // Start all tests
 async function startAllTests() {
   try {
-/*    await testCurrencyConverter();
-    await testApp();
-    await testEntsoe();
-    await testNewHour(20000);
-    await testCharging();*/
-    await testReliability();
+    // await testCurrencyConverter();
+    // await testApp();
+    // await testEntsoe();
+    // await testNewHour(20000);
+    await testCharging();
+    //await testReliability();
+    //await testMail();
   } catch (err) {
     console.log(`Testing failed: ${err}`);
+    console.log(err.stack);
   }
 }
 
