@@ -840,7 +840,7 @@ class PiggyBank extends Homey.App {
       ((powerUsed + +powerChange) < 0) || (ampsOffered === d.DEVICE_CMD[driverId].minCurrent));
     const wantOn = (isOn || (powerChange > 0))
       && (+chargerOptions.chargeRemaining > 0)
-      && (this.__charge_plan[0])
+      && (this.__charge_plan[0] > 0)
       && !isEmergency;
     // Check that we do not toggle the charger too often
     const now = new Date();
@@ -1417,7 +1417,7 @@ class PiggyBank extends Homey.App {
     if (chargerOptions.chargeTarget === c.CHARGE_TARGET_FLOW) {
       const isOn = this.__charger_flow_is_on;
       const isEmergency = (+powerDiff < 0) && ((this.__charge_power_active + +powerDiff) < 0);
-      const wantOn = (isOn || (+powerDiff > 0)) && this.__charge_plan[0] && !isEmergency;
+      const wantOn = (isOn || (+powerDiff > 0)) && (this.__charge_plan[0] > 0) && !isEmergency;
       const timeLapsed = (now - this.prevChargerTime) / 1000; // Lapsed time in seconds
       const waitUpdate = (this.prevChargerTime !== undefined) && (timeLapsed < chargerOptions.minToggleTime) && (!isEmergency);
       if (!waitUpdate) {
