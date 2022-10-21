@@ -286,7 +286,7 @@
       "full": "All Information",
       "clearLog": "Clear",
       "sendLog": "Send",
-      "sendConfirm": "Send the log contents to the developer?",
+      "sendConfirm": "Send the log contents to the developer? (NOTE: The messaging system is a bit unreliable; Please try again later if there is no response)",
       "thankYou": "Thank you!",
       "sendError": "Failed sending the log, please try again later or wait for app update. ",
       "showState": "State",
