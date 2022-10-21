@@ -236,6 +236,7 @@ const DEVICE_CMD = {
     default: false
   },
   'no.thermofloor:ZM-Single-Relay-16A': DEFAULT_SWITCH,
+  'org.knx:knx_dimmer': DEFAULT_SWITCH,
   'se.husdata:H60': {
     type: DEVICE_TYPE.HEATER,
     note: 'This device has no onOff capability and will emulate Off by turning the temperature to absolute minimum',
