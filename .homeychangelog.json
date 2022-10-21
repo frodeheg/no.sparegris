@@ -508,5 +508,8 @@
   },
   "0.18.12": {
     "en": "Fix for bug #31: Easee did not turn off after ended charging cycle"
+  },
+  "0.18.13": {
+    "en": "Fix for bug #34: Device reports for missing devices did not work properly."
   }
 }
