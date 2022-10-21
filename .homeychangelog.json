@@ -502,5 +502,8 @@
   },
   "0.18.10": {
     "en": "Improved estimation of power when crossing into new hours + Made car chargers more visible in the device selection + Fixed bug: New thermostat devices appeared as enabled allthough they was not. + Fix for bug when car charger was not raising power"
+  },
+  "0.18.11": {
+    "en": "Added ady.smartthings:stDevice to the list of supported devices + Improved feedback when sending logs + Fix for issue #32 Equal prices charged at random + Fix for bug #33: Charging flows did not work properly + reporting of free power has been broken after charging flows was added"
   }
 }
