@@ -836,7 +836,7 @@ class PiggyBank extends Homey.App {
     const ampsOffered = !isOn || (device.capabilitiesObj === null) ? 0
       : !hasPowerCap ? +chargerOptions.chargeMin
         : +await device.capabilitiesObj[d.DEVICE_CMD[driverId].setCurrentCap].value;
-    const isEmergency = (powerChange < 0) && (
+    const isEmergency = (+powerChange < 0) && (
       ((powerUsed + +powerChange) < 0) || (ampsOffered === d.DEVICE_CMD[driverId].minCurrent));
     const wantOn = (isOn || (powerChange > 0))
       && (+chargerOptions.chargeRemaining > 0)
@@ -1399,7 +1399,7 @@ class PiggyBank extends Homey.App {
   /**
    * onFreePowerChanged is called whenever the amount of free power has changed
    */
-  async onFreePowerChanged(powerDiff) {
+  async onFreePowerChanged(powerDiff, now = new Date()) {
     // this.log(`OnFreePowerChanged(${powerDiff})`);
     const freeThreshold = +this.homey.settings.get('freeThreshold') || 100;
     const listOfUsedDevices = this.homey.settings.get('frostList') || {};
@@ -1412,37 +1412,38 @@ class PiggyBank extends Homey.App {
     } else {
       this.__free_capacity = 0;
     }
-    const chargerOptions = this.homey.settings.get('chargerOptions');
-    if ((!this.__charger_flow_is_on) && (powerDiff < chargerOptions.chargeThreshold)) {
-      // The device should not be turned on if the available power is less than the charge threshold
-      return Promise.resolve([false, false]);
-    }
     // Trigger charger flows
+    const chargerOptions = this.homey.settings.get('chargerOptions');
     if (chargerOptions.chargeTarget === c.CHARGE_TARGET_FLOW) {
       const isOn = this.__charger_flow_is_on;
-      const wantOn = (isOn || (+powerDiff > 0)) && this.__charge_plan[0];
-      const maxPower = +this.homey.settings.get('maxPower');
-      const newOfferPower = Math.min(Math.max(this.__charge_power_active + +powerDiff, +chargerOptions.chargeMin), maxPower);
-      if (wantOn && !isOn) {
-        const startChargingTrigger = this.homey.flow.getTriggerCard('start-charging');
-        const tokens = { offeredPower: newOfferPower };
-        startChargingTrigger.trigger(tokens);
-        this.__charge_power_active = newOfferPower;
-        this.__charger_flow_is_on = true;
-      } else if (wantOn && isOn) {
-        const changeChargingPowerTrigger = this.homey.flow.getTriggerCard('change-charging-power');
-        const tokens = { offeredPower: newOfferPower };
-        changeChargingPowerTrigger.trigger(tokens);
-        this.__charge_power_active = newOfferPower;
-      } else if (isOn && !wantOn) {
-        const stopChargingTrigger = this.homey.flow.getTriggerCard('stop-charging');
-        stopChargingTrigger.trigger();
-        this.__charge_power_active = 0;
-        this.__charger_flow_is_on = false;
+      const isEmergency = (+powerDiff < 0) && ((this.__charge_power_active + +powerDiff) < 0);
+      const wantOn = (isOn || (+powerDiff > 0)) && this.__charge_plan[0] && !isEmergency;
+      const timeLapsed = (now - this.prevChargerTime) / 1000; // Lapsed time in seconds
+      const waitUpdate = (this.prevChargerTime !== undefined) && (timeLapsed < chargerOptions.minToggleTime) && (!isEmergency);
+      if (!waitUpdate) {
+        this.prevChargerTime = new Date(now.getTime());
+        const maxPower = +this.homey.settings.get('maxPower');
+        const newOfferPower = Math.min(Math.max(this.__charge_power_active + +powerDiff, +chargerOptions.chargeMin), maxPower);
+        if (wantOn && !isOn && (+powerDiff >= chargerOptions.chargeThreshold)) {
+          const startChargingTrigger = this.homey.flow.getTriggerCard('start-charging');
+          const tokens = { offeredPower: newOfferPower };
+          startChargingTrigger.trigger(tokens);
+          this.__charge_power_active = newOfferPower;
+          this.__charger_flow_is_on = true;
+        } else if (wantOn && isOn) {
+          const changeChargingPowerTrigger = this.homey.flow.getTriggerCard('change-charging-power');
+          const tokens = { offeredPower: newOfferPower };
+          changeChargingPowerTrigger.trigger(tokens);
+          this.__charge_power_active = newOfferPower;
+        } else if (isOn && !wantOn) {
+          const stopChargingTrigger = this.homey.flow.getTriggerCard('stop-charging');
+          stopChargingTrigger.trigger();
+          this.__charge_power_active = 0;
+          this.__charger_flow_is_on = false;
+        }
       }
     }
     // Prevent the trigger from triggering more than once a minute
-    const now = new Date();
     const timeSinceLastTrigger = now - this.__free_power_trigger_time;
     if (!timeSinceLastTrigger > (60 * 1000)) {
       this.__free_power_trigger_time = now;
