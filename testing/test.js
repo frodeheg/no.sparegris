@@ -172,10 +172,14 @@ async function testReliability() {
 
 // Test Mail
 async function testMail() {
+  console.log('Testing mail');
   const app = new PiggyBank();
   await app.onInit();
   await applyBasicConfig(app);
+  app.updateLog('This is a test message from the validation script', c.LOG_ALL);
   await app.sendLog();
+  await app.onUninit();
+  console.log('Testing mail - Passed');
 }
 
 // Start all tests
@@ -187,7 +191,7 @@ async function startAllTests() {
     // await testNewHour(20000);
     await testCharging();
     //await testReliability();
-    //await testMail();
+    // await testMail();
   } catch (err) {
     console.log(`Testing failed: ${err}`);
     console.log(err.stack);

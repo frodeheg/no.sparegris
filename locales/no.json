@@ -286,14 +286,15 @@
       "full": "All informasjon",
       "clearLog": "Tøm",
       "sendLog": "Send",
-      "sendConfirm": "Send loggen til utvikleren? (NB! meldingssystemet er litt ustabilt så prøv gjerne igjen senere om du ikke får noen respons)",
-      "thankYou": "Tusen takk!",
+      "sendConfirm": "Send loggen til utvikleren?",
+      "thankYou": "Tusen takk! (Vær oppmerksom på at meldingssystemet er litt ustabilt. Dersom du ikke får noen respons kan du gjerne prøve på nytt litt senere eller bruke forumet.)",
       "sendError": "Kunne ikke sende loggen, prøv igjen senere eller vent på en ny versjon av appen. ",
       "showState": "Status",
       "showPriceApi": "Info fra Strømregning",
       "generic": "Generell feilsøking",
       "email": "Epost",
-      "comment": "Kommentar"
+      "comment": "Kommentar",
+      "required": "Du har ikke generert en rapport eller beskrevet problemet. Vennligst generer en rapport eller beskriv problemet + legg inn epost før du sender loggen."
     }
   },
   "newdevice" : {

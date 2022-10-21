@@ -2336,12 +2336,12 @@ class PiggyBank extends Homey.App {
           subject: 'Sparegris log', // Subject line
           text: String(this.mylog.diagLog) // plain text body
         };
-        this.log(`message: ${JSON.stringify(mailMessage)}`);
         const info = await transporter.sendMail(mailMessage);
 
         this.updateLog(`Message sent: ${info.messageId}`, c.LOG_INFO);
         // Preview only available when sending through an Ethereal account
         this.log('Preview URL: ', nodemailer.getTestMessageUrl(info));
+        // transporter.close();
         return;
       } catch (err) {
         this.updateLog(`Send log error: ${err}`, c.LOG_ERROR);
@@ -2398,12 +2398,12 @@ class PiggyBank extends Homey.App {
       'Device does not set temperature',
       'Device is not listed'
     ];
+    this.updateLog('----- ANALYZING DEVICE -----', c.LOG_ALL);
+    this.updateLog(`Report type: ${(+filter >= 0 && +filter <= 4) ? problems[filter] : 'Invalid'}`, c.LOG_ALL);
+    this.updateLog(`Device ID:   ${deviceId}`, c.LOG_ALL);
     // const flows = await this.homeyApi.flow.getFlowCardActions(); // TBD: Remove???
     await this.homeyApi.devices.getDevice({ id: deviceId })
       .then(device => {
-        this.updateLog('----- ANALYZING DEVICE -----', c.LOG_ALL);
-        this.updateLog(`Report type: ${problems[filter]}`, c.LOG_ALL);
-        this.updateLog(`Device ID:   ${deviceId}`, c.LOG_ALL);
         this.updateLog(`Device name: ${device.name}`, c.LOG_ALL);
         try {
           this.updateLog(`Device reliability: ${this.__deviceList[deviceId].reliability}`, c.LOG_ALL);
@@ -2437,7 +2437,9 @@ class PiggyBank extends Homey.App {
         // }
       })
       .catch(err => {
-        this.log(`Failed to fetch devicelist: ${err}`);
+        const errText = `Failed to generate report: ${err}`;
+        this.updateLog(errText, c.LOG_ERROR);
+        throw new Error(errText);
       })
       .finally(done => {
         this.updateLog('--- ANALYZING DEVICE DONE ---', c.LOG_ALL);

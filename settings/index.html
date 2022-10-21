@@ -93,6 +93,7 @@
         "month.dec"
       ]
 
+      var reportGenerated = false;
       var needModeRefresh = true;
       var numErrorDevices = 0;
 
@@ -1083,14 +1084,14 @@
         </select><br>
         <label for="deviceInfoSelector"><span data-i18n="settings.deviceinfo.selector">deviceinfo.selector</span>:</label>
         <select id="deviceInfoSelector" disabled>
-          <option value=0 selected>Please wait while populating</option>
+          <option value="" selected>Please wait while populating</option>
         </select><br>
         <label for="email"><span data-i18n="settings.log.email">log.email</span>:</label>
         <input id="email" type="text" value="optional.email@for.feedback" onfocus="if (this.value=='optional.email@for.feedback') this.value=''">
         <label for="comment"><span data-i18n="settings.log.comment">log.comment</span>:</label>
         <input id="comment" type="text" value="Optional" onfocus="if (this.value=='Optional') this.value=''">
         <label for="showCaps"><span data-i18n="settings.deviceinfo.getinfo">deviceinfo.getinfo</span>:</label>
-        <button id="showCaps" data-i18n="settings.deviceinfo.analyze" disabled>deviceinfo.analyze</button>
+        <button id="showCaps" data-i18n="settings.deviceinfo.analyze">deviceinfo.analyze</button>
       </fieldset>
       <fieldset id="logGeneric" style="display:none">
         <legend data-i18n="settings.log.generic">log.generic</legend>
@@ -2118,16 +2119,14 @@
         });
 
         deviceFilterElement.addEventListener('change', function (e) {
-          if (+deviceFilterElement.value === 0) {
-            showCapsElement.disabled = true;
-            deviceInfoSelectorElement.disabled = true;
-          } else {
+          deviceInfoSelectorElement.disabled = true; // Disable while waiting for it to update
+          deviceInfoSelectorElement.innerHTML = `<option value="" selected>Please wait while populating</selected>`;
+          if (+deviceFilterElement.value !== 0) {
             Homey.api('GET', `/getDevices?type=${deviceFilterElement.value}`, null, function (err, result) {
               if (err) return Homey.alert(err);
               else {
                 refreshDeviceSelector(result);
                 if (result.length > 0) {
-                  showCapsElement.disabled = false;
                   deviceInfoSelectorElement.disabled = false;
                 }
               }
@@ -2153,7 +2152,12 @@
           if (deviceId == "") {
             Homey.alert(Homey.__('settings.deviceinfo.noDeviceSelected'));
           } else {
-            let reliability = deviceList[deviceId].reliability
+            let reliability;
+            try {
+              reliability = deviceList[deviceId].reliability;
+            } catch(err) {
+              reliability = 1; // The unit is not in the deviceList if it is reported as not listed
+            }
             if ((deviceId in deviceList) && (reliability < 1)) {
               let alertMessage = Homey.__('settings.deviceinfo.unreliableDevice');
               Homey.alert(alertMessage.replace("${reliability}", Math.round(reliability*100)));
@@ -2161,6 +2165,7 @@
             Homey.api('GET', `/apiCommand?cmd=logShowCaps&deviceId=${deviceId}&filter=${deviceFilter}`, null, function (err, result) {
               if (err) return Homey.alert(err);
             });
+            reportGenerated = true;
           }
         });
 
@@ -2177,12 +2182,16 @@
         });
 
         sendLogElement.addEventListener('click', function (e) {
+          const email = document.getElementById('email').value;
+          const comment = document.getElementById('comment').value;
+          // Abort if no report or no email/comment
+          if ((reportGenerated === false) && ((email === 'optional.email@for.feedback') || (comment === 'Optional'))) {
+            return Homey.alert(Homey.__("settings.log.required"));
+          }
           // Ask for permission
           Homey.confirm(Homey.__("settings.log.sendConfirm"), null, function (e, ok) {
             if (ok) {
               // Add user comment before sending
-              const email = document.getElementById('email').value;
-              const comment = document.getElementById('comment').value;
               Homey.api('GET', `/apiCommand?cmd=log&text=Email:%20${email}%0AComment:${comment}&loglevel=${LOG_ALL}`, null, function (err, result) {
                 if (err) return Homey.alert(err);
               });
