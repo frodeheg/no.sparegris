@@ -514,5 +514,8 @@
   },
   "0.18.14": {
     "en": "Added org.knx:knx_dimmer to the list of supported devices + Additional fix for device reporting on missing devices"
+  },
+  "0.18.15": {
+    "en": "Fix for bug #29: When selecting minimum expensive and cheap hours today the value was picked from the two next days instead of today only so the number of hours ended up wrong."
   }
 }
