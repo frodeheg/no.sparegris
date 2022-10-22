@@ -162,6 +162,8 @@ const DEVICE_CMD = {
   },
   'nl.climate.daikin:airairhp': {
     ...DEFAULT_AC,
+    note: 'This device has no onOff capability and will have to emulate On by turning the mode into heat. '
+      + 'Please contact the developer of the Daikin app and request that the onOff capability is added and report back when done. This will fix the Piggy Bank integration.',
     setOnOffCap: 'thermostat_mode_std',
     setOnValue: 'heat', // This is unfortunate
     setOffValue: 'off',

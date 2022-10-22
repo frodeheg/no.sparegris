@@ -672,14 +672,15 @@ class PiggyBank extends Homey.App {
 
     // Loop all devices
     for (const device of Object.values(devices)) {
+      const driverId = `${device.driverUri.split(':').at(-1)}:${device.driverId}`;
       // Relevant Devices must have an onoff capability
       // Unfortunately some devices like the SensiboSky heat pump controller invented their own onoff capability
       // so unless specially handled the capability might not be detected. The generic detection mechanism below
       // has only been tested on SensiboSky devices so there might be problems with other devices with custom onoff capabilities
-      const onoffCap = device.capabilities.includes('onoff') ? 'onoff' : device.capabilities.find(cap => cap.includes('onoff'));
-      // if ((onoffCap === undefined) && device.capabilities.includes('enabled')) {
-      //   onoffCap = 'enabled';
-      // }
+      let onoffCap = device.capabilities.includes('onoff') ? 'onoff' : device.capabilities.find(cap => cap.includes('onoff'));
+      if ((onoffCap === undefined) && (driverId in d.DEVICE_CMD)) {
+        onoffCap = d.DEVICE_CMD[driverId].setOnOffCap;
+      }
       if (onoffCap === undefined) {
         this.updateLog(`ignoring: ${device.name}`, c.LOG_DEBUG);
         if (device.name === 'Varmepumpe') {
@@ -689,7 +690,6 @@ class PiggyBank extends Homey.App {
         continue;
       }
       // Priority 1 devices has class = thermostat & heater - capabilities ['target_temperature' + 'measure_temperature']
-      const driverId = `${device.driverUri.split(':').at(-1)}:${device.driverId}`;
       const priority = (((driverId in d.DEVICE_CMD)
         && ((d.DEVICE_CMD[driverId].type === d.DEVICE_TYPE.CHARGER)
         || (d.DEVICE_CMD[driverId].type === d.DEVICE_TYPE.HEATER)
