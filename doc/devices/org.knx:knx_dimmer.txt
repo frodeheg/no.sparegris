@@ -1,0 +1,13 @@
++10:15:44.069: ----- ANALYZING DEVICE -----
++10:15:44.072: Report type: Device does not set temperature
++10:15:44.074: Device ID:   379c4699-f617-4147-9e61-b01163a6a1dd
++10:15:44.079: Device name: Spotter ved TV
++10:15:44.082: Device reliability: 1
++10:15:44.093: Driver Uri: homey:app:org.knx
++10:15:44.098: Driver Id: knx_dimmer
++10:15:44.099: Found onoff cap: onoff
++10:15:44.102: Found temp cap: false
++10:15:44.106: Capabilities: onoff,dim
++10:15:44.108: Options for 'onoff': {"value":false,"lastUpdated":"2022-10-19T22:30:29.547Z","type":"boolean","getable":true,"setable":true,"title":"Slått på","desc":null,"units":null,"id":"onoff","options":{"setOnDim":false}}
++10:15:44.110: Options for 'dim': {"value":0,"lastUpdated":"2022-10-19T22:30:29.682Z","type":"number","getable":true,"setable":true,"title":"Dempingsnivå","desc":null,"units":"%","decimals":2,"min":0,"max":1,"chartType":"stepLine","id":"dim","options":{}}
++10:15:44.112: --- ANALYZING DEVICE DONE ---

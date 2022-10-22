@@ -237,6 +237,17 @@ const DEVICE_CMD = {
   },
   'no.thermofloor:ZM-Single-Relay-16A': DEFAULT_SWITCH,
   'org.knx:knx_dimmer': DEFAULT_SWITCH,
+  'org.knx:knx_thermostat': {
+    type: DEVICE_TYPE.HEATER,
+    note: 'This device has no onOff capability and will emulate Off by turning the temperature to absolute minimum',
+    setOnOffCap: null, // There is no such capability for this device
+    readTempCap: 'measure_temperature', // Indoor temp does not work on the device in question...
+    setTempCap: 'target_temperature',
+    tempMin: 5, // Min is 4, but using 4 as emulated Off
+    tempMax: 35,
+    tempStep: 0.5,
+    beta: true
+  },
   'se.husdata:H60': {
     type: DEVICE_TYPE.HEATER,
     note: 'This device has no onOff capability and will emulate Off by turning the temperature to absolute minimum',

@@ -1,0 +1,11 @@
++9:18:8.821: ----- ANALYZING DEVICE -----
++9:18:8.827: Report type: Device is not listed
++9:18:8.831: Device ID:   3cf0c8d4-00dc-4548-b2bb-570855b6c881
++9:18:8.866: Device name: Varmekabel (Bad1)
++9:18:8.870: Driver Uri: homey:app:org.knx
++9:18:8.872: Driver Id: knx_thermostat
++9:18:8.876: Error: TypeError: Cannot read properties of undefined (reading 'onoff_cap')
++9:18:8.878: Capabilities: target_temperature,measure_temperature
++9:18:8.885: Options for 'target_temperature': {"value":24,"lastUpdated":"2022-10-22T05:59:29.948Z","type":"number","getable":true,"setable":true,"title":"Ønsket temperatur","desc":null,"units":"°C","decimals":2,"min":4,"max":35,"chartType":"stepLine","id":"target_temperature","options":{}}
++9:18:8.888: Options for 'measure_temperature': {"value":24.02,"lastUpdated":"2022-10-22T09:04:42.283Z","type":"number","getable":true,"setable":false,"title":"Temperatur","desc":"Temperatur i grader Celsius (°C)","units":"°C","decimals":2,"chartType":"spline","id":"measure_temperature","options":{}}
++9:18:8.890: --- ANALYZING DEVICE DONE ---
