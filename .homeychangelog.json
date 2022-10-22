@@ -520,5 +520,8 @@
   },
   "0.18.16": {
     "en": "Added support for knx_thermostat (beta)"
+  },
+  "0.18.17": {
+    "en": "Fix for bug #38: Devices without onOff capabilities was still not controllable"
   }
 }
