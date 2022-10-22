@@ -20,7 +20,8 @@ const env = require('../env.json');
  */
 class FakeSettingsClass {
 
-  constructor() {
+  constructor(homey) {
+    this.homey = homey;
     this.values = {};
   }
 
@@ -36,7 +37,7 @@ class FakeSettingsClass {
   }
 
   on(target, callback) {
-    console.log('TBD: Implement settings.on');
+    if (this.homey.__debug) console.log('TBD: Implement settings.on');
   }
 
   unset(target) {
@@ -99,12 +100,16 @@ class FakeAppApiClass {
  */
 class FakeApiClass {
 
+  constructor(homey) {
+    this.homey = homey;
+  }
+
   getApiApp(appName) {
     return new FakeAppApiClass(appName);
   }
 
   realtime(event, parameter) {
-    console.log('TBD: Implement realtime(...)');
+    if (this.homey.__debug) console.log('TBD: Implement realtime(...)');
   }
 
 }
@@ -114,16 +119,18 @@ class FakeApiClass {
  */
 class FakeTriggerCardClass {
 
-  constructor() {
-    console.log('TBD: Implement FakeTriggerCard');
+  constructor(homey, name) {
+    this.homey = homey;
+    this.name = name;
+    if (this.homey.__debug) console.log('TBD: Implement FakeTriggerCard');
   }
 
   registerRunListener(callback) {
-    console.log('TBD: Implement registerRunListener');
+    if (this.homey.__debug) console.log('TBD: Implement registerRunListener');
   }
 
   trigger(tokens) {
-    console.log('TBD: Implement tokens');
+    if (this.homey.__debug) console.log('TBD: Implement tokens');
   }
 
 }
@@ -133,16 +140,18 @@ class FakeTriggerCardClass {
  */
 class FakeActionCardClass {
 
-  constructor() {
-    console.log('TBD: Implement FakeActionCard');
+  constructor(homey, name) {
+    this.homey = homey;
+    this.name = name;
+    if (this.homey.__debug) console.log('TBD: Implement FakeActionCard');
   }
 
   registerRunListener(callback) {
-    console.log('TBD: Implement registerRunListener');
+    if (this.homey.__debug) console.log('TBD: Implement registerRunListener');
   }
 
   registerArgumentAutocompleteListener(callback) {
-    console.log('TBD: Implement registerArgumentAutocompleteListener (action)');
+    if (this.homey.__debug) console.log('TBD: Implement registerArgumentAutocompleteListener (action)');
   }
 
 }
@@ -152,16 +161,18 @@ class FakeActionCardClass {
  */
 class FakeConditionCardClass {
 
-  constructor() {
-    console.log('TBD: Implement FakeConditionCard');
+  constructor(homey, name) {
+    this.homey = homey;
+    this.name = name;
+    if (this.homey.__debug) console.log('TBD: Implement FakeConditionCard');
   }
 
   registerRunListener(callback) {
-    console.log('TBD: Implement registerRunListener');
+    if (this.homey.__debug) console.log('TBD: Implement registerRunListener');
   }
 
   registerArgumentAutocompleteListener(callback) {
-    console.log('TBD: Implement registerArgumentAutocompleteListener (condition)');
+    if (this.homey.__debug) console.log('TBD: Implement registerArgumentAutocompleteListener (condition)');
   }
 
 }
@@ -171,16 +182,20 @@ class FakeConditionCardClass {
  */
 class FakeFlowClass {
 
+  constructor(homey) {
+    this.homey = homey;
+  }
+
   getTriggerCard(name) {
-    return new FakeTriggerCardClass(name);
+    return new FakeTriggerCardClass(this.homey, name);
   }
 
   getActionCard(name) {
-    return new FakeActionCardClass(name);
+    return new FakeActionCardClass(this.homey, name);
   }
 
   getConditionCard(name) {
-    return new FakeConditionCardClass(name);
+    return new FakeConditionCardClass(this.homey, name);
   }
 
 }
@@ -189,6 +204,10 @@ class FakeFlowClass {
  * Fake Clock class
  */
 class FakeClockClass {
+
+  constructor(homey) {
+    this.homey = homey;
+  }
 
   getTimezone() {
     return 'Europe/Oslo';
@@ -203,11 +222,12 @@ class FakeHomeyClass {
 
   constructor(app) {
     this.app = app;
-    this.settings = new FakeSettingsClass();
-    this.api = new FakeApiClass();
-    this.flow = new FakeFlowClass();
-    this.clock = new FakeClockClass();
+    this.settings = new FakeSettingsClass(this);
+    this.api = new FakeApiClass(this);
+    this.flow = new FakeFlowClass(this);
+    this.clock = new FakeClockClass(this);
     this.env = env;
+    this.__debug = false;
   }
 
   __(languagestring) {
@@ -215,7 +235,11 @@ class FakeHomeyClass {
   }
 
   on(event, callback) {
-    console.log('TBD implement on(event,callback)');
+    if (this.__debug) console.log('TBD implement on(event,callback)');
+  }
+
+  enableDebug() {
+    this.__debug = true;
   }
 
 }

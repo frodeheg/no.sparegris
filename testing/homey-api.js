@@ -8,9 +8,27 @@
  */
 class FakeDevicesClass {
 
+  constructor() {
+    this.fakeDevices = {};
+  }
+
   getDevices() {
     console.log('TBD: Implement getDevices');
     return {};
+  }
+
+  getDevice(deviceId) {
+    return this.fakeDevices[deviceId];
+  }
+
+  addFakeDevice(device) {
+    this.fakeDevices[device.id] = device;
+  }
+
+  addFakeDevices(devices) {
+    for (let i = 0; i < devices.length; i++) {
+      this.addFakeDevice(devices[i]);
+    }
   }
 
 }

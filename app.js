@@ -1095,7 +1095,7 @@ class PiggyBank extends Homey.App {
     }
 
     if (+this.homey.settings.get('operatingMode') !== c.MODE_DISABLED) {
-      this.doPriceCalculations()
+      await this.doPriceCalculations(now)
         .then(() => this.rescheduleCharging(isNewHour))
         .catch(err => {
           // Either the app is not configured yet or the utility price API is not installed, just ignore
@@ -1356,9 +1356,9 @@ class PiggyBank extends Homey.App {
       this.gotPPFromFlow = true;
     }
     // Do not continue if the price point did not change
-    const oldPricePoint = +this.homey.settings.get('pricePoint');
-    this.statsSetLastHourPricePoint(oldPricePoint);
-    if (+newMode === +oldPricePoint) {
+    const oldPricePoint = this.homey.settings.get('pricePoint');
+    this.statsSetLastHourPricePoint(+oldPricePoint);
+    if ((+newMode === +oldPricePoint) && (oldPricePoint !== null)) {
       return Promise.resolve();
     }
 
@@ -2582,8 +2582,7 @@ class PiggyBank extends Homey.App {
    * currentPrices - assumes that the api check has already been done
    * @returns an array of all prices today + an index for the current hour
    */
-  async currentPrices(priceMode, priceKind) {
-    const now = new Date();
+  async currentPrices(priceMode, priceKind, now = new Date()) {
     const nowSeconds = now.getTime() / 1000;
     try {
       const todayStart = roundToStartOfDay(now, this.homey);
@@ -2668,7 +2667,7 @@ class PiggyBank extends Homey.App {
     const nPricesToAdd = Math.min(this.__all_prices.length, 48);
     for (let i = 0; i < nPricesToAdd; i++) {
       pricesOnly.push(this.__all_prices[i].price);
-      if ((nowSeconds - 3600) > this.__all_prices[i].time) {
+      if ((nowSeconds - 3600) >= this.__all_prices[i].time) {
         currentIndex++;
       }
     }
@@ -2678,7 +2677,7 @@ class PiggyBank extends Homey.App {
   /**
    * Called once every hour (and when app starts + when settings are changed)
    */
-  async doPriceCalculations() {
+  async doPriceCalculations(now = new Date()) {
     // Abort if prices are not available
     const priceMode = +this.homey.settings.get('priceMode');
     const futureData = this.homey.settings.get('futurePriceOptions');
@@ -2695,7 +2694,7 @@ class PiggyBank extends Homey.App {
     } else {
       this.__last_hour_price = undefined;
     }
-    const priceInfo = await this.currentPrices(priceMode, priceKind);
+    const priceInfo = await this.currentPrices(priceMode, priceKind, now);
     this.__current_prices = priceInfo.prices;
     this.__current_price_index = priceInfo.now;
 
@@ -2712,12 +2711,12 @@ class PiggyBank extends Homey.App {
     }
     const hoursInInterval = +futurePriceOptions.averageTime * 24;
     let averagePrice = +this.homey.settings.get('averagePrice') || undefined;
+    const todayArray = this.__current_prices.slice(0, 24);
     if (!Number.isInteger(hoursInInterval)
       || hoursInInterval === 0
       || typeof (averagePrice) !== 'number'
       || !Number.isFinite(averagePrice)) {
       // Use today price average
-      const todayArray = this.__current_prices.slice(0, 24);
       averagePrice = todayArray.reduce((a, b) => a + b, 0) / todayArray.length; // Should always be divide by 24
     } else {
       // Calculate average price over time
@@ -2732,7 +2731,7 @@ class PiggyBank extends Homey.App {
     this.__extreme_price_limit = averagePrice * (+futurePriceOptions.extremePriceModifier / 100 + 1);
 
     // If min/max limit does not encompas enough hours, change the limits
-    const orderedPriceTable = [...this.__current_prices].sort();
+    const orderedPriceTable = [...todayArray].sort();
     const lowPriceIndex = +futurePriceOptions.minCheapTime;
     const highPriceIndex = 23 - futurePriceOptions.minExpensiveTime;
     if (this.__low_price_limit < orderedPriceTable[lowPriceIndex]) {

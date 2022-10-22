@@ -9,7 +9,7 @@ const c = require('../common/constants');
 const prices = require('../common/prices');
 const Homey = require('./homey');
 const PiggyBank = require('../app');
-const { toLocalTime, fromLocalTime, timeToNextHour } = require('../common/homeytime');
+const { toLocalTime, fromLocalTime, timeToNextHour, roundToStartOfDay } = require('../common/homeytime');
 
 // Test Currency Converter
 // * Test that the date for the last currency fetched is recent... otherwise the API could have changed
@@ -108,7 +108,7 @@ async function applyBasicConfig(app) {
     {id_a: {operation: c.EMERGENCY_OFF}}, {id_a: {operation: c.EMERGENCY_OFF}}, {id_a: {operation: c.EMERGENCY_OFF}}, {id_a: {operation: c.EMERGENCY_OFF}}, {id_a: {operation: c.EMERGENCY_OFF}}
   ]);
   app.__deviceList = {
-    id_a: { name:"DeviceNamenamenamenamename 1", room: "Stue",    image: "x.jpg", use: true, priority: 0, thermostat_cap: true, driverId: 'no.thermofloor:TF_Thermostat' },
+    id_a: { name:"DeviceNamenamenamenamename 1", room: "Stue",    image: "x.jpg", use: true, priority: 0, thermostat_cap: true, reliability: 1.0, driverId: 'no.thermofloor:TF_Thermostat' },
     id_b: { name:"DeviceName 2", room: "Kjøkken", image: "x.jpg", use: true, priority: 1, thermostat_cap: true, reliability: 0.5, driverId: 'no.thermofloor:Z-TRM2fx' },
     id_c: { name:"DeviceName 3", room: "Bad",     image: "x.jpg", use: true, priority: 0, thermostat_cap: false, reliability: 0.6, driverId: 'no.thermofloor:Z-TRM3' },
     id_d: { name:"DeviceName 4", room: "Bad",     image: "x.jpg", use: false, priority: 1, thermostat_cap: true, reliability: 0.7, driverId: 'se.husdata:H60' },
@@ -117,8 +117,17 @@ async function applyBasicConfig(app) {
   app.homey.settings.set('priceMode', c.PRICE_MODE_INTERNAL);
   const futureData = app.homey.settings.get('futurePriceOptions');
   futureData.priceKind = c.PRICE_KIND_SPOT;
+  futureData.averageTime = 2;
   app.homey.settings.set('futurePriceOptions', futureData);
   app.app_is_configured = app.validateSettings();
+  const fakeDevices = [
+    { id: 'id_a', capabilitiesObj: { measure_temperature: { value: 1 }, target_temperature: { value: 20 } } },
+    { id: 'id_b', capabilitiesObj: { measure_temperature: { value: 1 }, target_temperature: { value: 20 } } },
+    { id: 'id_c', capabilitiesObj: { measure_temperature: { value: 1 }, target_temperature: { value: 20 } } },
+    { id: 'id_d', capabilitiesObj: { measure_temperature: { value: 1 }, target_temperature: { value: 20 } } },
+    { id: 'id_e', capabilitiesObj: { measure_temperature: { value: 1 }, target_temperature: { value: 20 } } },
+  ];
+  app.homeyApi.devices.addFakeDevices(fakeDevices);
   await app.createDeviceList(); // To initialize app.__current_state[...]
   await app.doPriceCalculations();
 }
@@ -135,13 +144,13 @@ async function testCharging() {
     0.2, 0.3, 0.5, 0.3, 0.2, 0.5, 0.9, 0.8, 0.1, 0.2,
     0.2, 0.3, 0.5, 0.3];
   app.__current_price_index = 3;
-  const result_table = [undefined, 3750, undefined, undefined, undefined, 3750, 3750];
-  //app.onChargingCycleStart(10, '08:00');
-  let callTime = new Date();
+  const resultTable = [undefined, 3750, undefined, undefined, undefined, 3750, 3750];
+  // app.onChargingCycleStart(10, '08:00');
+  const callTime = new Date();
   callTime.setHours(3, 0, 0, 0);
   app.onChargingCycleStart(undefined, '10:00', 3, callTime);
   for (let i = 0; i < app.__charge_plan.length; i++) {
-    if (app.__charge_plan[i] !== result_table[i]) {
+    if (app.__charge_plan[i] !== resultTable[i]) {
       for (let j = 0; j < app.__charge_plan.length; j++) console.log(`Charge plan hour +${j}: plan ${app.__charge_plan[j]}, wanted: ${result_table[j]}`);
       throw new Error('Charging schedule failed');
     }
@@ -158,13 +167,19 @@ async function testReliability() {
   await app.onInit();
   await applyBasicConfig(app);
 
+  if (Object.keys(app.__deviceList).length === 0) {
+    throw new Error('No devices found');
+  }
   for (const deviceId in app.__deviceList) {
     const device = app.__deviceList[deviceId];
+    const oldReliability = device.reliability;
     app.updateReliability(deviceId, 0);
     app.updateReliability(deviceId, 1);
-    console.log(`Reliability: ${device.reliability}`);
+    // console.log(`Reliability: ${device.reliability}`);
+    if (device.reliability !== (oldReliability * 0.99 * 0.99 + 0.01)) {
+      throw new Error('Reliability test failed');
+    }
   }
-  //console.log(`Reliability: ${}`)
 
   await app.onUninit();
   console.log('Testing reliability - Passed');
@@ -182,6 +197,41 @@ async function testMail() {
   console.log('Testing mail - Passed');
 }
 
+// Test price points
+async function testPricePoints() {
+  console.log('Testing price points');
+  const app = new PiggyBank();
+  await app.onInit();
+  await applyBasicConfig(app);
+  const ppNames = ['PP_LOW', 'PP_NORM', 'PP_HIGH', 'PP_EXTREME', 'PP_DIRTCHEAP'];
+  app.__all_prices = [];
+  app.__current_prices = [
+    0.2, 0.3, 0.5, 0.3, 0.2, 0.5, 0.9, 0.8, 0.1, 0.2, 0.2, 0.3,
+    0.5, 0.3, 0.2, 0.5, 0.9, 0.8, 0.1, 0.2, 0.2, 0.3, 0.5, 0.3,
+    0.2, 0.3, 0.5, 0.3, 0.2, 0.5, 0.9, 0.8, 0.1, 0.2, 0.2, 0.3,
+    0.5, 0.3, 0.2, 0.5, 0.9, 0.8, 0.1, 0.2, 0.2, 0.3, 0.5, 0.3];
+  //const sortedPrices = app.__current_prices.slice(0, 24).sort((a, b) => b - a);
+  //console.log(`Sorted prices: ${sortedPrices}`); //High cap: 0.5, low cap: 0.2
+  app.homey.settings.set('averagePrice', 10);
+
+  const now = roundToStartOfDay(new Date(1666396747401), app.homey);
+  for (let i = 0; i < app.__current_prices.length; i++) {
+    const newPrice = { time: (now.getTime() / 1000) + (i * 60 * 60), price: app.__current_prices[i] };
+    app.__all_prices.push(newPrice);
+  }
+
+  for (let hour = 0; hour < 24; hour++) {
+    const curTime = new Date(now.getTime());
+    curTime.setHours(now.getHours() + hour, 0, 0, 0);
+    await app.onNewHour(true, curTime);
+    if (app.__current_price_index !== hour) throw new Error('Current hour is not calculated correctly');
+    console.log(`${String(hour).padStart(2, '0')}:00 Price: ${app.__current_prices[hour]} (${ppNames[app.homey.settings.get('pricePoint')]})`);
+  }
+
+  await app.onUninit();
+  console.log('Testing price points - Passed');
+}
+
 // Start all tests
 async function startAllTests() {
   try {
@@ -190,8 +240,9 @@ async function startAllTests() {
     // await testEntsoe();
     // await testNewHour(20000);
     await testCharging();
-    //await testReliability();
+    await testReliability();
     // await testMail();
+    // await testPricePoints();
   } catch (err) {
     console.log(`Testing failed: ${err}`);
     console.log(err.stack);
@@ -199,4 +250,5 @@ async function startAllTests() {
 }
 
 // Run all the testing
-startAllTests();
+// startAllTests();
+testPricePoints();
