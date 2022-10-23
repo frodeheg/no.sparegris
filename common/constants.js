@@ -2,10 +2,12 @@
 
 // Overrides
 const OVERRIDE = {
+  NONE: 0,
   ON: 1,
   OFF: 2,
   OFF_UNTIL_MANUAL_ON: 3,
   MANUAL_TEMP: 4,
+  FROST_GUARD: 5,
 };
 
 // Modes

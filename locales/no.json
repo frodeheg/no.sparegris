@@ -51,7 +51,7 @@
         "settings": "Avanserte innstillinger",
         "charger": "Lading av elbil",
         "frost": "Frostsikring",
-        "zones": "Sonestyring"
+        "override": "Overstyring"
       },
       "help": {
         "title": "Hjelp",
@@ -251,6 +251,19 @@
       "zonesClear": "Reset alle soner",
       "zoneName": "Sone",
       "zoneNum": "Antall enheter påvirket"
+    },
+    "override": {
+      "header": "Overstyrte enheter",
+      "overrideHint": "Enheter kan bli overstyrt på flere måter:<ul><li>Gjennom sonestyring (flytkort)</li><li>Gjennom frostsikring (automatisk)</li><li>Gjennom vedlikehold (i sparegris innsikt)</li><li>Gjennom overstyring av enkeltenheter (flytkort)</li></ul>",
+      "overridden": "Følgende enheter har blitt overstyrt",
+      "device": "Enhet",
+      "status": "Overstyrt med",
+      "on": "Tvunget på",
+      "off": "Tvunget Av",
+      "offUntilOn": "Vedlikeholdsmodus (avsluttes ved manuell påslåing)",
+      "temp": "Manuell temperatur",
+      "frost": "Frostsikring aktiv",
+      "zone": "Sone ${zone} slått av"
     },
     "mode" : {
       "activeMode" : "Aktiv modus",

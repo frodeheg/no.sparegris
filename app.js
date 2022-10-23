@@ -726,7 +726,7 @@ class PiggyBank extends Homey.App {
       }
 
       // Check if we have AC devices
-      this.__hasAC |= useDevice && (driverId in d.DEVICE_CMD) && (d.DEVICE_CMD[driverId].type === d.DEVICE_TYPE.AC);
+      this.__hasAC |= /* useDevice && */ (driverId in d.DEVICE_CMD) && (d.DEVICE_CMD[driverId].type === d.DEVICE_TYPE.AC);
 
       this.updateLog(`Device: ${String(priority)} ${device.id} ${device.name} ${device.class}`, c.LOG_DEBUG);
       const thermostatCap = device.capabilities.includes('target_temperature')
@@ -914,6 +914,29 @@ class PiggyBank extends Homey.App {
   }
 
   /**
+   * Checks if the frost guard is active
+   */
+  async isFrostGuardActive(device, deviceId) {
+    const tempCap = this.getTempGetCap(deviceId);
+    const override = this.homey.settings.get('override') || {};
+    let frostGuardIsOn;
+    if ((device.capabilitiesObj === null) || (device.capabilitiesObj[tempCap] === undefined)) {
+      frostGuardIsOn = false;
+    } else {
+      const frostList = this.homey.settings.get('frostList');
+      frostGuardIsOn = device.capabilitiesObj[tempCap].value < frostList[deviceId].minTemp;
+    }
+    if (!frostGuardIsOn && override[deviceId] === c.OVERRIDE.FROST_GUARD) {
+      delete override[deviceId]; // Done with override
+      this.homey.settings.set('override', override);
+    } else if (frostGuardIsOn) {
+      override[deviceId] = c.OVERRIDE.FROST_GUARD;
+      this.homey.settings.set('override', override);
+    }
+    return frostGuardIsOn;
+  }
+
+  /**
    * Changes the state of a device.
    * The state cannot always be changed. The priority of states are as follows:
    * - Below frost-guard results in always on and highest priority
@@ -985,18 +1008,18 @@ class PiggyBank extends Homey.App {
       this.updateReliability(deviceId, 0);
       return Promise.resolve([false, false]); // The unhandled device is solved by the later nComError handling
     }
-    const frostList = this.homey.settings.get('frostList');
-    const frostGuardActive = (this.__deviceList[deviceId].thermostat_cap && (device.capabilitiesObj !== null))
-      ? (device.capabilitiesObj[this.getTempGetCap(deviceId)].value < frostList[deviceId].minTemp) : false;
+    const frostGuardActive = this.isFrostGuardActive(device, deviceId);
 
     if (this.getOnOffCap(deviceId) === undefined) return Promise.resolve([false, false]); // Homey was busy, will have to retry later
     const isOn = this.getIsOn(device, deviceId);
-    if (this.__current_sate[deviceId].override === c.OVERRIDE.OFF_UNTIL_MANUAL_ON && isOn) {
-      delete this.__current_sate[deviceId].override;
+    const override = this.homey.settings.get('override') || {};
+    if (override[deviceId] === c.OVERRIDE.OFF_UNTIL_MANUAL_ON && isOn) {
+      delete override[deviceId];
+      this.homey.settings.set('override', override);
     }
-    const forceOn = (this.__current_sate[deviceId].override === c.OVERRIDE.ON);
-    const forceOff = (this.__current_sate[deviceId].override === c.OVERRIDE.OFF)
-      || (this.__current_sate[deviceId].override === c.OVERRIDE.OFF_UNTIL_MANUAL_ON);
+    const forceOn = (override[deviceId] === c.OVERRIDE.ON);
+    const forceOff = (override[deviceId] === c.OVERRIDE.OFF)
+      || (override[deviceId] === c.OVERRIDE.OFF_UNTIL_MANUAL_ON);
     const activeZones = this.homey.settings.get('zones');
     const isEmergency = currentActionOp === EMERGENCY_OFF;
     const newStateOn = frostGuardActive || (forceOn && !isEmergency)
@@ -1750,8 +1773,7 @@ class PiggyBank extends Homey.App {
         const hasTargetTemp = device.capabilities.includes(tempSetCap);
         const hasMeasureTemp = device.capabilities.includes(tempGetCap);
         if ((!hasTargetTemp) || (!hasMeasureTemp)) return Promise.resolve([true, true]);
-        const frostGuardActive = this.__deviceList[deviceId].thermostat_cap
-          ? (device.capabilitiesObj[this.getTempGetCap(deviceId)].value < frostList[deviceId].minTemp) : false;
+        const frostGuardActive = this.isFrostGuardActive(device, deviceId);
         let newTemp = frostGuardActive ? parseInt(frostList[deviceId].minTemp, 10) : (modeTemp + deltaTemp);
         const minTemp = this.getTempCapMin(device, deviceId);
         const maxTemp = this.getTempCapMax(device, deviceId);
@@ -1761,7 +1783,8 @@ class PiggyBank extends Homey.App {
         if (device.capabilitiesObj[tempSetCap].value === newTemp) return Promise.resolve([true, true]);
         this.__current_state[deviceId].ongoing = true;
         this.__current_state[deviceId].confirmed = false;
-        if (this.__current_sate[deviceId].override === c.OVERRIDE.MANUAL_TEMP) {
+        const override = this.homey.settings.get('override') || {};
+        if (override[deviceId] === c.OVERRIDE.MANUAL_TEMP) {
           return Promise.resolve([false, true]);
         }
         return device.setCapabilityValue({ capabilityId: tempSetCap, value: newTemp })
@@ -2201,11 +2224,16 @@ class PiggyBank extends Homey.App {
    */
   async filterChangeAC() {
     const frostList = this.homey.settings.get('frostList');
+    const override = this.homey.settings.get('override') || {};
     for (const deviceId in frostList) {
-      if ((deviceId in d.DEVICE_CMD) && (d.DEVICE_CMD[deviceId].type === d.DEVICE_TYPE.AC)) {
-        this.__current_state[deviceId].override = c.OVERRIDE.OFF_UNTIL_MANUAL_ON;
+      const { driverId } = this.__deviceList[deviceId];
+      if ((driverId in d.DEVICE_CMD) && (d.DEVICE_CMD[driverId].type === d.DEVICE_TYPE.AC)) {
+        override[deviceId] = c.OVERRIDE.OFF_UNTIL_MANUAL_ON;
+        const device = await this.homeyApi.devices.getDevice({ id: deviceId });
+        this.setOnOff(device, deviceId, false);
       }
     }
+    this.homey.settings.set('override', override);
     this.log('Turn off AC devices');
   }
 
@@ -2395,7 +2423,7 @@ class PiggyBank extends Homey.App {
     this.updateLog(`Total number of monitor errors: ${this.__monitorError}`, c.LOG_ALL);
     this.updateLog('Device Name               | Location        | Is On      | Temperature | Com errors | Ongoing', c.LOG_ALL);
     for (const deviceId in frostList) {
-      if (!(deviceId in this.__deviceList) || this.__deviceList[deviceId].use === false) continue;
+      if (!(deviceId in this.__deviceList) || !this.__deviceList[deviceId].use) continue;
       const { name, room } = this.__deviceList[deviceId];
       const { lastCmd, nComError } = this.__current_state[deviceId];
       const { temp, ongoing, confirmed } = this.__current_state[deviceId];

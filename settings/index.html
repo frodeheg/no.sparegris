@@ -39,6 +39,14 @@
       var leavePageText = "settings.alert.leavepage";
       var zoneNameText = "settings.zone.zoneName";
       var zoneNumText = "settings.zone.zoneNum";
+      var overrideDeviceText = "settings.override.device";
+      var overrideStatusText = "settings.override.status";
+      var overrideonText = "settings.override.on";
+      var overrideoffText = "settings.override.off";
+      var overrideoffUntilOnText = "settings.override.offUntilOn";
+      var overridetempText = "settings.override.temp";
+      var overridefrostText = "settings.override.frost";
+      var overrideZoneText = "settings.override.zone";
       var helpButtons = "settings.price.buttons.help";
       var helpButtonOn = "settings.price.buttons.helpOn";
       var helpButtonOff = "settings.price.buttons.helpOff";
@@ -128,10 +136,11 @@
         [], // Night
         [] // Away
       ];
-      var modeNames = []
-      var frostList = {} // Indexed by deviceId
-      var zoneList = {} // Indexed by zone-id
-      var priceActionList = [ {}, {}, {}, {}, {} ] // Indexed by deviceId
+      var modeNames = [];
+      var frostList = {}; // Indexed by deviceId
+      var zoneList = {}; // Indexed by zone-id
+      var overrideList = {};
+      var priceActionList = [ {}, {}, {}, {}, {} ]; // Indexed by deviceId
       var currentPricePoint = 1; // Normal
       var currentOperatingMode = 0; // Disabled
       var currentErrorMargin = 5;
@@ -297,6 +306,56 @@
             '</tr>';
         }
         gen_list += "</table>";
+        list.innerHTML = gen_list;
+      }
+
+      function generateOverrideList() {
+        var list = document.getElementById("overrideList");
+        var gen_list =
+          '<table width="100%">' +
+            '<tr>' +
+              '<th style="text-align:left" width="60%">' + overrideDeviceText + '</th>' +
+              '<th style="text-align:left" width="40%">' + overrideStatusText + '</th>' +
+            '</tr>';
+        for (deviceId in deviceList) {
+          if (deviceList[deviceId].use) {
+            let reasons = []; // Reason for override
+            switch (overrideList[deviceId]) {
+              case OVERRIDE.ON:
+                reasons.push(overrideonText);
+                break;
+              case OVERRIDE.OFF:
+                reasons.push(overrideoffText);
+                break;
+              case OVERRIDE.OFF_UNTIL_MANUAL_ON:
+                reasons.push(overrideoffUntilOnText);
+                break;
+              case OVERRIDE.MANUAL_TEMP:
+                reasons.push(overridetempText);
+                break;
+              case OVERRIDE.FROST_GUARD:
+                reasons.push(overridefrostText);
+                break;
+              default: // No override
+                // reasons.push("blah");
+                break;
+            }
+
+            for (zone in zoneList) {
+              if (zoneList[zone].enabled === false && deviceList[deviceId].memberOf.includes(zone)) {
+                reasons.push(overrideZoneText.replace("${zone}", zoneList[zone].name));
+              }
+            }
+            if (reasons.length > 0) {
+              gen_list +=
+              "<tr>" +
+                "<td>" + limitText(deviceList[deviceId].name) + "</td>" +
+                "<td>" + limitText(reasons.join('<br>')) + "</td>" +
+              "</tr>";
+            }
+          }
+        }
+        gen_list += '</table>';
         list.innerHTML = gen_list;
       }
 
@@ -804,7 +863,7 @@
             <a href="#" data-i18n="settings.menu.advanced.settings" onclick="changeTab(event, 'advancedPage')">Advanced settings</a>
             <a href="#" data-i18n="settings.menu.advanced.charger" onclick="changeTab(event, 'chargerPage')">Car Chargers</a>
             <a href="#" data-i18n="settings.menu.advanced.frost" onclick="changeTab(event, 'frostPage')">Frost guard</a>
-            <a href="#" data-i18n="settings.menu.advanced.zones" onclick="changeTab(event, 'zonePage')">Zone control</a>
+            <a href="#" data-i18n="settings.menu.advanced.override" onclick="changeTab(event, 'overridePage')">Override</a>
           </div>
         </td>
         <td class="dropdown" style="text-align:right" onclick="allowDropdown();">
@@ -1331,8 +1390,16 @@
     </div>
     <!-- Frost page end -->
 
-    <!-- Zone page -->
-    <div id="zonePage" class="tabcontent">
+    <!-- Override page -->
+    <div id="overridePage" class="tabcontent">
+      <fieldset>
+        <legend><div class="blockHeader" data-i18n="settings.override.header">override.header</div> 
+          <div class="hintButton" onclick="toggle(this,'overrideHint');return false;">i</div>
+        </legend>
+        <p id="overrideHint" class="hint" data-i18n="settings.override.overrideHint">override.overrideHint</p>
+        <span data-i18n="settings.override.overridden">override.overridden</span>:
+        <span id="overrideList">Devices should have been filled in here, if you see this text it is a bug</span>
+      </fieldset>
       <fieldset>
         <legend><div class="blockHeader" data-i18n="settings.zone.header">zone.header</div> 
           <div class="hintButton" onclick="toggle(this,'zoneHint');toggle(this,'zoneHint2');return false;">i</div>
@@ -1436,6 +1503,7 @@
       var priceActionListLoaded = false;
       var frostListLoaded = false;
       var zoneListLoaded = false;
+      var overrideListLoaded = false;
       var mainFuseLoaded = false;
       var graphLoaded = false;
       var futurePriceOptionsLoaded = false;
@@ -1675,6 +1743,7 @@
           `priceActionListLoaded: ${priceActionListLoaded}<br>` +
           `frostListLoaded: ${frostListLoaded}<br>` +
           `zoneListLoaded: ${zoneListLoaded}<br>` +
+          `overrideListLoaded: ${overrideListLoaded}<br>` +
           `mainFuseLoaded: ${mainFuseLoaded}<br>` +
           `graphLoaded: ${graphLoaded}<br>` +
           `futurePriceOptionsLoaded: ${futurePriceOptionsLoaded}<br>` +
@@ -1695,6 +1764,7 @@
           && priceActionListLoaded
           && frostListLoaded
           && zoneListLoaded
+          && overrideListLoaded
           && mainFuseLoaded
           && graphLoaded
           && futurePriceOptionsLoaded
@@ -1787,6 +1857,14 @@
         leavePageText = Homey.__(leavePageText);
         zoneNameText = Homey.__(zoneNameText);
         zoneNumText = Homey.__(zoneNumText);
+        overrideDeviceText = Homey.__(overrideDeviceText);
+        overrideStatusText = Homey.__(overrideStatusText);
+        overrideonText = Homey.__(overrideonText);
+        overrideoffText = Homey.__(overrideoffText);
+        overrideoffUntilOnText = Homey.__(overrideoffUntilOnText);
+        overridetempText = Homey.__(overridetempText);
+        overridefrostText = Homey.__(overridefrostText);
+        overrideZoneText = Homey.__(overrideZoneText);
         helpButtons = Homey.__(helpButtons);
         helpButtonOn = Homey.__(helpButtonOn);
         helpButtonOff = Homey.__(helpButtonOff);
@@ -1946,6 +2024,14 @@
             zoneList = myZoneList;
           } // else use defaults set from the top
           zoneListLoaded = true;
+          checkLoadingDone();
+        })
+        Homey.get("override", function (err, myOverrideList) {
+          if (err) return Homey.alert(err);
+          if (myOverrideList !== null) {
+            overrideList = myOverrideList;
+          } // else use defaults set from the top
+          overrideListLoaded = true;
           checkLoadingDone();
         })
         Homey.get("priceActionList", function (err, mypriceActionList) {
@@ -2418,7 +2504,8 @@
         }
 
         // Update zone list for Zone Page
-        if (tabPage == 'zonePage') {
+        if (tabPage == 'overridePage') {
+          generateOverrideList();
           generateZoneList();
         }
 
@@ -2506,6 +2593,7 @@
         modeNamesLoaded = true;
         frostListLoaded = true;
         zoneListLoaded = true;
+        overrideListLoaded = true;
         operatingModeLoaded = true;
         priceModeLoaded = true;
         pricePointLoaded = true;

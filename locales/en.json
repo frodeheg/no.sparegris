@@ -51,7 +51,7 @@
         "settings": "Advanced settings",
         "charger": "Car chargers",
         "frost": "Frost guard",
-        "zones": "Zone control"
+        "override": "Override"
       },
       "help": {
         "title": "Help",
@@ -251,6 +251,19 @@
       "zonesClear": "Clear all zones",
       "zoneName": "Sone",
       "zoneNum": "Antall enheter påvirket"
+    },
+    "override": {
+      "header": "Overriden devices",
+      "overrideHint": "Devices can be overriden in several ways:<ul><li>Through zone control (flow cards)</li><li>Through frost guard (automatic)</li><li>Through maintenance actions (in piggy bank insights)</li><li>Through per device overrides (flow cards)</li></ul>",
+      "overridden": "The following devices has been overridden",
+      "device": "Device",
+      "status": "Overridden by",
+      "on": "Forced On",
+      "off": "Forced Off",
+      "offUntilOn": "Maintenance (finishes when turned on manually)",
+      "temp": "Manual temperature",
+      "frost": "Frost guard active",
+      "zone": "Zone ${zone} turned off"
     },
     "mode" : {
       "activeMode" : "Active Mode",
