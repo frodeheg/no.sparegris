@@ -925,7 +925,6 @@
             "en": "Moving average price",
             "no": "Glidende snittpris"
           },
-          "decimals": 5,
           "units": {
             "en": "NOK/kWh",
             "no": "kr/kWh"
@@ -936,7 +935,6 @@
             "en": "Current price",
             "no": "Gjeldende pris"
           },
-          "decimals": 5,
           "units": {
             "en": "NOK/kWh",
             "no": "kr/kWh"
@@ -947,7 +945,6 @@
             "en": "Acceptable price",
             "no": "Akseptabel pris"
           },
-          "decimals": 5,
           "units": {
             "en": "NOK/kWh",
             "no": "kr/kWh"
@@ -958,7 +955,6 @@
             "en": "Limit for dirt cheap prices",
             "no": "Grense for grisebillig pris"
           },
-          "decimals": 5,
           "units": {
             "en": "NOK/kWh",
             "no": "kr/kWh"
@@ -969,7 +965,6 @@
             "en": "Limit for low prices",
             "no": "Grense for lav pris"
           },
-          "decimals": 5,
           "units": {
             "en": "NOK/kWh",
             "no": "kr/kWh"
@@ -980,7 +975,6 @@
             "en": "Limit for high prices",
             "no": "Grense for høy pris"
           },
-          "decimals": 5,
           "units": {
             "en": "NOK/kWh",
             "no": "kr/kWh"
@@ -991,7 +985,6 @@
             "en": "Limit for extremely high prices",
             "no": "Grense for ekstrempriser"
           },
-          "decimals": 5,
           "units": {
             "en": "NOK/kWh",
             "no": "kr/kWh"
