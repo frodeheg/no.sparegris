@@ -307,6 +307,7 @@ class PiggyBank extends Homey.App {
     }
 
     // Initialize current state
+    this.__hasAC = false;
     this.__intervalID = undefined;
     this.__newHourID = undefined;
     this.__reserved_energy = 0;
@@ -724,6 +725,9 @@ class PiggyBank extends Homey.App {
         zoneId = zones[zoneId].parent;
       }
 
+      // Check if we have AC devices
+      this.__hasAC |= useDevice && (driverId in d.DEVICE_CMD) && (d.DEVICE_CMD[driverId].type === d.DEVICE_TYPE.AC);
+
       this.updateLog(`Device: ${String(priority)} ${device.id} ${device.name} ${device.class}`, c.LOG_DEBUG);
       const thermostatCap = device.capabilities.includes('target_temperature')
         && device.capabilities.includes('measure_temperature');
@@ -987,9 +991,16 @@ class PiggyBank extends Homey.App {
 
     if (this.getOnOffCap(deviceId) === undefined) return Promise.resolve([false, false]); // Homey was busy, will have to retry later
     const isOn = this.getIsOn(device, deviceId);
+    if (this.__current_sate[deviceId].override === c.OVERRIDE.OFF_UNTIL_MANUAL_ON && isOn) {
+      delete this.__current_sate[deviceId].override;
+    }
+    const forceOn = (this.__current_sate[deviceId].override === c.OVERRIDE.ON);
+    const forceOff = (this.__current_sate[deviceId].override === c.OVERRIDE.OFF)
+      || (this.__current_sate[deviceId].override === c.OVERRIDE.OFF_UNTIL_MANUAL_ON);
     const activeZones = this.homey.settings.get('zones');
-    const newStateOn = frostGuardActive
-      || (currentActionOp !== TURN_OFF && currentActionOp !== EMERGENCY_OFF
+    const isEmergency = currentActionOp === EMERGENCY_OFF;
+    const newStateOn = frostGuardActive || (forceOn && !isEmergency)
+      || (currentActionOp !== TURN_OFF && !isEmergency && !forceOff
         && !this.__deviceList[deviceId].memberOf.some(z => (activeZones.hasOwnProperty(z) && !activeZones[z].enabled))
         && ((newState === TURN_ON && currentModeState !== ALWAYS_OFF) || (newState === TURN_OFF && currentModeState === ALWAYS_ON)));
 
@@ -1750,6 +1761,9 @@ class PiggyBank extends Homey.App {
         if (device.capabilitiesObj[tempSetCap].value === newTemp) return Promise.resolve([true, true]);
         this.__current_state[deviceId].ongoing = true;
         this.__current_state[deviceId].confirmed = false;
+        if (this.__current_sate[deviceId].override === c.OVERRIDE.MANUAL_TEMP) {
+          return Promise.resolve([false, true]);
+        }
         return device.setCapabilityValue({ capabilityId: tempSetCap, value: newTemp })
           .then(() => Promise.resolve([true, false]));
       })
@@ -2166,6 +2180,9 @@ class PiggyBank extends Homey.App {
     }
   }
 
+  /**
+   * Maintenance action: reset statistics
+   */
   async resetStatistics() {
     this.__monitorError = 0;
     this.__stats_app_restarts = 0;
@@ -2177,6 +2194,19 @@ class PiggyBank extends Homey.App {
     this.homey.settings.set('stats_failed_turn_off', this.__stats_failed_turn_off);
     this.homey.settings.set('stats_failed_temp_change', this.__stats_failed_temp_change);
     return Promise.resolve();
+  }
+
+  /**
+   * Maintenance action: turn off AC devices
+   */
+  async filterChangeAC() {
+    const frostList = this.homey.settings.get('frostList');
+    for (const deviceId in frostList) {
+      if ((deviceId in d.DEVICE_CMD) && (d.DEVICE_CMD[deviceId].type === d.DEVICE_TYPE.AC)) {
+        this.__current_state[deviceId].override = c.OVERRIDE.OFF_UNTIL_MANUAL_ON;
+      }
+    }
+    this.log('Turn off AC devices');
   }
 
   /**
@@ -2515,6 +2545,7 @@ class PiggyBank extends Homey.App {
       savings_yesterday: this.__stats_savings_yesterday,
       savings_all_time_use: this.__stats_savings_all_time_use,
       savings_all_time_power_part: this.__stats_savings_all_time_power_part,
+      hasAC: this.__hasAC,
 
       appState
     };

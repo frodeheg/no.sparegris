@@ -20,6 +20,9 @@ class MyDevice extends Device {
     this.setPollIntervalTime(settings['refreshRate']);
     this.updateState();
     // this.deviceId = await this.getDeviceId();
+    if (this.hasCapability('button.filterChangeAC') === true) {
+      this.registerCapabilityListener('button.filterChangeAC', async () => this.homey.app.filterChangeAC());
+    }
     this.updateCapabilities(settings);
     this.homey.app.updateLog('MyDevice has been initialized', 1);
   }
@@ -409,6 +412,13 @@ class MyDevice extends Device {
       }
       if (this.hasCapability('piggy_money.extreme_price_limit') === true && piggyState.extreme_price_limit) {
         this.setCapabilityValue('piggy_money.extreme_price_limit', piggyState.extreme_price_limit);
+      }
+
+      if (this.hasCapability('button.filterChangeAC') === false && piggyState.hasAC) {
+        await this.addCapability('button.filterChangeAC');
+        this.registerCapabilityListener('button.filterChangeAC', async () => this.homey.app.filterChangeAC());
+      } else if (this.hasCapability('button.filterChangeAC') === true && !piggyState.hasAC) {
+        this.removeCapability('button.filterChangeAC');
       }
 
       // Other things to report:

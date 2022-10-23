@@ -1,5 +1,13 @@
 'use strict';
 
+// Overrides
+const OVERRIDE = {
+  ON: 1,
+  OFF: 2,
+  OFF_UNTIL_MANUAL_ON: 3,
+  MANUAL_TEMP: 4,
+};
+
 // Modes
 const MODE_DISABLED = 0;
 const MODE_NORMAL = 1;
@@ -104,6 +112,7 @@ const ENTSOE_BIDDING_ZONES = {
 };
 
 module.exports = {
+  OVERRIDE,
   MODE_DISABLED,
   MODE_NORMAL,
   MODE_NIGHT,

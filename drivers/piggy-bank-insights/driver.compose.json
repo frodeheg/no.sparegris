@@ -43,6 +43,17 @@
          "no": "Nullstiller statistikken."
       }
     },
+    "button.filterChangeAC": {
+      "maintenanceAction": true,
+      "title": {
+         "en": "Change AC filters",
+         "no": "Bytt AC filter"
+      },
+      "desc": {
+         "en": "Turns off all heat pumps and leaves them switched off until they are manually switched on again.",
+         "no": "Slår av alle varmepumper og lar dem være avslått inntil de manuelt blir påslått igjen."
+      }
+    },
     "piggy_money.savings_all_time_use": {
       "title": {
         "en": "Money saved utility joint",
