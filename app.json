@@ -687,6 +687,76 @@
       },
       {
         "title": {
+          "en": "Override device",
+          "no": "Overstyr enhet"
+        },
+        "titleFormatted": {
+          "en": "Override Device [[device]] operation with [[mode]]",
+          "no": "Overstyr Enhet [[device]] til [[mode]]"
+        },
+        "hint": {
+          "en": "Allows you to override how Piggy Bank operates a specific device.",
+          "no": "Lar deg overstyre hvordan Sparegris opererer spesifikke enheter."
+        },
+        "args": [
+          {
+            "type": "autocomplete",
+            "name": "device",
+            "title": {
+              "en": "Device",
+              "no": "Enhet"
+            },
+            "placeholder": {
+              "en": "Selected device",
+              "no": "Valgt enhet"
+            }
+          },
+          {
+            "type": "dropdown",
+            "name": "mode",
+            "values": [
+              {
+                "id": "0",
+                "label": {
+                  "en": "Disable override",
+                  "no": "Deaktiver overstyring"
+                }
+              },
+              {
+                "id": "1",
+                "label": {
+                  "en": "Forced on",
+                  "no": "Tvunget på"
+                }
+              },
+              {
+                "id": "2",
+                "label": {
+                  "en": "Forced off",
+                  "no": "Tvunget av"
+                }
+              },
+              {
+                "id": "3",
+                "label": {
+                  "en": "Maintenance (off) until manually turned on",
+                  "no": "Vedlikehold (av) frem til manuelt påslått"
+                }
+              },
+              {
+                "id": "4",
+                "label": {
+                  "en": "Manual temperature",
+                  "no": "Manuell temperatur"
+                }
+              }
+            ]
+          }
+        ],
+        "id": "override-device"
+      },
+      {
+        "title": {
           "en": "Start charging cycle (kWh)",
           "no": "Start ladesyklus (kWh)"
         },
