@@ -947,7 +947,7 @@ class PiggyBank extends Homey.App {
   /**
    * Checks if the frost guard is active
    */
-  async isFrostGuardActive(device, deviceId) {
+  isFrostGuardActive(device, deviceId) {
     const tempCap = this.getTempGetCap(deviceId);
     const override = this.homey.settings.get('override') || {};
     let frostGuardIsOn;
