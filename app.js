@@ -1004,9 +1004,10 @@ class PiggyBank extends Homey.App {
     }
 
     // In case the new state was not set it will be the same as the preferred state.
-    // This can happen for 2 cases:
+    // This can happen for 3 cases:
     // - priceMode is DISABLED
     // - zone control turns on devices again
+    // - there is sufficient power to turn on devices again
     let newState;
     if ((targetState === undefined) || (targetState === DELTA_TEMP)) {
       switch (currentActionOp) {
@@ -1112,8 +1113,8 @@ class PiggyBank extends Homey.App {
         });
     }
 
-    if (newStateOn && isOn && (targetState === undefined || targetState === DELTA_TEMP)) {
-      // Temperature could have changed
+    if (newStateOn && isOn && (targetState === undefined || targetState === DELTA_TEMP) && (this.__current_state[deviceId].nComError === 0)) {
+      // Temperature could have changed (only send refresh for reliable devices)
       return this.refreshTemp(deviceId);
     }
 
@@ -1575,7 +1576,7 @@ class PiggyBank extends Homey.App {
             if ((driverId in d.DEVICE_CMD) && (d.DEVICE_CMD[driverId].type === d.DEVICE_TYPE.CHARGER)) {
               [success, noChange] = await this.changeDevicePower(deviceId, morePower);
             } else {
-              [success, noChange] = await this.changeDeviceState(deviceId, TURN_ON);
+              [success, noChange] = await this.changeDeviceState(deviceId, undefined);
             }
             if (success && !noChange) {
               // Sucessfully Turned on
@@ -1673,26 +1674,35 @@ class PiggyBank extends Homey.App {
    * This is called whenever the override action flow has been started
    */
   async onOverrideChanged(deviceId, forcedState) {
+    const frostList = this.homey.settings.get('frostList') || {};
+    if (!(deviceId in frostList)) {
+      return Promise.reject(new Error('This device is not controllable and cannot be overridden.'));
+    }
     const override = this.homey.settings.get('override') || {};
     override[deviceId] = forcedState;
     const device = await this.homeyApi.devices.getDevice({ id: deviceId });
+    let promise;
     switch (+forcedState) {
       case c.OVERRIDE.NONE:
         delete override[deviceId];
+        promise = this.changeDeviceState(deviceId, undefined); // Go back to default state
         break;
       case c.OVERRIDE.ON:
-        this.setOnOff(device, deviceId, true);
+        promise = this.setOnOff(device, deviceId, true);
         break;
       case c.OVERRIDE.OFF:
       case c.OVERRIDE.OFF_UNTIL_MANUAL_ON:
-        this.setOnOff(device, deviceId, false);
+        promise = this.setOnOff(device, deviceId, false);
         break;
       case c.OVERRIDE.MANUAL_TEMP: // This only means do not touch the temperature
       case c.OVERRIDE.FROST_GUARD: // Actually not enabled as input to the flow
       default:
+        promise = Promise.resolve(true);
         break;
     }
     this.homey.settings.set('override', override);
+    // Resolve to true even on error because the override has been stopped and as such will the error resolve later
+    return promise.then(() => Promise.resolve(true));
   }
 
   /**
