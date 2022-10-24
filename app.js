@@ -422,6 +422,18 @@ class PiggyBank extends Homey.App {
       if (+this.homey.settings.get('operatingMode') === c.MODE_DISABLED) return Promise.reject(new Error(this.homey.__('warnings.notEnabled')));
       return this.onSafetyPowerUpdate(args.reserved);
     });
+    const cardActionOverride = this.homey.flow.getActionCard('override-device');
+    cardActionOverride.registerRunListener(async args => {
+      if (preventZigbee) return Promise.reject(new Error(this.homey.__('warnings.homeyReboot')));
+      if (!this.app_is_configured) return Promise.reject(new Error(this.homey.__('warnings.notConfigured')));
+      return this.onOverrideChanged(args.device.id, +args.mode);
+    });
+    cardActionOverride.registerArgumentAutocompleteListener(
+      'device',
+      async (query, args) => {
+        return this.generateDeviceList(query, args);
+      }
+    );
     const cardZoneUpdate = this.homey.flow.getActionCard('change-zone-active');
     cardZoneUpdate.registerArgumentAutocompleteListener(
       'zone',
@@ -578,6 +590,25 @@ class PiggyBank extends Homey.App {
         };
         results.push(mode);
       }
+    }
+    return results.filter(result => {
+      return result.name.toLowerCase().includes(query.toLowerCase());
+    });
+  }
+
+  /**
+   * Warning: homey does not report any errors if this function crashes, so make sure it doesn't crash
+   */
+  async generateDeviceList(query, args) {
+    const frostList = this.homey.settings.get('frostList');
+    const results = [];
+    for (const deviceId in frostList) {
+      const device = {
+        name: this.__deviceList[deviceId].name,
+        description: this.__deviceList[deviceId].room,
+        id: deviceId
+      };
+      results.push(device);
     }
     return results.filter(result => {
       return result.name.toLowerCase().includes(query.toLowerCase());
@@ -1636,6 +1667,32 @@ class PiggyBank extends Homey.App {
     }
     this.__num_off_devices = numDevices - numForcedOnDevices; // Reset off counter in case it was wrong
     return Promise.reject(new Error(errorString));
+  }
+
+  /**
+   * This is called whenever the override action flow has been started
+   */
+  async onOverrideChanged(deviceId, forcedState) {
+    const override = this.homey.settings.get('override') || {};
+    override[deviceId] = forcedState;
+    const device = await this.homeyApi.devices.getDevice({ id: deviceId });
+    switch (+forcedState) {
+      case c.OVERRIDE.NONE:
+        delete override[deviceId];
+        break;
+      case c.OVERRIDE.ON:
+        this.setOnOff(device, deviceId, true);
+        break;
+      case c.OVERRIDE.OFF:
+      case c.OVERRIDE.OFF_UNTIL_MANUAL_ON:
+        this.setOnOff(device, deviceId, false);
+        break;
+      case c.OVERRIDE.MANUAL_TEMP: // This only means do not touch the temperature
+      case c.OVERRIDE.FROST_GUARD: // Actually not enabled as input to the flow
+      default:
+        break;
+    }
+    this.homey.settings.set('override', override);
   }
 
   /**
