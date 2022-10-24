@@ -526,5 +526,8 @@
   },
   "0.18.18": {
     "en": "Fix for request #30: Add service button for AC devices + Fix for bug #39 Too many decimals on currency capability + Implemented feature #41: Overriding devices"
+  },
+  "0.18.19": {
+    "en": "Critical bugfix for the version submitted just a few minutes ago. The frost guard was triggering all the time"
   }
 }
