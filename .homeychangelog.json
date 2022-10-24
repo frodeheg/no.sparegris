@@ -523,5 +523,8 @@
   },
   "0.18.17": {
     "en": "Fix for bug #38: Devices without onOff capabilities was still not controllable"
+  },
+  "0.18.18": {
+    "en": "Fix for request #30: Add service button for AC devices + Fix for bug #39 Too many decimals on currency capability + Implemented feature #41: Overriding devices"
   }
 }
