@@ -532,5 +532,8 @@
   },
   "0.18.20": {
     "en": "Critical improvement for issue #48: If no prices are available - use PP_NORMAL. Also put an error message in the settings home screen, created notifications in the timeline and added condition card to check for price availability. + Fix for bug #47: Temperature was not reset when going out of override mode"
+  },
+  "0.18.21": {
+    "en": "Improvement in description of missing prices condition from issue #48."
   }
 }
