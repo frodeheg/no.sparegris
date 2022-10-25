@@ -529,5 +529,8 @@
   },
   "0.18.19": {
     "en": "Critical bugfix for the version submitted just a few minutes ago. The frost guard was triggering all the time"
+  },
+  "0.18.20": {
+    "en": "Critical improvement for issue #48: If no prices are available - use PP_NORMAL. Also put an error message in the settings home screen, created notifications in the timeline and added condition card to check for price availability. + Fix for bug #47: Temperature was not reset when going out of override mode"
   }
 }
