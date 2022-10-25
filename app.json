@@ -323,16 +323,16 @@
     "conditions": [
       {
         "title": {
-          "en": "Future electricity prices are unavailable",
-          "no": "Fremtidige strømpriser er utilgjengelige"
+          "en": "Future electricity prices are !{{unavailable|available}}",
+          "no": "Fremtidige strømpriser er !{{utilgjengelig|tilgjengelig}}"
         },
         "titleFormatted": {
           "en": "The future price in [[hours]] hours is !{{unavailable|available}}.",
           "no": "Den fremtidige prisen om [[hours]] timer er !{{utilgjengelig|tilgjengelig}}."
         },
         "hint": {
-          "en": "Use this trigger to handle situations when the future prices for some reason is not available.",
-          "no": "Bruk denne triggeren for å håndtere situasjoner hvor de fremtidige prisene av en eller annen grunn ikke er tilgjengelige."
+          "en": "Use this condition to handle situations when the future prices in a given number of hours for some reason is not available.",
+          "no": "Bruk denne sjekken for å håndtere situasjoner hvor den fremtidige prisen om et gitt antall timer av en eller annen grunn ikke er tilgjengelig."
         },
         "args": [
           {
