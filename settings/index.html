@@ -104,6 +104,7 @@
       var reportGenerated = false;
       var needModeRefresh = true;
       var numErrorDevices = 0;
+      var graphData = {};
 
       const KEEP = -1;
       const ALWAYS_OFF = 0;
@@ -811,6 +812,7 @@
         haveTasks |= changeTaskVisibility('taskNoPriceAPIDevice', !appIsDisabled && priceMode == PRICE_MODE_INTERNAL && priceKind == PRICE_KIND_EXTERNAL && appConfigProgress.ApiStatus == PRICE_API_NO_DEVICE);
         haveTasks |= changeTaskVisibility('taskNoPriceAPIData', !appIsDisabled && priceMode == PRICE_MODE_INTERNAL && priceKind == PRICE_KIND_EXTERNAL && appConfigProgress.ApiStatus == PRICE_API_NO_DATA);
         haveTasks |= changeTaskVisibility('taskNoPriceEnabled', !appIsDisabled && priceMode == PRICE_MODE_DISABLED);
+        haveTasks |= changeTaskVisibility('taskNoPrices', !appIsDisabled && priceMode == PRICE_MODE_INTERNAL && priceKind == PRICE_KIND_SPOT && Array.isArray(graphData.elPrices) && (graphData.elPrices.length == 0));
         haveTasks |= changeTaskVisibility('taskDisableLogging', !appIsDisabled && document.getElementById('logLevel').value != 0);
         haveTasks |= changeTaskVisibility('taskExperimental', !appIsDisabled && experimentalEnabled);
         haveTasks |= changeTaskVisibility('errorDevices', !appIsDisabled && numErrorDevices > 0);
@@ -933,19 +935,20 @@
         <legend data-i18n="settings.app.myTasks">app.myTasks</legend>
 
         <table class="settings_table">
-          <tr id="taskCreateEnergyFlow"><td style="vertical-align:top;"><span id="icon1" class="⚠ err"></span></td><td><span data-i18n="settings.welcome.taskCreateEnergyFlow">taskCreateEnergyFlow</span></td></tr>
-          <tr id="taskNoPriceAPI"><td style="vertical-align:top;"><span id="icon2" class="⚠ err"></span></td><td><span data-i18n="settings.welcome.taskNoPriceAPI">taskNoPriceAPI</span></td></tr>
-          <tr id="taskNoPriceAPIDevice"><td style="vertical-align:top;"><span id="icon3" class="⚠ err"></span></td><td><span data-i18n="settings.welcome.taskNoPriceAPIDevice">taskNoPriceAPIDevice</span></td></tr>
-          <tr id="taskNoPriceAPIData"><td style="vertical-align:top;"><span id="icon4" class="⚠ err"></span></td><td><span data-i18n="settings.welcome.taskNoPriceAPIData">taskNoPriceAPIData</span></td></tr>
-          <tr id="taskEnableApp"><td style="vertical-align:top;"><span id="icon5" class="⚠ warn"></span></td><td><span data-i18n="settings.welcome.taskEnableApp">taskEnableApp</span></td></tr>
-          <tr id="taskEnergyFlowRate"><td style="vertical-align:top;"><span id="icon6" class="⚠ warn"></span></td><td><span id="energyFlowRateText">taskEnergyFlowRate</span></td></tr>
-          <tr id="taskChargerNotEnabled"><td style="vertical-align:top;"><span id="icon6" class="⚠ err"></span></td><td><span data-i18n="settings.welcome.taskChargerNotEnabled">taskChargerNotEnabled</span></td></tr>
-          <tr id="taskNoPriceFlow"><td style="vertical-align:top;"><span id="icon7" class="⚠ warn"></span></td><td><span data-i18n="settings.welcome.taskNoPriceFlow">taskNoPriceFlow</span></td></tr>
-          <tr id="taskDisableLogging"><td style="vertical-align:top;"><span id="icon8" class="⚠ warn"></span></td><td><span data-i18n="settings.welcome.taskDisableLogging">taskDisableLogging</span></td></tr>
-          <tr id="taskExperimental"><td style="vertical-align:top;"><span id="icon9" class="⚠ warn"></span></td><td><span data-i18n="settings.welcome.taskExperimental">taskExperimental</span></td></tr>
-          <tr id="errorDevices"><td style="vertical-align:top;"><span id="icon10" class="⚠ warn"></span></td><td><span data-i18n="settings.welcome.errorDevices">errorDevices</span><div id="errorDeviceList"></div></td></tr>
-          <tr id="taskNoPriceEnabled"><td style="vertical-align:top;"><span id="icon11" class="⚠ info"></span></td><td><span data-i18n="settings.welcome.taskNoPriceEnabled">taskNoPriceEnabled</span></td></tr>
-          <tr id="taskNone"><td style="vertical-align:top;"><span id="icon12" class="⚠ info"></span></td><td><span data-i18n="settings.welcome.taskNone">taskNone</span></td></tr>
+          <tr id="taskCreateEnergyFlow"><td style="vertical-align:top;"><span id="iconE1" class="⚠ err"></span></td><td><span data-i18n="settings.welcome.taskCreateEnergyFlow">taskCreateEnergyFlow</span></td></tr>
+          <tr id="taskNoPriceAPI"><td style="vertical-align:top;"><span id="iconE2" class="⚠ err"></span></td><td><span data-i18n="settings.welcome.taskNoPriceAPI">taskNoPriceAPI</span></td></tr>
+          <tr id="taskNoPriceAPIDevice"><td style="vertical-align:top;"><span id="iconE3" class="⚠ err"></span></td><td><span data-i18n="settings.welcome.taskNoPriceAPIDevice">taskNoPriceAPIDevice</span></td></tr>
+          <tr id="taskNoPriceAPIData"><td style="vertical-align:top;"><span id="iconE4" class="⚠ err"></span></td><td><span data-i18n="settings.welcome.taskNoPriceAPIData">taskNoPriceAPIData</span></td></tr>
+          <tr id="taskChargerNotEnabled"><td style="vertical-align:top;"><span id="iconE5" class="⚠ err"></span></td><td><span data-i18n="settings.welcome.taskChargerNotEnabled">taskChargerNotEnabled</span></td></tr>
+          <tr id="taskNoPrices"><td style="vertical-align:top;"><span id="iconE6" class="⚠ err"></span></td><td><span data-i18n="settings.welcome.taskNoPrices">taskNoPrices</span></td></tr>
+          <tr id="taskEnableApp"><td style="vertical-align:top;"><span id="iconW1" class="⚠ warn"></span></td><td><span data-i18n="settings.welcome.taskEnableApp">taskEnableApp</span></td></tr>
+          <tr id="taskEnergyFlowRate"><td style="vertical-align:top;"><span id="iconW2" class="⚠ warn"></span></td><td><span id="energyFlowRateText">taskEnergyFlowRate</span></td></tr>
+          <tr id="taskNoPriceFlow"><td style="vertical-align:top;"><span id="iconW3" class="⚠ warn"></span></td><td><span data-i18n="settings.welcome.taskNoPriceFlow">taskNoPriceFlow</span></td></tr>
+          <tr id="taskDisableLogging"><td style="vertical-align:top;"><span id="iconW4" class="⚠ warn"></span></td><td><span data-i18n="settings.welcome.taskDisableLogging">taskDisableLogging</span></td></tr>
+          <tr id="taskExperimental"><td style="vertical-align:top;"><span id="iconW5" class="⚠ warn"></span></td><td><span data-i18n="settings.welcome.taskExperimental">taskExperimental</span></td></tr>
+          <tr id="errorDevices"><td style="vertical-align:top;"><span id="iconW6" class="⚠ warn"></span></td><td><span data-i18n="settings.welcome.errorDevices">errorDevices</span><div id="errorDeviceList"></div></td></tr>
+          <tr id="taskNoPriceEnabled"><td style="vertical-align:top;"><span id="iconI1" class="⚠ info"></span></td><td><span data-i18n="settings.welcome.taskNoPriceEnabled">taskNoPriceEnabled</span></td></tr>
+          <tr id="taskNone"><td style="vertical-align:top;"><span id="iconI2" class="⚠ info"></span></td><td><span data-i18n="settings.welcome.taskNone">taskNone</span></td></tr>
         </table>
 
       </fieldset>
@@ -1950,6 +1953,7 @@
             if (err) return Homey.alert(err);
             updateGraph(data);
             updateCarSheduleGraph(data);
+            graphData = data;
             graphLoaded = true;
           });
 
@@ -2639,17 +2643,17 @@
           checkLoadingDone();
         }, 1 * 1000);
         setGridCost(futurePriceOptions.gridCosts);
-        updateGraph({
+        graphData = {
           daysInMonth: 31,
           month: 2,
           dailyMax: [4000, 4900, 4300, 4800, 4500, 4400, 4200, 3200, 1023, 4300],
-          dailyMaxGood: [true, true, false, true, true]
-        });
-        updateCarSheduleGraph({
+          dailyMaxGood: [true, true, false, true, true],
           chargeShedule: [4000, 4000, 0, 0, 4000],
           elPrices: [0.5, 0.43, 0.33, 0.64, 0.93, 0.45, 0.22],
           currentHour: 2
-        });
+        };
+        updateGraph(graphData);
+        updateCarSheduleGraph(graphData);
       }
       DEBUG_END */
     </script>

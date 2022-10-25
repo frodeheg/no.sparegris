@@ -85,6 +85,8 @@
       "taskNoPriceAPIDevice": "Your choice to fetch prices from an external app require the app 'Norwegian Electricity Bill' to be installed. The app is found but prices can only be retrieved when the apps corresponding device has been installed.",
       "taskNoPriceAPIData": "You have chosen to fetch prices from an external app, but the 'Norwegian Electricity Bill' app has been configured for price from flows, and as such it will not forward the prices to this app...",
       "taskNoPriceEnabled": "You have not activated price management yet. This could possibly save you some more money.",
+      "taskNoPrices": "No future prices are available. Forces price point to Normal price until the situation has been resolved.",
+      "taskYesPrices": "Future prices are available again.",
       "taskDisableLogging": "You have enabled extended logging, which slows down the app significantly. Please disable extended logging for better performance.",
       "taskExperimental" : ["You have chosen to control a unit that the app has not been verified to handle. <!--",
           "-->Please <a href=\"ShowLog\" onclick=\"changeTab(event, 'logPage');return false;\">report</a> the status <!--",

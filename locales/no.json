@@ -85,6 +85,8 @@
       "taskNoPriceAPIDevice": "Du har valgt å hente priser fra ekstern app. Da hentes prisene fra Strømregning-appen, men for at dette skal virke må du også installere appens koresponderende enhet (Også kalt 'Strømregning').",
       "taskNoPriceAPIData": "Du har valgt å hente priser fra ekstern app, men Strømregning-appen er innstillt på pris fra flow, så da videresender den ikke prisen til denne appen...",
       "taskNoPriceEnabled": "Du har ikke aktivert prisstyring av enhetene enda. Det kan være litt å spare på å slå det på.",
+      "taskNoPrices": "Ingen fremtidige priser er tilgjengelig. Tvinger prispunkt til Normalpris inntil situasjonen har løst seg.",
+      "taskYesPrices": "Fremtidige priser er tilgjengelig igjen.",
       "taskDisableLogging": "Du har slått på utvidet logging, noe som sinker appen betydelig. Vennligst slå av utvidet logging for bedre ytelse.",
       "taskExperimental" : ["Du har valgt å styre en enhet som ikke er verifisert at appen håndterer enda. <!--",
           "-->Dersom du <a href=\"ShowLog\" onclick=\"changeTab(event, 'logPage');return false;\">rapporterer</a> <!--",

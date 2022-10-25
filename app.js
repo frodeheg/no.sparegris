@@ -450,6 +450,10 @@ class PiggyBank extends Homey.App {
       if (+this.homey.settings.get('operatingMode') === c.MODE_DISABLED) return Promise.reject(new Error(this.homey.__('warnings.notEnabled')));
       return this.onZoneUpdate(args.zone, args.enabled);
     });
+    const noPriceCondition = this.homey.flow.getConditionCard('future-prices-unavailable');
+    noPriceCondition.registerRunListener(async (args, state) => {
+      return this.__current_prices[args.hours] === undefined;
+    });
     const priceCondition = this.homey.flow.getConditionCard('the_price_point_is');
     priceCondition.registerRunListener(async (args, state) => {
       const priceIsEqual = +args.mode === +this.homey.settings.get('pricePoint');
@@ -2815,7 +2819,7 @@ class PiggyBank extends Homey.App {
       if (this.apiState === c.PRICE_API_NO_DATA) return Promise.reject(new Error(this.homey.__('warnings.noPriceApiData')));
     }
 
-    if (this.__current_prices && this.__current_price_index) {
+    if (this.__current_prices && isNumber(+this.__current_price_index)) {
       this.__last_hour_price = this.__current_prices[this.__current_price_index];
     } else {
       this.__last_hour_price = undefined;
@@ -2828,9 +2832,21 @@ class PiggyBank extends Homey.App {
 
     // === Calculate price point if state is internal and have future prices ===
     const futurePriceOptions = this.homey.settings.get('futurePriceOptions');
-    if (this.__current_prices.length < 1
-      || priceMode !== c.PRICE_MODE_INTERNAL) {
+    if (priceMode !== c.PRICE_MODE_INTERNAL) {
       return Promise.resolve();
+    }
+    if (this.__current_prices.length < 1) {
+      if (this.homey.settings.get('__no_price_notification') === null) {
+        this.homey.settings.set('__no_price_notification', true);
+        const noPriceText = this.homey.__('settings.welcome.taskNoPrices');
+        this.homey.notifications.createNotification({ excerpt: noPriceText });
+      }
+      return this.onPricePointUpdate(c.PP_NORM);
+    }
+    if (this.homey.settings.get('__no_price_notification')) {
+      this.homey.settings.unset('__no_price_notification');
+      const yesPriceText = this.homey.__('settings.welcome.taskYesPrices');
+      this.homey.notifications.createNotification({ excerpt: yesPriceText });
     }
     if (!this.app_is_configured) {
       return Promise.reject(new Error(this.homey.__('warnings.notConfigured')));
