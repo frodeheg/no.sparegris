@@ -194,7 +194,7 @@
           found_experimental_on |= device.use && experimental;
           let enabledImg = device.use ? experimental ? "experimental.png" : "enabled.png" : "disabled.png";
           let experimentalCmd = experimental ? 'document.getElementById(\'' + experimentalId + '\').style.display=\'block\';' : '';
-          let noteButton = hasNote ? `<div class="hintButton" onclick="toggle(this,'note${key}', 'table-row');return false;" style="display:inline-block">i</div>` : '';
+          let noteButton = hasNote ? ` <div class="hintButton" onclick="toggle(this,'note${key}', 'table-row');return false;" style="display:inline-block">i</div>` : '';
           let noteText = hasNote ? `<tr id="note${key}" class="hint"><td colspan=4><p>${DEVICE_CMD[device.driverId].note}</p></td></tr>` : '';
           gen_list +=
             '<tr>' +

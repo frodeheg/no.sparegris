@@ -190,6 +190,7 @@ const DEVICE_CMD = {
   'no.connecte:smart_socket': DEFAULT_SWITCH,
   'no.easee:charger': {
     ...DEFAULT_CHARGER,
+    note: 'This device should be put into locked mode from the Easee app to give full control of the charger to PiggyBank.',
     setCurrentCap: 'target_circuit_current',
     getOfferedCap: 'measure_current.offered',
     minCurrent: 7,
