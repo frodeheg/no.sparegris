@@ -28,7 +28,6 @@
 // CHARGER : Additional parameters
 //   setCurrentCap     - Capability for changing the offered current (in Amps)
 //   minCurrent        - The offered current should never be lower than this
-//   maxCurrent        - The offered current should never be higher than this
 //   measurePowerCap   - Capability for reading used power
 //   measureVoltageCap - Capability for reading voltage
 
@@ -192,8 +191,8 @@ const DEVICE_CMD = {
   'no.easee:charger': {
     ...DEFAULT_CHARGER,
     setCurrentCap: 'target_circuit_current',
+    getOfferedCap: 'measure_current.offered',
     minCurrent: 7,
-    maxCurrent: 40,
     measurePowerCap: 'measure_power',
     measureVoltageCap: 'measure_voltage',
     beta: true,

@@ -881,10 +881,16 @@ class PiggyBank extends Homey.App {
       && (+chargerOptions.chargeRemaining > 0)
       && (this.__charge_plan[0] > 0)
       && !isEmergency;
+    const { lastCmd, lastCurrent } = this.__current_state[deviceId];
+    const ampsActualOffer = !isOn || (device.capabilitiesObj === null) ? 0
+      : hasPowerCap ? +await device.capabilitiesObj[d.DEVICE_CMD[driverId].getOfferedCap].value : 0;
+    const ignoreChargerThrottle = (+powerChange < 0)
+      && (((lastCmd === TURN_ON) && (isOn === true) && (!hasPowerCap || (lastCurrent === ampsActualOffer)))
+      || ((lastCmd === TURN_OFF) && (isOn === false)));
     // Check that we do not toggle the charger too often
     const now = new Date();
     const timeLapsed = (now - this.prevChargerTime) / 1000; // Lapsed time in seconds
-    if (this.prevChargerTime !== undefined && (timeLapsed < chargerOptions.minToggleTime) && !isEmergency) {
+    if (this.prevChargerTime !== undefined && (timeLapsed < chargerOptions.minToggleTime) && !ignoreChargerThrottle && !isEmergency) {
       // Must wait a little bit more before changing
       return Promise.resolve([false, false]);
     }
@@ -895,6 +901,7 @@ class PiggyBank extends Homey.App {
     this.__current_state[deviceId].ongoing = false; // If already ongoing then it should already have been completed, try again
     if (wantOn) {
       const turnOnPromise = !isOn ? this.setOnOff(device, deviceId, true) : Promise.resolve();
+      const maxCurrent = !hasPowerCap ? 0 : await device.capabilitiesObj[d.DEVICE_CMD[driverId].setCurrentCap].max;
       let newOfferPower;
       this.__current_state[deviceId].ongoing = true;
       this.__current_state[deviceId].confirmed = false;
@@ -907,7 +914,9 @@ class PiggyBank extends Homey.App {
           const maxPower = +this.homey.settings.get('maxPower');
           newOfferPower = Math.min(Math.max(powerUsed + +powerChange, +chargerOptions.chargeMin), maxPower);
           const newOfferCurrent = (+powerUsed <= 0) ? d.DEVICE_CMD[driverId].minCurrent
-            : Math.floor(Math.min(Math.max(ampsOffered * (newOfferPower / +powerUsed), d.DEVICE_CMD[driverId].minCurrent), d.DEVICE_CMD[driverId].maxCurrent));
+            : Math.floor(Math.min(Math.max(ampsOffered * (newOfferPower / +powerUsed), d.DEVICE_CMD[driverId].minCurrent), +maxCurrent));
+          this.__current_state[deviceId].lastCurrent = newOfferCurrent;
+          if (newOfferCurrent === ampsActualOffer) return Promise.resolve();
           return device.setCapabilityValue({ capabilityId: d.DEVICE_CMD[driverId].setCurrentCap, value: newOfferCurrent });
         })
         .then(() => {
