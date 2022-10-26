@@ -535,5 +535,8 @@
   },
   "0.18.21": {
     "en": "Improvement in description of missing prices condition from issue #48."
+  },
+  "0.18.22": {
+    "en": "Minor improvements to Easee charging (Issue #44)"
   }
 }
