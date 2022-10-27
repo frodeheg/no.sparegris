@@ -1066,11 +1066,16 @@ class PiggyBank extends Homey.App {
     const forceOff = (override[deviceId] === c.OVERRIDE.OFF)
       || (override[deviceId] === c.OVERRIDE.OFF_UNTIL_MANUAL_ON);
     const activeZones = this.homey.settings.get('zones');
-    const isEmergency = currentActionOp === EMERGENCY_OFF;
+    const isEmergency = targetState === EMERGENCY_OFF;
     const newStateOn = frostGuardActive || (forceOn && !isEmergency)
       || (currentActionOp !== TURN_OFF && !isEmergency && !forceOff
         && !this.__deviceList[deviceId].memberOf.some(z => (activeZones.hasOwnProperty(z) && !activeZones[z].enabled))
-        && ((newState === TURN_ON && currentModeState !== ALWAYS_OFF) || (newState === TURN_OFF && currentModeState === ALWAYS_ON)));
+        && ((newState === TURN_ON && currentModeState !== ALWAYS_OFF) || (newState === TURN_OFF && currentModeState === ALWAYS_ON) || (newState === EMERGENCY_OFF && isOn)));
+
+    if (newState === EMERGENCY_OFF && newStateOn === undefined) {
+      // Early exit because it's no emergency and we don't know whether to be on or off
+      return Promise.resolve([false, false]);
+    }
 
     this.__current_state[deviceId].lastCmd = newStateOn ? TURN_ON : (newState === EMERGENCY_OFF) ? EMERGENCY_OFF : TURN_OFF;
     if (newStateOn === undefined) {
@@ -1794,7 +1799,7 @@ class PiggyBank extends Homey.App {
       }
     }
     const maxPower = this.homey.settings.get('maxPower');
-    const priceSorted = Array.from(priceArray.keys()).sort((a, b) => ((priceArray[a] === priceArray[b]) ? (a-b) : (priceArray[a] - priceArray[b])));
+    const priceSorted = Array.from(priceArray.keys()).sort((a, b) => ((priceArray[a] === priceArray[b]) ? (a - b) : (priceArray[a] - priceArray[b])));
     this.__charge_plan = [];
     let scheduleRemaining = chargerOptions.chargeRemaining;
     for (let i = 0; (i < priceSorted.length) && (scheduleRemaining > 0); i++) {
