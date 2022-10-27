@@ -538,5 +538,8 @@
   },
   "0.18.22": {
     "en": "Minor improvements to Easee charging (Issue #44)"
+  },
+  "0.18.23": {
+    "en": "Fix for bug #49 Emergency off acted as constant off the last 4 days"
   }
 }
