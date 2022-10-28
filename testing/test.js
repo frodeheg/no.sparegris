@@ -59,18 +59,18 @@ async function testEntsoe() {
 
 // Test OnNewHour
 async function testNewHour(numTests) {
-  console.log('Testin onNewHour');
+  console.log('Testing onNewHour');
   const app = new PiggyBank();
   await app.onInit();
   let testAccum = 0;
-  const now = new Date();
-  console.log(`Start: ${testAccum} ?= ${app.__accum_energy} ||| ${now}`);
+  let now = new Date();
+  console.log(`Start: ${now}`);
   let oldPow = 0;
-  for (let i = 0; i < numTests; i++) {
+  for (let i = 0; i < 20000; i++) {
     const randomTime = Math.round((2 + (Math.random() * 30)) * 1000);
     const randomPow = 300 + (Math.random() * 5000);
     const hourBefore = now.getHours();
-    now.setMilliseconds(now.getMilliseconds() + randomTime);
+    now = new Date(now.getTime() + randomTime);
     const hourAfter = now.getHours();
     if (hourBefore !== hourAfter) {
       const marginLow = Math.floor(testAccum * 0.98);
@@ -89,9 +89,9 @@ async function testNewHour(numTests) {
       oldPow = randomPow;
     }
   }
-  console.log(`End: ${testAccum} ?= ${app.__accum_energy} ||| ${now}`);
+  console.log(`End: ${now}`);
   await app.onUninit();
-  console.log('Testin onNewHour - Passed');
+  console.log('Testing onNewHour - Passed');
 }
 
 async function applyBasicConfig(app) {
@@ -250,5 +250,5 @@ async function startAllTests() {
 }
 
 // Run all the testing
-// startAllTests();
-testPricePoints();
+startAllTests();
+// testPricePoints();

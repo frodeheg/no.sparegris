@@ -1724,7 +1724,7 @@ class PiggyBank extends Homey.App {
   }
 
   /**
-   * Called when the user initiates a chargin cycles through a flow
+   * Called when the user initiates a charging cycles through a flow
    * @param offerEnergy number of kWh to offer before time runs out (will be undefined if offerHours)
    * @param endTime the localtime for when to end charging
    * @param offerHours number of hours to offer energy before time runs out (will be undefined if offerEnergy)
@@ -2267,7 +2267,7 @@ class PiggyBank extends Homey.App {
         this.__stats_actual_cost += (this.__stats_price * this.__stats_energy) / 1000;
         // If new day
         if (toLocalTime(this.__stats_price_time, this.homey).getHours() === 0
-          && this.__stats_n_hours_today > 0) {
+          && this.__stats_n_hours_today > 1) { // Guard to prevent double trigger at summer time changes
           // Accumulate and reset dayliy stats:
           this.__stats_cost_if_smooth = (this.__stats_accum_use_today * (this.__stats_accum_price_today / this.__stats_n_hours_today)) / 1000;
           this.__stats_savings_yesterday = this.__stats_cost_if_smooth - this.__stats_actual_cost;
