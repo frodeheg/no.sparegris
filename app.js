@@ -282,7 +282,7 @@ class PiggyBank extends Homey.App {
       if (!('gridTaxNight' in futurePriceOptions)) futurePriceOptions.gridTaxNight = 0.2839; // Tensio default
       if (!('VAT' in futurePriceOptions)) futurePriceOptions.VAT = 25;
       if (!(Array.isArray(futurePriceOptions.gridCosts))) futurePriceOptions.gridCosts = await this.fetchTariffTable();
-      this.log(`Resetting futurePriceOptions to ${JSON.stringify(futurePriceOptions)}`);
+      this.updateLog(`Resetting futurePriceOptions to ${JSON.stringify(futurePriceOptions)}`, c.LOG_DEBUG);
       this.homey.settings.set('futurePriceOptions', futurePriceOptions);
     }
     let chargerOptions = this.homey.settings.get('chargerOptions');
@@ -302,7 +302,7 @@ class PiggyBank extends Homey.App {
       if (!('chargeRemaining' in chargerOptions)) chargerOptions.chargeRemaining = 0;
       if (!('chargeCycleType' in chargerOptions)) chargerOptions.chargeCycleType = c.OFFER_HOURS;
       if (!('chargeEnd' in chargerOptions)) chargerOptions.chargeEnd = now;
-      this.log(`Resetting chargerOptions to ${JSON.stringify(chargerOptions)}`);
+      this.updateLog(`Resetting chargerOptions to ${JSON.stringify(chargerOptions)}`, c.LOG_DEBUG);
       this.homey.settings.set('chargerOptions', chargerOptions);
     }
 
@@ -1738,7 +1738,7 @@ class PiggyBank extends Homey.App {
       const hoursEnd = Number.parseInt(endTime.split(':').at(0), 10);
       const minutesEnd = Number.parseInt(endTime.split(':').at(1), 10);
       const minutesDiff = timeDiff(nowLocal.getHours(), nowLocal.getMinutes(), hoursEnd, minutesEnd);
-      const endTimeUTC = new Date();
+      const endTimeUTC = new Date(now.getTime());
       endTimeUTC.setMinutes(endTimeUTC.getMinutes() + minutesDiff, 0, 0);
       chargerOptions.chargeRemaining = offerEnergy ? (offerEnergy * 1000) : +offerHours;
       chargerOptions.chargeCycleType = offerEnergy ? c.OFFER_ENERGY : c.OFFER_HOURS;

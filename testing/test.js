@@ -14,7 +14,7 @@ const { toLocalTime, fromLocalTime, timeToNextHour, roundToStartOfDay } = requir
 // Test Currency Converter
 // * Test that the date for the last currency fetched is recent... otherwise the API could have changed
 async function testCurrencyConverter() {
-  console.log('Testing Currency Converter');
+  console.log('[......] Currency Converter');
   const currencyTable = await prices.fetchCurrencyTable('EUR');
   const now = new Date();
   for (const currency in currencyTable) {
@@ -24,22 +24,24 @@ async function testCurrencyConverter() {
       throw new Error(`No recent samples for currency ${currency}, last sample time: ${sampleTime}`);
     }
   }
-  console.log('Testing Currency Converter - Passed');
+  console.log('\x1b[1A[\x1b[32mPASSED\x1b[0m]');
 }
 
 // Test App
 async function testApp() {
-  console.log('Testing App init');
+  console.log('[......] App init');
   const app = new PiggyBank();
+  await app.disableLog();
   await app.onInit();
   await app.onUninit();
-  console.log('Testing App init - Passed');
+  console.log('\x1b[1A[\x1b[32mPASSED\x1b[0m]');
 }
 
 // Test Entsoe Integration
 async function testEntsoe() {
-  console.log('Testing Entsoe');
+  console.log('[......] Entsoe');
   const app = new PiggyBank();
+  await app.disableLog();
   await app.onInit();
   await prices.entsoeApiInit(Homey.env.ENTSOE_TOKEN);
   const todayStart = new Date();
@@ -51,20 +53,24 @@ async function testEntsoe() {
   const gridTaxDay = 0.3626; // Between 6-22
   const gridTaxNight = 0.2839; // Between 22-6
   const finalPrices = await prices.applyTaxesOnSpotprice(priceData, surcharge, VAT, gridTaxDay, gridTaxNight, app.homey);
-  console.log(finalPrices);
+  if (finalPrices.length < 24) {
+    console.log(finalPrices);
+    throw new Error('Entsoe API is not returning the prices');
+  }
 
   await app.onUninit();
-  console.log('Testing Entsoe - Passed');
+  console.log('\x1b[1A[\x1b[32mPASSED\x1b[0m]');
 }
 
 // Test OnNewHour
 async function testNewHour(numTests) {
-  console.log('Testing onNewHour');
+  console.log('[......] onNewHour');
   const app = new PiggyBank();
+  await app.disableLog();
   await app.onInit();
   let testAccum = 0;
   let now = new Date();
-  console.log(`Start: ${now}`);
+  // console.log(`Start: ${now}`);
   let oldPow = 0;
   for (let i = 0; i < 20000; i++) {
     const randomTime = Math.round((2 + (Math.random() * 30)) * 1000);
@@ -89,9 +95,9 @@ async function testNewHour(numTests) {
       oldPow = randomPow;
     }
   }
-  console.log(`End: ${now}`);
+  // console.log(`End: ${now}`);
   await app.onUninit();
-  console.log('Testing onNewHour - Passed');
+  console.log('\x1b[1A[\x1b[32mPASSED\x1b[0m]');
 }
 
 async function applyBasicConfig(app) {
@@ -121,21 +127,24 @@ async function applyBasicConfig(app) {
   app.homey.settings.set('futurePriceOptions', futureData);
   app.app_is_configured = app.validateSettings();
   const fakeDevices = [
-    { id: 'id_a', capabilitiesObj: { measure_temperature: { value: 1 }, target_temperature: { value: 20 } } },
-    { id: 'id_b', capabilitiesObj: { measure_temperature: { value: 1 }, target_temperature: { value: 20 } } },
-    { id: 'id_c', capabilitiesObj: { measure_temperature: { value: 1 }, target_temperature: { value: 20 } } },
-    { id: 'id_d', capabilitiesObj: { measure_temperature: { value: 1 }, target_temperature: { value: 20 } } },
-    { id: 'id_e', capabilitiesObj: { measure_temperature: { value: 1 }, target_temperature: { value: 20 } } },
+    'com.mill.txt',
+    'com.mill.txt',
+  //  { id: 'id_a', capabilitiesObj: { measure_temperature: { value: 1 }, target_temperature: { value: 20 } } },
+  //  { id: 'id_b', capabilitiesObj: { measure_temperature: { value: 1 }, target_temperature: { value: 20 } } },
+  //  { id: 'id_c', capabilitiesObj: { measure_temperature: { value: 1 }, target_temperature: { value: 20 } } },
+  //  { id: 'id_d', capabilitiesObj: { measure_temperature: { value: 1 }, target_temperature: { value: 20 } } },
+  //  { id: 'id_e', capabilitiesObj: { measure_temperature: { value: 1 }, target_temperature: { value: 20 } } },
   ];
-  app.homeyApi.devices.addFakeDevices(fakeDevices);
+  app.homeyApi.devices.addFakeDevices(fakeDevices, 'Home/Gang');
   await app.createDeviceList(); // To initialize app.__current_state[...]
   await app.doPriceCalculations();
 }
 
 // Test Charging
 async function testCharging() {
-  console.log('Testing charging');
+  console.log('[......] charging');
   const app = new PiggyBank();
+  await app.disableLog();
   await app.onInit();
   await applyBasicConfig(app);
 
@@ -151,19 +160,20 @@ async function testCharging() {
   app.onChargingCycleStart(undefined, '10:00', 3, callTime);
   for (let i = 0; i < app.__charge_plan.length; i++) {
     if (app.__charge_plan[i] !== resultTable[i]) {
-      for (let j = 0; j < app.__charge_plan.length; j++) console.log(`Charge plan hour +${j}: plan ${app.__charge_plan[j]}, wanted: ${result_table[j]}`);
+      for (let j = 0; j < app.__charge_plan.length; j++) console.log(`Charge plan hour +${j}: plan ${app.__charge_plan[j]}, wanted: ${resultTable[j]}`);
       throw new Error('Charging schedule failed');
     }
   }
 
   await app.onUninit();
-  console.log('Testing charging - Passed');
+  console.log('\x1b[1A[\x1b[32mPASSED\x1b[0m]');
 }
 
 // Test reliability
 async function testReliability() {
-  console.log('Testing reliability');
+  console.log('[......] reliability');
   const app = new PiggyBank();
+  await app.disableLog();
   await app.onInit();
   await applyBasicConfig(app);
 
@@ -182,37 +192,40 @@ async function testReliability() {
   }
 
   await app.onUninit();
-  console.log('Testing reliability - Passed');
+  console.log('\x1b[1A[\x1b[32mPASSED\x1b[0m]');
 }
 
 // Test Mail
 async function testMail() {
-  console.log('Testing mail');
+  console.log('[......] mail');
   const app = new PiggyBank();
+  await app.disableLog();
   await app.onInit();
   await applyBasicConfig(app);
   app.updateLog('This is a test message from the validation script', c.LOG_ALL);
   await app.sendLog();
   await app.onUninit();
-  console.log('Testing mail - Passed');
+  console.log('\x1b[1A[\x1b[32mPASSED\x1b[0m]');
 }
 
 // Test price points
 async function testPricePoints() {
-  console.log('Testing price points');
+  console.log('[......] price points');
   const app = new PiggyBank();
+  await app.disableLog();
   await app.onInit();
   await applyBasicConfig(app);
   const ppNames = ['PP_LOW', 'PP_NORM', 'PP_HIGH', 'PP_EXTREME', 'PP_DIRTCHEAP'];
   app.__all_prices = [];
   app.__current_prices = [
-    0.2, 0.3, 0.5, 0.3, 0.2, 0.5, 0.9, 0.8, 0.1, 0.2, 0.2, 0.3,
+    0.2, 0.3, 0.5, 0.3, 0.2, 0.5, 0.9, 1.8, 0.1, 0.2, 0.2, 0.3,
     0.5, 0.3, 0.2, 0.5, 0.9, 0.8, 0.1, 0.2, 0.2, 0.3, 0.5, 0.3,
     0.2, 0.3, 0.5, 0.3, 0.2, 0.5, 0.9, 0.8, 0.1, 0.2, 0.2, 0.3,
     0.5, 0.3, 0.2, 0.5, 0.9, 0.8, 0.1, 0.2, 0.2, 0.3, 0.5, 0.3];
+  const CorrectPP = [4, 0, 1, 0, 4, 1, 2, 3, 4, 4, 4, 0, 1, 0, 4, 1, 2, 2, 4, 4, 4, 0, 1, 0];
   //const sortedPrices = app.__current_prices.slice(0, 24).sort((a, b) => b - a);
   //console.log(`Sorted prices: ${sortedPrices}`); //High cap: 0.5, low cap: 0.2
-  app.homey.settings.set('averagePrice', 10);
+  app.homey.settings.set('averagePrice', 0.6);
 
   const now = roundToStartOfDay(new Date(1666396747401), app.homey);
   for (let i = 0; i < app.__current_prices.length; i++) {
@@ -225,26 +238,28 @@ async function testPricePoints() {
     curTime.setHours(now.getHours() + hour, 0, 0, 0);
     await app.onNewHour(true, curTime);
     if (app.__current_price_index !== hour) throw new Error('Current hour is not calculated correctly');
-    console.log(`${String(hour).padStart(2, '0')}:00 Price: ${app.__current_prices[hour]} (${ppNames[app.homey.settings.get('pricePoint')]})`);
+    if (app.homey.settings.get('pricePoint') !== CorrectPP[hour]) throw new Error(`Invalid Price point at hour ${hour}`);
+    // console.log(`${String(hour).padStart(2, '0')}:00 Price: ${app.__current_prices[hour]} (${ppNames[app.homey.settings.get('pricePoint')]})`);
   }
 
   await app.onUninit();
-  console.log('Testing price points - Passed');
+  console.log('\x1b[1A[\x1b[32mPASSED\x1b[0m]');
 }
 
 // Start all tests
 async function startAllTests() {
   try {
-    // await testCurrencyConverter();
-    // await testApp();
-    // await testEntsoe();
-    // await testNewHour(20000);
+    await testCurrencyConverter();
+    await testApp();
+    await testEntsoe();
+    await testNewHour(20000);
     await testCharging();
     await testReliability();
+    await testPricePoints();
     // await testMail();
-    // await testPricePoints();
   } catch (err) {
-    console.log(`Testing failed: ${err}`);
+    console.log('\x1b[1A[\x1b[31mFAILED\x1b[0m]');
+    console.log(err);
     console.log(err.stack);
   }
 }

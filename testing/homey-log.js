@@ -9,7 +9,7 @@
 class Log {
 
   constructor() {
-    console.log('Fake Homey logger initialized');
+    // console.log('Fake Homey logger initialized');
   }
 
   setExtra(extra) {

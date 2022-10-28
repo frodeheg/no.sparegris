@@ -252,11 +252,19 @@ class App {
   constructor() {
     this.manifest = manifest;
     this.homey = new FakeHomeyClass(this);
-    this.log('Replacement for Homey Api Initialized');
+    this.enableLog();
+  }
+
+  enableLog() {
+    this.logEnabled = true;
+  }
+
+  disableLog() {
+    this.logEnabled = false;
   }
 
   log(value) {
-    console.log(value);
+    if (this.logEnabled) console.log(value);
   }
 
 }
