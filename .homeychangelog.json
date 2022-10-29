@@ -541,5 +541,8 @@
   },
   "0.18.23": {
     "en": "Fix for bug #49 Emergency off acted as constant off the last 4 days"
+  },
+  "0.18.24": {
+    "en": "Fixes for bug #52: Entering winter time would cause statistics problems"
   }
 }
