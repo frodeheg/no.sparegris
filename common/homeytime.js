@@ -10,7 +10,13 @@
  */
 function toLocalTime(homeyTime, homey) {
   const tz = homey.clock.getTimezone();
-  const localTime = new Date(homeyTime.toLocaleString('en-US', { timeZone: tz }));
+  const homeyTimeHourAgo = new Date(homeyTime.getTime() - 3600000);
+  const localeStringNow = homeyTime.toLocaleString('en-US', { timeZone: tz });
+  const localeStringHourAgo = homeyTimeHourAgo.toLocaleString('en-US', { timeZone: tz })
+  const localTime = new Date(localeStringNow);
+  if (localeStringNow === localeStringHourAgo) {
+    localTime.setTime(localTime.getTime() + 3600000);
+  }
   return localTime;
 }
 
@@ -62,23 +68,24 @@ function timeToNextHour(inputTime) {
 }
 
 /**
- * Rounds a time object to nearest hour
- */
-function roundToNearestHour(date) {
-  date.setMinutes(date.getMinutes() + 30);
-  date.setMinutes(0, 0, 0);
-  return date;
-}
-
-/**
  * Rounds a time object to start of the day in local time
  * Returned time is in UTC
  */
 function roundToStartOfDay(time, homey) {
   const localTime = toLocalTime(time, homey);
-  const localTimeDiff = Math.round((time.getTime() - localTime.getTime()) / (60 * 60 * 1000));
-  localTime.setHours(localTimeDiff, 0, 0, 0);
-  return localTime;
+  localTime.setHours(0, 0, 0, 0);
+  return fromLocalTime(localTime, homey);
+}
+
+/**
+ * Rounds a time object to nearest hour
+ */
+function roundToNearestHour(date) {
+  const startOfDay = new Date(date.getTime());
+  startOfDay.setHours(0, 0, 0, 0);
+  const hour = Math.round((date - startOfDay) / (60 * 60 * 1000));
+  const newTime = new Date(startOfDay.getTime() + (hour * 60 * 60 * 1000));
+  return newTime;
 }
 
 /**
