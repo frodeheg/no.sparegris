@@ -19,6 +19,7 @@ const { toLocalTime, roundToNearestHour, roundToStartOfDay } = require('./homeyt
  *     - "moneySavedUsage"    : value : The money saved by moving power in the interval
  *     - "price"              : value : The electricity price per hour, for period day/month/year = averages
  *     - "pricePoints"        : array : The price point per hour, for period day/month/year then array [0..4] with number of occurances of the price point
+ *     - "overShootAvoided"   : bool  : Indicating if the maxPower was indeed saved within the power tariff within the timeframe
  *   period:
  *     - "yearly" : One item stored per year (never expires)
  *     - "monthly": One item stored per month (never expires)
