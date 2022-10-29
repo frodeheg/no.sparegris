@@ -2369,7 +2369,7 @@
         const addMode = (newMode >= modeList.length && modeList.length < 8);
         const removeMode = (newMode == -1 && modeList.length > 3)
         if (addMode) {
-          modeList.push([ ...modeList[0] ]);
+          modeList.push(JSON.parse(JSON.stringify(modeList[0])));
           modeNames.push(`${modeNameCustomText} ${modeList.length-3}`);
         }
         if (removeMode) {
