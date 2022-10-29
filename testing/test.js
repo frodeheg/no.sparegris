@@ -7,6 +7,7 @@
 const d = require('../common/devices');
 const c = require('../common/constants');
 const prices = require('../common/prices');
+const { addToArchive, cleanArchive, getArchive } = require('../common/archive');
 const Homey = require('./homey');
 const PiggyBank = require('../app');
 const { toLocalTime, fromLocalTime, timeToNextHour, roundToStartOfDay } = require('../common/homeytime');
@@ -72,7 +73,7 @@ async function testNewHour(numTests) {
   let now = new Date();
   // console.log(`Start: ${now}`);
   let oldPow = 0;
-  for (let i = 0; i < 20000; i++) {
+  for (let i = 0; i < numTests; i++) {
     const randomTime = Math.round((2 + (Math.random() * 30)) * 1000);
     const randomPow = 300 + (Math.random() * 5000);
     const hourBefore = now.getHours();
@@ -246,6 +247,39 @@ async function testPricePoints() {
   console.log('\x1b[1A[\x1b[32mPASSED\x1b[0m]');
 }
 
+/**
+ * Test Archive functions
+ */
+async function testArchive() {
+  console.log('[......] Archive');
+  const app = new PiggyBank();
+  await app.disableLog();
+  await app.onInit();
+  await applyBasicConfig(app);
+
+  let now = roundToStartOfDay(new Date(1666396747401 + (1000*60*60*24*(8))), app.homey);
+  for (let i = 0; i < 50; i++) {
+    const data = {
+      maxPower: 500 + Math.round(Math.random() * 4500),
+      dataOk: (Math.random() > 0.001),
+      powUsage: 500 + Math.round(Math.random() * 4500),
+      moneySavedTariff: (Math.round(Math.random() * 10) - 2),
+      moneySavedUsage: (i % (30 * 24) === 0) ? 70 : 0,
+      price: 0.8 + (Math.random() * 1),
+      pricePoints: Math.floor(Math.random() * 5),
+    };
+    await addToArchive(app.homey, data, now);
+    //await cleanArchive(app.homey);
+    now = new Date(now.getTime() + (60 * 60 * 1000));
+  }
+  const archive = await getArchive(app.homey);
+  // TODO: TEST THE VALUES
+  //console.log(archive['pricePoints']);
+  //console.log(archive['pricePoints']['daily']['2022-10']);
+  await app.onUninit();
+  console.log('\x1b[1A[\x1b[32mPASSED\x1b[0m]');
+}
+
 // Start all tests
 async function startAllTests() {
   try {
@@ -256,14 +290,14 @@ async function startAllTests() {
     await testCharging();
     await testReliability();
     await testPricePoints();
+    await testArchive();
     // await testMail();
   } catch (err) {
     console.log('\x1b[1A[\x1b[31mFAILED\x1b[0m]');
     console.log(err);
-    console.log(err.stack);
   }
 }
 
 // Run all the testing
 startAllTests();
-// testPricePoints();
+//testArchive();

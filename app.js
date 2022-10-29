@@ -27,6 +27,7 @@ const { HomeyAPIApp } = require('homey-api');
 const { resolve } = require('path');
 const c = require('./common/constants');
 const d = require('./common/devices');
+const { addToArchive, cleanArchive, getArchive } = require('./common/archive');
 const {
   toLocalTime, timeDiff, timeSinceLastHour, timeToNextHour, roundToNearestHour, roundToStartOfDay, isSameHour
 } = require('./common/homeytime');

@@ -29,11 +29,11 @@ class FakeSettingsClass {
     if (this.values[target] === undefined) {
       return null;
     }
-    return JSON.parse(this.values[target]);
+    return this.values[target];
   }
 
   set(target, value) {
-    this.values[target] = JSON.stringify(value);
+    this.values[target] = value;
   }
 
   on(target, callback) {
