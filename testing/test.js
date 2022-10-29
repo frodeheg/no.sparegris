@@ -267,6 +267,7 @@ async function testArchive() {
       moneySavedUsage: (i % (30 * 24) === 0) ? 70 : 0,
       price: 0.8 + (Math.random() * 1),
       pricePoints: Math.floor(Math.random() * 5),
+      overShootAvoided: (Math.random() > 0.02),
     };
     await addToArchive(app.homey, data, now);
     //await cleanArchive(app.homey);

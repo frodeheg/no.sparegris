@@ -34,6 +34,7 @@ function fromLocalTime(localTime, homey) {
 
 /**
  * Evaluates the amount of minutes until the next time occur
+ * TODO: fix this diff when crossing summer time
  */
 function timeDiff(HourA, MinA, HourB, MinB) {
   const minSinceMidnightA = HourA * 60 + MinA;

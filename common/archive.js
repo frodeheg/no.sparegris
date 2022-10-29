@@ -48,6 +48,7 @@ const SCHEMA = {
   AND: 5,
   ADD: 6,
   COUNT: 7,
+  OR: 8,
 };
 
 const validTypes = {
@@ -58,6 +59,7 @@ const validTypes = {
   moneySavedUsage: { hourly: SCHEMA.SET, daily: SCHEMA.ADD, monthly: SCHEMA.ADD, yearly: SCHEMA.ADD },
   price: { hourly: SCHEMA.SET, daily: SCHEMA.AVG, monthly: SCHEMA.AVG, yearly: SCHEMA.AVG },
   pricePoints: { hourly: SCHEMA.SET, daily: SCHEMA.COUNT, monthly: SCHEMA.COUNT, yearly: SCHEMA.COUNT },
+  overShootAvoided: { hourly: SCHEMA.SET, daily: SCHEMA.OR, monthly: SCHEMA.OR, yearly: SCHEMA.OR },
 };
 
 /**
@@ -100,11 +102,24 @@ function setDataMacro(archive, dataId, period, time, idx, value) {
     case SCHEMA.AND:
       setValue = oldValueUndef ? value : (oldValue && value);
       break;
+    case SCHEMA.OR:
+      setValue = oldValueUndef ? value : (oldValue || value);
+      break;
     case SCHEMA.AVG3:
-      setValue = calcAvg(archive, dataId, period, time, idx, 3);
+      try {
+        setValue = calcAvg(archive, dataId, period, time, idx, 3);
+      } catch (err) {
+        // In case hourly data is skipped the value is the average
+        setValue = value;
+      }
       break;
     case SCHEMA.AVG:
-      setValue = calcAvg(archive, dataId, period, time, idx, Infinity);
+      try {
+        setValue = calcAvg(archive, dataId, period, time, idx, Infinity);
+      } catch (err) {
+        // In case hourly data is skipped the value is the average
+        setValue = value;
+      }
       break;
     case SCHEMA.MAX:
       setValue = oldValueUndef ? value : Math.max(+oldValue, +value);
@@ -122,7 +137,7 @@ function setDataMacro(archive, dataId, period, time, idx, value) {
  * @data is of type Object and contains all the data types to archive: {dataId1: value1, dataId2: value2, ...}
  * @time is of type UTC and will be converted into localtime before deciding how to structure the archive by month/year
  */
-async function addToArchive(homey, data, timeUTC = new Date()) {
+async function addToArchive(homey, data, timeUTC = new Date(), skipHours = false, skipDays = false) {
   const archive = await homey.settings.get('archive') || {};
   const startOfDayUTC = roundToStartOfDay(timeUTC, homey);
   const localTime = roundToNearestHour(toLocalTime(timeUTC, homey));
@@ -135,12 +150,16 @@ async function addToArchive(homey, data, timeUTC = new Date()) {
     if (!(dataId in validTypes)) continue;
 
     // Update Hourly first
-    const hourIdx = `${String(ltYear).padStart(4, '0')}-${String(ltMonth + 1).padStart(2, '0')}-${String(ltDay + 1).padStart(2, '0')}`;
-    setDataMacro(archive, dataId, 'hourly', hourIdx, ltHour, data[dataId]);
+    if (skipHours === false) {
+      const hourIdx = `${String(ltYear).padStart(4, '0')}-${String(ltMonth + 1).padStart(2, '0')}-${String(ltDay + 1).padStart(2, '0')}`;
+      setDataMacro(archive, dataId, 'hourly', hourIdx, ltHour, data[dataId]);
+    }
 
     // Update Daily
-    const dayIdx = `${String(ltYear).padStart(4, '0')}-${String(ltMonth + 1).padStart(2, '0')}`;
-    setDataMacro(archive, dataId, 'daily', dayIdx, ltDay, data[dataId]);
+    if (skipDays === false) {
+      const dayIdx = `${String(ltYear).padStart(4, '0')}-${String(ltMonth + 1).padStart(2, '0')}`;
+      setDataMacro(archive, dataId, 'daily', dayIdx, ltDay, data[dataId]);
+    }
 
     // Update Monthly
     const monthIdx = `${String(ltYear).padStart(4, '0')}`;

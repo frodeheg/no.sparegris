@@ -217,6 +217,42 @@ class PiggyBank extends Homey.App {
       this.homey.settings.set('stats_this_month_average', avg || 0); // Set to 0 in case it is NaN
     }
 
+    // Version 0.18.24 moved stats_daily_max into archive
+    const archive = await this.homey.settings.get('archive');
+    const maxes = await this.homey.settings.get('stats_daily_max');
+    const maxesOk = await this.homey.settings.get('stats_daily_max_ok');
+    if (archive === null && maxes !== null) {
+      // Add max power
+      for (let i = 0; i < maxes.length; i++) {
+        if (maxes[i] !== undefined) {
+          const data = {
+            maxPower: maxes[i],
+            dataOk: maxesOk[i]
+          };
+          this.log(`Adding: ${data}`);
+          const dataTimeStart = new Date('October 1, 2022, 01:00:00 GMT+2:00');
+          const dataTime = new Date(dataTimeStart.getTime() + i*24*60*60*1000);
+          await addToArchive(this.homey, data, dataTime, true);
+        }
+      }
+
+      // Add saved money, month only as per day is missing
+      const dataTime = new Date('October 15, 2022, 01:00:00 GMT+2:00');
+      const data = {
+        moneySavedUsage: this.__stats_savings_all_time_use,
+        moneySavedTariff: this.__stats_savings_all_time_power_part,
+        dataOk: true
+      };
+      await addToArchive(this.homey, data, dataTime, true, true);
+    }
+
+    // Version 0.18.xx
+    // Delete the old statistics as they has been in the archive for a while
+    // this.homey.settings.unset('stats_daily_max');
+    // this.homey.settings.unset('stats_daily_max_ok');
+    // this.homey.settings.unset('stats_savings_all_time_use');
+    // this.homey.settings.unset('stats_savings_all_time_power_part');
+
     // ===== BREAKING CHANGES END =====
 
     // ===== KEEPING STATE ACROSS RESTARTS =====
@@ -325,7 +361,7 @@ class PiggyBank extends Homey.App {
     this.homeyApi = new HomeyAPIApp({ homey: this.homey });
     this.__last_power_off_time = new Date();
     this.__last_power_on_time = new Date();
-    this.__last_power_off_time.setMinutes(this.__last_power_off_time.getMinutes() - 5); // Time in the past to allow turning on devices at app start
+    this.__last_power_off_time.setUTCMinutes(this.__last_power_off_time.getUTCMinutes() - 5); // Time in the past to allow turning on devices at app start
     this.__charge_plan = []; // No charge plan
     this.__charge_power_active = 0;
     // All elements of current_state will have the following:
@@ -1740,7 +1776,7 @@ class PiggyBank extends Homey.App {
       const minutesEnd = Number.parseInt(endTime.split(':').at(1), 10);
       const minutesDiff = timeDiff(nowLocal.getHours(), nowLocal.getMinutes(), hoursEnd, minutesEnd);
       const endTimeUTC = new Date(now.getTime());
-      endTimeUTC.setMinutes(endTimeUTC.getMinutes() + minutesDiff, 0, 0);
+      endTimeUTC.setUTCMinutes(endTimeUTC.getUTCMinutes() + minutesDiff, 0, 0);
       chargerOptions.chargeRemaining = offerEnergy ? (offerEnergy * 1000) : +offerHours;
       chargerOptions.chargeCycleType = offerEnergy ? c.OFFER_ENERGY : c.OFFER_HOURS;
       chargerOptions.chargeEnd = endTimeUTC;
@@ -1788,7 +1824,7 @@ class PiggyBank extends Homey.App {
     // Reset charge plan
     this.__charge_plan = [];
     const startOfHour = new Date(now.getTime());
-    startOfHour.setMinutes(0, 0, 0);
+    startOfHour.setUTCMinutes(0, 0, 0);
     const end = new Date(chargerOptions.chargeEnd);
     const timespan = Math.min(Math.floor((end - startOfHour) / (60 * 60 * 1000)), 24); // timespan to plan in hours
     const priceArray = this.__current_prices.slice(this.__current_price_index, this.__current_price_index + timespan);
@@ -2123,7 +2159,7 @@ class PiggyBank extends Homey.App {
   }
 
   // Must only be called once every month
-  async statsSetLastMonthPower(energy) {
+  async statsSetLastMonthPower(energy, timeLastUpdatedUTC) {
     const maxPower = this.homey.settings.get('maxPower');
     const overShootAvoided = this.homey.settings.get('overShootAvoided');
     this.__stats_last_month_max = energy;
@@ -2137,6 +2173,8 @@ class PiggyBank extends Homey.App {
     if (didMeetTariff && avoidedOvershooting && (tariffIndex < gridCosts.length - 2)) {
       const newSaving = gridCosts[tariffIndex + 1].price - gridCosts[tariffIndex].price;
       this.__stats_savings_all_time_power_part += newSaving;
+      const data = { moneySavedTariff: newSaving };
+      addToArchive(this.homey, data, timeLastUpdatedUTC, true, true);
       this.homey.settings.set('stats_savings_all_time_power_part', this.__stats_savings_all_time_power_part);
     } // else max tariff, nothing saved
   }
@@ -2155,7 +2193,7 @@ class PiggyBank extends Homey.App {
     this.__stats_this_month_average = this.__stats_this_month_maxes.reduce((a, b) => a + b, 0) / this.__stats_this_month_maxes.length;
     // On new month:
     if (newMonthTriggered) {
-      await this.statsSetLastMonthPower(this.__stats_this_month_average);
+      await this.statsSetLastMonthPower(this.__stats_this_month_average, timeLastUpdatedUTC);
       this.__stats_this_month_maxes = [];
       this.__stats_app_restarts = 0;
       this.homey.settings.set('stats_app_restarts', 0);
@@ -2204,6 +2242,20 @@ class PiggyBank extends Homey.App {
     this.homey.settings.set('stats_daily_max_ok', dailyMaxOk);
     this.homey.settings.set('stats_daily_max_last_update_time', hourAgoUTC);
     this.homey.settings.set('overShootAvoided', overShootAvoided);
+
+    const data = {
+      maxPower: energy,
+      dataOk: energyOk && !lastHourMissed,
+      powUsage: this.__accum_energy,
+      overShootAvoided
+    };
+    if (+this.homey.settings.get('priceMode') !== c.PRICE_MODE_DISABLED) {
+      data.pricePoints = +this.homey.settings.get('pricePoint');
+    }
+    if (Array.isArray(this.__current_prices)) {
+      data.price = this.__current_prices[this.__current_price_index];
+    }
+    await addToArchive(this.homey, data, hourAgoUTC);
   }
 
   statsSetLastHourPrice(price) {
@@ -2273,6 +2325,8 @@ class PiggyBank extends Homey.App {
           this.__stats_cost_if_smooth = (this.__stats_accum_use_today * (this.__stats_accum_price_today / this.__stats_n_hours_today)) / 1000;
           this.__stats_savings_yesterday = this.__stats_cost_if_smooth - this.__stats_actual_cost;
           if (Number.isFinite(this.__stats_savings_yesterday)) {
+            const data = { moneySavedUsage: this.__stats_savings_yesterday };
+            addToArchive(this.homey, data, now, true);
             this.__stats_savings_all_time_use += this.__stats_savings_yesterday;
             this.homey.settings.set('stats_savings_all_time_use', this.__stats_savings_all_time_use);
           }
