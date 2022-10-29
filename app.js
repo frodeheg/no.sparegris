@@ -231,17 +231,20 @@ class PiggyBank extends Homey.App {
           };
           this.log(`Adding: ${data}`);
           const dataTimeStart = new Date('October 1, 2022, 01:00:00 GMT+2:00');
-          const dataTime = new Date(dataTimeStart.getTime() + i*24*60*60*1000);
+          const dataTime = new Date(dataTimeStart.getTime() + i * 24 * 60 * 60 * 1000);
           await addToArchive(this.homey, data, dataTime, true);
         }
       }
 
       // Add saved money, month only as per day is missing
-      const dataTime = new Date('October 15, 2022, 01:00:00 GMT+2:00');
-      const data = {
-        moneySavedUsage: this.__stats_savings_all_time_use,
-        moneySavedTariff: this.__stats_savings_all_time_power_part,
-        dataOk: true
+      let dataTime = new Date('September 15, 2022, 01:00:00 GMT+2:00');
+      let data = {
+        moneySavedTariff: +this.homey.settings.get('stats_savings_all_time_power_part') || 0
+      };
+      await addToArchive(this.homey, data, dataTime, true, true);
+      dataTime = new Date('October 15, 2022, 01:00:00 GMT+2:00');
+      data = {
+        moneySavedUsage: +this.homey.settings.get('stats_savings_all_time_use') || 0
       };
       await addToArchive(this.homey, data, dataTime, true, true);
     }
