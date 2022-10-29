@@ -547,5 +547,8 @@
   },
   "0.18.25": {
     "en": "Fixed small conversion issue when converting the old values into the new archive system."
+  },
+  "0.18.26": {
+    "en": "Fixed temperature setting when adding new custom modes."
   }
 }
