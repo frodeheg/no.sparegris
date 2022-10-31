@@ -550,5 +550,8 @@
   },
   "0.18.26": {
     "en": "Fixed temperature setting when adding new custom modes."
+  },
+  "0.18.27": {
+    "en": "Critical bugfix for bug #57 which prevented new users from setting the max power limit properly"
   }
 }
