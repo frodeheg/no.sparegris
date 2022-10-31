@@ -654,13 +654,15 @@
 
       function updateMaxPowerList() {
         let selector = document.getElementById('maxPower');
+        let maxPower = selector.value;
         let lines = '';
         for (let i = 0; i < gridCost.length; i++) {
           let { limit } = gridCost[i];
           let limitBelow = +getGridBelow(limit);
           if (Number.isNaN(limitBelow)) limitBelow = 0;
           if ((limit > 0) && (limit <= 100000)) {
-            lines += `<option value="${limit}">${stepText} ${i+1} - ${limitBelow/1000}-${limit/1000} kW</option>`;
+            let selectedText = (limit == maxPower) ? ' selected' : '';
+            lines += `<option value="${limit}"${selectedText}>${stepText} ${i+1} - ${limitBelow/1000}-${limit/1000} kW</option>`;
           }
         }
         selector.innerHTML = lines;
@@ -720,7 +722,6 @@
 
       function updateMaxPowerEditor() {
         let table = document.getElementById('gridCostsTable');
-        let lines = '';
         for (let i = 0; i < gridCost.length; i++) {
           let { limit, price } = gridCost[i];
           if (table.rows.length <= (i+1)) {
@@ -837,6 +838,7 @@
     <!-- 
     <h1 data-i18n="settings.title">.title</h1>
     <p data-i18n="settings.subtitle">.subtitle</p>
+    <div id="debug">blah...</div>
     -->
     <!-- Loading page-->
     <div id="loadingPage">
@@ -1941,9 +1943,11 @@
           // Maxpower cannot be updated before after setGridCost has been called
           Homey.get("maxPower", function (err, maxPower) {
             if (err) return Homey.alert(err);
-            if (maxPower !== null && Number.isInteger(+maxPower)) {
-              setMaxPower(+maxPower, 0, Infinity);
-            } // else use defaults set from the top (this is the first time)
+            if (maxPower === null || !Number.isInteger(+maxPower)) {
+              // use defaults set from the top (this is the first time)
+              maxPower = 5000;
+            }
+            setMaxPower(+maxPower, 0, Infinity);
             maxPowerLoaded = true;
             checkLoadingDone();
           });
@@ -2527,7 +2531,6 @@
         if (tabPage == 'priorityPage') {
           refreshModeLists(modeId);
           if (modeId == -1 && currentModeTab < modeList.length) {
-            document.getElementById("debug").innerHTML = `<br><br><br>LT: ${modeId} ${modeList.length} ${currentModeTab}`;
             modeId = currentModeTab;
           } else if (modeId == -1) {
             modeId = modeList.length - 1;
