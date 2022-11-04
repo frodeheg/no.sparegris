@@ -30,6 +30,8 @@
 //   minCurrent        - The offered current should never be lower than this
 //   measurePowerCap   - Capability for reading used power
 //   measureVoltageCap - Capability for reading voltage
+//   statusCap         - Capability for reading charger state
+//   statusAvailable   - An array of statusCap values that allow us to start charging
 
 // Device types
 // Note for CHARGER:
@@ -196,6 +198,8 @@ const DEVICE_CMD = {
     minCurrent: 7,
     measurePowerCap: 'measure_power',
     measureVoltageCap: 'measure_voltage',
+    statusCap: 'charger_status',
+    statusAvailable: ['Paused', 'Error', 'Car connected'],
     beta: true,
     default: false
   },

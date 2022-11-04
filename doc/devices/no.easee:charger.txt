@@ -1,3 +1,31 @@
+
+[log] 2022-11-03 03:43:05 [PiggyBank] ----- ANALYZING DEVICE -----
+[log] 2022-11-03 03:43:05 [PiggyBank] Report type: Experimental device is working
+[log] 2022-11-03 03:43:05 [PiggyBank] Device ID:   cd757394-deed-4c60-844a-1f8220545f6c
+[log] 2022-11-03 03:43:05 [PiggyBank] Device name: charger.name
+[log] 2022-11-03 03:43:05 [PiggyBank] Driver Uri: homey:app:no.easee
+[log] 2022-11-03 03:43:05 [PiggyBank] Driver Id: charger
+[log] 2022-11-03 03:43:05 [PiggyBank] Found onoff cap: onoff
+[log] 2022-11-03 03:43:05 [PiggyBank] Found temp cap: false
+[log] 2022-11-03 03:43:05 [PiggyBank] Device reliability: 1
+[log] 2022-11-03 03:43:05 [PiggyBank] Capabilities: charger_status,enabled,measure_current.offered,measure_power,measure_current.p1,measure_current.p2,measure_current.p3,measure_voltage,meter_power.lastCharge,meter_power,onoff,target_circuit_current,button.reconnect,button.organize
+[log] 2022-11-03 03:43:05 [PiggyBank] Options for 'charger_status': {"value":"Paused","lastUpdated":"2022-11-03T03:43:01.331Z","type":"string","getable":true,"setable":false,"title":"Status","desc":null,"units":null,"iconObj":{"id":"514d59bcce8209f116fb4bbebd8679b9","url":"/icon/514d59bcce8209f116fb4bbebd8679b9/icon.svg"},"id":"charger_status","options":{}}
+[log] 2022-11-03 03:43:05 [PiggyBank] Options for 'enabled': {"value":true,"lastUpdated":"2022-11-03T00:31:26.041Z","type":"boolean","getable":true,"setable":false,"title":"Enabled","desc":null,"units":null,"iconObj":{"id":"213b78c392bf914fa4c2289febdee574","url":"/icon/213b78c392bf914fa4c2289febdee574/icon.svg"},"id":"enabled","options":{}}
+[log] 2022-11-03 03:43:05 [PiggyBank] Options for 'measure_current.offered': {"value":0,"lastUpdated":"2022-11-03T03:43:01.328Z","type":"number","getable":true,"setable":false,"title":"Current allocated","desc":"Elektrisk strøm (A)","units":"A","decimals":2,"chartType":"stepLine","id":"measure_current.offered","options":{"title":{"en":"Current allocated","sv":"Allokerad ström"}}}
+[log] 2022-11-03 03:43:05 [PiggyBank] Options for 'measure_power': {"value":0,"lastUpdated":"2022-11-03T03:43:01.330Z","type":"number","getable":true,"setable":false,"title":"Effekt","desc":"Effekt i watt (W)","units":"W","decimals":2,"chartType":"stepLine","id":"measure_power","options":{}}
+[log] 2022-11-03 03:43:05 [PiggyBank] Options for 'measure_current.p1': {"value":0.29,"lastUpdated":"2022-11-03T03:43:01.331Z","type":"number","getable":true,"setable":false,"title":"Current P1","desc":"Elektrisk strøm (A)","units":"A","decimals":2,"chartType":"stepLine","id":"measure_current.p1","options":{"title":{"en":"Current P1","sv":"Ström L1"}}}
+[log] 2022-11-03 03:43:05 [PiggyBank] Options for 'measure_current.p2': {"value":0.29,"lastUpdated":"2022-11-03T03:43:01.368Z","type":"number","getable":true,"setable":false,"title":"Current P2","desc":"Elektrisk strøm (A)","units":"A","decimals":2,"chartType":"stepLine","id":"measure_current.p2","options":{"title":{"en":"Current P2","sv":"Ström L2"}}}
+[log] 2022-11-03 03:43:05 [PiggyBank] Options for 'measure_current.p3': {"value":0.01,"lastUpdated":"2022-11-03T03:39:01.076Z","type":"number","getable":true,"setable":false,"title":"Current P3","desc":"Elektrisk strøm (A)","units":"A","decimals":2,"chartType":"stepLine","id":"measure_current.p3","options":{"title":{"en":"Current P3","sv":"Ström L3"}}}
+[log] 2022-11-03 03:43:05 [PiggyBank] Options for 'measure_voltage': {"value":239,"lastUpdated":"2022-11-03T03:31:30.742Z","type":"number","getable":true,"setable":false,"title":"Spenning","desc":"Spenning (V)","units":"V","decimals":2,"chartType":"stepLine","id":"measure_voltage","options":{}}
+[log] 2022-11-03 03:43:05 [PiggyBank] Options for 'meter_power.lastCharge': {"value":0.03,"lastUpdated":"2022-11-03T03:43:01.327Z","type":"number","getable":true,"setable":false,"title":"Last charge session","desc":"Energiforbruk i kilowattimer (kWh)","units":"kWh","decimals":2,"chartType":"spline","id":"meter_power.lastCharge","options":{"title":{"en":"Last charge session","sv":"Senaste laddsessionen"}}}
+[log] 2022-11-03 03:43:05 [PiggyBank] Options for 'meter_power': {"value":2155.3,"lastUpdated":"2022-11-03T03:31:30.741Z","type":"number","getable":true,"setable":false,"title":"Lifetime","desc":"Energiforbruk i kilowattimer (kWh)","units":"kWh","decimals":2,"chartType":"spline","id":"meter_power","options":{"title":{"en":"Lifetime","sv":"Livstid"}}}
+[log] 2022-11-03 03:43:05 [PiggyBank] Options for 'onoff': {"value":false,"lastUpdated":"2022-11-03T03:42:34.252Z","type":"boolean","getable":true,"setable":true,"title":"Charging","desc":null,"units":null,"id":"onoff","options":{}}
+[log] 2022-11-03 03:43:05 [PiggyBank] Options for 'target_circuit_current': {"value":8,"lastUpdated":"2022-11-03T03:42:12.605Z","type":"number","getable":true,"setable":true,"title":"Dynamic circuit current","desc":"Set the dynamic circuit current. The max value is adjusted to the circuit fuse setting.","units":"A","decimals":0,"min":0,"max":20,"step":1,"chartType":"stepLine","id":"target_circuit_current","options":{"max":20}}
+[log] 2022-11-03 03:43:05 [PiggyBank] Options for 'button.reconnect': {"value":null,"lastUpdated":null,"type":"boolean","getable":false,"setable":true,"title":"Reconnect","desc":"Reconnect to Easee Cloud API","units":null,"id":"button.reconnect","options":{"maintenanceAction":true,"title":{"en":"Reconnect","sv":"Återskapa uppkoppling"},"desc":{"en":"Reconnect to Easee Cloud API","sv":"Återskapa uppkoppling till Easee Cloud API"}}}
+[log] 2022-11-03 03:43:05 [PiggyBank] Options for 'button.organize': {"value":null,"lastUpdated":null,"type":"boolean","getable":false,"setable":true,"title":"Reorder capabilities","desc":"Reorder capabilities in the intended order.","units":null,"id":"button.organize","options":{"maintenanceAction":true,"title":{"en":"Reorder capabilities","sv":"Reorganisera egenskaperna"},"desc":{"en":"Reorder capabilities in the intended order.","sv":"Flytta egenskaperna till den tänkta ordningen."}}}
+[log] 2022-11-03 03:43:05 [PiggyBank] --- ANALYZING DEVICE DONE ---
+
+
 Log ID: 2022-10-04T02:07:57.090Z
 App version 0.17.5
 
