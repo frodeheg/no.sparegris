@@ -868,6 +868,7 @@
             <a href="#" data-i18n="settings.menu.advanced.charger" onclick="changeTab(event, 'chargerPage')">Car Chargers</a>
             <a href="#" data-i18n="settings.menu.advanced.frost" onclick="changeTab(event, 'frostPage')">Frost guard</a>
             <a href="#" data-i18n="settings.menu.advanced.override" onclick="changeTab(event, 'overridePage')">Override</a>
+            <a href="#" data-i18n="settings.menu.advanced.backup" onclick="changeTab(event, 'backupPage')">Backup</a>
           </div>
         </td>
         <td class="dropdown" style="text-align:right" onclick="allowDropdown();">
@@ -1423,7 +1424,19 @@
         <button id="clear" class="right" data-i18n="settings.zone.zonesClear" onclick="clearZones();displaySaveHint();return false;">zone.zonesClear</button>
       </fieldset>
     </div>
-    <!-- Zone page end -->
+    <!-- Override page end -->
+
+    <!-- Backup page -->
+    <div id="backupPage" class="tabcontent">
+      <fieldset>
+        <legend><div class="blockHeader" data-i18n="settings.backup.header">backup.header</div></legend>
+        <span data-i18n="settings.backup.text">The backup / restore is currently only for debug. You can get the state but not set it.</span>:
+      </fieldset>
+      <textarea id="backupBlob" cols="50" rows="10"></textarea><br>
+      <button id="getState" data-i18n="settings.backup.getState">Get State</button><br>
+    </div>
+    <!-- Backup page end -->
+
 
     <!-- Mode specific page -->
     <div id="priorityPage" class="tabcontent">
@@ -2155,6 +2168,12 @@
             Homey.alert(err.message);
           }
         }
+        document.getElementById("getState").addEventListener("click", e => {
+          Homey.api('GET', '/apiCommand?cmd=getFullState', null, function (err, result) {
+            if (err) Homey.alert(err);
+            document.getElementById("backupBlob").value = JSON.stringify(result, null, 2);
+          });
+        });
         saveElement.addEventListener("click", function (e) {
           Homey.alert(Homey.__('warnings.savingWait'));
           try {
@@ -2587,6 +2606,13 @@
           // Make the log text area fill the page
           diagLogElement.setAttribute('cols', (diagLogElement.parentElement.clientWidth-20) / 8);
           diagLogElement.style.height = (window.innerHeight - diagLogElement.offsetTop - 120) + 'px';
+        }
+
+        if (tabPage == 'backupPage') {
+          // Make the log text area fill the page
+          let backupElement = document.getElementById('backupBlob');
+          backupElement.setAttribute('cols', (backupElement.parentElement.clientWidth-20) / 8);
+          backupElement.style.height = (window.innerHeight - backupElement.offsetTop - 120) + 'px';
         }
 
         if (tabPage == 'helpSupportedPage') {

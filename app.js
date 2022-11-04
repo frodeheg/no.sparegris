@@ -871,6 +871,33 @@ class PiggyBank extends Homey.App {
   }
 
   /**
+   * Return a json object of the state to be used for backup and debug.
+   */
+  async getFullState() {
+    const myState = {};
+    myState.version = Homey.manifest.version;
+    myState.settings = {};
+    const settings = this.homey.settings.getKeys();
+    for (let i = 0; i < settings.length; i++) {
+      myState.settings[settings[i]] = await this.homey.settings.get(settings[i]);
+    }
+    myState.state = {};
+    const state = Object.keys(this);
+    for (let i = 0; i < state.length; i++) {
+      if (state[i].includes('__', 0)) {
+        try {
+          let abortIfCircular = JSON.stringify(this[state[i]]);
+          abortIfCircular = this[state[i]];
+          myState.state[state[i]] = abortIfCircular;
+        } catch (err) {
+          myState.state[state[i]] = '...';
+        }
+      }
+    }
+    return myState;
+  }
+
+  /**
    * Reduces the power usage for a charger device
    * This function is only called if the device is a charger or a manually selected socket device
    * Note that this function is already throttled by onBelowPowerLimit such that it will not increase power
@@ -1066,7 +1093,7 @@ class PiggyBank extends Homey.App {
     if (withinChargingPlan) {
       if (isOn !== true) {
         this.log('Turning on');
-        const chargerStatus = await device.capabilitiesObj[d.DEVICE_CMD[driverId].statusCap].value
+        const chargerStatus = await device.capabilitiesObj[d.DEVICE_CMD[driverId].statusCap].value;
         if (d.DEVICE_CMD[driverId].statusAvailable.includes(chargerStatus)) {
           this.__current_state[deviceId].lastCmd = TURN_ON;
           this.__current_state[deviceId].ongoing = true;

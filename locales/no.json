@@ -51,7 +51,8 @@
         "settings": "Avanserte innstillinger",
         "charger": "Lading av elbil",
         "frost": "Frostsikring",
-        "override": "Overstyring"
+        "override": "Overstyring",
+        "backup": "Sikkerhetskopi"
       },
       "help": {
         "title": "Hjelp",
@@ -310,6 +311,11 @@
       "email": "Epost",
       "comment": "Kommentar",
       "required": "Du har ikke generert en rapport eller beskrevet problemet. Vennligst generer en rapport eller beskriv problemet + legg inn epost før du sender loggen."
+    },
+    "backup": {
+      "header": "Sikkerhetskopiering",
+      "text": "Sikkerhetskopieringen er ikke ferdigstilt. Du kan hente ut intern tilstand men foreløbig ikke sette den.",
+      "getState": "Hent tilstand"
     }
   },
   "newdevice" : {

@@ -41,6 +41,8 @@ module.exports = {
         return homey.app.createDeviceList();
       case 'getAppConfigProgress':
         return homey.app.getAppConfigProgress();
+      case 'getFullState':
+        return homey.app.getFullState();
       default:
         throw (new Error(`Incorrect api command: ${query.cmd}`));
     }

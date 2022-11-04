@@ -51,7 +51,8 @@
         "settings": "Advanced settings",
         "charger": "Car chargers",
         "frost": "Frost guard",
-        "override": "Override"
+        "override": "Override",
+        "backup": "Backup"
       },
       "help": {
         "title": "Help",
@@ -310,6 +311,11 @@
       "email": "Email",
       "comment": "Comment",
       "required": "You have not generated a report or described the problem. Please generate a report or describe the problem+your email address before you submit the log."
+    },
+    "backup": {
+      "header": "Backup",
+      "text": "The backup functionality is not completed. You can retrieve the state but not set it yet.",
+      "getState": "Retrieve state"
     }
   },
   "newdevice" : {
