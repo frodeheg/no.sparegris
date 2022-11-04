@@ -1975,6 +1975,7 @@ class PiggyBank extends Homey.App {
       this.homey.settings.set('chargerOptions', chargerOptions);
     }
     await this.rescheduleCharging(false, now);
+    return Promise.resolve();
   }
 
   /**
