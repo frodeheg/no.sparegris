@@ -814,8 +814,8 @@
           {
             "type": "text",
             "placeholder": {
-              "en": "end time",
-              "no": "sluttid"
+              "en": "end time (HH:MM)",
+              "no": "sluttid (TT:MM)"
             },
             "title": {
               "en": "End time",
@@ -857,8 +857,8 @@
           {
             "type": "text",
             "placeholder": {
-              "en": "end time",
-              "no": "sluttid"
+              "en": "end time (HH:MM)",
+              "no": "sluttid (TT:MM)"
             },
             "title": {
               "en": "End time",
