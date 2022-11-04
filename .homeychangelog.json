@@ -553,5 +553,8 @@
   },
   "0.18.27": {
     "en": "Critical bugfix for bug #57 which prevented new users from setting the max power limit properly"
+  },
+  "0.18.28": {
+    "en": "Added new charging implementation (selectable, not default - for testing - because it's not working properly before the Easee app is updated) + Added posibility to read out the internal state under the backup menu item. Mainly to debug an anoying crash bug."
   }
 }
