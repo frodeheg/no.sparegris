@@ -1951,13 +1951,21 @@ class PiggyBank extends Homey.App {
    * @param offerHours number of hours to offer energy before time runs out (will be undefined if offerEnergy)
    */
   async onChargingCycleStart(offerEnergy, endTime, offerHours = undefined, now = new Date()) {
+    if ((typeof (endTime) !== 'string') || (!endTime.includes(':'))) {
+      return Promise.reject(new Error(this.homey.__('warnings.notValidTime')));
+    }
+    const hoursEnd = +endTime.split(':').at(0);
+    const minutesEnd = +endTime.split(':').at(1);
+    if (hoursEnd < 0 || hoursEnd > 23 || Number.isNaN(hoursEnd)
+      || minutesEnd < 0 || minutesEnd > 59 || Number.isNaN(minutesEnd)) {
+      return Promise.reject(new Error(this.homey.__('warnings.notValidTime')));
+    }
+
     this.updateLog('Charging cycle started', c.LOG_INFO);
     const chargerOptions = this.homey.settings.get('chargerOptions');
     if (chargerOptions) {
       // Convert local end time to UTC
       const nowLocal = toLocalTime(now, this.homey);
-      const hoursEnd = Number.parseInt(endTime.split(':').at(0), 10);
-      const minutesEnd = Number.parseInt(endTime.split(':').at(1), 10);
       const minutesDiff = timeDiff(nowLocal.getHours(), nowLocal.getMinutes(), hoursEnd, minutesEnd);
       const endTimeUTC = new Date(now.getTime());
       endTimeUTC.setUTCMinutes(endTimeUTC.getUTCMinutes() + minutesDiff, 0, 0);

@@ -336,7 +336,8 @@
     "notPMfromFlow": "In order to set price points with flows you first have to enable price management using flows in the app setup",
     "rememberToSave": "Remember to save!",
     "appDisabled": "The app operating mode is set to disabled. Please turn it on in app settings or with a flow.",
-    "timeout": "Timeout! Homey is busy. Please wait some more, retry later or contact the App developer if the problem persist. If you're running from a browser then it usually helps to refresh the page."
+    "timeout": "Timeout! Homey is busy. Please wait some more, retry later or contact the App developer if the problem persist. If you're running from a browser then it usually helps to refresh the page.",
+    "notValidTime": "The end time is not valid. Please use 24-hour format HH:MM (no AM/PM)"
   },
   "breaking": {
     "maxPower": "Important change for **Piggy Bank**: Max Power is now a single global setting instead of per mode. Please check that the new setting is ok. The new setting is ",

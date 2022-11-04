@@ -27,7 +27,7 @@
       "name": "offerHours"
     },
     {
-      "type": "time",
+      "type": "text",
       "placeholder": {
         "en": "end time",
         "no": "sluttid"
