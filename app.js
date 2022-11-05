@@ -1067,11 +1067,13 @@ class PiggyBank extends Homey.App {
     const isEmergency = (+powerChange < 0) && (
       ((powerUsed + +powerChange) < 0) || (ampsOffered === d.DEVICE_CMD[driverId].minCurrent));
     const now = new Date();
-    if ((chargerOptions.chargeCycleType === c.OFFER_HOURS) && (chargerOptions.chargeEnd < now)) {
+    const end = new Date(chargerOptions.chargeEnd);
+    if (((chargerOptions.chargeCycleType === c.OFFER_HOURS) && (end < now))
+      || ((chargerOptions.chargeCycleType === c.OFFER_ENERGY) && (+chargerOptions.chargeRemaining < this.__offeredEnergy))) {
       chargerOptions.chargeRemaining = 0;
     }
-    const withinChargingPlan = (this.__charge_plan[0] > 0)
-      && (+chargerOptions.chargeRemaining > 0);
+
+    const withinChargingPlan = (this.__charge_plan[0] > 0) && (+chargerOptions.chargeRemaining > 0);
     const { lastCmd, lastCurrent, lastPower } = this.__current_state[deviceId];
     const ampsActualOffer = !isOn || (device.capabilitiesObj === null) ? 0
       : hasPowerCap ? +await device.capabilitiesObj[d.DEVICE_CMD[driverId].getOfferedCap].value : 0;
@@ -1722,10 +1724,17 @@ class PiggyBank extends Homey.App {
     if (chargerOptions.chargeTarget === c.CHARGE_TARGET_FLOW) {
       const isOn = this.__charger_flow_is_on;
       const isEmergency = (+powerDiff < 0) && ((this.__charge_power_active + +powerDiff) < 0);
-      const wantOn = (isOn || (+powerDiff > 0)) && (this.__charge_plan[0] > 0) && !isEmergency;
+      const now = new Date();
+      const end = new Date(chargerOptions.chargeEnd);
+      if (((chargerOptions.chargeCycleType === c.OFFER_HOURS) && (end < now))
+        || ((chargerOptions.chargeCycleType === c.OFFER_ENERGY) && (+chargerOptions.chargeRemaining < this.__offeredEnergy))) {
+        chargerOptions.chargeRemaining = 0;
+      }
+      const withinChargingPlan = (this.__charge_plan[0] > 0) && (+chargerOptions.chargeRemaining > 0);
+      const wantOn = (isOn || (+powerDiff > 0)) && withinChargingPlan && !isEmergency;
       const timeLapsed = (now - this.prevChargerTime) / 1000; // Lapsed time in seconds
       const waitUpdate = (this.prevChargerTime !== undefined) && (timeLapsed < chargerOptions.minToggleTime) && (!isEmergency);
-      if (!waitUpdate) {
+      if ((!waitUpdate) && ((chargerOptions.chargeRemaining > 0) || this.__charger_flow_is_on)) {
         this.prevChargerTime = new Date(now.getTime());
         const maxPower = +this.homey.settings.get('maxPower');
         const newOfferPower = Math.min(Math.max(this.__charge_power_active + +powerDiff, +chargerOptions.chargeMin), maxPower);
@@ -2001,6 +2010,7 @@ class PiggyBank extends Homey.App {
   async rescheduleCharging(isNewHour, now = new Date()) {
     const chargerOptions = this.homey.settings.get('chargerOptions');
     if (isNewHour) {
+      const oldRemaining = chargerOptions.chargeRemaining;
       if (chargerOptions.chargeCycleType === c.OFFER_ENERGY) {
         chargerOptions.chargeRemaining -= this.__offeredEnergy;
         this.__offeredEnergy = 0;
@@ -2008,29 +2018,30 @@ class PiggyBank extends Homey.App {
         chargerOptions.chargeRemaining -= 1;
       }
       if (chargerOptions.chargeRemaining < 0) chargerOptions.chargeRemaining = 0;
-      this.homey.settings.set('chargerOptions', chargerOptions);
+      if (oldRemaining !== 0) this.homey.settings.set('chargerOptions', chargerOptions);
     }
-
-    // Ignore charging if the process is complete
-    if (chargerOptions.chargeRemaining === 0) return Promise.resolve();
 
     // Reset charge plan
     this.__charge_plan = [];
+
+    // Ignore rescheduling if there is nothing left to schedule
+    if (chargerOptions.chargeRemaining === 0) return Promise.resolve();
+
+    // Calculate new charging plan
     const startOfHour = new Date(now.getTime());
     startOfHour.setUTCMinutes(0, 0, 0);
     const end = new Date(chargerOptions.chargeEnd);
-    const timespan = Math.min(Math.floor((end - startOfHour) / (60 * 60 * 1000)), 24); // timespan to plan in hours
-    const priceArray = this.__current_prices.slice(this.__current_price_index, this.__current_price_index + timespan);
-    if (priceArray.length < timespan) {
+    const timespan = Math.min((end - startOfHour) / (60 * 60 * 1000), 24); // timespan to plan in hours
+    const priceArray = this.__current_prices.slice(this.__current_price_index, this.__current_price_index + Math.floor(timespan));
+    if (priceArray.length < Math.ceil(timespan)) {
       // Too few prices available, use average as future
       const futurePrice = +this.homey.settings.get('averagePrice') || this.__current_prices[this.__current_price_index];
-      while (priceArray.length < timespan) {
+      while (priceArray.length < Math.ceil(timespan)) {
         priceArray.push(futurePrice);
       }
     }
     const maxPower = this.homey.settings.get('maxPower');
     const priceSorted = Array.from(priceArray.keys()).sort((a, b) => ((priceArray[a] === priceArray[b]) ? (a - b) : (priceArray[a] - priceArray[b])));
-    this.__charge_plan = [];
     let scheduleRemaining = chargerOptions.chargeRemaining;
     for (let i = 0; (i < priceSorted.length) && (scheduleRemaining > 0); i++) {
       const idx = priceSorted[i];
