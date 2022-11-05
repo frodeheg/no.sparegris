@@ -556,5 +556,8 @@
   },
   "0.18.28": {
     "en": "Added new charging implementation (selectable, not default - for testing - because it's not working properly before the Easee app is updated) + Added posibility to read out the internal state under the backup menu item. Mainly to debug an anoying crash bug."
+  },
+  "0.18.29": {
+    "en": "Start car charging now accept end time as a variable (issue #22) + Charging now stops exactly when ordered (issue #24)"
   }
 }
