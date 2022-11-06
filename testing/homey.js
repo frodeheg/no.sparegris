@@ -41,7 +41,9 @@ class FakeSettingsClass {
   }
 
   unset(target) {
-    if (target in this.values) delete this.values.target;
+    if (target in this.values) {
+      delete this.values[target];
+    }
   }
 
 }
@@ -216,6 +218,21 @@ class FakeClockClass {
 }
 
 /**
+ * Fake Notifications class
+ */
+class FakeNotificationsClass {
+
+  constructor(homey) {
+    this.homey = homey;
+  }
+
+  createNotification(message) {
+    this.homey.app.log(`NOTIFICATION: ${message.excerpt}`);
+  }
+
+}
+
+/**
  * Fake Homey class
  */
 class FakeHomeyClass {
@@ -226,6 +243,7 @@ class FakeHomeyClass {
     this.api = new FakeApiClass(this);
     this.flow = new FakeFlowClass(this);
     this.clock = new FakeClockClass(this);
+    this.notifications = new FakeNotificationsClass(this);
     this.env = env;
     this.__debug = false;
   }

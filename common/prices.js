@@ -118,9 +118,7 @@ async function entsoeApiInit(apiKey) {
  * Contract_MarketAgreement = A13 (Hourly)
  * ProcessType = A01 (Day ahead)
  */
-async function entsoeGetData(startTime, currency = 'NOK') {
-  const biddingZone = '10YNO-3--------J';
-
+async function entsoeGetData(startTime, currency = 'NOK', biddingZone) {
   const tomorrow = new Date(startTime.getTime());
   tomorrow.setDate(tomorrow.getDate() + 2);
   // tomorrow.setHours(tomorrow.getHours() + 23);

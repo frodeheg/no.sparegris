@@ -47,7 +47,8 @@ async function testEntsoe() {
   await prices.entsoeApiInit(Homey.env.ENTSOE_TOKEN);
   const todayStart = new Date();
   todayStart.setHours(0, 0, 0, 0);
-  const priceData = await prices.entsoeGetData(todayStart, 'NOK');
+  const biddingZone = '10YNO-3--------J';
+  const priceData = await prices.entsoeGetData(todayStart, 'NOK', biddingZone);
   // console.log(priceData);
   const surcharge = 0.0198;// Network provider provision
   const VAT = 0.25; // 25% moms
@@ -216,7 +217,6 @@ async function testPricePoints() {
   await app.disableLog();
   await app.onInit();
   await applyBasicConfig(app);
-  const ppNames = ['PP_LOW', 'PP_NORM', 'PP_HIGH', 'PP_EXTREME', 'PP_DIRTCHEAP'];
   app.__all_prices = [];
   app.__current_prices = [
     0.2, 0.3, 0.5, 0.3, 0.2, 0.5, 0.9, 1.8, 0.1, 0.2, 0.2, 0.3,
@@ -281,6 +281,42 @@ async function testArchive() {
   console.log('\x1b[1A[\x1b[32mPASSED\x1b[0m]');
 }
 
+/* async function testPricePoints2() {
+  console.log('[......] Minimum number of cheap/expensive hours');
+  const app = new PiggyBank();
+  await app.disableLog();
+  await app.onInit();
+  await applyBasicConfig(app);
+  app.__all_prices = [];
+  app.__current_prices = [
+    0.2, 0.3, 0.5, 0.3, 0.2, 0.5, 0.9, 1.8, 0.1, 0.2, 0.2, 0.3,
+    0.5, 0.3, 0.2, 0.5, 0.9, 0.8, 0.1, 0.2, 0.2, 0.3, 0.5, 0.3,
+    0.2, 0.3, 0.5, 0.3, 0.2, 0.5, 0.9, 0.8, 0.1, 0.2, 0.2, 0.3,
+    0.5, 0.3, 0.2, 0.5, 0.9, 0.8, 0.1, 0.2, 0.2, 0.3, 0.5, 0.3];
+  const CorrectPP = [4, 0, 1, 0, 4, 1, 2, 3, 4, 4, 4, 0, 1, 0, 4, 1, 2, 2, 4, 4, 4, 0, 1, 0];
+  //const sortedPrices = app.__current_prices.slice(0, 24).sort((a, b) => b - a);
+  //console.log(`Sorted prices: ${sortedPrices}`); //High cap: 0.5, low cap: 0.2
+  app.homey.settings.set('averagePrice', 0.6);
+
+  const now = roundToStartOfDay(new Date(1666396747401), app.homey);
+  for (let i = 0; i < app.__current_prices.length; i++) {
+    const newPrice = { time: (now.getTime() / 1000) + (i * 60 * 60), price: app.__current_prices[i] };
+    app.__all_prices.push(newPrice);
+  }
+
+  for (let hour = 0; hour < 24; hour++) {
+    const curTime = new Date(now.getTime());
+    curTime.setHours(now.getHours() + hour, 0, 0, 0);
+    await app.onNewHour(true, curTime);
+    if (app.__current_price_index !== hour) throw new Error('Current hour is not calculated correctly');
+    if (app.homey.settings.get('pricePoint') !== CorrectPP[hour]) throw new Error(`Invalid Price point at hour ${hour}`);
+    // console.log(`${String(hour).padStart(2, '0')}:00 Price: ${app.__current_prices[hour]} (${ppNames[app.homey.settings.get('pricePoint')]})`);
+  }
+
+  await app.onUninit();
+  console.log('\x1b[1A[\x1b[32mPASSED\x1b[0m]');
+} */
+
 // Start all tests
 async function startAllTests() {
   try {
@@ -291,6 +327,7 @@ async function startAllTests() {
     await testCharging();
     await testReliability();
     await testPricePoints();
+    // await testPricePoints2();
     await testArchive();
     // await testMail();
   } catch (err) {
