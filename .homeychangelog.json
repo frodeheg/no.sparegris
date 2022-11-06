@@ -559,5 +559,8 @@
   },
   "0.18.29": {
     "en": "Start car charging now accept end time as a variable (issue #22) + Charging now stops exactly when ordered (issue #24)"
+  },
+  "0.18.30": {
+    "en": "Added new charging option for Easee that does not attempt to change the on/off capability at all, only the offered current (target_circuit_current)"
   }
 }
