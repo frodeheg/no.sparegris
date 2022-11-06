@@ -3123,7 +3123,7 @@ class PiggyBank extends Homey.App {
           } else if (priceKind === c.PRICE_KIND_SPOT) {
             const biddingZone = (futurePriceOptions.priceCountry in c.ENTSOE_BIDDING_ZONES)
               && (futurePriceOptions.priceRegion in c.ENTSOE_BIDDING_ZONES[futurePriceOptions.priceCountry])
-              ? c.ENTSOE_BIDDING_ZONES[futurePriceOptions.priceCountry][futurePriceOptions.priceRegion] : undefined;
+              ? c.ENTSOE_BIDDING_ZONES[futurePriceOptions.priceCountry][futurePriceOptions.priceRegion].id : undefined;
             const priceData = await prices.entsoeGetData(todayStart, 'NOK', biddingZone);
             futurePrices = await prices.applyTaxesOnSpotprice(
               priceData,
