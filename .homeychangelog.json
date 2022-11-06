@@ -562,5 +562,8 @@
   },
   "0.18.30": {
     "en": "Added new charging option for Easee that does not attempt to change the on/off capability at all, only the offered current (target_circuit_current)"
+  },
+  "0.18.31": {
+    "en": "Fix for major bug that prevented people with other bidding zones than NO-3 (middle norway) from getting the correct price predictions."
   }
 }
