@@ -1084,8 +1084,9 @@
           <tr>
             <td class="settings_row_name"><label for="experimentalMode">Experimental mode</label>:</td>
             <td class="settings_row_input"><select id="experimentalMode" class="inputElem" onchange="updateAdvancedSettings();displaySaveHint()">
-              <option value="1"selected>Old algorithm</option>
-              <option value="2">Experimental algorithm (unreliable)</option>
+              <option value="1"selected>Old algorithm (many on/off + change current)</option>
+              <option value="2">Experimental algorithm (one on/off + change current - unreliable)</option>
+              <option value="3">Experimental algorithm (only change current - untested)</option>
             </select></td>
           </tr>
           <tr>
@@ -1831,7 +1832,7 @@
           document.getElementById('chargeMin').value = chargerOptions.chargeMin;
           document.getElementById('chargeThreshold').value = chargerOptions.chargeThreshold;
           document.getElementById('minToggleTime').value = chargerOptions.minToggleTime;
-          document.getElementById('experimentalMode').value = chargerOptions.experimentalMode;
+          document.getElementById('experimentalMode').value = chargerOptions.experimentalMode || 1;
           document.getElementById('chargeRemaining').value = chargerOptions.chargeRemaining / 1000;
           document.getElementById('chargeEnd').value = toTimeString(new Date(chargerOptions.chargeEnd));
           document.getElementById("energyFlowRateText").innerHTML = energyFlowRateText.replace("${interval}", Math.round(appConfigProgress.timeSinceEnergyMeter / 60));
