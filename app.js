@@ -185,6 +185,14 @@ class PiggyBank extends Homey.App {
       this.homey.settings.set('priceActionList', newPriceActionList);
     }
 
+    // Version 0.12.12 Moved some settings into api commands
+    this.homey.settings.unset('logLevel');
+    this.homey.settings.unset('showState');
+    this.homey.settings.unset('showCaps');
+    this.homey.settings.unset('showPriceApi');
+    this.homey.settings.unset('diagLog');
+    this.homey.settings.unset('sendLog');
+
     // Version 0.14.5 Adds custom Modes
     const modeNames = this.homey.settings.get('modeNames');
     const modeList = this.homey.settings.get('modeList');
