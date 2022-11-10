@@ -87,6 +87,46 @@ class PiggyBank extends Homey.App {
   }
 
   /**
+   * getDevice
+   * Overloads the getDevice command from the homeyApi because it's unreliable
+   */
+  async getDevice(deviceId) {
+    let device = null;
+    for (let retries = 10; retries > 0; retries--) {
+      device = await this.homeyApi.devices.getDevice({ id: deviceId });
+      if (device && device.capabilitiesObj) return device;
+      const delay = ms => new Promise(res => setTimeout(res, ms));
+      await delay(100); // 0.1 sec
+    }
+    return device;
+  }
+
+  /**
+   * Run the initialization commands for adding devices
+   */
+  async runDeviceCommands(deviceId, listRef) {
+    if (!(deviceId in this.__deviceList)) return Promise.reject(new Error('The deviceId to control does not exist'));
+    const { driverId } = this.__deviceList[deviceId];
+    if (!(driverId in d.DEVICE_CMD)) return Promise.resolve();
+    if (!(listRef in d.DEVICE_CMD[driverId])) return Promise.resolve();
+    this.log(`Got ${listRef} for ${driverId}`);
+    const list = d.DEVICE_CMD[driverId][listRef];
+    const device = await this.getDevice(deviceId);
+    for (const capName in list) {
+      const maxVal = (device.capabilitiesObj === null) ? 32 : await device.capabilitiesObj[capName].max;
+      const setVal = (list[capName] === Infinity) ? maxVal : list[capName];
+      this.log(`try capname: ${capName} = ${setVal}`);
+      try {
+        await device.setCapabilityValue({ capabilityId: capName, value: setVal }); // Just pass errors on
+      } catch (err) {
+        this.log(`Error: ${err}`);
+      }
+      this.log(`did capname: ${capName} = ${setVal}`);
+    }
+    return Promise.resolve();
+  }
+
+  /**
    * onInit is called when the app is initialized.
    */
   async onInit() {
@@ -533,9 +573,20 @@ class PiggyBank extends Homey.App {
       return this.onChargingCycleStop();
     });
 
-    this.homey.settings.on('set', setting => {
+    // Prepare which devices was on for setting deviceList which is called after this
+    this.__oldDeviceList = this.homey.settings.get('deviceList');
+
+    this.homey.settings.on('set', (setting, hmm, hmm2) => {
       if (setting === 'deviceList') {
         this.__deviceList = this.homey.settings.get('deviceList');
+        for (const deviceId in this.__deviceList) {
+          if (this.__deviceList[deviceId].use && !((deviceId in this.__oldDeviceList) && this.__oldDeviceList[deviceId].use)) {
+            this.runDeviceCommands(deviceId, 'onAdd');
+          } else if (!this.__deviceList[deviceId].use && (deviceId in this.__oldDeviceList) && this.__oldDeviceList[deviceId].use) {
+            this.runDeviceCommands(deviceId, 'onRemove');
+          }
+        }
+        this.__oldDeviceList = this.__deviceList;
       } else if (setting === 'settingsSaved') {
         const doRefresh = this.homey.settings.get('settingsSaved');
         if (doRefresh === 'true') {
@@ -561,6 +612,16 @@ class PiggyBank extends Homey.App {
         }
       }
     });
+
+    // ============= RUN ONADD EVENTS FOR ALL SELECTED DEVICES ==============
+    try {
+      const frostList = this.homey.settings.get('frostList');
+      for (const deviceId in frostList) {
+        await this.runDeviceCommands(deviceId, 'onAdd');
+      }
+    } catch (err) {
+      this.updateLog(`onInit error, could not run onAdd for relevant devices: ${err}`);
+    }
 
     // ============== ON NEW HOUR SAFETY GUARD WHEN RESTARTING ==============
     // Check if the onNewHour was missed due to a restart
@@ -919,7 +980,7 @@ class PiggyBank extends Homey.App {
     this.log(`Changing power by: ${powerChange}`);
     let device;
     try {
-      device = await this.homeyApi.devices.getDevice({ id: deviceId });
+      device = await this.getDevice(deviceId);
       this.updateReliability(deviceId, 1);
     } catch (err) {
       // Most likely timeout
@@ -1038,7 +1099,7 @@ class PiggyBank extends Homey.App {
     this.log(`Requested power change: ${powerChange}`);
     let device;
     try {
-      device = await this.homeyApi.devices.getDevice({ id: deviceId });
+      device = await this.getDevice(deviceId);
       this.updateReliability(deviceId, 1);
     } catch (err) {
       // Most likely timeout
@@ -1089,7 +1150,7 @@ class PiggyBank extends Homey.App {
     const timeLapsed = (now - this.prevChargerTime) / 1000; // Lapsed time in seconds
     if (this.prevChargerTime !== undefined && (timeLapsed < +chargerOptions.minToggleTime) && !ignoreChargerThrottle && !isEmergency) {
       // Must wait a little bit more before changing
-      this.log(`Wait more: ${+(chargerOptions.minToggle)} - ${timeLapsed} = ${+(chargerOptions.minToggle) - timeLapsed} sec left`);
+      this.log(`Wait more: ${+(chargerOptions.minToggleTime)} - ${timeLapsed} = ${+(chargerOptions.minToggleTime) - timeLapsed} sec left`);
       return Promise.resolve([false, false]);
     }
     this.prevChargerTime = now;
@@ -1188,10 +1249,10 @@ class PiggyBank extends Homey.App {
     if (chargerOptions.chargeTarget === c.CHARGE_TARGET_FLOW) {
       return Promise.resolve([true, true]);
     }
-    this.log(`Requested power change: ${powerChange}`);
+    this.updateLog(`Requested power change: ${powerChange}`, c.LOG_DEBUG);
     let device;
     try {
-      device = await this.homeyApi.devices.getDevice({ id: deviceId });
+      device = await this.getDevice(deviceId);
       this.updateReliability(deviceId, 1);
     } catch (err) {
       // Most likely timeout
@@ -1242,7 +1303,7 @@ class PiggyBank extends Homey.App {
     const timeLapsed = (now - this.prevChargerTime) / 1000; // Lapsed time in seconds
     if (this.prevChargerTime !== undefined && (timeLapsed < +chargerOptions.minToggleTime) && !ignoreChargerThrottle && !isEmergency) {
       // Must wait a little bit more before changing
-      this.log(`Wait more: ${+(chargerOptions.minToggle)} - ${timeLapsed} = ${+(chargerOptions.minToggle) - timeLapsed} sec left`);
+      this.updateLog(`Wait more: ${+(chargerOptions.minToggleTime)} - ${timeLapsed} = ${+(chargerOptions.minToggleTime) - timeLapsed} sec left`, c.LOG_DEBUG);
       return Promise.resolve([false, false]);
     }
     this.prevChargerTime = now;
@@ -1253,8 +1314,9 @@ class PiggyBank extends Homey.App {
     const maxPower = +this.homey.settings.get('maxPower');
     const newOfferPower = Math.min(Math.max(powerUsed + +powerChange, +chargerOptions.chargeMin), maxPower);
     const newOfferCurrent = (isEmergency || !withinChargingPlan) ? 0
-      : Math.floor(Math.min(Math.max(ampsOffered * (newOfferPower / +powerUsed), minCurrent), +maxCurrent));
-    this.log(`Setting ${newOfferCurrent} amp, was ${ampsActualOffer}`);
+      : (+powerUsed === 0) ? minCurrent
+        : Math.floor(Math.min(Math.max(ampsOffered * (newOfferPower / +powerUsed), minCurrent), +maxCurrent));
+    this.updateLog(`Setting ${newOfferCurrent} amp, was ${ampsActualOffer}`, c.LOG_DEBUG);
     if ((newOfferCurrent === ampsActualOffer) && (newOfferCurrent === ampsOffered)) return Promise.resolve([true, true]);
     this.__current_state[deviceId].lastCurrent = newOfferCurrent;
     this.__current_state[deviceId].lastPower = powerUsed;
@@ -1364,7 +1426,7 @@ class PiggyBank extends Homey.App {
 
     let device;
     try {
-      device = await this.homeyApi.devices.getDevice({ id: deviceId });
+      device = await this.getDevice(deviceId);
       this.updateReliability(deviceId, 1);
     } catch (err) {
       // Most likely timeout
@@ -1546,7 +1608,7 @@ class PiggyBank extends Homey.App {
             this.__current_state[deviceId].__monitorError += 1;
           }
           // Go on to confirm device states
-          return this.homeyApi.devices.getDevice({ id: deviceId });
+          return this.getDevice(deviceId);
         })
         .then(device => {
           if (this.getOnOffCap(deviceId) === undefined) {
@@ -2030,7 +2092,7 @@ class PiggyBank extends Homey.App {
     }
     const override = this.homey.settings.get('override') || {};
     override[deviceId] = forcedState;
-    const device = await this.homeyApi.devices.getDevice({ id: deviceId });
+    const device = await this.getDevice(deviceId);
     let promise;
     switch (+forcedState) {
       case c.OVERRIDE.NONE:
@@ -2186,7 +2248,7 @@ class PiggyBank extends Homey.App {
     const currentAction = actionLists[actionListIdx][deviceId]; // Action state: .operation
     const currentPriceMode = +this.homey.settings.get('priceMode');
     const deltaTemp = ((currentPriceMode !== c.PRICE_MODE_DISABLED) && (currentAction.operation === DELTA_TEMP)) ? parseInt(currentAction.delta, 10) : 0;
-    return this.homeyApi.devices.getDevice({ id: deviceId })
+    return this.getDevice(deviceId)
       .then(device => {
         if (this.getOnOffCap(deviceId) === undefined) {
           return Promise.reject(new Error('The onoff capability is non-existing, this should never happen.'));
@@ -2675,7 +2737,7 @@ class PiggyBank extends Homey.App {
       const { driverId } = this.__deviceList[deviceId];
       if ((driverId in d.DEVICE_CMD) && (d.DEVICE_CMD[driverId].type === d.DEVICE_TYPE.AC)) {
         override[deviceId] = c.OVERRIDE.OFF_UNTIL_MANUAL_ON;
-        const device = await this.homeyApi.devices.getDevice({ id: deviceId });
+        const device = await this.getDevice(deviceId);
         this.setOnOff(device, deviceId, false);
       }
     }
@@ -2874,7 +2936,7 @@ class PiggyBank extends Homey.App {
       const { lastCmd, nComError } = this.__current_state[deviceId];
       const { temp, ongoing, confirmed } = this.__current_state[deviceId];
       const { __monitorError, __monitorFixTemp, __monitorFixOn } = this.__current_state[deviceId];
-      this.homeyApi.devices.getDevice({ id: deviceId })
+      this.getDevice(deviceId)
         .then(device => {
           const isOnActual = (this.getOnOffCap(deviceId) === undefined) ? undefined : this.getIsOn(device, deviceId);
           const tempTargetCap = this.getTempSetCap(deviceId);
@@ -2906,7 +2968,7 @@ class PiggyBank extends Homey.App {
     this.updateLog(`Report type: ${(+filter >= 0 && +filter <= 4) ? problems[filter] : 'Invalid'}`, c.LOG_ALL);
     this.updateLog(`Device ID:   ${deviceId}`, c.LOG_ALL);
     // const flows = await this.homeyApi.flow.getFlowCardActions(); // TBD: Remove???
-    await this.homeyApi.devices.getDevice({ id: deviceId })
+    await this.getDevice(deviceId)
       .then(device => {
         this.updateLog(`Device name: ${device.name}`, c.LOG_ALL);
         try {
