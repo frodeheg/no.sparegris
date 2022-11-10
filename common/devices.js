@@ -273,8 +273,7 @@ const DEVICE_CMD = {
     setTempCap: 'target_temperature',
     tempMin: 5, // Min is 4, but using 4 as emulated Off
     tempMax: 35,
-    tempStep: 0.5,
-    beta: true
+    tempStep: 0.5
   },
   'se.husdata:H60': {
     type: DEVICE_TYPE.HEATER,
