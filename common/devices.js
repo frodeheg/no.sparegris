@@ -112,6 +112,21 @@ const DEVICE_CMD = {
     setModeFanValue: 'wind',
     default: false
   },
+  'climate.onecta.daikin:altherma3_geo': {
+    ...DEFAULT_AC,
+    note: 'The driver for this device is not following proper design guidelines. Thus controlling it from here may only work on a fraction of the devices. '
+      + 'The HotwaterTank is for example known to be non-functional. Please contact Daikin to fix their app or I may add a workaround if they refuse. '
+      + 'See <a href="https://github.com/frodeheg/no.sparegris/issues/62#issuecomment-1309710578">here</ a> for more details.',
+    tempMin: 4,
+    tempMax: 35,
+    tempStep: 0.5,
+    setModeCap: 'operation_mode_altherma3',
+    setModeHeatValue: 'heating',
+    setModeCoolValue: 'cooling',
+    setModeAutoValue: 'auto',
+    default: false,
+    beta: true
+  },
   'cloud.shelly:shelly': DEFAULT_SWITCH,
   'com.aeotec:ZW078': DEFAULT_SWITCH,
   'com.arjankranenburg.virtual:mode': DEFAULT_SWITCH,
