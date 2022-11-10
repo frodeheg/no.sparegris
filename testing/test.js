@@ -329,7 +329,7 @@ async function startAllTests() {
     await testPricePoints();
     // await testPricePoints2();
     await testArchive();
-    // await testMail();
+    await testMail();
   } catch (err) {
     console.log('\x1b[1A[\x1b[31mFAILED\x1b[0m]');
     console.log(err);
