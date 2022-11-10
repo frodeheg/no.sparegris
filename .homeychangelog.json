@@ -565,5 +565,8 @@
   },
   "0.18.31": {
     "en": "Fix for major bug that prevented people with other bidding zones than NO-3 (middle norway) from getting the correct price predictions."
+  },
+  "0.18.32": {
+    "en": "Updates to experimental charging algorithm 3 for Easee devices + Fixed device reporting + partial support for Daikin Altherma III Geo pump"
   }
 }
