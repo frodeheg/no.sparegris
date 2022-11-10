@@ -115,8 +115,9 @@ const DEVICE_CMD = {
   'climate.onecta.daikin:altherma3_geo': {
     ...DEFAULT_AC,
     note: 'The driver for this device is not following proper design guidelines. Thus controlling it from here may only work on a fraction of the devices. '
-      + 'The HotwaterTank is for example known to be non-functional. Please contact Daikin to fix their app or I may add a workaround if they refuse. '
+      + 'The HotwaterTank is for example known to be non-functional. Please contact Daikin to fix their app or I may add a workaround if nothing happens. '
       + 'See <a href="https://github.com/frodeheg/no.sparegris/issues/62#issuecomment-1309710578">here</ a> for more details.',
+    readTempCap: 'measure_temperature.leavingWaterTemperature', // measure_temperature does not work, so this is for frost guard to work only. Can't be used for temp control
     tempMin: 4,
     tempMax: 35,
     tempStep: 0.5,
