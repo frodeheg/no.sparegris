@@ -874,8 +874,9 @@ class PiggyBank extends Homey.App {
       this.__hasAC |= /* useDevice && */ (driverId in d.DEVICE_CMD) && (d.DEVICE_CMD[driverId].type === d.DEVICE_TYPE.AC);
 
       this.updateLog(`Device: ${String(priority)} ${device.id} ${device.name} ${device.class}`, c.LOG_DEBUG);
-      const thermostatCap = device.capabilities.includes('target_temperature')
-        && device.capabilities.includes('measure_temperature');
+      const thermostatCap = (driverId in d.DEVICE_CMD)
+        ? (d.DEVICE_CMD[driverId].readTempCap && d.DEVICE_CMD[driverId].setTempCap)
+        : (device.capabilities.includes('target_temperature') && device.capabilities.includes('measure_temperature'));
       // device.capabilitiesObj should be available but in case homey timed out it could be incomplete
       const targetTemp = (thermostatCap && device.capabilitiesObj && ('target_temperature' in device.capabilitiesObj))
         ? +device.capabilitiesObj['target_temperature'].value : 24;
