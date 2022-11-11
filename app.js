@@ -88,7 +88,8 @@ class PiggyBank extends Homey.App {
 
   /**
    * getDevice
-   * Overloads the getDevice command from the homeyApi because it's unreliable
+   * Overloads the getDevice command from the homeyApi because it's unreliable.
+   * Should only be used when the capabilitiesObj list is required.
    */
   async getDevice(deviceId) {
     let device = null;
@@ -1140,7 +1141,7 @@ class PiggyBank extends Homey.App {
       ((powerUsed + +powerChange) < 0) || (ampsOffered === d.DEVICE_CMD[driverId].minCurrent));
     const now = new Date();
     const end = new Date(chargerOptions.chargeEnd);
-    if (((chargerOptions.chargeCycleType === c.OFFER_HOURS) && (end < now))
+    if ((end < now)
       || ((chargerOptions.chargeCycleType === c.OFFER_ENERGY) && (+chargerOptions.chargeRemaining < this.__offeredEnergy))) {
       chargerOptions.chargeRemaining = 0;
     }
@@ -1295,7 +1296,7 @@ class PiggyBank extends Homey.App {
       ((powerUsed + +powerChange) < 0) || (ampsOffered === d.DEVICE_CMD[driverId].minCurrent));
     const now = new Date();
     const end = new Date(chargerOptions.chargeEnd);
-    if (((chargerOptions.chargeCycleType === c.OFFER_HOURS) && (end < now))
+    if ((end < now)
       || ((chargerOptions.chargeCycleType === c.OFFER_ENERGY) && (+chargerOptions.chargeRemaining < this.__offeredEnergy))) {
       chargerOptions.chargeRemaining = 0;
     }
@@ -1312,6 +1313,11 @@ class PiggyBank extends Homey.App {
     if (this.prevChargerTime !== undefined && (timeLapsed < +chargerOptions.minToggleTime) && !ignoreChargerThrottle && !isEmergency) {
       // Must wait a little bit more before changing
       this.updateLog(`Wait more: ${+(chargerOptions.minToggleTime)} - ${timeLapsed} = ${+(chargerOptions.minToggleTime) - timeLapsed} sec left`, c.LOG_DEBUG);
+      // Report success in case there is an unconfirmed command and we're trying to reduce power... to avoid reporting powerfail too early.
+      if (!ignoreChargerThrottle && (+powerChange < 0)) {
+        return Promise.resolve([true, false]);
+      }
+      // Return failure in case the earlier commands was confirmed
       return Promise.resolve([false, false]);
     }
     this.prevChargerTime = now;
@@ -1898,7 +1904,7 @@ class PiggyBank extends Homey.App {
       const isEmergency = (+powerDiff < 0) && ((this.__charge_power_active + +powerDiff) < 0);
       const now = new Date();
       const end = new Date(chargerOptions.chargeEnd);
-      if (((chargerOptions.chargeCycleType === c.OFFER_HOURS) && (end < now))
+      if ((end < now)
         || ((chargerOptions.chargeCycleType === c.OFFER_ENERGY) && (+chargerOptions.chargeRemaining < this.__offeredEnergy))) {
         chargerOptions.chargeRemaining = 0;
       }
