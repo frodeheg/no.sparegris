@@ -568,5 +568,8 @@
   },
   "0.18.32": {
     "en": "Updates to experimental charging algorithm 3 for Easee devices + Fixed device reporting + partial support for Daikin Altherma III Geo pump"
+  },
+  "0.18.33": {
+    "en": "Added workaround for the non-standard device type: Daikin Altherma III Geo pump + Fix for bug #65: Charging cycles started with the kWh flow did not end at the specified end time. + Improvement #59: Avoid powering down the house while waiting for a car charger to confirm its outstanding requests."
   }
 }
