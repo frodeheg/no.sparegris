@@ -125,8 +125,7 @@ const DEVICE_CMD = {
       onoff: false,
       hotwatertank_onoff_altherma3: 'off'
     },
-    default: false,
-    beta: true
+    default: false
   },
   'cloud.shelly:shelly': DEFAULT_SWITCH,
   'com.aeotec:ZW078': DEFAULT_SWITCH,
