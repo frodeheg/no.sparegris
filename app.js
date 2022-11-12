@@ -104,6 +104,7 @@ class PiggyBank extends Homey.App {
 
   /**
    * Run the initialization commands for adding devices
+   * @return true if state was changed for any of the commands, false if no change was requested
    */
   async runDeviceCommands(deviceId, listRef) {
     if (!(deviceId in this.__deviceList)) return Promise.reject(new Error('The deviceId to control does not exist'));
@@ -113,18 +114,23 @@ class PiggyBank extends Homey.App {
     this.log(`Got ${listRef} for ${driverId}`);
     const list = d.DEVICE_CMD[driverId][listRef];
     const device = await this.getDevice(deviceId);
+    let stateChanged = false;
     for (const capName in list) {
       const maxVal = (device.capabilitiesObj === null) ? 32 : await device.capabilitiesObj[capName].max;
       const setVal = (list[capName] === Infinity) ? maxVal : list[capName];
+      const prevVal = (device.capabilitiesObj === null) ? undefined : await device.capabilitiesObj[capName].value;
       this.log(`try capname: ${capName} = ${setVal}`);
       try {
-        await device.setCapabilityValue({ capabilityId: capName, value: setVal }); // Just pass errors on
+        if (prevVal !== setVal) {
+          stateChanged = true;
+          await device.setCapabilityValue({ capabilityId: capName, value: setVal }); // Just pass errors on
+        }
       } catch (err) {
         this.log(`Error: ${err}`);
       }
       this.log(`did capname: ${capName} = ${setVal}`);
     }
-    return Promise.resolve();
+    return Promise.resolve(stateChanged);
   }
 
   /**
@@ -193,6 +199,7 @@ class PiggyBank extends Homey.App {
     this.homey.settings.unset('showPriceApi');
     this.homey.settings.unset('diagLog');
     this.homey.settings.unset('sendLog');
+    this.homey.settings.unset('charger');
 
     // Version 0.14.5 Adds custom Modes
     const modeNames = this.homey.settings.get('modeNames');
@@ -416,6 +423,7 @@ class PiggyBank extends Homey.App {
     this.__last_power_off_time.setUTCMinutes(this.__last_power_off_time.getUTCMinutes() - 5); // Time in the past to allow turning on devices at app start
     this.__charge_plan = []; // No charge plan
     this.__charge_power_active = 0;
+    this.__spookey_check_activated = undefined;
     // All elements of current_state will have the following:
     //  nComError: Number of communication errors since last time it worked - Used to depriorotize devices so we don't get stuck in an infinite retry loop
     //  lastCmd: The last onoff command that was sent to the device
@@ -583,9 +591,9 @@ class PiggyBank extends Homey.App {
     });
 
     // Prepare which devices was on for setting deviceList which is called after this
-    this.__oldDeviceList = this.homey.settings.get('deviceList');
+    this.__oldDeviceList = this.homey.settings.get('deviceList') || [];
 
-    this.homey.settings.on('set', (setting, hmm, hmm2) => {
+    this.homey.settings.on('set', setting => {
       if (setting === 'deviceList') {
         this.__deviceList = this.homey.settings.get('deviceList');
         for (const deviceId in this.__deviceList) {
@@ -934,6 +942,7 @@ class PiggyBank extends Homey.App {
   async getAppConfigProgress() {
     const appConfigProgress = {};
     this.apiState = await this._checkApi();
+    appConfigProgress.numSpookeyChanges = this.__spookey_changes;
     appConfigProgress.energyMeterNotConnected = (this.__energy_meter_detected_time === undefined);
     appConfigProgress.timeSinceEnergyMeter = ((new Date() - this.__energy_meter_detected_time) / 1000);
     appConfigProgress.gotPPFromFlow = this.homey.settings.get('gotPPFromFlow') === 'true';
@@ -983,6 +992,9 @@ class PiggyBank extends Homey.App {
     }
     if (+(chargerOptions.experimentalMode) === 3) {
       return this.changeDevicePower3(deviceId, powerChange);
+    }
+    if (+(chargerOptions.experimentalMode) === 4) {
+      return this.changeDevicePower4(deviceId, powerChange);
     }
     if (chargerOptions.chargeTarget === c.CHARGE_TARGET_FLOW) {
       return Promise.resolve([true, true]);
@@ -1352,6 +1364,123 @@ class PiggyBank extends Homey.App {
         this.updateReliability(deviceId, 0);
         return Promise.resolve([false, false]);
       });
+  }
+
+  async changeDevicePower4(deviceId, powerChange) {
+    const chargerOptions = this.homey.settings.get('chargerOptions');
+    if (chargerOptions.chargeTarget === c.CHARGE_TARGET_FLOW) {
+      return Promise.resolve([true, true]);
+    }
+    this.updateLog(`Requested power change: ${powerChange}`, c.LOG_DEBUG);
+    let device;
+    try {
+      device = await this.getDevice(deviceId);
+      this.updateReliability(deviceId, 1);
+    } catch (err) {
+      // Most likely timeout
+      this.updateLog(`Charger device cannot be fetched. ${String(err)}`, c.LOG_ERROR);
+      this.__current_state[deviceId].nComError += 10; // Big error so wait more until retry than smaller errors
+      this.updateReliability(deviceId, 0);
+      return Promise.resolve([false, false]); // The unhandled device is solved by the later nComError handling
+    }
+
+    if (device.capabilitiesObj === null) {
+      this.__current_state[deviceId].nComError += 10; // This should not happen
+      this.updateReliability(deviceId, 0);
+      return Promise.resolve([false, false]);
+    }
+
+    const { driverId } = this.__deviceList[deviceId];
+    if ((!(driverId in d.DEVICE_CMD))
+      || (d.DEVICE_CMD[driverId].measurePowerCap === undefined)
+      || (d.DEVICE_CMD[driverId].setCurrentCap === undefined)
+      || (d.DEVICE_CMD[driverId].getOfferedCap === undefined)
+      || (d.DEVICE_CMD[driverId].onChargeStart === undefined)
+      || (d.DEVICE_CMD[driverId].onChargeEnd === undefined)) {
+      return Promise.reject(new Error('Please notify the developer that the charger definition for this charger is incorrect and need to be updated'));
+    }
+    const ampsOffered = +await device.capabilitiesObj[d.DEVICE_CMD[driverId].setCurrentCap].value;
+    const powerUsed = +await device.capabilitiesObj[d.DEVICE_CMD[driverId].measurePowerCap].value;
+    const isOn = (powerUsed > 0) || (ampsOffered > 0);
+    this.__charge_power_active = powerUsed;
+    if ((!isOn) && (powerChange < chargerOptions.chargeThreshold)) {
+      // The device should not be turned on if the available power is less than the charge threshold
+      return Promise.resolve([false, false]);
+    }
+    const isEmergency = (+powerChange < 0) && (
+      ((powerUsed + +powerChange) < 0) || (ampsOffered === d.DEVICE_CMD[driverId].minCurrent));
+    const now = new Date();
+    const end = new Date(chargerOptions.chargeEnd);
+    if ((end < now)
+      || ((chargerOptions.chargeCycleType === c.OFFER_ENERGY) && (+chargerOptions.chargeRemaining < this.__offeredEnergy))) {
+      chargerOptions.chargeRemaining = 0;
+    }
+
+    const withinChargingPlan = (this.__charge_plan[0] > 0) && (+chargerOptions.chargeRemaining > 0);
+    const { lastCurrent, lastPower } = this.__current_state[deviceId];
+    const ampsActualOffer = +await device.capabilitiesObj[d.DEVICE_CMD[driverId].getOfferedCap].value;
+    if ((lastCurrent === ampsActualOffer) && (lastPower !== powerUsed)) {
+      this.__current_state[deviceId].confirmed = true;
+    }
+    const ignoreChargerThrottle = this.__current_state[deviceId].confirmed;
+    // Check that we do not toggle the charger too often
+    const timeLapsed = (now - this.prevChargerTime) / 1000; // Lapsed time in seconds
+    const throttleActive = timeLapsed < +chargerOptions.minToggleTime;
+    if (this.prevChargerTime !== undefined && throttleActive && !ignoreChargerThrottle && !isEmergency) {
+      // Must wait a little bit more before changing
+      this.updateLog(`Wait more: ${+(chargerOptions.minToggleTime)} - ${timeLapsed} = ${+(chargerOptions.minToggleTime) - timeLapsed} sec left`, c.LOG_DEBUG);
+      // Report success in case there is an unconfirmed command and we're trying to reduce power... to avoid reporting powerfail too early.
+      if (!ignoreChargerThrottle && (+powerChange < 0)) {
+        return Promise.resolve([true, false]);
+      }
+      // Return failure in case the earlier commands was confirmed
+      return Promise.resolve([false, false]);
+    }
+    this.prevChargerTime = now;
+    if (isEmergency) this.updateLog('Emergency turn off for charger device (minToggleTime ignored)', c.LOG_WARNING);
+
+    const maxCurrent = +await device.capabilitiesObj[d.DEVICE_CMD[driverId].setCurrentCap].max;
+    const { pauseCurrent, minCurrent } = d.DEVICE_CMD[driverId];
+    const maxPower = +this.homey.settings.get('maxPower');
+    const newOfferPower = Math.min(Math.max(powerUsed + +powerChange, +chargerOptions.chargeMin), maxPower);
+    const newOfferCurrent = (!withinChargingPlan) ? 0
+      : (isEmergency) ? pauseCurrent
+        : (+powerUsed === 0) ? minCurrent
+          : Math.floor(Math.min(Math.max(ampsOffered * (newOfferPower / +powerUsed), minCurrent), +maxCurrent));
+    this.updateLog(`Setting ${newOfferCurrent} amp, was ${ampsActualOffer}`, c.LOG_DEBUG);
+    if ((newOfferCurrent === ampsActualOffer) && (newOfferCurrent === ampsOffered)) return Promise.resolve([true, true]);
+    this.__current_state[deviceId].lastCurrent = newOfferCurrent;
+    this.__current_state[deviceId].lastPower = powerUsed;
+    this.__current_state[deviceId].confirmed = false;
+    this.__current_state[deviceId].ongoing = true;
+    return this.chargeCycleValidation(deviceId, device, withinChargingPlan, throttleActive)
+      .then(() => device.setCapabilityValue({ capabilityId: d.DEVICE_CMD[driverId].setCurrentCap, value: newOfferCurrent }))
+      .then(() => {
+        this.__current_state[deviceId].ongoing = false;
+        this.__current_state[deviceId].nComError = 0;
+        this.updateReliability(deviceId, 1);
+        const noChange = withinChargingPlan ? powerUsed + +powerChange < newOfferPower : !isOn;
+        return Promise.resolve([true, noChange]); // In case more power is offered but it doesn't get used, let the app turn on other devices
+      })
+      .catch(err => {
+        this.updateLog(`Failed signalling charger: ${String(err)}`, c.LOG_ERROR);
+        this.__current_state[deviceId].nComError += 1;
+        this.__current_state[deviceId].ongoing = undefined;
+        this.updateReliability(deviceId, 0);
+        return Promise.resolve([false, false]);
+      });
+  }
+
+  /**
+   * Makes sure that a charge cycle does not move out of the active phase
+   * and count spookey changes
+   */
+  async chargeCycleValidation(deviceId, planActive, throttleActive) {
+    const listRef = planActive ? 'onChargeStart' : 'onChargeEnd';
+    const changeNeeded = await this.runDeviceCommands(deviceId, listRef); // Pass errors on
+    this.__spookey_changes += (this.__spookey_check_activated === planActive && !throttleActive) ? changeNeeded : 0;
+    this.__spookey_check_activated = planActive;
+    return Promise.resolve();
   }
 
   /**
@@ -2150,6 +2279,8 @@ class PiggyBank extends Homey.App {
     }
 
     this.updateLog('Charging cycle started', c.LOG_INFO);
+    this.__spookey_check_activated = undefined;
+    this.__spookey_changes = 0;
     const chargerOptions = this.homey.settings.get('chargerOptions');
     if (chargerOptions) {
       // Convert local end time to UTC

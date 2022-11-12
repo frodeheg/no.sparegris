@@ -207,17 +207,25 @@ const DEVICE_CMD = {
   'no.connecte:smart_socket': DEFAULT_SWITCH,
   'no.easee:charger': {
     ...DEFAULT_CHARGER,
-    onAdd: {
-      target_charger_current: 0,
+    onChargeStart: {
       target_circuit_current: Infinity
     },
+    onChargeEnd: {
+      target_circuit_current: 0
+    },
+    onAdd: {
+      target_charger_current: 0,
+      target_circuit_current: 0
+    },
     onRemove: {
-      target_charger_current: Infinity
+      target_charger_current: Infinity,
+      target_circuit_current: Infinity
     },
     note: 'This device must have the test version of the Easee app in order to function.',
     setCurrentCap: 'target_charger_current',
     getOfferedCap: 'measure_current.offered',
     minCurrent: 7,
+    pauseCurrent: 4,
     measurePowerCap: 'measure_power',
     measureVoltageCap: 'measure_voltage',
     statusCap: 'charger_status',

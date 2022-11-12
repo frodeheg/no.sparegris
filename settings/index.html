@@ -56,6 +56,7 @@
       var timeoutText = "warnings.timeout";
       var energyFlowRateText = "settings.welcome.taskEnergyFlowRate";
       var experimentalText = "settings.welcome.taskExperimental";
+      var spookeyText = "settings.welcome.taskSpookey";
       var onGoingText = "settings.help.ongoing";
       var modeNameDayText = "settings.opMode.normal";
       var modeNameNightText = "settings.opMode.night";
@@ -816,6 +817,7 @@
         haveTasks |= changeTaskVisibility('taskNoPrices', !appIsDisabled && priceMode == PRICE_MODE_INTERNAL && priceKind == PRICE_KIND_SPOT && Array.isArray(graphData.elPrices) && (graphData.elPrices.length == 0));
         haveTasks |= changeTaskVisibility('taskDisableLogging', !appIsDisabled && document.getElementById('logLevel').value != 0);
         haveTasks |= changeTaskVisibility('taskExperimental', !appIsDisabled && experimentalEnabled);
+        haveTasks |= changeTaskVisibility('taskSpookey', !appIsDisabled && (+appConfigProgress.numSpookeyChanges > 0));
         haveTasks |= changeTaskVisibility('errorDevices', !appIsDisabled && numErrorDevices > 0);
         changeTaskVisibility('taskNone', !haveTasks);
       }
@@ -949,6 +951,7 @@
           <tr id="taskNoPriceFlow"><td style="vertical-align:top;"><span id="iconW3" class="⚠ warn"></span></td><td><span data-i18n="settings.welcome.taskNoPriceFlow">taskNoPriceFlow</span></td></tr>
           <tr id="taskDisableLogging"><td style="vertical-align:top;"><span id="iconW4" class="⚠ warn"></span></td><td><span data-i18n="settings.welcome.taskDisableLogging">taskDisableLogging</span></td></tr>
           <tr id="taskExperimental"><td style="vertical-align:top;"><span id="iconW5" class="⚠ warn"></span></td><td><span data-i18n="settings.welcome.taskExperimental">taskExperimental</span></td></tr>
+          <tr id="taskSpookey"><td style="vertical-align:top;"><span id="iconW5" class="⚠ warn"></span></td><td><span id="spookeyText">taskSpookey</span></td></tr>
           <tr id="errorDevices"><td style="vertical-align:top;"><span id="iconW6" class="⚠ warn"></span></td><td><span data-i18n="settings.welcome.errorDevices">errorDevices</span><div id="errorDeviceList"></div></td></tr>
           <tr id="taskNoPriceEnabled"><td style="vertical-align:top;"><span id="iconI1" class="⚠ info"></span></td><td><span data-i18n="settings.welcome.taskNoPriceEnabled">taskNoPriceEnabled</span></td></tr>
           <tr id="taskNone"><td style="vertical-align:top;"><span id="iconI2" class="⚠ info"></span></td><td><span data-i18n="settings.welcome.taskNone">taskNone</span></td></tr>
@@ -1086,7 +1089,8 @@
             <td class="settings_row_input"><select id="experimentalMode" class="inputElem" onchange="updateAdvancedSettings();displaySaveHint()">
               <option value="1"selected>Old algorithm (many on/off + change current)</option>
               <option value="2">Experimental algorithm (one on/off + change current - unreliable)</option>
-              <option value="3">Experimental algorithm (only change current - untested)</option>
+              <option value="3">Experimental algorithm (only change charger current - unreliable)</option>
+              <option value="4">Experimental algorithm (change charger and circuit current - untested)</option>
             </select></td>
           </tr>
           <tr>
@@ -1836,6 +1840,7 @@
           document.getElementById('chargeRemaining').value = chargerOptions.chargeRemaining / 1000;
           document.getElementById('chargeEnd').value = toTimeString(new Date(chargerOptions.chargeEnd));
           document.getElementById("energyFlowRateText").innerHTML = energyFlowRateText.replace("${interval}", Math.round(appConfigProgress.timeSinceEnergyMeter / 60));
+          document.getElementById("spookeyText").innerHTML = spookeyText.replace("${times}", appConfigProgress.numSpookeyChanges);
           checkPriceMode(document.getElementById("priceMode")); // not called automatically when programatically changed
           checkPriceKind(document.getElementById("priceKind")); // not called automatically when programatically changed
           changeTab(false, 'welcomePage');
@@ -1913,6 +1918,7 @@
         timeoutText = Homey.__(timeoutText);
         energyFlowRateText = Homey.__(energyFlowRateText);
         experimentalText = Homey.__(experimentalText);
+        spookeyText = Homey.__(spookeyText);
         onGoingText = Homey.__(onGoingText);
         modeNameDayText = Homey.__(modeNameDayText);
         modeNameNightText = Homey.__(modeNameNightText);
@@ -2239,7 +2245,6 @@
               Homey.set("freeThreshold",freeThresholdElement.value, errFunc);
               Homey.set("safetyPower", safetyPowerElement.value, errFunc);
               Homey.set("mainFuse", mainFuseElement.value, errFunc);
-              Homey.set("charger", chargerOptions, errFunc);
               Homey.set("settingsSaved", "", errFunc); // On settings is only called if the settings actually changed
               Homey.set("settingsSaved", "true", errFunc); // This one will throw the message settings.alert.settingssaved on success
             }

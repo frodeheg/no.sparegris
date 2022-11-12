@@ -92,6 +92,7 @@
       "taskExperimental" : ["Du har valgt å styre en enhet som ikke er verifisert at appen håndterer enda. <!--",
           "-->Dersom du <a href=\"ShowLog\" onclick=\"changeTab(event, 'logPage');return false;\">rapporterer</a> <!--",
           "-->status for denne enheten til utvikleren kan eventuelle feil fikses og denne meldingen fjernes."],
+      "taskSpookey": "Laderen din endret status ${times} ganger på mystisk vis siden start av siste ladesyklus. Vennligst deaktiver alle andre kilder som forsøker å styre laderen.",
       "taskNone": "Supert, appen er riktig konfigurert.",
       "errorDevices": "Følgende enheter er svært upålitelige, vennligst følg innstruksjonene som kommer når du klikker på dem for å øke påliteligheten.",
       "reliability": "Pålitelighet",

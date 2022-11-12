@@ -92,6 +92,7 @@
       "taskExperimental" : ["You have chosen to control a unit that the app has not been verified to handle. <!--",
           "-->Please <a href=\"ShowLog\" onclick=\"changeTab(event, 'logPage');return false;\">report</a> the status <!--",
           "-->for this device to the developer in order to get any problems fixed and this message removed."],
+      "taskSpookey": "Your charger has mysteriously changed status ${times} times since the start of the last charge cycle. Please disable all other sources that attempt to control the charger.",
       "taskNone": "Well done, the app is correctly configured.",
       "errorDevices": "The following devices are very unreliable, please follow the instructions when clicking on them to improve reliability.",
       "reliability": "Reliability",
