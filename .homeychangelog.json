@@ -574,5 +574,8 @@
   },
   "0.18.34": {
     "en": "Devices with thermostat capabilities that should be ignored are now ignored properly."
+  },
+  "0.18.35": {
+    "en": "Changed the feedback message when opening the app configuration dialog while the app version is being upgraded."
   }
 }
