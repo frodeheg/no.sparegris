@@ -988,15 +988,15 @@ class PiggyBank extends Homey.App {
    */
   async changeDevicePower(deviceId, powerChange) {
     const chargerOptions = this.homey.settings.get('chargerOptions');
-    if (+(chargerOptions.experimentalMode) === 2) {
-      return this.changeDevicePower2(deviceId, powerChange);
-    }
-    if (+(chargerOptions.experimentalMode) === 3) {
-      return this.changeDevicePower3(deviceId, powerChange);
-    }
-    if (+(chargerOptions.experimentalMode) === 4) {
+    // if (+(chargerOptions.experimentalMode) === 2) {
+    //   return this.changeDevicePower2(deviceId, powerChange);
+    // }
+    // if (+(chargerOptions.experimentalMode) === 3) {
+    //   return this.changeDevicePower3(deviceId, powerChange);
+    // }
+    // if (+(chargerOptions.experimentalMode) === 4) {
       return this.changeDevicePower4(deviceId, powerChange);
-    }
+    // }
     if (chargerOptions.chargeTarget === c.CHARGE_TARGET_FLOW) {
       return Promise.resolve([true, true]);
     }
