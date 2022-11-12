@@ -580,5 +580,8 @@
   },
   "0.18.36": {
     "en": "Moved Altherma III Geo pump out of the beta phase. Issue #62 + Added new charging algorithm for easee, issue #59. + Fix for bug #69: Removed error message when saving settings for the first time. + Fix for issue #59: Easee charger received commands when app was disabled."
+  },
+  "0.18.37": {
+    "en": "Made charging algorithm 4 mandatory because the first 3 is likely to have been broken by the introduction of algorithm 4"
   }
 }
