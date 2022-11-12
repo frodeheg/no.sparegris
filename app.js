@@ -107,6 +107,7 @@ class PiggyBank extends Homey.App {
    * @return true if state was changed for any of the commands, false if no change was requested
    */
   async runDeviceCommands(deviceId, listRef) {
+    if (+this.homey.settings.get('operatingMode') === c.MODE_DISABLED) return Promise.resolve(false);
     if (!(deviceId in this.__deviceList)) return Promise.reject(new Error('The deviceId to control does not exist'));
     const { driverId } = this.__deviceList[deviceId];
     if (!(driverId in d.DEVICE_CMD)) return Promise.resolve();
