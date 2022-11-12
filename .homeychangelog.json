@@ -571,5 +571,8 @@
   },
   "0.18.33": {
     "en": "Added workaround for the non-standard device type: Daikin Altherma III Geo pump + Fix for bug #65: Charging cycles started with the kWh flow did not end at the specified end time. + Improvement #59: Avoid powering down the house while waiting for a car charger to confirm its outstanding requests."
+  },
+  "0.18.34": {
+    "en": "Devices with thermostat capabilities that should be ignored are now ignored properly."
   }
 }
