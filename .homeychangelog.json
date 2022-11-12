@@ -577,5 +577,8 @@
   },
   "0.18.35": {
     "en": "Changed the feedback message when opening the app configuration dialog while the app version is being upgraded."
+  },
+  "0.18.36": {
+    "en": "Moved Altherma III Geo pump out of the beta phase. Issue #62 + Added new charging algorithm for easee, issue #59. + Fix for bug #69: Removed error message when saving settings for the first time. + Fix for issue #59: Easee charger received commands when app was disabled."
   }
 }
