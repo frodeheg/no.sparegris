@@ -1842,6 +1842,18 @@
         }
       }
 
+      // a method to alert the user about something went wrong
+      function alertUser(Homey, message) {
+        if (String(message).includes('getVersion')
+          || String(message).includes('getDevices')
+          || String(message).includes('apiCommand')
+          || String(message).includes('getStats')) {
+          Homey.alert('It seems like Homey is updating the app version. Please try again in a minute or two when the app has been properly installed.')
+        } else {
+          Homey.alert(message);
+        }
+      }
+
       // a method named 'onHomeyReady' must be present in your code
       function onHomeyReady(Homey) {
 
@@ -1941,7 +1953,7 @@
         // Request devicelist refresh
         Homey.api('GET', '/apiCommand?cmd=createDeviceList', null, function (err, response) {
           if (err) {
-            Homey.alert(`Could not load device list (${err})`);
+            alertUser(Homey, `Could not load device list (${err})`);
           } else if (Object.keys(response).length === 0) {
             Homey.alert('No controllable devices found (check help section for instructions)');
           } else {
@@ -1976,7 +1988,7 @@
 
           // Aquire graphs (must be after setGridCost)
           Homey.api('GET', '/getStats', null, function (err, data) {
-            if (err) return Homey.alert(err);
+            if (err) return alertUser(Homey, err);
             updateGraph(data);
             updateCarSheduleGraph(data);
             graphData = data;
@@ -1998,7 +2010,7 @@
 
         // Refresh API configuration progress
         Homey.api('GET', '/apiCommand?cmd=getAppConfigProgress', null, function (err, options) {
-          if (err) return Homey.alert(err);
+          if (err) return alertUser(Homey, err);
           if (options) {
             appConfigProgress = options;
           } else {
@@ -2158,7 +2170,7 @@
           logLevelElement.value = logLevel;
         });
         Homey.api('GET', '/apiCommand?cmd=requestLog', null, function (err, result) {
-          if (err) Homey.alert(err);
+          if (err) alertUser(Homey, err);
         });
 
         // This error function is a bit deciving because it only returns err on success
@@ -2166,13 +2178,13 @@
         const errFunc = (err) => { 
           if (err) {
             rememberToSaveElement.style.display = 'none';
-            Homey.api('GET', `/apiCommand?cmd=log&text=${err}&loglevel=0`);
-            Homey.alert(err.message);
+            Homey.api('GET', `/apiCommand?cmd=log&text=${err}&loglevel=0`, null, function (err2, result) {});
+            alertUser(Homey, err.message);
           }
         }
         document.getElementById("getState").addEventListener("click", e => {
           Homey.api('GET', '/apiCommand?cmd=getFullState', null, function (err, result) {
-            if (err) Homey.alert(err);
+            if (err) alertUser(Homey, err);
             document.getElementById("backupBlob").value = JSON.stringify(result, null, 2);
           });
         });
@@ -2247,7 +2259,7 @@
           deviceInfoSelectorElement.innerHTML = `<option value="" selected>Please wait while populating</selected>`;
           if (+deviceFilterElement.value !== 0) {
             Homey.api('GET', `/getDevices?type=${deviceFilterElement.value}`, null, function (err, result) {
-              if (err) return Homey.alert(err);
+              if (err) return alertUser(Homey, err);
               else {
                 refreshDeviceSelector(result);
                 if (result.length > 0) {
@@ -2260,13 +2272,13 @@
 
         logLevelElement.addEventListener('change', function (e) {
           Homey.api('GET', `/apiCommand?cmd=setLogLevel&logLevel=${logLevelElement.value}`, null, function (err, result) {
-            if (err) return Homey.alert(err);
+            if (err) return alertUser(Homey, err);
           });
         });
 
         showStateElement.addEventListener('click', function (e) {
           Homey.api('GET', '/apiCommand?cmd=logShowState', null, function (err, result) {
-            if (err) return Homey.alert(err);
+            if (err) return alertUser(Homey, err);
           });
         });
 
@@ -2287,7 +2299,7 @@
               Homey.alert(alertMessage.replace("${reliability}", Math.round(reliability*100)));
             }
             Homey.api('GET', `/apiCommand?cmd=logShowCaps&deviceId=${deviceId}&filter=${deviceFilter}`, null, function (err, result) {
-              if (err) return Homey.alert(err);
+              if (err) return alertUser(Homey, err);
             });
             reportGenerated = true;
           }
@@ -2295,13 +2307,13 @@
 
         showPriceApiElement.addEventListener('click', function (e) {
           Homey.api('GET', '/apiCommand?cmd=logShowPriceApi', null, function (err, result) {
-            if (err) return Homey.alert(err);
+            if (err) return alertUser(Homey, err);
           });
         });
 
         clearLogElement.addEventListener('click', function (e) {
           Homey.api('GET', '/apiCommand?cmd=clearLog', null, function (err, result) {
-            if (err) return Homey.alert(err);
+            if (err) return alertUser(Homey, err);
           });
         });
 
@@ -2317,11 +2329,11 @@
             if (ok) {
               // Add user comment before sending
               Homey.api('GET', `/apiCommand?cmd=log&text=Email:%20${email}%0AComment:${comment}&loglevel=${LOG_ALL}`, null, function (err, result) {
-                if (err) return Homey.alert(err);
+                if (err) return alertUser(Homey, err);
               });
               // Send the log
               Homey.api('GET', '/apiCommand?cmd=sendLog', null, function (err, result) {
-                if (err) return Homey.alert(Homey.__('settings.log.sendError') + err);
+                if (err) return alertUser(Homey, Homey.__('settings.log.sendError') + err);
                 Homey.alert(Homey.__("settings.log.thankYou"));
               });
             }
