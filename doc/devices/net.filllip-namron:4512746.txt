@@ -1,0 +1,14 @@
++13:24:25.301: ----- ANALYZING DEVICE -----
++13:24:25.304: Report type: Experimental device is working
++13:24:25.305: Device ID:   af790195-1f48-4dee-a642-6df39cf3ba53
++13:24:25.340: Device name: VVB
++13:24:25.343: Driver Uri: homey:app:net.filllip-namron
++13:24:25.345: Driver Id: 4512746
++13:24:25.348: Found onoff cap: onoff
++13:24:25.353: Found temp cap: false
++13:24:25.357: Device reliability: 1
++13:24:25.359: Capabilities: onoff,measure_power,meter_power
++13:24:25.362: Options for 'onoff': {"value":true,"lastUpdated":"2022-11-12T16:27:17.213Z","type":"boolean","getable":true,"setable":true,"title":"Slått på","desc":null,"units":null,"id":"onoff","options":{"setOnDim":false}}
++13:24:25.365: Options for 'measure_power': {"value":0,"lastUpdated":"2022-11-13T12:04:55.802Z","type":"number","getable":true,"setable":false,"title":"Effekt","desc":"Effekt i watt (W)","units":"W","decimals":2,"chartType":"stepLine","id":"measure_power","options":{"isApproximated":true}}
++13:24:25.368: Options for 'meter_power': {"value":951.1,"lastUpdated":"2022-11-13T12:31:40.609Z","type":"number","getable":true,"setable":false,"title":"Energi","desc":"Energiforbruk i kilowattimer (kWh)","units":"kWh","decimals":2,"chartType":"spline","id":"meter_power","options":{}}
++13:24:25.372: --- ANALYZING DEVICE DONE ---

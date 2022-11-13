@@ -176,6 +176,7 @@ const DEVICE_CMD = {
     tempMax: 35,
     default: false
   },
+  'net.filllip-namron:4512746': DEFAULT_SWITCH,
   'nl.climate.daikin:airairhp': {
     ...DEFAULT_AC,
     note: 'This device has no onOff capability and will have to emulate On by turning the mode into heat. '
