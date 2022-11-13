@@ -1399,7 +1399,7 @@ class PiggyBank extends Homey.App {
     }
 
     const { driverId } = this.__deviceList[deviceId];
-    const setCurrentCap = ('target_charger_current' in device.device.capabilitiesObj) ? 'target_charger_current' : 'target_circuit_current'; // TODO Remove... temporary workaround for Bug #70
+    const setCurrentCap = ('target_charger_current' in device.capabilitiesObj) ? 'target_charger_current' : 'target_circuit_current'; // TODO Remove... temporary workaround for Bug #70
     if ((!(driverId in d.DEVICE_CMD))
       || (d.DEVICE_CMD[driverId].measurePowerCap === undefined)
       || (setCurrentCap === undefined) // TODO replace: || (d.DEVICE_CMD[driverId].setCurrentCap === undefined)
