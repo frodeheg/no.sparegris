@@ -2184,7 +2184,7 @@
         const errFunc = (err) => { 
           if (err) {
             rememberToSaveElement.style.display = 'none';
-            Homey.api('GET', `/apiCommand?cmd=log&text=${err}&loglevel=0`, null, function (err2, result) {});
+            Homey.api('GET', `/apiCommand?cmd=log&text=${err.message}&loglevel=0`, null, function (err2, result) {});
             alertUser(Homey, err.message);
           }
         }
