@@ -157,6 +157,7 @@ const DEVICE_CMD = {
     default: false
   },
   'com.swttt.devicegroups:light': DEFAULT_SWITCH,
+  'com.tibber:pulse': DEFAULT_IGNORED,
   'com.tuya.cloud:tuyalight': DEFAULT_SWITCH,
   'com.mill:mill': {
     type: DEVICE_TYPE.HEATER,

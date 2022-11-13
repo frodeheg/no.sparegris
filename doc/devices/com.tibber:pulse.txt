@@ -1,0 +1,30 @@
+Log ID: 2022-10-30T08:11:09.899Z
+App version 0.18.26
+
++8:11:9.899: No state from previous shutdown? Powerloss, deactivated or forced restart.
++8:11:9.970: Homey reboot detected. Delaying device control by 800 seconds to improve Zigbee recovery.
++21:13:40.386: Failed checking electricity price API: app_not_found
++21:13:40.388: Please install the app "Strømregning" to fetch electricity prices
++21:15:3.522: Failed checking electricity price API: app_not_found
++21:15:3.523: Please install the app "Strømregning" to fetch electricity prices
++21:20:9.699: Failed checking electricity price API: app_not_found
++21:20:9.702: Please install the app "Strømregning" to fetch electricity prices
++21:25:37.242: Failed checking electricity price API: app_not_found
++21:25:37.244: Please install the app "Strømregning" to fetch electricity prices
++21:30:36.774: ----- ANALYZING DEVICE -----
++21:30:36.779: Report type: Device is not listed
++21:30:36.781: Device ID:   790439d3-6d43-466f-90f7-35a5b8bc0145
++21:30:36.820: Device name: Pulse Solvornvegen 311
++21:30:36.822: Driver Uri: homey:app:com.tibber
++21:30:36.824: Driver Id: pulse
++21:30:36.827: Error: TypeError: Cannot read properties of undefined (reading 'onoff_cap')
++21:30:36.829: Capabilities: measure_power,meter_power,accumulatedCost,measure_current.L1,measure_current.L2,measure_current.L3
++21:30:36.831: Options for 'measure_power': {"value":110,"lastUpdated":"2022-10-31T21:30:15.555Z","type":"number","getable":true,"setable":false,"title":"Power","desc":"Power in watt (W)","units":"W","decimals":2,"chartType":"stepLine","id":"measure_power","options":{}}
++21:30:36.833: Options for 'meter_power': {"value":6.68,"lastUpdated":"2022-10-31T21:27:44.777Z","type":"number","getable":true,"setable":false,"title":"Consumption since midnight","desc":"Energy usage in kilowatt-hour (kWh)","units":"kWh","decimals":2,"chartType":"spline","id":"meter_power","options":{"title":{"en":"Consumption since midnight"}}}
++21:30:36.839: Options for 'accumulatedCost': {"value":11.68,"lastUpdated":"2022-10-31T21:30:15.563Z","type":"number","getable":true,"setable":false,"title":"Cost since midnight","desc":null,"units":"¤","iconObj":{"id":"c465f7c0f74d10788c5c2eab1da9e2bb","url":"/icon/c465f7c0f74d10788c5c2eab1da9e2bb/icon.svg"},"id":"accumulatedCost","options":{}}
++21:30:36.841: Options for 'measure_current.L1': {"value":0.5,"lastUpdated":"2022-10-31T21:20:23.377Z","type":"number","getable":true,"setable":false,"title":"Current phase 1","desc":"Electric current (A)","units":"A","decimals":2,"chartType":"stepLine","id":"measure_current.L1","options":{"title":{"en":"Current phase 1"}}}
++21:30:36.843: Options for 'measure_current.L2': {"value":null,"lastUpdated":null,"type":"number","getable":true,"setable":false,"title":"Current phase 2","desc":"Electric current (A)","units":"A","decimals":2,"chartType":"stepLine","id":"measure_current.L2","options":{"title":{"en":"Current phase 2"}}}
++21:30:36.845: Options for 'measure_current.L3': {"value":0.4,"lastUpdated":"2022-10-31T21:11:33.341Z","type":"number","getable":true,"setable":false,"title":"Current phase 3","desc":"Electric current (A)","units":"A","decimals":2,"chartType":"stepLine","id":"measure_current.L3","options":{"title":{"en":"Current phase 3"}}}
++21:30:36.847: --- ANALYZING DEVICE DONE ---
++21:31:23.331: Email:%20Jak480@hotmail.com%0AComment:Energy meter 
++21:31:23.360: Sending log
