@@ -586,5 +586,8 @@
   },
   "0.18.38": {
     "en": "Fixed the minimum charger threshold as it was not able to edit properly in fully automated mode. #67"
+  },
+  "0.18.39": {
+    "en": "Fix for two crash bugs, one for users of Easee chargers that are not on the test version of the easee app, one for knx thermostat owners."
   }
 }
