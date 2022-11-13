@@ -1065,14 +1065,14 @@
           <tr id="chargeTargetHint" class="hint"><td colspan="2"><p data-i18n="settings.charge.chargeTargetHint">charge.chargeTargetHint</p></td></tr>
           <tr id ="chargeMinRow">
             <td class="settings_row_name"><label for="chargeMin" data-i18n="settings.charge.chargeMin">charge.chargeMin</label>:</td>
-            <td class="settings_row_input"><input id="chargeMin" class="inputElem" type="number" min="1500" max="2000" step="500" value="2000"
+            <td class="settings_row_input"><input id="chargeMin" class="inputElem" type="number" min="1500" max="2000" step="100" value="2000"
               onchange="limitElement(this); updateAdvancedSettings(); displaySaveHint()">W
               <div class="hintButton" onclick="toggle(this,'chargeMinHint', 'table-row');return false;">i</div></td>
           </tr>
           <tr id="chargeMinHint" class="hint"><td colspan="2"><p data-i18n="settings.charge.chargeMinHint">charge.chargeMinHint</p></td></tr>
           <tr>
             <td class="settings_row_name"><label for="chargeThreshold" data-i18n="settings.charge.chargeThreshold">charge.chargeThreshold</label>:</td>
-            <td class="settings_row_input"><input id="chargeThreshold" class="inputElem" type="number" min="1500" max="20000" step="500" value="2000"
+            <td class="settings_row_input"><input id="chargeThreshold" class="inputElem" type="number" min="1500" max="20000" step="100" value="2000"
               onchange="limitElement(this); updateAdvancedSettings(); displaySaveHint()">W
               <div class="hintButton" onclick="toggle(this,'chargeThresholdHint', 'table-row');return false;">i</div></td>
           </tr>

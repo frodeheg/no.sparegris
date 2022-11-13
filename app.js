@@ -306,6 +306,12 @@ class PiggyBank extends Homey.App {
       await addToArchive(this.homey, data, dataTime, true, true);
     }
 
+    // Version 0.18.38 - The minimum toggle time was changed to never come above 90 and a new default was set to 120s
+    if (chargerOptionsRepair && ('minToggleTime' in chargerOptionsRepair) && (+chargerOptionsRepair.minToggleTime < 90)) {
+      chargerOptionsRepair.minToggleTime = 120;
+      this.homey.settings.set('chargerOptions', chargerOptionsRepair);
+    }
+
     // Version 0.18.xx
     // Delete the old statistics as they has been in the archive for a while
     // this.homey.settings.unset('stats_daily_max');
@@ -395,7 +401,7 @@ class PiggyBank extends Homey.App {
       if (!('chargeTarget' in chargerOptions)) chargerOptions.chargeTarget = c.CHARGE_TARGET_AUTO;
       if (!('chargeMin' in chargerOptions)) chargerOptions.chargeMin = 1500;
       if (!('chargeThreshold' in chargerOptions)) chargerOptions.chargeThreshold = 2000;
-      if (!('minToggleTime' in chargerOptions)) chargerOptions.minToggleTime = 30;
+      if (!('minToggleTime' in chargerOptions)) chargerOptions.minToggleTime = 120;
       if (!('chargeRemaining' in chargerOptions)) chargerOptions.chargeRemaining = 0;
       if (!('chargeCycleType' in chargerOptions)) chargerOptions.chargeCycleType = c.OFFER_HOURS;
       if (!('chargeEnd' in chargerOptions)) chargerOptions.chargeEnd = now;
