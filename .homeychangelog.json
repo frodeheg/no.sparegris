@@ -583,5 +583,8 @@
   },
   "0.18.37": {
     "en": "Made charging algorithm 4 mandatory because the first 3 is likely to have been broken by the introduction of algorithm 4"
+  },
+  "0.18.38": {
+    "en": "Fixed the minimum charger threshold as it was not able to edit properly in fully automated mode. #67"
   }
 }
