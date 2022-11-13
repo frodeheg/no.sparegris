@@ -117,6 +117,7 @@ class PiggyBank extends Homey.App {
     const device = await this.getDevice(deviceId);
     let stateChanged = false;
     for (const capName in list) {
+      if (!(capName in device.capabilitiesObj)) continue; // TODO: Remove, temporary workaround for bug #70 to avoid crashes for those that have not updated to the test-version of the Easee app
       const maxVal = (device.capabilitiesObj === null) ? 32 : await device.capabilitiesObj[capName].max;
       const setVal = (list[capName] === Infinity) ? maxVal : list[capName];
       const prevVal = (device.capabilitiesObj === null) ? undefined : await device.capabilitiesObj[capName].value;
@@ -841,7 +842,7 @@ class PiggyBank extends Homey.App {
       let onoffCap = device.capabilities.includes('onoff') ? 'onoff' : device.capabilities.find(cap => cap.includes('onoff'));
       if ((onoffCap === undefined) && (driverId in d.DEVICE_CMD)) {
         onoffCap = d.DEVICE_CMD[driverId].setOnOffCap;
-        if (typeof onoffCap === 'object') {
+        if ((typeof onoffCap === 'object') && (onoffCap !== null)) {
           const filteredArray = onoffCap.filter(value => device.capabilities.includes(value));
           onoffCap = filteredArray[0];
         }
@@ -1398,15 +1399,16 @@ class PiggyBank extends Homey.App {
     }
 
     const { driverId } = this.__deviceList[deviceId];
+    const setCurrentCap = ('target_charger_current' in device.device.capabilitiesObj) ? 'target_charger_current' : 'target_circuit_current'; // TODO Remove... temporary workaround for Bug #70
     if ((!(driverId in d.DEVICE_CMD))
       || (d.DEVICE_CMD[driverId].measurePowerCap === undefined)
-      || (d.DEVICE_CMD[driverId].setCurrentCap === undefined)
+      || (setCurrentCap === undefined) // TODO replace: || (d.DEVICE_CMD[driverId].setCurrentCap === undefined)
       || (d.DEVICE_CMD[driverId].getOfferedCap === undefined)
       || (d.DEVICE_CMD[driverId].onChargeStart === undefined)
       || (d.DEVICE_CMD[driverId].onChargeEnd === undefined)) {
       return Promise.reject(new Error('Please notify the developer that the charger definition for this charger is incorrect and need to be updated'));
     }
-    const ampsOffered = +await device.capabilitiesObj[d.DEVICE_CMD[driverId].setCurrentCap].value;
+    const ampsOffered = +await device.capabilitiesObj[setCurrentCap].value; // TODO replace: const ampsOffered = +await device.capabilitiesObj[d.DEVICE_CMD[driverId].setCurrentCap].value;
     const powerUsed = +await device.capabilitiesObj[d.DEVICE_CMD[driverId].measurePowerCap].value;
     const isOn = (powerUsed > 0) || (ampsOffered > 0);
     this.__charge_power_active = powerUsed;
@@ -1446,7 +1448,7 @@ class PiggyBank extends Homey.App {
     this.prevChargerTime = now;
     if (isEmergency) this.updateLog('Emergency turn off for charger device (minToggleTime ignored)', c.LOG_WARNING);
 
-    const maxCurrent = +await device.capabilitiesObj[d.DEVICE_CMD[driverId].setCurrentCap].max;
+    const maxCurrent = +await device.capabilitiesObj[setCurrentCap].max; // TODO Replace: const maxCurrent = +await device.capabilitiesObj[d.DEVICE_CMD[driverId].setCurrentCap].max;
     const { pauseCurrent, minCurrent } = d.DEVICE_CMD[driverId];
     const maxPower = +this.homey.settings.get('maxPower');
     const newOfferPower = Math.min(Math.max(powerUsed + +powerChange, +chargerOptions.chargeMin), maxPower);
@@ -1461,7 +1463,7 @@ class PiggyBank extends Homey.App {
     this.__current_state[deviceId].confirmed = false;
     this.__current_state[deviceId].ongoing = true;
     return this.chargeCycleValidation(deviceId, device, withinChargingPlan, throttleActive)
-      .then(() => device.setCapabilityValue({ capabilityId: d.DEVICE_CMD[driverId].setCurrentCap, value: newOfferCurrent }))
+      .then(() => device.setCapabilityValue({ capabilityId: setCurrentCap, value: newOfferCurrent })) // TODO Replace: .then(() => device.setCapabilityValue({ capabilityId: d.DEVICE_CMD[driverId].setCurrentCap, value: newOfferCurrent }))
       .then(() => {
         this.__current_state[deviceId].ongoing = false;
         this.__current_state[deviceId].nComError = 0;
