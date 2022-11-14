@@ -125,7 +125,8 @@
         id_b: { name:"DeviceName 2", room: "Kjøkken", image: "https://as2.ftcdn.net/v2/jpg/02/49/76/93/1000_F_249769389_7su5tYXOvcjcehNCcWTwcjnHvSMkLocJ.jpg", use: true, priority: 1, thermostat_cap: true, reliability: 0.5, driverId: 'no.thermofloor:Z-TRM2fx' },
         id_c: { name:"DeviceName 3", room: "Bad",     image: "https://as2.ftcdn.net/v2/jpg/02/49/76/93/1000_F_249769389_7su5tYXOvcjcehNCcWTwcjnHvSMkLocJ.jpg", use: true, priority: 0, thermostat_cap: false, reliability: 0.6, driverId: 'no.thermofloor:Z-TRM3' },
         id_d: { name:"DeviceName 4", room: "Bad",     image: "https://as2.ftcdn.net/v2/jpg/02/49/76/93/1000_F_249769389_7su5tYXOvcjcehNCcWTwcjnHvSMkLocJ.jpg", use: false, priority: 1, thermostat_cap: true, reliability: 0.7, driverId: 'se.husdata:H60' },
-        id_e: { name:"DeviceName 3", room: "Bad",     image: "https://as2.ftcdn.net/v2/jpg/02/49/76/93/1000_F_249769389_7su5tYXOvcjcehNCcWTwcjnHvSMkLocJ.jpg", use: true, priority: 0, thermostat_cap: false, reliability: 0.6, driverId: 'com.everspring:AN179' }
+        id_e: { name:"DeviceName 3", room: "Bad",     image: "https://as2.ftcdn.net/v2/jpg/02/49/76/93/1000_F_249769389_7su5tYXOvcjcehNCcWTwcjnHvSMkLocJ.jpg", use: true, priority: 0, thermostat_cap: false, reliability: 0.6, driverId: 'com.everspring:AN179' },
+        id_e: { name:"Lader", room: "Ute",     image: "https://as2.ftcdn.net/v2/jpg/02/49/76/93/1000_F_249769389_7su5tYXOvcjcehNCcWTwcjnHvSMkLocJ.jpg", use: false, priority: 1, thermostat_cap: false, reliability: 1.0, driverId: 'no.easee:charger' }
       }
       // The modeList is not indexed by id because it uses the index to sort the list
       var modeList = [
@@ -1053,11 +1054,12 @@
     <div id="chargerPage" class="tabcontent">
       <fieldset>
         <legend data-i18n="settings.charge.header">charge.header</legend>
-        <p data-i18n="settings.charge.carChargerHint">charge.carChargerHint</p>
+        <p id="carChargerMissingHint" data-i18n="settings.charge.carChargerMissingHint">charge.carChargerMissingHint</p>
+        <p id="carChargerNotAddedHint" data-i18n="settings.charge.carChargerNotAddedHint">charge.carChargerNotAddedHint</p>
         <table class="settings_table">
           <tr>
             <td class="settings_row_name"><label for="chargeTarget" data-i18n="settings.charge.chargeTarget">charge.chargeTarget</label>:</td>
-            <td class="settings_row_input"><select id="chargeTarget" class="inputElem" onchange="updateAdvancedSettings();displaySaveHint()">
+            <td class="settings_row_input"><select id="chargeTarget" disabled class="inputElem" onchange="updateAdvancedSettings();displaySaveHint()">
               <option value="1" data-i18n="settings.charge.chargeTargetAuto" selected >Auto</option>
               <option value="2" data-i18n="settings.charge.chargeTargetFlow">Manual</option>
             </select><div class="hintButton" onclick="toggle(this,'chargeTargetHint', 'table-row');return false;">i</div></td>
@@ -2560,6 +2562,7 @@
 
         // Update the advanced settings page
         if (tabPage == 'chargerPage') {
+          updateChargerHints(deviceList);
           updateAdvancedSettings();
         }
         

@@ -5,6 +5,35 @@
 'use strict';
 
 require('../constants');
+require('../devices');
+
+function updateChargerHints(deviceList) {
+  let foundCharger = false;
+  let chargerUsed = false;
+  for (const key in deviceList) {
+    const device = deviceList[key];
+    if ((device.driverId in DEVICE_CMD) && (DEVICE_CMD[device.driverId].type === DEVICE_TYPE.CHARGER)) {
+      foundCharger = true;
+      chargerUsed = device.use;
+    }
+  }
+  const carChargerMissingHint = document.getElementById('carChargerMissingHint');
+  const carChargerNotAddedHint = document.getElementById('carChargerNotAddedHint');
+  const chargeTarget = document.getElementById('chargeTarget');
+  if (foundCharger && chargerUsed) {
+    carChargerMissingHint.style.display = 'none';
+    carChargerNotAddedHint.style.display = 'none';
+    chargeTarget.value = CHARGE_TARGET_AUTO;
+  } else if (foundCharger && !chargerUsed) {
+    carChargerMissingHint.style.display = 'none';
+    carChargerNotAddedHint.style.display = 'block';
+    chargeTarget.value = CHARGE_TARGET_FLOW;
+  } else {
+    carChargerMissingHint.style.display = 'block';
+    carChargerNotAddedHint.style.display = 'none';
+    chargeTarget.value = CHARGE_TARGET_FLOW;
+  }
+}
 
 function updateAdvancedSettings() {
   const chargeMinRow = document.getElementById('chargeMinRow');
@@ -26,5 +55,6 @@ function updateAdvancedSettings() {
 }
 
 module.exports = {
+  updateChargerHints,
   updateAdvancedSettings,
 };
