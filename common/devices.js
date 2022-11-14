@@ -229,6 +229,7 @@ const DEVICE_CMD = {
     pauseCurrent: 4,
     measurePowerCap: 'measure_power',
     statusCap: 'charger_status',
+    statusUnavailable: ['Completed', 'Standby', 'Error'],
     beta: true,
     default: false
   },

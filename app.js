@@ -1029,12 +1029,12 @@ class PiggyBank extends Homey.App {
       || (d.DEVICE_CMD[driverId].getOfferedCap === undefined)
       || (d.DEVICE_CMD[driverId].onChargeStart === undefined)
       || (d.DEVICE_CMD[driverId].onChargeEnd === undefined)
-      || (d.DEVICE_CMD[driverId].statusCap === undefined)) {
+      || (d.DEVICE_CMD[driverId].statusCap === undefined)
+      || (d.DEVICE_CMD[driverId].statusUnavailable === undefined)) {
       return Promise.reject(new Error('Please notify the developer that the charger definition for this charger is incorrect and need to be updated'));
     }
     const ampsOffered = +await device.capabilitiesObj[d.DEVICE_CMD[driverId].setCurrentCap].value;
     const powerUsed = +await device.capabilitiesObj[d.DEVICE_CMD[driverId].measurePowerCap].value;
-    const chargerStatus = await device.capabilitiesObj[d.DEVICE_CMD[driverId].statusCap].value;
     const isOn = (powerUsed > 0) || (ampsOffered > 0);
     this.__charge_power_active = powerUsed;
     if ((!isOn) && (powerChange < chargerOptions.chargeThreshold)) {
@@ -1046,7 +1046,6 @@ class PiggyBank extends Homey.App {
     const now = new Date();
     const end = new Date(chargerOptions.chargeEnd);
     if ((end < now)
-      || (chargerStatus === 'Completed')
       || ((chargerOptions.chargeCycleType === c.OFFER_ENERGY) && (+chargerOptions.chargeRemaining < this.__offeredEnergy))) {
       chargerOptions.chargeRemaining = 0;
     }
@@ -1075,13 +1074,14 @@ class PiggyBank extends Homey.App {
     this.prevChargerTime = now;
     if (isEmergency) this.updateLog('Emergency turn off for charger device (minToggleTime ignored)', c.LOG_WARNING);
 
+    const chargerStatus = await device.capabilitiesObj[d.DEVICE_CMD[driverId].statusCap].value;
     const maxCurrent = +await device.capabilitiesObj[d.DEVICE_CMD[driverId].setCurrentCap].max;
     const { pauseCurrent, minCurrent } = d.DEVICE_CMD[driverId];
     const maxPower = +this.homey.settings.get('maxPower');
-    const noCarConnected = (chargerStatus === 'Standby');
+    const cannotCharge = d.DEVICE_CMD[driverId].statusUnavailable.includes(chargerStatus);
     const newOfferPower = Math.min(Math.max(powerUsed + +powerChange, +chargerOptions.chargeMin), maxPower);
     const newOfferCurrent = (!withinChargingCycle) ? 0
-      : (!withinChargingPlan || isEmergency || noCarConnected) ? pauseCurrent
+      : (!withinChargingPlan || isEmergency || cannotCharge) ? pauseCurrent
         : (+powerUsed === 0) ? minCurrent
           : Math.floor(Math.min(Math.max(ampsOffered * (newOfferPower / +powerUsed), minCurrent), +maxCurrent));
     this.updateLog(`Setting ${newOfferCurrent} amp, was ${ampsActualOffer}`, c.LOG_DEBUG);
