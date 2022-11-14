@@ -1051,7 +1051,8 @@ class PiggyBank extends Homey.App {
       chargerOptions.chargeRemaining = 0;
     }
 
-    const withinChargingPlan = (this.__charge_plan[0] > 0) && (+chargerOptions.chargeRemaining > 0);
+    const withinChargingCycle = (+chargerOptions.chargeRemaining > 0);
+    const withinChargingPlan = (this.__charge_plan[0] > 0) && withinChargingCycle;
     const { lastCurrent, lastPower } = this.__current_state[deviceId];
     const ampsActualOffer = +await device.capabilitiesObj[d.DEVICE_CMD[driverId].getOfferedCap].value;
     if ((lastCurrent === ampsActualOffer) && (lastPower !== powerUsed)) {
@@ -1079,7 +1080,7 @@ class PiggyBank extends Homey.App {
     const maxPower = +this.homey.settings.get('maxPower');
     const noCarConnected = (chargerStatus === 'Standby');
     const newOfferPower = Math.min(Math.max(powerUsed + +powerChange, +chargerOptions.chargeMin), maxPower);
-    const newOfferCurrent = (chargerOptions.chargeRemaining === 0) ? 0
+    const newOfferCurrent = (!withinChargingCycle) ? 0
       : (!withinChargingPlan || isEmergency || noCarConnected) ? pauseCurrent
         : (+powerUsed === 0) ? minCurrent
           : Math.floor(Math.min(Math.max(ampsOffered * (newOfferPower / +powerUsed), minCurrent), +maxCurrent));
@@ -1089,7 +1090,7 @@ class PiggyBank extends Homey.App {
     this.__current_state[deviceId].lastPower = powerUsed;
     this.__current_state[deviceId].confirmed = false;
     this.__current_state[deviceId].ongoing = true;
-    return this.chargeCycleValidation(deviceId, device, withinChargingPlan, throttleActive)
+    return this.chargeCycleValidation(deviceId, device, withinChargingCycle, throttleActive)
       .then(() => device.setCapabilityValue({ capabilityId: d.DEVICE_CMD[driverId].setCurrentCap, value: newOfferCurrent }))
       .then(() => {
         this.__current_state[deviceId].ongoing = false;
