@@ -1085,15 +1085,6 @@
           </tr>
           <tr id="minToggleTimeHint" class="hint"><td colspan="2"><p data-i18n="settings.charge.minToggleTimeHint">charge.minToggleTimeHint</p></td></tr>
           <tr>
-            <td class="settings_row_name"><label for="experimentalMode">Experimental mode</label>:</td>
-            <td class="settings_row_input"><select id="experimentalMode" class="inputElem" onchange="updateAdvancedSettings();displaySaveHint()">
-<!--              <option value="1" selected>Old algorithm (many on/off + change current)</option>
-              <option value="2">Experimental algorithm (one on/off + change current - unreliable)</option>
-              <option value="3">Experimental algorithm (only change charger current - unreliable)</option>-->
-              <option value="4" selected>Experimental algorithm (change charger and circuit current - untested)</option>
-            </select></td>
-          </tr>
-          <tr>
             <td class="settings_row_name"><label for="chargeRemaining" data-i18n="settings.charge.chargeRemaining">charge.chargeRemaining</label>:</td>
             <td class="settings_row_input"><input disabled id="chargeRemaining" class="inputElem" type="number" min="0" max="100" step="1" value="0" onchange="displaySaveHint()">kWh
               <div class="hintButton" onclick="toggle(this,'chargeRemainingHint', 'table-row');return false;">i</div></td>
@@ -1836,7 +1827,6 @@
           document.getElementById('chargeMin').value = chargerOptions.chargeMin;
           document.getElementById('chargeThreshold').value = chargerOptions.chargeThreshold;
           document.getElementById('minToggleTime').value = chargerOptions.minToggleTime;
-          document.getElementById('experimentalMode').value = chargerOptions.experimentalMode || 1;
           document.getElementById('chargeRemaining').value = chargerOptions.chargeRemaining / 1000;
           document.getElementById('chargeEnd').value = toTimeString(new Date(chargerOptions.chargeEnd));
           document.getElementById("energyFlowRateText").innerHTML = energyFlowRateText.replace("${interval}", Math.round(appConfigProgress.timeSinceEnergyMeter / 60));
@@ -2224,7 +2214,6 @@
               chargerOptions.chargeMin = +document.getElementById('chargeMin').value;
               chargerOptions.chargeThreshold = +document.getElementById('chargeThreshold').value;
               chargerOptions.minToggleTime = +document.getElementById('minToggleTime').value;
-              chargerOptions.experimentalMode = +document.getElementById('experimentalMode').value;
               // chargerOptions.chargeRemaining = +document.getElementById('chargeRemaining').value; // Ignore as it is read only
               // chargerOptions.chargeEnd = +document.getElementById('chargeEnd').value; // Ignore as it is read only (and converted to localtime)
               let opModeValue = (appEnabledElement.value === "1") ? operatingModeElement.value : 0

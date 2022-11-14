@@ -31,7 +31,6 @@
 //   measurePowerCap   - Capability for reading used power
 //   measureVoltageCap - Capability for reading voltage
 //   statusCap         - Capability for reading charger state
-//   statusAvailable   - An array of statusCap values that allow us to start charging
 
 // Device types
 // Note for CHARGER:
@@ -224,15 +223,12 @@ const DEVICE_CMD = {
       target_charger_current: Infinity,
       target_circuit_current: Infinity
     },
-    note: 'This device must have the test version of the Easee app in order to function.',
     setCurrentCap: 'target_charger_current',
     getOfferedCap: 'measure_current.offered',
     minCurrent: 7,
     pauseCurrent: 4,
     measurePowerCap: 'measure_power',
-    measureVoltageCap: 'measure_voltage',
     statusCap: 'charger_status',
-    statusAvailable: ['Paused', 'Error', 'Car connected'],
     beta: true,
     default: false
   },

@@ -117,7 +117,6 @@ class PiggyBank extends Homey.App {
     const device = await this.getDevice(deviceId);
     let stateChanged = false;
     for (const capName in list) {
-      if (!(capName in device.capabilitiesObj)) continue; // TODO: Remove, temporary workaround for bug #70 to avoid crashes for those that have not updated to the test-version of the Easee app
       const maxVal = (device.capabilitiesObj === null) ? 32 : await device.capabilitiesObj[capName].max;
       const setVal = (list[capName] === Infinity) ? maxVal : list[capName];
       const prevVal = (device.capabilitiesObj === null) ? undefined : await device.capabilitiesObj[capName].value;
@@ -310,6 +309,12 @@ class PiggyBank extends Homey.App {
     // Version 0.18.38 - The minimum toggle time was changed to never come above 90 and a new default was set to 120s
     if (chargerOptionsRepair && ('minToggleTime' in chargerOptionsRepair) && (+chargerOptionsRepair.minToggleTime < 90)) {
       chargerOptionsRepair.minToggleTime = 120;
+      this.homey.settings.set('chargerOptions', chargerOptionsRepair);
+    }
+
+    // Version 0.18.40
+    if (chargerOptionsRepair && ('experimentalMode' in chargerOptionsRepair)) {
+      delete chargerOptionsRepair.experimentalMode;
       this.homey.settings.set('chargerOptions', chargerOptionsRepair);
     }
 
@@ -995,287 +1000,6 @@ class PiggyBank extends Homey.App {
    */
   async changeDevicePower(deviceId, powerChange) {
     const chargerOptions = this.homey.settings.get('chargerOptions');
-    // if (+(chargerOptions.experimentalMode) === 2) {
-    //   return this.changeDevicePower2(deviceId, powerChange);
-    // }
-    // if (+(chargerOptions.experimentalMode) === 3) {
-    //   return this.changeDevicePower3(deviceId, powerChange);
-    // }
-    // if (+(chargerOptions.experimentalMode) === 4) {
-      return this.changeDevicePower4(deviceId, powerChange);
-    // }
-    if (chargerOptions.chargeTarget === c.CHARGE_TARGET_FLOW) {
-      return Promise.resolve([true, true]);
-    }
-    this.log(`Changing power by: ${powerChange}`);
-    let device;
-    try {
-      device = await this.getDevice(deviceId);
-      this.updateReliability(deviceId, 1);
-    } catch (err) {
-      // Most likely timeout
-      this.updateLog(`Charger device cannot be fetched. ${String(err)}`, c.LOG_ERROR);
-      this.__current_state[deviceId].nComError += 10; // Big error so wait more until retry than smaller errors
-      this.updateReliability(deviceId, 0);
-      return Promise.resolve([false, false]); // The unhandled device is solved by the later nComError handling
-    }
-
-    const { driverId } = this.__deviceList[deviceId];
-    const isOn = this.getIsOn(device, deviceId);
-    if (isOn === undefined) {
-      this.__current_state[deviceId].nComError += 10; // This should not happen
-      this.updateReliability(deviceId, 0);
-      return Promise.resolve([false, false]);
-    }
-    if ((!isOn) && (powerChange < chargerOptions.chargeThreshold)) {
-      // The device should not be turned on if the available power is less than the charge threshold
-      return Promise.resolve([false, false]);
-    }
-    const hasPowerCap = (driverId in d.DEVICE_CMD)
-      && (d.DEVICE_CMD[driverId].setCurrentCap !== undefined);
-    const powerUsed = !isOn || !hasPowerCap || (device.capabilitiesObj === null) ? 0
-      : +await device.capabilitiesObj[d.DEVICE_CMD[driverId].measurePowerCap].value;
-    this.__charge_power_active = powerUsed;
-    const ampsOffered = !isOn || (device.capabilitiesObj === null) ? 0
-      : !hasPowerCap ? +chargerOptions.chargeMin
-        : +await device.capabilitiesObj[d.DEVICE_CMD[driverId].setCurrentCap].value;
-    const isEmergency = (+powerChange < 0) && (
-      ((powerUsed + +powerChange) < 0) || (ampsOffered === d.DEVICE_CMD[driverId].minCurrent));
-    const wantOn = (isOn || (powerChange > 0))
-      && (+chargerOptions.chargeRemaining > 0)
-      && (this.__charge_plan[0] > 0)
-      && !isEmergency;
-    const { lastCmd, lastCurrent } = this.__current_state[deviceId];
-    const ampsActualOffer = !isOn || (device.capabilitiesObj === null) ? 0
-      : hasPowerCap ? +await device.capabilitiesObj[d.DEVICE_CMD[driverId].getOfferedCap].value : 0;
-    const ignoreChargerThrottle = (+powerChange < 0)
-      && (((lastCmd === TURN_ON) && (isOn === true) && (!hasPowerCap || (lastCurrent === ampsActualOffer)))
-      || ((lastCmd === TURN_OFF) && (isOn === false)));
-    // Check that we do not toggle the charger too often
-    const now = new Date();
-    const timeLapsed = (now - this.prevChargerTime) / 1000; // Lapsed time in seconds
-    if (this.prevChargerTime !== undefined && (timeLapsed < chargerOptions.minToggleTime) && !ignoreChargerThrottle && !isEmergency) {
-      // Must wait a little bit more before changing
-      return Promise.resolve([false, false]);
-    }
-    this.prevChargerTime = now;
-    if (isEmergency) this.updateLog('Emergency turn off for charger device (minToggleTime ignored)', c.LOG_WARNING);
-    // Start signalling the charger
-    this.__current_state[deviceId].lastCmd = wantOn ? TURN_ON : TURN_OFF;
-    this.__current_state[deviceId].ongoing = false; // If already ongoing then it should already have been completed, try again
-    if (wantOn) {
-      const turnOnPromise = !isOn ? this.setOnOff(device, deviceId, true) : Promise.resolve();
-      const maxCurrent = !hasPowerCap ? 0 : await device.capabilitiesObj[d.DEVICE_CMD[driverId].setCurrentCap].max;
-      let newOfferPower;
-      this.__current_state[deviceId].ongoing = true;
-      this.__current_state[deviceId].confirmed = false;
-      return turnOnPromise
-        .then(() => {
-          this.updateReliability(deviceId, 1);
-          this.__num_off_devices += isOn ? 0 : -1;
-          this.__current_state[deviceId].nComError = 0;
-          if (!hasPowerCap) return Promise.resolve();
-          const maxPower = +this.homey.settings.get('maxPower');
-          newOfferPower = Math.min(Math.max(powerUsed + +powerChange, +chargerOptions.chargeMin), maxPower);
-          const newOfferCurrent = (+powerUsed <= 0) ? d.DEVICE_CMD[driverId].minCurrent
-            : Math.floor(Math.min(Math.max(ampsOffered * (newOfferPower / +powerUsed), d.DEVICE_CMD[driverId].minCurrent), +maxCurrent));
-          this.__current_state[deviceId].lastCurrent = newOfferCurrent;
-          if (newOfferCurrent === ampsActualOffer) return Promise.resolve();
-          return device.setCapabilityValue({ capabilityId: d.DEVICE_CMD[driverId].setCurrentCap, value: newOfferCurrent });
-        })
-        .then(() => {
-          this.__current_state[deviceId].ongoing = false;
-          if (!hasPowerCap) return Promise.resolve([true, isOn === wantOn]);
-          this.updateReliability(deviceId, 1);
-          return Promise.resolve([true, powerUsed + +powerChange < newOfferPower]); // In case more power is offered but it doesn't get used, let the app turn on other devices
-        })
-        .catch(err => {
-          this.updateLog(`Failed signalling charger: ${String(err)}`, c.LOG_ERROR);
-          this.__current_state[deviceId].ongoing = undefined;
-          this.__current_state[deviceId].nComError += 1;
-          this.updateReliability(deviceId, 0);
-          return Promise.resolve([false, false]);
-        });
-    }
-    if (isOn) { // && !wantOn
-      this.__current_state[deviceId].ongoing = true;
-      this.__current_state[deviceId].confirmed = false;
-      // Turn off
-      return this.setOnOff(device, deviceId, false)
-        .then(() => {
-          this.__charge_power_active = 0;
-          this.updateReliability(deviceId, 1);
-          this.__num_off_devices--;
-          this.__current_state[deviceId].ongoing = false;
-          this.__current_state[deviceId].nComError = 0;
-          return Promise.resolve([true, false]);
-        })
-        .catch(err => {
-          this.updateLog(`Failed turning off charger: ${String(err)}`, c.LOG_ERROR);
-          this.__current_state[deviceId].ongoing = undefined;
-          this.__current_state[deviceId].nComError += 1;
-          this.updateReliability(deviceId, 0);
-          return Promise.resolve([false, false]);
-        });
-    } // Else is off and want off
-    return Promise.resolve([true, true]);
-  }
-
-  async changeDevicePower2(deviceId, powerChange) {
-    const chargerOptions = this.homey.settings.get('chargerOptions');
-    if (chargerOptions.chargeTarget === c.CHARGE_TARGET_FLOW) {
-      return Promise.resolve([true, true]);
-    }
-    this.log(`Requested power change: ${powerChange}`);
-    let device;
-    try {
-      device = await this.getDevice(deviceId);
-      this.updateReliability(deviceId, 1);
-    } catch (err) {
-      // Most likely timeout
-      this.updateLog(`Charger device cannot be fetched. ${String(err)}`, c.LOG_ERROR);
-      this.__current_state[deviceId].nComError += 10; // Big error so wait more until retry than smaller errors
-      this.updateReliability(deviceId, 0);
-      return Promise.resolve([false, false]); // The unhandled device is solved by the later nComError handling
-    }
-
-    const { driverId } = this.__deviceList[deviceId];
-    const isOn = this.getIsOn(device, deviceId);
-    if (isOn === undefined) {
-      this.__current_state[deviceId].nComError += 10; // This should not happen
-      this.updateReliability(deviceId, 0);
-      return Promise.resolve([false, false]);
-    }
-    if ((!isOn) && (powerChange < chargerOptions.chargeThreshold)) {
-      // The device should not be turned on if the available power is less than the charge threshold
-      return Promise.resolve([false, false]);
-    }
-    const hasPowerCap = (driverId in d.DEVICE_CMD)
-      && (d.DEVICE_CMD[driverId].setCurrentCap !== undefined);
-    const powerUsed = !isOn || !hasPowerCap || (device.capabilitiesObj === null) ? 0
-      : +await device.capabilitiesObj[d.DEVICE_CMD[driverId].measurePowerCap].value;
-    this.__charge_power_active = powerUsed;
-    const ampsOffered = !isOn || (device.capabilitiesObj === null) ? 0
-      : !hasPowerCap ? +chargerOptions.chargeMin
-        : +await device.capabilitiesObj[d.DEVICE_CMD[driverId].setCurrentCap].value;
-    const isEmergency = (+powerChange < 0) && (
-      ((powerUsed + +powerChange) < 0) || (ampsOffered === d.DEVICE_CMD[driverId].minCurrent));
-    const now = new Date();
-    const end = new Date(chargerOptions.chargeEnd);
-    if ((end < now)
-      || ((chargerOptions.chargeCycleType === c.OFFER_ENERGY) && (+chargerOptions.chargeRemaining < this.__offeredEnergy))) {
-      chargerOptions.chargeRemaining = 0;
-    }
-
-    const withinChargingPlan = (this.__charge_plan[0] > 0) && (+chargerOptions.chargeRemaining > 0);
-    const { lastCmd, lastCurrent, lastPower } = this.__current_state[deviceId];
-    const ampsActualOffer = !isOn || (device.capabilitiesObj === null) ? 0
-      : hasPowerCap ? +await device.capabilitiesObj[d.DEVICE_CMD[driverId].getOfferedCap].value : 0;
-    const onGoing = ((lastCmd === TURN_ON) && (isOn !== true))
-     || ((lastCmd === TURN_OFF) && (isOn !== false))
-     || ((isOn === true) && hasPowerCap && ((lastCurrent !== ampsActualOffer) || (lastPower === powerUsed)));
-    const ignoreChargerThrottle = !onGoing;
-    this.log(`Ignore throttle: ${ignoreChargerThrottle} ${onGoing} ${isEmergency}`);
-    // Check that we do not toggle the charger too often
-    const timeLapsed = (now - this.prevChargerTime) / 1000; // Lapsed time in seconds
-    if (this.prevChargerTime !== undefined && (timeLapsed < +chargerOptions.minToggleTime) && !ignoreChargerThrottle && !isEmergency) {
-      // Must wait a little bit more before changing
-      this.log(`Wait more: ${+(chargerOptions.minToggleTime)} - ${timeLapsed} = ${+(chargerOptions.minToggleTime) - timeLapsed} sec left`);
-      return Promise.resolve([false, false]);
-    }
-    this.prevChargerTime = now;
-    if (isEmergency) this.updateLog('Emergency turn off for charger device (minToggleTime ignored)', c.LOG_WARNING);
-
-    if (withinChargingPlan) {
-      if (isOn !== true) {
-        this.log('Turning on');
-        const chargerStatus = await device.capabilitiesObj[d.DEVICE_CMD[driverId].statusCap].value;
-        if (d.DEVICE_CMD[driverId].statusAvailable.includes(chargerStatus)) {
-          this.__current_state[deviceId].lastCmd = TURN_ON;
-          this.__current_state[deviceId].ongoing = true;
-          this.__current_state[deviceId].confirmed = false;
-          return this.setOnOff(device, deviceId, true)
-            .then(() => {
-              this.updateReliability(deviceId, 1);
-              this.__num_off_devices += -1;
-              this.__current_state[deviceId].nComError = 0;
-              if (!hasPowerCap) return Promise.resolve();
-              const newOfferCurrent = d.DEVICE_CMD[driverId].minCurrent;
-              this.log('Setting 7 amp');
-              this.__current_state[deviceId].lastCurrent = newOfferCurrent;
-              this.__current_state[deviceId].lastPower = powerUsed;
-              return device.setCapabilityValue({ capabilityId: d.DEVICE_CMD[driverId].setCurrentCap, value: newOfferCurrent });
-            })
-            .then(() => {
-              this.__current_state[deviceId].ongoing = false;
-              if (hasPowerCap) this.updateReliability(deviceId, 1);
-              return Promise.resolve([true, false]);
-            })
-            .catch(err => {
-              this.updateLog(`Failed starting charging cycle: ${String(err)}`, c.LOG_ERROR);
-              this.__current_state[deviceId].ongoing = undefined;
-              this.__current_state[deviceId].nComError += 1;
-              this.updateReliability(deviceId, 0);
-              return Promise.resolve([false, false]);
-            });
-        }
-      } else { // isOn === true
-        const maxCurrent = !hasPowerCap ? 0 : await device.capabilitiesObj[d.DEVICE_CMD[driverId].setCurrentCap].max;
-        if (!hasPowerCap) return Promise.resolve([false, false]);
-        const { minCurrent } = d.DEVICE_CMD[driverId];
-        const maxPower = +this.homey.settings.get('maxPower');
-        const newOfferPower = Math.min(Math.max(powerUsed + +powerChange, +chargerOptions.chargeMin), maxPower);
-        const newOfferCurrent = isEmergency ? 0
-          : (+powerUsed <= 0) ? minCurrent
-            : Math.floor(Math.min(Math.max(ampsOffered * (newOfferPower / +powerUsed), minCurrent), +maxCurrent));
-        this.log(`Setting ${newOfferCurrent} amp, was ${ampsActualOffer}`);
-        if (newOfferCurrent === ampsActualOffer) return Promise.resolve([true, true]);
-        this.__current_state[deviceId].lastCurrent = newOfferCurrent;
-        this.__current_state[deviceId].lastPower = powerUsed;
-        return device.setCapabilityValue({ capabilityId: d.DEVICE_CMD[driverId].setCurrentCap, value: newOfferCurrent })
-          .then(() => {
-            if (!hasPowerCap) return Promise.resolve([true, false]);
-            this.updateReliability(deviceId, 1);
-            return Promise.resolve([true, powerUsed + +powerChange < newOfferPower]); // In case more power is offered but it doesn't get used, let the app turn on other devices
-          })
-          .catch(err => {
-            this.updateLog(`Failed signalling charger: ${String(err)}`, c.LOG_ERROR);
-            this.__current_state[deviceId].nComError += 1;
-            this.updateReliability(deviceId, 0);
-            return Promise.resolve([false, false]);
-          });
-      }
-    }
-    // Else withinChargingPlan !== true
-    if (isOn) {
-      this.__current_state[deviceId].lastCmd = TURN_OFF;
-      this.__current_state[deviceId].ongoing = true;
-      this.__current_state[deviceId].confirmed = false;
-      // Turn off
-      this.log('Turning off charger');
-      return this.setOnOff(device, deviceId, false)
-        .then(() => {
-          this.__charge_power_active = 0;
-          this.updateReliability(deviceId, 1);
-          this.__num_off_devices--;
-          this.__current_state[deviceId].ongoing = false;
-          this.__current_state[deviceId].nComError = 0;
-          return Promise.resolve([true, false]);
-        })
-        .catch(err => {
-          this.updateLog(`Failed turning off charger: ${String(err)}`, c.LOG_ERROR);
-          this.__current_state[deviceId].ongoing = undefined;
-          this.__current_state[deviceId].nComError += 1;
-          this.updateReliability(deviceId, 0);
-          return Promise.resolve([false, false]);
-        });
-    }
-    // Else is off and want off
-    return Promise.resolve([true, true]);
-  }
-
-  async changeDevicePower3(deviceId, powerChange) {
-    const chargerOptions = this.homey.settings.get('chargerOptions');
     if (chargerOptions.chargeTarget === c.CHARGE_TARGET_FLOW) {
       return Promise.resolve([true, true]);
     }
@@ -1302,11 +1026,15 @@ class PiggyBank extends Homey.App {
     if ((!(driverId in d.DEVICE_CMD))
       || (d.DEVICE_CMD[driverId].measurePowerCap === undefined)
       || (d.DEVICE_CMD[driverId].setCurrentCap === undefined)
-      || (d.DEVICE_CMD[driverId].getOfferedCap === undefined)) {
+      || (d.DEVICE_CMD[driverId].getOfferedCap === undefined)
+      || (d.DEVICE_CMD[driverId].onChargeStart === undefined)
+      || (d.DEVICE_CMD[driverId].onChargeEnd === undefined)
+      || (d.DEVICE_CMD[driverId].statusCap === undefined)) {
       return Promise.reject(new Error('Please notify the developer that the charger definition for this charger is incorrect and need to be updated'));
     }
     const ampsOffered = +await device.capabilitiesObj[d.DEVICE_CMD[driverId].setCurrentCap].value;
     const powerUsed = +await device.capabilitiesObj[d.DEVICE_CMD[driverId].measurePowerCap].value;
+    const chargerStatus = await device.capabilitiesObj[d.DEVICE_CMD[driverId].statusCap].value;
     const isOn = (powerUsed > 0) || (ampsOffered > 0);
     this.__charge_power_active = powerUsed;
     if ((!isOn) && (powerChange < chargerOptions.chargeThreshold)) {
@@ -1318,109 +1046,7 @@ class PiggyBank extends Homey.App {
     const now = new Date();
     const end = new Date(chargerOptions.chargeEnd);
     if ((end < now)
-      || ((chargerOptions.chargeCycleType === c.OFFER_ENERGY) && (+chargerOptions.chargeRemaining < this.__offeredEnergy))) {
-      chargerOptions.chargeRemaining = 0;
-    }
-
-    const withinChargingPlan = (this.__charge_plan[0] > 0) && (+chargerOptions.chargeRemaining > 0);
-    const { lastCurrent, lastPower } = this.__current_state[deviceId];
-    const ampsActualOffer = +await device.capabilitiesObj[d.DEVICE_CMD[driverId].getOfferedCap].value;
-    if ((lastCurrent === ampsActualOffer) && (lastPower !== powerUsed)) {
-      this.__current_state[deviceId].confirmed = true;
-    }
-    const ignoreChargerThrottle = this.__current_state[deviceId].confirmed;
-    // Check that we do not toggle the charger too often
-    const timeLapsed = (now - this.prevChargerTime) / 1000; // Lapsed time in seconds
-    if (this.prevChargerTime !== undefined && (timeLapsed < +chargerOptions.minToggleTime) && !ignoreChargerThrottle && !isEmergency) {
-      // Must wait a little bit more before changing
-      this.updateLog(`Wait more: ${+(chargerOptions.minToggleTime)} - ${timeLapsed} = ${+(chargerOptions.minToggleTime) - timeLapsed} sec left`, c.LOG_DEBUG);
-      // Report success in case there is an unconfirmed command and we're trying to reduce power... to avoid reporting powerfail too early.
-      if (!ignoreChargerThrottle && (+powerChange < 0)) {
-        return Promise.resolve([true, false]);
-      }
-      // Return failure in case the earlier commands was confirmed
-      return Promise.resolve([false, false]);
-    }
-    this.prevChargerTime = now;
-    if (isEmergency) this.updateLog('Emergency turn off for charger device (minToggleTime ignored)', c.LOG_WARNING);
-
-    const maxCurrent = +await device.capabilitiesObj[d.DEVICE_CMD[driverId].setCurrentCap].max;
-    const { minCurrent } = d.DEVICE_CMD[driverId];
-    const maxPower = +this.homey.settings.get('maxPower');
-    const newOfferPower = Math.min(Math.max(powerUsed + +powerChange, +chargerOptions.chargeMin), maxPower);
-    const newOfferCurrent = (isEmergency || !withinChargingPlan) ? 0
-      : (+powerUsed === 0) ? minCurrent
-        : Math.floor(Math.min(Math.max(ampsOffered * (newOfferPower / +powerUsed), minCurrent), +maxCurrent));
-    this.updateLog(`Setting ${newOfferCurrent} amp, was ${ampsActualOffer}`, c.LOG_DEBUG);
-    if ((newOfferCurrent === ampsActualOffer) && (newOfferCurrent === ampsOffered)) return Promise.resolve([true, true]);
-    this.__current_state[deviceId].lastCurrent = newOfferCurrent;
-    this.__current_state[deviceId].lastPower = powerUsed;
-    this.__current_state[deviceId].confirmed = false;
-    this.__current_state[deviceId].ongoing = true;
-    return device.setCapabilityValue({ capabilityId: d.DEVICE_CMD[driverId].setCurrentCap, value: newOfferCurrent })
-      .then(() => {
-        this.__current_state[deviceId].ongoing = false;
-        this.__current_state[deviceId].nComError = 0;
-        this.updateReliability(deviceId, 1);
-        const noChange = withinChargingPlan ? powerUsed + +powerChange < newOfferPower : !isOn;
-        return Promise.resolve([true, noChange]); // In case more power is offered but it doesn't get used, let the app turn on other devices
-      })
-      .catch(err => {
-        this.updateLog(`Failed signalling charger: ${String(err)}`, c.LOG_ERROR);
-        this.__current_state[deviceId].nComError += 1;
-        this.__current_state[deviceId].ongoing = undefined;
-        this.updateReliability(deviceId, 0);
-        return Promise.resolve([false, false]);
-      });
-  }
-
-  async changeDevicePower4(deviceId, powerChange) {
-    const chargerOptions = this.homey.settings.get('chargerOptions');
-    if (chargerOptions.chargeTarget === c.CHARGE_TARGET_FLOW) {
-      return Promise.resolve([true, true]);
-    }
-    this.updateLog(`Requested power change: ${powerChange}`, c.LOG_DEBUG);
-    let device;
-    try {
-      device = await this.getDevice(deviceId);
-      this.updateReliability(deviceId, 1);
-    } catch (err) {
-      // Most likely timeout
-      this.updateLog(`Charger device cannot be fetched. ${String(err)}`, c.LOG_ERROR);
-      this.__current_state[deviceId].nComError += 10; // Big error so wait more until retry than smaller errors
-      this.updateReliability(deviceId, 0);
-      return Promise.resolve([false, false]); // The unhandled device is solved by the later nComError handling
-    }
-
-    if (device.capabilitiesObj === null) {
-      this.__current_state[deviceId].nComError += 10; // This should not happen
-      this.updateReliability(deviceId, 0);
-      return Promise.resolve([false, false]);
-    }
-
-    const { driverId } = this.__deviceList[deviceId];
-    const setCurrentCap = ('target_charger_current' in device.capabilitiesObj) ? 'target_charger_current' : 'target_circuit_current'; // TODO Remove... temporary workaround for Bug #70
-    if ((!(driverId in d.DEVICE_CMD))
-      || (d.DEVICE_CMD[driverId].measurePowerCap === undefined)
-      || (setCurrentCap === undefined) // TODO replace: || (d.DEVICE_CMD[driverId].setCurrentCap === undefined)
-      || (d.DEVICE_CMD[driverId].getOfferedCap === undefined)
-      || (d.DEVICE_CMD[driverId].onChargeStart === undefined)
-      || (d.DEVICE_CMD[driverId].onChargeEnd === undefined)) {
-      return Promise.reject(new Error('Please notify the developer that the charger definition for this charger is incorrect and need to be updated'));
-    }
-    const ampsOffered = +await device.capabilitiesObj[setCurrentCap].value; // TODO replace: const ampsOffered = +await device.capabilitiesObj[d.DEVICE_CMD[driverId].setCurrentCap].value;
-    const powerUsed = +await device.capabilitiesObj[d.DEVICE_CMD[driverId].measurePowerCap].value;
-    const isOn = (powerUsed > 0) || (ampsOffered > 0);
-    this.__charge_power_active = powerUsed;
-    if ((!isOn) && (powerChange < chargerOptions.chargeThreshold)) {
-      // The device should not be turned on if the available power is less than the charge threshold
-      return Promise.resolve([false, false]);
-    }
-    const isEmergency = (+powerChange < 0) && (
-      ((powerUsed + +powerChange) < 0) || (ampsOffered === d.DEVICE_CMD[driverId].minCurrent));
-    const now = new Date();
-    const end = new Date(chargerOptions.chargeEnd);
-    if ((end < now)
+      || (chargerStatus === 'Completed')
       || ((chargerOptions.chargeCycleType === c.OFFER_ENERGY) && (+chargerOptions.chargeRemaining < this.__offeredEnergy))) {
       chargerOptions.chargeRemaining = 0;
     }
@@ -1448,12 +1074,13 @@ class PiggyBank extends Homey.App {
     this.prevChargerTime = now;
     if (isEmergency) this.updateLog('Emergency turn off for charger device (minToggleTime ignored)', c.LOG_WARNING);
 
-    const maxCurrent = +await device.capabilitiesObj[setCurrentCap].max; // TODO Replace: const maxCurrent = +await device.capabilitiesObj[d.DEVICE_CMD[driverId].setCurrentCap].max;
+    const maxCurrent = +await device.capabilitiesObj[d.DEVICE_CMD[driverId].setCurrentCap].max;
     const { pauseCurrent, minCurrent } = d.DEVICE_CMD[driverId];
     const maxPower = +this.homey.settings.get('maxPower');
+    const noCarConnected = (chargerStatus === 'Standby');
     const newOfferPower = Math.min(Math.max(powerUsed + +powerChange, +chargerOptions.chargeMin), maxPower);
-    const newOfferCurrent = (!withinChargingPlan) ? 0
-      : (isEmergency) ? pauseCurrent
+    const newOfferCurrent = (chargerOptions.chargeRemaining === 0) ? 0
+      : (!withinChargingPlan || isEmergency || noCarConnected) ? pauseCurrent
         : (+powerUsed === 0) ? minCurrent
           : Math.floor(Math.min(Math.max(ampsOffered * (newOfferPower / +powerUsed), minCurrent), +maxCurrent));
     this.updateLog(`Setting ${newOfferCurrent} amp, was ${ampsActualOffer}`, c.LOG_DEBUG);
@@ -1463,7 +1090,7 @@ class PiggyBank extends Homey.App {
     this.__current_state[deviceId].confirmed = false;
     this.__current_state[deviceId].ongoing = true;
     return this.chargeCycleValidation(deviceId, device, withinChargingPlan, throttleActive)
-      .then(() => device.setCapabilityValue({ capabilityId: setCurrentCap, value: newOfferCurrent })) // TODO Replace: .then(() => device.setCapabilityValue({ capabilityId: d.DEVICE_CMD[driverId].setCurrentCap, value: newOfferCurrent }))
+      .then(() => device.setCapabilityValue({ capabilityId: d.DEVICE_CMD[driverId].setCurrentCap, value: newOfferCurrent }))
       .then(() => {
         this.__current_state[deviceId].ongoing = false;
         this.__current_state[deviceId].nComError = 0;
