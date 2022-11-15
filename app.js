@@ -120,16 +120,15 @@ class PiggyBank extends Homey.App {
       const maxVal = (device.capabilitiesObj === null) ? 32 : await device.capabilitiesObj[capName].max;
       const setVal = (list[capName] === Infinity) ? maxVal : list[capName];
       const prevVal = (device.capabilitiesObj === null) ? undefined : await device.capabilitiesObj[capName].value;
-      this.log(`try capname: ${capName} = ${setVal}`);
       try {
         if ((prevVal !== setVal) && (retryNonZero || (+setVal === 0))) {
           stateChanged = true;
+          this.log(`Setting capname: ${capName} = ${setVal}`);
           await device.setCapabilityValue({ capabilityId: capName, value: setVal }); // Just pass errors on
         }
       } catch (err) {
         this.log(`Error: ${err}`);
       }
-      this.log(`did capname: ${capName} = ${setVal}`);
     }
     return Promise.resolve(stateChanged);
   }
@@ -2555,6 +2554,7 @@ class PiggyBank extends Homey.App {
   async getStats() {
     const dailyMax = this.homey.settings.get('stats_daily_max');
     const dailyMaxGood = this.homey.settings.get('stats_daily_max_ok');
+    const priceMode = +this.homey.settings.get('priceMode');
     const statsTimeLocal = toLocalTime(new Date(this.homey.settings.get('stats_daily_max_last_update_time')), this.homey);
     const daysInStatsMonth = new Date(statsTimeLocal.getFullYear(), statsTimeLocal.getMonth() + 1, 0).getDate();
     const stats = {
@@ -2564,7 +2564,7 @@ class PiggyBank extends Homey.App {
       dailyMaxGood: Array.isArray(dailyMaxGood) ? dailyMaxGood : [],
       chargeShedule: this.__charge_plan,
       elPrices: this.__current_prices,
-      currentHour: this.__current_price_index
+      currentHour: (priceMode === c.PRICE_MODE_DISABLED) ? toLocalTime(new Date(), this.homey).getHours() : this.__current_price_index
     };
     return stats;
   }
