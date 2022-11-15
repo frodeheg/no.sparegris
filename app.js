@@ -106,7 +106,7 @@ class PiggyBank extends Homey.App {
    * Run the initialization commands for adding devices
    * @return true if state was changed for any of the commands, false if no change was requested
    */
-  async runDeviceCommands(deviceId, listRef) {
+  async runDeviceCommands(deviceId, listRef, retryNonZero = true) {
     if (+this.homey.settings.get('operatingMode') === c.MODE_DISABLED) return Promise.resolve(false);
     if (!(deviceId in this.__deviceList)) return Promise.reject(new Error('The deviceId to control does not exist'));
     const { driverId } = this.__deviceList[deviceId];
@@ -122,7 +122,7 @@ class PiggyBank extends Homey.App {
       const prevVal = (device.capabilitiesObj === null) ? undefined : await device.capabilitiesObj[capName].value;
       this.log(`try capname: ${capName} = ${setVal}`);
       try {
-        if (prevVal !== setVal) {
+        if ((prevVal !== setVal) && (retryNonZero || (+setVal === 0))) {
           stateChanged = true;
           await device.setCapabilityValue({ capabilityId: capName, value: setVal }); // Just pass errors on
         }
@@ -1115,7 +1115,7 @@ class PiggyBank extends Homey.App {
    */
   async chargeCycleValidation(deviceId, planActive, throttleActive) {
     const listRef = planActive ? 'onChargeStart' : 'onChargeEnd';
-    const changeNeeded = await this.runDeviceCommands(deviceId, listRef); // Pass errors on
+    const changeNeeded = await this.runDeviceCommands(deviceId, listRef, false); // Pass errors on
     this.__spookey_changes += (this.__spookey_check_activated === planActive && !throttleActive) ? changeNeeded : 0;
     this.__spookey_check_activated = planActive;
     return Promise.resolve();
