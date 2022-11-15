@@ -230,7 +230,6 @@ const DEVICE_CMD = {
     measurePowerCap: 'measure_power',
     statusCap: 'charger_status',
     statusUnavailable: ['Completed', 'Standby', 'Error'],
-    beta: true,
     default: false
   },
   'no.hoiax:hiax-connected-200': {
