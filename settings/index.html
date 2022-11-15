@@ -1675,7 +1675,7 @@
         // Generate data
         let dataHours = Array.from(Array(24).keys()).map((x)=>`${(x+stats.currentHour)%24}:00`);
         let dataPrices = Array.from(Array(24).keys()).map((x)=>stats.elPrices[x+stats.currentHour] || 0);
-        let maxPrice = dataPrices.reduce((a,b) => { return !a ? b : !b ? a : a > b ? a : b });
+        let maxPrice = dataPrices.reduce((a,b) => { return !a ? b : !b ? a : a > b ? a : b }) || 1;
         let dataPlan = Array.from(Array(24).keys()).map((x)=>stats.chargeShedule[x] ? maxPrice : 0 );
         let colorBars = Array(24).fill(`skyblue`);
         let colorBarLines = Array(24).fill('black');
