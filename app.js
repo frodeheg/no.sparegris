@@ -1017,6 +1017,7 @@ class PiggyBank extends Homey.App {
     }
 
     if (device.capabilitiesObj === null) {
+      this.updateLog('Charger device capability list missing', c.LOG_ERROR);
       this.__current_state[deviceId].nComError += 10; // This should not happen
       this.updateReliability(deviceId, 0);
       return Promise.resolve([false, false]);
@@ -1294,8 +1295,10 @@ class PiggyBank extends Homey.App {
         });
     }
 
-    if (newStateOn && isOn && (targetState === undefined || targetState === DELTA_TEMP) && (this.__current_state[deviceId].nComError === 0)) {
-      // Temperature could have changed (only send refresh for reliable devices)
+    if (newStateOn && isOn && (targetState === undefined || targetState === DELTA_TEMP)
+      && ((this.__current_state[deviceId].nComError === 0)
+        || ((this.__deviceList[deviceId].reliability > 0.5) && (this.__current_state[deviceId].ongoing === false)))) {
+      // Update temperature if it changed (unreliable devices will only refresh temp up until a certain point)
       return this.refreshTemp(deviceId);
     }
 
@@ -1410,25 +1413,25 @@ class PiggyBank extends Homey.App {
             return this.changeDeviceState(deviceId, newOp)
               .then(() => this.refreshTemp(deviceId))
               .then(() => {
-                this.__current_state[deviceId].confirmed = 1;
                 return Promise.resolve(false);
               });
           }
           if ((!isOn) || (!this.__deviceList[deviceId].thermostat_cap)) {
             this.__current_state[deviceId].confirmed = 2;
+            this.__current_state[deviceId].nComError = 0; // nComError must have been set in error
             return Promise.resolve(true);
           }
           // Thermostat capabilities
           const tempConfirmed = this.__current_state[deviceId].temp && (device.capabilitiesObj[this.getTempSetCap(deviceId)].value === this.__current_state[deviceId].temp);
           if (tempConfirmed) {
             this.__current_state[deviceId].confirmed = 3;
+            this.__current_state[deviceId].nComError = 0; // nComError must have been set in error
             return Promise.resolve(true);
           }
           // Try to change the temp state.....
           this.__current_state[deviceId].__monitorFixTemp += 1;
           return this.refreshTemp(deviceId)
             .then(() => {
-              this.__current_state[deviceId].confirmed = 4;
               return Promise.resolve(false);
             });
         })
