@@ -375,5 +375,9 @@
     "oct": "October",
     "nov": "November",
     "dec": "December"
+  },
+  "units": {
+    "kWh": "kWh",
+    "hours": "h"
   }
 }

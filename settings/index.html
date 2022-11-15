@@ -1062,33 +1062,35 @@
             <td class="settings_row_input"><select id="chargeTarget" disabled class="inputElem" onchange="updateAdvancedSettings();displaySaveHint()">
               <option value="1" data-i18n="settings.charge.chargeTargetAuto" selected >Auto</option>
               <option value="2" data-i18n="settings.charge.chargeTargetFlow">Manual</option>
-            </select><div class="hintButton" onclick="toggle(this,'chargeTargetHint', 'table-row');return false;">i</div></td>
+            </select> <div class="hintButton" onclick="toggle(this,'chargeTargetHint', 'table-row');return false;">i</div></td>
           </tr>
           <tr id="chargeTargetHint" class="hint"><td colspan="2"><p data-i18n="settings.charge.chargeTargetHint">charge.chargeTargetHint</p></td></tr>
           <tr id ="chargeMinRow">
             <td class="settings_row_name"><label for="chargeMin" data-i18n="settings.charge.chargeMin">charge.chargeMin</label>:</td>
             <td class="settings_row_input"><input id="chargeMin" class="inputElem" type="number" min="1500" max="2000" step="100" value="2000"
-              onchange="limitElement(this); updateAdvancedSettings(); displaySaveHint()">W
+              onchange="limitElement(this); updateAdvancedSettings(); displaySaveHint()"> W
               <div class="hintButton" onclick="toggle(this,'chargeMinHint', 'table-row');return false;">i</div></td>
           </tr>
           <tr id="chargeMinHint" class="hint"><td colspan="2"><p data-i18n="settings.charge.chargeMinHint">charge.chargeMinHint</p></td></tr>
           <tr>
             <td class="settings_row_name"><label for="chargeThreshold" data-i18n="settings.charge.chargeThreshold">charge.chargeThreshold</label>:</td>
             <td class="settings_row_input"><input id="chargeThreshold" class="inputElem" type="number" min="1500" max="20000" step="100" value="2000"
-              onchange="limitElement(this); updateAdvancedSettings(); displaySaveHint()">W
+              onchange="limitElement(this); updateAdvancedSettings(); displaySaveHint()"> W
               <div class="hintButton" onclick="toggle(this,'chargeThresholdHint', 'table-row');return false;">i</div></td>
           </tr>
           <tr id="chargeThresholdHint" class="hint"><td colspan="2"><p data-i18n="settings.charge.chargeThresholdHint">charge.chargeThresholdHint</p></td></tr>
           <tr>
             <td class="settings_row_name"><label for="minToggleTime" data-i18n="settings.charge.minToggleTime">charge.minToggleTime</label>:</td>
             <td class="settings_row_input"><input id="minToggleTime" class="inputElem" type="number" min="90" max="300" step="1" value="120"
-              onchange="limitElement(this); displaySaveHint()">s
+              onchange="limitElement(this); displaySaveHint()"> s
               <div class="hintButton" onclick="toggle(this,'minToggleTimeHint', 'table-row');return false;">i</div></td>
           </tr>
           <tr id="minToggleTimeHint" class="hint"><td colspan="2"><p data-i18n="settings.charge.minToggleTimeHint">charge.minToggleTimeHint</p></td></tr>
           <tr>
             <td class="settings_row_name"><label for="chargeRemaining" data-i18n="settings.charge.chargeRemaining">charge.chargeRemaining</label>:</td>
-            <td class="settings_row_input"><input disabled id="chargeRemaining" class="inputElem" type="number" min="0" max="100" step="1" value="0" onchange="displaySaveHint()">kWh
+            <td class="settings_row_input"><input disabled id="chargeRemaining" class="inputElem" type="number" min="0" max="100" step="1" value="0" onchange="displaySaveHint()">
+              <label for="chargeRemaining" id="chargeRemainingUnit_kWh" data-i18n="units.kWh">kWh</label>
+              <label for="chargeRemaining" id="chargeRemainingUnit_h" data-i18n="units.hours">h</label>
               <div class="hintButton" onclick="toggle(this,'chargeRemainingHint', 'table-row');return false;">i</div></td>
           </tr>
           <tr id="chargeRemainingHint" class="hint"><td colspan="2"><p data-i18n="settings.charge.chargeRemainingHint">charge.chargeRemainingHint</p></td></tr>
@@ -1829,7 +1831,9 @@
           document.getElementById('chargeMin').value = chargerOptions.chargeMin;
           document.getElementById('chargeThreshold').value = chargerOptions.chargeThreshold;
           document.getElementById('minToggleTime').value = chargerOptions.minToggleTime;
-          document.getElementById('chargeRemaining').value = chargerOptions.chargeRemaining / 1000;
+          document.getElementById('chargeRemaining').value = chargerOptions.chargeRemaining / ((chargerOptions.chargeCycleType === OFFER_HOURS) ? 1 : 1000);
+          document.getElementById('chargeRemainingUnit_kWh').style.display = (chargerOptions.chargeCycleType === OFFER_ENERGY) ? 'inline-block' : 'none';
+          document.getElementById('chargeRemainingUnit_h').style.display = (chargerOptions.chargeCycleType === OFFER_HOURS) ? 'inline-block' : 'none';
           document.getElementById('chargeEnd').value = toTimeString(new Date(chargerOptions.chargeEnd));
           document.getElementById("energyFlowRateText").innerHTML = energyFlowRateText.replace("${interval}", Math.round(appConfigProgress.timeSinceEnergyMeter / 60));
           document.getElementById("spookeyText").innerHTML = spookeyText.replace("${times}", appConfigProgress.numSpookeyChanges);
@@ -2666,6 +2670,7 @@
           chargeMin: 1500,
           chargeThreshold: 2000,
           minToggleTime: 120,
+          chargeCycleType: OFFER_HOURS,
           chargeRemaining: 0,
           chargeEnd: '2022-10-15T06:00:08.708Z'
         }
