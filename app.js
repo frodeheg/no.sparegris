@@ -1055,7 +1055,9 @@ class PiggyBank extends Homey.App {
     const withinChargingPlan = (this.__charge_plan[0] > 0) && withinChargingCycle;
     const { lastCurrent, lastPower } = this.__current_state[deviceId];
     const ampsActualOffer = +await device.capabilitiesObj[d.DEVICE_CMD[driverId].getOfferedCap].value;
-    if ((lastCurrent === ampsActualOffer) && (lastPower !== powerUsed)) {
+    if (((lastCurrent === ampsActualOffer) && (lastPower !== powerUsed))
+      || (lastCurrent > ampsActualOffer)) {
+      // Need to confirm for lastCurrent > ampsActualOffer too because the current may be limited
       this.__current_state[deviceId].confirmed = true;
     }
     const ignoreChargerThrottle = this.__current_state[deviceId].confirmed;
@@ -1069,7 +1071,7 @@ class PiggyBank extends Homey.App {
       if (!ignoreChargerThrottle && (+powerChange < 0)) {
         return Promise.resolve([true, false]);
       }
-      // Return failure in case the earlier commands was confirmed
+      // Return failure in case the earlier commands was confirmed to allow turning on/off other devices
       return Promise.resolve([false, false]);
     }
     this.prevChargerTime = now;
