@@ -592,5 +592,8 @@
   },
   "0.19.0": {
     "en": "Easee Car charger support finally completed. + Fix for bug #78: Temperature control stopped working. + Marked net.filllip-namron:4512746 devices as stable."
+  },
+  "0.19.1": {
+    "en": "Minor correction to when to increase charging current."
   }
 }
