@@ -1054,9 +1054,12 @@ class PiggyBank extends Homey.App {
     const withinChargingPlan = (this.__charge_plan[0] > 0) && withinChargingCycle;
     const { lastCurrent, lastPower } = this.__current_state[deviceId];
     const ampsActualOffer = +await device.capabilitiesObj[d.DEVICE_CMD[driverId].getOfferedCap].value;
-    if (((lastCurrent === ampsActualOffer) && (lastPower !== powerUsed))
-      || (lastCurrent > ampsActualOffer)) {
-      // Need to confirm for lastCurrent > ampsActualOffer too because the current may be limited
+    if ((lastCurrent === ampsActualOffer) && (lastPower !== powerUsed)) {
+      // note that confirmed is not set when lastCurrent is higher than ampsActualOffer because ampsActualOffer is clamped.
+      // Since we don't know the clamp it's difficult to detect confirmed for this case... But: This is ok for our case,
+      // because confirmed is only used to ignore charger throttle and it doesn't matter if we throttle a little bit more
+      // when increasing power. One possible downside is that when power is becoming available then less prioritized devices
+      // will have a possibility to be turned on before the charger.
       this.__current_state[deviceId].confirmed = true;
     }
     const ignoreChargerThrottle = this.__current_state[deviceId].confirmed;
