@@ -7,7 +7,7 @@
 require('../constants');
 require('../devices');
 
-function updateChargerHints(deviceList) {
+function checkForCharger(deviceList) {
   let foundCharger = false;
   let chargerUsed = false;
   for (const key in deviceList) {
@@ -17,6 +17,11 @@ function updateChargerHints(deviceList) {
       chargerUsed = device.use;
     }
   }
+  return { foundCharger, chargerUsed };
+}
+
+function updateChargerHints(deviceList) {
+  const { foundCharger, chargerUsed } = checkForCharger(deviceList);
   const carChargerMissingHint = document.getElementById('carChargerMissingHint');
   const carChargerNotAddedHint = document.getElementById('carChargerNotAddedHint');
   const chargeTarget = document.getElementById('chargeTarget');
@@ -26,10 +31,10 @@ function updateChargerHints(deviceList) {
     chargeTarget.value = CHARGE_TARGET_AUTO;
   } else if (foundCharger && !chargerUsed) {
     carChargerMissingHint.style.display = 'none';
-    carChargerNotAddedHint.style.display = 'block';
+    carChargerNotAddedHint.style.display = 'table-row';
     chargeTarget.value = CHARGE_TARGET_FLOW;
   } else {
-    carChargerMissingHint.style.display = 'block';
+    carChargerMissingHint.style.display = 'table-row';
     carChargerNotAddedHint.style.display = 'none';
     chargeTarget.value = CHARGE_TARGET_FLOW;
   }
@@ -55,6 +60,7 @@ function updateAdvancedSettings() {
 }
 
 module.exports = {
+  checkForCharger,
   updateChargerHints,
   updateAdvancedSettings,
 };

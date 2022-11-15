@@ -804,6 +804,7 @@
         }
         let appIsDisabled = (document.getElementById("appEnabled").value == '0');
         let haveTasks = false;
+        const { foundCharger, chargerUsed } = checkForCharger(deviceList);
         const priceMode = document.getElementById("priceMode").value;
         const priceKind = document.getElementById("priceKind").value;
         haveTasks |= changeTaskVisibility('taskEnableApp', appIsDisabled);
@@ -820,6 +821,7 @@
         haveTasks |= changeTaskVisibility('taskExperimental', !appIsDisabled && experimentalEnabled);
         haveTasks |= changeTaskVisibility('taskSpookey', !appIsDisabled && (+appConfigProgress.numSpookeyChanges > 0));
         haveTasks |= changeTaskVisibility('errorDevices', !appIsDisabled && numErrorDevices > 0);
+        haveTasks |= changeTaskVisibility('taskAddCarCharger', !appIsDisabled && foundCharger && !chargerUsed);
         changeTaskVisibility('taskNone', !haveTasks);
       }
 
@@ -954,6 +956,7 @@
           <tr id="taskExperimental"><td style="vertical-align:top;"><span id="iconW5" class="⚠ warn"></span></td><td><span data-i18n="settings.welcome.taskExperimental">taskExperimental</span></td></tr>
           <tr id="taskSpookey"><td style="vertical-align:top;"><span id="iconW5" class="⚠ warn"></span></td><td><span id="spookeyText">taskSpookey</span></td></tr>
           <tr id="errorDevices"><td style="vertical-align:top;"><span id="iconW6" class="⚠ warn"></span></td><td><span data-i18n="settings.welcome.errorDevices">errorDevices</span><div id="errorDeviceList"></div></td></tr>
+          <tr id="taskAddCarCharger"><td style="vertical-align:top;"><span id="iconW7" class="⚠ warn"></span></td><td><span data-i18n="settings.charge.carChargerNotAddedHint">charge.carChargerNotAddedHint</span></td></tr>
           <tr id="taskNoPriceEnabled"><td style="vertical-align:top;"><span id="iconI1" class="⚠ info"></span></td><td><span data-i18n="settings.welcome.taskNoPriceEnabled">taskNoPriceEnabled</span></td></tr>
           <tr id="taskNone"><td style="vertical-align:top;"><span id="iconI2" class="⚠ info"></span></td><td><span data-i18n="settings.welcome.taskNone">taskNone</span></td></tr>
         </table>
@@ -1054,8 +1057,10 @@
     <div id="chargerPage" class="tabcontent">
       <fieldset>
         <legend data-i18n="settings.charge.header">charge.header</legend>
-        <p id="carChargerMissingHint" data-i18n="settings.charge.carChargerMissingHint">charge.carChargerMissingHint</p>
-        <p id="carChargerNotAddedHint" data-i18n="settings.charge.carChargerNotAddedHint">charge.carChargerNotAddedHint</p>
+        <table class="settings_table">
+          <tr id="carChargerMissingHint"><td style="vertical-align:top;"><span id="iconC1" class="⚠ info"></span></td><td><span data-i18n="settings.charge.carChargerMissingHint">charge.carChargerMissingHint</span></td></tr>
+          <tr id="carChargerNotAddedHint"><td style="vertical-align:top;"><span id="iconC2" class="⚠ warn"></span></td><td><span data-i18n="settings.charge.carChargerNotAddedHint">charge.carChargerNotAddedHint</span></td></tr>
+        </table>
         <table class="settings_table">
           <tr>
             <td class="settings_row_name"><label for="chargeTarget" data-i18n="settings.charge.chargeTarget">charge.chargeTarget</label>:</td>
@@ -1089,8 +1094,8 @@
           <tr>
             <td class="settings_row_name"><label for="chargeRemaining" data-i18n="settings.charge.chargeRemaining">charge.chargeRemaining</label>:</td>
             <td class="settings_row_input"><input disabled id="chargeRemaining" class="inputElem" type="number" min="0" max="100" step="1" value="0" onchange="displaySaveHint()">
-              <label for="chargeRemaining" id="chargeRemainingUnit_kWh" data-i18n="units.kWh">kWh</label>
-              <label for="chargeRemaining" id="chargeRemainingUnit_h" data-i18n="units.hours">h</label>
+              <span id="chargeRemainingUnit_kWh" data-i18n="units.kWh">kWh</span>
+              <span id="chargeRemainingUnit_h" data-i18n="units.hours">h</span>
               <div class="hintButton" onclick="toggle(this,'chargeRemainingHint', 'table-row');return false;">i</div></td>
           </tr>
           <tr id="chargeRemainingHint" class="hint"><td colspan="2"><p data-i18n="settings.charge.chargeRemainingHint">charge.chargeRemainingHint</p></td></tr>
