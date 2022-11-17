@@ -183,7 +183,7 @@ async function applyStateFromFile(app, file) {
         }
         const dummyDevice = { id: deviceId, capabilitiesObj: dummyCap };
         fakeDev = app.homeyApi.devices.addFakeDevice(dummyDevice, devInfo.roomId);
-        fakeDev.driverUri = `homey:app:${devInfo.driverId.slice(0,devInfo.driverId.indexOf(':'))}`;
+        fakeDev.driverUri = `homey:app:${devInfo.driverId.slice(0, devInfo.driverId.indexOf(':'))}`;
         fakeDev.driverId = devInfo.driverId.slice(devInfo.driverId.indexOf(':') + 1);
       }
       fakeDev.deviceId = deviceId;

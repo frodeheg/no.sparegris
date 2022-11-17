@@ -115,6 +115,7 @@ class FakeZonesClass {
       zoneId = uniqueID++;
     }
     this.zones[zoneId] = new FakeZoneClass(zoneName, parentId, zoneId);
+    return zoneId;
   }
 
   getZones() {
