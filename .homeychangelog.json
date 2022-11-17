@@ -595,5 +595,8 @@
   },
   "0.19.1": {
     "en": "Minor correction to when to increase charging current."
+  },
+  "0.19.2": {
+    "en": "Added support for Elko Smart Super TR RF (experimental)"
   }
 }
