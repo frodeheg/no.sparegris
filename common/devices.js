@@ -130,6 +130,14 @@ const DEVICE_CMD = {
   'com.aeotec:ZW078': DEFAULT_SWITCH,
   'com.arjankranenburg.virtual:mode': DEFAULT_SWITCH,
   'com.datek.eva:meter-reader': DEFAULT_IGNORED,
+  'com.elko:ESHSUPERTR': {
+    ...DEFAULT_HEATER,
+    note: 'The developer need confirmation that on/off for this device is working before removing experimental flag',
+    setOnOffCap: 'power_status',
+    tempMax: 50,
+    beta: true,
+    default: false
+  },
   'com.everspring:AN179': DEFAULT_SWITCH,
   'com.fibaro:FGS-213': DEFAULT_SWITCH,
   'com.fibaro:FGWPE-101': DEFAULT_SWITCH,
