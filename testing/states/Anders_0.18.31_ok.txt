@@ -1,0 +1,3936 @@
+{
+  "version": "0.18.31",
+  "settings": {
+    "controlTemp": "0",
+    "diagLog": "+6:26:0.130: Failed to reduce power usage by 8080W (number of forced on devices: 0)\r\n+6:28:0.124: Failed to reduce power usage by 8555W (number of forced on devices: 0)\r\n+6:30:33.490: Failed to reduce power usage by 7354W (number of forced on devices: 0)\r\n+6:30:48.325: Failed to reduce power usage by 7412W (number of forced on devices: 0)\r\n+6:31:7.107: Failed to reduce power usage by 9505W (number of forced on devices: 0)\r\n+6:31:33.410: Failed to reduce power usage by 8249W (number of forced on devices: 0)\r\n+6:32:31.850: Failed to reduce power usage by 10024W (number of forced on devices: 0)\r\n+6:32:45.776: Failed to reduce power usage by 10069W (number of forced on devices: 0)\r\n+6:32:58.256: Failed to reduce power usage by 10133W (number of forced on devices: 0)\r\n+6:33:37.971: Failed to reduce power usage by 8984W (number of forced on devices: 0)\r\n+6:34:31.915: Failed to reduce power usage by 9279W (number of forced on devices: 0)\r\n+6:35:25.926: Failed to reduce power usage by 10992W (number of forced on devices: 0)\r\n+6:35:38.146: Failed to reduce power usage by 11079W (number of forced on devices: 0)\r\n+6:35:58.262: Failed to reduce power usage by 11229W (number of forced on devices: 0)\r\n+6:36:19.218: Failed to reduce power usage by 11373W (number of forced on devices: 0)\r\n+6:36:51.632: Failed to reduce power usage by 10241W (number of forced on devices: 0)\r\n+6:37:29.211: Failed to reduce power usage by 11903W (number of forced on devices: 0)\r\n+6:37:47.986: Failed to reduce power usage by 12065W (number of forced on devices: 0)\r\n+6:38:1.723: Failed to reduce power usage by 12186W (number of forced on devices: 0)\r\n+6:38:21.814: Failed to reduce power usage by 10970W (number of forced on devices: 0)\r\n+6:39:7.898: Failed to reduce power usage by 11355W (number of forced on devices: 0)\r\n+6:40:1.942: Failed to reduce power usage by 11840W (number of forced on devices: 0)\r\n+6:40:35.716: Failed to reduce power usage by 13572W (number of forced on devices: 0)\r\n+6:40:56.025: Failed to reduce power usage by 13804W (number of forced on devices: 0)\r\n+6:41:8.550: Failed to reduce power usage by 13950W (number of forced on devices: 0)\r\n+6:41:35.504: Failed to reduce power usage by 12813W (number of forced on devices: 0)\r\n+6:42:28.428: Failed to reduce power usage by 14838W (number of forced on devices: 0)\r\n+6:42:47.975: Failed to reduce power usage by 15101W (number of forced on devices: 0)\r\n+6:43:1.709: Failed to reduce power usage by 15297W (number of forced on devices: 0)\r\n+6:43:55.614: Failed to reduce power usage by 14724W (number of forced on devices: 0)\r\n+6:45:8.291: Failed to reduce power usage by 15834W (number of forced on devices: 0)\r\n+6:45:41.585: Failed to reduce power usage by 17841W (number of forced on devices: 0)\r\n+6:45:55.908: Failed to reduce power usage by 18119W (number of forced on devices: 0)\r\n+6:46:15.949: Failed to reduce power usage by 18551W (number of forced on devices: 0)\r\n+6:46:55.580: Failed to reduce power usage by 18058W (number of forced on devices: 0)\r\n+6:47:35.879: Failed to reduce power usage by 20386W (number of forced on devices: 0)\r\n+6:47:55.388: Failed to reduce power usage by 20912W (number of forced on devices: 0)\r\n+6:48:21.478: Failed to reduce power usage by 20276W (number of forced on devices: 0)\r\n+6:49:28.129: Failed to reduce power usage by 22363W (number of forced on devices: 0)\r\n+6:50:28.484: Failed to reduce power usage by 25097W (number of forced on devices: 0)\r\n+6:50:48.080: Failed to reduce power usage by 25097W (number of forced on devices: 0)\r\n+6:51:5.738: Failed to reduce power usage by 25097W (number of forced on devices: 0)\r\n+6:51:23.365: Failed to reduce power usage by 25097W (number of forced on devices: 0)\r\n+6:52:32.180: Failed to reduce power usage by 25097W (number of forced on devices: 0)\r\n+6:52:45.972: Failed to reduce power usage by 25097W (number of forced on devices: 0)\r\n+6:53:5.984: Failed to reduce power usage by 25097W (number of forced on devices: 0)\r\n+6:54:5.835: Failed to reduce power usage by 25097W (number of forced on devices: 0)\r\n+6:55:20.007: Failed to reduce power usage by 25097W (number of forced on devices: 0)\r\n+6:55:38.418: Failed to reduce power usage by 25097W (number of forced on devices: 0)\r\n+6:55:56.938: Failed to reduce power usage by 25097W (number of forced on devices: 0)\r\n+6:56:15.797: Failed to reduce power usage by 25097W (number of forced on devices: 0)\r\n+6:56:53.528: Failed to reduce power usage by 25097W (number of forced on devices: 0)\r\n+6:57:35.656: Failed to reduce power usage by 25097W (number of forced on devices: 0)\r\n+6:57:47.899: Failed to reduce power usage by 25097W (number of forced on devices: 0)\r\n+6:58:21.842: Failed to reduce power usage by 25097W (number of forced on devices: 0)\r\n+6:59:21.663: Failed to reduce power usage by 25097W (number of forced on devices: 0)\r\n+12:0:27.032: Failed to reduce power usage by 172W (number of forced on devices: 0)\r\n+12:0:32.946: Failed to reduce power usage by 175W (number of forced on devices: 0)\r\n+12:0:39.302: Failed to reduce power usage by 158W (number of forced on devices: 0)\r\n+12:0:46.663: Failed to reduce power usage by 153W (number of forced on devices: 0)\r\n+12:1:20.675: Failed to reduce power usage by 878W (number of forced on devices: 0)\r\n+12:7:33.041: Failed to reduce power usage by 35W (number of forced on devices: 1)\r\n+20:0:5.858: Failed to turn on device Varmtvannsbereder, will retry later\r\n+20:0:5.923: Failed to turn on device Vaskeromsgulv, will retry later\r\n+20:0:23.749: Failed to turn on device Varmtvannsbereder, will retry later\r\n+20:0:28.844: Failed to turn on device Vaskeromsgulv, will retry later\r\n+4:0:5.650: Failed to turn off device Varmtvannsbereder, will try to turn off other devices instead. (Error: Timeout after 5000ms)\r\n+4:0:5.680: Failed to turn off device Vaskeromsgulv, will try to turn off other devices instead. (Error: Timeout after 5000ms)\r\n",
+    "sendLog": "",
+    "showState": "",
+    "showCaps": "",
+    "showPriceApi": "",
+    "stats_app_restarts": 8,
+    "deviceList": {
+      "1d1caab3-02ff-4295-8336-e2c8decfd249": {
+        "priority": 0,
+        "name": "Hønelys",
+        "room": "Hønehuset",
+        "roomId": "84897f44-e783-40dd-ae30-972e3bad57d0",
+        "memberOf": [
+          "84897f44-e783-40dd-ae30-972e3bad57d0",
+          "cdbf506f-e22b-41ac-befc-7646937115bd",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/4ce818f4d0186f1eefb0dc30fdc11fb9/icon.svg",
+        "onoff_cap": "onoff",
+        "thermostat_cap": false,
+        "targetTemp": 24,
+        "driverId": "com.fibaro:FGD-212",
+        "use": false,
+        "reliability": 1
+      },
+      "a3c2d286-777a-4559-8e4c-4cacdcc9abc5": {
+        "priority": 0,
+        "name": "Kjøkkenovn",
+        "room": "Kjøkkenet",
+        "roomId": "2ab5a003-0120-4c01-80f2-a237dcf4ba14",
+        "memberOf": [
+          "2ab5a003-0120-4c01-80f2-a237dcf4ba14",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "ae383ec5-ade3-439d-be3d-58261cc1f95f",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/a72c6f37751c043a5df37beeaa04675c/icon.svg",
+        "onoff_cap": "onoff",
+        "thermostat_cap": false,
+        "targetTemp": 24,
+        "driverId": "com.fibaro:FGWPE-101",
+        "use": false,
+        "reliability": 1
+      },
+      "d7adda54-9543-41b3-b386-ceec9d42884e": {
+        "priority": 0,
+        "name": "Trappelys",
+        "room": "Gang",
+        "roomId": "478cfd92-6475-4214-80d9-27125e39863a",
+        "memberOf": [
+          "478cfd92-6475-4214-80d9-27125e39863a",
+          "9eb2975d-49ea-4033-8db0-105a3e982117",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "ae383ec5-ade3-439d-be3d-58261cc1f95f",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/67dfc715c27ad782e80e679cbb4bc735/icon.svg",
+        "onoff_cap": "onoff",
+        "thermostat_cap": false,
+        "targetTemp": 24,
+        "driverId": "me.zwave:05457",
+        "use": false,
+        "reliability": 1
+      },
+      "9a554fba-ee99-4f4e-b9c4-13d9162dd205": {
+        "priority": 0,
+        "name": "Kontorovn",
+        "room": "Kontor",
+        "roomId": "1815c884-af06-4d53-a2c1-6f4c77e9eb4e",
+        "memberOf": [
+          "1815c884-af06-4d53-a2c1-6f4c77e9eb4e",
+          "37782dac-6d40-40a2-a0a4-17a0dd05003a",
+          "ae383ec5-ade3-439d-be3d-58261cc1f95f",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/a72c6f37751c043a5df37beeaa04675c/icon.svg",
+        "onoff_cap": "onoff",
+        "thermostat_cap": false,
+        "targetTemp": 24,
+        "driverId": "com.fibaro:FGWPE-101",
+        "use": false,
+        "reliability": 1
+      },
+      "cc3644a8-e367-43f5-a3a0-cc7795292167": {
+        "priority": 0,
+        "name": "Garasjerouter",
+        "room": "Garasjen",
+        "roomId": "cdbf506f-e22b-41ac-befc-7646937115bd",
+        "memberOf": [
+          "cdbf506f-e22b-41ac-befc-7646937115bd",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/4ce818f4d0186f1eefb0dc30fdc11fb9/icon.svg",
+        "onoff_cap": "onoff",
+        "thermostat_cap": false,
+        "targetTemp": 24,
+        "driverId": "com.fibaro:FGS-221",
+        "use": false,
+        "reliability": 1
+      },
+      "a30e300d-0a7a-4080-a62a-bca124316645": {
+        "priority": 0,
+        "name": "Garasjerouter Rele2",
+        "room": "Garasjen",
+        "roomId": "cdbf506f-e22b-41ac-befc-7646937115bd",
+        "memberOf": [
+          "cdbf506f-e22b-41ac-befc-7646937115bd",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/4ce818f4d0186f1eefb0dc30fdc11fb9/icon.svg",
+        "onoff_cap": "onoff",
+        "thermostat_cap": false,
+        "targetTemp": 24,
+        "driverId": "com.fibaro:FGS-221",
+        "use": false,
+        "reliability": 1
+      },
+      "6ff3eaa2-7e22-4225-ad45-54c7cd35b9d4": {
+        "priority": 0,
+        "name": "Låveplugg",
+        "room": "Verksted I Låven",
+        "roomId": "630d051c-ad8d-47b8-b2e2-1b8dc9e2c2f2",
+        "memberOf": [
+          "630d051c-ad8d-47b8-b2e2-1b8dc9e2c2f2",
+          "c64df4d4-8e67-420b-9ae4-70751c83b419",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/a72c6f37751c043a5df37beeaa04675c/icon.svg",
+        "onoff_cap": "onoff",
+        "thermostat_cap": false,
+        "targetTemp": 24,
+        "driverId": "com.fibaro:FGWPE-101",
+        "use": 1,
+        "reliability": 1
+      },
+      "61d0e976-6a5d-4376-8220-69e0f7debd47": {
+        "priority": 0,
+        "name": "Verkstedovn",
+        "room": "Verksted I Låven",
+        "roomId": "630d051c-ad8d-47b8-b2e2-1b8dc9e2c2f2",
+        "memberOf": [
+          "630d051c-ad8d-47b8-b2e2-1b8dc9e2c2f2",
+          "c64df4d4-8e67-420b-9ae4-70751c83b419",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/a72c6f37751c043a5df37beeaa04675c/icon.svg",
+        "onoff_cap": "onoff",
+        "thermostat_cap": false,
+        "targetTemp": 24,
+        "driverId": "com.fibaro:FGWPE-101",
+        "use": false,
+        "reliability": 1
+      },
+      "1116b5ea-a7ea-4b08-9138-4592d0176d82": {
+        "priority": 0,
+        "name": "Utelys Låven",
+        "room": "Utendørs",
+        "roomId": "5204dc44-8e9c-49e7-aed8-9d5c93330126",
+        "memberOf": [
+          "5204dc44-8e9c-49e7-aed8-9d5c93330126",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/4ce818f4d0186f1eefb0dc30fdc11fb9/icon.svg",
+        "onoff_cap": "onoff",
+        "thermostat_cap": false,
+        "targetTemp": 24,
+        "driverId": "com.fibaro:FGD-212",
+        "use": false,
+        "reliability": 1
+      },
+      "e7907e31-1990-412b-ba2a-920b7085cee1": {
+        "priority": 0,
+        "name": "JLH Forsterker",
+        "room": "Verksted I Låven",
+        "roomId": "630d051c-ad8d-47b8-b2e2-1b8dc9e2c2f2",
+        "memberOf": [
+          "630d051c-ad8d-47b8-b2e2-1b8dc9e2c2f2",
+          "c64df4d4-8e67-420b-9ae4-70751c83b419",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/a72c6f37751c043a5df37beeaa04675c/icon.svg",
+        "onoff_cap": "onoff",
+        "thermostat_cap": false,
+        "targetTemp": 24,
+        "driverId": "com.fibaro:FGWPx-102-PLUS",
+        "use": false,
+        "reliability": 1
+      },
+      "9c7be705-f3c7-4acd-93c1-2ba63e435e64": {
+        "priority": 0,
+        "name": "Verkstedlys",
+        "room": "Verksted I Låven",
+        "roomId": "630d051c-ad8d-47b8-b2e2-1b8dc9e2c2f2",
+        "memberOf": [
+          "630d051c-ad8d-47b8-b2e2-1b8dc9e2c2f2",
+          "c64df4d4-8e67-420b-9ae4-70751c83b419",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/4ce818f4d0186f1eefb0dc30fdc11fb9/icon.svg",
+        "onoff_cap": "onoff",
+        "thermostat_cap": false,
+        "targetTemp": 24,
+        "driverId": "com.fibaro:FGS-223",
+        "use": false,
+        "reliability": 1
+      },
+      "30085e23-22f2-4301-9dab-22b0d1cc9dc1": {
+        "priority": 0,
+        "name": "Kompressor",
+        "room": "Verksted I Låven",
+        "roomId": "630d051c-ad8d-47b8-b2e2-1b8dc9e2c2f2",
+        "memberOf": [
+          "630d051c-ad8d-47b8-b2e2-1b8dc9e2c2f2",
+          "c64df4d4-8e67-420b-9ae4-70751c83b419",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/4ce818f4d0186f1eefb0dc30fdc11fb9/icon.svg",
+        "onoff_cap": "onoff",
+        "thermostat_cap": false,
+        "targetTemp": 24,
+        "driverId": "com.fibaro:FGS-223",
+        "use": false,
+        "reliability": 1
+      },
+      "bf7934cf-27de-4ab0-abc8-89da1fdd6556": {
+        "priority": 0,
+        "name": "Bad Varmekabel",
+        "room": "Badet",
+        "roomId": "8a6928ea-26b2-4922-9ead-d20ee6695dd3",
+        "memberOf": [
+          "8a6928ea-26b2-4922-9ead-d20ee6695dd3",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "ae383ec5-ade3-439d-be3d-58261cc1f95f",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/4ce818f4d0186f1eefb0dc30fdc11fb9/icon.svg",
+        "onoff_cap": "onoff",
+        "thermostat_cap": false,
+        "targetTemp": 24,
+        "driverId": "com.fibaro:FGS-221",
+        "use": false,
+        "reliability": 1
+      },
+      "2377a408-fe92-432e-8381-3e86c653850e": {
+        "priority": 0,
+        "name": "Ubrukt Rele ",
+        "room": "Badet",
+        "roomId": "8a6928ea-26b2-4922-9ead-d20ee6695dd3",
+        "memberOf": [
+          "8a6928ea-26b2-4922-9ead-d20ee6695dd3",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "ae383ec5-ade3-439d-be3d-58261cc1f95f",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/4ce818f4d0186f1eefb0dc30fdc11fb9/icon.svg",
+        "onoff_cap": "onoff",
+        "thermostat_cap": false,
+        "targetTemp": 24,
+        "driverId": "com.fibaro:FGS-221",
+        "use": false,
+        "reliability": 1
+      },
+      "b0abdeb3-00b0-4549-bbb7-a7549fb2332c": {
+        "priority": 0,
+        "name": "Høneovn",
+        "room": "Hønehuset",
+        "roomId": "84897f44-e783-40dd-ae30-972e3bad57d0",
+        "memberOf": [
+          "84897f44-e783-40dd-ae30-972e3bad57d0",
+          "cdbf506f-e22b-41ac-befc-7646937115bd",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/4ce818f4d0186f1eefb0dc30fdc11fb9/icon.svg",
+        "onoff_cap": "onoff",
+        "thermostat_cap": false,
+        "targetTemp": 24,
+        "driverId": "com.fibaro:FGS-223",
+        "use": false,
+        "reliability": 1
+      },
+      "7902c716-dd05-4531-b95d-b363b5aa7cbc": {
+        "priority": 0,
+        "name": "Hønevifte",
+        "room": "Hønehuset",
+        "roomId": "84897f44-e783-40dd-ae30-972e3bad57d0",
+        "memberOf": [
+          "84897f44-e783-40dd-ae30-972e3bad57d0",
+          "cdbf506f-e22b-41ac-befc-7646937115bd",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/4ce818f4d0186f1eefb0dc30fdc11fb9/icon.svg",
+        "onoff_cap": "onoff",
+        "thermostat_cap": false,
+        "targetTemp": 24,
+        "driverId": "com.fibaro:FGS-223",
+        "use": false,
+        "reliability": 1
+      },
+      "2e3d96a2-51fc-4323-8a48-c6da109349f1": {
+        "priority": 0,
+        "name": "Verandarouter",
+        "room": "Veranda",
+        "roomId": "b91a10fa-c1fb-4c4c-a05d-c070699e8532",
+        "memberOf": [
+          "b91a10fa-c1fb-4c4c-a05d-c070699e8532",
+          "b840a982-a3a7-4513-9d96-902d81128f5c",
+          "ae383ec5-ade3-439d-be3d-58261cc1f95f",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/4ce818f4d0186f1eefb0dc30fdc11fb9/icon.svg",
+        "onoff_cap": "onoff",
+        "thermostat_cap": false,
+        "targetTemp": 24,
+        "driverId": "com.fibaro:FGD-211",
+        "use": false,
+        "reliability": 1
+      },
+      "d7845767-f938-4e11-aab9-4c2c1f2116b8": {
+        "priority": 0,
+        "name": "Ferie På Tur",
+        "room": "Sjelden I Bruk",
+        "roomId": "6319f653-b86f-4f6a-81bb-238a21cc396d",
+        "memberOf": [
+          "6319f653-b86f-4f6a-81bb-238a21cc396d",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/81814e4d6af3ac9cec08dd51508de00c/icon.svg",
+        "onoff_cap": "onoff",
+        "thermostat_cap": false,
+        "targetTemp": 24,
+        "driverId": "com.arjankranenburg.virtual:mode",
+        "use": false,
+        "reliability": 1
+      },
+      "b334f82f-928c-4a2a-8629-b9acb87e9f9b": {
+        "priority": 0,
+        "name": "Låvelys",
+        "room": "Låven",
+        "roomId": "c64df4d4-8e67-420b-9ae4-70751c83b419",
+        "memberOf": [
+          "c64df4d4-8e67-420b-9ae4-70751c83b419",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/4ce818f4d0186f1eefb0dc30fdc11fb9/icon.svg",
+        "onoff_cap": "onoff",
+        "thermostat_cap": false,
+        "targetTemp": 24,
+        "driverId": "com.fibaro:FGD-212",
+        "use": false,
+        "reliability": 1
+      },
+      "c745766f-fcd0-4f36-b42e-4c8b3d224356": {
+        "priority": 0,
+        "name": "Hjemmekontor ",
+        "room": "Kontor",
+        "roomId": "1815c884-af06-4d53-a2c1-6f4c77e9eb4e",
+        "memberOf": [
+          "1815c884-af06-4d53-a2c1-6f4c77e9eb4e",
+          "37782dac-6d40-40a2-a0a4-17a0dd05003a",
+          "ae383ec5-ade3-439d-be3d-58261cc1f95f",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/145585aeb6d1731b45b19060a6396cd6/icon.svg",
+        "onoff_cap": "onoff",
+        "thermostat_cap": false,
+        "targetTemp": 24,
+        "driverId": "com.arjankranenburg.virtual:mode",
+        "use": false,
+        "reliability": 1
+      },
+      "b5462728-ad63-4da0-8fec-c7f9240290f4": {
+        "priority": 0,
+        "name": "Helgejobb",
+        "room": "Kontor",
+        "roomId": "1815c884-af06-4d53-a2c1-6f4c77e9eb4e",
+        "memberOf": [
+          "1815c884-af06-4d53-a2c1-6f4c77e9eb4e",
+          "37782dac-6d40-40a2-a0a4-17a0dd05003a",
+          "ae383ec5-ade3-439d-be3d-58261cc1f95f",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/fdc61ad5c4561f4858f19317507019f6/icon.svg",
+        "onoff_cap": "onoff",
+        "thermostat_cap": false,
+        "targetTemp": 24,
+        "driverId": "com.arjankranenburg.virtual:mode",
+        "use": false,
+        "reliability": 1
+      },
+      "8ba38c55-b7d0-409b-86dd-a40723be55a2": {
+        "priority": 0,
+        "name": "Helgevarme verksted",
+        "room": "Verksted I Låven",
+        "roomId": "630d051c-ad8d-47b8-b2e2-1b8dc9e2c2f2",
+        "memberOf": [
+          "630d051c-ad8d-47b8-b2e2-1b8dc9e2c2f2",
+          "c64df4d4-8e67-420b-9ae4-70751c83b419",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/fdc61ad5c4561f4858f19317507019f6/icon.svg",
+        "onoff_cap": "onoff",
+        "thermostat_cap": false,
+        "targetTemp": 24,
+        "driverId": "com.arjankranenburg.virtual:mode",
+        "use": false,
+        "reliability": 1
+      },
+      "7852a19e-8398-450b-a41c-ec8b562067fb": {
+        "priority": 0,
+        "name": "Ferietid Hjemme",
+        "room": "Sjelden I Bruk",
+        "roomId": "6319f653-b86f-4f6a-81bb-238a21cc396d",
+        "memberOf": [
+          "6319f653-b86f-4f6a-81bb-238a21cc396d",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/145585aeb6d1731b45b19060a6396cd6/icon.svg",
+        "onoff_cap": "onoff",
+        "thermostat_cap": false,
+        "targetTemp": 24,
+        "driverId": "com.arjankranenburg.virtual:mode",
+        "use": false,
+        "reliability": 1
+      },
+      "80f77613-c886-4978-8282-0a73d4685189": {
+        "priority": 0,
+        "name": "Lys Nr 2",
+        "room": "Verkstedet",
+        "roomId": "7f755306-18ba-4939-be4c-3eabb194192c",
+        "memberOf": [
+          "7f755306-18ba-4939-be4c-3eabb194192c",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/a72c6f37751c043a5df37beeaa04675c/icon.svg",
+        "onoff_cap": "onoff",
+        "thermostat_cap": false,
+        "targetTemp": 24,
+        "driverId": "com.fibaro:FGWPx-102-PLUS",
+        "use": false,
+        "reliability": 1
+      },
+      "08e8ae82-cb46-4c38-a6f2-1bc983bc86c5": {
+        "priority": 0,
+        "name": "Amandas Ovn",
+        "room": "Amandas Rom",
+        "roomId": "0fe0cea2-9f60-4f44-aeeb-914a3fcd6c5b",
+        "memberOf": [
+          "0fe0cea2-9f60-4f44-aeeb-914a3fcd6c5b",
+          "b840a982-a3a7-4513-9d96-902d81128f5c",
+          "ae383ec5-ade3-439d-be3d-58261cc1f95f",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/a72c6f37751c043a5df37beeaa04675c/icon.svg",
+        "onoff_cap": "onoff",
+        "thermostat_cap": false,
+        "targetTemp": 24,
+        "driverId": "com.fibaro:FGWPE-101",
+        "use": false,
+        "reliability": 1
+      },
+      "e0f78127-c2c5-4aeb-a07c-a001664d7ca0": {
+        "priority": 0,
+        "name": "Amanda er her",
+        "room": "Amandas Rom",
+        "roomId": "0fe0cea2-9f60-4f44-aeeb-914a3fcd6c5b",
+        "memberOf": [
+          "0fe0cea2-9f60-4f44-aeeb-914a3fcd6c5b",
+          "b840a982-a3a7-4513-9d96-902d81128f5c",
+          "ae383ec5-ade3-439d-be3d-58261cc1f95f",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/81814e4d6af3ac9cec08dd51508de00c/icon.svg",
+        "onoff_cap": "onoff",
+        "thermostat_cap": false,
+        "targetTemp": 24,
+        "driverId": "com.arjankranenburg.virtual:mode",
+        "use": false,
+        "reliability": 1
+      },
+      "6bede99b-3059-48cd-8e4d-b2f7041fade9": {
+        "priority": 0,
+        "name": "Hønevinduet åpent",
+        "room": "Hønehuset",
+        "roomId": "84897f44-e783-40dd-ae30-972e3bad57d0",
+        "memberOf": [
+          "84897f44-e783-40dd-ae30-972e3bad57d0",
+          "cdbf506f-e22b-41ac-befc-7646937115bd",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/4c76892249ecb1d00d4821bc6c8108a8/icon.svg",
+        "onoff_cap": "onoff",
+        "thermostat_cap": false,
+        "targetTemp": 24,
+        "driverId": "com.arjankranenburg.virtual:mode",
+        "use": false,
+        "reliability": 1
+      },
+      "7f2b4b4b-55f3-4d6f-8a1a-73a6875527bd": {
+        "priority": 0,
+        "name": "Lyskaster På Verkstedvegg",
+        "room": "Utendørs",
+        "roomId": "5204dc44-8e9c-49e7-aed8-9d5c93330126",
+        "memberOf": [
+          "5204dc44-8e9c-49e7-aed8-9d5c93330126",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/a72c6f37751c043a5df37beeaa04675c/icon.svg",
+        "onoff_cap": "onoff",
+        "thermostat_cap": false,
+        "targetTemp": 24,
+        "driverId": "com.fibaro:FGWPx-102-PLUS",
+        "use": false,
+        "reliability": 1
+      },
+      "410d2c96-a9c9-4141-b3ce-5c02c104c8bd": {
+        "priority": 0,
+        "name": "Soveromsovn",
+        "room": "Soverom",
+        "roomId": "ddc3cdaa-8172-4c4a-97c9-22d8ec462972",
+        "memberOf": [
+          "ddc3cdaa-8172-4c4a-97c9-22d8ec462972",
+          "b840a982-a3a7-4513-9d96-902d81128f5c",
+          "ae383ec5-ade3-439d-be3d-58261cc1f95f",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/a72c6f37751c043a5df37beeaa04675c/icon.svg",
+        "onoff_cap": "onoff",
+        "thermostat_cap": false,
+        "targetTemp": 24,
+        "driverId": "com.fibaro:FGWPx-102-PLUS",
+        "use": 0,
+        "reliability": 1
+      },
+      "755fe45e-d9bb-4869-8323-c0b123b21891": {
+        "priority": 0,
+        "name": "Utelys Verksted",
+        "room": "Utendørs",
+        "roomId": "5204dc44-8e9c-49e7-aed8-9d5c93330126",
+        "memberOf": [
+          "5204dc44-8e9c-49e7-aed8-9d5c93330126",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/4ce818f4d0186f1eefb0dc30fdc11fb9/icon.svg",
+        "onoff_cap": "onoff",
+        "thermostat_cap": false,
+        "targetTemp": 24,
+        "driverId": "com.fibaro:FGD-212",
+        "use": false,
+        "reliability": 1
+      },
+      "b9b65311-a18e-432c-aaa8-d413561cb8d3": {
+        "priority": 0,
+        "name": "Verkstedlys 2. Etasje",
+        "room": "Verkstedet",
+        "roomId": "7f755306-18ba-4939-be4c-3eabb194192c",
+        "memberOf": [
+          "7f755306-18ba-4939-be4c-3eabb194192c",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/4ce818f4d0186f1eefb0dc30fdc11fb9/icon.svg",
+        "onoff_cap": "onoff",
+        "thermostat_cap": false,
+        "targetTemp": 24,
+        "driverId": "com.fibaro:FGS-221",
+        "use": false,
+        "reliability": 1
+      },
+      "3b8a4393-d736-45c6-82dd-00df9c3fbad3": {
+        "priority": 0,
+        "name": "Verkstedlys Lager 2. Etasje",
+        "room": "Verkstedet",
+        "roomId": "7f755306-18ba-4939-be4c-3eabb194192c",
+        "memberOf": [
+          "7f755306-18ba-4939-be4c-3eabb194192c",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/4ce818f4d0186f1eefb0dc30fdc11fb9/icon.svg",
+        "onoff_cap": "onoff",
+        "thermostat_cap": false,
+        "targetTemp": 24,
+        "driverId": "com.fibaro:FGS-221",
+        "use": false,
+        "reliability": 1
+      },
+      "3aeb9dc7-01dc-4682-8972-e7ed78c86b2d": {
+        "priority": 0,
+        "name": "Verkstedtining",
+        "room": "Verksted I Låven",
+        "roomId": "630d051c-ad8d-47b8-b2e2-1b8dc9e2c2f2",
+        "memberOf": [
+          "630d051c-ad8d-47b8-b2e2-1b8dc9e2c2f2",
+          "c64df4d4-8e67-420b-9ae4-70751c83b419",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/fdc61ad5c4561f4858f19317507019f6/icon.svg",
+        "onoff_cap": "onoff",
+        "thermostat_cap": false,
+        "targetTemp": 24,
+        "driverId": "com.arjankranenburg.virtual:mode",
+        "use": false,
+        "reliability": 1
+      },
+      "05a9e76d-7f51-4757-ae55-b78bea121c8e": {
+        "priority": 0,
+        "name": "Utelys På Trammen",
+        "room": "Utendørs",
+        "roomId": "5204dc44-8e9c-49e7-aed8-9d5c93330126",
+        "memberOf": [
+          "5204dc44-8e9c-49e7-aed8-9d5c93330126",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/f456beb02929c47cdfd33fc7f0f4cae2/icon.svg",
+        "onoff_cap": "onoff",
+        "thermostat_cap": false,
+        "targetTemp": 24,
+        "driverId": "com.philips.hue.zigbee:LWA001",
+        "use": false,
+        "reliability": 1
+      },
+      "cd13c238-b46b-43d7-bd2a-7dfb71c25700": {
+        "priority": 0,
+        "name": "Bulb 9W A60 E27 EUR White",
+        "room": "Hjem",
+        "roomId": "9919ee1e-ffbc-480b-bc4b-77fb047e9e68",
+        "memberOf": [
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/f456beb02929c47cdfd33fc7f0f4cae2/icon.svg",
+        "onoff_cap": "onoff",
+        "thermostat_cap": false,
+        "targetTemp": 24,
+        "driverId": "com.philips.hue.zigbee:LWA001",
+        "use": false,
+        "reliability": 1
+      },
+      "8bb0b96e-1336-43f3-a8db-f0dfc5f523cb": {
+        "priority": 0,
+        "name": "Hikokilader",
+        "room": "Verkstedet",
+        "roomId": "7f755306-18ba-4939-be4c-3eabb194192c",
+        "memberOf": [
+          "7f755306-18ba-4939-be4c-3eabb194192c",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/a72c6f37751c043a5df37beeaa04675c/icon.svg",
+        "onoff_cap": "onoff",
+        "thermostat_cap": false,
+        "targetTemp": 24,
+        "driverId": "com.fibaro:FGWPx-102-PLUS",
+        "use": false,
+        "reliability": 1
+      },
+      "fb62dc43-24c0-46d2-9731-0386a2b65053": {
+        "priority": 0,
+        "name": "Verkstedlys 1. Etg",
+        "room": "Verkstedet",
+        "roomId": "7f755306-18ba-4939-be4c-3eabb194192c",
+        "memberOf": [
+          "7f755306-18ba-4939-be4c-3eabb194192c",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/4ce818f4d0186f1eefb0dc30fdc11fb9/icon.svg",
+        "onoff_cap": "onoff",
+        "thermostat_cap": false,
+        "targetTemp": 24,
+        "driverId": "com.fibaro:FGS-213",
+        "use": false,
+        "reliability": 1
+      },
+      "28a6078e-87e1-4d54-9889-0fc08f4b3289": {
+        "priority": 0,
+        "name": "Hønevindu + Temp",
+        "room": "Hønehuset",
+        "roomId": "84897f44-e783-40dd-ae30-972e3bad57d0",
+        "memberOf": [
+          "84897f44-e783-40dd-ae30-972e3bad57d0",
+          "cdbf506f-e22b-41ac-befc-7646937115bd",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/bf56bfb3eb4489d2237242876438e5c9/icon.svg",
+        "onoff_cap": "onoff.output1",
+        "thermostat_cap": false,
+        "targetTemp": 24,
+        "driverId": "com.fibaro:FGBS-222",
+        "use": false,
+        "reliability": 1
+      },
+      "449fe67f-cf71-46fc-8fe1-10538f3cba84": {
+        "priority": 0,
+        "name": "Varmtvannsbereder",
+        "room": "Bereder",
+        "roomId": "245e2f1b-4cbc-4c08-b809-2d993665d801",
+        "memberOf": [
+          "245e2f1b-4cbc-4c08-b809-2d993665d801",
+          "0420c059-fba8-4885-b274-e2fe984a21c6",
+          "37782dac-6d40-40a2-a0a4-17a0dd05003a",
+          "ae383ec5-ade3-439d-be3d-58261cc1f95f",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/f551b12bb0a5ee1adca6c88cc928288d/icon.svg",
+        "onoff_cap": "onoff",
+        "thermostat_cap": false,
+        "targetTemp": 24,
+        "driverId": "no.thermofloor:ZM-Single-Relay-16A",
+        "use": 0,
+        "reliability": 1
+      },
+      "b593c9ba-c186-441c-8f73-d05f0e497b29": {
+        "priority": 0,
+        "name": "Vaskeromsgulv",
+        "room": "Gulv",
+        "roomId": "5a54cb5a-0628-49d3-be36-6f0a29a5e954",
+        "memberOf": [
+          "5a54cb5a-0628-49d3-be36-6f0a29a5e954",
+          "0420c059-fba8-4885-b274-e2fe984a21c6",
+          "37782dac-6d40-40a2-a0a4-17a0dd05003a",
+          "ae383ec5-ade3-439d-be3d-58261cc1f95f",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/4ce818f4d0186f1eefb0dc30fdc11fb9/icon.svg",
+        "onoff_cap": "onoff",
+        "thermostat_cap": false,
+        "targetTemp": 24,
+        "driverId": "com.fibaro:FGS-213",
+        "use": 1,
+        "reliability": 1
+      },
+      "0bd9133a-069f-4b8c-86f3-d42ea23f0952": {
+        "priority": 0,
+        "name": "Sponavsug",
+        "room": "Verkstedet",
+        "roomId": "7f755306-18ba-4939-be4c-3eabb194192c",
+        "memberOf": [
+          "7f755306-18ba-4939-be4c-3eabb194192c",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/4ce818f4d0186f1eefb0dc30fdc11fb9/icon.svg",
+        "onoff_cap": "onoff",
+        "thermostat_cap": false,
+        "targetTemp": 24,
+        "driverId": "com.fibaro:FGS-213",
+        "use": false,
+        "reliability": 1
+      },
+      "ee676696-0b72-45ca-beb7-0970302c769a": {
+        "priority": 1,
+        "name": "VerkstedTermostat",
+        "room": "Verksted I Låven",
+        "roomId": "630d051c-ad8d-47b8-b2e2-1b8dc9e2c2f2",
+        "memberOf": [
+          "630d051c-ad8d-47b8-b2e2-1b8dc9e2c2f2",
+          "c64df4d4-8e67-420b-9ae4-70751c83b419",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/76e4e48dbf1227355616cc3ccbc13ed3/icon.svg",
+        "onoff_cap": "onoff",
+        "thermostat_cap": true,
+        "targetTemp": 5,
+        "driverId": "no.almli.thermostat:VThermo",
+        "use": true,
+        "reliability": 1
+      },
+      "25f5ff67-e886-42bd-b98f-87b16af6bf95": {
+        "priority": 1,
+        "name": "SoveromsTermostat",
+        "room": "Soverom",
+        "roomId": "ddc3cdaa-8172-4c4a-97c9-22d8ec462972",
+        "memberOf": [
+          "ddc3cdaa-8172-4c4a-97c9-22d8ec462972",
+          "b840a982-a3a7-4513-9d96-902d81128f5c",
+          "ae383ec5-ade3-439d-be3d-58261cc1f95f",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/76e4e48dbf1227355616cc3ccbc13ed3/icon.svg",
+        "onoff_cap": "onoff",
+        "thermostat_cap": true,
+        "targetTemp": 13,
+        "driverId": "no.almli.thermostat:VThermo",
+        "use": true,
+        "reliability": 1
+      },
+      "ed050720-8a11-4d1f-976d-53dc82e5943a": {
+        "priority": 1,
+        "name": "HøneTermostat",
+        "room": "Hønehuset",
+        "roomId": "84897f44-e783-40dd-ae30-972e3bad57d0",
+        "memberOf": [
+          "84897f44-e783-40dd-ae30-972e3bad57d0",
+          "cdbf506f-e22b-41ac-befc-7646937115bd",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/76e4e48dbf1227355616cc3ccbc13ed3/icon.svg",
+        "onoff_cap": "onoff",
+        "thermostat_cap": true,
+        "targetTemp": 12,
+        "driverId": "no.almli.thermostat:VThermo",
+        "use": 0,
+        "reliability": 1
+      }
+    },
+    "futurePriceOptions": {
+      "minCheapTime": "4",
+      "minExpensiveTime": "4",
+      "averageTime": "0",
+      "lowPriceModifier": "-10",
+      "highPriceModifier": "10",
+      "extremePriceModifier": "100",
+      "dirtCheapPriceModifier": "-50",
+      "priceKind": "1",
+      "priceCountry": "Norway (NO)",
+      "priceRegion": "0",
+      "surcharge": "0.0198",
+      "priceFixed": "0.6",
+      "gridTaxDay": "0.3626",
+      "gridTaxNight": "0.2839",
+      "VAT": "25",
+      "gridCosts": [
+        {
+          "limit": 2000,
+          "price": 150
+        },
+        {
+          "limit": 5000,
+          "price": 250
+        },
+        {
+          "limit": 10000,
+          "price": 410
+        },
+        {
+          "limit": 15000,
+          "price": 735
+        },
+        {
+          "limit": 20000,
+          "price": 975
+        },
+        {
+          "limit": 25000,
+          "price": 1210
+        }
+      ]
+    },
+    "appConfigProgress": {
+      "energyMeterNotConnected": false,
+      "timeSinceEnergyMeter": 8.425,
+      "gotPPFromFlow": false,
+      "ApiStatus": 2
+    },
+    "deviceListRefresh": "done",
+    "frostList": {
+      "b593c9ba-c186-441c-8f73-d05f0e497b29": {
+        "minTemp": 5
+      },
+      "ee676696-0b72-45ca-beb7-0970302c769a": {
+        "minTemp": "1"
+      },
+      "25f5ff67-e886-42bd-b98f-87b16af6bf95": {
+        "minTemp": "5"
+      },
+      "6ff3eaa2-7e22-4225-ad45-54c7cd35b9d4": {
+        "minTemp": 5
+      }
+    },
+    "zones": {
+      "5a54cb5a-0628-49d3-be36-6f0a29a5e954": {
+        "name": "Gulv",
+        "enabled": false
+      },
+      "245e2f1b-4cbc-4c08-b809-2d993665d801": {
+        "name": "Bereder",
+        "enabled": false
+      },
+      "84897f44-e783-40dd-ae30-972e3bad57d0": {
+        "name": "Hønehuset",
+        "enabled": true
+      },
+      "630d051c-ad8d-47b8-b2e2-1b8dc9e2c2f2": {
+        "name": "Verksted I Låven",
+        "enabled": false
+      }
+    },
+    "maxPower": "5000",
+    "operatingMode": 1,
+    "priceMode": "2",
+    "modeList": [
+      [
+        {
+          "id": "25f5ff67-e886-42bd-b98f-87b16af6bf95",
+          "operation": 2,
+          "targetTemp": 12
+        },
+        {
+          "id": "b593c9ba-c186-441c-8f73-d05f0e497b29",
+          "operation": 2,
+          "targetTemp": 24
+        },
+        {
+          "id": "ee676696-0b72-45ca-beb7-0970302c769a",
+          "operation": 2,
+          "targetTemp": 6.5
+        },
+        {
+          "id": "6ff3eaa2-7e22-4225-ad45-54c7cd35b9d4",
+          "operation": 2,
+          "targetTemp": 24
+        }
+      ],
+      [
+        {
+          "id": "b593c9ba-c186-441c-8f73-d05f0e497b29",
+          "operation": 2,
+          "targetTemp": 19
+        },
+        {
+          "id": "ee676696-0b72-45ca-beb7-0970302c769a",
+          "operation": 0,
+          "targetTemp": 5
+        },
+        {
+          "id": "25f5ff67-e886-42bd-b98f-87b16af6bf95",
+          "operation": 2,
+          "targetTemp": 10
+        },
+        {
+          "id": "6ff3eaa2-7e22-4225-ad45-54c7cd35b9d4",
+          "operation": 0,
+          "targetTemp": 19
+        }
+      ],
+      [
+        {
+          "id": "b593c9ba-c186-441c-8f73-d05f0e497b29",
+          "operation": 2,
+          "targetTemp": 6
+        },
+        {
+          "id": "ee676696-0b72-45ca-beb7-0970302c769a",
+          "operation": 0,
+          "targetTemp": 2
+        },
+        {
+          "id": "25f5ff67-e886-42bd-b98f-87b16af6bf95",
+          "operation": 2,
+          "targetTemp": 3
+        },
+        {
+          "id": "6ff3eaa2-7e22-4225-ad45-54c7cd35b9d4",
+          "operation": 2,
+          "targetTemp": 6
+        }
+      ],
+      [
+        {
+          "id": "b593c9ba-c186-441c-8f73-d05f0e497b29",
+          "operation": 1,
+          "targetTemp": 12
+        },
+        {
+          "id": "ee676696-0b72-45ca-beb7-0970302c769a",
+          "operation": 2,
+          "targetTemp": 3
+        },
+        {
+          "id": "25f5ff67-e886-42bd-b98f-87b16af6bf95",
+          "operation": 2,
+          "targetTemp": 6
+        },
+        {
+          "id": "6ff3eaa2-7e22-4225-ad45-54c7cd35b9d4",
+          "operation": 2,
+          "targetTemp": 12
+        }
+      ]
+    ],
+    "pricePoint": "1",
+    "errorMargin": "5",
+    "priceActionList": [
+      {
+        "b593c9ba-c186-441c-8f73-d05f0e497b29": {
+          "delta": 3,
+          "operation": 0
+        },
+        "ee676696-0b72-45ca-beb7-0970302c769a": {
+          "delta": 1,
+          "operation": 2
+        },
+        "25f5ff67-e886-42bd-b98f-87b16af6bf95": {
+          "delta": 2,
+          "operation": 2
+        },
+        "6ff3eaa2-7e22-4225-ad45-54c7cd35b9d4": {
+          "delta": 3,
+          "operation": 3
+        }
+      },
+      {
+        "b593c9ba-c186-441c-8f73-d05f0e497b29": {
+          "delta": 0,
+          "operation": 0
+        },
+        "ee676696-0b72-45ca-beb7-0970302c769a": {
+          "delta": 0,
+          "operation": 3
+        },
+        "25f5ff67-e886-42bd-b98f-87b16af6bf95": {
+          "delta": 0,
+          "operation": 3
+        },
+        "6ff3eaa2-7e22-4225-ad45-54c7cd35b9d4": {
+          "delta": 0,
+          "operation": 3
+        }
+      },
+      {
+        "b593c9ba-c186-441c-8f73-d05f0e497b29": {
+          "delta": -5,
+          "operation": 1
+        },
+        "ee676696-0b72-45ca-beb7-0970302c769a": {
+          "delta": -1,
+          "operation": 2
+        },
+        "25f5ff67-e886-42bd-b98f-87b16af6bf95": {
+          "delta": -3,
+          "operation": 2
+        },
+        "6ff3eaa2-7e22-4225-ad45-54c7cd35b9d4": {
+          "delta": -5,
+          "operation": 1
+        }
+      },
+      {
+        "b593c9ba-c186-441c-8f73-d05f0e497b29": {
+          "delta": -10,
+          "operation": 1
+        },
+        "ee676696-0b72-45ca-beb7-0970302c769a": {
+          "delta": -3,
+          "operation": 2
+        },
+        "25f5ff67-e886-42bd-b98f-87b16af6bf95": {
+          "delta": -5,
+          "operation": 2
+        },
+        "6ff3eaa2-7e22-4225-ad45-54c7cd35b9d4": {
+          "delta": -10,
+          "operation": 1
+        }
+      },
+      {
+        "b593c9ba-c186-441c-8f73-d05f0e497b29": {
+          "delta": 3,
+          "operation": 0
+        },
+        "ee676696-0b72-45ca-beb7-0970302c769a": {
+          "delta": 1,
+          "operation": 2
+        },
+        "25f5ff67-e886-42bd-b98f-87b16af6bf95": {
+          "delta": 2,
+          "operation": 2
+        },
+        "6ff3eaa2-7e22-4225-ad45-54c7cd35b9d4": {
+          "delta": 4,
+          "operation": 3
+        }
+      }
+    ],
+    "freeThreshold": "0",
+    "safetyPower": "0",
+    "settingsSaved": "",
+    "mainFuse": "63",
+    "averagePrice": 5.2411691666666655,
+    "gotPPFromFlow": true,
+    "stats_norm_energy": 1394.399875848306,
+    "stats_savings_all_time_use": 10.272747368146316,
+    "stats_low_energy": 2380.2524406148395,
+    "stats_high_energy": 8519.212567264332,
+    "stats_this_month_maxes": [
+      3841.0832888888917,
+      3127.826485277775,
+      2945.982052500001
+    ],
+    "stats_this_month_average": 3304.9639422222226,
+    "stats_failed_turn_on": 89,
+    "stats_failed_turn_off": 106,
+    "modeNames": [
+      "Egendefinert"
+    ],
+    "gridCosts": [
+      {
+        "limit": 2000,
+        "price": 150
+      },
+      {
+        "limit": 5000,
+        "price": 250
+      },
+      {
+        "limit": 10000,
+        "price": 410
+      },
+      {
+        "limit": 15000,
+        "price": 735
+      },
+      {
+        "limit": 20000,
+        "price": 975
+      },
+      {
+        "limit": 25000,
+        "price": 1210
+      }
+    ],
+    "stats_daily_max": [
+      2899.3745350000017,
+      2765.903325555555,
+      2945.982052500001,
+      2705.0111777777784,
+      3841.0832888888917,
+      3127.826485277775,
+      2202.1852172222225
+    ],
+    "stats_daily_max_ok": [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "stats_daily_max_last_update_time": "2022-11-07T06:00:00.000Z",
+    "overShootAvoided": null,
+    "stats_last_month_max": 3544.7813043518513,
+    "chargerOptions": {
+      "chargeTarget": 1,
+      "chargeMin": 1000,
+      "chargeMax": 10000,
+      "chargeMargin": 500,
+      "chargeDevice": "",
+      "chargeThreshold": 2000,
+      "minToggleTime": 30,
+      "chargeRemaining": 0,
+      "chargeCycleType": 2,
+      "chargeEnd": "2022-10-17T14:55:58.030Z",
+      "experimentalMode": 1
+    },
+    "charger": {
+      "chargeTarget": 1,
+      "chargeMin": 1000,
+      "chargeMax": 10000,
+      "chargeMargin": 500,
+      "chargeDevice": "",
+      "chargeThreshold": 2000,
+      "minToggleTime": 30,
+      "chargeRemaining": 0,
+      "chargeCycleType": 2,
+      "chargeEnd": "2022-10-17T14:55:58.030Z",
+      "experimentalMode": 1
+    },
+    "archive": {
+      "maxPower": {
+        "daily": {
+          "2022-10": [
+            2061.9728594444437,
+            3496.5537325000023,
+            2750.0528777777777,
+            null,
+            2604.4530775000003,
+            2160.56521388889,
+            2944.3999547222215,
+            2941.3639225000015,
+            2910.9674272222223,
+            2454.740332777778,
+            2041.9310447222224,
+            2988.3881733333337,
+            2460.901617222223,
+            2835.1663897222224,
+            2566.60414277778,
+            2338.5621116666666,
+            3202.434673055556,
+            2433.210954444445,
+            3425.998127222222,
+            3290.622692222222,
+            2704.856195555554,
+            2912.4971352777793,
+            2545.258259722223,
+            3012.5882916666674,
+            2633.318849722221,
+            3224.3759433333307,
+            3431.1857222222206,
+            2873.801058333335,
+            2235.5521250000006,
+            3706.604458333331,
+            3090.5180549999995
+          ],
+          "2022-11": [
+            2899.3745350000017,
+            2765.903325555555,
+            2945.982052500001,
+            2705.0111777777784,
+            3841.0832888888917,
+            3127.826485277775,
+            2202.1852172222225
+          ]
+        },
+        "monthly": {
+          "2022": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            3544.7813043518513,
+            3304.9639422222226
+          ]
+        },
+        "yearly": {
+          "2022": [
+            3841.0832888888917
+          ]
+        },
+        "hourly": {
+          "2022-10-29": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            486.8659802777778,
+            1128.1599427777776,
+            725.253573611111,
+            773.775593888889,
+            784.5203775,
+            741.6355763888888,
+            1338.550433055556,
+            961.7481027777776,
+            2235.5521250000006
+          ],
+          "2022-10-30": [
+            799.1970461111111,
+            838.5438699999997,
+            1029.9652472222226,
+            931.8594019444448,
+            736.5716024999999,
+            1474.8685174999994,
+            1394.1291780555557,
+            1410.0840291666673,
+            1397.8979519444445,
+            1885.6495600000017,
+            1500.935346944444,
+            2207.132179166667,
+            3137.5026525000003,
+            2070.394347777778,
+            2055.5809602777786,
+            1789.7062924999998,
+            2278.084817777778,
+            2334.608887499999,
+            2111.358128055556,
+            2720.165839999999,
+            2166.869693055556,
+            1557.779118611111,
+            1957.7624358333333,
+            1592.2040608333336,
+            3706.604458333331
+          ],
+          "2022-10-31": [
+            1366.363675,
+            1227.1825391666666,
+            1733.3514127777783,
+            766.3185383333329,
+            546.6931824999999,
+            1017.0502030555556,
+            1847.2343627777766,
+            2022.2490888888885,
+            2105.3723519444457,
+            1379.054726666667,
+            3090.5180549999995,
+            1418.0184966666673,
+            1253.380035,
+            1088.7735236111107,
+            729.0823416666668,
+            935.7673388888891,
+            846.5221338888889,
+            1320.251502222222,
+            916.7688122222223,
+            1001.8721805555556,
+            2578.579249444442,
+            1364.7863758333338,
+            1152.5000991666666,
+            650.4177638888892
+          ],
+          "2022-11-01": [
+            736.6614025000001,
+            1239.1687097222227,
+            797.3433488888893,
+            2899.3745350000017,
+            1040.770369722222,
+            1291.4948852777773,
+            1449.164397222222,
+            1427.2766188888886,
+            1392.5889941666665,
+            1405.4098499999998,
+            1454.510295555555,
+            2874.7352305555555,
+            2832.1108186111146,
+            1990.2897283333336,
+            932.6683991666669,
+            712.4407355555554,
+            530.8183127777777,
+            2008.0601316666675,
+            1066.0772530555553,
+            1119.1652922222222,
+            1434.005030555556,
+            1377.2589597222222,
+            1312.4748497222224,
+            1925.2528205555554
+          ],
+          "2022-11-02": [
+            965.1018438888889,
+            649.8817608333335,
+            2510.071103055557,
+            529.4641911111111,
+            645.7116125000002,
+            1140.7941022222224,
+            1393.5452350000005,
+            1961.7648397222222,
+            1732.4599405555557,
+            1948.1985825,
+            1654.872892222222,
+            1939.5265436111117,
+            2285.7659230555564,
+            1557.9532127777773,
+            948.1042550000002,
+            1325.7587058333331,
+            1012.2372658333337,
+            906.1963972222226,
+            892.130298611111,
+            970.0211730555559,
+            2765.903325555555,
+            2006.8009736111112,
+            1301.157069722222,
+            900.0128447222223
+          ],
+          "2022-11-03": [
+            784.1144650000001,
+            1121.2358941666662,
+            2921.0479283333343,
+            1948.8797508333334,
+            970.7782538888885,
+            1558.3739708333324,
+            1579.5747666666664,
+            2225.866107222221,
+            1137.7313680555553,
+            561.5939916666667,
+            474.29721500000005,
+            403.0854597222223,
+            841.8903386111109,
+            637.0773300000001,
+            895.1377538888894,
+            1278.116941111111,
+            1382.8974788888888,
+            930.5936352777778,
+            736.9969566666666,
+            825.8395347222217,
+            2945.982052500001,
+            1029.430656111111,
+            863.3187666666672,
+            465.97300249999995
+          ],
+          "2022-11-04": [
+            1161.127912777778,
+            562.9198311111111,
+            868.9543908333332,
+            539.7857138888888,
+            738.0091311111108,
+            1402.0183808333338,
+            1877.659788888889,
+            1140.7601305555559,
+            1319.5066633333333,
+            1211.7983266666663,
+            1103.0856422222223,
+            1311.7240250000002,
+            2705.0111777777784,
+            1363.0303711111117,
+            1400.754960277778,
+            1453.3399586111107,
+            2304.292656666668,
+            1354.6601744444445,
+            1312.6098913888889,
+            920.7144408333335,
+            944.0899138888889,
+            1344.0279577777771,
+            1569.4700888888883,
+            1372.0983788888886
+          ],
+          "2022-11-05": [
+            1042.9205805555555,
+            1293.454595277778,
+            2412.3324474999995,
+            880.1285836111111,
+            876.292312777778,
+            1321.7977136111117,
+            1485.989192777778,
+            2204.5770049999996,
+            1663.6679877777783,
+            1754.2167091666659,
+            1693.9660905555568,
+            1939.6351408333335,
+            1526.0344847222232,
+            1363.4344775000002,
+            1158.4822725000001,
+            1677.1353361111114,
+            1449.8156225000002,
+            1120.0407199999997,
+            1062.3402536111112,
+            1177.986428611111,
+            3841.0832888888917,
+            1534.5870888888892,
+            1318.3489619444442,
+            1185.598006944444
+          ],
+          "2022-11-06": [
+            1317.653734166667,
+            1063.196916666667,
+            1728.954135277778,
+            859.3901216666668,
+            718.2628469444443,
+            1482.3684788888895,
+            1640.637343611111,
+            1488.5976113888883,
+            2580.4962786111123,
+            1344.9395088888893,
+            2168.761317500001,
+            1561.1061777777782,
+            1553.9460622222223,
+            1203.271873611111,
+            3005.137895555555,
+            1034.1488247222223,
+            1825.580692222222,
+            675.7518388888888,
+            777.468829166667,
+            1420.0591238888883,
+            3127.826485277775,
+            1110.668928333333,
+            850.284556388889,
+            906.9237236111111
+          ],
+          "2022-11-07": [
+            606.3006894444445,
+            1611.7301061111125,
+            721.6778327777776,
+            653.6686380555556,
+            728.3387733333335,
+            903.4345524999997,
+            1338.7560552777786,
+            2202.1852172222225
+          ]
+        }
+      },
+      "dataOk": {
+        "daily": {
+          "2022-10": [
+            true,
+            true,
+            true,
+            null,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            false,
+            true,
+            true,
+            true
+          ],
+          "2022-11": [
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true
+          ]
+        },
+        "monthly": {
+          "2022": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            false,
+            true
+          ]
+        },
+        "yearly": {
+          "2022": [
+            false
+          ]
+        },
+        "hourly": {
+          "2022-10-29": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "2022-10-30": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "2022-10-31": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "2022-11-01": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "2022-11-02": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "2022-11-03": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "2022-11-04": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "2022-11-05": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "2022-11-06": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "2022-11-07": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "moneySavedTariff": {
+        "monthly": {
+          "2022": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            0,
+            160
+          ]
+        },
+        "yearly": {
+          "2022": [
+            160
+          ]
+        }
+      },
+      "moneySavedUsage": {
+        "monthly": {
+          "2022": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            10.272747368146316
+          ]
+        },
+        "yearly": {
+          "2022": [
+            10.272747368146316
+          ]
+        }
+      },
+      "powUsage": {
+        "hourly": {
+          "2022-10-29": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            486.8659802777778,
+            1128.1599427777776,
+            725.253573611111,
+            773.775593888889,
+            784.5203775,
+            741.6355763888888,
+            1338.550433055556,
+            961.7481027777776,
+            2235.5521250000006
+          ],
+          "2022-10-30": [
+            799.1970461111111,
+            838.5438699999997,
+            1029.9652472222226,
+            931.8594019444448,
+            736.5716024999999,
+            1474.8685174999994,
+            1394.1291780555557,
+            1410.0840291666673,
+            1397.8979519444445,
+            1885.6495600000017,
+            1500.935346944444,
+            2207.132179166667,
+            3137.5026525000003,
+            2070.394347777778,
+            2055.5809602777786,
+            1789.7062924999998,
+            2278.084817777778,
+            2334.608887499999,
+            2111.358128055556,
+            2720.165839999999,
+            2166.869693055556,
+            1557.779118611111,
+            1957.7624358333333,
+            1592.2040608333336,
+            3706.604458333331
+          ],
+          "2022-10-31": [
+            1366.363675,
+            1227.1825391666666,
+            1733.3514127777783,
+            766.3185383333329,
+            546.6931824999999,
+            1017.0502030555556,
+            1847.2343627777766,
+            2022.2490888888885,
+            2105.3723519444457,
+            1379.054726666667,
+            3090.5180549999995,
+            1418.0184966666673,
+            1253.380035,
+            1088.7735236111107,
+            729.0823416666668,
+            935.7673388888891,
+            846.5221338888889,
+            1320.251502222222,
+            916.7688122222223,
+            1001.8721805555556,
+            2578.579249444442,
+            1364.7863758333338,
+            1152.5000991666666,
+            650.4177638888892
+          ],
+          "2022-11-01": [
+            736.6614025000001,
+            1239.1687097222227,
+            797.3433488888893,
+            2899.3745350000017,
+            1040.770369722222,
+            1291.4948852777773,
+            1449.164397222222,
+            1427.2766188888886,
+            1392.5889941666665,
+            1405.4098499999998,
+            1454.510295555555,
+            2874.7352305555555,
+            2832.1108186111146,
+            1990.2897283333336,
+            932.6683991666669,
+            712.4407355555554,
+            530.8183127777777,
+            2008.0601316666675,
+            1066.0772530555553,
+            1119.1652922222222,
+            1434.005030555556,
+            1377.2589597222222,
+            1312.4748497222224,
+            1925.2528205555554
+          ],
+          "2022-11-02": [
+            965.1018438888889,
+            649.8817608333335,
+            2510.071103055557,
+            529.4641911111111,
+            645.7116125000002,
+            1140.7941022222224,
+            1393.5452350000005,
+            1961.7648397222222,
+            1732.4599405555557,
+            1948.1985825,
+            1654.872892222222,
+            1939.5265436111117,
+            2285.7659230555564,
+            1557.9532127777773,
+            948.1042550000002,
+            1325.7587058333331,
+            1012.2372658333337,
+            906.1963972222226,
+            892.130298611111,
+            970.0211730555559,
+            2765.903325555555,
+            2006.8009736111112,
+            1301.157069722222,
+            900.0128447222223
+          ],
+          "2022-11-03": [
+            784.1144650000001,
+            1121.2358941666662,
+            2921.0479283333343,
+            1948.8797508333334,
+            970.7782538888885,
+            1558.3739708333324,
+            1579.5747666666664,
+            2225.866107222221,
+            1137.7313680555553,
+            561.5939916666667,
+            474.29721500000005,
+            403.0854597222223,
+            841.8903386111109,
+            637.0773300000001,
+            895.1377538888894,
+            1278.116941111111,
+            1382.8974788888888,
+            930.5936352777778,
+            736.9969566666666,
+            825.8395347222217,
+            2945.982052500001,
+            1029.430656111111,
+            863.3187666666672,
+            465.97300249999995
+          ],
+          "2022-11-04": [
+            1161.127912777778,
+            562.9198311111111,
+            868.9543908333332,
+            539.7857138888888,
+            738.0091311111108,
+            1402.0183808333338,
+            1877.659788888889,
+            1140.7601305555559,
+            1319.5066633333333,
+            1211.7983266666663,
+            1103.0856422222223,
+            1311.7240250000002,
+            2705.0111777777784,
+            1363.0303711111117,
+            1400.754960277778,
+            1453.3399586111107,
+            2304.292656666668,
+            1354.6601744444445,
+            1312.6098913888889,
+            920.7144408333335,
+            944.0899138888889,
+            1344.0279577777771,
+            1569.4700888888883,
+            1372.0983788888886
+          ],
+          "2022-11-05": [
+            1042.9205805555555,
+            1293.454595277778,
+            2412.3324474999995,
+            880.1285836111111,
+            876.292312777778,
+            1321.7977136111117,
+            1485.989192777778,
+            2204.5770049999996,
+            1663.6679877777783,
+            1754.2167091666659,
+            1693.9660905555568,
+            1939.6351408333335,
+            1526.0344847222232,
+            1363.4344775000002,
+            1158.4822725000001,
+            1677.1353361111114,
+            1449.8156225000002,
+            1120.0407199999997,
+            1062.3402536111112,
+            1177.986428611111,
+            3841.0832888888917,
+            1534.5870888888892,
+            1318.3489619444442,
+            1185.598006944444
+          ],
+          "2022-11-06": [
+            1317.653734166667,
+            1063.196916666667,
+            1728.954135277778,
+            859.3901216666668,
+            718.2628469444443,
+            1482.3684788888895,
+            1640.637343611111,
+            1488.5976113888883,
+            2580.4962786111123,
+            1344.9395088888893,
+            2168.761317500001,
+            1561.1061777777782,
+            1553.9460622222223,
+            1203.271873611111,
+            3005.137895555555,
+            1034.1488247222223,
+            1825.580692222222,
+            675.7518388888888,
+            777.468829166667,
+            1420.0591238888883,
+            3127.826485277775,
+            1110.668928333333,
+            850.284556388889,
+            906.9237236111111
+          ],
+          "2022-11-07": [
+            606.3006894444445,
+            1611.7301061111125,
+            721.6778327777776,
+            653.6686380555556,
+            728.3387733333335,
+            903.4345524999997,
+            1338.7560552777786,
+            2202.1852172222225
+          ]
+        },
+        "daily": {
+          "2022-10": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            9176.061705277778,
+            45085.4556236111,
+            32358.107989166663
+          ],
+          "2022-11": [
+            35249.120969444455,
+            33943.434092222225,
+            28519.83361833333,
+            31281.44990777778,
+            36983.865301666665,
+            35445.43330527778,
+            8766.091864722224
+          ]
+        },
+        "monthly": {
+          "2022": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            86619.62531805557,
+            210189.22905944436
+          ]
+        },
+        "yearly": {
+          "2022": [
+            296808.8543774999
+          ]
+        }
+      },
+      "overShootAvoided": {
+        "hourly": {
+          "2022-10-29": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "2022-10-30": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "2022-10-31": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "2022-11-01": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "2022-11-02": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "2022-11-03": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "2022-11-04": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "2022-11-05": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "2022-11-06": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "2022-11-07": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "daily": {
+          "2022-10": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "2022-11": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ]
+        },
+        "monthly": {
+          "2022": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ]
+        },
+        "yearly": {
+          "2022": [
+            null
+          ]
+        }
+      },
+      "price": {
+        "hourly": {
+          "2022-10-29": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "2022-10-30": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "2022-10-31": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "2022-11-01": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "2022-11-02": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "2022-11-03": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "2022-11-04": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "2022-11-05": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "2022-11-06": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "2022-11-07": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ]
+        },
+        "daily": {
+          "2022-10": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "2022-11": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ]
+        },
+        "monthly": {
+          "2022": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ]
+        },
+        "yearly": {
+          "2022": [
+            null
+          ]
+        }
+      }
+    },
+    "stats_savings_all_time_power_part": 160,
+    "all_prices": []
+  },
+  "state": {
+    "__accum_energy": 568.6751983333332,
+    "__current_power": 635,
+    "__current_power_time": "2022-11-07T07:21:25.353Z",
+    "__power_last_hour": 2202.1852172222225,
+    "__offeredEnergy": 0,
+    "__accum_since": "2022-11-07T00:00:00.000Z",
+    "__hasAC": 0,
+    "__intervalID": "...",
+    "__newHourID": "...",
+    "__reserved_energy": 0,
+    "__free_power_trigger_time": "2022-11-07T07:19:08.599Z",
+    "__power_estimated": 408.2780125,
+    "__alarm_overshoot": false,
+    "__free_capacity": 5868.267792453882,
+    "__num_forced_off_devices": 0,
+    "__num_off_devices": 0,
+    "__all_prices": [],
+    "__current_prices": [],
+    "__current_price_index": 0,
+    "__last_power_off_time": "2022-11-07T07:14:08.659Z",
+    "__last_power_on_time": "2022-11-07T07:21:25.354Z",
+    "__charge_plan": [],
+    "__charge_power_active": 0,
+    "__current_state": {
+      "1d1caab3-02ff-4295-8336-e2c8decfd249": {
+        "nComError": 0,
+        "ongoing": false,
+        "__monitorError": 0,
+        "__monitorFixOn": 0,
+        "__monitorFixTemp": 0
+      },
+      "a3c2d286-777a-4559-8e4c-4cacdcc9abc5": {
+        "nComError": 0,
+        "ongoing": false,
+        "__monitorError": 0,
+        "__monitorFixOn": 0,
+        "__monitorFixTemp": 0
+      },
+      "d7adda54-9543-41b3-b386-ceec9d42884e": {
+        "nComError": 0,
+        "ongoing": false,
+        "__monitorError": 0,
+        "__monitorFixOn": 0,
+        "__monitorFixTemp": 0
+      },
+      "9a554fba-ee99-4f4e-b9c4-13d9162dd205": {
+        "nComError": 0,
+        "ongoing": false,
+        "__monitorError": 0,
+        "__monitorFixOn": 0,
+        "__monitorFixTemp": 0
+      },
+      "cc3644a8-e367-43f5-a3a0-cc7795292167": {
+        "nComError": 0,
+        "ongoing": false,
+        "__monitorError": 0,
+        "__monitorFixOn": 0,
+        "__monitorFixTemp": 0
+      },
+      "a30e300d-0a7a-4080-a62a-bca124316645": {
+        "nComError": 0,
+        "ongoing": false,
+        "__monitorError": 0,
+        "__monitorFixOn": 0,
+        "__monitorFixTemp": 0
+      },
+      "6ff3eaa2-7e22-4225-ad45-54c7cd35b9d4": {
+        "nComError": 0,
+        "ongoing": false,
+        "__monitorError": 0,
+        "__monitorFixOn": 0,
+        "__monitorFixTemp": 0
+      },
+      "61d0e976-6a5d-4376-8220-69e0f7debd47": {
+        "nComError": 0,
+        "ongoing": false,
+        "__monitorError": 0,
+        "__monitorFixOn": 0,
+        "__monitorFixTemp": 0
+      },
+      "1116b5ea-a7ea-4b08-9138-4592d0176d82": {
+        "nComError": 0,
+        "ongoing": false,
+        "__monitorError": 0,
+        "__monitorFixOn": 0,
+        "__monitorFixTemp": 0
+      },
+      "e7907e31-1990-412b-ba2a-920b7085cee1": {
+        "nComError": 0,
+        "ongoing": false,
+        "__monitorError": 0,
+        "__monitorFixOn": 0,
+        "__monitorFixTemp": 0
+      },
+      "9c7be705-f3c7-4acd-93c1-2ba63e435e64": {
+        "nComError": 0,
+        "ongoing": false,
+        "__monitorError": 0,
+        "__monitorFixOn": 0,
+        "__monitorFixTemp": 0
+      },
+      "30085e23-22f2-4301-9dab-22b0d1cc9dc1": {
+        "nComError": 0,
+        "ongoing": false,
+        "__monitorError": 0,
+        "__monitorFixOn": 0,
+        "__monitorFixTemp": 0
+      },
+      "bf7934cf-27de-4ab0-abc8-89da1fdd6556": {
+        "nComError": 0,
+        "ongoing": false,
+        "__monitorError": 0,
+        "__monitorFixOn": 0,
+        "__monitorFixTemp": 0
+      },
+      "2377a408-fe92-432e-8381-3e86c653850e": {
+        "nComError": 0,
+        "ongoing": false,
+        "__monitorError": 0,
+        "__monitorFixOn": 0,
+        "__monitorFixTemp": 0
+      },
+      "b0abdeb3-00b0-4549-bbb7-a7549fb2332c": {
+        "nComError": 0,
+        "ongoing": false,
+        "__monitorError": 0,
+        "__monitorFixOn": 0,
+        "__monitorFixTemp": 0
+      },
+      "7902c716-dd05-4531-b95d-b363b5aa7cbc": {
+        "nComError": 0,
+        "ongoing": false,
+        "__monitorError": 0,
+        "__monitorFixOn": 0,
+        "__monitorFixTemp": 0
+      },
+      "2e3d96a2-51fc-4323-8a48-c6da109349f1": {
+        "nComError": 0,
+        "ongoing": false,
+        "__monitorError": 0,
+        "__monitorFixOn": 0,
+        "__monitorFixTemp": 0
+      },
+      "d7845767-f938-4e11-aab9-4c2c1f2116b8": {
+        "nComError": 0,
+        "ongoing": false,
+        "__monitorError": 0,
+        "__monitorFixOn": 0,
+        "__monitorFixTemp": 0
+      },
+      "b334f82f-928c-4a2a-8629-b9acb87e9f9b": {
+        "nComError": 0,
+        "ongoing": false,
+        "__monitorError": 0,
+        "__monitorFixOn": 0,
+        "__monitorFixTemp": 0
+      },
+      "c745766f-fcd0-4f36-b42e-4c8b3d224356": {
+        "nComError": 0,
+        "ongoing": false,
+        "__monitorError": 0,
+        "__monitorFixOn": 0,
+        "__monitorFixTemp": 0
+      },
+      "b5462728-ad63-4da0-8fec-c7f9240290f4": {
+        "nComError": 0,
+        "ongoing": false,
+        "__monitorError": 0,
+        "__monitorFixOn": 0,
+        "__monitorFixTemp": 0
+      },
+      "8ba38c55-b7d0-409b-86dd-a40723be55a2": {
+        "nComError": 0,
+        "ongoing": false,
+        "__monitorError": 0,
+        "__monitorFixOn": 0,
+        "__monitorFixTemp": 0
+      },
+      "7852a19e-8398-450b-a41c-ec8b562067fb": {
+        "nComError": 0,
+        "ongoing": false,
+        "__monitorError": 0,
+        "__monitorFixOn": 0,
+        "__monitorFixTemp": 0
+      },
+      "80f77613-c886-4978-8282-0a73d4685189": {
+        "nComError": 0,
+        "ongoing": false,
+        "__monitorError": 0,
+        "__monitorFixOn": 0,
+        "__monitorFixTemp": 0
+      },
+      "08e8ae82-cb46-4c38-a6f2-1bc983bc86c5": {
+        "nComError": 0,
+        "ongoing": false,
+        "__monitorError": 0,
+        "__monitorFixOn": 0,
+        "__monitorFixTemp": 0
+      },
+      "e0f78127-c2c5-4aeb-a07c-a001664d7ca0": {
+        "nComError": 0,
+        "ongoing": false,
+        "__monitorError": 0,
+        "__monitorFixOn": 0,
+        "__monitorFixTemp": 0
+      },
+      "6bede99b-3059-48cd-8e4d-b2f7041fade9": {
+        "nComError": 0,
+        "ongoing": false,
+        "__monitorError": 0,
+        "__monitorFixOn": 0,
+        "__monitorFixTemp": 0
+      },
+      "7f2b4b4b-55f3-4d6f-8a1a-73a6875527bd": {
+        "nComError": 0,
+        "ongoing": false,
+        "__monitorError": 0,
+        "__monitorFixOn": 0,
+        "__monitorFixTemp": 0
+      },
+      "410d2c96-a9c9-4141-b3ce-5c02c104c8bd": {
+        "nComError": 0,
+        "ongoing": false,
+        "__monitorError": 0,
+        "__monitorFixOn": 0,
+        "__monitorFixTemp": 0
+      },
+      "755fe45e-d9bb-4869-8323-c0b123b21891": {
+        "nComError": 0,
+        "ongoing": false,
+        "__monitorError": 0,
+        "__monitorFixOn": 0,
+        "__monitorFixTemp": 0
+      },
+      "b9b65311-a18e-432c-aaa8-d413561cb8d3": {
+        "nComError": 0,
+        "ongoing": false,
+        "__monitorError": 0,
+        "__monitorFixOn": 0,
+        "__monitorFixTemp": 0
+      },
+      "3b8a4393-d736-45c6-82dd-00df9c3fbad3": {
+        "nComError": 0,
+        "ongoing": false,
+        "__monitorError": 0,
+        "__monitorFixOn": 0,
+        "__monitorFixTemp": 0
+      },
+      "3aeb9dc7-01dc-4682-8972-e7ed78c86b2d": {
+        "nComError": 0,
+        "ongoing": false,
+        "__monitorError": 0,
+        "__monitorFixOn": 0,
+        "__monitorFixTemp": 0
+      },
+      "05a9e76d-7f51-4757-ae55-b78bea121c8e": {
+        "nComError": 0,
+        "ongoing": false,
+        "__monitorError": 0,
+        "__monitorFixOn": 0,
+        "__monitorFixTemp": 0
+      },
+      "cd13c238-b46b-43d7-bd2a-7dfb71c25700": {
+        "nComError": 0,
+        "ongoing": false,
+        "__monitorError": 0,
+        "__monitorFixOn": 0,
+        "__monitorFixTemp": 0
+      },
+      "8bb0b96e-1336-43f3-a8db-f0dfc5f523cb": {
+        "nComError": 0,
+        "ongoing": false,
+        "__monitorError": 0,
+        "__monitorFixOn": 0,
+        "__monitorFixTemp": 0
+      },
+      "fb62dc43-24c0-46d2-9731-0386a2b65053": {
+        "nComError": 0,
+        "ongoing": false,
+        "__monitorError": 0,
+        "__monitorFixOn": 0,
+        "__monitorFixTemp": 0
+      },
+      "28a6078e-87e1-4d54-9889-0fc08f4b3289": {
+        "nComError": 0,
+        "ongoing": false,
+        "__monitorError": 0,
+        "__monitorFixOn": 0,
+        "__monitorFixTemp": 0
+      },
+      "449fe67f-cf71-46fc-8fe1-10538f3cba84": {
+        "nComError": 0,
+        "ongoing": false,
+        "__monitorError": 0,
+        "__monitorFixOn": 0,
+        "__monitorFixTemp": 0
+      },
+      "b593c9ba-c186-441c-8f73-d05f0e497b29": {
+        "nComError": 0,
+        "ongoing": false,
+        "__monitorError": 0,
+        "__monitorFixOn": 0,
+        "__monitorFixTemp": 0
+      },
+      "0bd9133a-069f-4b8c-86f3-d42ea23f0952": {
+        "nComError": 0,
+        "ongoing": false,
+        "__monitorError": 0,
+        "__monitorFixOn": 0,
+        "__monitorFixTemp": 0
+      },
+      "ee676696-0b72-45ca-beb7-0970302c769a": {
+        "nComError": 0,
+        "ongoing": false,
+        "__monitorError": 0,
+        "__monitorFixOn": 0,
+        "__monitorFixTemp": 0
+      },
+      "25f5ff67-e886-42bd-b98f-87b16af6bf95": {
+        "nComError": 0,
+        "lastCmd": 0,
+        "ongoing": false,
+        "__monitorError": 0,
+        "__monitorFixOn": 0,
+        "__monitorFixTemp": 0
+      },
+      "ed050720-8a11-4d1f-976d-53dc82e5943a": {
+        "nComError": 0,
+        "ongoing": false,
+        "__monitorError": 0,
+        "__monitorFixOn": 0,
+        "__monitorFixTemp": 0
+      }
+    },
+    "__stats_failed_turn_on": 89,
+    "__stats_failed_turn_off": 106,
+    "__stats_failed_temp_change": 0,
+    "__statsIntervalID": "...",
+    "__stats_dirtcheap_energy": null,
+    "__stats_low_energy": 2380.2524406148395,
+    "__stats_norm_energy": 1394.399875848306,
+    "__stats_high_energy": 8519.212567264332,
+    "__stats_extreme_energy": null,
+    "__stats_this_month_maxes": [
+      3841.0832888888917,
+      3127.826485277775,
+      2945.982052500001
+    ],
+    "__stats_savings_all_time_use": 10.272747368146316,
+    "__stats_savings_all_time_power_part": 160,
+    "__stats_n_hours_today": 0,
+    "__stats_accum_price_today": 0,
+    "__stats_accum_use_today": 0,
+    "__stats_actual_cost": 0,
+    "__stats_this_month_average": 3304.9639422222226,
+    "__stats_last_month_max": 3544.7813043518513,
+    "__stats_app_restarts": 8,
+    "__deviceList": {
+      "1d1caab3-02ff-4295-8336-e2c8decfd249": {
+        "priority": 0,
+        "name": "Hønelys",
+        "room": "Hønehuset",
+        "roomId": "84897f44-e783-40dd-ae30-972e3bad57d0",
+        "memberOf": [
+          "84897f44-e783-40dd-ae30-972e3bad57d0",
+          "cdbf506f-e22b-41ac-befc-7646937115bd",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/4ce818f4d0186f1eefb0dc30fdc11fb9/icon.svg",
+        "onoff_cap": "onoff",
+        "thermostat_cap": false,
+        "targetTemp": 24,
+        "driverId": "com.fibaro:FGD-212",
+        "use": false,
+        "reliability": 1
+      },
+      "a3c2d286-777a-4559-8e4c-4cacdcc9abc5": {
+        "priority": 0,
+        "name": "Kjøkkenovn",
+        "room": "Kjøkkenet",
+        "roomId": "2ab5a003-0120-4c01-80f2-a237dcf4ba14",
+        "memberOf": [
+          "2ab5a003-0120-4c01-80f2-a237dcf4ba14",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "ae383ec5-ade3-439d-be3d-58261cc1f95f",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/a72c6f37751c043a5df37beeaa04675c/icon.svg",
+        "onoff_cap": "onoff",
+        "thermostat_cap": false,
+        "targetTemp": 24,
+        "driverId": "com.fibaro:FGWPE-101",
+        "use": false,
+        "reliability": 1
+      },
+      "d7adda54-9543-41b3-b386-ceec9d42884e": {
+        "priority": 0,
+        "name": "Trappelys",
+        "room": "Gang",
+        "roomId": "478cfd92-6475-4214-80d9-27125e39863a",
+        "memberOf": [
+          "478cfd92-6475-4214-80d9-27125e39863a",
+          "9eb2975d-49ea-4033-8db0-105a3e982117",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "ae383ec5-ade3-439d-be3d-58261cc1f95f",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/67dfc715c27ad782e80e679cbb4bc735/icon.svg",
+        "onoff_cap": "onoff",
+        "thermostat_cap": false,
+        "targetTemp": 24,
+        "driverId": "me.zwave:05457",
+        "use": false,
+        "reliability": 1
+      },
+      "9a554fba-ee99-4f4e-b9c4-13d9162dd205": {
+        "priority": 0,
+        "name": "Kontorovn",
+        "room": "Kontor",
+        "roomId": "1815c884-af06-4d53-a2c1-6f4c77e9eb4e",
+        "memberOf": [
+          "1815c884-af06-4d53-a2c1-6f4c77e9eb4e",
+          "37782dac-6d40-40a2-a0a4-17a0dd05003a",
+          "ae383ec5-ade3-439d-be3d-58261cc1f95f",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/a72c6f37751c043a5df37beeaa04675c/icon.svg",
+        "onoff_cap": "onoff",
+        "thermostat_cap": false,
+        "targetTemp": 24,
+        "driverId": "com.fibaro:FGWPE-101",
+        "use": false,
+        "reliability": 1
+      },
+      "cc3644a8-e367-43f5-a3a0-cc7795292167": {
+        "priority": 0,
+        "name": "Garasjerouter",
+        "room": "Garasjen",
+        "roomId": "cdbf506f-e22b-41ac-befc-7646937115bd",
+        "memberOf": [
+          "cdbf506f-e22b-41ac-befc-7646937115bd",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/4ce818f4d0186f1eefb0dc30fdc11fb9/icon.svg",
+        "onoff_cap": "onoff",
+        "thermostat_cap": false,
+        "targetTemp": 24,
+        "driverId": "com.fibaro:FGS-221",
+        "use": false,
+        "reliability": 1
+      },
+      "a30e300d-0a7a-4080-a62a-bca124316645": {
+        "priority": 0,
+        "name": "Garasjerouter Rele2",
+        "room": "Garasjen",
+        "roomId": "cdbf506f-e22b-41ac-befc-7646937115bd",
+        "memberOf": [
+          "cdbf506f-e22b-41ac-befc-7646937115bd",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/4ce818f4d0186f1eefb0dc30fdc11fb9/icon.svg",
+        "onoff_cap": "onoff",
+        "thermostat_cap": false,
+        "targetTemp": 24,
+        "driverId": "com.fibaro:FGS-221",
+        "use": false,
+        "reliability": 1
+      },
+      "6ff3eaa2-7e22-4225-ad45-54c7cd35b9d4": {
+        "priority": 0,
+        "name": "Låveplugg",
+        "room": "Verksted I Låven",
+        "roomId": "630d051c-ad8d-47b8-b2e2-1b8dc9e2c2f2",
+        "memberOf": [
+          "630d051c-ad8d-47b8-b2e2-1b8dc9e2c2f2",
+          "c64df4d4-8e67-420b-9ae4-70751c83b419",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/a72c6f37751c043a5df37beeaa04675c/icon.svg",
+        "onoff_cap": "onoff",
+        "thermostat_cap": false,
+        "targetTemp": 24,
+        "driverId": "com.fibaro:FGWPE-101",
+        "use": 1,
+        "reliability": 1
+      },
+      "61d0e976-6a5d-4376-8220-69e0f7debd47": {
+        "priority": 0,
+        "name": "Verkstedovn",
+        "room": "Verksted I Låven",
+        "roomId": "630d051c-ad8d-47b8-b2e2-1b8dc9e2c2f2",
+        "memberOf": [
+          "630d051c-ad8d-47b8-b2e2-1b8dc9e2c2f2",
+          "c64df4d4-8e67-420b-9ae4-70751c83b419",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/a72c6f37751c043a5df37beeaa04675c/icon.svg",
+        "onoff_cap": "onoff",
+        "thermostat_cap": false,
+        "targetTemp": 24,
+        "driverId": "com.fibaro:FGWPE-101",
+        "use": false,
+        "reliability": 1
+      },
+      "1116b5ea-a7ea-4b08-9138-4592d0176d82": {
+        "priority": 0,
+        "name": "Utelys Låven",
+        "room": "Utendørs",
+        "roomId": "5204dc44-8e9c-49e7-aed8-9d5c93330126",
+        "memberOf": [
+          "5204dc44-8e9c-49e7-aed8-9d5c93330126",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/4ce818f4d0186f1eefb0dc30fdc11fb9/icon.svg",
+        "onoff_cap": "onoff",
+        "thermostat_cap": false,
+        "targetTemp": 24,
+        "driverId": "com.fibaro:FGD-212",
+        "use": false,
+        "reliability": 1
+      },
+      "e7907e31-1990-412b-ba2a-920b7085cee1": {
+        "priority": 0,
+        "name": "JLH Forsterker",
+        "room": "Verksted I Låven",
+        "roomId": "630d051c-ad8d-47b8-b2e2-1b8dc9e2c2f2",
+        "memberOf": [
+          "630d051c-ad8d-47b8-b2e2-1b8dc9e2c2f2",
+          "c64df4d4-8e67-420b-9ae4-70751c83b419",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/a72c6f37751c043a5df37beeaa04675c/icon.svg",
+        "onoff_cap": "onoff",
+        "thermostat_cap": false,
+        "targetTemp": 24,
+        "driverId": "com.fibaro:FGWPx-102-PLUS",
+        "use": false,
+        "reliability": 1
+      },
+      "9c7be705-f3c7-4acd-93c1-2ba63e435e64": {
+        "priority": 0,
+        "name": "Verkstedlys",
+        "room": "Verksted I Låven",
+        "roomId": "630d051c-ad8d-47b8-b2e2-1b8dc9e2c2f2",
+        "memberOf": [
+          "630d051c-ad8d-47b8-b2e2-1b8dc9e2c2f2",
+          "c64df4d4-8e67-420b-9ae4-70751c83b419",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/4ce818f4d0186f1eefb0dc30fdc11fb9/icon.svg",
+        "onoff_cap": "onoff",
+        "thermostat_cap": false,
+        "targetTemp": 24,
+        "driverId": "com.fibaro:FGS-223",
+        "use": false,
+        "reliability": 1
+      },
+      "30085e23-22f2-4301-9dab-22b0d1cc9dc1": {
+        "priority": 0,
+        "name": "Kompressor",
+        "room": "Verksted I Låven",
+        "roomId": "630d051c-ad8d-47b8-b2e2-1b8dc9e2c2f2",
+        "memberOf": [
+          "630d051c-ad8d-47b8-b2e2-1b8dc9e2c2f2",
+          "c64df4d4-8e67-420b-9ae4-70751c83b419",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/4ce818f4d0186f1eefb0dc30fdc11fb9/icon.svg",
+        "onoff_cap": "onoff",
+        "thermostat_cap": false,
+        "targetTemp": 24,
+        "driverId": "com.fibaro:FGS-223",
+        "use": false,
+        "reliability": 1
+      },
+      "bf7934cf-27de-4ab0-abc8-89da1fdd6556": {
+        "priority": 0,
+        "name": "Bad Varmekabel",
+        "room": "Badet",
+        "roomId": "8a6928ea-26b2-4922-9ead-d20ee6695dd3",
+        "memberOf": [
+          "8a6928ea-26b2-4922-9ead-d20ee6695dd3",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "ae383ec5-ade3-439d-be3d-58261cc1f95f",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/4ce818f4d0186f1eefb0dc30fdc11fb9/icon.svg",
+        "onoff_cap": "onoff",
+        "thermostat_cap": false,
+        "targetTemp": 24,
+        "driverId": "com.fibaro:FGS-221",
+        "use": false,
+        "reliability": 1
+      },
+      "2377a408-fe92-432e-8381-3e86c653850e": {
+        "priority": 0,
+        "name": "Ubrukt Rele ",
+        "room": "Badet",
+        "roomId": "8a6928ea-26b2-4922-9ead-d20ee6695dd3",
+        "memberOf": [
+          "8a6928ea-26b2-4922-9ead-d20ee6695dd3",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "ae383ec5-ade3-439d-be3d-58261cc1f95f",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/4ce818f4d0186f1eefb0dc30fdc11fb9/icon.svg",
+        "onoff_cap": "onoff",
+        "thermostat_cap": false,
+        "targetTemp": 24,
+        "driverId": "com.fibaro:FGS-221",
+        "use": false,
+        "reliability": 1
+      },
+      "b0abdeb3-00b0-4549-bbb7-a7549fb2332c": {
+        "priority": 0,
+        "name": "Høneovn",
+        "room": "Hønehuset",
+        "roomId": "84897f44-e783-40dd-ae30-972e3bad57d0",
+        "memberOf": [
+          "84897f44-e783-40dd-ae30-972e3bad57d0",
+          "cdbf506f-e22b-41ac-befc-7646937115bd",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/4ce818f4d0186f1eefb0dc30fdc11fb9/icon.svg",
+        "onoff_cap": "onoff",
+        "thermostat_cap": false,
+        "targetTemp": 24,
+        "driverId": "com.fibaro:FGS-223",
+        "use": false,
+        "reliability": 1
+      },
+      "7902c716-dd05-4531-b95d-b363b5aa7cbc": {
+        "priority": 0,
+        "name": "Hønevifte",
+        "room": "Hønehuset",
+        "roomId": "84897f44-e783-40dd-ae30-972e3bad57d0",
+        "memberOf": [
+          "84897f44-e783-40dd-ae30-972e3bad57d0",
+          "cdbf506f-e22b-41ac-befc-7646937115bd",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/4ce818f4d0186f1eefb0dc30fdc11fb9/icon.svg",
+        "onoff_cap": "onoff",
+        "thermostat_cap": false,
+        "targetTemp": 24,
+        "driverId": "com.fibaro:FGS-223",
+        "use": false,
+        "reliability": 1
+      },
+      "2e3d96a2-51fc-4323-8a48-c6da109349f1": {
+        "priority": 0,
+        "name": "Verandarouter",
+        "room": "Veranda",
+        "roomId": "b91a10fa-c1fb-4c4c-a05d-c070699e8532",
+        "memberOf": [
+          "b91a10fa-c1fb-4c4c-a05d-c070699e8532",
+          "b840a982-a3a7-4513-9d96-902d81128f5c",
+          "ae383ec5-ade3-439d-be3d-58261cc1f95f",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/4ce818f4d0186f1eefb0dc30fdc11fb9/icon.svg",
+        "onoff_cap": "onoff",
+        "thermostat_cap": false,
+        "targetTemp": 24,
+        "driverId": "com.fibaro:FGD-211",
+        "use": false,
+        "reliability": 1
+      },
+      "d7845767-f938-4e11-aab9-4c2c1f2116b8": {
+        "priority": 0,
+        "name": "Ferie På Tur",
+        "room": "Sjelden I Bruk",
+        "roomId": "6319f653-b86f-4f6a-81bb-238a21cc396d",
+        "memberOf": [
+          "6319f653-b86f-4f6a-81bb-238a21cc396d",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/81814e4d6af3ac9cec08dd51508de00c/icon.svg",
+        "onoff_cap": "onoff",
+        "thermostat_cap": false,
+        "targetTemp": 24,
+        "driverId": "com.arjankranenburg.virtual:mode",
+        "use": false,
+        "reliability": 1
+      },
+      "b334f82f-928c-4a2a-8629-b9acb87e9f9b": {
+        "priority": 0,
+        "name": "Låvelys",
+        "room": "Låven",
+        "roomId": "c64df4d4-8e67-420b-9ae4-70751c83b419",
+        "memberOf": [
+          "c64df4d4-8e67-420b-9ae4-70751c83b419",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/4ce818f4d0186f1eefb0dc30fdc11fb9/icon.svg",
+        "onoff_cap": "onoff",
+        "thermostat_cap": false,
+        "targetTemp": 24,
+        "driverId": "com.fibaro:FGD-212",
+        "use": false,
+        "reliability": 1
+      },
+      "c745766f-fcd0-4f36-b42e-4c8b3d224356": {
+        "priority": 0,
+        "name": "Hjemmekontor ",
+        "room": "Kontor",
+        "roomId": "1815c884-af06-4d53-a2c1-6f4c77e9eb4e",
+        "memberOf": [
+          "1815c884-af06-4d53-a2c1-6f4c77e9eb4e",
+          "37782dac-6d40-40a2-a0a4-17a0dd05003a",
+          "ae383ec5-ade3-439d-be3d-58261cc1f95f",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/145585aeb6d1731b45b19060a6396cd6/icon.svg",
+        "onoff_cap": "onoff",
+        "thermostat_cap": false,
+        "targetTemp": 24,
+        "driverId": "com.arjankranenburg.virtual:mode",
+        "use": false,
+        "reliability": 1
+      },
+      "b5462728-ad63-4da0-8fec-c7f9240290f4": {
+        "priority": 0,
+        "name": "Helgejobb",
+        "room": "Kontor",
+        "roomId": "1815c884-af06-4d53-a2c1-6f4c77e9eb4e",
+        "memberOf": [
+          "1815c884-af06-4d53-a2c1-6f4c77e9eb4e",
+          "37782dac-6d40-40a2-a0a4-17a0dd05003a",
+          "ae383ec5-ade3-439d-be3d-58261cc1f95f",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/fdc61ad5c4561f4858f19317507019f6/icon.svg",
+        "onoff_cap": "onoff",
+        "thermostat_cap": false,
+        "targetTemp": 24,
+        "driverId": "com.arjankranenburg.virtual:mode",
+        "use": false,
+        "reliability": 1
+      },
+      "8ba38c55-b7d0-409b-86dd-a40723be55a2": {
+        "priority": 0,
+        "name": "Helgevarme verksted",
+        "room": "Verksted I Låven",
+        "roomId": "630d051c-ad8d-47b8-b2e2-1b8dc9e2c2f2",
+        "memberOf": [
+          "630d051c-ad8d-47b8-b2e2-1b8dc9e2c2f2",
+          "c64df4d4-8e67-420b-9ae4-70751c83b419",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/fdc61ad5c4561f4858f19317507019f6/icon.svg",
+        "onoff_cap": "onoff",
+        "thermostat_cap": false,
+        "targetTemp": 24,
+        "driverId": "com.arjankranenburg.virtual:mode",
+        "use": false,
+        "reliability": 1
+      },
+      "7852a19e-8398-450b-a41c-ec8b562067fb": {
+        "priority": 0,
+        "name": "Ferietid Hjemme",
+        "room": "Sjelden I Bruk",
+        "roomId": "6319f653-b86f-4f6a-81bb-238a21cc396d",
+        "memberOf": [
+          "6319f653-b86f-4f6a-81bb-238a21cc396d",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/145585aeb6d1731b45b19060a6396cd6/icon.svg",
+        "onoff_cap": "onoff",
+        "thermostat_cap": false,
+        "targetTemp": 24,
+        "driverId": "com.arjankranenburg.virtual:mode",
+        "use": false,
+        "reliability": 1
+      },
+      "80f77613-c886-4978-8282-0a73d4685189": {
+        "priority": 0,
+        "name": "Lys Nr 2",
+        "room": "Verkstedet",
+        "roomId": "7f755306-18ba-4939-be4c-3eabb194192c",
+        "memberOf": [
+          "7f755306-18ba-4939-be4c-3eabb194192c",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/a72c6f37751c043a5df37beeaa04675c/icon.svg",
+        "onoff_cap": "onoff",
+        "thermostat_cap": false,
+        "targetTemp": 24,
+        "driverId": "com.fibaro:FGWPx-102-PLUS",
+        "use": false,
+        "reliability": 1
+      },
+      "08e8ae82-cb46-4c38-a6f2-1bc983bc86c5": {
+        "priority": 0,
+        "name": "Amandas Ovn",
+        "room": "Amandas Rom",
+        "roomId": "0fe0cea2-9f60-4f44-aeeb-914a3fcd6c5b",
+        "memberOf": [
+          "0fe0cea2-9f60-4f44-aeeb-914a3fcd6c5b",
+          "b840a982-a3a7-4513-9d96-902d81128f5c",
+          "ae383ec5-ade3-439d-be3d-58261cc1f95f",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/a72c6f37751c043a5df37beeaa04675c/icon.svg",
+        "onoff_cap": "onoff",
+        "thermostat_cap": false,
+        "targetTemp": 24,
+        "driverId": "com.fibaro:FGWPE-101",
+        "use": false,
+        "reliability": 1
+      },
+      "e0f78127-c2c5-4aeb-a07c-a001664d7ca0": {
+        "priority": 0,
+        "name": "Amanda er her",
+        "room": "Amandas Rom",
+        "roomId": "0fe0cea2-9f60-4f44-aeeb-914a3fcd6c5b",
+        "memberOf": [
+          "0fe0cea2-9f60-4f44-aeeb-914a3fcd6c5b",
+          "b840a982-a3a7-4513-9d96-902d81128f5c",
+          "ae383ec5-ade3-439d-be3d-58261cc1f95f",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/81814e4d6af3ac9cec08dd51508de00c/icon.svg",
+        "onoff_cap": "onoff",
+        "thermostat_cap": false,
+        "targetTemp": 24,
+        "driverId": "com.arjankranenburg.virtual:mode",
+        "use": false,
+        "reliability": 1
+      },
+      "6bede99b-3059-48cd-8e4d-b2f7041fade9": {
+        "priority": 0,
+        "name": "Hønevinduet åpent",
+        "room": "Hønehuset",
+        "roomId": "84897f44-e783-40dd-ae30-972e3bad57d0",
+        "memberOf": [
+          "84897f44-e783-40dd-ae30-972e3bad57d0",
+          "cdbf506f-e22b-41ac-befc-7646937115bd",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/4c76892249ecb1d00d4821bc6c8108a8/icon.svg",
+        "onoff_cap": "onoff",
+        "thermostat_cap": false,
+        "targetTemp": 24,
+        "driverId": "com.arjankranenburg.virtual:mode",
+        "use": false,
+        "reliability": 1
+      },
+      "7f2b4b4b-55f3-4d6f-8a1a-73a6875527bd": {
+        "priority": 0,
+        "name": "Lyskaster På Verkstedvegg",
+        "room": "Utendørs",
+        "roomId": "5204dc44-8e9c-49e7-aed8-9d5c93330126",
+        "memberOf": [
+          "5204dc44-8e9c-49e7-aed8-9d5c93330126",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/a72c6f37751c043a5df37beeaa04675c/icon.svg",
+        "onoff_cap": "onoff",
+        "thermostat_cap": false,
+        "targetTemp": 24,
+        "driverId": "com.fibaro:FGWPx-102-PLUS",
+        "use": false,
+        "reliability": 1
+      },
+      "410d2c96-a9c9-4141-b3ce-5c02c104c8bd": {
+        "priority": 0,
+        "name": "Soveromsovn",
+        "room": "Soverom",
+        "roomId": "ddc3cdaa-8172-4c4a-97c9-22d8ec462972",
+        "memberOf": [
+          "ddc3cdaa-8172-4c4a-97c9-22d8ec462972",
+          "b840a982-a3a7-4513-9d96-902d81128f5c",
+          "ae383ec5-ade3-439d-be3d-58261cc1f95f",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/a72c6f37751c043a5df37beeaa04675c/icon.svg",
+        "onoff_cap": "onoff",
+        "thermostat_cap": false,
+        "targetTemp": 24,
+        "driverId": "com.fibaro:FGWPx-102-PLUS",
+        "use": 0,
+        "reliability": 1
+      },
+      "755fe45e-d9bb-4869-8323-c0b123b21891": {
+        "priority": 0,
+        "name": "Utelys Verksted",
+        "room": "Utendørs",
+        "roomId": "5204dc44-8e9c-49e7-aed8-9d5c93330126",
+        "memberOf": [
+          "5204dc44-8e9c-49e7-aed8-9d5c93330126",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/4ce818f4d0186f1eefb0dc30fdc11fb9/icon.svg",
+        "onoff_cap": "onoff",
+        "thermostat_cap": false,
+        "targetTemp": 24,
+        "driverId": "com.fibaro:FGD-212",
+        "use": false,
+        "reliability": 1
+      },
+      "b9b65311-a18e-432c-aaa8-d413561cb8d3": {
+        "priority": 0,
+        "name": "Verkstedlys 2. Etasje",
+        "room": "Verkstedet",
+        "roomId": "7f755306-18ba-4939-be4c-3eabb194192c",
+        "memberOf": [
+          "7f755306-18ba-4939-be4c-3eabb194192c",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/4ce818f4d0186f1eefb0dc30fdc11fb9/icon.svg",
+        "onoff_cap": "onoff",
+        "thermostat_cap": false,
+        "targetTemp": 24,
+        "driverId": "com.fibaro:FGS-221",
+        "use": false,
+        "reliability": 1
+      },
+      "3b8a4393-d736-45c6-82dd-00df9c3fbad3": {
+        "priority": 0,
+        "name": "Verkstedlys Lager 2. Etasje",
+        "room": "Verkstedet",
+        "roomId": "7f755306-18ba-4939-be4c-3eabb194192c",
+        "memberOf": [
+          "7f755306-18ba-4939-be4c-3eabb194192c",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/4ce818f4d0186f1eefb0dc30fdc11fb9/icon.svg",
+        "onoff_cap": "onoff",
+        "thermostat_cap": false,
+        "targetTemp": 24,
+        "driverId": "com.fibaro:FGS-221",
+        "use": false,
+        "reliability": 1
+      },
+      "3aeb9dc7-01dc-4682-8972-e7ed78c86b2d": {
+        "priority": 0,
+        "name": "Verkstedtining",
+        "room": "Verksted I Låven",
+        "roomId": "630d051c-ad8d-47b8-b2e2-1b8dc9e2c2f2",
+        "memberOf": [
+          "630d051c-ad8d-47b8-b2e2-1b8dc9e2c2f2",
+          "c64df4d4-8e67-420b-9ae4-70751c83b419",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/fdc61ad5c4561f4858f19317507019f6/icon.svg",
+        "onoff_cap": "onoff",
+        "thermostat_cap": false,
+        "targetTemp": 24,
+        "driverId": "com.arjankranenburg.virtual:mode",
+        "use": false,
+        "reliability": 1
+      },
+      "05a9e76d-7f51-4757-ae55-b78bea121c8e": {
+        "priority": 0,
+        "name": "Utelys På Trammen",
+        "room": "Utendørs",
+        "roomId": "5204dc44-8e9c-49e7-aed8-9d5c93330126",
+        "memberOf": [
+          "5204dc44-8e9c-49e7-aed8-9d5c93330126",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/f456beb02929c47cdfd33fc7f0f4cae2/icon.svg",
+        "onoff_cap": "onoff",
+        "thermostat_cap": false,
+        "targetTemp": 24,
+        "driverId": "com.philips.hue.zigbee:LWA001",
+        "use": false,
+        "reliability": 1
+      },
+      "cd13c238-b46b-43d7-bd2a-7dfb71c25700": {
+        "priority": 0,
+        "name": "Bulb 9W A60 E27 EUR White",
+        "room": "Hjem",
+        "roomId": "9919ee1e-ffbc-480b-bc4b-77fb047e9e68",
+        "memberOf": [
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/f456beb02929c47cdfd33fc7f0f4cae2/icon.svg",
+        "onoff_cap": "onoff",
+        "thermostat_cap": false,
+        "targetTemp": 24,
+        "driverId": "com.philips.hue.zigbee:LWA001",
+        "use": false,
+        "reliability": 1
+      },
+      "8bb0b96e-1336-43f3-a8db-f0dfc5f523cb": {
+        "priority": 0,
+        "name": "Hikokilader",
+        "room": "Verkstedet",
+        "roomId": "7f755306-18ba-4939-be4c-3eabb194192c",
+        "memberOf": [
+          "7f755306-18ba-4939-be4c-3eabb194192c",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/a72c6f37751c043a5df37beeaa04675c/icon.svg",
+        "onoff_cap": "onoff",
+        "thermostat_cap": false,
+        "targetTemp": 24,
+        "driverId": "com.fibaro:FGWPx-102-PLUS",
+        "use": false,
+        "reliability": 1
+      },
+      "fb62dc43-24c0-46d2-9731-0386a2b65053": {
+        "priority": 0,
+        "name": "Verkstedlys 1. Etg",
+        "room": "Verkstedet",
+        "roomId": "7f755306-18ba-4939-be4c-3eabb194192c",
+        "memberOf": [
+          "7f755306-18ba-4939-be4c-3eabb194192c",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/4ce818f4d0186f1eefb0dc30fdc11fb9/icon.svg",
+        "onoff_cap": "onoff",
+        "thermostat_cap": false,
+        "targetTemp": 24,
+        "driverId": "com.fibaro:FGS-213",
+        "use": false,
+        "reliability": 1
+      },
+      "28a6078e-87e1-4d54-9889-0fc08f4b3289": {
+        "priority": 0,
+        "name": "Hønevindu + Temp",
+        "room": "Hønehuset",
+        "roomId": "84897f44-e783-40dd-ae30-972e3bad57d0",
+        "memberOf": [
+          "84897f44-e783-40dd-ae30-972e3bad57d0",
+          "cdbf506f-e22b-41ac-befc-7646937115bd",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/bf56bfb3eb4489d2237242876438e5c9/icon.svg",
+        "onoff_cap": "onoff.output1",
+        "thermostat_cap": false,
+        "targetTemp": 24,
+        "driverId": "com.fibaro:FGBS-222",
+        "use": false,
+        "reliability": 1
+      },
+      "449fe67f-cf71-46fc-8fe1-10538f3cba84": {
+        "priority": 0,
+        "name": "Varmtvannsbereder",
+        "room": "Bereder",
+        "roomId": "245e2f1b-4cbc-4c08-b809-2d993665d801",
+        "memberOf": [
+          "245e2f1b-4cbc-4c08-b809-2d993665d801",
+          "0420c059-fba8-4885-b274-e2fe984a21c6",
+          "37782dac-6d40-40a2-a0a4-17a0dd05003a",
+          "ae383ec5-ade3-439d-be3d-58261cc1f95f",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/f551b12bb0a5ee1adca6c88cc928288d/icon.svg",
+        "onoff_cap": "onoff",
+        "thermostat_cap": false,
+        "targetTemp": 24,
+        "driverId": "no.thermofloor:ZM-Single-Relay-16A",
+        "use": 0,
+        "reliability": 1
+      },
+      "b593c9ba-c186-441c-8f73-d05f0e497b29": {
+        "priority": 0,
+        "name": "Vaskeromsgulv",
+        "room": "Gulv",
+        "roomId": "5a54cb5a-0628-49d3-be36-6f0a29a5e954",
+        "memberOf": [
+          "5a54cb5a-0628-49d3-be36-6f0a29a5e954",
+          "0420c059-fba8-4885-b274-e2fe984a21c6",
+          "37782dac-6d40-40a2-a0a4-17a0dd05003a",
+          "ae383ec5-ade3-439d-be3d-58261cc1f95f",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/4ce818f4d0186f1eefb0dc30fdc11fb9/icon.svg",
+        "onoff_cap": "onoff",
+        "thermostat_cap": false,
+        "targetTemp": 24,
+        "driverId": "com.fibaro:FGS-213",
+        "use": 1,
+        "reliability": 1
+      },
+      "0bd9133a-069f-4b8c-86f3-d42ea23f0952": {
+        "priority": 0,
+        "name": "Sponavsug",
+        "room": "Verkstedet",
+        "roomId": "7f755306-18ba-4939-be4c-3eabb194192c",
+        "memberOf": [
+          "7f755306-18ba-4939-be4c-3eabb194192c",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/4ce818f4d0186f1eefb0dc30fdc11fb9/icon.svg",
+        "onoff_cap": "onoff",
+        "thermostat_cap": false,
+        "targetTemp": 24,
+        "driverId": "com.fibaro:FGS-213",
+        "use": false,
+        "reliability": 1
+      },
+      "ee676696-0b72-45ca-beb7-0970302c769a": {
+        "priority": 1,
+        "name": "VerkstedTermostat",
+        "room": "Verksted I Låven",
+        "roomId": "630d051c-ad8d-47b8-b2e2-1b8dc9e2c2f2",
+        "memberOf": [
+          "630d051c-ad8d-47b8-b2e2-1b8dc9e2c2f2",
+          "c64df4d4-8e67-420b-9ae4-70751c83b419",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/76e4e48dbf1227355616cc3ccbc13ed3/icon.svg",
+        "onoff_cap": "onoff",
+        "thermostat_cap": true,
+        "targetTemp": 5,
+        "driverId": "no.almli.thermostat:VThermo",
+        "use": true,
+        "reliability": 1
+      },
+      "25f5ff67-e886-42bd-b98f-87b16af6bf95": {
+        "priority": 1,
+        "name": "SoveromsTermostat",
+        "room": "Soverom",
+        "roomId": "ddc3cdaa-8172-4c4a-97c9-22d8ec462972",
+        "memberOf": [
+          "ddc3cdaa-8172-4c4a-97c9-22d8ec462972",
+          "b840a982-a3a7-4513-9d96-902d81128f5c",
+          "ae383ec5-ade3-439d-be3d-58261cc1f95f",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/76e4e48dbf1227355616cc3ccbc13ed3/icon.svg",
+        "onoff_cap": "onoff",
+        "thermostat_cap": true,
+        "targetTemp": 13,
+        "driverId": "no.almli.thermostat:VThermo",
+        "use": true,
+        "reliability": 1
+      },
+      "ed050720-8a11-4d1f-976d-53dc82e5943a": {
+        "priority": 1,
+        "name": "HøneTermostat",
+        "room": "Hønehuset",
+        "roomId": "84897f44-e783-40dd-ae30-972e3bad57d0",
+        "memberOf": [
+          "84897f44-e783-40dd-ae30-972e3bad57d0",
+          "cdbf506f-e22b-41ac-befc-7646937115bd",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/76e4e48dbf1227355616cc3ccbc13ed3/icon.svg",
+        "onoff_cap": "onoff",
+        "thermostat_cap": true,
+        "targetTemp": 12,
+        "driverId": "no.almli.thermostat:VThermo",
+        "use": 0,
+        "reliability": 1
+      }
+    },
+    "__stats_price_time": "2022-11-07T07:19:09.566Z",
+    "__monitorError": 0,
+    "__energy_meter_detected_time": "2022-11-07T07:21:25.353Z"
+  }
+}

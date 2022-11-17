@@ -4,6 +4,7 @@
 
 'use strict';
 
+const fs = require('fs');
 const d = require('../common/devices');
 const c = require('../common/constants');
 const prices = require('../common/prices');
@@ -137,9 +138,60 @@ async function applyBasicConfig(app) {
   //  { id: 'id_d', capabilitiesObj: { measure_temperature: { value: 1 }, target_temperature: { value: 20 } } },
   //  { id: 'id_e', capabilitiesObj: { measure_temperature: { value: 1 }, target_temperature: { value: 20 } } },
   ];
-  app.homeyApi.devices.addFakeDevices(fakeDevices, 'Home/Gang');
+  const zoneHomeId = app.homeyApi.zones.addZone('Home');
+  const zoneGangId = app.homeyApi.zones.addZone('Gang', null, zoneHomeId);
+  app.homeyApi.devices.addFakeDevices(fakeDevices, zoneGangId);
   await app.createDeviceList(); // To initialize app.__current_state[...]
   await app.doPriceCalculations();
+}
+
+async function applyStateFromFile(app, file) {
+  const p = Promise;
+  fs.readFile(`testing/${file}`, (err, data) => {
+    if (err) {
+      p.reject(err);
+    }
+    const parsed = JSON.parse(data);
+    app.homey.settings.values = parsed.settings;
+    for (const v in parsed.state) {
+      app[v] = parsed.state[v];
+    }
+    // Create fake devices to match the loaded state
+    for (const deviceId in parsed.settings.deviceList) {
+      const devInfo = parsed.settings.deviceList[deviceId];
+      const fileName = `${devInfo.driverId}.txt`;
+      const zones = app.homeyApi.zones.getZones();
+      let fakeDev;
+      for (let idx = devInfo.memberOf.length - 1; idx >= 0; idx--) {
+        const zoneId = devInfo.memberOf[idx];
+        const zoneName = (idx === 0) ? devInfo.room : `${devInfo.room}_parent_${idx}`;
+        const parentId = devInfo.memberOf[idx + 1] || null;
+        if (!(zoneId in zones)) app.homeyApi.zones.addZone(zoneName, zoneId, parentId);
+        else if (idx === 0) app.homeyApi.zones.zones[zoneId].name = devInfo.room;
+      }
+      try {
+        fakeDev = app.homeyApi.devices.addFakeDevice(fileName, devInfo.roomId);
+      } catch (err) {
+        console.log(`Missing file: ${fileName} - overriding with defaults`);
+        const dummyCap = {};
+        if (devInfo.thermostat_cap) {
+          dummyCap.measure_temperature = { value: 1 };
+          dummyCap.target_temperature = { value: 20 };
+        }
+        if (devInfo.onoff_cap) {
+          dummyCap[devInfo.onoff_cap] = { value: false };
+        }
+        const dummyDevice = { id: deviceId, capabilitiesObj: dummyCap };
+        fakeDev = app.homeyApi.devices.addFakeDevice(dummyDevice, devInfo.roomId);
+        fakeDev.driverUri = `homey:app:${devInfo.driverId.slice(0,devInfo.driverId.indexOf(':'))}`;
+        fakeDev.driverId = devInfo.driverId.slice(devInfo.driverId.indexOf(':') + 1);
+      }
+      fakeDev.deviceId = deviceId;
+      fakeDev.name = devInfo.name;
+    }
+    p.resolve();
+  });
+  return p;
 }
 
 // Test Charging
@@ -317,6 +369,16 @@ async function testArchive() {
   console.log('\x1b[1A[\x1b[32mPASSED\x1b[0m]');
 } */
 
+async function testState(stateDump) {
+  console.log(`[......] State "${stateDump}"`);
+  const app = new PiggyBank();
+  await app.disableLog();
+  await app.onInit();
+  await applyStateFromFile(app, stateDump);
+  await app.onUninit();
+  console.log('\x1b[1A[\x1b[32mPASSED\x1b[0m]');
+}
+
 // Start all tests
 async function startAllTests() {
   try {
@@ -338,4 +400,4 @@ async function startAllTests() {
 
 // Run all the testing
 startAllTests();
-//testArchive();
+//testState('states/Anders_0.18.31_err.txt');

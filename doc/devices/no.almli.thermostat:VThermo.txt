@@ -1,0 +1,18 @@
+Log ID: 2022-11-17T00:27:23.149Z
+App version 0.19.1
+
++0:27:23.149: ----- ANALYZING DEVICE -----
++0:27:23.151: Report type: Device is not being turned on/off
++0:27:23.153: Device ID:   76cd3131-7e96-44c1-ba99-7c2030331fac
++0:27:23.181: Device name: VThermo
++0:27:23.183: Driver Uri: homey:app:no.almli.thermostat
++0:27:23.185: Driver Id: VThermo
++0:27:23.187: Found onoff cap: onoff
++0:27:23.188: Found temp cap: target_temperature
++0:27:23.190: Device reliability: 1
++0:27:23.192: Capabilities: onoff,vt_onoff,target_temperature,measure_temperature
++0:27:23.194: Options for 'onoff': {"value":true,"lastUpdated":"2022-11-17T00:26:08.729Z","type":"boolean","getable":true,"setable":true,"title":"Slått på","desc":null,"units":null,"id":"onoff","options":{}}
++0:27:23.196: Options for 'vt_onoff': {"value":null,"lastUpdated":null,"type":"boolean","getable":true,"setable":false,"title":"State","desc":null,"units":null,"iconObj":{"id":"e26b791b9ffa7746315a0dbbe053b682","url":"/icon/e26b791b9ffa7746315a0dbbe053b682/icon.svg"},"id":"vt_onoff","options":{}}
++0:27:23.198: Options for 'target_temperature': {"value":null,"lastUpdated":null,"type":"number","getable":true,"setable":true,"title":"Ønsket temperatur","desc":null,"units":"°C","decimals":2,"min":4,"max":35,"chartType":"stepLine","id":"target_temperature","options":{}}
++0:27:23.200: Options for 'measure_temperature': {"value":2.9,"lastUpdated":"2022-11-17T00:26:38.605Z","type":"number","getable":true,"setable":false,"title":"Temperatur","desc":"Temperatur i grader Celsius (°C)","units":"°C","decimals":2,"chartType":"spline","id":"measure_temperature","options":{}}
++0:27:23.202: --- ANALYZING DEVICE DONE ---

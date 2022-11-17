@@ -3,7 +3,9 @@
 
 'use strict';
 
-let fs = require('fs');
+const fs = require('fs');
+
+let uniqueID = 1;
 
 /**
  * Fake Device class
@@ -67,14 +69,15 @@ class FakeDevicesClass {
     return this.fakeDevices[deviceId];
   }
 
-  addFakeDevice(device, zoneName) {
-    const zoneObj = this.homey.zones.addZone(zoneName);
-    this.fakeDevices.push(new FakeDeviceClass(this.homey, device, zoneObj));
+  addFakeDevice(device, zoneId) {
+    const fakeDevice = new FakeDeviceClass(this.homey, device, zoneId);
+    this.fakeDevices.push(fakeDevice);
+    return fakeDevice;
   }
 
-  addFakeDevices(devices, zone) {
+  addFakeDevices(devices, zoneId) {
     for (let i = 0; i < devices.length; i++) {
-      this.addFakeDevice(devices[i], zone);
+      this.addFakeDevice(devices[i], zoneId);
     }
   }
 
@@ -107,16 +110,11 @@ class FakeZonesClass {
     this.zones = {};
   }
 
-  addZone(fullZone) {
-    const splitZone = fullZone.split('/');
-    for (let i = 0; i < splitZone.length; i++) {
-      const zoneId = [...splitZone].splice(0, i + 1).join('/');
-      const parentId = [...splitZone].splice(0, i).join('/');
-      const zoneName = splitZone[i];
-      if (zoneId in this.zones) continue;
-      this.zones[zoneId] = new FakeZoneClass(zoneName, parentId, zoneId);
+  addZone(zoneName, zoneId = null, parentId = null) {
+    if (zoneId === null) {
+      zoneId = uniqueID++;
     }
-    return fullZone;
+    this.zones[zoneId] = new FakeZoneClass(zoneName, parentId, zoneId);
   }
 
   getZones() {
