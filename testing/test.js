@@ -13,6 +13,22 @@ const Homey = require('./homey');
 const PiggyBank = require('../app');
 const { toLocalTime, fromLocalTime, timeToNextHour, roundToStartOfDay } = require('../common/homeytime');
 
+// Disables timers in order to allow high speed-out-of-time testing.
+async function disableTimers(app) {
+  if (app.__intervalID !== undefined) {
+    clearInterval(app.__intervalID);
+    app.__intervalID = undefined;
+  }
+  if (app.__newHourID !== undefined) {
+    clearTimeout(app.__newHourID);
+    app.__newHourID = undefined;
+  }
+  if (app.__statsIntervalID !== undefined) {
+    clearInterval(app.__statsIntervalID);
+    app.__statsIntervalID = undefined;
+  }
+}
+
 // Test Currency Converter
 // * Test that the date for the last currency fetched is recent... otherwise the API could have changed
 async function testCurrencyConverter() {
@@ -395,8 +411,10 @@ async function testState(stateDump) {
   const app = new PiggyBank();
   await app.disableLog();
   await app.onInit();
+  await disableTimers(app);
   await applyStateFromFile(app, stateDump);
   const now = app.__current_power_time;
+  // Simulate time going forward
   await app.onUninit();
   console.log('\x1b[1A[\x1b[32mPASSED\x1b[0m]');
 }

@@ -2307,6 +2307,7 @@ class PiggyBank extends Homey.App {
   statsUnInit() {
     if (this.__statsIntervalID !== undefined) {
       clearInterval(this.__statsIntervalID);
+      this.__statsIntervalID = undefined;
     }
   }
 
