@@ -146,22 +146,36 @@ async function applyBasicConfig(app) {
 }
 
 async function applyStateFromFile(app, file) {
-  const p = Promise;
-  fs.readFile(`testing/${file}`, (err, data) => {
-    if (err) {
-      p.reject(err);
-    }
+  return new Promise((resolve, reject) => {
+    fs.readFile(`testing/${file}`, (err, data) => {
+      if (err) {
+        reject(err);
+      }
+      resolve(data);
+    });
+  }).then(data => {
     const parsed = JSON.parse(data);
     app.homey.settings.values = parsed.settings;
     for (const v in parsed.state) {
-      app[v] = parsed.state[v];
+      switch (v) {
+        case '__intervalID':
+        case '__newHourID':
+        case '__statsIntervalID':
+          break;
+        case '__current_power_time':
+          app[v] = new Date(parsed.state[v]);
+          break;
+        default:
+          app[v] = parsed.state[v];
+          break;
+      }
     }
     // Create fake devices to match the loaded state
+    const devices = [];
     for (const deviceId in parsed.settings.deviceList) {
       const devInfo = parsed.settings.deviceList[deviceId];
       const fileName = `${devInfo.driverId}.txt`;
       const zones = app.homeyApi.zones.getZones();
-      let fakeDev;
       for (let idx = devInfo.memberOf.length - 1; idx >= 0; idx--) {
         const zoneId = devInfo.memberOf[idx];
         const zoneName = (idx === 0) ? devInfo.room : `${devInfo.room}_parent_${idx}`;
@@ -169,29 +183,36 @@ async function applyStateFromFile(app, file) {
         if (!(zoneId in zones)) app.homeyApi.zones.addZone(zoneName, zoneId, parentId);
         else if (idx === 0) app.homeyApi.zones.zones[zoneId].name = devInfo.room;
       }
-      try {
-        fakeDev = app.homeyApi.devices.addFakeDevice(fileName, devInfo.roomId);
-      } catch (err) {
-        console.log(`Missing file: ${fileName} - overriding with defaults`);
-        const dummyCap = {};
-        if (devInfo.thermostat_cap) {
-          dummyCap.measure_temperature = { value: 1 };
-          dummyCap.target_temperature = { value: 20 };
+      devices.push(new Promise((resolve, reject) => {
+        let fakeDev;
+        try {
+          fakeDev = app.homeyApi.devices.addFakeDevice(fileName, devInfo.roomId);
+        } catch (err) {
+          console.log(`Missing file: ${fileName} - overriding with defaults`);
+          const dummyCap = {};
+          if (devInfo.thermostat_cap) {
+            dummyCap.measure_temperature = { value: 1 };
+            dummyCap.target_temperature = { value: 20 };
+          }
+          if (devInfo.onoff_cap) {
+            dummyCap[devInfo.onoff_cap] = { value: false };
+          }
+          const dummyDevice = { id: deviceId, capabilitiesObj: dummyCap };
+          try {
+            fakeDev = app.homeyApi.devices.addFakeDevice(dummyDevice, devInfo.roomId);
+            fakeDev.driverUri = `homey:app:${devInfo.driverId.slice(0, devInfo.driverId.indexOf(':'))}`;
+            fakeDev.driverId = devInfo.driverId.slice(devInfo.driverId.indexOf(':') + 1);
+          } catch (err2) {
+            reject(err2);
+          }
         }
-        if (devInfo.onoff_cap) {
-          dummyCap[devInfo.onoff_cap] = { value: false };
-        }
-        const dummyDevice = { id: deviceId, capabilitiesObj: dummyCap };
-        fakeDev = app.homeyApi.devices.addFakeDevice(dummyDevice, devInfo.roomId);
-        fakeDev.driverUri = `homey:app:${devInfo.driverId.slice(0, devInfo.driverId.indexOf(':'))}`;
-        fakeDev.driverId = devInfo.driverId.slice(devInfo.driverId.indexOf(':') + 1);
-      }
-      fakeDev.deviceId = deviceId;
-      fakeDev.name = devInfo.name;
+        fakeDev.deviceId = deviceId;
+        fakeDev.name = devInfo.name;
+        resolve(fakeDev);
+      }));
     }
-    p.resolve();
+    return Promise.all(devices);
   });
-  return p;
 }
 
 // Test Charging
@@ -375,6 +396,7 @@ async function testState(stateDump) {
   await app.disableLog();
   await app.onInit();
   await applyStateFromFile(app, stateDump);
+  const now = app.__current_power_time;
   await app.onUninit();
   console.log('\x1b[1A[\x1b[32mPASSED\x1b[0m]');
 }
@@ -400,4 +422,4 @@ async function startAllTests() {
 
 // Run all the testing
 startAllTests();
-//testState('states/Anders_0.18.31_err.txt');
+// testState('states/Anders_0.18.31_err.txt');
