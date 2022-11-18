@@ -1773,14 +1773,14 @@ class PiggyBank extends Homey.App {
             }
             if (success && !noChange) {
               // Sucessfully Turned on
-              this.updateLog('Something was turned on...');
+              this.updateLog('Something was turned on...', c.LOG_DEBUG);
               return Promise.resolve();
             } // else try to modify another device
             if (!success) {
               numForcedOffDevices++;
             }
           } catch (err) {
-            this.updateLog(`Error ${err}`);
+            this.updateLog(`Error ${err}`, c.LOG_DEBUG);
             return Promise.reject(new Error(`Unknown error: ${err}`));
           }
           break;
@@ -1788,12 +1788,12 @@ class PiggyBank extends Homey.App {
           // Keep off / let it be on if it has been overridden by a user
           break;
         default:
-          this.updateLog(`Invalid op: ${reorderedModeList[idx].operation}`);
+          this.updateLog(`Invalid op: ${reorderedModeList[idx].operation}`, c.LOG_DEBUG);
           return Promise.reject(new Error('Invalid operation'));
       }
     }
     // If this point was reached then all devices are on and still below power limit
-    this.updateLog('Reached end without anything to turn on');
+    this.updateLog('Reached end without anything to turn on', c.LOG_DEBUG);
     this.__num_off_devices = numForcedOffDevices; // Reset the off counter in case it was incorrect
     this.__num_forced_off_devices = numForcedOffDevices;
     return Promise.resolve();
