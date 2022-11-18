@@ -17,6 +17,21 @@ const MODE_NIGHT = 2;
 const MODE_AWAY = 3;
 const MODE_CUSTOM = 4;
 
+// Operations for controlled devices
+const MAIN_OP = {
+  ALWAYS_OFF: 0,
+  ALWAYS_ON: 1,
+  CONTROLLED: 2,
+};
+
+const TARGET_OP = {
+  TURN_ON: 0,
+  TURN_OFF: 1,
+  DELTA_TEMP: 2,
+  EMERGENCY_OFF: 3,
+  IGNORE: 4,
+};
+
 // App enable
 const APP_NOT_READY = 0;
 const APP_READY = 1;
@@ -120,6 +135,8 @@ module.exports = {
   MODE_NIGHT,
   MODE_AWAY,
   MODE_CUSTOM,
+  MAIN_OP,
+  TARGET_OP,
   APP_NOT_READY,
   APP_READY,
   APP_MISSING_PRICE_API,

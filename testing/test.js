@@ -4,30 +4,13 @@
 
 'use strict';
 
-const fs = require('fs');
-const d = require('../common/devices');
 const c = require('../common/constants');
 const prices = require('../common/prices');
 const { addToArchive, cleanArchive, getArchive } = require('../common/archive');
 const Homey = require('./homey');
 const PiggyBank = require('../app');
 const { toLocalTime, fromLocalTime, timeToNextHour, roundToStartOfDay } = require('../common/homeytime');
-
-// Disables timers in order to allow high speed-out-of-time testing.
-async function disableTimers(app) {
-  if (app.__intervalID !== undefined) {
-    clearInterval(app.__intervalID);
-    app.__intervalID = undefined;
-  }
-  if (app.__newHourID !== undefined) {
-    clearTimeout(app.__newHourID);
-    app.__newHourID = undefined;
-  }
-  if (app.__statsIntervalID !== undefined) {
-    clearInterval(app.__statsIntervalID);
-    app.__statsIntervalID = undefined;
-  }
-}
+const { disableTimers, applyBasicConfig, applyStateFromFile, getAllDeviceId, writePowerStatus } = require('./test-helpers');
 
 // Test Currency Converter
 // * Test that the date for the last currency fetched is recent... otherwise the API could have changed
@@ -117,118 +100,6 @@ async function testNewHour(numTests) {
   // console.log(`End: ${now}`);
   await app.onUninit();
   console.log('\x1b[1A[\x1b[32mPASSED\x1b[0m]');
-}
-
-async function applyBasicConfig(app) {
-  app.homey.settings.set('operatingMode', c.MODE_NORMAL);
-  app.homey.settings.set('maxPower', 5000);
-  app.homey.settings.set('frostList', { id_a: { minTemp: 3 } });
-  app.homey.settings.set('modeList', [
-    // Normal
-    [{ id: 'id_a', operation: c.CONTROLLED, targetTemp: 24 }],
-    [{ id: 'id_a', operation: c.CONTROLLED, targetTemp: 24 }], // Night
-    [{ id: 'id_a', operation: c.CONTROLLED, targetTemp: 24 }], // Away
-  ]);
-  app.homey.settings.set('priceActionList', [
-    {id_a: {operation: c.EMERGENCY_OFF}}, {id_a: {operation: c.EMERGENCY_OFF}}, {id_a: {operation: c.EMERGENCY_OFF}}, {id_a: {operation: c.EMERGENCY_OFF}}, {id_a: {operation: c.EMERGENCY_OFF}}
-  ]);
-  app.__deviceList = {
-    id_a: { name:"DeviceNamenamenamenamename 1", room: "Stue",    image: "x.jpg", use: true, priority: 0, thermostat_cap: true, reliability: 1.0, driverId: 'no.thermofloor:TF_Thermostat' },
-    id_b: { name:"DeviceName 2", room: "Kjøkken", image: "x.jpg", use: true, priority: 1, thermostat_cap: true, reliability: 0.5, driverId: 'no.thermofloor:Z-TRM2fx' },
-    id_c: { name:"DeviceName 3", room: "Bad",     image: "x.jpg", use: true, priority: 0, thermostat_cap: false, reliability: 0.6, driverId: 'no.thermofloor:Z-TRM3' },
-    id_d: { name:"DeviceName 4", room: "Bad",     image: "x.jpg", use: false, priority: 1, thermostat_cap: true, reliability: 0.7, driverId: 'se.husdata:H60' },
-    id_e: { name:"DeviceName 3", room: "Bad",     image: "x.jpg", use: true, priority: 0, thermostat_cap: false, reliability: 0.6, driverId: 'com.everspring:AN179' }
-  }
-  app.homey.settings.set('priceMode', c.PRICE_MODE_INTERNAL);
-  const futureData = app.homey.settings.get('futurePriceOptions');
-  futureData.priceKind = c.PRICE_KIND_SPOT;
-  futureData.averageTime = 2;
-  app.homey.settings.set('futurePriceOptions', futureData);
-  app.app_is_configured = app.validateSettings();
-  const fakeDevices = [
-    'com.mill.txt',
-    'com.mill.txt',
-  //  { id: 'id_a', capabilitiesObj: { measure_temperature: { value: 1 }, target_temperature: { value: 20 } } },
-  //  { id: 'id_b', capabilitiesObj: { measure_temperature: { value: 1 }, target_temperature: { value: 20 } } },
-  //  { id: 'id_c', capabilitiesObj: { measure_temperature: { value: 1 }, target_temperature: { value: 20 } } },
-  //  { id: 'id_d', capabilitiesObj: { measure_temperature: { value: 1 }, target_temperature: { value: 20 } } },
-  //  { id: 'id_e', capabilitiesObj: { measure_temperature: { value: 1 }, target_temperature: { value: 20 } } },
-  ];
-  const zoneHomeId = app.homeyApi.zones.addZone('Home');
-  const zoneGangId = app.homeyApi.zones.addZone('Gang', null, zoneHomeId);
-  app.homeyApi.devices.addFakeDevices(fakeDevices, zoneGangId);
-  await app.createDeviceList(); // To initialize app.__current_state[...]
-  await app.doPriceCalculations();
-}
-
-async function applyStateFromFile(app, file) {
-  return new Promise((resolve, reject) => {
-    fs.readFile(`testing/${file}`, (err, data) => {
-      if (err) {
-        reject(err);
-      }
-      resolve(data);
-    });
-  }).then(data => {
-    const parsed = JSON.parse(data);
-    app.homey.settings.values = parsed.settings;
-    for (const v in parsed.state) {
-      switch (v) {
-        case '__intervalID':
-        case '__newHourID':
-        case '__statsIntervalID':
-          break;
-        case '__current_power_time':
-          app[v] = new Date(parsed.state[v]);
-          break;
-        default:
-          app[v] = parsed.state[v];
-          break;
-      }
-    }
-    // Create fake devices to match the loaded state
-    const devices = [];
-    for (const deviceId in parsed.settings.deviceList) {
-      const devInfo = parsed.settings.deviceList[deviceId];
-      const fileName = `${devInfo.driverId}.txt`;
-      const zones = app.homeyApi.zones.getZones();
-      for (let idx = devInfo.memberOf.length - 1; idx >= 0; idx--) {
-        const zoneId = devInfo.memberOf[idx];
-        const zoneName = (idx === 0) ? devInfo.room : `${devInfo.room}_parent_${idx}`;
-        const parentId = devInfo.memberOf[idx + 1] || null;
-        if (!(zoneId in zones)) app.homeyApi.zones.addZone(zoneName, zoneId, parentId);
-        else if (idx === 0) app.homeyApi.zones.zones[zoneId].name = devInfo.room;
-      }
-      devices.push(new Promise((resolve, reject) => {
-        let fakeDev;
-        try {
-          fakeDev = app.homeyApi.devices.addFakeDevice(fileName, devInfo.roomId);
-        } catch (err) {
-          console.log(`Missing file: ${fileName} - overriding with defaults`);
-          const dummyCap = {};
-          if (devInfo.thermostat_cap) {
-            dummyCap.measure_temperature = { value: 1 };
-            dummyCap.target_temperature = { value: 20 };
-          }
-          if (devInfo.onoff_cap) {
-            dummyCap[devInfo.onoff_cap] = { value: false };
-          }
-          const dummyDevice = { id: deviceId, capabilitiesObj: dummyCap };
-          try {
-            fakeDev = app.homeyApi.devices.addFakeDevice(dummyDevice, devInfo.roomId);
-            fakeDev.driverUri = `homey:app:${devInfo.driverId.slice(0, devInfo.driverId.indexOf(':'))}`;
-            fakeDev.driverId = devInfo.driverId.slice(devInfo.driverId.indexOf(':') + 1);
-          } catch (err2) {
-            reject(err2);
-          }
-        }
-        fakeDev.deviceId = deviceId;
-        fakeDev.name = devInfo.name;
-        resolve(fakeDev);
-      }));
-    }
-    return Promise.all(devices);
-  });
 }
 
 // Test Charging
@@ -406,15 +277,61 @@ async function testArchive() {
   console.log('\x1b[1A[\x1b[32mPASSED\x1b[0m]');
 } */
 
-async function testState(stateDump) {
+/**
+ * Test that all devices does power on in after a while
+ */
+async function testPowerOnAll() {
+  console.log('[......] Test Power On after Failure');
+  const stateDump = 'states/Anders_0.18.31_err.txt';
+  const app = new PiggyBank();
+  await app.disableLog();
+  await app.onInit();
+  app.setLogLevel(c.LOG_DEBUG);
+  await disableTimers(app);
+  await applyStateFromFile(app, stateDump);
+  const devices = await getAllDeviceId(app);
+  await app.onZoneUpdate({ name: 'Zone 1', id: '5a54cb5a-0628-49d3-be36-6f0a29a5e954' }, true);
+  await app.onZoneUpdate({ name: 'Zone 2', id: '630d051c-ad8d-47b8-b2e2-1b8dc9e2c2f2' }, true);
+  // Simulate time going forward
+  const curTime = app.__current_power_time;
+  for (let i = 0; i < 10; i++) {
+    curTime.setTime(curTime.getTime() + Math.round(10000 + Math.random() * 5000 - 2500));
+    await app.onPowerUpdate(0, curTime);
+  }
+  // Test that all devices are on
+  for (let i = 0; i < devices.length; i++) {
+    const deviceId = devices[i];
+    const device = await app.getDevice(deviceId);
+    const isOn = await app.getIsOn(device, deviceId);
+    if (app.__deviceList[deviceId].use && !isOn) throw new Error(`Device is still off: ${deviceId}`);
+  }
+  await app.onUninit();
+  console.log('\x1b[1A[\x1b[32mPASSED\x1b[0m]');
+}
+
+/**
+ * @param {*} stateDump The state dump to start simulating from
+ * @param {*} simTime Number of secconds of simulation time
+ */
+async function testState(stateDump, simTime) {
   console.log(`[......] State "${stateDump}"`);
   const app = new PiggyBank();
   await app.disableLog();
   await app.onInit();
+  app.setLogLevel(c.LOG_DEBUG);
   await disableTimers(app);
   await applyStateFromFile(app, stateDump);
-  const now = app.__current_power_time;
+  const devices = await getAllDeviceId(app);
+  await writePowerStatus(app, devices);
   // Simulate time going forward
+  const curTime = app.__current_power_time;
+  const startTime = new Date(curTime);
+  while ((curTime.getTime() - startTime.getTime()) / 1000 < simTime) {
+    curTime.setTime(curTime.getTime() + Math.round(10000 + Math.random() * 5000 - 2500));
+    const curPower = Math.round(1000 + Math.random() * 3000);
+    await app.onPowerUpdate(curPower, curTime);
+    await writePowerStatus(app, devices);
+  }
   await app.onUninit();
   console.log('\x1b[1A[\x1b[32mPASSED\x1b[0m]');
 }
@@ -432,6 +349,7 @@ async function startAllTests() {
     // await testPricePoints2();
     await testArchive();
     await testMail();
+    await testPowerOnAll();
   } catch (err) {
     console.log('\x1b[1A[\x1b[31mFAILED\x1b[0m]');
     console.log(err);
@@ -440,4 +358,4 @@ async function startAllTests() {
 
 // Run all the testing
 startAllTests();
-// testState('states/Anders_0.18.31_err.txt');
+//testState('states/Anders_0.18.31_err.txt', 100);

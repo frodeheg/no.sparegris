@@ -44,9 +44,13 @@ class FakeDeviceClass {
     } else {
       this.manifest = definition;
       this.driverUri = 'xxxxxx';
-      this.deviceId = definition.id;
-      this.capabilities = definition.capabilitiesObj;
+      this.id = definition.id;
+      this.capabilitiesObj = definition.capabilitiesObj;
     }
+  }
+
+  async setCapabilityValue(data) {
+    this.capabilitiesObj[data.capabilityId].value = data.value;
   }
 
 }
@@ -58,7 +62,7 @@ class FakeDevicesClass {
 
   constructor(homey) {
     this.homey = homey;
-    this.fakeDevices = [];
+    this.fakeDevices = {};
   }
 
   getDevices() {
@@ -66,12 +70,13 @@ class FakeDevicesClass {
   }
 
   getDevice(deviceId) {
-    return this.fakeDevices[deviceId];
+    return this.fakeDevices[deviceId.id];
   }
 
-  addFakeDevice(device, zoneId) {
+  addFakeDevice(device, zoneId, deviceId = undefined) {
     const fakeDevice = new FakeDeviceClass(this.homey, device, zoneId);
-    this.fakeDevices.push(fakeDevice);
+    if (deviceId) fakeDevice.id = deviceId;
+    this.fakeDevices[fakeDevice.id] = fakeDevice;
     return fakeDevice;
   }
 
