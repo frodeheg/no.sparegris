@@ -1,0 +1,37 @@
+Log ID: 2022-11-17T08:24:11.284Z
+App version 0.18.39
+
++8:24:11.284: No state from previous shutdown? Powerloss, deactivated or forced restart.
++8:24:11.392: Homey reboot detected. Delaying device control by 676 seconds to improve Zigbee recovery.
++14:16:58.952: Error: Endringene har blitt lagret.
++14:17:38.610: Error: Endringene har blitt lagret.
++14:17:59.183: Error: Endringene har blitt lagret.
++14:18:45.911: Error: Endringene har blitt lagret.
++14:19:2.661: Error: Endringene har blitt lagret.
++14:19:50.631: Error: Endringene har blitt lagret.
++14:20:2.104: ----- ANALYZING DEVICE -----
++14:20:2.110: Report type: Experimental device is working
++14:20:2.116: Device ID:   23eacffd-3b6d-43b1-88d6-f4f336b0f006
++14:20:2.148: Device name: Varmepumpe
++14:20:2.150: Driver Uri: homey:app:climate.onecta.daikin
++14:20:2.152: Driver Id: stylish_ftxa
++14:20:2.155: Found onoff cap: onoff
++14:20:2.156: Found temp cap: true
++14:20:2.158: Device reliability: 1
++14:20:2.160: Capabilities: onoff,operation_mode,powerFulMode,target_temperature,measure_temperature,measure_temperature.outdoorTemperature,measure_humidity,fanDirection_horizontal,fanDirection_vertical_swing,fanSpeedMode,fanSpeedFixed
++14:20:2.162: Options for 'onoff': {"value":true,"lastUpdated":"2022-11-18T14:00:01.605Z","type":"boolean","getable":true,"setable":true,"title":"On / Off","desc":null,"units":null,"chartType":"stepLine","id":"onoff","options":{"title":{"en":"On / Off","nl":"Aan / Uit"},"platforms":["local","cloud"],"insights":true,"chartType":"stepLine","getable":true,"setable":true,"uiComponent":"toggle","uiQuickAction":true}}
++14:20:2.164: Options for 'operation_mode': {"value":"heating","lastUpdated":"2022-11-17T18:01:17.210Z","type":"enum","getable":true,"setable":true,"title":"Operation Mode","desc":null,"units":null,"values":[{"id":"auto","title":"Auto"},{"id":"cooling","title":"Cooling"},{"id":"heating","title":"Heating"},{"id":"dry","title":"Dry"},{"id":"fanOnly","title":"FanOnly"}],"id":"operation_mode","options":{}}
++14:20:2.165: Options for 'powerFulMode': {"value":"off","lastUpdated":"2022-11-17T18:01:17.240Z","type":"enum","getable":true,"setable":true,"title":"Powerful Mode","desc":null,"units":null,"values":[{"id":"on","title":"On"},{"id":"off","title":"Off"}],"id":"powerFulMode","options":{}}
++14:20:2.167: Options for 'target_temperature': {"value":17,"lastUpdated":"2022-11-18T14:19:52.608Z","type":"number","getable":true,"setable":true,"title":"Ønsket temperatur","desc":null,"units":"°C","decimals":2,"min":10,"max":30,"chartType":"stepLine","id":"target_temperature","options":{"min":10,"max":30}}
++14:20:2.169: Options for 'measure_temperature': {"value":23,"lastUpdated":"2022-11-18T13:32:18.864Z","type":"number","getable":true,"setable":false,"title":"Indoor Temperature","desc":"Temperatur i grader Celsius (°C)","units":"°C","decimals":1,"chartType":"spline","id":"measure_temperature","options":{"type":"number","title":{"en":"Indoor Temperature","nl":"Binnen temperatuur"},"platforms":["local","cloud"],"units":{"en":"°C","nl":"°C"},"insights":true,"decimals":1,"chartType":"spline","getable":true,"setable":false,"uiComponent":"sensor"}}
++14:20:2.171: Options for 'measure_temperature.outdoorTemperature': {"value":1,"lastUpdated":"2022-11-18T14:01:20.237Z","type":"number","getable":true,"setable":false,"title":"Outdoor Temperature","desc":"Temperatur i grader Celsius (°C)","units":"°C","decimals":1,"chartType":"spline","id":"measure_temperature.outdoorTemperature","options":{"title":{"en":"Outdoor Temperature","nl":"Buiten temperatuur"},"platforms":["local","cloud"],"units":{"en":"°C","nl":"°C"},"insights":true,"decimals":1,"chartType":"spline","getable":true,"setable":false,"uiComponent":"sensor"}}
++14:20:2.173: Options for 'measure_humidity': {"value":null,"lastUpdated":null,"type":"number","getable":true,"setable":false,"title":"Luftfuktighet","desc":"Luftfuktighet i prosent (%)","units":"%","decimals":2,"chartType":"spline","id":"measure_humidity","options":{}}
++14:20:2.174: Options for 'fanDirection_horizontal': {"value":"stop","lastUpdated":"2022-11-18T14:09:10.755Z","type":"enum","getable":true,"setable":true,"title":"Fan Horizontal","desc":null,"units":null,"values":[{"id":"swing","title":"Swing"},{"id":"stop","title":"Stop"}],"id":"fanDirection_horizontal","options":{}}
++14:20:2.176: Options for 'fanDirection_vertical_swing': {"value":"swing","lastUpdated":"2022-11-18T09:57:08.634Z","type":"enum","getable":true,"setable":true,"title":"Fan Vertical","desc":null,"units":null,"values":[{"id":"swing","title":"Swing"},{"id":"stop","title":"Stop"}],"id":"fanDirection_vertical_swing","options":{}}
++14:20:2.179: Options for 'fanSpeedMode': {"value":"quiet","lastUpdated":"2022-11-18T09:57:08.685Z","type":"enum","getable":true,"setable":true,"title":"Fan Mode","desc":null,"units":null,"values":[{"id":"auto","title":"Auto"},{"id":"quiet","title":"Quiet"},{"id":"fixed","title":"Fixed"}],"id":"fanSpeedMode","options":{}}
++14:20:2.181: Options for 'fanSpeedFixed': {"value":"1","lastUpdated":"2022-11-17T18:01:17.252Z","type":"enum","getable":true,"setable":true,"title":"Fan Speed","desc":null,"units":null,"values":[{"id":"1","title":"1"},{"id":"2","title":"2"},{"id":"3","title":"3"},{"id":"4","title":"4"},{"id":"5","title":"5"}],"id":"fanSpeedFixed","options":{}}
++14:20:2.183: --- ANALYZING DEVICE DONE ---
++14:20:6.019: Email: optional.email@for.feedback
+Comment:Optional
++14:20:6.068: Sending log
++14:20:24.407: Sending log

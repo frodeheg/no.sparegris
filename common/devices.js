@@ -82,7 +82,8 @@ const DEFAULT_AC = {
   setModeCap: 'thermostat_mode',
   setModeHeatValue: 'heat',
   setModeCoolValue: 'cool',
-  setModeAutoValue: 'auto'
+  setModeAutoValue: 'auto',
+  default: true
 };
 
 // Default charger
@@ -124,6 +125,16 @@ const DEVICE_CMD = {
       onoff: false,
       hotwatertank_onoff_altherma3: 'off'
     },
+    default: false
+  },
+  'climate.onecta.daikin:stylish_ftxa': {
+    ...DEFAULT_AC,
+    tempStep: 0.5,
+    setModeCap: 'operation_mode',
+    setModeHeatValue: 'heating',
+    setModeCoolValue: 'cooling',
+    setModeDryValue: 'dry',
+    setModeFanValue: 'fanOnly',
     default: false
   },
   'cloud.shelly:shelly': DEFAULT_SWITCH,
