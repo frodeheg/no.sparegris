@@ -598,5 +598,8 @@
   },
   "0.19.2": {
     "en": "Added support for Elko Smart Super TR RF (experimental)"
+  },
+  "0.19.3": {
+    "en": "Fix for a bug that prevented devices from being turned on again after being turned off if temperature control was disabled."
   }
 }
