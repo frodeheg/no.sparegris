@@ -601,5 +601,8 @@
   },
   "0.19.3": {
     "en": "Fix for a bug that prevented devices from being turned on again after being turned off if temperature control was disabled."
+  },
+  "0.19.4": {
+    "en": "Added support for heat pump climate.onecta.daikin:stylish_ftxa"
   }
 }
