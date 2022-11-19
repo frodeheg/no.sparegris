@@ -381,6 +381,35 @@
       },
       {
         "title": {
+          "en": "A zone !{{is|isn't}} enabled",
+          "no": "En Sone !{{er|er ikke}} aktiv"
+        },
+        "titleFormatted": {
+          "en": "The zone [[zone]] !{{is|isn't}} enabled",
+          "no": "Sonen [[zone]] !{{er|er ikke}} aktiv"
+        },
+        "hint": {
+          "en": "Use this flow card to check if a zone can be controlled by the app.",
+          "no": "Bruk dette flytkortet til å sjekke om en sone er styrbar av appen."
+        },
+        "args": [
+          {
+            "type": "autocomplete",
+            "name": "zone",
+            "title": {
+              "en": "Zone name",
+              "no": "Sone navn"
+            },
+            "placeholder": {
+              "en": "Name of the zone as defined in Homey",
+              "no": "Navn på sone som definert i Homey"
+            }
+          }
+        ],
+        "id": "is_zone_enabled"
+      },
+      {
+        "title": {
           "en": "The mode !{{is|isn't}}",
           "no": "Driftsmodus !{{er|er ikke}}"
         },

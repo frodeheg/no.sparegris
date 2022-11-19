@@ -570,6 +570,15 @@ class PiggyBank extends Homey.App {
         return this.generateModeList(query, args);
       }
     );
+    const isZoneEnabledCondition = this.homey.flow.getConditionCard('is_zone_enabled');
+    isZoneEnabledCondition.registerRunListener(async (args, state) => {
+      const activeZones = this.homey.settings.get('zones');
+      const zoneIsEnabled = !activeZones.hasOwnProperty(args.zone.id) || activeZones[args.zone.id].enabled;
+      return zoneIsEnabled;
+    });
+    isZoneEnabledCondition.registerArgumentAutocompleteListener(
+      'zone', async (query, args) => this.generateZoneList(query, args)
+    );
     // Action cards for charging
     const cardActionStartChargingCycle = this.homey.flow.getActionCard('start-charging-cycle');
     cardActionStartChargingCycle.registerRunListener(async args => {
