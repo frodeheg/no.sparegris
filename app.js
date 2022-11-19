@@ -2541,7 +2541,7 @@ class PiggyBank extends Homey.App {
       if ((driverId in d.DEVICE_CMD) && (d.DEVICE_CMD[driverId].type === d.DEVICE_TYPE.AC)) {
         override[deviceId] = c.OVERRIDE.OFF_UNTIL_MANUAL_ON;
         const device = await this.getDevice(deviceId);
-        this.setOnOff(device, deviceId, false);
+        await this.setOnOff(device, deviceId, false);
       }
     }
     this.homey.settings.set('override', override);
