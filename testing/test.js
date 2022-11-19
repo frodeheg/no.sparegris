@@ -330,6 +330,52 @@ async function testIssue84() {
 }
 
 /**
+ * Github issue #87
+ */
+async function testIssue87() {
+  console.log('[......] Test Github issue #87: Temperature too low');
+  const stateDump = 'states/Frode_0.19.4_bug87.txt';
+  const app = new PiggyBank();
+  await app.disableLog();
+  await app.onInit();
+  app.setLogLevel(c.LOG_DEBUG);
+  await disableTimers(app);
+  await applyStateFromFile(app, stateDump);
+  const devices = await getAllDeviceId(app);
+
+  // Simulate time going forward
+  const curTime = app.__current_power_time;
+  for (let i = 0; i < 10; i++) {
+    curTime.setTime(curTime.getTime() + Math.round(10000 + Math.random() * 5000 - 2500));
+    await app.onPowerUpdate(0, curTime);
+  }
+  // Test that all devices are the right temperature
+  const rightTemp = {
+    '33fa2e27-a8cb-4e65-87f8-13545305101a': 11,
+    '734fab2d-2c19-4032-8726-d0a40624c3fb': 11,
+    '0a763eab-ffde-4581-af47-58755bbb22ed': 6,
+    'ef2c3457-0a55-4ccd-a943-58de258d07dd': 11,
+    '7e844fe8-3f2e-4206-a849-aa5541883c9b': 6,
+    '1160d771-5a69-445c-add1-3943ccb16d43': 6,
+    'eb3be21c-bcb2-47b2-9393-eae2d33737dc': 55,
+    'b4788083-9606-49a2-99d4-9efce7a4656d': 16,
+  };
+  for (let i = 0; i < devices.length; i++) {
+    const deviceId = devices[i];
+    const device = await app.getDevice(deviceId);
+    const hasTemp = app.__deviceList[deviceId].thermostat_cap !== undefined;
+    if (device.capabilities.includes(app.getTempSetCap())) {
+      if (device.capabilitiesObj[app.getTempSetCap()].value !== rightTemp[deviceId]) {
+        throw new Error('Incorrect temperature');
+      }
+    }
+  }
+
+  await app.onUninit();
+  console.log('\x1b[1A[\x1b[32mPASSED\x1b[0m]');
+}
+
+/**
  * @param {*} stateDump The state dump to start simulating from
  * @param {*} simTime Number of secconds of simulation time
  */
@@ -371,6 +417,7 @@ async function startAllTests() {
     await testMail();
     await testPowerOnAll();
     await testIssue84();
+    await testIssue87();
   } catch (err) {
     console.log('\x1b[1A[\x1b[31mFAILED\x1b[0m]');
     console.log(err);

@@ -1230,7 +1230,8 @@ class PiggyBank extends Homey.App {
       || (currentActionOp !== TARGET_OP.TURN_OFF && !isEmergency && !forceOff
         && !this.__deviceList[deviceId].memberOf.some(z => (activeZones.hasOwnProperty(z) && !activeZones[z].enabled))
         && ((newState === TARGET_OP.TURN_ON && currentModeState !== MAIN_OP.ALWAYS_OFF)
-          || (newState === TARGET_OP.TURN_OFF && currentModeState === MAIN_OP.ALWAYS_ON) || (newState === TARGET_OP.EMERGENCY_OFF && isOn)));
+          || (newState === TARGET_OP.TURN_OFF && currentModeState === MAIN_OP.ALWAYS_ON)
+          || (newState === TARGET_OP.EMERGENCY_OFF && isOn)));
 
     if (newState === TARGET_OP.EMERGENCY_OFF && newStateOn === undefined) {
       // Early exit because it's no emergency and we don't know whether to be on or off
@@ -1773,7 +1774,7 @@ class PiggyBank extends Homey.App {
             }
             if (success && !noChange) {
               // Sucessfully Turned on
-              this.updateLog('Something was turned on...', c.LOG_DEBUG);
+              this.updateLog('Turn on success', c.LOG_DEBUG);
               return Promise.resolve();
             } // else try to modify another device
             if (!success) {
@@ -2064,6 +2065,7 @@ class PiggyBank extends Homey.App {
         if (override[deviceId] === c.OVERRIDE.MANUAL_TEMP) {
           return Promise.resolve([true, true]);
         }
+        this.updateLog(`Refreshing temp for device ${device.name}, value: ${newTemp}, mode: ${modeTemp}, delta: ${deltaTemp}`, c.LOG_DEBUG);
         return device.setCapabilityValue({ capabilityId: tempSetCap, value: newTemp })
           .then(() => Promise.resolve([true, false]));
       })

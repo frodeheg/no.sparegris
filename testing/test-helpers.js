@@ -139,7 +139,7 @@ async function applyStateFromFile(app, file) {
           app.log(`Missing file: ${fileName} - overriding with defaults`);
           const dummyCap = {};
           if (devInfo.thermostat_cap) {
-            dummyCap.measure_temperature = { value: 1 };
+            dummyCap.measure_temperature = { value: 10 };
             dummyCap.target_temperature = { value: 20 };
           }
           if (devInfo.onoff_cap || !devInfo.use) {
