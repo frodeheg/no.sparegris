@@ -604,5 +604,8 @@
   },
   "0.19.4": {
     "en": "Added support for heat pump climate.onecta.daikin:stylish_ftxa"
+  },
+  "0.19.5": {
+    "en": "Updated price points from \"low\"/\"high\" to \"cheap\"/\"expensive\" everywhere for consistency. (Issue #60)"
   }
 }
