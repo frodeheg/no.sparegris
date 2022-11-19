@@ -607,5 +607,8 @@
   },
   "0.19.5": {
     "en": "Updated price points from \"low\"/\"high\" to \"cheap\"/\"expensive\" everywhere for consistency. (Issue #60)"
+  },
+  "0.19.6": {
+    "en": "Added \"and\" flow card to check if a zone is enabled or not"
   }
 }
