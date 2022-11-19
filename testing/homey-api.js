@@ -43,9 +43,11 @@ class FakeDeviceClass {
       }
     } else {
       this.manifest = definition;
-      this.driverUri = 'xxxxxx';
+      this.driverUri = 'homey:app:unknown';
+      this.driverId = 'unknown';
       this.id = definition.id;
       this.capabilitiesObj = definition.capabilitiesObj;
+      this.capabilities = Object.keys(this.capabilitiesObj);
     }
   }
 

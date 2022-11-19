@@ -310,6 +310,26 @@ async function testPowerOnAll() {
 }
 
 /**
+ * Github issue #84
+ */
+async function testIssue84() {
+  console.log('[......] Test Github issue #84: AC maintanance button');
+  const app = new PiggyBank();
+  await app.disableLog();
+  await app.onInit();
+  await applyBasicConfig(app);
+
+  await app.filterChangeAC();
+  const override = app.homey.settings.get('override');
+  if (Object.keys(override).length !== 2) {
+    throw new Error('Override AC devices did not work');
+  }
+
+  await app.onUninit();
+  console.log('\x1b[1A[\x1b[32mPASSED\x1b[0m]');
+}
+
+/**
  * @param {*} stateDump The state dump to start simulating from
  * @param {*} simTime Number of secconds of simulation time
  */
@@ -350,6 +370,7 @@ async function startAllTests() {
     await testArchive();
     await testMail();
     await testPowerOnAll();
+    await testIssue84();
   } catch (err) {
     console.log('\x1b[1A[\x1b[31mFAILED\x1b[0m]');
     console.log(err);
