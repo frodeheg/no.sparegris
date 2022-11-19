@@ -217,6 +217,36 @@
         "id": "free-power-changed"
       },
       {
+        "deprecated": true,
+        "title": {
+          "en": "Price point changed",
+          "no": "Prispunkt endret seg"
+        },
+        "titleFormatted": {
+          "en": "The price point changed.",
+          "no": "Prispunkt endret seg."
+        },
+        "hint": {
+          "en": "This trigger card has been deprecated. Please replace it with the new one to ensure future correctness.",
+          "no": "Dette flytkortet er utdatert. Vennligst bytt det ut for å forsikre at det virker i fremtiden."
+        },
+        "tokens": [
+          {
+            "type": "string",
+            "name": "pricePoint",
+            "title": {
+              "en": "Price point",
+              "no": "Prispunkt"
+            },
+            "example": {
+              "en": "Can be 'Dirt cheap', 'Low', 'Normal', 'High' or 'Extremely high'",
+              "no": "Kan være 'Grisebillig', 'Lav', 'Normal', 'Høy' eller 'Ekstremt høy'"
+            }
+          }
+        ],
+        "id": "price-point-changed"
+      },
+      {
         "title": {
           "en": "Price point changed",
           "no": "Prispunkt endret seg"
@@ -238,12 +268,12 @@
               "no": "Prispunkt"
             },
             "example": {
-              "en": "Can be 'Dirt cheap', 'Low', 'Normal', 'High' or 'Extremely high'",
-              "no": "Kan være 'Grisebillig', 'Lav', 'Normal', 'Høy' eller 'Ekstremt høy'"
+              "en": "Can be 'Dirt cheap', 'Cheap', 'Normal', 'Expensive' or 'Extremely expensive'",
+              "no": "Kan være 'Grisebillig', 'Billig', 'Normal', 'Dyrt' eller 'Ekstremt dyrt'"
             }
           }
         ],
-        "id": "price-point-changed"
+        "id": "price-point-changed2"
       },
       {
         "title": {
@@ -406,8 +436,8 @@
               {
                 "id": "0",
                 "label": {
-                  "en": "Low",
-                  "no": "Lav"
+                  "en": "Cheap",
+                  "no": "Billig"
                 }
               },
               {
@@ -420,15 +450,15 @@
               {
                 "id": "2",
                 "label": {
-                  "en": "High",
-                  "no": "Høy"
+                  "en": "Expensive",
+                  "no": "Dyrt"
                 }
               },
               {
                 "id": "3",
                 "label": {
-                  "en": "Extremely high",
-                  "no": "Ekstremt høy"
+                  "en": "Extremely expensive",
+                  "no": "Ekstremt dyrt"
                 }
               }
             ]
@@ -596,8 +626,8 @@
           "no": "Sett Sparegris prispunkt til [[mode]] pris"
         },
         "hint": {
-          "en": "Inform Piggy Bank whether the price on electricity is high or low",
-          "no": "Informerer Sparegris om prisen på strøm er høy eller lav"
+          "en": "Inform Piggy Bank whether the energy is expensive or cheap",
+          "no": "Informerer Sparegris om strømmen er dyr eller billig"
         },
         "highlight": true,
         "args": [
@@ -615,8 +645,8 @@
               {
                 "id": "0",
                 "label": {
-                  "en": "Low",
-                  "no": "Lav"
+                  "en": "Cheap",
+                  "no": "Billig"
                 }
               },
               {
@@ -629,15 +659,15 @@
               {
                 "id": "2",
                 "label": {
-                  "en": "High",
-                  "no": "Høy"
+                  "en": "Expensive",
+                  "no": "Dyrt"
                 }
               },
               {
                 "id": "3",
                 "label": {
-                  "en": "Extremely high",
-                  "no": "Ekstremt høy"
+                  "en": "Extremely expensive",
+                  "no": "Ekstremt dyrt"
                 }
               }
             ]

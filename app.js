@@ -1614,6 +1614,23 @@ class PiggyBank extends Homey.App {
       return Promise.resolve();
     }
 
+    // ==================== LEGACY CODE BEGIN ===========================
+    // Find the translation table for price points from the app manifest
+    const ppTableOld = [
+      { en: 'Low', no: 'Lav' },
+      { en: 'Normal', no: 'Normal' },
+      { en: 'High', no: 'Høy' },
+      { en: 'Extremely high', no: 'Ekstremt høy' },
+      { en: 'Dirt cheap', no: 'Grisebillig' }
+    ];
+
+    // Send price point trigger
+    const pricePointTriggerOld = this.homey.flow.getTriggerCard('price-point-changed');
+    const pricePointStringOld = this.homey.__(ppTableOld[newMode]);
+    const tokensOld = { pricePoint: pricePointStringOld };
+    pricePointTriggerOld.trigger(tokensOld);
+    // ==================== LEGACY CODE END ===========================
+
     // Find the translation table for price points from the app manifest
     let ppTriggerId = 0;
     const keys = this.manifest.flow.actions;
@@ -1622,7 +1639,7 @@ class PiggyBank extends Homey.App {
     const ppTable = keys2.reduce((outTable, item) => { return { ...outTable, [item.id]: item.label }; }, []);
 
     // Send price point trigger
-    const pricePointTrigger = this.homey.flow.getTriggerCard('price-point-changed');
+    const pricePointTrigger = this.homey.flow.getTriggerCard('price-point-changed2');
     const pricePointString = this.homey.__(ppTable[newMode]);
     const tokens = { pricePoint: pricePointString };
     pricePointTrigger.trigger(tokens);

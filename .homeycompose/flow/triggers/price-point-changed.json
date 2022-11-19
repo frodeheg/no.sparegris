@@ -1,28 +1,29 @@
 {
-    "title": {
-      "en": "Price point changed",
-      "no": "Prispunkt endret seg"
-    },
-    "titleFormatted": {
-      "en": "The price point changed.",
-      "no": "Prispunkt endret seg."
-    },
-    "hint": {
-      "en": "Use this trigger if you want the internal price control of PiggyBank to control external events.",
-      "no": "Bruk denne triggeren dersom du ønsker at den interne prisstyringen i Sparegris skal styre eksterne hendelser."
-    },
-    "tokens": [
-      {
-        "type": "string",
-        "name": "pricePoint",
-        "title": {
-          "en": "Price point",
-          "no": "Prispunkt"
-        },
-        "example": {
-          "en": "Can be 'Dirt cheap', 'Low', 'Normal', 'High' or 'Extremely high'",
-          "no": "Kan være 'Grisebillig', 'Lav', 'Normal', 'Høy' eller 'Ekstremt høy'"
-        }
+  "deprecated": true,
+  "title": {
+    "en": "Price point changed",
+    "no": "Prispunkt endret seg"
+  },
+  "titleFormatted": {
+    "en": "The price point changed.",
+    "no": "Prispunkt endret seg."
+  },
+  "hint": {
+    "en": "This trigger card has been deprecated. Please replace it with the new one to ensure future correctness.",
+    "no": "Dette flytkortet er utdatert. Vennligst bytt det ut for å forsikre at det virker i fremtiden."
+  },
+  "tokens": [
+    {
+      "type": "string",
+      "name": "pricePoint",
+      "title": {
+        "en": "Price point",
+        "no": "Prispunkt"
+      },
+      "example": {
+        "en": "Can be 'Dirt cheap', 'Low', 'Normal', 'High' or 'Extremely high'",
+        "no": "Kan være 'Grisebillig', 'Lav', 'Normal', 'Høy' eller 'Ekstremt høy'"
       }
-    ]
-  }
+    }
+  ]
+}

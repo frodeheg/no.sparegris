@@ -8,8 +8,8 @@
     "no": "Sett Sparegris prispunkt til [[mode]] pris"
   },
   "hint": {
-    "en": "Inform Piggy Bank whether the price on electricity is high or low",
-    "no": "Informerer Sparegris om prisen på strøm er høy eller lav"
+    "en": "Inform Piggy Bank whether the energy is expensive or cheap",
+    "no": "Informerer Sparegris om strømmen er dyr eller billig"
   },
   "highlight": true,
   "args": [
@@ -27,8 +27,8 @@
         {
           "id": "0",
           "label": {
-            "en": "Low",
-            "no": "Lav"
+            "en": "Cheap",
+            "no": "Billig"
           }
         },
         {
@@ -41,15 +41,15 @@
         {
           "id": "2",
           "label": {
-            "en": "High",
-            "no": "Høy"
+            "en": "Expensive",
+            "no": "Dyrt"
           }
         },
         {
           "id": "3",
           "label": {
-            "en": "Extremely high",
-            "no": "Ekstremt høy"
+            "en": "Extremely expensive",
+            "no": "Ekstremt dyrt"
           }
         }
       ]
