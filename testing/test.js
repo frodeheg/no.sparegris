@@ -332,7 +332,7 @@ async function testIssue84() {
 /**
  * Github issue #87
  */
-async function testIssue87() {
+async function testIssue83_and_87() {
   console.log('[......] Test Github issue #87: Temperature too low');
   const stateDump = 'states/Frode_0.19.4_bug87.txt';
   const app = new PiggyBank();
@@ -354,7 +354,7 @@ async function testIssue87() {
     '33fa2e27-a8cb-4e65-87f8-13545305101a': 11,
     '734fab2d-2c19-4032-8726-d0a40624c3fb': 11,
     '0a763eab-ffde-4581-af47-58755bbb22ed': 6,
-    'ef2c3457-0a55-4ccd-a943-58de258d07dd': 11,
+    'ef2c3457-0a55-4ccd-a943-58de258d07dd': 11.5,
     '7e844fe8-3f2e-4206-a849-aa5541883c9b': 6,
     '1160d771-5a69-445c-add1-3943ccb16d43': 6,
     'eb3be21c-bcb2-47b2-9393-eae2d33737dc': 55,
@@ -363,10 +363,10 @@ async function testIssue87() {
   for (let i = 0; i < devices.length; i++) {
     const deviceId = devices[i];
     const device = await app.getDevice(deviceId);
-    const hasTemp = app.__deviceList[deviceId].thermostat_cap !== undefined;
     if (device.capabilities.includes(app.getTempSetCap())) {
-      if (device.capabilitiesObj[app.getTempSetCap()].value !== rightTemp[deviceId]) {
-        throw new Error('Incorrect temperature');
+      const actualTemp = device.capabilitiesObj[app.getTempSetCap()].value;
+      if (actualTemp !== rightTemp[deviceId]) {
+        throw new Error(`Incorrect temperature for device ${deviceId}: ${actualTemp} !== ${rightTemp[deviceId]}`);
       }
     }
   }
@@ -417,7 +417,7 @@ async function startAllTests() {
     await testMail();
     await testPowerOnAll();
     await testIssue84();
-    await testIssue87();
+    await testIssue83_and_87();
   } catch (err) {
     console.log('\x1b[1A[\x1b[31mFAILED\x1b[0m]');
     console.log(err);

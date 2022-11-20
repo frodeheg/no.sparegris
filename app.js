@@ -2074,10 +2074,10 @@ class PiggyBank extends Homey.App {
     const actionListIdx = +this.homey.settings.get('pricePoint');
     const currentModeList = modeList[currentMode - 1];
     const modeIdx = this.findModeIdx(deviceId);
-    const modeTemp = parseInt(currentModeList[modeIdx].targetTemp, 10);
+    const modeTemp = +currentModeList[modeIdx].targetTemp;
     const currentAction = actionLists[actionListIdx][deviceId]; // Action state: .operation
     const currentPriceMode = +this.homey.settings.get('priceMode');
-    const deltaTemp = ((currentPriceMode !== c.PRICE_MODE_DISABLED) && (currentAction.operation === TARGET_OP.DELTA_TEMP)) ? parseInt(currentAction.delta, 10) : 0;
+    const deltaTemp = ((currentPriceMode !== c.PRICE_MODE_DISABLED) && (currentAction.operation === TARGET_OP.DELTA_TEMP)) ? +currentAction.delta : 0;
     return this.getDevice(deviceId)
       .then(device => {
         if (this.getOnOffCap(deviceId) === undefined) {
@@ -2094,7 +2094,7 @@ class PiggyBank extends Homey.App {
         const hasMeasureTemp = device.capabilities.includes(tempGetCap);
         if ((!hasTargetTemp) || (!hasMeasureTemp)) return Promise.resolve([true, true]);
         const frostGuardActive = this.isFrostGuardActive(device, deviceId);
-        let newTemp = frostGuardActive ? parseInt(frostList[deviceId].minTemp, 10) : (modeTemp + deltaTemp);
+        let newTemp = frostGuardActive ? +frostList[deviceId].minTemp : (modeTemp + deltaTemp);
         const minTemp = this.getTempCapMin(device, deviceId);
         const maxTemp = this.getTempCapMax(device, deviceId);
         if (newTemp < minTemp) newTemp = minTemp;
@@ -2899,7 +2899,7 @@ class PiggyBank extends Homey.App {
             : c.APP_READY;
     return {
       power_last_hour: parseInt(this.__power_last_hour, 10), // Actually NaN the first hour of operation
-      power_estimated: this.__power_estimated === undefined ? undefined : parseInt(this.__power_estimated.toFixed(2), 10),
+      power_estimated: this.__power_estimated === undefined ? undefined : parseInt(this.__power_estimated.toFixed(0), 10),
       price_point: +await this.homey.settings.get('pricePoint'),
       operating_mode: +await this.homey.settings.get('operatingMode'),
       alarm_overshoot: this.__alarm_overshoot,

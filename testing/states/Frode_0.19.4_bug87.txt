@@ -880,7 +880,7 @@
           "operation": 2,
           "minTemp": 15,
           "maxTemp": 28,
-          "targetTemp": "26"
+          "targetTemp": "26.5"
         },
         {
           "id": "33fa2e27-a8cb-4e65-87f8-13545305101a",
@@ -975,7 +975,7 @@
           "operation": 2,
           "minTemp": 15,
           "maxTemp": 28,
-          "targetTemp": "15"
+          "targetTemp": "15.5"
         },
         {
           "id": "33fa2e27-a8cb-4e65-87f8-13545305101a",
@@ -1069,7 +1069,7 @@
         {
           "id": "ef2c3457-0a55-4ccd-a943-58de258d07dd",
           "operation": 2,
-          "targetTemp": "10"
+          "targetTemp": "10.5"
         },
         {
           "id": "7e844fe8-3f2e-4206-a849-aa5541883c9b",
@@ -1136,7 +1136,7 @@
         {
           "id": "0a763eab-ffde-4581-af47-58755bbb22ed",
           "operation": 2,
-          "targetTemp": "24"
+          "targetTemp": "24.5"
         },
         {
           "id": "ef2c3457-0a55-4ccd-a943-58de258d07dd",
