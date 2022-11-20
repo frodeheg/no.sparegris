@@ -8,6 +8,7 @@ const OVERRIDE = {
   OFF_UNTIL_MANUAL_ON: 3,
   MANUAL_TEMP: 4,
   FROST_GUARD: 5,
+  CONTROLLED: 6,
 };
 
 // Modes

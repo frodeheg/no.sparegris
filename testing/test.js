@@ -332,8 +332,8 @@ async function testIssue84() {
 /**
  * Github issue #87
  */
-async function testIssue83_and_87() {
-  console.log('[......] Test Github issue #87: Temperature too low');
+async function testIssue83And87() {
+  console.log('[......] Test Github issue #83 and #87: Incorrect temperature');
   const stateDump = 'states/Frode_0.19.4_bug87.txt';
   const app = new PiggyBank();
   await app.disableLog();
@@ -416,7 +416,7 @@ async function startAllTests() {
     await testArchive();
     await testPowerOnAll();
     await testIssue84();
-    await testIssue83_and_87();
+    await testIssue83And87();
     await testMail();
   } catch (err) {
     console.log('\x1b[1A[\x1b[31mFAILED\x1b[0m]');

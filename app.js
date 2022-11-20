@@ -734,6 +734,17 @@ class PiggyBank extends Homey.App {
   }
 
   /**
+   * Applies a mode override for a device
+   */
+  async applyModeOverride(mode, deviceId) {
+    const override = this.homey.settings.get('override') || {};
+    return (override[deviceId] === c.OVERRIDE.CONTROLLED) ? c.MAIN_OP.CONTROLLED
+      : (override[deviceId] === c.OVERRIDE.ON) ? c.MAIN_OP.ALWAYS_ON
+        : (override[deviceId] === c.OVERRIDE.OFF) ? c.MAIN_OP.ALWAYS_OFF
+          : mode;
+  }
+
+  /**
    * Warning: homey does not report any errors if this function crashes, so make sure it doesn't crash
    */
   async generateDeviceList(query, args) {
@@ -1189,9 +1200,11 @@ class PiggyBank extends Homey.App {
     const currentAction = actionLists[actionListIdx][deviceId]; // Action state: .operation
     const modeLists = this.homey.settings.get('modeList');
     const currentMode = +this.homey.settings.get('operatingMode');
+    const override = this.homey.settings.get('override') || {};
+    const forceControlled = (override[deviceId] === c.OVERRIDE.CONTROLLED);
     const currentModeList = modeLists[currentMode - 1];
     const currentModeIdx = this.findModeIdx(deviceId);
-    const currentModeState = parseInt(currentModeList[currentModeIdx].operation, 10); // Mode state
+    const currentModeState = forceControlled ? c.MAIN_OP.CONTROLLED : parseInt(currentModeList[currentModeIdx].operation, 10); // Mode state
     const replacementOp = (currentModeState === MAIN_OP.ALWAYS_OFF) ? TARGET_OP.TURN_OFF : TARGET_OP.TURN_ON;
     const currentActionOp = (priceMode === c.PRICE_MODE_DISABLED) ? replacementOp : parseInt(currentAction.operation, 10); // Override the current action if price actions are disabled
 
@@ -1241,7 +1254,6 @@ class PiggyBank extends Homey.App {
 
     if (this.getOnOffCap(deviceId) === undefined) return Promise.resolve([false, false]); // Homey was busy, will have to retry later
     const isOn = this.getIsOn(device, deviceId);
-    const override = this.homey.settings.get('override') || {};
     if (override[deviceId] === c.OVERRIDE.OFF_UNTIL_MANUAL_ON && isOn) {
       delete override[deviceId];
       this.homey.settings.set('override', override);
@@ -1802,7 +1814,8 @@ class PiggyBank extends Homey.App {
         continue;
       }
       // Check if the on state complies with the settings
-      switch (reorderedModeList[idx].operation) {
+      const operation = await this.applyModeOverride(reorderedModeList[idx].operation, deviceId);
+      switch (operation) {
         case MAIN_OP.CONTROLLED:
         case MAIN_OP.ALWAYS_ON:
           // Always on is overridden by price actions
@@ -1831,7 +1844,7 @@ class PiggyBank extends Homey.App {
           // Keep off / let it be on if it has been overridden by a user
           break;
         default:
-          this.updateLog(`Invalid op: ${reorderedModeList[idx].operation}`, c.LOG_DEBUG);
+          this.updateLog(`Invalid op: ${reorderedModeList[idx].operation}`, c.LOG_ERROR);
           return Promise.reject(new Error('Invalid operation'));
       }
     }
@@ -1923,6 +1936,9 @@ class PiggyBank extends Homey.App {
     const device = await this.getDevice(deviceId);
     let promise;
     switch (+forcedState) {
+      case c.OVERRIDE.CONTROLLED:
+        promise = this.changeDeviceState(deviceId, undefined); // Controlled
+        break;
       case c.OVERRIDE.NONE:
         delete override[deviceId];
         promise = this.changeDeviceState(deviceId, undefined); // Go back to default state

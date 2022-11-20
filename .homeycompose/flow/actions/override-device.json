@@ -50,6 +50,13 @@
             }
           },
           {
+            "id": "6",
+            "label": {
+              "en": "Controlled",
+              "no": "Styrt"
+            }
+          },
+          {
             "id": "3",
             "label": {
               "en": "Maintenance (off) until manually turned on",
