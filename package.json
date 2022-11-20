@@ -2,6 +2,9 @@
   "name": "no.sparegris",
   "version": "1.0.0",
   "main": "app.js",
+  "engines": {
+    "node": ">=12.0.0"
+  },
   "scripts": {
     "lint": "eslint --ext .js,.ts --ignore-path .gitignore ."
   },

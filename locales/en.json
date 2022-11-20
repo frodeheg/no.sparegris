@@ -125,6 +125,7 @@
     "cost" : {
       "header": "Cost settings",
       "surcharge": "Surcharge electricity provider",
+      "currency": "Currency",
       "VAT": "VAT",
       "gridTaxDay": "Grid charge 06-22",
       "gridTaxNight": "Grid charge 22-06",

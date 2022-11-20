@@ -233,6 +233,28 @@ class FakeNotificationsClass {
 }
 
 /**
+ * Fake Language class
+ */
+class FakeLanguageClass {
+
+  constructor(homey) {
+    this.homey = homey;
+    this.locale = 'no';
+  }
+
+  __(languagestring) {
+    if (this.locale in languagestring) return languagestring[this.locale];
+    if ('en' in languagestring) return languagestring['en'];
+    throw new Error(`Broken languagestring: ${JSON.stringify(languagestring)}`);
+  }
+
+  getLanguage() {
+    return this.locale;
+  }
+
+}
+
+/**
  * Fake Homey class
  */
 class FakeHomeyClass {
@@ -244,12 +266,13 @@ class FakeHomeyClass {
     this.flow = new FakeFlowClass(this);
     this.clock = new FakeClockClass(this);
     this.notifications = new FakeNotificationsClass(this);
+    this.i18n = new FakeLanguageClass(this);
     this.env = env;
     this.__debug = false;
   }
 
   __(languagestring) {
-    return `Languagestring: ${languagestring}`;
+    return this.i18n.__(languagestring);
   }
 
   on(event, callback) {

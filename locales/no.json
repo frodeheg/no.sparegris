@@ -125,6 +125,7 @@
     "cost" : {
       "header": "Kostnader",
       "surcharge": "Påslag strømleverandør",
+      "currency": "Valuta",
       "VAT": "Moms",
       "gridTaxDay": "Nettleie 06-22",
       "gridTaxNight": "Nettleie 22-06",

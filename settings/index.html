@@ -1046,6 +1046,12 @@
         <legend data-i18n="settings.cost.header">cost.header</legend>
         <table class="settings_table">
           <tr>
+            <td class="settings_row_name"><label for="currency" data-i18n="settings.cost.currency">cost.currency</label>:</td>
+            <td class="settings_row_input"><select id ="currency" onchange="displaySaveHint();">
+              <option value="0" selected>Error - should be replaced with currencies</option>
+            </select></td>
+          </tr>
+          <tr>
             <td class="settings_row_name"><label for="VAT" data-i18n="settings.cost.VAT">cost.VAT</label>:</td>
             <td class="settings_row_input"><input id="VAT" class="inputElem" type="number" min="0" max="100" value="25" onchange="displaySaveHint()">%</td>
           </tr>
@@ -1539,6 +1545,7 @@
       var futurePriceOptionsLoaded = false;
       var chargerOptionsLoaded = false;
       var appConfigProgressLoaded = false;
+      var currenciesLoaded = false;
       var onHomeyReadyCompleted = false;
 
       function updateGraph(stats) {
@@ -1779,6 +1786,7 @@
           `futurePriceOptionsLoaded: ${futurePriceOptionsLoaded}<br>` +
           `chargerOptionsLoaded: ${chargerOptionsLoaded}<br>` +
           `appConfigProgressLoaded: ${appConfigProgressLoaded}<br>` +
+          `currenciesLoaded: ${currenciesLoaded}<br>` +
           `onHomeyReadyCompleted: ${onHomeyReadyCompleted}<br>`;*/
         if (maxPowerLoaded
           && deviceListLoaded
@@ -1800,6 +1808,7 @@
           && futurePriceOptionsLoaded
           && chargerOptionsLoaded
           && appConfigProgressLoaded
+          && currenciesLoaded
           && onHomeyReadyCompleted) {
           // Update device enable list:
           generateEnableList('highPriDevices', 1);
@@ -1832,6 +1841,7 @@
           document.getElementById("gridTaxDay").value = futurePriceOptions.gridTaxDay;
           document.getElementById("gridTaxNight").value = futurePriceOptions.gridTaxNight;
           document.getElementById("VAT").value = futurePriceOptions.VAT;
+          document.getElementById('currency').value = futurePriceOptions.currency;
           document.getElementById('chargeTarget').value = chargerOptions.chargeTarget;
           document.getElementById('chargeMin').value = chargerOptions.chargeMin;
           document.getElementById('chargeThreshold').value = chargerOptions.chargeThreshold;
@@ -1878,6 +1888,7 @@
         var mainFuseElement = document.getElementById("mainFuse");
         var rememberToSaveElement = document.getElementById("rememberToSave");
         var maxPowerElement = document.getElementById("maxPower");
+        var currencyElement = document.getElementById("currency");
 
         // Fetch translation strings from Homey
         deltaText = Homey.__(deltaText);
@@ -2013,6 +2024,19 @@
             chargerOptions = {}
           }
           chargerOptionsLoaded = true;
+        });
+
+        // Refresh
+        Homey.api('GET', '/apiCommand?cmd=getCurrencies', null, function (err, currencies) {
+          if (err) return alertUser(Homey, err);
+          let newCurrencyText = '';
+          for (let currencyId in currencies) {
+            newCurrencyText += `<option value="${currencyId}">${currencies[currencyId]}</option>`;
+          }
+          currencyElement.innerHTML = newCurrencyText;
+
+          currenciesLoaded = true;
+          checkLoadingDone();
         });
 
         // Refresh API configuration progress
@@ -2220,6 +2244,7 @@
               futurePriceOptions.gridTaxDay = document.getElementById("gridTaxDay").value;
               futurePriceOptions.gridTaxNight = document.getElementById("gridTaxNight").value;
               futurePriceOptions.VAT = document.getElementById("VAT").value;
+              futurePriceOptions.currency = document.getElementById('currency').value;
               futurePriceOptions.gridCosts = gridCost;
               chargerOptions.chargeTarget = +document.getElementById('chargeTarget').value;
               chargerOptions.chargeMin = +document.getElementById('chargeMin').value;
@@ -2669,6 +2694,7 @@
         futurePriceOptionsLoaded = true;
         chargerOptionsLoaded = true;
         appConfigProgressLoaded = true;
+        currenciesLoaded = true;
         onHomeyReadyCompleted = true;
         chargerOptions = {
           chargeTarget: CHARGE_TARGET_AUTO,
@@ -2695,6 +2721,7 @@
           gridTaxDay: 0.3626, // Tensio default
           gridTaxNight: 0.2839, // Tensio default
           VAT: 25,
+          currency: 'NOK',
           gridCosts: [{ limit: 2000, price: 73 }, { limit: 5000, price: 128 }, { limit: 10000, price: 219 }]
         }
         setTimeout(function () {

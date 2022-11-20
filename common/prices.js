@@ -11,18 +11,53 @@ const { toLocalTime } = require('./homeytime');
 // = CURRENCY
 // =============================================================================
 
-const WWW_NORGES_BANK_CURRENCY = 'https://data.norges-bank.no/api/data/EXR/B.GBP+EUR+SEK+DKK+RUB+PLN.NOK.SP?format=sdmx-json&startPeriod={startDate}&endPeriod={endDate}&locale=no';
+const WWW_NORGES_BANK_CURRENCY = 'https://data.norges-bank.no/api/data/EXR/B.{toCurrency}.{fromCurrency}.SP?format=sdmx-json&startPeriod={startDate}&endPeriod={endDate}&locale={locale}';
 const currencyTable = {
-  GBP: { rate: 11.6025, date: '2022-09-23', name: 'Pound sterling' },
-  EUR: { rate: 10.2335, date: '2022-09-23', name: 'Euro' },
-  SEK: { rate: 93.6000, date: '2022-09-23', name: 'Svenska krona' },
-  DKK: { rate: 137.610, date: '2022-09-23', name: 'Danish krone' },
-  RUB: { rate: 545.750, date: '2022-09-23', name: 'российские рубли' },
-  PLN: { rate: 2.15250, date: '2022-09-23', name: 'Polski złoty' },
+  GBP: { rate: 12.0442, date: '2022-11-18', name: 'Britiske pund' },
+  EUR: { rate: 10.486, date: '2022-11-18', name: 'Euro' },
+  SEK: { rate: 0.955, date: '2022-11-18', name: 'Svenske kroner' },
+  DKK: { rate: 1.4097, date: '2022-11-18', name: 'Danske kroner' },
+  RUB: { rate: 0.17, date: '2022-11-20', name: 'российские рубли' },
+  PLN: { rate: 2.2295, date: '2022-11-18', name: 'Polske zloty' },
   NOK: { rate: 1.00000, date: '2022-09-23', name: 'Norske Kroner' },
+  AUD: { rate: 6.7945, date: '2022-11-18', name: 'Australske dollar' },
+  BGN: { rate: 5.3614999999999995, date: '2022-11-18', name: 'Bulgarske lev' },
+  BRL: { rate: 1.8904, date: '2022-11-18', name: 'Brasilianske real' },
+  CAD: { rate: 7.576, date: '2022-11-18', name: 'Kanadiske dollar' },
+  CHF: { rate: 10.6123, date: '2022-11-18', name: 'Sveitsiske franc' },
+  CNY: { rate: 1.4211, date: '2022-11-18', name: 'Kinesiske yuan' },
+  CZK: { rate: 0.43062, date: '2022-11-18', name: 'Tsjekkiske koruna' },
+  HKD: { rate: 1.2931, date: '2022-11-18', name: 'Hong Kong dollar' },
+  HRK: { rate: 1.3903999999999999, date: '2022-11-18', name: 'Kroatiske kuna' },
+  HUF: { rate: 0.025737999999999997, date: '2022-11-18', name: 'Ungarske forinter' },
+  I44: { rate: 112.85, date: '2022-11-18', name: 'Importveid kursindeks' },
+  IDR: { rate: 0.00064631, date: '2022-11-18', name: 'Indonesiske rupiah' },
+  ILS: { rate: 2.9201, date: '2022-11-18', name: 'Ny israelsk shekel' },
+  INR: { rate: 0.12382, date: '2022-11-18', name: 'Indiske rupi' },
+  JPY: { rate: 0.072257, date: '2022-11-18', name: 'Japanske yen' },
+  KRW: { rate: 0.007549, date: '2022-11-18', name: 'Sørkoreanske won' },
+  MXN: { rate: 0.5201, date: '2022-11-18', name: 'Meksikanske peso' },
+  MYR: { rate: 2.2215, date: '2022-11-18', name: 'Malaysiske ringgit' },
+  NZD: { rate: 6.2577, date: '2022-11-18', name: 'New Zealand dollar' },
+  PHP: { rate: 0.1765, date: '2022-11-18', name: 'Filippinske peso' },
+  PKR: { rate: 0.045129999999999997, date: '2022-11-18', name: 'Pakistanske rupi' },
+  RON: { rate: 2.1221, date: '2022-11-18', name: 'Ny rumenske leu' },
+  SGD: { rate: 7.3695, date: '2022-11-18', name: 'Singapore dollar' },
+  THB: { rate: 0.28288, date: '2022-11-18', name: 'Thailandske baht' },
+  TRY: { rate: 0.5433, date: '2022-11-18', name: 'Tyrkiske lira' },
+  TWD: { rate: 0.32494999999999996, date: '2022-11-18', name: 'Nye taiwanske dollar' },
+  TWI: { rate: 122.89, date: '2022-11-18', name: 'Industriens effektive valutakurs' },
+  USD: { rate: 10.1158, date: '2022-11-18', name: 'Amerikanske dollar' },
+  XDR: { rate: 13.27554, date: '2022-11-18', name: 'IMF Spesielle trekkrettigheter' },
+  ZAR: { rate: 0.5855, date: '2022-11-18', name: 'Sørafrikanske rand' },
+  BYN: { rate: 4.0053, date: '2022-11-18', name: 'Nye hviterussiske rubler' },
+  BDT: { rate: 0.09820000000000001, date: '2022-11-18', name: 'Bangladeshi taka' },
+  MMK: { rate: 0.004817, date: '2022-11-18', name: 'Myanmar kyat' },
+  ISK: { rate: 0.0704, date: '2022-11-18', name: 'Islandske kroner' },
+  VND: { rate: 0.00040800000000000005, date: '2022-11-18', name: 'Vietnamesiske dong' },
 };
 
-const homeyCodeToCurrency = {
+const defaultCurrency = {
   en: 'GBP',
   nl: 'EUR',
   de: 'EUR',
@@ -36,18 +71,33 @@ const homeyCodeToCurrency = {
   pl: 'PLN',
 };
 
+async function getDecimals(currency) {
+  const decimals = 2 - Math.round(Math.log10(currencyTable['NOK'].rate / currencyTable[currency].rate));
+  return decimals;
+}
+
+let currencyLocale = 'no'; // Updated on request
+
+async function currencyApiInit(locale) {
+  currencyLocale = locale;
+}
+
 // Fetch the newest currency conversions
 // When failed, return the last known currencies
 // @param from - Sets the reference currency
-async function fetchCurrencyTable(from = 'NOK', date) {
+async function fetchCurrencyTable(currencies = '', date) {
   const now = (date === undefined) ? new Date() : new Date(date);
   const someDaysAgo = new Date();
   someDaysAgo.setDate(now.getDate() - 4);
   const startDate = `${String(someDaysAgo.getUTCFullYear())}-${String(someDaysAgo.getUTCMonth() + 1).padStart(2, '0')}-${String(someDaysAgo.getUTCDate()).padStart(2, '0')}`;
   const endDate = `${String(now.getUTCFullYear())}-${String(now.getUTCMonth() + 1).padStart(2, '0')}-${String(now.getUTCDate()).padStart(2, '0')}`;
+  const toString = (typeof currencies === 'object') ? currencies.join('+') : currencies;
   const webAddress = WWW_NORGES_BANK_CURRENCY
     .replace('{startDate}', startDate)
-    .replace('{endDate}', endDate);
+    .replace('{endDate}', endDate)
+    .replace('{toCurrency}', toString)
+    .replace('{fromCurrency}', 'NOK')
+    .replace('{locale}', currencyLocale);
   let currencyCopy;
   try {
     const { data, res } = await request(webAddress, { dataType: 'json' });
@@ -73,25 +123,26 @@ async function fetchCurrencyTable(from = 'NOK', date) {
         }
         const exchangeRate = +data.data.dataSets[0].series[`0:${i}:0:0`].observations[latestDateIndex][0] / multiplier;
         const exchangeDate = data.data.structure.dimensions.observation[0].values[latestDateIndex].start.substring(0, 10);
+        if (!(currencyNames[i].id in currencyTable)) currencyTable[currencyNames[i].id] = {};
         currencyTable[currencyNames[i].id].rate = exchangeRate;
         currencyTable[currencyNames[i].id].date = exchangeDate;
+        currencyTable[currencyNames[i].id].name = currencyNames[i].name;
       }
     }
     //
     currencyCopy = JSON.parse(JSON.stringify(currencyTable));
-    const divider = currencyCopy[from].rate;
-    // eslint-disable-next-line guard-for-in, no-restricted-syntax
-    for (const currency in currencyCopy) {
-      currencyCopy[currency].rate /= divider;
-    }
   } catch (err) {} // Ignore errors. Instead the currencyTable contain a date which indicate last working date
 
-  return currencyCopy;
+  if (currencies === '') return currencyCopy;
+  const asArray = Object.entries(currencyCopy);
+  const filtered = asArray.filter(([key, value]) => ((typeof currencies === 'object') ? currencies.includes(key) : key === currencies));
+  const asObject = Object.fromEntries(filtered);
+  return asObject;
 }
 
 async function getCurrencyModifier(fromCurrency, toCurrency, date) {
-  const currencyTable = await fetchCurrencyTable(toCurrency, date);
-  return currencyTable[fromCurrency].rate;
+  const currencyTable = await fetchCurrencyTable([toCurrency, fromCurrency], date);
+  return currencyTable[fromCurrency].rate / currencyTable[toCurrency].rate;
 }
 
 // =============================================================================
@@ -283,6 +334,9 @@ async function fetchFromEntsoe() {
 fetchFromEntsoe(); */
 
 module.exports = {
+  currencyApiInit,
+  defaultCurrency,
+  getDecimals,
   fetchCurrencyTable,
   entsoeApiInit,
   entsoeGetData,

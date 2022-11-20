@@ -41,6 +41,8 @@ module.exports = {
         return homey.app.createDeviceList();
       case 'getAppConfigProgress':
         return homey.app.getAppConfigProgress();
+      case 'getCurrencies':
+        return homey.app.getCurrencies();
       case 'getFullState':
         return homey.app.getFullState();
       default:

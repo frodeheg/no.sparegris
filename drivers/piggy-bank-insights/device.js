@@ -14,6 +14,7 @@ class MyDevice extends Device {
    */
   async onInit() {
     this.intervalID = undefined;
+    this.currency = 'NOK';
 
     // Fetch poll interval and set up timer
     const settings = this.getSettings();
@@ -421,6 +422,32 @@ class MyDevice extends Device {
         this.removeCapability('button.filterChangeAC');
       }
 
+      // Change currencies
+      if (this.currency !== piggyState.currency) {
+        // Currency
+        const currencyOptions = {
+          units: { en: piggyState.currency },
+          decimals: piggyState.decimals,
+        };
+        await this.updateCapability('piggy_money.savings_all_time_use', currencyOptions);
+        await this.updateCapability('piggy_money.savings_all_time_power_part', currencyOptions);
+        await this.updateCapability('piggy_money.savings_all_time_total', currencyOptions);
+
+        // Currency / kWh
+        const currencyPerkWhOptions = {
+          units: { en: `${piggyState.currency}/kWh` },
+          decimals: piggyState.decimals,
+        };
+        await this.updateCapability('piggy_money.average_price', currencyPerkWhOptions);
+        await this.updateCapability('piggy_money.current_price', currencyPerkWhOptions);
+        await this.updateCapability('piggy_money.acceptable_price', currencyPerkWhOptions);
+        await this.updateCapability('piggy_money.dirt_cheap_price_limit', currencyPerkWhOptions);
+        await this.updateCapability('piggy_money.low_price_limit', currencyPerkWhOptions);
+        await this.updateCapability('piggy_money.high_price_limit', currencyPerkWhOptions);
+        await this.updateCapability('piggy_money.extreme_price_limit', currencyPerkWhOptions);
+        this.currency = piggyState.currency;
+      }
+
       // Other things to report:
       // * 4: Average power used in every mode
       // * 3: Average power used in every price pointupdateupdate
@@ -433,6 +460,14 @@ class MyDevice extends Device {
     } finally {
       this.intervalID = setTimeout(() => this.updateState(), this.__pollIntervalTime);
     }
+  }
+
+  /**
+   * Sets the capabilities options
+   */
+  async updateCapability(capabilityId, baseOptions) {
+    const options = { ...this.homey.app.manifest.drivers[0].capabilitiesOptions[capabilityId], ...baseOptions };
+    await this.setCapabilityOptions(capabilityId, options);
   }
 
   /**

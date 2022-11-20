@@ -149,6 +149,7 @@ class PiggyBank extends Homey.App {
       this.logInit();
     } catch (err) {} // Ignore logging errors, normal users don't care
 
+    await prices.currencyApiInit(this.homey.i18n.getLanguage());
     await prices.entsoeApiInit(Homey.env.ENTSOE_TOKEN);
 
     // ===== BREAKING CHANGES =====
@@ -363,6 +364,7 @@ class PiggyBank extends Homey.App {
       || !('gridTaxDay' in futurePriceOptions)
       || !('gridTaxNight' in futurePriceOptions)
       || !('VAT' in futurePriceOptions)
+      || !('currency' in futurePriceOptions)
       || !(Array.isArray(futurePriceOptions.gridCosts))) {
       if (!futurePriceOptions) futurePriceOptions = {};
       if (!('minCheapTime' in futurePriceOptions)) futurePriceOptions.minCheapTime = 4;
@@ -380,6 +382,7 @@ class PiggyBank extends Homey.App {
       if (!('gridTaxDay' in futurePriceOptions)) futurePriceOptions.gridTaxDay = 0.3626; // Tensio default
       if (!('gridTaxNight' in futurePriceOptions)) futurePriceOptions.gridTaxNight = 0.2839; // Tensio default
       if (!('VAT' in futurePriceOptions)) futurePriceOptions.VAT = 25;
+      if (!('currency' in futurePriceOptions)) futurePriceOptions.currency = this.homey.__(prices.defaultCurrency);
       if (!(Array.isArray(futurePriceOptions.gridCosts))) futurePriceOptions.gridCosts = await this.fetchTariffTable();
       this.updateLog(`Resetting futurePriceOptions to ${JSON.stringify(futurePriceOptions)}`, c.LOG_DEBUG);
       this.homey.settings.set('futurePriceOptions', futurePriceOptions);
@@ -960,6 +963,19 @@ class PiggyBank extends Homey.App {
     appConfigProgress.gotPPFromFlow = this.homey.settings.get('gotPPFromFlow') === 'true';
     appConfigProgress.ApiStatus = this.apiState;
     return appConfigProgress;
+  }
+
+  /**
+   * Return a list of currencies that can be used
+   */
+  async getCurrencies() {
+    await prices.currencyApiInit(this.homey.i18n.getLanguage());
+    const currencies = await prices.fetchCurrencyTable();
+    const namesOnly = {};
+    for (const id in currencies) {
+      namesOnly[id] = currencies[id].name;
+    }
+    return namesOnly;
   }
 
   /**
@@ -2904,6 +2920,8 @@ class PiggyBank extends Homey.App {
       power_last_month: this.__stats_last_month_max,
       num_restarts: this.__stats_app_restarts,
 
+      currency: futureData.currency,
+      decimals: await prices.getDecimals(futureData.currency),
       average_price: +await this.homey.settings.get('averagePrice') || undefined,
       current_price: this.__current_prices[this.__current_price_index],
       dirtcheap_price_limit: this.__dirtcheap_price_limit,
@@ -3018,7 +3036,7 @@ class PiggyBank extends Homey.App {
             const biddingZone = (futurePriceOptions.priceCountry in c.ENTSOE_BIDDING_ZONES)
               && (futurePriceOptions.priceRegion in c.ENTSOE_BIDDING_ZONES[futurePriceOptions.priceCountry])
               ? c.ENTSOE_BIDDING_ZONES[futurePriceOptions.priceCountry][futurePriceOptions.priceRegion].id : undefined;
-            const priceData = await prices.entsoeGetData(todayStart, 'NOK', biddingZone);
+            const priceData = await prices.entsoeGetData(todayStart, futurePriceOptions.currency, biddingZone);
             futurePrices = await prices.applyTaxesOnSpotprice(
               priceData,
               futurePriceOptions.surcharge,
