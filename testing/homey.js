@@ -4,15 +4,7 @@
 
 'use strict';
 
-const manifest = {
-  version: '1.0',
-  flow: {
-    actions: [{
-      id: 'change-piggy-bank-price-point',
-      args: [{values: [{id: 'a', label: 'la'}, {id: 'b', label: 'lb'}, {id: 'c', label: 'lc'}]}],
-    }],
-  },
-};
+const manifest = require('../app.json');
 const env = require('../env.json');
 
 /**
@@ -243,6 +235,7 @@ class FakeLanguageClass {
   }
 
   __(languagestring) {
+    if (typeof languagestring === 'string') return languagestring;
     if (this.locale in languagestring) return languagestring[this.locale];
     if ('en' in languagestring) return languagestring['en'];
     throw new Error(`Broken languagestring: ${JSON.stringify(languagestring)}`);
