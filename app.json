@@ -389,8 +389,8 @@
           "no": "Sonen [[zone]] !{{er|er ikke}} aktiv"
         },
         "hint": {
-          "en": "Use this flow card to check if a zone can be controlled by the app.",
-          "no": "Bruk dette flytkortet til å sjekke om en sone er styrbar av appen."
+          "en": "Use this flow card to check if a zone is enabled for app control. You may have to restart Piggy if you changed name of a zone.",
+          "no": "Bruk dette flytkortet til å sjekke om en sone er aktivert for app styring. Du må kanskje starte Sparegris på nytt dersom du har endret navn på en sone."
         },
         "args": [
           {
@@ -745,8 +745,8 @@
           "no": "Endre sone [[zone]] aktiv til [[enabled]]"
         },
         "hint": {
-          "en": "Allows you to turn on/off devices in zones e.g. in connection with ventilation. If the app is disabled the zone list may be empty.",
-          "no": "Tillater deg å slå av/på enheter i soner f.eks. i forbindelse med lufting. Dersom appen er deaktivert kan sone-listen være tom."
+          "en": "Allows you to turn on/off devices in zones e.g. in connection with ventilation. You may have to restart Piggy if you changed name of a zone. If the app is disabled the zone list may be empty.",
+          "no": "Tillater deg å slå av/på enheter i soner f.eks. i forbindelse med lufting. Du må kanskje starte Sparegris på nytt dersom du har endret navn på en sone. Dersom appen er deaktivert kan sone-listen være tom."
         },
         "args": [
           {

@@ -8,8 +8,8 @@
     "no": "Sonen [[zone]] !{{er|er ikke}} aktiv"
   },
   "hint": {
-    "en": "Use this flow card to check if a zone can be controlled by the app.",
-    "no": "Bruk dette flytkortet til å sjekke om en sone er styrbar av appen."
+    "en": "Use this flow card to check if a zone is enabled for app control. You may have to restart Piggy if you changed name of a zone.",
+    "no": "Bruk dette flytkortet til å sjekke om en sone er aktivert for app styring. Du må kanskje starte Sparegris på nytt dersom du har endret navn på en sone."
   },
   "args": [
     {

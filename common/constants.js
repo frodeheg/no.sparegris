@@ -18,7 +18,7 @@ const MODE_AWAY = 3;
 const MODE_CUSTOM = 4;
 
 // Operations for controlled devices
-const MAIN_OP = {
+const MAIN_OP = {
   ALWAYS_OFF: 0,
   ALWAYS_ON: 1,
   CONTROLLED: 2,
