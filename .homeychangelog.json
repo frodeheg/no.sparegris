@@ -610,5 +610,8 @@
   },
   "0.19.6": {
     "en": "Added \"and\" flow card to check if a zone is enabled or not"
+  },
+  "0.19.7": {
+    "en": "Added currency support + Fixed decimal setting of temperatures + Implemented override for 'controlled' + Updated flow card hint text for 'zone-override'"
   }
 }
