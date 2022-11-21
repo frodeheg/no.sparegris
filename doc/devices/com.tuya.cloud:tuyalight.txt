@@ -1,0 +1,20 @@
+Log ID: 2022-11-21T22:12:37.760Z
+App version 0.19.7
+
++22:12:37.760: ----- ANALYZING DEVICE -----
++22:12:37.763: Report type: Device is not being turned on/off
++22:12:37.765: Device ID:   63b406f3-ce2f-473f-a25d-6040cd5f010c
++22:12:37.836: Device name: Spot Tak 8
++22:12:37.838: Driver Uri: homey:app:com.tuya.cloud
++22:12:37.840: Driver Id: tuyalight
++22:12:37.841: Found onoff cap: onoff
++22:12:37.843: Found temp cap: undefined
++22:12:37.844: Device reliability: 1
++22:12:37.845: Capabilities: onoff,dim,light_temperature,light_hue,light_saturation,light_mode
++22:12:37.848: Options for 'onoff': {"value":false,"lastUpdated":"2022-11-21T04:02:15.804Z","type":"boolean","getable":true,"setable":true,"title":"Slått på","desc":null,"units":null,"id":"onoff","options":{}}
++22:12:37.850: Options for 'dim': {"value":1,"lastUpdated":"2022-08-18T10:41:02.589Z","type":"number","getable":true,"setable":true,"title":"Dempingsnivå","desc":null,"units":"%","decimals":2,"min":0,"max":1,"chartType":"stepLine","id":"dim","options":{}}
++22:12:37.852: Options for 'light_temperature': {"value":0.6,"lastUpdated":"2022-11-20T09:47:05.004Z","type":"number","getable":true,"setable":true,"title":"Fargetemperatur","desc":null,"units":null,"decimals":2,"min":0,"max":1,"chartType":"stepLine","id":"light_temperature","options":{}}
++22:12:37.853: Options for 'light_hue': {"value":0.7,"lastUpdated":"2022-11-17T08:09:19.399Z","type":"number","getable":true,"setable":true,"title":"Fargetone","desc":null,"units":null,"decimals":2,"min":0,"max":1,"chartType":"stepLine","id":"light_hue","options":{}}
++22:12:37.855: Options for 'light_saturation': {"value":1,"lastUpdated":"2022-11-17T07:42:45.511Z","type":"number","getable":true,"setable":true,"title":"Fargemetning","desc":null,"units":null,"decimals":2,"min":0,"max":1,"chartType":"stepLine","id":"light_saturation","options":{}}
++22:12:37.857: Options for 'light_mode': {"value":"temperature","lastUpdated":"2022-11-20T09:47:05.004Z","type":"enum","getable":true,"setable":true,"title":"Lysmodus","desc":"Veksle mellom farge- og temperaturmodus","units":null,"values":[{"id":"color","title":"Farge"},{"id":"temperature","title":"Temperatur"}],"id":"light_mode","options":{}}
++22:12:37.858: --- ANALYZING DEVICE DONE ---

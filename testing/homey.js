@@ -38,6 +38,10 @@ class FakeSettingsClass {
     }
   }
 
+  getKeys() {
+    return Object.keys(this.values);
+  }
+
 }
 
 /**

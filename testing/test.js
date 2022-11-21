@@ -376,6 +376,58 @@ async function testIssue83And87() {
 }
 
 /**
+ * Github ticket #88
+ */
+async function testTicket88() {
+  console.log('[......] Test Github ticket #88: Override controlled');
+  const stateDump = 'states/Frode_0.19.7_ticket88.txt';
+  const app = new PiggyBank();
+  await app.disableLog();
+  await app.onInit();
+  app.setLogLevel(c.LOG_DEBUG);
+  await disableTimers(app);
+  await applyStateFromFile(app, stateDump);
+  const devices = await getAllDeviceId(app);
+  const curTime = app.__current_power_time;
+
+  for (let times = 0; times < 2; times++) {
+    // First run a little with insane power to turn everything off
+    for (let i = 0; i < 5; i++) {
+      curTime.setTime(curTime.getTime() + Math.round(10000 + Math.random() * 5000 - 2500));
+      try {
+        await app.onPowerUpdate(7000, curTime);
+      } catch (err) {}
+    }
+    // Test that all devices are off
+    for (let i = 0; i < devices.length; i++) {
+      const deviceId = devices[i];
+      const device = await app.getDevice(deviceId);
+      const isOn = await app.getIsOn(device, deviceId);
+      if (app.__deviceList[deviceId].use && isOn) throw new Error(`Device is still on: ${deviceId}`);
+    }
+    await app.onNewHour(true, curTime);
+    curTime.setTime(curTime.getTime() + Math.round(10*60000));
+    await app.onPowerUpdate(0, curTime);
+    curTime.setTime(curTime.getTime() + Math.round(10*60000));
+    // Run some more to turn everything on again
+    for (let i = 0; i < 5; i++) {
+      curTime.setTime(curTime.getTime() + Math.round(10000 + Math.random() * 5000 - 2500));
+      await app.onPowerUpdate(0, curTime);
+    }
+    // Test that all devices are on
+    for (let i = 0; i < devices.length; i++) {
+      const deviceId = devices[i];
+      const device = await app.getDevice(deviceId);
+      const isOn = await app.getIsOn(device, deviceId);
+      if (app.__deviceList[deviceId].use && !isOn) throw new Error(`Device is still off: ${deviceId}`);
+    }
+  }
+
+  await app.onUninit();
+  console.log('\x1b[1A[\x1b[32mPASSED\x1b[0m]');
+}
+
+/**
  * @param {*} stateDump The state dump to start simulating from
  * @param {*} simTime Number of secconds of simulation time
  */
@@ -417,6 +469,7 @@ async function startAllTests() {
     await testPowerOnAll();
     await testIssue84();
     await testIssue83And87();
+    await testTicket88();
     await testMail();
   } catch (err) {
     console.log('\x1b[1A[\x1b[31mFAILED\x1b[0m]');

@@ -1,0 +1,16 @@
++22:10:10.980: ----- ANALYZING DEVICE -----
++22:10:10.982: Report type: Device is not being turned on/off
++22:10:10.990: Device ID:   4a6ccdad-d1c3-4751-a981-6734df83219c
++22:10:11.098: Device name: Stikkontakt
++22:10:11.101: Driver Uri: homey:app:no.connecte
++22:10:11.106: Driver Id: smart_socket
++22:10:11.108: Found onoff cap: onoff
++22:10:11.110: Found temp cap: undefined
++22:10:11.113: Device reliability: 1
++22:10:11.115: Capabilities: onoff,meter_power,measure_voltage,measure_current,measure_power
++22:10:11.121: Options for 'onoff': {"value":false,"lastUpdated":"2022-03-17T05:06:55.022Z","type":"boolean","getable":true,"setable":true,"title":"Slått på","desc":null,"units":null,"id":"onoff","options":{}}
++22:10:11.123: Options for 'meter_power': {"value":0,"lastUpdated":"2022-03-13T17:08:25.885Z","type":"number","getable":true,"setable":false,"title":"Energi","desc":"Energiforbruk i kilowattimer (kWh)","units":"kWh","decimals":2,"chartType":"spline","id":"meter_power","options":{}}
++22:10:11.126: Options for 'measure_voltage': {"value":236,"lastUpdated":"2022-11-21T22:10:06.332Z","type":"number","getable":true,"setable":false,"title":"Spenning","desc":"Spenning (V)","units":"V","decimals":2,"chartType":"stepLine","id":"measure_voltage","options":{}}
++22:10:11.128: Options for 'measure_current': {"value":0,"lastUpdated":"2022-11-21T22:09:57.458Z","type":"number","getable":true,"setable":false,"title":"Strøm","desc":"Elektrisk strøm (A)","units":"A","decimals":2,"chartType":"stepLine","id":"measure_current","options":{}}
++22:10:11.133: Options for 'measure_power': {"value":0,"lastUpdated":"2022-11-21T22:09:39.541Z","type":"number","getable":true,"setable":false,"title":"Effekt","desc":"Effekt i watt (W)","units":"W","decimals":2,"chartType":"stepLine","id":"measure_power","options":{}}
++22:10:11.136: --- ANALYZING DEVICE DONE ---

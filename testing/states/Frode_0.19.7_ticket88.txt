@@ -1,0 +1,4552 @@
+{
+  "version": "0.19.7",
+  "settings": {
+    "controlTemp": "1",
+    "gridCosts": [
+      {
+        "limit": 2000,
+        "price": 73
+      },
+      {
+        "limit": 5000,
+        "price": 128
+      },
+      {
+        "limit": 10000,
+        "price": 219
+      },
+      {
+        "limit": 15000,
+        "price": 323
+      },
+      {
+        "limit": 20000,
+        "price": 426
+      },
+      {
+        "limit": 25000,
+        "price": 530
+      }
+    ],
+    "futurePriceOptions": {
+      "minCheapTime": "4",
+      "minExpensiveTime": "4",
+      "averageTime": "0",
+      "dirtCheapPriceModifier": "-50",
+      "lowPriceModifier": "-10",
+      "highPriceModifier": "10",
+      "extremePriceModifier": "100",
+      "priceKind": "1",
+      "priceCountry": "Norway (NO)",
+      "priceRegion": "0",
+      "surcharge": "0.0198",
+      "priceFixed": "0.6",
+      "gridTaxDay": "0.3626",
+      "gridTaxNight": "0.2839",
+      "VAT": "25",
+      "gridCosts": [
+        {
+          "limit": 2000,
+          "price": 73
+        },
+        {
+          "limit": 5000,
+          "price": 128
+        },
+        {
+          "limit": 10000,
+          "price": 219
+        },
+        {
+          "limit": 15000,
+          "price": 323
+        },
+        {
+          "limit": 20000,
+          "price": 426
+        },
+        {
+          "limit": 25000,
+          "price": 530
+        }
+      ],
+      "currency": "AUD"
+    },
+    "chargerOptions": {
+      "chargeTarget": 2,
+      "chargeMin": 1500,
+      "chargeThreshold": 2000,
+      "minToggleTime": 120,
+      "chargeRemaining": 0,
+      "chargeCycleType": 2,
+      "chargeEnd": "2022-11-15T07:00:00.000Z"
+    },
+    "stats_app_restarts": 63,
+    "deviceList": {
+      "41d304f2-1987-4097-ab96-d7845018e9fc": {
+        "priority": 0,
+        "name": "Lys Kanin",
+        "room": "Kaninhus",
+        "roomId": "28d1c66a-a88c-4fe9-bebe-bf6e65b3fa07",
+        "memberOf": [
+          "28d1c66a-a88c-4fe9-bebe-bf6e65b3fa07",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/0050694fb94e1f9ffaf3d824c9b21125/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "se.nexa:EYCR-2300",
+        "use": 0,
+        "reliability": 1
+      },
+      "3d4d1d83-3916-48ae-8f47-9ade9883bbe4": {
+        "priority": 0,
+        "name": "Spot Kjøkken",
+        "room": "Kjøkken",
+        "roomId": "2ab5a003-0120-4c01-80f2-a237dcf4ba14",
+        "memberOf": [
+          "2ab5a003-0120-4c01-80f2-a237dcf4ba14",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/c8ef7a2273d26c3aa870410744d61559/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "com.everspring:AN179",
+        "use": false,
+        "reliability": 1
+      },
+      "69daf50a-3d22-4e23-8ac7-c821771595d9": {
+        "priority": 0,
+        "name": "Lys Skap",
+        "room": "Kjøkken",
+        "roomId": "2ab5a003-0120-4c01-80f2-a237dcf4ba14",
+        "memberOf": [
+          "2ab5a003-0120-4c01-80f2-a237dcf4ba14",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/10f7f928fcccbf5c9bd8a1bbf427ee3b/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "vdevice:zwavebasic",
+        "use": false,
+        "reliability": 1
+      },
+      "8f286b07-91a4-43c6-80c1-10a7709ad258": {
+        "priority": 0,
+        "name": "Lysbryter Stue Sofa",
+        "room": "Stue",
+        "roomId": "9eb2975d-49ea-4033-8db0-105a3e982117",
+        "memberOf": [
+          "9eb2975d-49ea-4033-8db0-105a3e982117",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/c8ef7a2273d26c3aa870410744d61559/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "com.everspring:AN179",
+        "use": false,
+        "reliability": 1
+      },
+      "2dadf7f1-58ad-47aa-8d0f-f2e73a061100": {
+        "priority": 0,
+        "name": "Ventilasjon",
+        "room": "Gang",
+        "roomId": "478cfd92-6475-4214-80d9-27125e39863a",
+        "memberOf": [
+          "478cfd92-6475-4214-80d9-27125e39863a",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/b7a8054208bd5f018c397a44fbe2acc7/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "vdevice:virtual_socket",
+        "use": false,
+        "reliability": 1
+      },
+      "1f20658b-4742-453a-8b4d-263699c4604c": {
+        "priority": 0,
+        "name": "Stikkontakt ved gangen",
+        "room": "Stue",
+        "roomId": "9eb2975d-49ea-4033-8db0-105a3e982117",
+        "memberOf": [
+          "9eb2975d-49ea-4033-8db0-105a3e982117",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/4f24bd97e0b08160af41848714955dd7/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "no.connecte:smart_socket",
+        "use": false,
+        "reliability": 1
+      },
+      "375cd1c4-439f-4685-b651-62637a7057c4": {
+        "priority": 0,
+        "name": "Stikkontakt",
+        "room": "Stue",
+        "roomId": "9eb2975d-49ea-4033-8db0-105a3e982117",
+        "memberOf": [
+          "9eb2975d-49ea-4033-8db0-105a3e982117",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/4f24bd97e0b08160af41848714955dd7/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "no.connecte:smart_socket",
+        "use": false,
+        "reliability": 1
+      },
+      "59d3270f-3805-4443-b495-c1b64f00dd43": {
+        "priority": 0,
+        "name": "Stikkontakt Bak Sofa",
+        "room": "Stue",
+        "roomId": "9eb2975d-49ea-4033-8db0-105a3e982117",
+        "memberOf": [
+          "9eb2975d-49ea-4033-8db0-105a3e982117",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/4f24bd97e0b08160af41848714955dd7/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "no.connecte:smart_socket",
+        "use": false,
+        "reliability": 1
+      },
+      "403c96db-2c49-4e92-90cb-b79d06939c1c": {
+        "priority": 0,
+        "name": "Stikkontakt",
+        "room": "Stue",
+        "roomId": "9eb2975d-49ea-4033-8db0-105a3e982117",
+        "memberOf": [
+          "9eb2975d-49ea-4033-8db0-105a3e982117",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/4f24bd97e0b08160af41848714955dd7/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "no.connecte:smart_socket",
+        "use": 1,
+        "reliability": 1
+      },
+      "cf99de9b-490a-4109-a72e-2b325935cd49": {
+        "priority": 0,
+        "name": "Stikkontakt",
+        "room": "Stue",
+        "roomId": "9eb2975d-49ea-4033-8db0-105a3e982117",
+        "memberOf": [
+          "9eb2975d-49ea-4033-8db0-105a3e982117",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/4f24bd97e0b08160af41848714955dd7/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "no.connecte:smart_socket",
+        "use": 0,
+        "reliability": 1
+      },
+      "b476daf5-4c44-469b-9d72-3c8b4fd8121f": {
+        "priority": 0,
+        "name": "Stikkontakt TV",
+        "room": "Stue",
+        "roomId": "9eb2975d-49ea-4033-8db0-105a3e982117",
+        "memberOf": [
+          "9eb2975d-49ea-4033-8db0-105a3e982117",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/4f24bd97e0b08160af41848714955dd7/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "no.connecte:smart_socket",
+        "use": 0,
+        "reliability": 1
+      },
+      "b5dbdab1-5015-4022-a243-c0e6e286f29b": {
+        "priority": 0,
+        "name": "Stikkontakt Pop Up",
+        "room": "Kjøkken",
+        "roomId": "2ab5a003-0120-4c01-80f2-a237dcf4ba14",
+        "memberOf": [
+          "2ab5a003-0120-4c01-80f2-a237dcf4ba14",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/4f24bd97e0b08160af41848714955dd7/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "no.connecte:smart_socket",
+        "use": false,
+        "reliability": 1
+      },
+      "09432718-ce51-4460-adcf-4bf9b1fb8d27": {
+        "priority": 0,
+        "name": "Stikkontakt",
+        "room": "Kjøkken",
+        "roomId": "2ab5a003-0120-4c01-80f2-a237dcf4ba14",
+        "memberOf": [
+          "2ab5a003-0120-4c01-80f2-a237dcf4ba14",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/4f24bd97e0b08160af41848714955dd7/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "no.connecte:smart_socket",
+        "use": false,
+        "reliability": 1
+      },
+      "4a6ccdad-d1c3-4751-a981-6734df83219c": {
+        "priority": 0,
+        "name": "Stikkontakt",
+        "room": "Kjøkken",
+        "roomId": "2ab5a003-0120-4c01-80f2-a237dcf4ba14",
+        "memberOf": [
+          "2ab5a003-0120-4c01-80f2-a237dcf4ba14",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/4f24bd97e0b08160af41848714955dd7/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "no.connecte:smart_socket",
+        "use": false,
+        "reliability": 1
+      },
+      "31a89648-b70a-4256-be79-f67d81c8f50a": {
+        "priority": 0,
+        "name": "Stikkontakt",
+        "room": "Kjøkken",
+        "roomId": "2ab5a003-0120-4c01-80f2-a237dcf4ba14",
+        "memberOf": [
+          "2ab5a003-0120-4c01-80f2-a237dcf4ba14",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/4f24bd97e0b08160af41848714955dd7/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "no.connecte:smart_socket",
+        "use": false,
+        "reliability": 1
+      },
+      "642dde54-588c-4e21-97c3-65684f7c89ad": {
+        "priority": 0,
+        "name": "Stikkontakt",
+        "room": "Kjøkken",
+        "roomId": "2ab5a003-0120-4c01-80f2-a237dcf4ba14",
+        "memberOf": [
+          "2ab5a003-0120-4c01-80f2-a237dcf4ba14",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/4f24bd97e0b08160af41848714955dd7/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "no.connecte:smart_socket",
+        "use": false,
+        "reliability": 1
+      },
+      "08cd8691-b936-480e-a4aa-e53a2ad670e2": {
+        "priority": 0,
+        "name": "Stikkontakt Høyskap",
+        "room": "Kjøkken",
+        "roomId": "2ab5a003-0120-4c01-80f2-a237dcf4ba14",
+        "memberOf": [
+          "2ab5a003-0120-4c01-80f2-a237dcf4ba14",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/4f24bd97e0b08160af41848714955dd7/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "no.connecte:smart_socket",
+        "use": false,
+        "reliability": 1
+      },
+      "dbf5a40e-8cb5-4e81-a1e2-462bc5b75da0": {
+        "priority": 0,
+        "name": "Stikkontakt",
+        "room": "Kjøkken",
+        "roomId": "2ab5a003-0120-4c01-80f2-a237dcf4ba14",
+        "memberOf": [
+          "2ab5a003-0120-4c01-80f2-a237dcf4ba14",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/4f24bd97e0b08160af41848714955dd7/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "no.connecte:smart_socket",
+        "use": false,
+        "reliability": 1
+      },
+      "93e81774-8e52-496b-bbe2-0e37e5b47077": {
+        "priority": 0,
+        "name": "Stikkontakt",
+        "room": "Stue",
+        "roomId": "9eb2975d-49ea-4033-8db0-105a3e982117",
+        "memberOf": [
+          "9eb2975d-49ea-4033-8db0-105a3e982117",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/4f24bd97e0b08160af41848714955dd7/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "no.connecte:smart_socket",
+        "use": false,
+        "reliability": 1
+      },
+      "caaea1a3-c720-4661-bd6e-cd8c46743120": {
+        "priority": 0,
+        "name": "Stikkontakt",
+        "room": "Stue",
+        "roomId": "9eb2975d-49ea-4033-8db0-105a3e982117",
+        "memberOf": [
+          "9eb2975d-49ea-4033-8db0-105a3e982117",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/4f24bd97e0b08160af41848714955dd7/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "no.connecte:smart_socket",
+        "use": false,
+        "reliability": 1
+      },
+      "0a92d897-7f26-428b-b413-666af493437d": {
+        "priority": 0,
+        "name": "Stikkontakt",
+        "room": "Stue",
+        "roomId": "9eb2975d-49ea-4033-8db0-105a3e982117",
+        "memberOf": [
+          "9eb2975d-49ea-4033-8db0-105a3e982117",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/4f24bd97e0b08160af41848714955dd7/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "no.connecte:smart_socket",
+        "use": false,
+        "reliability": 1
+      },
+      "87cc2638-c873-4783-b5cf-3802b8bfaa81": {
+        "priority": 0,
+        "name": "Stikkontakt",
+        "room": "Stue",
+        "roomId": "9eb2975d-49ea-4033-8db0-105a3e982117",
+        "memberOf": [
+          "9eb2975d-49ea-4033-8db0-105a3e982117",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/4f24bd97e0b08160af41848714955dd7/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "no.connecte:smart_socket",
+        "use": false,
+        "reliability": 1
+      },
+      "f2f48f99-1fa0-43c7-995c-ab2a04777297": {
+        "priority": 0,
+        "name": "Stikkontakt",
+        "room": "Stue",
+        "roomId": "9eb2975d-49ea-4033-8db0-105a3e982117",
+        "memberOf": [
+          "9eb2975d-49ea-4033-8db0-105a3e982117",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/4f24bd97e0b08160af41848714955dd7/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "no.connecte:smart_socket",
+        "use": false,
+        "reliability": 1
+      },
+      "1b66dd72-6598-42a6-80c9-96aaa140b6c4": {
+        "priority": 0,
+        "name": "Lysekrone",
+        "room": "Stue",
+        "roomId": "9eb2975d-49ea-4033-8db0-105a3e982117",
+        "memberOf": [
+          "9eb2975d-49ea-4033-8db0-105a3e982117",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/1332b09ea8d32d45e98ce00969527f4b/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "nl.klikaanklikuit:AWMR-210",
+        "use": false,
+        "reliability": 1
+      },
+      "2ee574fb-d24e-44bd-bf55-8d2214ebec00": {
+        "priority": 0,
+        "name": "Spot Tak 3",
+        "room": "Loftsstue",
+        "roomId": "1815c884-af06-4d53-a2c1-6f4c77e9eb4e",
+        "memberOf": [
+          "1815c884-af06-4d53-a2c1-6f4c77e9eb4e",
+          "b840a982-a3a7-4513-9d96-902d81128f5c",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/2ebacfad8663659281be96ddf52acbad/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "com.tuya.cloud:tuyalight",
+        "use": false,
+        "reliability": 1
+      },
+      "bcbf49fc-4ea7-4a9a-ad4f-eed061ae18a0": {
+        "priority": 0,
+        "name": "Vann Avstegning",
+        "room": "Vaskerom",
+        "roomId": "57efa0f8-8ce6-4e55-884a-d3850f4557b1",
+        "memberOf": [
+          "57efa0f8-8ce6-4e55-884a-d3850f4557b1",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/10f7f928fcccbf5c9bd8a1bbf427ee3b/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "vdevice:zwavebasic",
+        "use": false,
+        "reliability": 1
+      },
+      "3dab9d5e-3ef3-49a9-b4e0-28ae0654cb12": {
+        "priority": 0,
+        "name": "Taklampe",
+        "room": "Kjøkken",
+        "roomId": "2ab5a003-0120-4c01-80f2-a237dcf4ba14",
+        "memberOf": [
+          "2ab5a003-0120-4c01-80f2-a237dcf4ba14",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/7bae6f7b88e84db041b73b07c52f4fdd/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "vdevice:zigbeebasic",
+        "use": false,
+        "reliability": 1
+      },
+      "33fa2e27-a8cb-4e65-87f8-13545305101a": {
+        "priority": 1,
+        "name": "Varmekabler Stue",
+        "room": "Stue",
+        "roomId": "9eb2975d-49ea-4033-8db0-105a3e982117",
+        "memberOf": [
+          "9eb2975d-49ea-4033-8db0-105a3e982117",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/3e023a6b59b121c1c3ea968ba6c608ff/icon.svg",
+        "onoff_cap": "onoff",
+        "thermostat_cap": "target_temperature",
+        "targetTemp": 22,
+        "driverId": "no.thermofloor:Z-TRM3",
+        "use": 0,
+        "reliability": 1
+      },
+      "734fab2d-2c19-4032-8726-d0a40624c3fb": {
+        "priority": 1,
+        "name": "Varmekabler Kjøkken",
+        "room": "Kjøkken",
+        "roomId": "2ab5a003-0120-4c01-80f2-a237dcf4ba14",
+        "memberOf": [
+          "2ab5a003-0120-4c01-80f2-a237dcf4ba14",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/3e023a6b59b121c1c3ea968ba6c608ff/icon.svg",
+        "onoff_cap": "onoff",
+        "thermostat_cap": "target_temperature",
+        "targetTemp": 20,
+        "driverId": "no.thermofloor:Z-TRM3",
+        "use": 0,
+        "reliability": 1
+      },
+      "0a763eab-ffde-4581-af47-58755bbb22ed": {
+        "priority": 1,
+        "name": "Varmekabler Vaskerom",
+        "room": "Vaskerom",
+        "roomId": "57efa0f8-8ce6-4e55-884a-d3850f4557b1",
+        "memberOf": [
+          "57efa0f8-8ce6-4e55-884a-d3850f4557b1",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/3e023a6b59b121c1c3ea968ba6c608ff/icon.svg",
+        "onoff_cap": "onoff",
+        "thermostat_cap": "target_temperature",
+        "targetTemp": 6,
+        "driverId": "no.thermofloor:Z-TRM3",
+        "use": 0,
+        "reliability": 1
+      },
+      "ef2c3457-0a55-4ccd-a943-58de258d07dd": {
+        "priority": 1,
+        "name": "Varmekabler Bad",
+        "room": "Bad",
+        "roomId": "5383b3ff-3c0e-466b-86cf-94bcf6fd7172",
+        "memberOf": [
+          "5383b3ff-3c0e-466b-86cf-94bcf6fd7172",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/3e023a6b59b121c1c3ea968ba6c608ff/icon.svg",
+        "onoff_cap": "onoff",
+        "thermostat_cap": "target_temperature",
+        "targetTemp": 22,
+        "driverId": "no.thermofloor:Z-TRM3",
+        "use": 0,
+        "reliability": 1
+      },
+      "7e844fe8-3f2e-4206-a849-aa5541883c9b": {
+        "priority": 1,
+        "name": "Varmekabler Indre Gang",
+        "room": "Gang",
+        "roomId": "478cfd92-6475-4214-80d9-27125e39863a",
+        "memberOf": [
+          "478cfd92-6475-4214-80d9-27125e39863a",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/3e023a6b59b121c1c3ea968ba6c608ff/icon.svg",
+        "onoff_cap": "onoff",
+        "thermostat_cap": "target_temperature",
+        "targetTemp": 13,
+        "driverId": "no.thermofloor:Z-TRM3",
+        "use": 0,
+        "reliability": 1
+      },
+      "1160d771-5a69-445c-add1-3943ccb16d43": {
+        "priority": 1,
+        "name": "Varmekabler Ytre Gang",
+        "room": "Gang",
+        "roomId": "478cfd92-6475-4214-80d9-27125e39863a",
+        "memberOf": [
+          "478cfd92-6475-4214-80d9-27125e39863a",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/3e023a6b59b121c1c3ea968ba6c608ff/icon.svg",
+        "onoff_cap": "onoff",
+        "thermostat_cap": "target_temperature",
+        "targetTemp": 11,
+        "driverId": "no.thermofloor:Z-TRM3",
+        "use": 0,
+        "reliability": 1
+      },
+      "d9c2b1bb-31fd-4f70-aaa7-db55008943e3": {
+        "priority": 0,
+        "name": "Utelys Veranda",
+        "room": "Hage",
+        "roomId": "5204dc44-8e9c-49e7-aed8-9d5c93330126",
+        "memberOf": [
+          "5204dc44-8e9c-49e7-aed8-9d5c93330126",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/c8ef7a2273d26c3aa870410744d61559/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "com.everspring:AN179",
+        "use": false,
+        "reliability": 1
+      },
+      "21324213-084b-4b9b-a9fb-6f46f929cd07": {
+        "priority": 0,
+        "name": "Water Control",
+        "room": "Hage",
+        "roomId": "5204dc44-8e9c-49e7-aed8-9d5c93330126",
+        "memberOf": [
+          "5204dc44-8e9c-49e7-aed8-9d5c93330126",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/bd4552e696ab849ea2bb6333c5813236/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "com.gardena:water-control",
+        "use": false,
+        "reliability": 1
+      },
+      "eb3be21c-bcb2-47b2-9393-eae2d33737dc": {
+        "priority": 1,
+        "name": "Høiax CONNECTED",
+        "room": "Vaskerom",
+        "roomId": "57efa0f8-8ce6-4e55-884a-d3850f4557b1",
+        "memberOf": [
+          "57efa0f8-8ce6-4e55-884a-d3850f4557b1",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/e350eae4f0c7e6200eedf688db036ea6/icon.svg",
+        "onoff_cap": "onoff",
+        "thermostat_cap": "target_temperature",
+        "targetTemp": 65,
+        "driverId": "no.hoiax:hiax-connected-200",
+        "use": 0,
+        "reliability": 1
+      },
+      "fe8e5e6c-5f8a-41ab-9c73-222dbcd0f57d": {
+        "priority": 0,
+        "name": "Kjøkkenbenk Belysning",
+        "room": "Kjøkken",
+        "roomId": "2ab5a003-0120-4c01-80f2-a237dcf4ba14",
+        "memberOf": [
+          "2ab5a003-0120-4c01-80f2-a237dcf4ba14",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/391846ec23880f99ad8533b32a901e0d/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "com.philips.hue.zigbee:LCL001",
+        "use": false,
+        "reliability": 1
+      },
+      "6b31d346-08c2-4eb4-82fe-1d628fee7f40": {
+        "priority": 0,
+        "name": "Vitrineskap",
+        "room": "Kjøkken",
+        "roomId": "2ab5a003-0120-4c01-80f2-a237dcf4ba14",
+        "memberOf": [
+          "2ab5a003-0120-4c01-80f2-a237dcf4ba14",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/cf6a604b62b17a037e4201c0bfc35772/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "nl.klikaanklikuit:ACC-250",
+        "use": false,
+        "reliability": 1
+      },
+      "b4788083-9606-49a2-99d4-9efce7a4656d": {
+        "priority": 1,
+        "name": "Varmepumpe",
+        "room": "Gang",
+        "roomId": "478cfd92-6475-4214-80d9-27125e39863a",
+        "memberOf": [
+          "478cfd92-6475-4214-80d9-27125e39863a",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/7c8264872f2b35d0ed4609102a0a9752/icon.svg",
+        "onoff_cap": "se_onoff",
+        "thermostat_cap": "target_temperature",
+        "targetTemp": 17,
+        "driverId": "com.sensibo:Sensibo",
+        "use": 0,
+        "reliability": 1
+      },
+      "ad67d837-085a-40bb-b6cf-66980c19368e": {
+        "priority": 0,
+        "name": "Besøk",
+        "room": "Hjem",
+        "roomId": "9919ee1e-ffbc-480b-bc4b-77fb047e9e68",
+        "memberOf": [
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/b7a8054208bd5f018c397a44fbe2acc7/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "vdevice:virtual_socket",
+        "use": false,
+        "reliability": 1
+      },
+      "64458c78-bdd4-4cb6-bfa7-5241c2da46a3": {
+        "priority": 0,
+        "name": "Nanoleaf Oppe",
+        "room": "Loftsstue",
+        "roomId": "1815c884-af06-4d53-a2c1-6f4c77e9eb4e",
+        "memberOf": [
+          "1815c884-af06-4d53-a2c1-6f4c77e9eb4e",
+          "b840a982-a3a7-4513-9d96-902d81128f5c",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/b531595500a5fdf57cde6e8bab259935/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "me.nanoleaf:shapes",
+        "use": false,
+        "reliability": 1
+      },
+      "e44abbf3-58df-448c-bd6b-58986768d3cb": {
+        "priority": 0,
+        "name": "Nanoleaf Trapp",
+        "room": "Loftsstue",
+        "roomId": "1815c884-af06-4d53-a2c1-6f4c77e9eb4e",
+        "memberOf": [
+          "1815c884-af06-4d53-a2c1-6f4c77e9eb4e",
+          "b840a982-a3a7-4513-9d96-902d81128f5c",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/b531595500a5fdf57cde6e8bab259935/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "me.nanoleaf:shapes",
+        "use": false,
+        "reliability": 1
+      },
+      "349c7ece-d635-4c61-a96b-d41c661e134e": {
+        "priority": 0,
+        "name": "Spot Tak 1",
+        "room": "Loftsstue",
+        "roomId": "1815c884-af06-4d53-a2c1-6f4c77e9eb4e",
+        "memberOf": [
+          "1815c884-af06-4d53-a2c1-6f4c77e9eb4e",
+          "b840a982-a3a7-4513-9d96-902d81128f5c",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/2ebacfad8663659281be96ddf52acbad/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "com.tuya.cloud:tuyalight",
+        "use": 1,
+        "reliability": 1
+      },
+      "738f5f81-cf29-492c-a0d4-efd36a293c27": {
+        "priority": 0,
+        "name": "Spot Tak 2",
+        "room": "Loftsstue",
+        "roomId": "1815c884-af06-4d53-a2c1-6f4c77e9eb4e",
+        "memberOf": [
+          "1815c884-af06-4d53-a2c1-6f4c77e9eb4e",
+          "b840a982-a3a7-4513-9d96-902d81128f5c",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/2ebacfad8663659281be96ddf52acbad/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "com.tuya.cloud:tuyalight",
+        "use": 1,
+        "reliability": 1
+      },
+      "63b406f3-ce2f-473f-a25d-6040cd5f010c": {
+        "priority": 0,
+        "name": "Spot Tak 8",
+        "room": "Loftsstue",
+        "roomId": "1815c884-af06-4d53-a2c1-6f4c77e9eb4e",
+        "memberOf": [
+          "1815c884-af06-4d53-a2c1-6f4c77e9eb4e",
+          "b840a982-a3a7-4513-9d96-902d81128f5c",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/2ebacfad8663659281be96ddf52acbad/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "com.tuya.cloud:tuyalight",
+        "use": 1,
+        "reliability": 1
+      },
+      "33b577be-040b-41e7-b1d3-0ac5abbece72": {
+        "priority": 0,
+        "name": "Spot Tak 9",
+        "room": "Loftsstue",
+        "roomId": "1815c884-af06-4d53-a2c1-6f4c77e9eb4e",
+        "memberOf": [
+          "1815c884-af06-4d53-a2c1-6f4c77e9eb4e",
+          "b840a982-a3a7-4513-9d96-902d81128f5c",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/2ebacfad8663659281be96ddf52acbad/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "com.tuya.cloud:tuyalight",
+        "use": false,
+        "reliability": 1
+      },
+      "8ee01356-6f67-4ce8-8bd8-45499a92e7a5": {
+        "priority": 0,
+        "name": "Spot Tak 4",
+        "room": "Loftsstue",
+        "roomId": "1815c884-af06-4d53-a2c1-6f4c77e9eb4e",
+        "memberOf": [
+          "1815c884-af06-4d53-a2c1-6f4c77e9eb4e",
+          "b840a982-a3a7-4513-9d96-902d81128f5c",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/2ebacfad8663659281be96ddf52acbad/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "com.tuya.cloud:tuyalight",
+        "use": false,
+        "reliability": 1
+      },
+      "3269380b-db51-4079-8169-c29eccb827ef": {
+        "priority": 0,
+        "name": "Spot Tak 7",
+        "room": "Loftsstue",
+        "roomId": "1815c884-af06-4d53-a2c1-6f4c77e9eb4e",
+        "memberOf": [
+          "1815c884-af06-4d53-a2c1-6f4c77e9eb4e",
+          "b840a982-a3a7-4513-9d96-902d81128f5c",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/2ebacfad8663659281be96ddf52acbad/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "com.tuya.cloud:tuyalight",
+        "use": false,
+        "reliability": 1
+      },
+      "877cbafc-c767-4919-b4ca-c85f5fef9b05": {
+        "priority": 0,
+        "name": "Spot Tak 5",
+        "room": "Loftsstue",
+        "roomId": "1815c884-af06-4d53-a2c1-6f4c77e9eb4e",
+        "memberOf": [
+          "1815c884-af06-4d53-a2c1-6f4c77e9eb4e",
+          "b840a982-a3a7-4513-9d96-902d81128f5c",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/2ebacfad8663659281be96ddf52acbad/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "com.tuya.cloud:tuyalight",
+        "use": false,
+        "reliability": 1
+      },
+      "12224de8-9473-410a-95d1-5b2f68fd1fb8": {
+        "priority": 0,
+        "name": "Spot Tak 6",
+        "room": "Loftsstue",
+        "roomId": "1815c884-af06-4d53-a2c1-6f4c77e9eb4e",
+        "memberOf": [
+          "1815c884-af06-4d53-a2c1-6f4c77e9eb4e",
+          "b840a982-a3a7-4513-9d96-902d81128f5c",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/2ebacfad8663659281be96ddf52acbad/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "com.tuya.cloud:tuyalight",
+        "use": false,
+        "reliability": 1
+      },
+      "cc868682-ab76-4040-8775-4d1377f91ab1": {
+        "priority": 0,
+        "name": "Billader",
+        "room": "Hjem",
+        "roomId": "9919ee1e-ffbc-480b-bc4b-77fb047e9e68",
+        "memberOf": [
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/2de97486ec3c91e751f89e9579892c87/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "com.arjankranenburg.virtual:mode",
+        "use": false,
+        "reliability": 1
+      }
+    },
+    "modeList": [
+      [
+        {
+          "id": "403c96db-2c49-4e92-90cb-b79d06939c1c",
+          "operation": 2,
+          "targetTemp": 24
+        },
+        {
+          "id": "349c7ece-d635-4c61-a96b-d41c661e134e",
+          "operation": 2,
+          "targetTemp": 24
+        },
+        {
+          "id": "738f5f81-cf29-492c-a0d4-efd36a293c27",
+          "operation": 2,
+          "targetTemp": 24
+        },
+        {
+          "id": "63b406f3-ce2f-473f-a25d-6040cd5f010c",
+          "operation": 2,
+          "targetTemp": 24
+        }
+      ],
+      [
+        {
+          "id": "403c96db-2c49-4e92-90cb-b79d06939c1c",
+          "operation": 2,
+          "targetTemp": 19
+        },
+        {
+          "id": "349c7ece-d635-4c61-a96b-d41c661e134e",
+          "operation": 2,
+          "targetTemp": 19
+        },
+        {
+          "id": "738f5f81-cf29-492c-a0d4-efd36a293c27",
+          "operation": 2,
+          "targetTemp": 19
+        },
+        {
+          "id": "63b406f3-ce2f-473f-a25d-6040cd5f010c",
+          "operation": 2,
+          "targetTemp": 19
+        }
+      ],
+      [
+        {
+          "id": "403c96db-2c49-4e92-90cb-b79d06939c1c",
+          "operation": 2,
+          "targetTemp": 6
+        },
+        {
+          "id": "349c7ece-d635-4c61-a96b-d41c661e134e",
+          "operation": 2,
+          "targetTemp": 6
+        },
+        {
+          "id": "738f5f81-cf29-492c-a0d4-efd36a293c27",
+          "operation": 2,
+          "targetTemp": 6
+        },
+        {
+          "id": "63b406f3-ce2f-473f-a25d-6040cd5f010c",
+          "operation": 2,
+          "targetTemp": 6
+        }
+      ]
+    ],
+    "modeNames": [],
+    "frostList": {
+      "403c96db-2c49-4e92-90cb-b79d06939c1c": {
+        "minTemp": 5
+      },
+      "349c7ece-d635-4c61-a96b-d41c661e134e": {
+        "minTemp": 5
+      },
+      "738f5f81-cf29-492c-a0d4-efd36a293c27": {
+        "minTemp": 5
+      },
+      "63b406f3-ce2f-473f-a25d-6040cd5f010c": {
+        "minTemp": 5
+      }
+    },
+    "zones": {
+      "9eb2975d-49ea-4033-8db0-105a3e982117": {
+        "name": "Stue",
+        "enabled": true
+      },
+      "1815c884-af06-4d53-a2c1-6f4c77e9eb4e": {
+        "name": "Loftsstue",
+        "enabled": true
+      }
+    },
+    "maxPower": "5000",
+    "operatingMode": "1",
+    "priceMode": "1",
+    "pricePoint": 0,
+    "priceActionList": [
+      {
+        "403c96db-2c49-4e92-90cb-b79d06939c1c": {
+          "delta": 3,
+          "operation": 0
+        },
+        "349c7ece-d635-4c61-a96b-d41c661e134e": {
+          "delta": 3,
+          "operation": 0
+        },
+        "738f5f81-cf29-492c-a0d4-efd36a293c27": {
+          "delta": 3,
+          "operation": 0
+        },
+        "63b406f3-ce2f-473f-a25d-6040cd5f010c": {
+          "delta": 3,
+          "operation": 0
+        }
+      },
+      {
+        "403c96db-2c49-4e92-90cb-b79d06939c1c": {
+          "delta": 0,
+          "operation": 3
+        },
+        "349c7ece-d635-4c61-a96b-d41c661e134e": {
+          "delta": 0,
+          "operation": 3
+        },
+        "738f5f81-cf29-492c-a0d4-efd36a293c27": {
+          "delta": 0,
+          "operation": 3
+        },
+        "63b406f3-ce2f-473f-a25d-6040cd5f010c": {
+          "delta": 0,
+          "operation": 3
+        }
+      },
+      {
+        "403c96db-2c49-4e92-90cb-b79d06939c1c": {
+          "delta": -5,
+          "operation": 1
+        },
+        "349c7ece-d635-4c61-a96b-d41c661e134e": {
+          "delta": -5,
+          "operation": 1
+        },
+        "738f5f81-cf29-492c-a0d4-efd36a293c27": {
+          "delta": -5,
+          "operation": 1
+        },
+        "63b406f3-ce2f-473f-a25d-6040cd5f010c": {
+          "delta": -5,
+          "operation": 1
+        }
+      },
+      {
+        "403c96db-2c49-4e92-90cb-b79d06939c1c": {
+          "delta": -10,
+          "operation": 1
+        },
+        "349c7ece-d635-4c61-a96b-d41c661e134e": {
+          "delta": -10,
+          "operation": 1
+        },
+        "738f5f81-cf29-492c-a0d4-efd36a293c27": {
+          "delta": -10,
+          "operation": 1
+        },
+        "63b406f3-ce2f-473f-a25d-6040cd5f010c": {
+          "delta": -10,
+          "operation": 1
+        }
+      },
+      {
+        "403c96db-2c49-4e92-90cb-b79d06939c1c": {
+          "delta": 4,
+          "operation": 3
+        },
+        "349c7ece-d635-4c61-a96b-d41c661e134e": {
+          "delta": 4,
+          "operation": 3
+        },
+        "738f5f81-cf29-492c-a0d4-efd36a293c27": {
+          "delta": 4,
+          "operation": 3
+        },
+        "63b406f3-ce2f-473f-a25d-6040cd5f010c": {
+          "delta": 4,
+          "operation": 3
+        }
+      }
+    ],
+    "errorMargin": "5",
+    "freeThreshold": "100",
+    "safetyPower": "500",
+    "mainFuse": "63",
+    "settingsSaved": "",
+    "stats_daily_max": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      0,
+      0,
+      null,
+      4787.312172500001,
+      null,
+      null,
+      null,
+      1523.0311441666672,
+      3389.7821647222213
+    ],
+    "stats_daily_max_ok": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      false,
+      false,
+      null,
+      false,
+      null,
+      null,
+      null,
+      false,
+      false
+    ],
+    "stats_daily_max_last_update_time": "2022-11-20T19:00:00.000Z",
+    "overShootAvoided": "5000",
+    "archive": {
+      "maxPower": {
+        "hourly": {
+          "2022-11-12": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            0
+          ],
+          "2022-11-13": [
+            null,
+            null,
+            null,
+            0
+          ],
+          "2022-11-15": [
+            null,
+            null,
+            null,
+            0,
+            4532.1174647222215,
+            4787.312172500001
+          ],
+          "2022-11-19": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            990.6826430555552,
+            1523.0311441666672
+          ],
+          "2022-11-20": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            0.6422111111111111,
+            2276.8229791666677,
+            3389.7821647222213,
+            2999.401822222223,
+            1933.4807966666667,
+            2380.860664444445,
+            1667.5250372222217
+          ]
+        },
+        "daily": {
+          "2022-11": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            0,
+            0,
+            null,
+            4787.312172500001,
+            null,
+            null,
+            null,
+            1523.0311441666672,
+            3389.7821647222213
+          ]
+        },
+        "monthly": {
+          "2022": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            3233.3751604629633
+          ]
+        },
+        "yearly": {
+          "2022": [
+            4787.312172500001
+          ]
+        }
+      },
+      "dataOk": {
+        "hourly": {
+          "2022-11-12": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            0
+          ],
+          "2022-11-13": [
+            null,
+            null,
+            null,
+            0
+          ],
+          "2022-11-15": [
+            null,
+            null,
+            null,
+            0,
+            1,
+            1
+          ],
+          "2022-11-19": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            0,
+            1
+          ],
+          "2022-11-20": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            0,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        "daily": {
+          "2022-11": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            false,
+            false,
+            null,
+            false,
+            null,
+            null,
+            null,
+            false,
+            false
+          ]
+        },
+        "monthly": {
+          "2022": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            false
+          ]
+        },
+        "yearly": {
+          "2022": [
+            false
+          ]
+        }
+      },
+      "powUsage": {
+        "hourly": {
+          "2022-11-12": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            0
+          ],
+          "2022-11-13": [
+            null,
+            null,
+            null,
+            0
+          ],
+          "2022-11-15": [
+            null,
+            null,
+            null,
+            0,
+            4532.1174647222215,
+            4787.312172500001
+          ],
+          "2022-11-19": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            990.6826430555552,
+            1523.0311441666672
+          ],
+          "2022-11-20": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            0.6422111111111111,
+            2276.8229791666677,
+            3389.7821647222213,
+            2999.401822222223,
+            1933.4807966666667,
+            2380.860664444445,
+            1667.5250372222217
+          ]
+        },
+        "daily": {
+          "2022-11": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            0,
+            0,
+            null,
+            9319.429637222223,
+            null,
+            null,
+            null,
+            2513.7137872222224,
+            14648.515675555554
+          ]
+        },
+        "monthly": {
+          "2022": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            26481.6591
+          ]
+        },
+        "yearly": {
+          "2022": [
+            26481.6591
+          ]
+        }
+      },
+      "overShootAvoided": {
+        "hourly": {
+          "2022-11-12": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            0
+          ],
+          "2022-11-13": [
+            null,
+            null,
+            null,
+            0
+          ],
+          "2022-11-15": [
+            null,
+            null,
+            null,
+            0,
+            5000,
+            5000
+          ],
+          "2022-11-19": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            5000,
+            5000
+          ],
+          "2022-11-20": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            5000,
+            5000,
+            5000,
+            5000,
+            5000,
+            5000,
+            5000
+          ]
+        },
+        "daily": {
+          "2022-11": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            "5000",
+            null,
+            null,
+            null,
+            "5000",
+            "5000"
+          ]
+        },
+        "monthly": {
+          "2022": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            "5000"
+          ]
+        },
+        "yearly": {
+          "2022": [
+            "5000"
+          ]
+        }
+      },
+      "price": {
+        "hourly": {
+          "2022-11-12": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "2022-11-13": [
+            null,
+            null,
+            null,
+            null
+          ],
+          "2022-11-15": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "2022-11-19": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "2022-11-20": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            0.5634032546786005
+          ]
+        },
+        "daily": {
+          "2022-11": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            0.5634032546786005
+          ]
+        },
+        "monthly": {
+          "2022": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            0.5634032546786005
+          ]
+        },
+        "yearly": {
+          "2022": [
+            0.5634032546786005
+          ]
+        }
+      },
+      "pricePoints": {
+        "hourly": {
+          "2022-11-19": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            0
+          ],
+          "2022-11-20": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        "daily": {
+          "2022-11": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            [
+              1,
+              0
+            ],
+            [
+              0,
+              1
+            ]
+          ]
+        },
+        "monthly": {
+          "2022": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            [
+              1,
+              7
+            ]
+          ]
+        },
+        "yearly": {
+          "2022": [
+            [
+              1,
+              7
+            ]
+          ]
+        }
+      }
+    },
+    "stats_this_month_maxes": [
+      4787.312172500001,
+      1523.0311441666672,
+      0
+    ],
+    "stats_this_month_average": 2103.4477722222227,
+    "gotPPFromFlow": true,
+    "stats_norm_energy": 2288.7916432711036,
+    "averagePrice": 0.7402363188976379,
+    "all_prices": [
+      {
+        "time": 1668985200,
+        "price": 0.5660814960629922
+      },
+      {
+        "time": 1668988800,
+        "price": 0.5661200787401575
+      },
+      {
+        "time": 1668992400,
+        "price": 0.5831543307086615
+      },
+      {
+        "time": 1668996000,
+        "price": 0.5747047244094489
+      },
+      {
+        "time": 1668999600,
+        "price": 0.5930700787401575
+      },
+      {
+        "time": 1669003200,
+        "price": 0.6027736220472442
+      },
+      {
+        "time": 1669006800,
+        "price": 0.7054527559055119
+      },
+      {
+        "time": 1669010400,
+        "price": 0.7855311023622047
+      },
+      {
+        "time": 1669014000,
+        "price": 0.9449354330708664
+      },
+      {
+        "time": 1669017600,
+        "price": 0.9584393700787401
+      },
+      {
+        "time": 1669021200,
+        "price": 0.9005653543307088
+      },
+      {
+        "time": 1669024800,
+        "price": 0.8462602362204725
+      },
+      {
+        "time": 1669028400,
+        "price": 0.7894279527559056
+      },
+      {
+        "time": 1669032000,
+        "price": 0.7887913385826772
+      },
+      {
+        "time": 1669035600,
+        "price": 0.7862062992125984
+      },
+      {
+        "time": 1669039200,
+        "price": 0.7823673228346457
+      },
+      {
+        "time": 1669042800,
+        "price": 0.8055555118110236
+      },
+      {
+        "time": 1669046400,
+        "price": 0.8636610236220472
+      },
+      {
+        "time": 1669050000,
+        "price": 0.8806566929133859
+      },
+      {
+        "time": 1669053600,
+        "price": 0.7672236220472441
+      },
+      {
+        "time": 1669057200,
+        "price": 0.7663555118110237
+      },
+      {
+        "time": 1669060800,
+        "price": 0.7201913385826773
+      },
+      {
+        "time": 1669064400,
+        "price": 0.6025035433070867
+      },
+      {
+        "time": 1669068000,
+        "price": 0.5856429133858267
+      },
+      {
+        "time": 1669071600,
+        "price": 0.5400001382682182
+      },
+      {
+        "time": 1669075200,
+        "price": 0.5211641995929384
+      },
+      {
+        "time": 1669078800,
+        "price": 0.4970294444936065
+      },
+      {
+        "time": 1669082400,
+        "price": 0.46730579177912474
+      },
+      {
+        "time": 1669086000,
+        "price": 0.4791217656298393
+      },
+      {
+        "time": 1669089600,
+        "price": 0.506292703862661
+      },
+      {
+        "time": 1669093200,
+        "price": 0.659988361134463
+      },
+      {
+        "time": 1669096800,
+        "price": 0.7298399119507987
+      },
+      {
+        "time": 1669100400,
+        "price": 0.7602597595239149
+      },
+      {
+        "time": 1669104000,
+        "price": 0.7811069277908057
+      },
+      {
+        "time": 1669107600,
+        "price": 0.784317159638954
+      },
+      {
+        "time": 1669111200,
+        "price": 0.803269130790673
+      },
+      {
+        "time": 1669114800,
+        "price": 0.7822285750630503
+      },
+      {
+        "time": 1669118400,
+        "price": 0.7818611388876598
+      },
+      {
+        "time": 1669122000,
+        "price": 0.7821125425866111
+      },
+      {
+        "time": 1669125600,
+        "price": 0.8042940843325517
+      },
+      {
+        "time": 1669129200,
+        "price": 0.7805847816468299
+      },
+      {
+        "time": 1669132800,
+        "price": 0.7828860924295384
+      },
+      {
+        "time": 1669136400,
+        "price": 0.7571655601522057
+      },
+      {
+        "time": 1669140000,
+        "price": 0.7327987400999956
+      },
+      {
+        "time": 1669143600,
+        "price": 0.6844325361709659
+      },
+      {
+        "time": 1669147200,
+        "price": 0.6786115736029379
+      },
+      {
+        "time": 1669150800,
+        "price": 0.5936264811291536
+      },
+      {
+        "time": 1669154400,
+        "price": 0.5696464359984073
+      }
+    ],
+    "override": {
+      "63b406f3-ce2f-473f-a25d-6040cd5f010c": 6
+    }
+  },
+  "state": {
+    "__accum_energy": 3865.306260277778,
+    "__current_power": 3470,
+    "__current_power_time": "2022-11-21T21:47:26.771Z",
+    "__offeredEnergy": 0,
+    "__accum_since": "2022-11-21T00:00:00.000Z",
+    "__hasAC": 1,
+    "__intervalID": "...",
+    "__newHourID": "...",
+    "__reserved_energy": 0,
+    "__free_power_trigger_time": "2022-11-21T21:44:59.642Z",
+    "__power_estimated": 726.0290638888889,
+    "__alarm_overshoot": false,
+    "__free_capacity": 0,
+    "__num_forced_off_devices": 0,
+    "__num_off_devices": 4,
+    "__all_prices": [
+      {
+        "time": 1668985200,
+        "price": 0.5660814960629922
+      },
+      {
+        "time": 1668988800,
+        "price": 0.5661200787401575
+      },
+      {
+        "time": 1668992400,
+        "price": 0.5831543307086615
+      },
+      {
+        "time": 1668996000,
+        "price": 0.5747047244094489
+      },
+      {
+        "time": 1668999600,
+        "price": 0.5930700787401575
+      },
+      {
+        "time": 1669003200,
+        "price": 0.6027736220472442
+      },
+      {
+        "time": 1669006800,
+        "price": 0.7054527559055119
+      },
+      {
+        "time": 1669010400,
+        "price": 0.7855311023622047
+      },
+      {
+        "time": 1669014000,
+        "price": 0.9449354330708664
+      },
+      {
+        "time": 1669017600,
+        "price": 0.9584393700787401
+      },
+      {
+        "time": 1669021200,
+        "price": 0.9005653543307088
+      },
+      {
+        "time": 1669024800,
+        "price": 0.8462602362204725
+      },
+      {
+        "time": 1669028400,
+        "price": 0.7894279527559056
+      },
+      {
+        "time": 1669032000,
+        "price": 0.7887913385826772
+      },
+      {
+        "time": 1669035600,
+        "price": 0.7862062992125984
+      },
+      {
+        "time": 1669039200,
+        "price": 0.7823673228346457
+      },
+      {
+        "time": 1669042800,
+        "price": 0.8055555118110236
+      },
+      {
+        "time": 1669046400,
+        "price": 0.8636610236220472
+      },
+      {
+        "time": 1669050000,
+        "price": 0.8806566929133859
+      },
+      {
+        "time": 1669053600,
+        "price": 0.7672236220472441
+      },
+      {
+        "time": 1669057200,
+        "price": 0.7663555118110237
+      },
+      {
+        "time": 1669060800,
+        "price": 0.7201913385826773
+      },
+      {
+        "time": 1669064400,
+        "price": 0.6025035433070867
+      },
+      {
+        "time": 1669068000,
+        "price": 0.5856429133858267
+      },
+      {
+        "time": 1669071600,
+        "price": 0.5400001382682182
+      },
+      {
+        "time": 1669075200,
+        "price": 0.5211641995929384
+      },
+      {
+        "time": 1669078800,
+        "price": 0.4970294444936065
+      },
+      {
+        "time": 1669082400,
+        "price": 0.46730579177912474
+      },
+      {
+        "time": 1669086000,
+        "price": 0.4791217656298393
+      },
+      {
+        "time": 1669089600,
+        "price": 0.506292703862661
+      },
+      {
+        "time": 1669093200,
+        "price": 0.659988361134463
+      },
+      {
+        "time": 1669096800,
+        "price": 0.7298399119507987
+      },
+      {
+        "time": 1669100400,
+        "price": 0.7602597595239149
+      },
+      {
+        "time": 1669104000,
+        "price": 0.7811069277908057
+      },
+      {
+        "time": 1669107600,
+        "price": 0.784317159638954
+      },
+      {
+        "time": 1669111200,
+        "price": 0.803269130790673
+      },
+      {
+        "time": 1669114800,
+        "price": 0.7822285750630503
+      },
+      {
+        "time": 1669118400,
+        "price": 0.7818611388876598
+      },
+      {
+        "time": 1669122000,
+        "price": 0.7821125425866111
+      },
+      {
+        "time": 1669125600,
+        "price": 0.8042940843325517
+      },
+      {
+        "time": 1669129200,
+        "price": 0.7805847816468299
+      },
+      {
+        "time": 1669132800,
+        "price": 0.7828860924295384
+      },
+      {
+        "time": 1669136400,
+        "price": 0.7571655601522057
+      },
+      {
+        "time": 1669140000,
+        "price": 0.7327987400999956
+      },
+      {
+        "time": 1669143600,
+        "price": 0.6844325361709659
+      },
+      {
+        "time": 1669147200,
+        "price": 0.6786115736029379
+      },
+      {
+        "time": 1669150800,
+        "price": 0.5936264811291536
+      },
+      {
+        "time": 1669154400,
+        "price": 0.5696464359984073
+      }
+    ],
+    "__current_prices": [
+      0.5660814960629922,
+      0.5661200787401575,
+      0.5831543307086615,
+      0.5747047244094489,
+      0.5930700787401575,
+      0.6027736220472442,
+      0.7054527559055119,
+      0.7855311023622047,
+      0.9449354330708664,
+      0.9584393700787401,
+      0.9005653543307088,
+      0.8462602362204725,
+      0.7894279527559056,
+      0.7887913385826772,
+      0.7862062992125984,
+      0.7823673228346457,
+      0.8055555118110236,
+      0.8636610236220472,
+      0.8806566929133859,
+      0.7672236220472441,
+      0.7663555118110237,
+      0.7201913385826773,
+      0.6025035433070867,
+      0.5856429133858267,
+      0.5400001382682182,
+      0.5211641995929384,
+      0.4970294444936065,
+      0.46730579177912474,
+      0.4791217656298393,
+      0.506292703862661,
+      0.659988361134463,
+      0.7298399119507987,
+      0.7602597595239149,
+      0.7811069277908057,
+      0.784317159638954,
+      0.803269130790673,
+      0.7822285750630503,
+      0.7818611388876598,
+      0.7821125425866111,
+      0.8042940843325517,
+      0.7805847816468299,
+      0.7828860924295384,
+      0.7571655601522057,
+      0.7327987400999956,
+      0.6844325361709659,
+      0.6786115736029379,
+      0.5936264811291536,
+      0.5696464359984073
+    ],
+    "__current_price_index": 22,
+    "__last_power_off_time": "2022-11-21T21:45:35.723Z",
+    "__last_power_on_time": "2022-11-21T21:47:26.773Z",
+    "__charge_plan": [],
+    "__charge_power_active": 0,
+    "__current_state": {
+      "41d304f2-1987-4097-ab96-d7845018e9fc": {
+        "nComError": 0,
+        "ongoing": false,
+        "__monitorError": 0,
+        "__monitorFixOn": 0,
+        "__monitorFixTemp": 0
+      },
+      "3d4d1d83-3916-48ae-8f47-9ade9883bbe4": {
+        "nComError": 0,
+        "ongoing": false,
+        "__monitorError": 0,
+        "__monitorFixOn": 0,
+        "__monitorFixTemp": 0
+      },
+      "69daf50a-3d22-4e23-8ac7-c821771595d9": {
+        "nComError": 0,
+        "ongoing": false,
+        "__monitorError": 0,
+        "__monitorFixOn": 0,
+        "__monitorFixTemp": 0
+      },
+      "8f286b07-91a4-43c6-80c1-10a7709ad258": {
+        "nComError": 0,
+        "ongoing": false,
+        "__monitorError": 0,
+        "__monitorFixOn": 0,
+        "__monitorFixTemp": 0
+      },
+      "2dadf7f1-58ad-47aa-8d0f-f2e73a061100": {
+        "nComError": 0,
+        "ongoing": false,
+        "__monitorError": 0,
+        "__monitorFixOn": 0,
+        "__monitorFixTemp": 0
+      },
+      "1f20658b-4742-453a-8b4d-263699c4604c": {
+        "nComError": 0,
+        "ongoing": false,
+        "__monitorError": 0,
+        "__monitorFixOn": 0,
+        "__monitorFixTemp": 0
+      },
+      "375cd1c4-439f-4685-b651-62637a7057c4": {
+        "nComError": 0,
+        "ongoing": false,
+        "__monitorError": 0,
+        "__monitorFixOn": 0,
+        "__monitorFixTemp": 0
+      },
+      "59d3270f-3805-4443-b495-c1b64f00dd43": {
+        "nComError": 0,
+        "ongoing": false,
+        "__monitorError": 0,
+        "__monitorFixOn": 0,
+        "__monitorFixTemp": 0
+      },
+      "403c96db-2c49-4e92-90cb-b79d06939c1c": {
+        "nComError": 0,
+        "lastCmd": 3,
+        "ongoing": false,
+        "__monitorError": 0,
+        "__monitorFixOn": 0,
+        "__monitorFixTemp": 0
+      },
+      "cf99de9b-490a-4109-a72e-2b325935cd49": {
+        "nComError": 0,
+        "ongoing": false,
+        "__monitorError": 0,
+        "__monitorFixOn": 0,
+        "__monitorFixTemp": 0
+      },
+      "b476daf5-4c44-469b-9d72-3c8b4fd8121f": {
+        "nComError": 0,
+        "ongoing": false,
+        "__monitorError": 0,
+        "__monitorFixOn": 0,
+        "__monitorFixTemp": 0
+      },
+      "b5dbdab1-5015-4022-a243-c0e6e286f29b": {
+        "nComError": 0,
+        "ongoing": false,
+        "__monitorError": 0,
+        "__monitorFixOn": 0,
+        "__monitorFixTemp": 0
+      },
+      "09432718-ce51-4460-adcf-4bf9b1fb8d27": {
+        "nComError": 0,
+        "ongoing": false,
+        "__monitorError": 0,
+        "__monitorFixOn": 0,
+        "__monitorFixTemp": 0
+      },
+      "4a6ccdad-d1c3-4751-a981-6734df83219c": {
+        "nComError": 0,
+        "ongoing": false,
+        "__monitorError": 0,
+        "__monitorFixOn": 0,
+        "__monitorFixTemp": 0
+      },
+      "31a89648-b70a-4256-be79-f67d81c8f50a": {
+        "nComError": 0,
+        "ongoing": false,
+        "__monitorError": 0,
+        "__monitorFixOn": 0,
+        "__monitorFixTemp": 0
+      },
+      "642dde54-588c-4e21-97c3-65684f7c89ad": {
+        "nComError": 0,
+        "ongoing": false,
+        "__monitorError": 0,
+        "__monitorFixOn": 0,
+        "__monitorFixTemp": 0
+      },
+      "08cd8691-b936-480e-a4aa-e53a2ad670e2": {
+        "nComError": 0,
+        "ongoing": false,
+        "__monitorError": 0,
+        "__monitorFixOn": 0,
+        "__monitorFixTemp": 0
+      },
+      "dbf5a40e-8cb5-4e81-a1e2-462bc5b75da0": {
+        "nComError": 0,
+        "ongoing": false,
+        "__monitorError": 0,
+        "__monitorFixOn": 0,
+        "__monitorFixTemp": 0
+      },
+      "93e81774-8e52-496b-bbe2-0e37e5b47077": {
+        "nComError": 0,
+        "ongoing": false,
+        "__monitorError": 0,
+        "__monitorFixOn": 0,
+        "__monitorFixTemp": 0
+      },
+      "caaea1a3-c720-4661-bd6e-cd8c46743120": {
+        "nComError": 0,
+        "ongoing": false,
+        "__monitorError": 0,
+        "__monitorFixOn": 0,
+        "__monitorFixTemp": 0
+      },
+      "0a92d897-7f26-428b-b413-666af493437d": {
+        "nComError": 0,
+        "ongoing": false,
+        "__monitorError": 0,
+        "__monitorFixOn": 0,
+        "__monitorFixTemp": 0
+      },
+      "87cc2638-c873-4783-b5cf-3802b8bfaa81": {
+        "nComError": 0,
+        "ongoing": false,
+        "__monitorError": 0,
+        "__monitorFixOn": 0,
+        "__monitorFixTemp": 0
+      },
+      "f2f48f99-1fa0-43c7-995c-ab2a04777297": {
+        "nComError": 0,
+        "ongoing": false,
+        "__monitorError": 0,
+        "__monitorFixOn": 0,
+        "__monitorFixTemp": 0
+      },
+      "1b66dd72-6598-42a6-80c9-96aaa140b6c4": {
+        "nComError": 0,
+        "ongoing": false,
+        "__monitorError": 0,
+        "__monitorFixOn": 0,
+        "__monitorFixTemp": 0
+      },
+      "2ee574fb-d24e-44bd-bf55-8d2214ebec00": {
+        "nComError": 0,
+        "ongoing": false,
+        "__monitorError": 0,
+        "__monitorFixOn": 0,
+        "__monitorFixTemp": 0
+      },
+      "bcbf49fc-4ea7-4a9a-ad4f-eed061ae18a0": {
+        "nComError": 0,
+        "ongoing": false,
+        "__monitorError": 0,
+        "__monitorFixOn": 0,
+        "__monitorFixTemp": 0
+      },
+      "3dab9d5e-3ef3-49a9-b4e0-28ae0654cb12": {
+        "nComError": 0,
+        "ongoing": false,
+        "__monitorError": 0,
+        "__monitorFixOn": 0,
+        "__monitorFixTemp": 0
+      },
+      "33fa2e27-a8cb-4e65-87f8-13545305101a": {
+        "nComError": 0,
+        "ongoing": false,
+        "__monitorError": 0,
+        "__monitorFixOn": 0,
+        "__monitorFixTemp": 0
+      },
+      "734fab2d-2c19-4032-8726-d0a40624c3fb": {
+        "nComError": 0,
+        "ongoing": false,
+        "__monitorError": 0,
+        "__monitorFixOn": 0,
+        "__monitorFixTemp": 0
+      },
+      "0a763eab-ffde-4581-af47-58755bbb22ed": {
+        "nComError": 0,
+        "ongoing": false,
+        "__monitorError": 0,
+        "__monitorFixOn": 0,
+        "__monitorFixTemp": 0
+      },
+      "ef2c3457-0a55-4ccd-a943-58de258d07dd": {
+        "nComError": 0,
+        "ongoing": false,
+        "__monitorError": 0,
+        "__monitorFixOn": 0,
+        "__monitorFixTemp": 0
+      },
+      "7e844fe8-3f2e-4206-a849-aa5541883c9b": {
+        "nComError": 0,
+        "ongoing": false,
+        "__monitorError": 0,
+        "__monitorFixOn": 0,
+        "__monitorFixTemp": 0
+      },
+      "1160d771-5a69-445c-add1-3943ccb16d43": {
+        "nComError": 0,
+        "ongoing": false,
+        "__monitorError": 0,
+        "__monitorFixOn": 0,
+        "__monitorFixTemp": 0
+      },
+      "d9c2b1bb-31fd-4f70-aaa7-db55008943e3": {
+        "nComError": 0,
+        "ongoing": false,
+        "__monitorError": 0,
+        "__monitorFixOn": 0,
+        "__monitorFixTemp": 0
+      },
+      "21324213-084b-4b9b-a9fb-6f46f929cd07": {
+        "nComError": 0,
+        "ongoing": false,
+        "__monitorError": 0,
+        "__monitorFixOn": 0,
+        "__monitorFixTemp": 0
+      },
+      "eb3be21c-bcb2-47b2-9393-eae2d33737dc": {
+        "nComError": 0,
+        "ongoing": false,
+        "__monitorError": 0,
+        "__monitorFixOn": 0,
+        "__monitorFixTemp": 0
+      },
+      "fe8e5e6c-5f8a-41ab-9c73-222dbcd0f57d": {
+        "nComError": 0,
+        "ongoing": false,
+        "__monitorError": 0,
+        "__monitorFixOn": 0,
+        "__monitorFixTemp": 0
+      },
+      "6b31d346-08c2-4eb4-82fe-1d628fee7f40": {
+        "nComError": 0,
+        "ongoing": false,
+        "__monitorError": 0,
+        "__monitorFixOn": 0,
+        "__monitorFixTemp": 0
+      },
+      "b4788083-9606-49a2-99d4-9efce7a4656d": {
+        "nComError": 0,
+        "ongoing": false,
+        "__monitorError": 0,
+        "__monitorFixOn": 0,
+        "__monitorFixTemp": 0
+      },
+      "ad67d837-085a-40bb-b6cf-66980c19368e": {
+        "nComError": 0,
+        "ongoing": false,
+        "__monitorError": 0,
+        "__monitorFixOn": 0,
+        "__monitorFixTemp": 0
+      },
+      "64458c78-bdd4-4cb6-bfa7-5241c2da46a3": {
+        "nComError": 0,
+        "ongoing": false,
+        "__monitorError": 0,
+        "__monitorFixOn": 0,
+        "__monitorFixTemp": 0
+      },
+      "e44abbf3-58df-448c-bd6b-58986768d3cb": {
+        "nComError": 0,
+        "ongoing": false,
+        "__monitorError": 0,
+        "__monitorFixOn": 0,
+        "__monitorFixTemp": 0
+      },
+      "349c7ece-d635-4c61-a96b-d41c661e134e": {
+        "nComError": 0,
+        "lastCmd": 3,
+        "ongoing": false,
+        "__monitorError": 0,
+        "__monitorFixOn": 0,
+        "__monitorFixTemp": 0
+      },
+      "738f5f81-cf29-492c-a0d4-efd36a293c27": {
+        "nComError": 0,
+        "lastCmd": 3,
+        "ongoing": false,
+        "__monitorError": 0,
+        "__monitorFixOn": 0,
+        "__monitorFixTemp": 0
+      },
+      "63b406f3-ce2f-473f-a25d-6040cd5f010c": {
+        "nComError": 0,
+        "lastCmd": 3,
+        "ongoing": false,
+        "__monitorError": 0,
+        "__monitorFixOn": 0,
+        "__monitorFixTemp": 0
+      },
+      "33b577be-040b-41e7-b1d3-0ac5abbece72": {
+        "nComError": 0,
+        "ongoing": false,
+        "__monitorError": 0,
+        "__monitorFixOn": 0,
+        "__monitorFixTemp": 0
+      },
+      "8ee01356-6f67-4ce8-8bd8-45499a92e7a5": {
+        "nComError": 0,
+        "ongoing": false,
+        "__monitorError": 0,
+        "__monitorFixOn": 0,
+        "__monitorFixTemp": 0
+      },
+      "3269380b-db51-4079-8169-c29eccb827ef": {
+        "nComError": 0,
+        "ongoing": false,
+        "__monitorError": 0,
+        "__monitorFixOn": 0,
+        "__monitorFixTemp": 0
+      },
+      "877cbafc-c767-4919-b4ca-c85f5fef9b05": {
+        "nComError": 0,
+        "ongoing": false,
+        "__monitorError": 0,
+        "__monitorFixOn": 0,
+        "__monitorFixTemp": 0
+      },
+      "12224de8-9473-410a-95d1-5b2f68fd1fb8": {
+        "nComError": 0,
+        "ongoing": false,
+        "__monitorError": 0,
+        "__monitorFixOn": 0,
+        "__monitorFixTemp": 0
+      },
+      "cc868682-ab76-4040-8775-4d1377f91ab1": {
+        "nComError": 0,
+        "ongoing": false,
+        "__monitorError": 0,
+        "__monitorFixOn": 0,
+        "__monitorFixTemp": 0
+      },
+      "9a453962-d613-4f94-a21d-40006452361d": {
+        "nComError": 0,
+        "ongoing": false,
+        "__monitorError": 0,
+        "__monitorFixOn": 0,
+        "__monitorFixTemp": 0
+      }
+    },
+    "__stats_failed_turn_on": 0,
+    "__stats_failed_turn_off": 0,
+    "__stats_failed_temp_change": 0,
+    "__statsIntervalID": "...",
+    "__stats_price_point": 0,
+    "__stats_dirtcheap_energy": null,
+    "__stats_low_energy": null,
+    "__stats_norm_energy": 2288.7916432711036,
+    "__stats_high_energy": null,
+    "__stats_extreme_energy": null,
+    "__stats_this_month_maxes": [
+      4787.312172500001,
+      1523.0311441666672,
+      0
+    ],
+    "__stats_savings_all_time_use": 0,
+    "__stats_savings_all_time_power_part": 0,
+    "__stats_n_hours_today": 0,
+    "__stats_accum_price_today": 0,
+    "__stats_accum_use_today": 0,
+    "__stats_actual_cost": 0,
+    "__stats_this_month_average": 2103.4477722222227,
+    "__stats_last_month_max": null,
+    "__stats_app_restarts": 63,
+    "__deviceList": {
+      "41d304f2-1987-4097-ab96-d7845018e9fc": {
+        "priority": 0,
+        "name": "Lys Kanin",
+        "room": "Kaninhus",
+        "roomId": "28d1c66a-a88c-4fe9-bebe-bf6e65b3fa07",
+        "memberOf": [
+          "28d1c66a-a88c-4fe9-bebe-bf6e65b3fa07",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/0050694fb94e1f9ffaf3d824c9b21125/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "se.nexa:EYCR-2300",
+        "use": 0,
+        "reliability": 1
+      },
+      "3d4d1d83-3916-48ae-8f47-9ade9883bbe4": {
+        "priority": 0,
+        "name": "Spot Kjøkken",
+        "room": "Kjøkken",
+        "roomId": "2ab5a003-0120-4c01-80f2-a237dcf4ba14",
+        "memberOf": [
+          "2ab5a003-0120-4c01-80f2-a237dcf4ba14",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/c8ef7a2273d26c3aa870410744d61559/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "com.everspring:AN179",
+        "use": false,
+        "reliability": 1
+      },
+      "69daf50a-3d22-4e23-8ac7-c821771595d9": {
+        "priority": 0,
+        "name": "Lys Skap",
+        "room": "Kjøkken",
+        "roomId": "2ab5a003-0120-4c01-80f2-a237dcf4ba14",
+        "memberOf": [
+          "2ab5a003-0120-4c01-80f2-a237dcf4ba14",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/10f7f928fcccbf5c9bd8a1bbf427ee3b/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "vdevice:zwavebasic",
+        "use": false,
+        "reliability": 1
+      },
+      "8f286b07-91a4-43c6-80c1-10a7709ad258": {
+        "priority": 0,
+        "name": "Lysbryter Stue Sofa",
+        "room": "Stue",
+        "roomId": "9eb2975d-49ea-4033-8db0-105a3e982117",
+        "memberOf": [
+          "9eb2975d-49ea-4033-8db0-105a3e982117",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/c8ef7a2273d26c3aa870410744d61559/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "com.everspring:AN179",
+        "use": false,
+        "reliability": 1
+      },
+      "2dadf7f1-58ad-47aa-8d0f-f2e73a061100": {
+        "priority": 0,
+        "name": "Ventilasjon",
+        "room": "Gang",
+        "roomId": "478cfd92-6475-4214-80d9-27125e39863a",
+        "memberOf": [
+          "478cfd92-6475-4214-80d9-27125e39863a",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/b7a8054208bd5f018c397a44fbe2acc7/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "vdevice:virtual_socket",
+        "use": false,
+        "reliability": 1
+      },
+      "1f20658b-4742-453a-8b4d-263699c4604c": {
+        "priority": 0,
+        "name": "Stikkontakt ved gangen",
+        "room": "Stue",
+        "roomId": "9eb2975d-49ea-4033-8db0-105a3e982117",
+        "memberOf": [
+          "9eb2975d-49ea-4033-8db0-105a3e982117",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/4f24bd97e0b08160af41848714955dd7/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "no.connecte:smart_socket",
+        "use": false,
+        "reliability": 1
+      },
+      "375cd1c4-439f-4685-b651-62637a7057c4": {
+        "priority": 0,
+        "name": "Stikkontakt",
+        "room": "Stue",
+        "roomId": "9eb2975d-49ea-4033-8db0-105a3e982117",
+        "memberOf": [
+          "9eb2975d-49ea-4033-8db0-105a3e982117",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/4f24bd97e0b08160af41848714955dd7/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "no.connecte:smart_socket",
+        "use": false,
+        "reliability": 1
+      },
+      "59d3270f-3805-4443-b495-c1b64f00dd43": {
+        "priority": 0,
+        "name": "Stikkontakt Bak Sofa",
+        "room": "Stue",
+        "roomId": "9eb2975d-49ea-4033-8db0-105a3e982117",
+        "memberOf": [
+          "9eb2975d-49ea-4033-8db0-105a3e982117",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/4f24bd97e0b08160af41848714955dd7/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "no.connecte:smart_socket",
+        "use": false,
+        "reliability": 1
+      },
+      "403c96db-2c49-4e92-90cb-b79d06939c1c": {
+        "priority": 0,
+        "name": "Stikkontakt",
+        "room": "Stue",
+        "roomId": "9eb2975d-49ea-4033-8db0-105a3e982117",
+        "memberOf": [
+          "9eb2975d-49ea-4033-8db0-105a3e982117",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/4f24bd97e0b08160af41848714955dd7/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "no.connecte:smart_socket",
+        "use": 1,
+        "reliability": 1
+      },
+      "cf99de9b-490a-4109-a72e-2b325935cd49": {
+        "priority": 0,
+        "name": "Stikkontakt",
+        "room": "Stue",
+        "roomId": "9eb2975d-49ea-4033-8db0-105a3e982117",
+        "memberOf": [
+          "9eb2975d-49ea-4033-8db0-105a3e982117",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/4f24bd97e0b08160af41848714955dd7/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "no.connecte:smart_socket",
+        "use": 0,
+        "reliability": 1
+      },
+      "b476daf5-4c44-469b-9d72-3c8b4fd8121f": {
+        "priority": 0,
+        "name": "Stikkontakt TV",
+        "room": "Stue",
+        "roomId": "9eb2975d-49ea-4033-8db0-105a3e982117",
+        "memberOf": [
+          "9eb2975d-49ea-4033-8db0-105a3e982117",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/4f24bd97e0b08160af41848714955dd7/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "no.connecte:smart_socket",
+        "use": 0,
+        "reliability": 1
+      },
+      "b5dbdab1-5015-4022-a243-c0e6e286f29b": {
+        "priority": 0,
+        "name": "Stikkontakt Pop Up",
+        "room": "Kjøkken",
+        "roomId": "2ab5a003-0120-4c01-80f2-a237dcf4ba14",
+        "memberOf": [
+          "2ab5a003-0120-4c01-80f2-a237dcf4ba14",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/4f24bd97e0b08160af41848714955dd7/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "no.connecte:smart_socket",
+        "use": false,
+        "reliability": 1
+      },
+      "09432718-ce51-4460-adcf-4bf9b1fb8d27": {
+        "priority": 0,
+        "name": "Stikkontakt",
+        "room": "Kjøkken",
+        "roomId": "2ab5a003-0120-4c01-80f2-a237dcf4ba14",
+        "memberOf": [
+          "2ab5a003-0120-4c01-80f2-a237dcf4ba14",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/4f24bd97e0b08160af41848714955dd7/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "no.connecte:smart_socket",
+        "use": false,
+        "reliability": 1
+      },
+      "4a6ccdad-d1c3-4751-a981-6734df83219c": {
+        "priority": 0,
+        "name": "Stikkontakt",
+        "room": "Kjøkken",
+        "roomId": "2ab5a003-0120-4c01-80f2-a237dcf4ba14",
+        "memberOf": [
+          "2ab5a003-0120-4c01-80f2-a237dcf4ba14",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/4f24bd97e0b08160af41848714955dd7/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "no.connecte:smart_socket",
+        "use": false,
+        "reliability": 1
+      },
+      "31a89648-b70a-4256-be79-f67d81c8f50a": {
+        "priority": 0,
+        "name": "Stikkontakt",
+        "room": "Kjøkken",
+        "roomId": "2ab5a003-0120-4c01-80f2-a237dcf4ba14",
+        "memberOf": [
+          "2ab5a003-0120-4c01-80f2-a237dcf4ba14",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/4f24bd97e0b08160af41848714955dd7/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "no.connecte:smart_socket",
+        "use": false,
+        "reliability": 1
+      },
+      "642dde54-588c-4e21-97c3-65684f7c89ad": {
+        "priority": 0,
+        "name": "Stikkontakt",
+        "room": "Kjøkken",
+        "roomId": "2ab5a003-0120-4c01-80f2-a237dcf4ba14",
+        "memberOf": [
+          "2ab5a003-0120-4c01-80f2-a237dcf4ba14",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/4f24bd97e0b08160af41848714955dd7/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "no.connecte:smart_socket",
+        "use": false,
+        "reliability": 1
+      },
+      "08cd8691-b936-480e-a4aa-e53a2ad670e2": {
+        "priority": 0,
+        "name": "Stikkontakt Høyskap",
+        "room": "Kjøkken",
+        "roomId": "2ab5a003-0120-4c01-80f2-a237dcf4ba14",
+        "memberOf": [
+          "2ab5a003-0120-4c01-80f2-a237dcf4ba14",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/4f24bd97e0b08160af41848714955dd7/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "no.connecte:smart_socket",
+        "use": false,
+        "reliability": 1
+      },
+      "dbf5a40e-8cb5-4e81-a1e2-462bc5b75da0": {
+        "priority": 0,
+        "name": "Stikkontakt",
+        "room": "Kjøkken",
+        "roomId": "2ab5a003-0120-4c01-80f2-a237dcf4ba14",
+        "memberOf": [
+          "2ab5a003-0120-4c01-80f2-a237dcf4ba14",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/4f24bd97e0b08160af41848714955dd7/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "no.connecte:smart_socket",
+        "use": false,
+        "reliability": 1
+      },
+      "93e81774-8e52-496b-bbe2-0e37e5b47077": {
+        "priority": 0,
+        "name": "Stikkontakt",
+        "room": "Stue",
+        "roomId": "9eb2975d-49ea-4033-8db0-105a3e982117",
+        "memberOf": [
+          "9eb2975d-49ea-4033-8db0-105a3e982117",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/4f24bd97e0b08160af41848714955dd7/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "no.connecte:smart_socket",
+        "use": false,
+        "reliability": 1
+      },
+      "caaea1a3-c720-4661-bd6e-cd8c46743120": {
+        "priority": 0,
+        "name": "Stikkontakt",
+        "room": "Stue",
+        "roomId": "9eb2975d-49ea-4033-8db0-105a3e982117",
+        "memberOf": [
+          "9eb2975d-49ea-4033-8db0-105a3e982117",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/4f24bd97e0b08160af41848714955dd7/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "no.connecte:smart_socket",
+        "use": false,
+        "reliability": 1
+      },
+      "0a92d897-7f26-428b-b413-666af493437d": {
+        "priority": 0,
+        "name": "Stikkontakt",
+        "room": "Stue",
+        "roomId": "9eb2975d-49ea-4033-8db0-105a3e982117",
+        "memberOf": [
+          "9eb2975d-49ea-4033-8db0-105a3e982117",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/4f24bd97e0b08160af41848714955dd7/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "no.connecte:smart_socket",
+        "use": false,
+        "reliability": 1
+      },
+      "87cc2638-c873-4783-b5cf-3802b8bfaa81": {
+        "priority": 0,
+        "name": "Stikkontakt",
+        "room": "Stue",
+        "roomId": "9eb2975d-49ea-4033-8db0-105a3e982117",
+        "memberOf": [
+          "9eb2975d-49ea-4033-8db0-105a3e982117",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/4f24bd97e0b08160af41848714955dd7/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "no.connecte:smart_socket",
+        "use": false,
+        "reliability": 1
+      },
+      "f2f48f99-1fa0-43c7-995c-ab2a04777297": {
+        "priority": 0,
+        "name": "Stikkontakt",
+        "room": "Stue",
+        "roomId": "9eb2975d-49ea-4033-8db0-105a3e982117",
+        "memberOf": [
+          "9eb2975d-49ea-4033-8db0-105a3e982117",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/4f24bd97e0b08160af41848714955dd7/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "no.connecte:smart_socket",
+        "use": false,
+        "reliability": 1
+      },
+      "1b66dd72-6598-42a6-80c9-96aaa140b6c4": {
+        "priority": 0,
+        "name": "Lysekrone",
+        "room": "Stue",
+        "roomId": "9eb2975d-49ea-4033-8db0-105a3e982117",
+        "memberOf": [
+          "9eb2975d-49ea-4033-8db0-105a3e982117",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/1332b09ea8d32d45e98ce00969527f4b/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "nl.klikaanklikuit:AWMR-210",
+        "use": false,
+        "reliability": 1
+      },
+      "2ee574fb-d24e-44bd-bf55-8d2214ebec00": {
+        "priority": 0,
+        "name": "Spot Tak 3",
+        "room": "Loftsstue",
+        "roomId": "1815c884-af06-4d53-a2c1-6f4c77e9eb4e",
+        "memberOf": [
+          "1815c884-af06-4d53-a2c1-6f4c77e9eb4e",
+          "b840a982-a3a7-4513-9d96-902d81128f5c",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/2ebacfad8663659281be96ddf52acbad/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "com.tuya.cloud:tuyalight",
+        "use": false,
+        "reliability": 1
+      },
+      "bcbf49fc-4ea7-4a9a-ad4f-eed061ae18a0": {
+        "priority": 0,
+        "name": "Vann Avstegning",
+        "room": "Vaskerom",
+        "roomId": "57efa0f8-8ce6-4e55-884a-d3850f4557b1",
+        "memberOf": [
+          "57efa0f8-8ce6-4e55-884a-d3850f4557b1",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/10f7f928fcccbf5c9bd8a1bbf427ee3b/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "vdevice:zwavebasic",
+        "use": false,
+        "reliability": 1
+      },
+      "3dab9d5e-3ef3-49a9-b4e0-28ae0654cb12": {
+        "priority": 0,
+        "name": "Taklampe",
+        "room": "Kjøkken",
+        "roomId": "2ab5a003-0120-4c01-80f2-a237dcf4ba14",
+        "memberOf": [
+          "2ab5a003-0120-4c01-80f2-a237dcf4ba14",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/7bae6f7b88e84db041b73b07c52f4fdd/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "vdevice:zigbeebasic",
+        "use": false,
+        "reliability": 1
+      },
+      "33fa2e27-a8cb-4e65-87f8-13545305101a": {
+        "priority": 1,
+        "name": "Varmekabler Stue",
+        "room": "Stue",
+        "roomId": "9eb2975d-49ea-4033-8db0-105a3e982117",
+        "memberOf": [
+          "9eb2975d-49ea-4033-8db0-105a3e982117",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/3e023a6b59b121c1c3ea968ba6c608ff/icon.svg",
+        "onoff_cap": "onoff",
+        "thermostat_cap": "target_temperature",
+        "targetTemp": 15,
+        "driverId": "no.thermofloor:Z-TRM3",
+        "use": 0,
+        "reliability": 1
+      },
+      "734fab2d-2c19-4032-8726-d0a40624c3fb": {
+        "priority": 1,
+        "name": "Varmekabler Kjøkken",
+        "room": "Kjøkken",
+        "roomId": "2ab5a003-0120-4c01-80f2-a237dcf4ba14",
+        "memberOf": [
+          "2ab5a003-0120-4c01-80f2-a237dcf4ba14",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/3e023a6b59b121c1c3ea968ba6c608ff/icon.svg",
+        "onoff_cap": "onoff",
+        "thermostat_cap": "target_temperature",
+        "targetTemp": 15,
+        "driverId": "no.thermofloor:Z-TRM3",
+        "use": 0,
+        "reliability": 1
+      },
+      "0a763eab-ffde-4581-af47-58755bbb22ed": {
+        "priority": 1,
+        "name": "Varmekabler Vaskerom",
+        "room": "Vaskerom",
+        "roomId": "57efa0f8-8ce6-4e55-884a-d3850f4557b1",
+        "memberOf": [
+          "57efa0f8-8ce6-4e55-884a-d3850f4557b1",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/3e023a6b59b121c1c3ea968ba6c608ff/icon.svg",
+        "onoff_cap": "onoff",
+        "thermostat_cap": "target_temperature",
+        "targetTemp": 10,
+        "driverId": "no.thermofloor:Z-TRM3",
+        "use": 0,
+        "reliability": 1
+      },
+      "ef2c3457-0a55-4ccd-a943-58de258d07dd": {
+        "priority": 1,
+        "name": "Varmekabler Bad",
+        "room": "Bad",
+        "roomId": "5383b3ff-3c0e-466b-86cf-94bcf6fd7172",
+        "memberOf": [
+          "5383b3ff-3c0e-466b-86cf-94bcf6fd7172",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/3e023a6b59b121c1c3ea968ba6c608ff/icon.svg",
+        "onoff_cap": "onoff",
+        "thermostat_cap": "target_temperature",
+        "targetTemp": 15,
+        "driverId": "no.thermofloor:Z-TRM3",
+        "use": 0,
+        "reliability": 1
+      },
+      "7e844fe8-3f2e-4206-a849-aa5541883c9b": {
+        "priority": 1,
+        "name": "Varmekabler Indre Gang",
+        "room": "Gang",
+        "roomId": "478cfd92-6475-4214-80d9-27125e39863a",
+        "memberOf": [
+          "478cfd92-6475-4214-80d9-27125e39863a",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/3e023a6b59b121c1c3ea968ba6c608ff/icon.svg",
+        "onoff_cap": "onoff",
+        "thermostat_cap": "target_temperature",
+        "targetTemp": 15,
+        "driverId": "no.thermofloor:Z-TRM3",
+        "use": 0,
+        "reliability": 1
+      },
+      "1160d771-5a69-445c-add1-3943ccb16d43": {
+        "priority": 1,
+        "name": "Varmekabler Ytre Gang",
+        "room": "Gang",
+        "roomId": "478cfd92-6475-4214-80d9-27125e39863a",
+        "memberOf": [
+          "478cfd92-6475-4214-80d9-27125e39863a",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/3e023a6b59b121c1c3ea968ba6c608ff/icon.svg",
+        "onoff_cap": "onoff",
+        "thermostat_cap": "target_temperature",
+        "targetTemp": 15,
+        "driverId": "no.thermofloor:Z-TRM3",
+        "use": 0,
+        "reliability": 1
+      },
+      "d9c2b1bb-31fd-4f70-aaa7-db55008943e3": {
+        "priority": 0,
+        "name": "Utelys Veranda",
+        "room": "Hage",
+        "roomId": "5204dc44-8e9c-49e7-aed8-9d5c93330126",
+        "memberOf": [
+          "5204dc44-8e9c-49e7-aed8-9d5c93330126",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/c8ef7a2273d26c3aa870410744d61559/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "com.everspring:AN179",
+        "use": false,
+        "reliability": 1
+      },
+      "21324213-084b-4b9b-a9fb-6f46f929cd07": {
+        "priority": 0,
+        "name": "Water Control",
+        "room": "Hage",
+        "roomId": "5204dc44-8e9c-49e7-aed8-9d5c93330126",
+        "memberOf": [
+          "5204dc44-8e9c-49e7-aed8-9d5c93330126",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/bd4552e696ab849ea2bb6333c5813236/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "com.gardena:water-control",
+        "use": false,
+        "reliability": 1
+      },
+      "eb3be21c-bcb2-47b2-9393-eae2d33737dc": {
+        "priority": 1,
+        "name": "Høiax CONNECTED",
+        "room": "Vaskerom",
+        "roomId": "57efa0f8-8ce6-4e55-884a-d3850f4557b1",
+        "memberOf": [
+          "57efa0f8-8ce6-4e55-884a-d3850f4557b1",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/e350eae4f0c7e6200eedf688db036ea6/icon.svg",
+        "onoff_cap": "onoff",
+        "thermostat_cap": "target_temperature",
+        "targetTemp": 65,
+        "driverId": "no.hoiax:hiax-connected-200",
+        "use": 0,
+        "reliability": 1
+      },
+      "fe8e5e6c-5f8a-41ab-9c73-222dbcd0f57d": {
+        "priority": 0,
+        "name": "Kjøkkenbenk Belysning",
+        "room": "Kjøkken",
+        "roomId": "2ab5a003-0120-4c01-80f2-a237dcf4ba14",
+        "memberOf": [
+          "2ab5a003-0120-4c01-80f2-a237dcf4ba14",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/391846ec23880f99ad8533b32a901e0d/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "com.philips.hue.zigbee:LCL001",
+        "use": false,
+        "reliability": 1
+      },
+      "6b31d346-08c2-4eb4-82fe-1d628fee7f40": {
+        "priority": 0,
+        "name": "Vitrineskap",
+        "room": "Kjøkken",
+        "roomId": "2ab5a003-0120-4c01-80f2-a237dcf4ba14",
+        "memberOf": [
+          "2ab5a003-0120-4c01-80f2-a237dcf4ba14",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/cf6a604b62b17a037e4201c0bfc35772/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "nl.klikaanklikuit:ACC-250",
+        "use": false,
+        "reliability": 1
+      },
+      "b4788083-9606-49a2-99d4-9efce7a4656d": {
+        "priority": 1,
+        "name": "Varmepumpe",
+        "room": "Gang",
+        "roomId": "478cfd92-6475-4214-80d9-27125e39863a",
+        "memberOf": [
+          "478cfd92-6475-4214-80d9-27125e39863a",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/7c8264872f2b35d0ed4609102a0a9752/icon.svg",
+        "onoff_cap": "se_onoff",
+        "thermostat_cap": "target_temperature",
+        "targetTemp": 20,
+        "driverId": "com.sensibo:Sensibo",
+        "use": 0,
+        "reliability": 1
+      },
+      "ad67d837-085a-40bb-b6cf-66980c19368e": {
+        "priority": 0,
+        "name": "Besøk",
+        "room": "Hjem",
+        "roomId": "9919ee1e-ffbc-480b-bc4b-77fb047e9e68",
+        "memberOf": [
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/b7a8054208bd5f018c397a44fbe2acc7/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "vdevice:virtual_socket",
+        "use": false,
+        "reliability": 1
+      },
+      "64458c78-bdd4-4cb6-bfa7-5241c2da46a3": {
+        "priority": 0,
+        "name": "Nanoleaf Oppe",
+        "room": "Loftsstue",
+        "roomId": "1815c884-af06-4d53-a2c1-6f4c77e9eb4e",
+        "memberOf": [
+          "1815c884-af06-4d53-a2c1-6f4c77e9eb4e",
+          "b840a982-a3a7-4513-9d96-902d81128f5c",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/b531595500a5fdf57cde6e8bab259935/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "me.nanoleaf:shapes",
+        "use": false,
+        "reliability": 1
+      },
+      "e44abbf3-58df-448c-bd6b-58986768d3cb": {
+        "priority": 0,
+        "name": "Nanoleaf Trapp",
+        "room": "Loftsstue",
+        "roomId": "1815c884-af06-4d53-a2c1-6f4c77e9eb4e",
+        "memberOf": [
+          "1815c884-af06-4d53-a2c1-6f4c77e9eb4e",
+          "b840a982-a3a7-4513-9d96-902d81128f5c",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/b531595500a5fdf57cde6e8bab259935/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "me.nanoleaf:shapes",
+        "use": false,
+        "reliability": 1
+      },
+      "349c7ece-d635-4c61-a96b-d41c661e134e": {
+        "priority": 0,
+        "name": "Spot Tak 1",
+        "room": "Loftsstue",
+        "roomId": "1815c884-af06-4d53-a2c1-6f4c77e9eb4e",
+        "memberOf": [
+          "1815c884-af06-4d53-a2c1-6f4c77e9eb4e",
+          "b840a982-a3a7-4513-9d96-902d81128f5c",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/2ebacfad8663659281be96ddf52acbad/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "com.tuya.cloud:tuyalight",
+        "use": 1,
+        "reliability": 1
+      },
+      "738f5f81-cf29-492c-a0d4-efd36a293c27": {
+        "priority": 0,
+        "name": "Spot Tak 2",
+        "room": "Loftsstue",
+        "roomId": "1815c884-af06-4d53-a2c1-6f4c77e9eb4e",
+        "memberOf": [
+          "1815c884-af06-4d53-a2c1-6f4c77e9eb4e",
+          "b840a982-a3a7-4513-9d96-902d81128f5c",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/2ebacfad8663659281be96ddf52acbad/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "com.tuya.cloud:tuyalight",
+        "use": 1,
+        "reliability": 1
+      },
+      "63b406f3-ce2f-473f-a25d-6040cd5f010c": {
+        "priority": 0,
+        "name": "Spot Tak 8",
+        "room": "Loftsstue",
+        "roomId": "1815c884-af06-4d53-a2c1-6f4c77e9eb4e",
+        "memberOf": [
+          "1815c884-af06-4d53-a2c1-6f4c77e9eb4e",
+          "b840a982-a3a7-4513-9d96-902d81128f5c",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/2ebacfad8663659281be96ddf52acbad/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "com.tuya.cloud:tuyalight",
+        "use": 1,
+        "reliability": 1
+      },
+      "33b577be-040b-41e7-b1d3-0ac5abbece72": {
+        "priority": 0,
+        "name": "Spot Tak 9",
+        "room": "Loftsstue",
+        "roomId": "1815c884-af06-4d53-a2c1-6f4c77e9eb4e",
+        "memberOf": [
+          "1815c884-af06-4d53-a2c1-6f4c77e9eb4e",
+          "b840a982-a3a7-4513-9d96-902d81128f5c",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/2ebacfad8663659281be96ddf52acbad/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "com.tuya.cloud:tuyalight",
+        "use": false,
+        "reliability": 1
+      },
+      "8ee01356-6f67-4ce8-8bd8-45499a92e7a5": {
+        "priority": 0,
+        "name": "Spot Tak 4",
+        "room": "Loftsstue",
+        "roomId": "1815c884-af06-4d53-a2c1-6f4c77e9eb4e",
+        "memberOf": [
+          "1815c884-af06-4d53-a2c1-6f4c77e9eb4e",
+          "b840a982-a3a7-4513-9d96-902d81128f5c",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/2ebacfad8663659281be96ddf52acbad/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "com.tuya.cloud:tuyalight",
+        "use": false,
+        "reliability": 1
+      },
+      "3269380b-db51-4079-8169-c29eccb827ef": {
+        "priority": 0,
+        "name": "Spot Tak 7",
+        "room": "Loftsstue",
+        "roomId": "1815c884-af06-4d53-a2c1-6f4c77e9eb4e",
+        "memberOf": [
+          "1815c884-af06-4d53-a2c1-6f4c77e9eb4e",
+          "b840a982-a3a7-4513-9d96-902d81128f5c",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/2ebacfad8663659281be96ddf52acbad/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "com.tuya.cloud:tuyalight",
+        "use": false,
+        "reliability": 1
+      },
+      "877cbafc-c767-4919-b4ca-c85f5fef9b05": {
+        "priority": 0,
+        "name": "Spot Tak 5",
+        "room": "Loftsstue",
+        "roomId": "1815c884-af06-4d53-a2c1-6f4c77e9eb4e",
+        "memberOf": [
+          "1815c884-af06-4d53-a2c1-6f4c77e9eb4e",
+          "b840a982-a3a7-4513-9d96-902d81128f5c",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/2ebacfad8663659281be96ddf52acbad/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "com.tuya.cloud:tuyalight",
+        "use": false,
+        "reliability": 1
+      },
+      "12224de8-9473-410a-95d1-5b2f68fd1fb8": {
+        "priority": 0,
+        "name": "Spot Tak 6",
+        "room": "Loftsstue",
+        "roomId": "1815c884-af06-4d53-a2c1-6f4c77e9eb4e",
+        "memberOf": [
+          "1815c884-af06-4d53-a2c1-6f4c77e9eb4e",
+          "b840a982-a3a7-4513-9d96-902d81128f5c",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/2ebacfad8663659281be96ddf52acbad/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "com.tuya.cloud:tuyalight",
+        "use": false,
+        "reliability": 1
+      },
+      "cc868682-ab76-4040-8775-4d1377f91ab1": {
+        "priority": 0,
+        "name": "Billader",
+        "room": "Hjem",
+        "roomId": "9919ee1e-ffbc-480b-bc4b-77fb047e9e68",
+        "memberOf": [
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/2de97486ec3c91e751f89e9579892c87/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "com.arjankranenburg.virtual:mode",
+        "use": false,
+        "reliability": 1
+      },
+      "9a453962-d613-4f94-a21d-40006452361d": {
+        "priority": 1,
+        "name": "Høiax Debug",
+        "room": null,
+        "roomId": "9919ee1e-ffbc-480b-bc4b-77fb047e9e68",
+        "memberOf": [
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": null,
+        "onoff_cap": "onoff",
+        "thermostat_cap": true,
+        "targetTemp": 24,
+        "driverId": "no.hoiax2:hiax-connected-200",
+        "use": false,
+        "reliability": 1
+      }
+    },
+    "__oldDeviceList": {
+      "41d304f2-1987-4097-ab96-d7845018e9fc": {
+        "priority": 0,
+        "name": "Lys Kanin",
+        "room": "Kaninhus",
+        "roomId": "28d1c66a-a88c-4fe9-bebe-bf6e65b3fa07",
+        "memberOf": [
+          "28d1c66a-a88c-4fe9-bebe-bf6e65b3fa07",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/0050694fb94e1f9ffaf3d824c9b21125/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "se.nexa:EYCR-2300",
+        "use": 0,
+        "reliability": 1
+      },
+      "3d4d1d83-3916-48ae-8f47-9ade9883bbe4": {
+        "priority": 0,
+        "name": "Spot Kjøkken",
+        "room": "Kjøkken",
+        "roomId": "2ab5a003-0120-4c01-80f2-a237dcf4ba14",
+        "memberOf": [
+          "2ab5a003-0120-4c01-80f2-a237dcf4ba14",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/c8ef7a2273d26c3aa870410744d61559/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "com.everspring:AN179",
+        "use": false,
+        "reliability": 1
+      },
+      "69daf50a-3d22-4e23-8ac7-c821771595d9": {
+        "priority": 0,
+        "name": "Lys Skap",
+        "room": "Kjøkken",
+        "roomId": "2ab5a003-0120-4c01-80f2-a237dcf4ba14",
+        "memberOf": [
+          "2ab5a003-0120-4c01-80f2-a237dcf4ba14",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/10f7f928fcccbf5c9bd8a1bbf427ee3b/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "vdevice:zwavebasic",
+        "use": false,
+        "reliability": 1
+      },
+      "8f286b07-91a4-43c6-80c1-10a7709ad258": {
+        "priority": 0,
+        "name": "Lysbryter Stue Sofa",
+        "room": "Stue",
+        "roomId": "9eb2975d-49ea-4033-8db0-105a3e982117",
+        "memberOf": [
+          "9eb2975d-49ea-4033-8db0-105a3e982117",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/c8ef7a2273d26c3aa870410744d61559/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "com.everspring:AN179",
+        "use": false,
+        "reliability": 1
+      },
+      "2dadf7f1-58ad-47aa-8d0f-f2e73a061100": {
+        "priority": 0,
+        "name": "Ventilasjon",
+        "room": "Gang",
+        "roomId": "478cfd92-6475-4214-80d9-27125e39863a",
+        "memberOf": [
+          "478cfd92-6475-4214-80d9-27125e39863a",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/b7a8054208bd5f018c397a44fbe2acc7/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "vdevice:virtual_socket",
+        "use": false,
+        "reliability": 1
+      },
+      "1f20658b-4742-453a-8b4d-263699c4604c": {
+        "priority": 0,
+        "name": "Stikkontakt ved gangen",
+        "room": "Stue",
+        "roomId": "9eb2975d-49ea-4033-8db0-105a3e982117",
+        "memberOf": [
+          "9eb2975d-49ea-4033-8db0-105a3e982117",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/4f24bd97e0b08160af41848714955dd7/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "no.connecte:smart_socket",
+        "use": false,
+        "reliability": 1
+      },
+      "375cd1c4-439f-4685-b651-62637a7057c4": {
+        "priority": 0,
+        "name": "Stikkontakt",
+        "room": "Stue",
+        "roomId": "9eb2975d-49ea-4033-8db0-105a3e982117",
+        "memberOf": [
+          "9eb2975d-49ea-4033-8db0-105a3e982117",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/4f24bd97e0b08160af41848714955dd7/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "no.connecte:smart_socket",
+        "use": false,
+        "reliability": 1
+      },
+      "59d3270f-3805-4443-b495-c1b64f00dd43": {
+        "priority": 0,
+        "name": "Stikkontakt Bak Sofa",
+        "room": "Stue",
+        "roomId": "9eb2975d-49ea-4033-8db0-105a3e982117",
+        "memberOf": [
+          "9eb2975d-49ea-4033-8db0-105a3e982117",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/4f24bd97e0b08160af41848714955dd7/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "no.connecte:smart_socket",
+        "use": false,
+        "reliability": 1
+      },
+      "403c96db-2c49-4e92-90cb-b79d06939c1c": {
+        "priority": 0,
+        "name": "Stikkontakt",
+        "room": "Stue",
+        "roomId": "9eb2975d-49ea-4033-8db0-105a3e982117",
+        "memberOf": [
+          "9eb2975d-49ea-4033-8db0-105a3e982117",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/4f24bd97e0b08160af41848714955dd7/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "no.connecte:smart_socket",
+        "use": 1,
+        "reliability": 1
+      },
+      "cf99de9b-490a-4109-a72e-2b325935cd49": {
+        "priority": 0,
+        "name": "Stikkontakt",
+        "room": "Stue",
+        "roomId": "9eb2975d-49ea-4033-8db0-105a3e982117",
+        "memberOf": [
+          "9eb2975d-49ea-4033-8db0-105a3e982117",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/4f24bd97e0b08160af41848714955dd7/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "no.connecte:smart_socket",
+        "use": 0,
+        "reliability": 1
+      },
+      "b476daf5-4c44-469b-9d72-3c8b4fd8121f": {
+        "priority": 0,
+        "name": "Stikkontakt TV",
+        "room": "Stue",
+        "roomId": "9eb2975d-49ea-4033-8db0-105a3e982117",
+        "memberOf": [
+          "9eb2975d-49ea-4033-8db0-105a3e982117",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/4f24bd97e0b08160af41848714955dd7/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "no.connecte:smart_socket",
+        "use": 0,
+        "reliability": 1
+      },
+      "b5dbdab1-5015-4022-a243-c0e6e286f29b": {
+        "priority": 0,
+        "name": "Stikkontakt Pop Up",
+        "room": "Kjøkken",
+        "roomId": "2ab5a003-0120-4c01-80f2-a237dcf4ba14",
+        "memberOf": [
+          "2ab5a003-0120-4c01-80f2-a237dcf4ba14",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/4f24bd97e0b08160af41848714955dd7/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "no.connecte:smart_socket",
+        "use": false,
+        "reliability": 1
+      },
+      "09432718-ce51-4460-adcf-4bf9b1fb8d27": {
+        "priority": 0,
+        "name": "Stikkontakt",
+        "room": "Kjøkken",
+        "roomId": "2ab5a003-0120-4c01-80f2-a237dcf4ba14",
+        "memberOf": [
+          "2ab5a003-0120-4c01-80f2-a237dcf4ba14",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/4f24bd97e0b08160af41848714955dd7/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "no.connecte:smart_socket",
+        "use": false,
+        "reliability": 1
+      },
+      "4a6ccdad-d1c3-4751-a981-6734df83219c": {
+        "priority": 0,
+        "name": "Stikkontakt",
+        "room": "Kjøkken",
+        "roomId": "2ab5a003-0120-4c01-80f2-a237dcf4ba14",
+        "memberOf": [
+          "2ab5a003-0120-4c01-80f2-a237dcf4ba14",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/4f24bd97e0b08160af41848714955dd7/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "no.connecte:smart_socket",
+        "use": false,
+        "reliability": 1
+      },
+      "31a89648-b70a-4256-be79-f67d81c8f50a": {
+        "priority": 0,
+        "name": "Stikkontakt",
+        "room": "Kjøkken",
+        "roomId": "2ab5a003-0120-4c01-80f2-a237dcf4ba14",
+        "memberOf": [
+          "2ab5a003-0120-4c01-80f2-a237dcf4ba14",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/4f24bd97e0b08160af41848714955dd7/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "no.connecte:smart_socket",
+        "use": false,
+        "reliability": 1
+      },
+      "642dde54-588c-4e21-97c3-65684f7c89ad": {
+        "priority": 0,
+        "name": "Stikkontakt",
+        "room": "Kjøkken",
+        "roomId": "2ab5a003-0120-4c01-80f2-a237dcf4ba14",
+        "memberOf": [
+          "2ab5a003-0120-4c01-80f2-a237dcf4ba14",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/4f24bd97e0b08160af41848714955dd7/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "no.connecte:smart_socket",
+        "use": false,
+        "reliability": 1
+      },
+      "08cd8691-b936-480e-a4aa-e53a2ad670e2": {
+        "priority": 0,
+        "name": "Stikkontakt Høyskap",
+        "room": "Kjøkken",
+        "roomId": "2ab5a003-0120-4c01-80f2-a237dcf4ba14",
+        "memberOf": [
+          "2ab5a003-0120-4c01-80f2-a237dcf4ba14",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/4f24bd97e0b08160af41848714955dd7/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "no.connecte:smart_socket",
+        "use": false,
+        "reliability": 1
+      },
+      "dbf5a40e-8cb5-4e81-a1e2-462bc5b75da0": {
+        "priority": 0,
+        "name": "Stikkontakt",
+        "room": "Kjøkken",
+        "roomId": "2ab5a003-0120-4c01-80f2-a237dcf4ba14",
+        "memberOf": [
+          "2ab5a003-0120-4c01-80f2-a237dcf4ba14",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/4f24bd97e0b08160af41848714955dd7/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "no.connecte:smart_socket",
+        "use": false,
+        "reliability": 1
+      },
+      "93e81774-8e52-496b-bbe2-0e37e5b47077": {
+        "priority": 0,
+        "name": "Stikkontakt",
+        "room": "Stue",
+        "roomId": "9eb2975d-49ea-4033-8db0-105a3e982117",
+        "memberOf": [
+          "9eb2975d-49ea-4033-8db0-105a3e982117",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/4f24bd97e0b08160af41848714955dd7/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "no.connecte:smart_socket",
+        "use": false,
+        "reliability": 1
+      },
+      "caaea1a3-c720-4661-bd6e-cd8c46743120": {
+        "priority": 0,
+        "name": "Stikkontakt",
+        "room": "Stue",
+        "roomId": "9eb2975d-49ea-4033-8db0-105a3e982117",
+        "memberOf": [
+          "9eb2975d-49ea-4033-8db0-105a3e982117",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/4f24bd97e0b08160af41848714955dd7/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "no.connecte:smart_socket",
+        "use": false,
+        "reliability": 1
+      },
+      "0a92d897-7f26-428b-b413-666af493437d": {
+        "priority": 0,
+        "name": "Stikkontakt",
+        "room": "Stue",
+        "roomId": "9eb2975d-49ea-4033-8db0-105a3e982117",
+        "memberOf": [
+          "9eb2975d-49ea-4033-8db0-105a3e982117",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/4f24bd97e0b08160af41848714955dd7/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "no.connecte:smart_socket",
+        "use": false,
+        "reliability": 1
+      },
+      "87cc2638-c873-4783-b5cf-3802b8bfaa81": {
+        "priority": 0,
+        "name": "Stikkontakt",
+        "room": "Stue",
+        "roomId": "9eb2975d-49ea-4033-8db0-105a3e982117",
+        "memberOf": [
+          "9eb2975d-49ea-4033-8db0-105a3e982117",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/4f24bd97e0b08160af41848714955dd7/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "no.connecte:smart_socket",
+        "use": false,
+        "reliability": 1
+      },
+      "f2f48f99-1fa0-43c7-995c-ab2a04777297": {
+        "priority": 0,
+        "name": "Stikkontakt",
+        "room": "Stue",
+        "roomId": "9eb2975d-49ea-4033-8db0-105a3e982117",
+        "memberOf": [
+          "9eb2975d-49ea-4033-8db0-105a3e982117",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/4f24bd97e0b08160af41848714955dd7/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "no.connecte:smart_socket",
+        "use": false,
+        "reliability": 1
+      },
+      "1b66dd72-6598-42a6-80c9-96aaa140b6c4": {
+        "priority": 0,
+        "name": "Lysekrone",
+        "room": "Stue",
+        "roomId": "9eb2975d-49ea-4033-8db0-105a3e982117",
+        "memberOf": [
+          "9eb2975d-49ea-4033-8db0-105a3e982117",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/1332b09ea8d32d45e98ce00969527f4b/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "nl.klikaanklikuit:AWMR-210",
+        "use": false,
+        "reliability": 1
+      },
+      "2ee574fb-d24e-44bd-bf55-8d2214ebec00": {
+        "priority": 0,
+        "name": "Spot Tak 3",
+        "room": "Loftsstue",
+        "roomId": "1815c884-af06-4d53-a2c1-6f4c77e9eb4e",
+        "memberOf": [
+          "1815c884-af06-4d53-a2c1-6f4c77e9eb4e",
+          "b840a982-a3a7-4513-9d96-902d81128f5c",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/2ebacfad8663659281be96ddf52acbad/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "com.tuya.cloud:tuyalight",
+        "use": false,
+        "reliability": 1
+      },
+      "bcbf49fc-4ea7-4a9a-ad4f-eed061ae18a0": {
+        "priority": 0,
+        "name": "Vann Avstegning",
+        "room": "Vaskerom",
+        "roomId": "57efa0f8-8ce6-4e55-884a-d3850f4557b1",
+        "memberOf": [
+          "57efa0f8-8ce6-4e55-884a-d3850f4557b1",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/10f7f928fcccbf5c9bd8a1bbf427ee3b/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "vdevice:zwavebasic",
+        "use": false,
+        "reliability": 1
+      },
+      "3dab9d5e-3ef3-49a9-b4e0-28ae0654cb12": {
+        "priority": 0,
+        "name": "Taklampe",
+        "room": "Kjøkken",
+        "roomId": "2ab5a003-0120-4c01-80f2-a237dcf4ba14",
+        "memberOf": [
+          "2ab5a003-0120-4c01-80f2-a237dcf4ba14",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/7bae6f7b88e84db041b73b07c52f4fdd/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "vdevice:zigbeebasic",
+        "use": false,
+        "reliability": 1
+      },
+      "33fa2e27-a8cb-4e65-87f8-13545305101a": {
+        "priority": 1,
+        "name": "Varmekabler Stue",
+        "room": "Stue",
+        "roomId": "9eb2975d-49ea-4033-8db0-105a3e982117",
+        "memberOf": [
+          "9eb2975d-49ea-4033-8db0-105a3e982117",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/3e023a6b59b121c1c3ea968ba6c608ff/icon.svg",
+        "onoff_cap": "onoff",
+        "thermostat_cap": "target_temperature",
+        "targetTemp": 22,
+        "driverId": "no.thermofloor:Z-TRM3",
+        "use": 0,
+        "reliability": 1
+      },
+      "734fab2d-2c19-4032-8726-d0a40624c3fb": {
+        "priority": 1,
+        "name": "Varmekabler Kjøkken",
+        "room": "Kjøkken",
+        "roomId": "2ab5a003-0120-4c01-80f2-a237dcf4ba14",
+        "memberOf": [
+          "2ab5a003-0120-4c01-80f2-a237dcf4ba14",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/3e023a6b59b121c1c3ea968ba6c608ff/icon.svg",
+        "onoff_cap": "onoff",
+        "thermostat_cap": "target_temperature",
+        "targetTemp": 20,
+        "driverId": "no.thermofloor:Z-TRM3",
+        "use": 0,
+        "reliability": 1
+      },
+      "0a763eab-ffde-4581-af47-58755bbb22ed": {
+        "priority": 1,
+        "name": "Varmekabler Vaskerom",
+        "room": "Vaskerom",
+        "roomId": "57efa0f8-8ce6-4e55-884a-d3850f4557b1",
+        "memberOf": [
+          "57efa0f8-8ce6-4e55-884a-d3850f4557b1",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/3e023a6b59b121c1c3ea968ba6c608ff/icon.svg",
+        "onoff_cap": "onoff",
+        "thermostat_cap": "target_temperature",
+        "targetTemp": 6,
+        "driverId": "no.thermofloor:Z-TRM3",
+        "use": 0,
+        "reliability": 1
+      },
+      "ef2c3457-0a55-4ccd-a943-58de258d07dd": {
+        "priority": 1,
+        "name": "Varmekabler Bad",
+        "room": "Bad",
+        "roomId": "5383b3ff-3c0e-466b-86cf-94bcf6fd7172",
+        "memberOf": [
+          "5383b3ff-3c0e-466b-86cf-94bcf6fd7172",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/3e023a6b59b121c1c3ea968ba6c608ff/icon.svg",
+        "onoff_cap": "onoff",
+        "thermostat_cap": "target_temperature",
+        "targetTemp": 22,
+        "driverId": "no.thermofloor:Z-TRM3",
+        "use": 0,
+        "reliability": 1
+      },
+      "7e844fe8-3f2e-4206-a849-aa5541883c9b": {
+        "priority": 1,
+        "name": "Varmekabler Indre Gang",
+        "room": "Gang",
+        "roomId": "478cfd92-6475-4214-80d9-27125e39863a",
+        "memberOf": [
+          "478cfd92-6475-4214-80d9-27125e39863a",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/3e023a6b59b121c1c3ea968ba6c608ff/icon.svg",
+        "onoff_cap": "onoff",
+        "thermostat_cap": "target_temperature",
+        "targetTemp": 13,
+        "driverId": "no.thermofloor:Z-TRM3",
+        "use": 0,
+        "reliability": 1
+      },
+      "1160d771-5a69-445c-add1-3943ccb16d43": {
+        "priority": 1,
+        "name": "Varmekabler Ytre Gang",
+        "room": "Gang",
+        "roomId": "478cfd92-6475-4214-80d9-27125e39863a",
+        "memberOf": [
+          "478cfd92-6475-4214-80d9-27125e39863a",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/3e023a6b59b121c1c3ea968ba6c608ff/icon.svg",
+        "onoff_cap": "onoff",
+        "thermostat_cap": "target_temperature",
+        "targetTemp": 11,
+        "driverId": "no.thermofloor:Z-TRM3",
+        "use": 0,
+        "reliability": 1
+      },
+      "d9c2b1bb-31fd-4f70-aaa7-db55008943e3": {
+        "priority": 0,
+        "name": "Utelys Veranda",
+        "room": "Hage",
+        "roomId": "5204dc44-8e9c-49e7-aed8-9d5c93330126",
+        "memberOf": [
+          "5204dc44-8e9c-49e7-aed8-9d5c93330126",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/c8ef7a2273d26c3aa870410744d61559/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "com.everspring:AN179",
+        "use": false,
+        "reliability": 1
+      },
+      "21324213-084b-4b9b-a9fb-6f46f929cd07": {
+        "priority": 0,
+        "name": "Water Control",
+        "room": "Hage",
+        "roomId": "5204dc44-8e9c-49e7-aed8-9d5c93330126",
+        "memberOf": [
+          "5204dc44-8e9c-49e7-aed8-9d5c93330126",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/bd4552e696ab849ea2bb6333c5813236/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "com.gardena:water-control",
+        "use": false,
+        "reliability": 1
+      },
+      "eb3be21c-bcb2-47b2-9393-eae2d33737dc": {
+        "priority": 1,
+        "name": "Høiax CONNECTED",
+        "room": "Vaskerom",
+        "roomId": "57efa0f8-8ce6-4e55-884a-d3850f4557b1",
+        "memberOf": [
+          "57efa0f8-8ce6-4e55-884a-d3850f4557b1",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/e350eae4f0c7e6200eedf688db036ea6/icon.svg",
+        "onoff_cap": "onoff",
+        "thermostat_cap": "target_temperature",
+        "targetTemp": 65,
+        "driverId": "no.hoiax:hiax-connected-200",
+        "use": 0,
+        "reliability": 1
+      },
+      "fe8e5e6c-5f8a-41ab-9c73-222dbcd0f57d": {
+        "priority": 0,
+        "name": "Kjøkkenbenk Belysning",
+        "room": "Kjøkken",
+        "roomId": "2ab5a003-0120-4c01-80f2-a237dcf4ba14",
+        "memberOf": [
+          "2ab5a003-0120-4c01-80f2-a237dcf4ba14",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/391846ec23880f99ad8533b32a901e0d/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "com.philips.hue.zigbee:LCL001",
+        "use": false,
+        "reliability": 1
+      },
+      "6b31d346-08c2-4eb4-82fe-1d628fee7f40": {
+        "priority": 0,
+        "name": "Vitrineskap",
+        "room": "Kjøkken",
+        "roomId": "2ab5a003-0120-4c01-80f2-a237dcf4ba14",
+        "memberOf": [
+          "2ab5a003-0120-4c01-80f2-a237dcf4ba14",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/cf6a604b62b17a037e4201c0bfc35772/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "nl.klikaanklikuit:ACC-250",
+        "use": false,
+        "reliability": 1
+      },
+      "b4788083-9606-49a2-99d4-9efce7a4656d": {
+        "priority": 1,
+        "name": "Varmepumpe",
+        "room": "Gang",
+        "roomId": "478cfd92-6475-4214-80d9-27125e39863a",
+        "memberOf": [
+          "478cfd92-6475-4214-80d9-27125e39863a",
+          "855113f1-f488-4223-b675-2f01270f573e",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/7c8264872f2b35d0ed4609102a0a9752/icon.svg",
+        "onoff_cap": "se_onoff",
+        "thermostat_cap": "target_temperature",
+        "targetTemp": 17,
+        "driverId": "com.sensibo:Sensibo",
+        "use": 0,
+        "reliability": 1
+      },
+      "ad67d837-085a-40bb-b6cf-66980c19368e": {
+        "priority": 0,
+        "name": "Besøk",
+        "room": "Hjem",
+        "roomId": "9919ee1e-ffbc-480b-bc4b-77fb047e9e68",
+        "memberOf": [
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/b7a8054208bd5f018c397a44fbe2acc7/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "vdevice:virtual_socket",
+        "use": false,
+        "reliability": 1
+      },
+      "64458c78-bdd4-4cb6-bfa7-5241c2da46a3": {
+        "priority": 0,
+        "name": "Nanoleaf Oppe",
+        "room": "Loftsstue",
+        "roomId": "1815c884-af06-4d53-a2c1-6f4c77e9eb4e",
+        "memberOf": [
+          "1815c884-af06-4d53-a2c1-6f4c77e9eb4e",
+          "b840a982-a3a7-4513-9d96-902d81128f5c",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/b531595500a5fdf57cde6e8bab259935/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "me.nanoleaf:shapes",
+        "use": false,
+        "reliability": 1
+      },
+      "e44abbf3-58df-448c-bd6b-58986768d3cb": {
+        "priority": 0,
+        "name": "Nanoleaf Trapp",
+        "room": "Loftsstue",
+        "roomId": "1815c884-af06-4d53-a2c1-6f4c77e9eb4e",
+        "memberOf": [
+          "1815c884-af06-4d53-a2c1-6f4c77e9eb4e",
+          "b840a982-a3a7-4513-9d96-902d81128f5c",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/b531595500a5fdf57cde6e8bab259935/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "me.nanoleaf:shapes",
+        "use": false,
+        "reliability": 1
+      },
+      "349c7ece-d635-4c61-a96b-d41c661e134e": {
+        "priority": 0,
+        "name": "Spot Tak 1",
+        "room": "Loftsstue",
+        "roomId": "1815c884-af06-4d53-a2c1-6f4c77e9eb4e",
+        "memberOf": [
+          "1815c884-af06-4d53-a2c1-6f4c77e9eb4e",
+          "b840a982-a3a7-4513-9d96-902d81128f5c",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/2ebacfad8663659281be96ddf52acbad/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "com.tuya.cloud:tuyalight",
+        "use": 1,
+        "reliability": 1
+      },
+      "738f5f81-cf29-492c-a0d4-efd36a293c27": {
+        "priority": 0,
+        "name": "Spot Tak 2",
+        "room": "Loftsstue",
+        "roomId": "1815c884-af06-4d53-a2c1-6f4c77e9eb4e",
+        "memberOf": [
+          "1815c884-af06-4d53-a2c1-6f4c77e9eb4e",
+          "b840a982-a3a7-4513-9d96-902d81128f5c",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/2ebacfad8663659281be96ddf52acbad/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "com.tuya.cloud:tuyalight",
+        "use": 1,
+        "reliability": 1
+      },
+      "63b406f3-ce2f-473f-a25d-6040cd5f010c": {
+        "priority": 0,
+        "name": "Spot Tak 8",
+        "room": "Loftsstue",
+        "roomId": "1815c884-af06-4d53-a2c1-6f4c77e9eb4e",
+        "memberOf": [
+          "1815c884-af06-4d53-a2c1-6f4c77e9eb4e",
+          "b840a982-a3a7-4513-9d96-902d81128f5c",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/2ebacfad8663659281be96ddf52acbad/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "com.tuya.cloud:tuyalight",
+        "use": 1,
+        "reliability": 1
+      },
+      "33b577be-040b-41e7-b1d3-0ac5abbece72": {
+        "priority": 0,
+        "name": "Spot Tak 9",
+        "room": "Loftsstue",
+        "roomId": "1815c884-af06-4d53-a2c1-6f4c77e9eb4e",
+        "memberOf": [
+          "1815c884-af06-4d53-a2c1-6f4c77e9eb4e",
+          "b840a982-a3a7-4513-9d96-902d81128f5c",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/2ebacfad8663659281be96ddf52acbad/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "com.tuya.cloud:tuyalight",
+        "use": false,
+        "reliability": 1
+      },
+      "8ee01356-6f67-4ce8-8bd8-45499a92e7a5": {
+        "priority": 0,
+        "name": "Spot Tak 4",
+        "room": "Loftsstue",
+        "roomId": "1815c884-af06-4d53-a2c1-6f4c77e9eb4e",
+        "memberOf": [
+          "1815c884-af06-4d53-a2c1-6f4c77e9eb4e",
+          "b840a982-a3a7-4513-9d96-902d81128f5c",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/2ebacfad8663659281be96ddf52acbad/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "com.tuya.cloud:tuyalight",
+        "use": false,
+        "reliability": 1
+      },
+      "3269380b-db51-4079-8169-c29eccb827ef": {
+        "priority": 0,
+        "name": "Spot Tak 7",
+        "room": "Loftsstue",
+        "roomId": "1815c884-af06-4d53-a2c1-6f4c77e9eb4e",
+        "memberOf": [
+          "1815c884-af06-4d53-a2c1-6f4c77e9eb4e",
+          "b840a982-a3a7-4513-9d96-902d81128f5c",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/2ebacfad8663659281be96ddf52acbad/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "com.tuya.cloud:tuyalight",
+        "use": false,
+        "reliability": 1
+      },
+      "877cbafc-c767-4919-b4ca-c85f5fef9b05": {
+        "priority": 0,
+        "name": "Spot Tak 5",
+        "room": "Loftsstue",
+        "roomId": "1815c884-af06-4d53-a2c1-6f4c77e9eb4e",
+        "memberOf": [
+          "1815c884-af06-4d53-a2c1-6f4c77e9eb4e",
+          "b840a982-a3a7-4513-9d96-902d81128f5c",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/2ebacfad8663659281be96ddf52acbad/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "com.tuya.cloud:tuyalight",
+        "use": false,
+        "reliability": 1
+      },
+      "12224de8-9473-410a-95d1-5b2f68fd1fb8": {
+        "priority": 0,
+        "name": "Spot Tak 6",
+        "room": "Loftsstue",
+        "roomId": "1815c884-af06-4d53-a2c1-6f4c77e9eb4e",
+        "memberOf": [
+          "1815c884-af06-4d53-a2c1-6f4c77e9eb4e",
+          "b840a982-a3a7-4513-9d96-902d81128f5c",
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/2ebacfad8663659281be96ddf52acbad/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "com.tuya.cloud:tuyalight",
+        "use": false,
+        "reliability": 1
+      },
+      "cc868682-ab76-4040-8775-4d1377f91ab1": {
+        "priority": 0,
+        "name": "Billader",
+        "room": "Hjem",
+        "roomId": "9919ee1e-ffbc-480b-bc4b-77fb047e9e68",
+        "memberOf": [
+          "9919ee1e-ffbc-480b-bc4b-77fb047e9e68"
+        ],
+        "image": "/icon/2de97486ec3c91e751f89e9579892c87/icon.svg",
+        "onoff_cap": "onoff",
+        "targetTemp": 24,
+        "driverId": "com.arjankranenburg.virtual:mode",
+        "use": false,
+        "reliability": 1
+      }
+    },
+    "__energy_meter_detected_time": "2022-11-21T21:47:26.771Z",
+    "__stats_price_time": "2022-11-21T21:45:07.381Z",
+    "__dirtcheap_price_limit": 0.37011815944881893,
+    "__low_price_limit": 0.6662126870078741,
+    "__high_price_limit": 0.8142599507874017,
+    "__extreme_price_limit": 1.4804726377952757,
+    "__starts_price_point_time": "2022-11-21T21:45:07.384Z",
+    "__monitorError": 0
+  }
+}

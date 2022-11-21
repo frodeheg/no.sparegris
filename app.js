@@ -1548,10 +1548,10 @@ class PiggyBank extends Homey.App {
     this.onFreePowerChanged(powerDiff + safetyPower);
     let promise;
     if (powerDiff < 0) {
-      promise = this.onAbovePowerLimit(-powerDiff, errorMarginWatts + safetyPower)
+      promise = this.onAbovePowerLimit(-powerDiff, errorMarginWatts + safetyPower, now)
         .catch(() => resolve()); // Ignore failures
     } else if (powerDiff > 0) {
-      promise = this.onBelowPowerLimit(powerDiff)
+      promise = this.onBelowPowerLimit(powerDiff, now)
         .catch(() => resolve()); // Ignore failures
     }
     return promise;
@@ -1771,7 +1771,7 @@ class PiggyBank extends Homey.App {
   /**
    * onBelowPowerLimit is called whenever power changed and we're allowed to use more power
    */
-  async onBelowPowerLimit(morePower) {
+  async onBelowPowerLimit(morePower, now = new Date()) {
     this.updateLog(`Below power Limit: ${morePower}`, c.LOG_DEBUG);
     morePower = Math.round(morePower);
     // Reset the power alarm as we now have sufficient power available
@@ -1780,7 +1780,7 @@ class PiggyBank extends Homey.App {
     // If power was turned _OFF_ within the last 1-5 minutes then abort turning on anything.
     // The waiting time is 5 minutes at the beginning of an hour and reduces gradually to 1 minute for the last 5 minutes
     // This is to avoid excessive on/off cycles of high power devices such as electric car chargers
-    this.__last_power_on_time = new Date();
+    this.__last_power_on_time = new Date(now.getTime());
     const timeLeftInHour = timeToNextHour(this.__last_power_on_time);
     const powerCycleInterval = (timeLeftInHour > TIME_FOR_POWERCYCLE_MAX) ? WAIT_TIME_TO_POWER_ON_AFTER_POWEROFF_MAX
       : (timeLeftInHour < TIME_FOR_POWERCYCLE_MIN) ? WAIT_TIME_TO_POWER_ON_AFTER_POWEROFF_MIN
@@ -1858,11 +1858,11 @@ class PiggyBank extends Homey.App {
   /**
    * onAbovePowerLimit is called whenever the power changed and we need to reduce it
    */
-  async onAbovePowerLimit(lessPower, marginWatts) {
+  async onAbovePowerLimit(lessPower, marginWatts, now = new Date()) {
     lessPower = Math.ceil(lessPower);
 
     // Do not care whether devices was just recently turned on
-    this.__last_power_off_time = new Date();
+    this.__last_power_off_time = new Date(now.getTime());
 
     const modeList = this.homey.settings.get('modeList');
     const currentMode = +this.homey.settings.get('operatingMode');

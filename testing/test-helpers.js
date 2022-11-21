@@ -171,7 +171,7 @@ async function applyStateFromFile(app, file) {
 
 async function getAllDeviceId(app) {
   const deviceIdList = [];
-  for (const idx in app.__deviceList) {
+  for (const idx in app.homey.settings.get('deviceList')) {
     deviceIdList.push(idx);
   }
   return deviceIdList;
