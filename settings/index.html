@@ -46,6 +46,7 @@
       var overrideoffUntilOnText = "settings.override.offUntilOn";
       var overridetempText = "settings.override.temp";
       var overridefrostText = "settings.override.frost";
+      var overrideControlledText = "settings.override.controlled";
       var overrideZoneText = "settings.override.zone";
       var helpButtons = "settings.price.buttons.help";
       var helpButtonOn = "settings.price.buttons.helpOn";
@@ -339,6 +340,8 @@
               case OVERRIDE.FROST_GUARD:
                 reasons.push(overridefrostText);
                 break;
+              case OVERRIDE.CONTROLLED:
+                reasons.push(overrideControlledText);
               default: // No override
                 // reasons.push("blah");
                 break;
@@ -1920,6 +1923,7 @@
         overrideoffUntilOnText = Homey.__(overrideoffUntilOnText);
         overridetempText = Homey.__(overridetempText);
         overridefrostText = Homey.__(overridefrostText);
+        overrideControlledText = Homey.__(overrideControlledText);
         overrideZoneText = Homey.__(overrideZoneText);
         helpButtons = Homey.__(helpButtons);
         helpButtonOn = Homey.__(helpButtonOn);

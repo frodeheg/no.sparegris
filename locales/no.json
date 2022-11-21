@@ -268,6 +268,7 @@
       "offUntilOn": "Vedlikeholdsmodus (avsluttes ved manuell påslåing)",
       "temp": "Manuell temperatur",
       "frost": "Frostsikring aktiv",
+      "controlled": "Tvunget styring",
       "zone": "Sone ${zone} slått av"
     },
     "mode" : {
