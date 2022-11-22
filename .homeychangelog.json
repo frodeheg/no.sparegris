@@ -613,5 +613,8 @@
   },
   "0.19.7": {
     "en": "Added currency support + Fixed decimal setting of temperatures + Implemented override for 'controlled' + Updated flow card hint text for 'zone-override'"
+  },
+  "0.19.8": {
+    "en": "Devices with override set to \"controlled\" was not listed in the override section (issue #88)"
   }
 }
