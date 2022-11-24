@@ -57,11 +57,13 @@ const PRICE_KIND_SPOT = 1;
 const PRICE_KIND_FIXED = 2;
 
 // Price points
-const PP_LOW = 0;
-const PP_NORM = 1;
-const PP_HIGH = 2;
-const PP_EXTREME = 3;
-const PP_DIRTCHEAP = 4;
+const PP = {
+  LOW: 0,
+  NORM: 1,
+  HIGH: 2,
+  EXTREME: 3,
+  DIRTCHEAP: 4,
+};
 
 // Logging classes
 const LOG_ERROR = 0;
@@ -138,6 +140,7 @@ module.exports = {
   MODE_CUSTOM,
   MAIN_OP,
   TARGET_OP,
+  PP,
   APP_NOT_READY,
   APP_READY,
   APP_MISSING_PRICE_API,
@@ -153,11 +156,6 @@ module.exports = {
   PRICE_KIND_EXTERNAL,
   PRICE_KIND_SPOT,
   PRICE_KIND_FIXED,
-  PP_LOW,
-  PP_NORM,
-  PP_HIGH,
-  PP_EXTREME,
-  PP_DIRTCHEAP,
   LOG_ERROR,
   LOG_INFO,
   LOG_DEBUG,

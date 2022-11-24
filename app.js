@@ -2517,23 +2517,23 @@ class PiggyBank extends Homey.App {
           pricePointLastHour = +this.homey.settings.get('pricePoint');
         }
         switch (pricePointLastHour) {
-          case c.PP_DIRTCHEAP:
+          case c.PP.DIRTCHEAP:
             this.__stats_dirtcheap_energy = (!this.__stats_dirtcheap_energy) ? this.__stats_energy : ((+this.__stats_dirtcheap_energy * 99 + this.__stats_energy) / 100);
             this.homey.settings.set('stats_dirtcheap_energy', this.__stats_dirtcheap_energy);
             break;
-          case c.PP_LOW:
+          case c.PP.LOW:
             this.__stats_low_energy = (!this.__stats_low_energy) ? this.__stats_energy : ((+this.__stats_low_energy * 99 + this.__stats_energy) / 100);
             this.homey.settings.set('stats_low_energy', this.__stats_low_energy);
             break;
-          case c.PP_NORM:
+          case c.PP.NORM:
             this.__stats_norm_energy = (!this.__stats_norm_energy) ? this.__stats_energy : ((+this.__stats_norm_energy * 99 + this.__stats_energy) / 100);
             this.homey.settings.set('stats_norm_energy', this.__stats_norm_energy);
             break;
-          case c.PP_HIGH:
+          case c.PP.HIGH:
             this.__stats_high_energy = (!this.__stats_high_energy) ? this.__stats_energy : ((+this.__stats_high_energy * 99 + this.__stats_energy) / 100);
             this.homey.settings.set('stats_high_energy', this.__stats_high_energy);
             break;
-          case c.PP_EXTREME:
+          case c.PP.EXTREME:
             this.__stats_extreme_energy = (!this.__stats_extreme_energy) ? this.__stats_energy : ((+this.__stats_extreme_energy * 99 + this.__stats_energy) / 100);
             this.homey.settings.set('stats_extreme_energy', this.__stats_extreme_energy);
             break;
@@ -3147,7 +3147,7 @@ class PiggyBank extends Homey.App {
         const noPriceText = this.homey.__('settings.welcome.taskNoPrices');
         this.homey.notifications.createNotification({ excerpt: noPriceText });
       }
-      return this.onPricePointUpdate(c.PP_NORM);
+      return this.onPricePointUpdate(c.PP.NORM);
     }
     if (this.homey.settings.get('__no_price_notification')) {
       this.homey.settings.unset('__no_price_notification');
@@ -3213,11 +3213,11 @@ class PiggyBank extends Homey.App {
     const isLowPrice = (this.__current_prices[this.__current_price_index] < this.__low_price_limit);
     const isHighPrice = isFixedPrice ? false : (this.__current_prices[this.__current_price_index] > this.__high_price_limit);
     const isExtremePrice = isFixedPrice ? false : (this.__current_prices[this.__current_price_index] > this.__extreme_price_limit) && Number.isInteger(+futurePriceOptions.extremePriceModifier);
-    const mode = isDirtCheapPrice ? c.PP_DIRTCHEAP
-      : isLowPrice ? c.PP_LOW
-        : isExtremePrice ? c.PP_EXTREME
-          : isHighPrice ? c.PP_HIGH
-            : c.PP_NORM;
+    const mode = isDirtCheapPrice ? c.PP.DIRTCHEAP
+      : isLowPrice ? c.PP.LOW
+        : isExtremePrice ? c.PP.EXTREME
+          : isHighPrice ? c.PP.HIGH
+            : c.PP.NORM;
     if (!preventZigbee) {
       return this.onPricePointUpdate(mode);
     }

@@ -323,11 +323,11 @@ class MyDevice extends Device {
       if (+piggyState.price_point !== +prevPricePoint) {
         this.setStoreValue('piggy_price', piggyState.price_point);
         switch (+piggyState.price_point) {
-          case c.PP_LOW: this.toggleCapability('piggy_price_low'); break;
-          case c.PP_NORM: this.toggleCapability('piggy_price_normal'); break;
-          case c.PP_HIGH: this.toggleCapability('piggy_price_expensive'); break;
-          case c.PP_EXTREME: this.toggleCapability('piggy_price_extreme'); break;
-          case c.PP_DIRTCHEAP: this.toggleCapability('piggy_price_dirt_cheap'); break;
+          case c.PP.LOW: this.toggleCapability('piggy_price_low'); break;
+          case c.PP.NORM: this.toggleCapability('piggy_price_normal'); break;
+          case c.PP.HIGH: this.toggleCapability('piggy_price_expensive'); break;
+          case c.PP.EXTREME: this.toggleCapability('piggy_price_extreme'); break;
+          case c.PP.DIRTCHEAP: this.toggleCapability('piggy_price_dirt_cheap'); break;
           default: /* Broken input should not happen */ break;
         }
       }

@@ -4,7 +4,6 @@
 
 const { XMLParser } = require('fast-xml-parser');
 const { request } = require('urllib'); // This adds 512kB (1.4MB debug) to the app
-const { PP_LOW } = require('./constants');
 const { toLocalTime } = require('./homeytime');
 
 // =============================================================================
