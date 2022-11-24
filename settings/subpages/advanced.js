@@ -4,9 +4,6 @@
 
 'use strict';
 
-require('../constants');
-require('../devices');
-
 function checkForCharger(deviceList) {
   let foundCharger = false;
   let chargerUsed = false;
