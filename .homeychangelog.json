@@ -622,5 +622,8 @@
   },
   "0.19.10": {
     "en": "Correction to the debug feature. It reported that debug was enabled too often"
+  },
+  "0.19.11": {
+    "en": "Vthermo devices will now fetch their min/max from the device capability"
   }
 }
