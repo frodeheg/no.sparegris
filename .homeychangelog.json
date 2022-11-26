@@ -619,5 +619,8 @@
   },
   "0.19.9": {
     "en": "Added Device logging + Added two devices to the supported list: com.xiaomi-mi:plug.maeu01 + no.connecte:puck_relay"
+  },
+  "0.19.10": {
+    "en": "Correction to the debug feature. It reported that debug was enabled too often"
   }
 }
