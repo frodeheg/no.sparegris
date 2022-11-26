@@ -58,6 +58,7 @@
         "title": "Hjelp",
         "save": "Hvordan spare penger",
         "notfound": "Appen finner ikke enheten min",
+        "debug": "Feilsøking",
         "supported": "Støttede enheter",
         "about": "Om"
       }
@@ -299,7 +300,9 @@
       "show": "Rapporter et problem",
       "header": "Logg",
       "exit": "Tilbake",
-      "level": "Vis hendelser",
+      "unit": "Enhet for full logg",
+      "unitNone": "Ingen Enhet valgt",
+      "level": "Andre hendelser",
       "error": "Bare feil",
       "basic": "Basisinformasjon",
       "full": "All informasjon",

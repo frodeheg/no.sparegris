@@ -103,9 +103,10 @@ class PiggyBank extends Homey.App {
     const { driverId } = this.__deviceList[deviceId];
     if (!(driverId in d.DEVICE_CMD)) return Promise.resolve();
     if (!(listRef in d.DEVICE_CMD[driverId])) return Promise.resolve();
-    this.log(`Got ${listRef} for ${driverId}`);
+    this.updateLog(`Got ${listRef} for ${driverId}`, c.LOG_DEBUG);
     const list = d.DEVICE_CMD[driverId][listRef];
     const device = await this.getDevice(deviceId);
+    if (this.logUnit === deviceId) this.updateLog(`attempt runDeviceCommands(${listRef}) for ${device.name}`, c.LOG_ALL);
     let stateChanged = false;
     for (const capName in list) {
       const maxVal = (device.capabilitiesObj === null) ? 32 : await device.capabilitiesObj[capName].max;
@@ -114,13 +115,15 @@ class PiggyBank extends Homey.App {
       try {
         if (prevVal !== setVal) {
           stateChanged = true;
-          this.log(`Setting capname: ${capName} = ${setVal}`);
+          this.updateLog(`Setting capname: ${capName} = ${setVal}`, c.LOG_INFO);
+          if (this.logUnit === deviceId) this.updateLog(`Setting Device ${device.name}.${capName} = ${setVal} | Origin from list ${driverId}.${listRef}`, c.LOG_ALL);
           await device.setCapabilityValue({ capabilityId: capName, value: setVal }); // Just pass errors on
         }
       } catch (err) {
-        this.log(`Error: ${err}`);
+        this.updateLog(`Error: ${err}`, c.LOG_ERROR);
       }
     }
+    if (this.logUnit === deviceId) this.updateLog(`attempt runDeviceCommands(${listRef}) for ${device.name}`, c.LOG_ALL);
     return Promise.resolve(stateChanged);
   }
 
@@ -1027,6 +1030,7 @@ class PiggyBank extends Homey.App {
   async changeDevicePower(deviceId, powerChange) {
     const chargerOptions = this.homey.settings.get('chargerOptions');
     if (chargerOptions.chargeTarget === c.CHARGE_TARGET_FLOW) {
+      if (this.logUnit === deviceId) this.updateLog(`abort changeDevicePower() for '${deviceId} because you have selected to control charging using flows, not automaticly.`, c.LOG_ALL);
       return Promise.resolve([true, true]);
     }
     this.updateLog(`Requested power change: ${powerChange}`, c.LOG_DEBUG);
@@ -1039,13 +1043,17 @@ class PiggyBank extends Homey.App {
       this.updateLog(`Charger device cannot be fetched. ${String(err)}`, c.LOG_ERROR);
       this.__current_state[deviceId].nComError += 10; // Big error so wait more until retry than smaller errors
       this.updateReliability(deviceId, 0);
+      if (this.logUnit === deviceId) this.updateLog(`abort changeDevicePower() for '${deviceId} due to Homey API issues (Homey is busy)`, c.LOG_ALL);
       return Promise.resolve([false, false]); // The unhandled device is solved by the later nComError handling
     }
+
+    if (this.logUnit === deviceId) this.updateLog(`attempt changeDevicePower(${powerChange}) for ${device.name}`, c.LOG_ALL);
 
     if (device.capabilitiesObj === null) {
       this.updateLog('Charger device capability list missing', c.LOG_ERROR);
       this.__current_state[deviceId].nComError += 10; // This should not happen
       this.updateReliability(deviceId, 0);
+      if (this.logUnit === deviceId) this.updateLog(`abort changeDevicePower() for ${device.name} due to Homey API issues (Homey busy?)`, c.LOG_ALL);
       return Promise.resolve([false, false]);
     }
 
@@ -1058,6 +1066,7 @@ class PiggyBank extends Homey.App {
       || (d.DEVICE_CMD[driverId].onChargeEnd === undefined)
       || (d.DEVICE_CMD[driverId].statusCap === undefined)
       || (d.DEVICE_CMD[driverId].statusUnavailable === undefined)) {
+      if (this.logUnit === deviceId) this.updateLog(`abort changeDevicePower() for ${device.name} the charger definition in Piggy is incorrect`, c.LOG_ALL);
       return Promise.reject(new Error('Please notify the developer that the charger definition for this charger is incorrect and need to be updated'));
     }
     const ampsOffered = +await device.capabilitiesObj[d.DEVICE_CMD[driverId].setCurrentCap].value;
@@ -1066,6 +1075,7 @@ class PiggyBank extends Homey.App {
     this.__charge_power_active = powerUsed;
     if ((!isOn) && (powerChange < chargerOptions.chargeThreshold)) {
       // The device should not be turned on if the available power is less than the charge threshold
+      if (this.logUnit === deviceId) this.updateLog(`abort changeDevicePower() for ${device.name} - available power was less than charge threshold`, c.LOG_ALL);
       return Promise.resolve([false, false]);
     }
     const isEmergency = (+powerChange < 0) && (
@@ -1098,9 +1108,11 @@ class PiggyBank extends Homey.App {
       this.updateLog(`Wait more: ${+(chargerOptions.minToggleTime)} - ${timeLapsed} = ${+(chargerOptions.minToggleTime) - timeLapsed} sec left`, c.LOG_DEBUG);
       // Report success in case there is an unconfirmed command and we're trying to reduce power... to avoid reporting powerfail too early.
       if (!ignoreChargerThrottle && (+powerChange < 0)) {
+        if (this.logUnit === deviceId) this.updateLog(`finished changeDevicePower() for ${device.name} - still waiting for confirmation on previous command`, c.LOG_ALL);
         return Promise.resolve([true, false]); // Also report onChanged=false because of the unconfirmed change
       }
       // Return failure in case the earlier commands was confirmed to allow turning on/off other devices
+      if (this.logUnit === deviceId) this.updateLog(`aborted changeDevicePower() for ${device.name} - Must wait for toggle time to expire`, c.LOG_ALL);
       return Promise.resolve([false, false]);
     }
     this.prevChargerTime = now;
@@ -1117,18 +1129,26 @@ class PiggyBank extends Homey.App {
         : (+powerUsed === 0) ? minCurrent
           : Math.floor(Math.min(Math.max(ampsOffered * (newOfferPower / +powerUsed), minCurrent), +maxCurrent));
     this.updateLog(`Setting ${newOfferCurrent} amp, was ${ampsActualOffer}`, c.LOG_DEBUG);
-    if ((newOfferCurrent === ampsActualOffer) && (newOfferCurrent === ampsOffered)) return Promise.resolve([true, true]);
+    if ((newOfferCurrent === ampsActualOffer) && (newOfferCurrent === ampsOffered)) {
+      if (this.logUnit === deviceId) this.updateLog(`finished changeDevicePower() for ${device.name} - The new current is the same as the previous`, c.LOG_ALL);
+      return Promise.resolve([true, true]);
+    }
     this.__current_state[deviceId].lastCurrent = newOfferCurrent;
     this.__current_state[deviceId].lastPower = powerUsed;
     this.__current_state[deviceId].confirmed = false;
     this.__current_state[deviceId].ongoing = true;
     return this.chargeCycleValidation(deviceId, device, withinChargingCycle, throttleActive)
-      .then(() => device.setCapabilityValue({ capabilityId: d.DEVICE_CMD[driverId].setCurrentCap, value: newOfferCurrent }))
+      .then(() => {
+        const capName = d.DEVICE_CMD[driverId].setCurrentCap;
+        if (this.logUnit === deviceId) this.updateLog(`Setting Device ${device.name}.${capName} = ${newOfferCurrent} | Origin ChangeDevicePower(${powerChange})`, c.LOG_ALL);
+        return device.setCapabilityValue({ capabilityId: capName, value: newOfferCurrent });
+      })
       .then(() => {
         this.__current_state[deviceId].ongoing = false;
         this.__current_state[deviceId].nComError = 0;
         this.updateReliability(deviceId, 1);
         const noChange = withinChargingPlan ? powerUsed + +powerChange < newOfferPower : !isOn;
+        if (this.logUnit === deviceId) this.updateLog(`finished changeDevicePower() for ${device.name} - all success`, c.LOG_ALL);
         return Promise.resolve([true, noChange]); // In case more power is offered but it doesn't get used, let the app turn on other devices
       })
       .catch(err => {
@@ -1136,6 +1156,7 @@ class PiggyBank extends Homey.App {
         this.__current_state[deviceId].nComError += 1;
         this.__current_state[deviceId].ongoing = undefined;
         this.updateReliability(deviceId, 0);
+        if (this.logUnit === deviceId) this.updateLog(`aborted changeDevicePower() for ${device.name} - failed signalling charger ${String(err)}`, c.LOG_ALL);
         return Promise.resolve([false, false]);
       });
   }
@@ -1192,6 +1213,7 @@ class PiggyBank extends Homey.App {
   async changeDeviceState(deviceId, targetState) {
     if (!(deviceId in this.__deviceList)) {
       // Apparently the stored settings are invalid and need to be refreshed
+      this.updateLog('The settings are corrupted, please save the settings again', c.LOG_ERROR);
       return Promise.resolve([false, false]);
     }
     const actionLists = this.homey.settings.get('priceActionList');
@@ -1236,23 +1258,29 @@ class PiggyBank extends Homey.App {
     // or EMERGENCY_OFF mode unless it is an EMERGENCY_OFF operation
     if ((currentActionOp === TARGET_OP.IGNORE) || (newState === TARGET_OP.IGNORE)
       || (currentActionOp === TARGET_OP.EMERGENCY_OFF && newState !== TARGET_OP.EMERGENCY_OFF)) {
+      if (this.logUnit === deviceId) this.updateLog(`aborted changeDeviceState() for '${deviceId} - Action was ignore or Emergency was not emergency`, c.LOG_ALL);
       return Promise.resolve([false, false]);
     }
 
     let device;
     try {
       device = await this.getDevice(deviceId);
+      if (this.logUnit === deviceId) this.updateLog(`attempt changeDeviceState(${targetState}) for ${device.name}`, c.LOG_ALL);
       this.updateReliability(deviceId, 1);
     } catch (err) {
       // Most likely timeout
       this.updateLog(`Device cannot be fetched. ${String(err)}`, c.LOG_ERROR);
       this.__current_state[deviceId].nComError += 10; // Big error so wait more until retry than smaller errors
       this.updateReliability(deviceId, 0);
+      if (this.logUnit === deviceId) this.updateLog(`aborted changeDeviceState() for '${deviceId} - Homey API failure (Homey is busy)`, c.LOG_ALL);
       return Promise.resolve([false, false]); // The unhandled device is solved by the later nComError handling
     }
     const frostGuardActive = this.isFrostGuardActive(device, deviceId);
 
-    if (this.getOnOffCap(deviceId) === undefined) return Promise.resolve([false, false]); // Homey was busy, will have to retry later
+    if (this.getOnOffCap(deviceId) === undefined) {
+      if (this.logUnit === deviceId) this.updateLog(`aborted changeDeviceState() for ${device.name} - Homey API failure (Homey busy?)`, c.LOG_ALL);
+      return Promise.resolve([false, false]); // Homey was busy, will have to retry later
+    }
     const isOn = this.getIsOn(device, deviceId);
     if (override[deviceId] === c.OVERRIDE.OFF_UNTIL_MANUAL_ON && isOn) {
       delete override[deviceId];
@@ -1272,6 +1300,7 @@ class PiggyBank extends Homey.App {
 
     if (newState === TARGET_OP.EMERGENCY_OFF && newStateOn === undefined) {
       // Early exit because it's no emergency and we don't know whether to be on or off
+      if (this.logUnit === deviceId) this.updateLog(`aborted changeDeviceState() for ${device.name} - mode is EMERGENCY_OFF but there is no emergency`, c.LOG_ALL);
       return Promise.resolve([false, false]);
     }
 
@@ -1292,6 +1321,7 @@ class PiggyBank extends Homey.App {
           this.__current_state[deviceId].nComError = 0;
           this.__num_off_devices--;
           // Always change temperature when turning on
+          if (this.logUnit === deviceId) this.updateLog(`finished changeDeviceState() for ${device.name} - successfully turned on`, c.LOG_ALL);
           return this.refreshTemp(deviceId); // Will not return error
         })
         .then(() => Promise.resolve([newState === TARGET_OP.TURN_ON, false]))
@@ -1301,6 +1331,7 @@ class PiggyBank extends Homey.App {
           this.__current_state[deviceId].ongoing = undefined;
           this.__current_state[deviceId].nComError += 1;
           this.updateLog(`Failed to turn on device ${deviceName}, will retry later`, c.LOG_ERROR);
+          if (this.logUnit === deviceId) this.updateLog(`aborted changeDeviceState() for ${device.name} due to ${String(error)}`, c.LOG_ALL);
           return Promise.resolve([false, false]); // The unresolved part is solved by the later nComError handling
         });
     } // ignore case !wantOn && isOn
@@ -1317,6 +1348,7 @@ class PiggyBank extends Homey.App {
           this.__current_state[deviceId].nComError = 0;
           this.__current_state[deviceId].ongoing = false;
           this.__num_off_devices++;
+          if (this.logUnit === deviceId) this.updateLog(`finished changeDeviceState() for ${device.name} - successfully turned off`, c.LOG_ALL);
           return Promise.resolve([newState === TARGET_OP.TURN_OFF, false]);
         })
         .catch(error => {
@@ -1325,6 +1357,7 @@ class PiggyBank extends Homey.App {
           this.statsCountFailedTurnOff();
           this.__current_state[deviceId].nComError += 1;
           this.updateLog(`Failed to turn off device ${deviceName}, will try to turn off other devices instead. (${error})`, c.LOG_ERROR);
+          if (this.logUnit === deviceId) this.updateLog(`aborted changeDeviceState() for ${device.name} due to: ${String(error)}`, c.LOG_ALL);
           return Promise.resolve([false, false]); // The unresolved part is solved by the later nComError handling
         });
     }
@@ -1333,10 +1366,12 @@ class PiggyBank extends Homey.App {
       && ((this.__current_state[deviceId].nComError === 0)
         || ((this.__deviceList[deviceId].reliability > 0.5) && (this.__current_state[deviceId].ongoing === false)))) {
       // Update temperature if it changed (unreliable devices will only refresh temp up until a certain point)
+      if (this.logUnit === deviceId) this.updateLog(`finished changeDeviceState() for ${device.name} - device onoff state was already correct - now checking temp`, c.LOG_ALL);
       return this.refreshTemp(deviceId);
     }
 
-    // Nothing happened
+    // Nothing happened - Everything is ok or Homey is not in synch with the actual device states
+    if (this.logUnit === deviceId) this.updateLog(`finished changeDeviceState() for ${device.name} - Nothing happened`, c.LOG_ALL);
     return Promise.resolve([newStateOn === (newState === TARGET_OP.TURN_ON), isOn === (newState === TARGET_OP.TURN_ON)]);
   }
 
@@ -1877,6 +1912,7 @@ class PiggyBank extends Homey.App {
     // Only turn off one device at the time
     let numForcedOnDevices;
     for (let isEmergency = 0; isEmergency < 2; isEmergency++) {
+      this.updateLog(`Running turn-off-cycle in ${isEmergency ? 'Emergency mode' : 'Normal mode'}`, c.LOG_DEBUG);
       numForcedOnDevices = 0;
       for (let idx = numDevices - 1; idx >= 0; idx--) {
         const deviceId = reorderedModeList[idx].id;
@@ -1896,12 +1932,14 @@ class PiggyBank extends Homey.App {
           }
           if (success && !noChange) {
             // Sucessfully Turned off
+            this.updateLog('Claims to have turned off device successfully', c.LOG_DEBUG);
             return Promise.resolve();
           }
           if (!success) {
             numForcedOnDevices++;
           }
         } catch (err) {
+          this.updateLog(`Error while trying to power down: ${err}`, c.LOG_ERROR);
           return Promise.reject(new Error(`Unknown error: ${err}`));
         }
       }
@@ -2081,6 +2119,7 @@ class PiggyBank extends Homey.App {
   async refreshTemp(deviceId) {
     // Do not refresh temperature if the temperature control is disabled
     if (+this.homey.settings.get('controlTemp') === 0) {
+      if (this.logUnit === deviceId) this.updateLog(`aborted refreshTemp() for '${deviceId} - Temperature control has been disabled`, c.LOG_ALL);
       return Promise.resolve([true, true]);
     }
     const modeList = this.homey.settings.get('modeList');
@@ -2096,19 +2135,27 @@ class PiggyBank extends Homey.App {
     const deltaTemp = ((currentPriceMode !== c.PRICE_MODE_DISABLED) && (currentAction.operation === TARGET_OP.DELTA_TEMP)) ? +currentAction.delta : 0;
     return this.getDevice(deviceId)
       .then(device => {
+        if (this.logUnit === deviceId) this.updateLog(`attempt refreshTemp() for ${device.name}`, c.LOG_ALL);
         if (this.getOnOffCap(deviceId) === undefined) {
+          if (this.logUnit === deviceId) this.updateLog(`aborted refreshTemp() for ${device.name} - No onoff cap???`, c.LOG_ALL);
           return Promise.reject(new Error('The onoff capability is non-existing, this should never happen.'));
         }
         const isOn = this.getIsOn(device, deviceId);
         if (isOn === undefined) {
           this.updateLog(`Refreshtemp: isOn was set to undefined ${isOn}`, c.LOG_ERROR);
         }
-        if (!isOn) return Promise.resolve([true, true]);
+        if (!isOn) {
+          if (this.logUnit === deviceId) this.updateLog(`aborted refreshTemp() for ${device.name} - Device is off`, c.LOG_ALL);
+          return Promise.resolve([true, true]);
+        }
         const tempSetCap = this.getTempSetCap(deviceId);
         const tempGetCap = this.getTempGetCap(deviceId);
         const hasTargetTemp = device.capabilities.includes(tempSetCap);
         const hasMeasureTemp = device.capabilities.includes(tempGetCap);
-        if ((!hasTargetTemp) || (!hasMeasureTemp)) return Promise.resolve([true, true]);
+        if ((!hasTargetTemp) || (!hasMeasureTemp)) {
+          if (this.logUnit === deviceId) this.updateLog(`aborted refreshTemp() for ${device.name} - Device does not have temperature capabilities`, c.LOG_ALL);
+          return Promise.resolve([true, true]);
+        }
         const frostGuardActive = this.isFrostGuardActive(device, deviceId);
         let newTemp = frostGuardActive ? +frostList[deviceId].minTemp : (modeTemp + deltaTemp);
         const minTemp = this.getTempCapMin(device, deviceId);
@@ -2116,14 +2163,18 @@ class PiggyBank extends Homey.App {
         if (newTemp < minTemp) newTemp = minTemp;
         if (newTemp > maxTemp) newTemp = maxTemp;
         this.__current_state[deviceId].temp = newTemp;
-        if (device.capabilitiesObj[tempSetCap].value === newTemp) return Promise.resolve([true, true]);
+        if (device.capabilitiesObj[tempSetCap].value === newTemp) {
+          if (this.logUnit === deviceId) this.updateLog(`finished refreshTemp() for ${device.name} - Old temperature was equal to new one ${newTemp}`, c.LOG_ALL);
+          return Promise.resolve([true, true]);
+        }
         this.__current_state[deviceId].ongoing = true;
         this.__current_state[deviceId].confirmed = false;
         const override = this.homey.settings.get('override') || {};
         if (override[deviceId] === c.OVERRIDE.MANUAL_TEMP) {
+          if (this.logUnit === deviceId) this.updateLog(`aborted refreshTemp() for ${device.name} - Manual override`, c.LOG_ALL);
           return Promise.resolve([true, true]);
         }
-        this.updateLog(`Refreshing temp for device ${device.name}, value: ${newTemp}, mode: ${modeTemp}, delta: ${deltaTemp}`, c.LOG_DEBUG);
+        if (this.logUnit === deviceId) this.updateLog(`Setting Device ${device.name}.${tempSetCap} = ${newTemp} | Origin RefreshTemp(${modeTemp} + ${deltaTemp})`, c.LOG_ALL);
         return device.setCapabilityValue({ capabilityId: tempSetCap, value: newTemp })
           .then(() => Promise.resolve([true, false]));
       })
@@ -2131,6 +2182,7 @@ class PiggyBank extends Homey.App {
         this.updateReliability(deviceId, 1);
         this.__current_state[deviceId].nComError = 0;
         this.__current_state[deviceId].ongoing = false;
+        if (this.logUnit === deviceId) this.updateLog(`finished refreshTemp() for '${deviceId} - Success`, c.LOG_ALL);
         return Promise.resolve([success, noChange]);
       }).catch(error => {
         this.statsCountFailedTempChange();
@@ -2138,6 +2190,7 @@ class PiggyBank extends Homey.App {
         this.__current_state[deviceId].nComError += 1;
         this.__current_state[deviceId].ongoing = undefined;
         this.updateLog(`Failed to set temperature for device ${this.__deviceList[deviceId].name}, will retry later (${error})`, c.LOG_ERROR);
+        if (this.logUnit === deviceId) this.updateLog(`aborted refreshTemp() for '${deviceId} - Failure ${error}`, c.LOG_ALL);
         return Promise.resolve([false, false]); // The unresolved part is solved by the later nComError handling
       });
   }
@@ -2289,6 +2342,7 @@ class PiggyBank extends Homey.App {
   }
 
   async setOnOff(device, deviceId, onOff) {
+    if (this.logUnit === deviceId) this.updateLog(`attempt setOnOff(${onOff}) for ${device.name}`, c.LOG_ALL);
     let onOffCap = this.getOnOffCap(deviceId);
     let onOffValue = onOff ? this.getOnOffTrue(deviceId) : this.getOnOffFalse(deviceId);
     if (onOffCap === null) {
@@ -2296,6 +2350,7 @@ class PiggyBank extends Homey.App {
       onOffValue = onOff ? d.DEVICE_CMD[this.__deviceList[deviceId].driverId].tempMin
         : (d.DEVICE_CMD[this.__deviceList[deviceId].driverId].tempMin - 1);
     }
+    if (this.logUnit === deviceId) this.updateLog(`Setting Device ${device.name}.${onOffCap} = ${onOffValue} | Origin setOnOff(${onOff})`, c.LOG_ALL);
     return device.setCapabilityValue({ capabilityId: onOffCap, value: onOffValue });
   }
 
@@ -2645,6 +2700,7 @@ class PiggyBank extends Homey.App {
       this.mylog.diagLog = '';
       this.logInitDone = true;
       this.logLevel = c.LOG_ERROR;
+      this.logUnit = '';
     } catch (err) {
       this.logInitDone = false;
     }
@@ -2653,6 +2709,10 @@ class PiggyBank extends Homey.App {
   setLogLevel(newLevel) {
     this.logLevel = +newLevel;
     if (!Number.isInteger(this.logLevel)) this.logLevel = c.LOG_ERROR;
+  }
+
+  setLogUnit(newUnit) {
+    this.logUnit = newUnit;
   }
 
   updateLog(newMessage, ignoreSetting = c.LOG_INFO) {
@@ -2965,6 +3025,7 @@ class PiggyBank extends Homey.App {
         for (const device of Object.values(devices)) {
           const deviceId = device.id;
           const onoffCap = (deviceId in this.__deviceList) ? this.__deviceList[deviceId].onoff_cap : undefined;
+          const isInUse = (deviceId in this.__deviceList) ? this.__deviceList[deviceId].use : false;
           const isExperimental = (deviceId in this.__deviceList)
             && (!(this.__deviceList[deviceId].driverId in d.DEVICE_CMD)
               || (d.DEVICE_CMD[this.__deviceList[deviceId].driverId].beta === true));
@@ -2974,6 +3035,7 @@ class PiggyBank extends Homey.App {
             || (onoffCap !== undefined && +type === 2) // Onoff problem
             || (onoffCap !== undefined && +type === 1 && isExperimental) // Experimental device
             || (onoffCap !== undefined && +type === 3) // Temp problem
+            || (onoffCap !== undefined && +type === 5 && isInUse)
           ) {
             retval.push({ name: device.name, value: device.id });
           }

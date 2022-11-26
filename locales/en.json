@@ -58,6 +58,7 @@
         "title": "Help",
         "save": "How to save money",
         "notfound": "The app can't find my device",
+        "debug": "Debug",
         "supported": "Supported Devices",
         "about": "About"
       }
@@ -299,7 +300,9 @@
       "show": "Report problem",
       "header": "Log",
       "exit": "Exit log",
-      "level": "Log level",
+      "unit": "Unit for full log",
+      "unitNone": "No Unit selected",
+      "level": "Other events",
       "error": "Errors Only",
       "basic": "Basic Information",
       "full": "All Information",
