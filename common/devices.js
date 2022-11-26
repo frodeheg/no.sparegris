@@ -189,6 +189,7 @@ const DEVICE_CMD = {
     tempMax: 35,
     tempStep: 0.5
   },
+  'com.xiaomi-mi:plug.maeu01': DEFAULT_SWITCH,
   'me.nanoleaf:shapes': DEFAULT_SWITCH,
   'net.filllip-namron:4512744': {
     ...DEFAULT_HEATER,
@@ -226,6 +227,7 @@ const DEVICE_CMD = {
     default: false
   },
   'no.connecte:smart_socket': DEFAULT_SWITCH,
+  'no.connecte:puck_relay': DEFAULT_SWITCH,
   'no.easee:charger': {
     ...DEFAULT_CHARGER,
     onChargeStart: {

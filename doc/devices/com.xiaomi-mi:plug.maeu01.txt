@@ -1,0 +1,14 @@
++9:47:38.608: ----- ANALYZING DEVICE -----
++9:47:38.616: Report type: Device is not being turned on/off
++9:47:38.620: Device ID:   31d0382b-db1d-4cd5-b242-2eb5c334be7f
++9:47:38.663: Device name: Verktøybod kjeller (15)
++9:47:38.666: Driver Uri: homey:app:com.xiaomi-mi
++9:47:38.668: Driver Id: plug.maeu01
++9:47:38.671: Found onoff cap: onoff
++9:47:38.673: Found temp cap: false
++9:47:38.678: Device reliability: 1
++9:47:38.683: Capabilities: onoff,measure_power,meter_power
++9:47:38.686: Options for 'onoff': {"value":false,"lastUpdated":"2022-11-24T09:00:10.178Z","type":"boolean","getable":true,"setable":true,"title":"Slått på","desc":null,"units":null,"id":"onoff","options":{}}
++9:47:38.694: Options for 'measure_power': {"value":0,"lastUpdated":"2022-11-24T05:00:10.329Z","type":"number","getable":true,"setable":false,"title":"Effekt","desc":"Effekt i watt (W)","units":"W","decimals":2,"chartType":"stepLine","id":"measure_power","options":{"approximated":true}}
++9:47:38.697: Options for 'meter_power': {"value":7.03,"lastUpdated":"2022-11-24T05:46:43.288Z","type":"number","getable":true,"setable":false,"title":"Energi","desc":"Energiforbruk i kilowattimer (kWh)","units":"kWh","decimals":2,"chartType":"spline","id":"meter_power","options":{}}
++9:47:38.703: --- ANALYZING DEVICE DONE ---
