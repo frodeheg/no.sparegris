@@ -616,5 +616,8 @@
   },
   "0.19.8": {
     "en": "Devices with override set to \"controlled\" was not listed in the override section (issue #88)"
+  },
+  "0.19.9": {
+    "en": "Added Device logging + Added two devices to the supported list: com.xiaomi-mi:plug.maeu01 + no.connecte:puck_relay"
   }
 }
