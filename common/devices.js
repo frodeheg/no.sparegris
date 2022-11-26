@@ -222,8 +222,8 @@ const DEVICE_CMD = {
   },
   'no.almli.thermostat:VThermo': {
     ...DEFAULT_HEATER,
-    tempMin: 4,
-    tempMax: 35,
+    tempMin: undefined, // For vthermo this depends on what is connected
+    tempMax: undefined, // --- " ---
     default: false
   },
   'no.connecte:smart_socket': DEFAULT_SWITCH,

@@ -2255,7 +2255,9 @@ class PiggyBank extends Homey.App {
 
   getTempCapMin(device, deviceId) {
     try {
-      return d.DEVICE_CMD[this.__deviceList[deviceId].driverId].tempMin;
+      const definedCap = d.DEVICE_CMD[this.__deviceList[deviceId].driverId].tempMin;
+      if (definedCap === undefined) throw new Error(); // Fall back to the capability.min
+      return definedCap;
     } catch (err) {
       try {
         return device.capabilitiesObj[this.getTempSetCap(deviceId)].min;
@@ -2267,7 +2269,9 @@ class PiggyBank extends Homey.App {
 
   getTempCapMax(device, deviceId) {
     try {
-      return d.DEVICE_CMD[this.__deviceList[deviceId].driverId].tempMax;
+      const definedCap = d.DEVICE_CMD[this.__deviceList[deviceId].driverId].tempMax;
+      if (definedCap === undefined) throw new Error(); // Fall back to the capability.max
+      return definedCap;
     } catch (err) {
       try {
         return device.capabilitiesObj[this.getTempSetCap(deviceId)].max;
