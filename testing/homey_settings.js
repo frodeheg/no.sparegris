@@ -52,7 +52,7 @@ class FakeHomey {
     } else if (command.includes('/apiCommand?cmd=getFullState')) {
       response = { fakestate: true };
     } else if (command.includes('/getDevices?type')) {
-      response = [{name: 'tullings', value: 'asd-fde'}, {name: 'fertt', value: 'avv-bbb'}];
+      response = [{name: 'Nothing selected', value: ''}, {name: 'something', value: 'avv-bbb'}, {name: 'another thing', value: 'ffe-bbb'}];
     } else {
       // No return value expected
       // '/apiCommand?cmd=log'

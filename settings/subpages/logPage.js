@@ -231,7 +231,7 @@ function refreshDeviceUnitSelector(devices) {
  * Checker to check if logging is enabled
  */
 function isLoggingEnabled() {
-  return document.getElementById('logLevel').value !== 0 || document.getElementById('logUnit').value !== 0;
+  return (+document.getElementById('logLevel').value !== 0) || (document.getElementById('logUnit').value !== '');
 }
 
 /**
