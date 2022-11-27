@@ -123,7 +123,7 @@ class PiggyBank extends Homey.App {
         this.updateLog(`Error: ${err}`, c.LOG_ERROR);
       }
     }
-    if (this.logUnit === deviceId) this.updateLog(`attempt runDeviceCommands(${listRef}) for ${device.name}`, c.LOG_ALL);
+    if (this.logUnit === deviceId) this.updateLog(`finished runDeviceCommands(${listRef}) for ${device.name}`, c.LOG_ALL);
     return Promise.resolve(stateChanged);
   }
 
