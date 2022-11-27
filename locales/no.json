@@ -34,7 +34,19 @@
       "chargeThresholdHint": "En ny ladesyklus starter kun når ledig effekt overstiger terskelverdien satt her. Denne må være større enn minste ladestrøm for å unngå at laderen slår seg av igjen med en gang.",
       "minToggleTimeHint": "Denne verdien angir i sekunder hvor lenge det går mellom hver gang et signal sendes til laderen. Dersom responstiden til laderen overstiger denne verdien bør denne verdien økes tilsvarende.",
       "chargeRemainingHint": "Denne verdien viser hvor mye energi som vil bli tilbydt til laderen før appen slutter å lade. Denne strømmen vil fordeles over all gjenværende tid frem til slutten på ladesyklusen. Du kan ikke sette denne verdien her, den må settes fra flytkortet for 'Start ladesyklus'.",
-      "chargeEndHint": "Dette feltet viser når nåværende ladesyklus vil slutte. Du kan ikke sette denne verdien her, den må settes fra flytkortet for 'Start ladesyklus'."
+      "chargeEndHint": "Dette feltet viser når nåværende ladesyklus vil slutte. Du kan ikke sette denne verdien her, den må settes fra flytkortet for 'Start ladesyklus'.",
+      "override": "Overstyring",
+      "overrideHint": ["ADVARSEL: Disse overstyringene er bare midlertidig tilgjengelig frem til slutten av januar 2023 for å eksperimentere for å løse noen problemer med lading.<!--",
+          "--><p>Hvordan den vanlige ladingen vil oppføre seg når overstyringsmekanismen fjernes er avhengig av tilbakemeldingene dine. Alle tilbakemeldinger må meldes <a href='https://github.com/frodeheg/no.sparegris/discussions/97'>i denne github-diskusjonen</a></p><!--",
+          "--><p>Stoppstrømmen er det tilbydd strøm er satt til når det ikke er noen ladesyklus. (0A for 3-fase lading)</p><!--",
+          "--><p>Pausestrømmen er det tilbydd strøm er satt til når den ikke lades i løpet av en ladesyklus. (0A for 3-fase lading)</p><!--",
+          "--><p>Minste ladestrøm sørger for at du aldri lader med mindre strøm enn dette. (minst 11A for 3-fase lading)</p>"],
+      "overrideEnable": "Overstyring",
+      "overrideEnableNo": "Deaktivert",
+      "overrideEnableYes": "Aktivert",
+      "overrideStop": "Stoppstrøm",
+      "overridePause": "Pausestrøm",
+      "overrideMinCurrent": "Minste ladestrøm"
     },
     "menu": {
       "home": {

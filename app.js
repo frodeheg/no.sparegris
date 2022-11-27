@@ -398,7 +398,11 @@ class PiggyBank extends Homey.App {
       || !('minToggleTime' in chargerOptions)
       || !('chargeRemaining' in chargerOptions)
       || !('chargeCycleType' in chargerOptions)
-      || !('chargeEnd' in chargerOptions)) {
+      || !('chargeEnd' in chargerOptions)
+      || !('overrideEnable' in chargerOptions)
+      || !('overrideStop' in chargerOptions)
+      || !('overridePause' in chargerOptions)
+      || !('overrideMinCurrent' in chargerOptions)) {
       if (!chargerOptions) chargerOptions = {};
       if (!('chargeTarget' in chargerOptions)) chargerOptions.chargeTarget = c.CHARGE_TARGET_AUTO;
       if (!('chargeMin' in chargerOptions)) chargerOptions.chargeMin = 1500;
@@ -407,6 +411,10 @@ class PiggyBank extends Homey.App {
       if (!('chargeRemaining' in chargerOptions)) chargerOptions.chargeRemaining = 0;
       if (!('chargeCycleType' in chargerOptions)) chargerOptions.chargeCycleType = c.OFFER_HOURS;
       if (!('chargeEnd' in chargerOptions)) chargerOptions.chargeEnd = now;
+      if (!('overrideEnable' in chargerOptions)) chargerOptions.overrideEnable = 0;
+      if (!('overrideStop' in chargerOptions)) chargerOptions.overrideStop = 0;
+      if (!('overridePause' in chargerOptions)) chargerOptions.overridePause = 4;
+      if (!('overrideMinCurrent' in chargerOptions)) chargerOptions.overrideMinCurrent = 7;
       this.updateLog(`Resetting chargerOptions to ${JSON.stringify(chargerOptions)}`, c.LOG_DEBUG);
       this.homey.settings.set('chargerOptions', chargerOptions);
     }
@@ -1120,11 +1128,13 @@ class PiggyBank extends Homey.App {
 
     const chargerStatus = await device.capabilitiesObj[d.DEVICE_CMD[driverId].statusCap].value;
     const maxCurrent = +await device.capabilitiesObj[d.DEVICE_CMD[driverId].setCurrentCap].max;
-    const { pauseCurrent, minCurrent } = d.DEVICE_CMD[driverId];
+    const stopCurrent = +chargerOptions.overrideEnable ? +chargerOptions.overrideStop : 0;
+    const pauseCurrent = +chargerOptions.overrideEnable ? +chargerOptions.overridePause : d.DEVICE_CMD[driverId].pauseCurrent;
+    const minCurrent = +chargerOptions.overrideEnable ? +chargerOptions.overrideMinCurrent : d.DEVICE_CMD[driverId].minCurrent;
     const maxPower = +this.homey.settings.get('maxPower');
     const cannotCharge = d.DEVICE_CMD[driverId].statusUnavailable.includes(chargerStatus);
     const newOfferPower = Math.min(Math.max(powerUsed + +powerChange, +chargerOptions.chargeMin), maxPower);
-    const newOfferCurrent = (!withinChargingCycle) ? 0
+    const newOfferCurrent = (!withinChargingCycle) ? stopCurrent
       : (!withinChargingPlan || isEmergency || cannotCharge) ? pauseCurrent
         : (+powerUsed === 0) ? minCurrent
           : Math.floor(Math.min(Math.max(ampsOffered * (newOfferPower / +powerUsed), minCurrent), +maxCurrent));

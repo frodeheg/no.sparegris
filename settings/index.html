@@ -1140,6 +1140,39 @@
           </tr>
           <tr id="chargeEndHint" class="hint"><td colspan="2"><p data-i18n="settings.charge.chargeEndHint">charge.chargeEndHint</p></td></tr>
         </table>
+
+        <div id ="overrides">
+          <input id="collapsibleOverride" class="toggle" type="checkbox">
+          <label for="collapsibleOverride" class="lbl-toggle" data-i18n="settings.charge.override" style="color: whitesmoke;">charge.override</label>
+          <div class="collapsible-content">
+            <div class="content-inner">
+              <p data-i18n="settings.charge.overrideHint">charge.overrideHint</p>
+              <table class="settings_table">
+                <tr>
+                  <td class="settings_row_name"><label for="overrideEnable" data-i18n="settings.charge.overrideEnable">charge.overrideEnable</label>:</td>
+                  <td class="settings_row_input">
+                    <select id="overrideEnable" class="inputElem" onchange="displaySaveHint()">
+                      <option value="0" data-i18n="settings.charge.overrideEnableNo">Disabled</option>
+                      <option value="1" data-i18n="settings.charge.overrideEnableYes">Enabled</option>
+                    </select>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="settings_row_name"><label for="overrideStop" data-i18n="settings.charge.overrideStop">charge.overrideStop</label>:</td>
+                  <td class="settings_row_input"><input id="overrideStop" class="inputElem" type="number" min="0" max="40" value="0" onchange="displaySaveHint()"></td>
+                </tr>
+                <tr>
+                  <td class="settings_row_name"><label for="overridePause" data-i18n="settings.charge.overridePause">charge.overridePause</label>:</td>
+                  <td class="settings_row_input"><input id="overridePause" class="inputElem" type="number" min="0" max="40" value="4" onchange="displaySaveHint()"></td>
+                </tr>
+                <tr>
+                  <td class="settings_row_name"><label for="overrideMinCurrent" data-i18n="settings.charge.overrideMinCurrent">charge.overrideMinCurrent</label>:</td>
+                  <td class="settings_row_input"><input id="overrideMinCurrent" class="inputElem" type="number" min="0" max="40" value="7" onchange="displaySaveHint()"></td>
+                </tr>
+              </table>
+            </div>
+          </div>
+        </div>
       </fieldset>
 
       <canvas id="chargeSheduleChart" style="max-height:250px;min-height:250px;display:none"></canvas>
@@ -1842,6 +1875,10 @@
           document.getElementById('chargeRemainingUnit_kWh').style.display = (chargerOptions.chargeCycleType === OFFER_ENERGY) ? 'inline-block' : 'none';
           document.getElementById('chargeRemainingUnit_h').style.display = (chargerOptions.chargeCycleType === OFFER_HOURS) ? 'inline-block' : 'none';
           document.getElementById('chargeEnd').value = toTimeString(new Date(chargerOptions.chargeEnd));
+          document.getElementById('overrideEnable').value = +chargerOptions.overrideEnable;
+          document.getElementById('overrideStop').value = +chargerOptions.overrideStop;
+          document.getElementById('overridePause').value = +chargerOptions.overridePause;
+          document.getElementById('overrideMinCurrent').value = +chargerOptions.overrideMinCurrent;
           document.getElementById("energyFlowRateText").innerHTML = energyFlowRateText.replace("${interval}", Math.round(appConfigProgress.timeSinceEnergyMeter / 60));
           document.getElementById("spookeyText").innerHTML = spookeyText.replace("${times}", appConfigProgress.numSpookeyChanges);
           checkPriceMode(document.getElementById("priceMode")); // not called automatically when programatically changed
@@ -2242,6 +2279,10 @@
               chargerOptions.minToggleTime = +document.getElementById('minToggleTime').value;
               // chargerOptions.chargeRemaining = +document.getElementById('chargeRemaining').value; // Ignore as it is read only
               // chargerOptions.chargeEnd = +document.getElementById('chargeEnd').value; // Ignore as it is read only (and converted to localtime)
+              chargerOptions.overrideEnable = +document.getElementById('overrideEnable').value;
+              chargerOptions.overrideStop = +document.getElementById('overrideStop').value;
+              chargerOptions.overridePause = +document.getElementById('overridePause').value;
+              chargerOptions.overrideMinCurrent = +document.getElementById('overrideMinCurrent').value;
               let opModeValue = (appEnabledElement.value === "1") ? operatingModeElement.value : 0
               Homey.set("futurePriceOptions", futurePriceOptions, errFunc);
               Homey.set('chargerOptions', chargerOptions, errFunc);
