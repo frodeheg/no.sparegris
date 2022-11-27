@@ -625,5 +625,8 @@
   },
   "0.19.11": {
     "en": "Vthermo devices will now fetch their min/max from the device capability"
+  },
+  "0.19.12": {
+    "en": "New Override features for charging (tickets #92 and #94)"
   }
 }
