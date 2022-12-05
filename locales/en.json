@@ -396,5 +396,10 @@
   "units": {
     "kWh": "kWh",
     "hours": "h"
+  },
+  "graph": {
+    "consumption": "Consumption",
+    "prices": "Prices",
+    "savings": "Savings"
   }
 }

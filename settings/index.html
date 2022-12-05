@@ -21,6 +21,7 @@
     <script type="text/javascript" src="./gridcost.js" data-origin="settings"></script>
     <script type="text/javascript" src="./homeytime.js" data-origin="settings"></script>
     <script type="text/javascript" src="subpages/logPage.js" data-origin="settings/subpages"></script>
+    <script type="text/javascript" src="subpages/graphs.js" data-origin="settings/subpages"></script>
     <script type="text/javascript" src="subpages/advanced.js" data-origin="settings/subpages"></script>
     <link href="style.css" rel="stylesheet" type="text/css">
     <link href="trashcan.css" rel="stylesheet" type="text/css">
@@ -117,7 +118,7 @@
 
       var needModeRefresh = true;
       var numErrorDevices = 0;
-      var graphData = {};
+      var noPrices = true;
 
       const KEEP = -1;
       const ALWAYS_OFF = 0;
@@ -827,7 +828,7 @@
         haveTasks |= changeTaskVisibility('taskNoPriceAPIDevice', !appIsDisabled && priceMode == PRICE_MODE_INTERNAL && priceKind == PRICE_KIND_EXTERNAL && appConfigProgress.ApiStatus == PRICE_API_NO_DEVICE);
         haveTasks |= changeTaskVisibility('taskNoPriceAPIData', !appIsDisabled && priceMode == PRICE_MODE_INTERNAL && priceKind == PRICE_KIND_EXTERNAL && appConfigProgress.ApiStatus == PRICE_API_NO_DATA);
         haveTasks |= changeTaskVisibility('taskNoPriceEnabled', !appIsDisabled && priceMode == PRICE_MODE_DISABLED);
-        haveTasks |= changeTaskVisibility('taskNoPrices', !appIsDisabled && priceMode == PRICE_MODE_INTERNAL && priceKind == PRICE_KIND_SPOT && Array.isArray(graphData.elPrices) && (graphData.elPrices.length == 0));
+        haveTasks |= changeTaskVisibility('taskNoPrices', !appIsDisabled && priceMode == PRICE_MODE_INTERNAL && priceKind == PRICE_KIND_SPOT && noPrices);
         haveTasks |= changeTaskVisibility('taskDisableLogging', !appIsDisabled && isLoggingEnabled());
         haveTasks |= changeTaskVisibility('taskExperimental', !appIsDisabled && experimentalEnabled);
         haveTasks |= changeTaskVisibility('taskSpookey', !appIsDisabled && (+appConfigProgress.numSpookeyChanges > 0));
@@ -951,6 +952,29 @@
           <input type="button" value="+" onclick="addMaxPowerElement();">
         </fieldset>
       </fieldset>
+
+      <table width="100%" class="tab">
+        <tr>
+          <td class="subtablinks" id="consumptionButton">
+            <span data-i18n="graph.consumption">graph.consumption</span>
+          </td>
+          <td class="subtablinks" id="pricesButton">
+            <span data-i18n="graph.prices">graph.prices</span>
+          </td>
+          <td class="subtablinks" id="savingsButton">
+            <span data-i18n="graph.savings">graph.savings</span>
+          </td>
+        </tr>
+      </table>
+
+      <div style="text-align:center; padding: 2px;">
+        <button id="ltButton">&lt;</button>
+        <button id="dayButton">Day</button>
+        <button id="monthButton">Month</button>
+        <button id="yearButton">Year</button>
+        <button id="gtButton">&gt;</button>
+      </div>
+
 
       <canvas id="tariffGuideChart" style="max-height:250px;min-height:250px;display:none"></canvas>
 
@@ -1427,8 +1451,10 @@
               <span data-i18n="settings.pricetab.extreme">pricetab.extreme</span>
             </td>
           </tr>
+          <tr style="background-color:#a0d0d6;">
+            <td colspan="5"><div id="priceActionList">List of devices should have been generated here, if you see this text it is a bug...</div></td>
+          </tr>
         </table>
-        <div id="priceActionList">List of devices should have been generated here, if you see this text it is a bug...</div>
       </div>
     </div>
     <!-- Price page end -->
@@ -1518,6 +1544,7 @@
         </tr>
       </table>
   
+      <div style="background-color:#a0d0d6;">
       <fieldset>
         <legend><div class="blockHeader" data-i18n="settings.mode.priorities">mode.priorities</div> 
           <div class="hintButton" onclick="toggle(this,'hint6');toggle(this,'hint7');toggle(this,'hint8');return false;">i</div>
@@ -1541,11 +1568,13 @@
           </table>
         </div>
         <span id="priorityList">List of devices should have been generated here, if you see this text it is a bug...</span>
-      </fieldset>
+      </fieldset></div>
     </div>
     <!-- Mode specific page end -->
 
-    <button id="save" class="right" data-i18n="settings.saveButton">.saveButton</button>
+    <div class="right" style="display:none;" id="saveOuter">
+    <button id="save" class="homey-button-primary-full" data-i18n="settings.saveButton">.saveButton</button>
+    </div>
 
     <script type="text/javascript">
 
@@ -1573,142 +1602,12 @@
       var currenciesLoaded = false;
       var onHomeyReadyCompleted = false;
 
-      function updateGraph(stats) {
-        // Calculate values
-        let maxDays = getMax3(stats.dailyMax);
-        let tariffGuide = Math.round(averageOfElements(stats.dailyMax, maxDays));
-        let tariffAbove = getGridAbove(tariffGuide);
-        let tariffBelow = getGridBelow(tariffGuide);
+      function updateCarSheduleGraph(chargeShedule, elPrices, currentHour) {
         // Generate data
-        let dataDays = Array.from(Array(stats.daysInMonth+1).keys()).slice(1);
-        let dataTariffAbove = Array(stats.daysInMonth).fill(tariffAbove);
-        let dataTariffBelow = Array(stats.daysInMonth).fill(tariffBelow);
-        let dataTariffGuide = Array(stats.daysInMonth).fill(tariffGuide);
-        let colorBars = Array(stats.daysInMonth).fill(`pink`);
-        let colorBarLines = Array(stats.daysInMonth).fill('black');
-        for (let i = 0; i < stats.daysInMonth; i++) {
-          let barCol = '80,160,80';
-          let barAlpha = 1;
-          let lineCol = '0,0,0';
-          let lineAlpha = 1;
-          if (maxDays.includes(i)) {
-            lineCol = '0,0,128';
-            barCol = '80,210,80';
-          }
-          if (!stats.dailyMaxGood[i]) {
-            barCol = '170,80,80';
-          }
-          if (i === stats.dailyMax.length-1) {
-            barAlpha = 0.3;
-            lineAlpha = 0.3;
-          }
-          colorBars[i] = `rgb(${barCol},${barAlpha})`;
-          colorBarLines[i] = `rgb(${lineCol},${lineAlpha})`;
-        }
-
-        new Chart("tariffGuideChart", {
-          data: {
-            labels: dataDays,
-            datasets: [{
-              type: 'line',
-              label: 'Trinn 3',
-              borderColor: "black",
-              pointBackgroundColor: "black",
-              data: dataTariffAbove,
-              borderWidth: 1,
-              pointRadius: 0,
-            }, {
-              type: 'line',
-              label: 'Trinn 2',
-              borderColor: "black",
-              pointBackgroundColor: "black",
-              data: dataTariffBelow,
-              borderWidth: 1,
-              pointRadius: 0,
-            }, {
-              type: 'line',
-              label: graphTariff,
-              borderDash: [10, 5],
-              borderColor: "gray",
-              pointBackgroundColor: "gray",
-              borderWidth: 1.5,
-              pointRadius: 0,
-              data: dataTariffGuide,
-            }, {
-              type: "bar",
-              label: graphHighest,
-              backgroundColor: colorBars,
-              borderColor: colorBarLines,
-              borderWidth: 1,
-              data: stats.dailyMax.map((x)=>Math.round(x))
-            }]
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-              y: {
-                title: {
-                  display: true,
-                  text: graphYAxis
-                },
-                ticks: {
-                  callback: function(value, index, ticks) {
-                    return `${Math.round(value/100)/10}`;
-                  }
-                }
-              }
-            },
-            interaction: {
-              intersect: false,
-              mode: 'index'
-            },
-            plugins: {
-              tooltip: {
-                callbacks: {
-                  title: function(context) {
-                    return `${monthText[stats.month]} ${context[0].label}`;
-                  },
-                  beforeFooter: function(context) {
-                    if (!stats.dailyMax[context[0].dataIndex]) return graphMissing;
-                    if (stats.dailyMaxGood[context[0].dataIndex] !== true) return graphInaccurate;
-                    if (context[0].dataIndex === stats.dailyMax.length-1) return graphIncomplete;
-                  }
-                },
-                filter: function(context) {
-                  if (context.dataset.label.startsWith('Trinn')) return false;
-                  return true;
-                }
-              },
-              legend: {
-                display: false,
-                position: 'right',
-                labels: {
-                  boxWidth: 10,
-                  font: {
-                    size: 9
-                  }
-                }
-              },
-              title: {
-                display: true,
-                text: graphTitle,
-                font: {
-                  size: 15
-                }
-              }
-            }
-          }
-        });
-        document.getElementById("tariffGuideChart").style.display='block';
-      }
-
-      function updateCarSheduleGraph(stats) {
-        // Generate data
-        let dataHours = Array.from(Array(24).keys()).map((x)=>`${(x+stats.currentHour)%24}:00`);
-        let dataPrices = Array.from(Array(24).keys()).map((x)=>stats.elPrices[x+stats.currentHour] || 0);
+        let dataHours = Array.from(Array(24).keys()).map((x)=>`${(x+currentHour)%24}:00`);
+        let dataPrices = Array.from(Array(24).keys()).map((x)=>elPrices[x+currentHour] || 0);
         let maxPrice = dataPrices.reduce((a,b) => { return !a ? b : !b ? a : a > b ? a : b }) || 1;
-        let dataPlan = Array.from(Array(24).keys()).map((x)=>stats.chargeShedule[x] ? maxPrice : 0 );
+        let dataPlan = Array.from(Array(24).keys()).map((x)=>chargeShedule[x] ? maxPrice : 0 );
         let colorBars = Array(24).fill(`skyblue`);
         let colorBarLines = Array(24).fill('black');
 
@@ -1847,7 +1746,7 @@
           updateRegions(futurePriceOptions.priceCountry, futurePriceOptions.priceRegion);
           loadElement.style.display = "none";
           document.getElementById("main_menu").style.display = "table";
-          document.getElementById("save").style.display = "inline-block";
+          document.getElementById("saveOuter").style.display = "inline-block";
           document.getElementById("errorMargin").value = currentErrorMargin;
           document.getElementById("freeThreshold").value = currentfreeThreshold;
           document.getElementById("safetyPower").value = currentSafetyPower;
@@ -2035,11 +1934,12 @@
           });
 
           // Aquire graphs (must be after setGridCost)
-          Homey.api('GET', '/getStats', null, function (err, data) {
+          const instantly = new Date().getTime();
+          Homey.api('GET', `/getStats?type=[chargePlan,maxPower]&time=${instantly}&granularity=${GRANULARITY.DAY}`, null, function (err, res) {
             if (err) return alertUser(Homey, err);
-            updateGraph(data);
-            updateCarSheduleGraph(data);
-            graphData = data;
+            InitGraph(Homey, res);
+            updateCarSheduleGraph(res.data.chargeShedule || [], res.data.elPrices || [], res.data.currentHour);
+            noPrices = !Array.isArray(res.data.elPrices) || (res.data.elPrices.length == 0)
             graphLoaded = true;
           });
 
@@ -2238,6 +2138,7 @@
             rememberToSaveElement.style.display = 'none';
             Homey.api('GET', `/apiCommand?cmd=log&text=${err.message}&loglevel=0`, null, function (err2, result) {});
             alertUser(Homey, err.message);
+            saveElement.classList.remove('is-loading');
           }
         }
         document.getElementById("getState").addEventListener("click", e => {
@@ -2247,6 +2148,7 @@
           });
         });
         saveElement.addEventListener("click", function (e) {
+          saveElement.classList.add('is-loading');
           Homey.alert(Homey.__('warnings.savingWait'));
           try {
             // Make sure all settings are up to date:
@@ -2306,9 +2208,19 @@
             }
           }
           catch (err) {
+            saveElement.classList.remove('is-loading');
             Homey.alert(Homey.__(`warnings.savingFailed: ${err}`));
           }
         });
+
+        document.getElementById("consumptionButton").addEventListener("click", e => { onShowConsumptionGraph(Homey) });
+        document.getElementById("pricesButton").addEventListener("click", e => { onShowPricesGraph(Homey) });
+        document.getElementById("savingsButton").addEventListener("click", e => { onShowSavingsGraph(Homey) });
+        document.getElementById("dayButton").addEventListener("click", e => { onShowDayTimespan(Homey) });
+        document.getElementById("monthButton").addEventListener("click", e => { onShowMonthTimespan(Homey) });
+        document.getElementById("yearButton").addEventListener("click", e => { onShowYearTimespan(Homey) });
+        document.getElementById("ltButton").addEventListener("click", e => { onBackClick(Homey) });
+        document.getElementById("gtButton").addEventListener("click", e => { onForwardClick(Homey) });
 
         setTimeout(function () {
           onHomeyReadyCompleted = true;
@@ -2445,7 +2357,7 @@
           const numRows = (modeList.length === 3) ? 1 : 2;
           let newModeSelectorText = '';
           for (let row=0; row < numRows; row++) {
-            newModeSelectorText += '<tr>';
+            newModeSelectorText += `<tr${row==1?' style="background-color:#a0d0d6;"':''}>`;
             for (let col=0; col < 4; col++) {
               let modeId = row*4 + col + 1;
               let active = modeId <= allModeNames.length;

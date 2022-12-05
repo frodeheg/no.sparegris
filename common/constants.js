@@ -1,5 +1,13 @@
 'use strict';
 
+// Granularity for archive
+const GRANULARITY = {
+  YEAR: 0,
+  MONTH: 1,
+  DAY: 2,
+  HOUR: 3,
+};
+
 // Overrides
 const OVERRIDE = {
   NONE: 0,
@@ -132,6 +140,7 @@ const ENTSOE_BIDDING_ZONES = {
 };
 
 module.exports = {
+  GRANULARITY,
   OVERRIDE,
   MODE_DISABLED,
   MODE_NORMAL,

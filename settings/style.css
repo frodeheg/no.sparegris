@@ -70,16 +70,24 @@ p {
 /* Style the tab */
 .tab {
     overflow: hidden;
-    border: 2px solid #ccc;
-    background-color: #f1f1f1;
+    padding-bottom: 0em;
+    border-collapse: separate;
+    border-spacing: 0em;
   }
   
   /* Style the buttons that are used to open the tab content */
   .subtablinks,
   .tablinks {
-    background-color: #f1f1f1;
+    background-color: rgb(80,99,107);
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    text-align: center;
+    outline: solid 1px rgb(40,59,57);
+    outline-offset: -1px;
+    color: #EEE;
+    font-weight: bold;
     border: none;
-    outline: none;
+    /* outline: none;*/
     cursor: pointer;
     padding: 0px 10px;
     line-height: 30px;
@@ -93,12 +101,12 @@ p {
   .subtablinks:hover,
   .tablinks:hover {
     font-weight: bold;
-    background-color: #ddd;
+    background-color: rgb(70, 122, 118);
   }
 
   /* Create an active/current tablink class */
   .tab td.active {
-    background-color: #ccc;
+    background-color: rgb(70, 122, 118);
     font-weight: bold;
     font-size: 12px !important;
 }
@@ -204,10 +212,6 @@ p {
 #mainFuse,
 #freeThreshold {
   width:90px;
-}
-
-#save {
-  display: none;
 }
 
 #rememberToSave {
@@ -354,7 +358,7 @@ input[type='checkbox'] { display: none; }
 .toggle:checked + .lbl-toggle { border-bottom-right-radius: 0; border-bottom-left-radius: 0; }
 
 .collapsible-content
-.content-inner { background: rgba(0, 105, 255, .2); border-bottom: 1px solid rgba(0, 105, 255, .45); border-bottom-left-radius: 7px; border-bottom-right-radius: 7px; padding: .5rem 1rem; }
+.content-inner { background: #a0d0d6; border-bottom: 1px solid #90c0c6; border-bottom-left-radius: 7px; border-bottom-right-radius: 7px; padding: .5rem 1rem; }
 
 .collapsible-content p { margin-bottom: 0; }
 

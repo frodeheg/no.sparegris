@@ -55,6 +55,9 @@ module.exports = {
   },
 
   async getStats({ homey, query }) {
+    if (query) {
+      return homey.app.getStats(query.type, query.time, query.granularity);
+    }
     return homey.app.getStats();
   }
 };

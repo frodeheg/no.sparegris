@@ -6,6 +6,9 @@
  * @returns an array of indices to the 3 largest elements
  */
 function getMax3(ar) {
+  if (ar === undefined) {
+    return undefined;
+  }
   const max = [];
   for (let i = 0; i < ar.length; i++) {
     if (Number.isNaN(+ar[i]) || ar[i] === null) {

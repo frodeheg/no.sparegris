@@ -29,10 +29,11 @@ const c = require('./common/constants');
 const d = require('./common/devices');
 const { addToArchive, cleanArchive, getArchive } = require('./common/archive');
 const {
-  toLocalTime, timeDiff, timeSinceLastHour, timeToNextHour, roundToNearestHour, roundToStartOfDay, isSameHour
+  daysInMonth, toLocalTime, timeDiff, timeSinceLastHour, timeToNextHour, roundToNearestHour, roundToStartOfDay, isSameHour, hoursInDay, fromLocalTime
 } = require('./common/homeytime');
 const { isNumber, toNumber } = require('./common/tools');
 const prices = require('./common/prices');
+const { close } = require('node:fs');
 
 const WAIT_TIME_TO_POWER_ON_AFTER_POWEROFF_MIN = 1 * 60 * 1000; // Wait 1 minute
 const WAIT_TIME_TO_POWER_ON_AFTER_POWEROFF_MAX = 5 * 60 * 1000; // Wait 5 minutes
@@ -2679,22 +2680,108 @@ class PiggyBank extends Homey.App {
 
   /**
    * Set up arrays for graph generation and return
+   * @param type = type of statistics to return
+   * @param index = index of statistics to return
    * @returns Statistics to generate graphs
    */
-  async getStats() {
-    const dailyMax = this.homey.settings.get('stats_daily_max');
-    const dailyMaxGood = this.homey.settings.get('stats_daily_max_ok');
+  async getStats(type = 'maxPower', time = null, granularity = c.GRANULARITY.DAY) {
+    if (type[0] === '[' && type.slice(-1) === ']') {
+      type = type.slice(1, -1).split(',');
+    } else {
+      type = [type];
+    }
+
+    // const dailyMax = this.homey.settings.get('stats_daily_max');
+    // const dailyMaxGood = this.homey.settings.get('stats_daily_max_ok');
+
     const priceMode = +this.homey.settings.get('priceMode');
-    const statsTimeLocal = toLocalTime(new Date(this.homey.settings.get('stats_daily_max_last_update_time')), this.homey);
-    const daysInStatsMonth = new Date(statsTimeLocal.getFullYear(), statsTimeLocal.getMonth() + 1, 0).getDate();
+    let statsTimeUTC = new Date(this.homey.settings.get('stats_daily_max_last_update_time'));
+    let statsTimeLocal = (time === null) ? toLocalTime(statsTimeUTC, this.homey) : new Date(+time);
+    const archive = await getArchive(this.homey);
+    let period;
+    let timeId;
+    let data = {};
+    let dataGood;
+    switch (granularity) {
+      default:
+      case c.GRANULARITY.DAY:
+        period = 'daily';
+        timeId = `${statsTimeLocal.getFullYear()}-${String(statsTimeLocal.getMonth() + 1).padStart(2, '0')}`;
+        break;
+      case c.GRANULARITY.MONTH:
+        period = 'monthly';
+        timeId = `${statsTimeLocal.getFullYear()}`;
+        break;
+      case c.GRANULARITY.YEAR:
+        period = 'yearly';
+        timeId = `${statsTimeLocal.getFullYear()}`;
+        break;
+      case c.GRANULARITY.HOUR:
+        period = 'hourly';
+        timeId = `${statsTimeLocal.getFullYear()}-${String(statsTimeLocal.getMonth() + 1).padStart(2, '0')}-${String(statsTimeLocal.getDate()).padStart(2, '0')}`;
+        break;
+    }
+    let searchData;
+    // this.log(archive);
+    const searchDataGood = archive.dataOk[period];
+    dataGood = searchDataGood[timeId];
+    for (const partIdx in type) {
+      const part = type[partIdx];
+      switch (part) {
+        case 'chargePlan':
+          data['chargeShedule'] = this.__charge_plan;
+          data['elPrices'] = this.__current_prices;
+          data['currentHour'] = (priceMode === c.PRICE_MODE_DISABLED) ? toLocalTime(new Date(), this.homey).getHours() : this.__current_price_index;
+          break;
+        case 'maxPower':
+        case 'powUsage':
+        case 'moneySavedTariff':
+        case 'moneySavedUsage':
+        case 'price':
+        case 'pricePoints':
+        case 'overShootAvoided':
+          this.log(`trying: ${part} ${period} ${timeId}`);
+          try {
+            searchData = archive[part][period];
+            data[part] = searchData[timeId];
+            if (searchData === undefined) throw new Error('No searchData');
+            if (data[part] === undefined) throw new Error('No data');
+          } catch (err) {
+            if (searchData) {
+              let closestTime;
+              let closestItem;
+              let closestTimeDiff = Infinity;
+              for (const timestamp in searchData) {
+                const timeStampDate = new Date(timestamp);
+                if (Math.abs(timeStampDate - statsTimeLocal) < closestTimeDiff) {
+                  closestItem = timestamp;
+                  closestTimeDiff = Math.abs(timeStampDate - statsTimeLocal);
+                  closestTime = timeStampDate;
+                }
+              }
+              data[part] = searchData[closestItem];
+              dataGood = searchDataGood[closestItem];
+              statsTimeLocal = closestTime;
+              statsTimeUTC = fromLocalTime(statsTimeUTC, this.homey);
+            } else {
+              data = { error: err };
+              dataGood = false;
+            }
+          }
+          break;
+        default:
+      }
+    }
+
     const stats = {
-      daysInMonth: daysInStatsMonth,
-      month: statsTimeLocal.getMonth(),
-      dailyMax: Array.isArray(dailyMax) ? dailyMax : [],
-      dailyMaxGood: Array.isArray(dailyMaxGood) ? dailyMaxGood : [],
-      chargeShedule: this.__charge_plan,
-      elPrices: this.__current_prices,
-      currentHour: (priceMode === c.PRICE_MODE_DISABLED) ? toLocalTime(new Date(), this.homey).getHours() : this.__current_price_index
+      daysInMonth: daysInMonth(statsTimeUTC, this.homey),
+      hoursInDay: hoursInDay(statsTimeUTC, this.homey),
+      localTime: statsTimeLocal.getTime(),
+      localDay: statsTimeLocal.getDate(),
+      localMonth: statsTimeLocal.getMonth(),
+      localYear: statsTimeLocal.getFullYear(),
+      data,
+      dataGood
     };
     return stats;
   }

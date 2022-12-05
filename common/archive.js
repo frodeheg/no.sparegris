@@ -34,7 +34,7 @@ const { toLocalTime, roundToNearestHour, roundToStartOfDay } = require('./homeyt
  *     - Single value for period "yearly"
  *     - Array going from 0 to 11, one value for every month for period "monthly"
  *     - Array going from 0 to monthDays-1, one value for every day in the month for period "daily"
- *     - Array going from 0 to 23, one value for every hour for period "hourly"
+ *     - Array going from 0 to dayHours-1, one value for every hour for period "hourly"
  */
 
 const ARCHIVE_EXPIRE_TIME_DAILY = 2; // In past months to keep
@@ -90,7 +90,7 @@ function setDataMacro(archive, dataId, period, time, idx, value) {
     case SCHEMA.NONE:
       return;
     case SCHEMA.COUNT:
-      setValue = oldValueUndef ? [0,0] : oldValue;
+      setValue = oldValueUndef ? [0, 0] : oldValue;
       if (setValue.includes(value)) {
         setValue[value] += 1;
       } else {

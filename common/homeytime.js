@@ -99,6 +99,26 @@ function isSameHour(time1, time2) {
     && (time1.getHours() === time2.getHours());
 }
 
+/**
+ * Returns how many hours it is in a day (local time)
+ * (goes from 23-25 due to daylight savings)
+ * @param time UTC time
+ */
+function hoursInDay(timeUTC, homey) {
+  const startOfDayUTC = roundToStartOfDay(timeUTC, homey);
+  const startOfNextDayUTC = new Date(startOfDayUTC.getFullYear(), startOfDayUTC.getMonth(), startOfDayUTC.getDate() + 1, startOfDayUTC.getHours(), startOfDayUTC.getMinutes());
+  return (startOfNextDayUTC - startOfDayUTC) / (60 * 60 * 1000);
+}
+
+/**
+ * Returns how many days it is in a month (local time)
+ * @param time UTC time
+ */
+function daysInMonth(timeUTC, homey) {
+  const localTime = toLocalTime(timeUTC, homey);
+  return new Date(localTime.getFullYear(), localTime.getMonth() + 1, 0).getDate();
+}
+
 module.exports = {
   toLocalTime,
   fromLocalTime,
@@ -109,4 +129,6 @@ module.exports = {
   roundToNearestHour,
   roundToStartOfDay,
   isSameHour,
+  hoursInDay,
+  daysInMonth,
 };
