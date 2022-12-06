@@ -210,6 +210,8 @@ p {
 #safetyPower,
 #errorMargin,
 #mainFuse,
+#expireDaily,
+#expireHourly,
 #freeThreshold {
   width:90px;
 }
