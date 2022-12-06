@@ -419,6 +419,10 @@ class PiggyBank extends Homey.App {
       this.updateLog(`Resetting chargerOptions to ${JSON.stringify(chargerOptions)}`, c.LOG_DEBUG);
       this.homey.settings.set('chargerOptions', chargerOptions);
     }
+    const expireDaily = this.homey.settings.get('expireDaily');
+    if (!expireDaily) this.homey.settings.set('expireDaily', 31);
+    const expireHourly = this.homey.settings.get('expireHourly');
+    if (!expireHourly) this.homey.settings.set('expireHourly', 7);
 
     // Initialize current state
     this.__hasAC = false;

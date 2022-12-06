@@ -1102,6 +1102,24 @@
           </tr>
         </table>
       </fieldset>
+      <fieldset>
+        <legend data-i18n="settings.archive.settings">archive.settings</legend>
+        <table class="settings_table">
+          <tr>
+            <td class="settings_row_name"><label for="expireDaily" data-i18n="settings.archive.expireDaily">archive.expireDaily</label>:</td>
+            <td class="settings_row_input"><input id="expireDaily" type="number" min="31" max="150" value="62" onchange="displaySaveHint()"> 
+              <div class="hintButton" onclick="toggle(this,'expireHint');return false;">i</div>
+            </td>
+          </tr>
+          <tr>
+            <td class="settings_row_name"><label for="expireHourly" data-i18n="settings.archive.expireHourly">archive.expireHourly</label>:</td>
+            <td class="settings_row_input"><input id="expireHourly" type="number" min="1" max="31" value="7" onchange="displaySaveHint()"> 
+              <div class="hintButton" onclick="toggle(this,'expireHint');return false;">i</div>
+            </td>
+          </tr>
+        </table>
+        <p id="expireHint" class="hint" data-i18n="settings.archive.expireHint">archive.expireHint</p>
+      </fieldset>
     </div>
 
     <!-- Advanced page: Car Chargers -->
@@ -1583,6 +1601,8 @@
       var errorMarginLoaded = false;
       var controlTempLoaded = false;
       var freeThresholdLoaded = false;
+      var expireDailyLoaded = false;
+      var expireHourlyLoaded = false;
       var safetyPowerLoaded = false;
       var maxPowerLoaded = false;
       var deviceListLoaded = false;
@@ -1698,6 +1718,8 @@
           `errorMarginLoaded: ${errorMarginLoaded}<br>` +
           `controlTempLoaded: ${controlTempLoaded}<br>` +
           `freeThresholdLoaded: ${freeThresholdLoaded}<br>` +
+          `expireDailyLoaded: ${expireDailyLoaded}<br>` +
+          `expireHourlyLoaded: ${expireHourlyLoaded}<br>` +
           `safetyPowerLoaded: ${safetyPowerLoaded}<br>` +
           `priceModeLoaded: ${priceModeLoaded}<br>` +
           `pricePointLoaded: ${pricePointLoaded}<br>` +
@@ -1720,6 +1742,8 @@
           && errorMarginLoaded
           && controlTempLoaded
           && freeThresholdLoaded
+          && expireDailyLoaded
+          && expireHourlyLoaded
           && safetyPowerLoaded
           && priceModeLoaded
           && pricePointLoaded
@@ -2105,6 +2129,18 @@
           freeThresholdLoaded = true;
           checkLoadingDone();
         });
+        Homey.get("expireDaily", function (err, expiretime) {
+          if (err) return Homey.alert(err);
+          document.getElementById("expireDaily").value = expiretime;
+          expireDailyLoaded = true;
+          checkLoadingDone();
+        });
+        Homey.get("expireHourly", function (err, expiretime) {
+          if (err) return Homey.alert(err);
+          document.getElementById("expireHourly").value = expiretime;
+          expireHourlyLoaded = true;
+          checkLoadingDone();
+        });
         Homey.get("safetyPower", function (err, safetyPower) {
           if (err) return Homey.alert(err);
           if (safetyPower !== null) {
@@ -2201,6 +2237,8 @@
               Homey.set("errorMargin", errorMarginElement.value, errFunc);
               Homey.set("controlTemp", controlTempElement.value, errFunc);
               Homey.set("freeThreshold",freeThresholdElement.value, errFunc);
+              Homey.set("expireDaily",document.getElementById("expireDaily").value, errFunc);
+              Homey.set("expireHourly",document.getElementById("expireHourly").value, errFunc);
               Homey.set("safetyPower", safetyPowerElement.value, errFunc);
               Homey.set("mainFuse", mainFuseElement.value, errFunc);
               Homey.set("settingsSaved", "", errFunc); // On settings is only called if the settings actually changed

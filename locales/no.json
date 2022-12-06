@@ -147,6 +147,12 @@
       "gridCost": "Kostnad per mnd.",
       "gridLimitHint": "Dersom du legger inn kostnad per kapasitetsledd fra din nettleverandør vil appen regne ut hvor mye du sparer over tid."
     },
+    "archive": {
+      "settings": "Arkiv",
+      "expireDaily": "Foreldelsestid daglig statistikk",
+      "expireHourly": "Foreldelsestid timestatistikk",
+      "expireHint": "Antall dager å beholde statistikken med den angitte oppløsningen. Statistikk for månedlig og årlig oppløsning beholdes for evig."
+    },
     "deviceinfo": {
       "header": "Rapportering av enheter",
       "filter": "Rapport",

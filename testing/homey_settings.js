@@ -80,6 +80,12 @@ class FakeHomey {
     const err = undefined;
     let response;
     switch (settingName) {
+      case 'expireDaily':
+        response = 31;
+        break;
+      case 'expireHourly':
+        response = 7;
+        break;
       case 'futurePriceOptions':
         response = {
           minCheapTime: 4,

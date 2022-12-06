@@ -147,6 +147,12 @@
       "gridCost": "Monthly cost",
       "gridLimitHint": "If you configure the cost per capacity step according to your grid provider, then your montly savings will be correctly calculated."
     },
+    "archive": {
+      "settings": "Archive",
+      "expireDaily": "Expire time Daily stats",
+      "expireHourly": "Expire time Hourly stats",
+      "expireHint": "Number of days to keep statistics with the given granularity. For Monthly and Yearly granularity the statistics are kept forever."
+    },
     "deviceinfo": {
       "header": "Device reporting",
       "filter": "Report",
