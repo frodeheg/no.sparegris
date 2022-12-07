@@ -2706,7 +2706,7 @@ class PiggyBank extends Homey.App {
     let timeId;
     let data = {};
     let dataGood;
-    switch (granularity) {
+    switch (+granularity) {
       default:
       case c.GRANULARITY.DAY:
         period = 'daily';
@@ -2744,7 +2744,7 @@ class PiggyBank extends Homey.App {
         case 'price':
         case 'pricePoints':
         case 'overShootAvoided':
-          this.log(`trying: ${part} ${period} ${timeId}`);
+          this.log(`trying: ${part} ${period} ${timeId} granularity: ${granularity}`);
           try {
             searchData = archive[part][period];
             data[part] = searchData[timeId];

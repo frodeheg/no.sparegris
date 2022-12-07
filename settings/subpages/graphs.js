@@ -91,7 +91,7 @@ function generateHourlyMaxData(stats) {
   }];
 }
 
-function generateHourlyMaxOptions(stats) {
+function generateHourlyMaxOptions(stats, graphTitle) {
   const dataset = stats.data.maxPower || [];
   const datasetOk = stats.dataGood || [];
   return {
@@ -153,7 +153,7 @@ function generateHourlyMaxOptions(stats) {
   };
 }
 
-function generatePriceData() {
+function generatePriceData(stats) {
   // Calculate values
   const dataset = stats.data.price || [];
   /*const datasetOk = stats.dataGood || [];
@@ -191,7 +191,7 @@ function generatePriceData() {
     label: 'Price',
     borderColor: 'black',
     pointBackgroundColor: 'black',
-    data: dataset.map(x => Math.round(x)),
+    data: dataset.map(x => x),
     borderWidth: 1,
     pointRadius: 0,
   }/*, {
@@ -221,7 +221,7 @@ function generatePriceData() {
   }*/];
 }
 
-function generatePriceOptions() {
+function generatePriceOptions(stats, graphTitle) {
   return {
     responsive: true,
     maintainAspectRatio: false,
@@ -231,20 +231,20 @@ function generatePriceOptions() {
           display: true,
           text: graphYAxis,
         },
-/*        ticks: {
+        ticks: {
           callback(value, index, ticks) {
-            return `${Math.round(value / 100) / 10}`;
+            return `${(+value).toFixed(2)}`;
           },
-        },*/
+        },
       },
     },
     interaction: {
       intersect: false,
       mode: 'index',
     },
-/*    plugins: {
+    plugins: {
       tooltip: {
-        callbacks: {
+        /* callbacks: {
           title(context) {
             return `${monthText[chartMonthIdx]} ${context[0].label}`;
           },
@@ -258,7 +258,7 @@ function generatePriceOptions() {
         filter(context) {
           if (context.dataset.label.startsWith('Trinn')) return false;
           return true;
-        },
+        },*/
       },
       legend: {
         display: false,
@@ -277,7 +277,7 @@ function generatePriceOptions() {
           size: 15,
         },
       },
-    },*/
+    },
   };
 }
 
@@ -311,35 +311,35 @@ function updateGraph(Homey) {
       let timeString;
       let labels;
       switch (chartPeriod) {
-        case GRANULARITY.YEAR:
-          timeString = `${chartYearIdx}`;
-          labels = [2022];
-          break;
         case GRANULARITY.MONTH:
+          timeString = `${chartYearIdx}`;
+          labels = monthText;
+          break;
+        case GRANULARITY.DAY:
           timeString = monthText[chartMonthIdx];
           labels = Array.from(Array(chartDaysInMonth + 1).keys()).slice(1);
           break;
-        case GRANULARITY.DAY:
+        case GRANULARITY.HOUR:
           timeString = `${monthText[chartMonthIdx]} - ${chartDayIdx + 1}`;
           labels = Array.from(Array(chartHoursInDay + 1).keys()).slice(1);
           break;
         default:
       }
-      chartId.options.plugins.title.text = `${chartHeader} - ${timeString}`;
       chartId.data.labels = labels;
-      /*switch (chartContent) {
-        case GRAPH_DATA_CONSUMPTION:*/
+      const graphTitle = `${chartHeader} - ${timeString}`;
+      switch (chartContent) {
+        case GRAPH_DATA_CONSUMPTION:
           chartId.data.datasets = generateHourlyMaxData(res);
-/*          chartId.data.options = generateHourlyMaxOptions(res);
+          chartId.options = generateHourlyMaxOptions(res, graphTitle);
           break;
         case GRAPH_DATA_PRICES:
           chartId.data.datasets = generatePriceData(res);
-          chartId.data.options = generatePriceOptions(res);
+          chartId.options = generatePriceOptions(res, graphTitle);
           break;
         case GRAPH_DATA_SAVINGS:
           break;
         default:
-      }*/
+      }
       // Homey.api('GET', `/apiCommand?cmd=log&text=atdetvarat${timeString}&loglevel=0`, null, function (err2, result) {});
       return chartId.update();
     });
@@ -361,33 +361,33 @@ function onShowSavingsGraph(Homey) {
 }
 
 function onShowDayTimespan(Homey) {
-  chartPeriod = GRANULARITY.DAY;
+  chartPeriod = GRANULARITY.HOUR;
   updateGraph(Homey);
 }
 
 function onShowMonthTimespan(Homey) {
-  chartPeriod = GRANULARITY.MONTH;
+  chartPeriod = GRANULARITY.DAY;
   updateGraph(Homey);
 }
 
 function onShowYearTimespan(Homey) {
-  chartPeriod = GRANULARITY.YEAR;
+  chartPeriod = GRANULARITY.MONTH;
   updateGraph(Homey);
 }
 
 function onBackClick(Homey) {
   switch (chartPeriod) {
-    case GRANULARITY.DAY:
+    default:
+    case GRANULARITY.HOUR:
       chartTime.setUTCDate(chartTime.getUTCDate() - 1);
       break;
-    default:
-    case GRANULARITY.MONTH:
+    case GRANULARITY.DAY:
       chartTime.setUTCMonth(chartTime.getUTCMonth() - 1);
       break;
     /* case GRAPH_PERIOD_WEEK:
       chartTime.setUTCDate(chartTime.getUTCDate() - 7);
       break; */
-    case GRANULARITY.YEAR:
+    case GRANULARITY.MONTH:
       chartTime.setUTCFullYear(chartTime.getUTCFullYear() - 1);
       break;
   }
@@ -396,17 +396,17 @@ function onBackClick(Homey) {
 
 function onForwardClick(Homey) {
   switch (chartPeriod) {
-    case GRANULARITY.DAY:
+    case GRANULARITY.HOUR:
       chartTime.setUTCDate(chartTime.getUTCDate() + 1);
       break;
     default:
-    case GRANULARITY.MONTH:
+    case GRANULARITY.DAY:
       chartTime.setUTCMonth(chartTime.getUTCMonth() + 1);
       break;
     /* case GRAPH_PERIOD_WEEK:
       chartTime.setUTCDate(chartTime.getUTCDate() + 7);
       break; */
-    case GRANULARITY.YEAR:
+    case GRANULARITY.MONTH:
       chartTime.setUTCFullYear(chartTime.getUTCFullYear() + 1);
       break;
   }
@@ -432,7 +432,7 @@ function InitGraph(Homey, stats) {
     chartId = new Chart('tariffGuideChart', {
       labels: dataDays,
       data: generateHourlyMaxData(stats),
-      options: generateHourlyMaxOptions(stats),
+      options: generateHourlyMaxOptions(stats, graphTitle),
     });
     document.getElementById('tariffGuideChart').style.display = 'block';
   } else {
