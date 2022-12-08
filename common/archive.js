@@ -90,12 +90,11 @@ function setDataMacro(archive, dataId, period, time, idx, value) {
     case SCHEMA.NONE:
       return;
     case SCHEMA.COUNT:
-      setValue = oldValueUndef ? [0, 0] : oldValue;
-      if (setValue.includes(value)) {
-        setValue[value] += 1;
-      } else {
-        setValue[value] = 1;
+      setValue = oldValueUndef ? [] : oldValue;
+      for (let i = setValue.length; i <= value; i++) {
+        setValue[i] = 0;
       }
+      setValue[value] += 1;
       break;
     case SCHEMA.ADD:
       setValue = oldValueUndef ? value : (oldValue + value);
