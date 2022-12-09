@@ -270,7 +270,7 @@ class PiggyBank extends Homey.App {
     }
 
     // Version 0.18.24 moved stats_daily_max into archive
-    const archive = await this.homey.settings.get('archive');
+    let archive = await this.homey.settings.get('archive');
     const maxes = await this.homey.settings.get('stats_daily_max');
     const maxesOk = await this.homey.settings.get('stats_daily_max_ok');
     if (archive === null && maxes !== null) {
@@ -311,6 +311,52 @@ class PiggyBank extends Homey.App {
     if (chargerOptionsRepair && ('experimentalMode' in chargerOptionsRepair)) {
       delete chargerOptionsRepair.experimentalMode;
       this.homey.settings.set('chargerOptions', chargerOptionsRepair);
+    }
+
+    // Version 0.19.13 - Corrects the Price points in the archive (issue #102)
+    const settingsVersion = await this.homey.settings.get('settingsVersion');
+    if (+settingsVersion < 1) {
+      archive = await this.homey.settings.get('archive');
+      if (archive !== null && archive.pricePoints !== undefined) {
+        this.log('Fixing broken price point in archive:');
+        for (const period in { daily: 1, monthly: 1, yearly: 1 }) {
+          this.log(`${period}`);
+          if (!(period in archive.pricePoints)) continue;
+          for (const time in archive.pricePoints[period]) {
+            this.log(`  ${time}`);
+            for (const data in archive.pricePoints[period][time]) {
+              const oldValues = archive.pricePoints[period][time][data];
+              const newSource = period === 'daily' ? archive.pricePoints.hourly[`${time}-${(+data + 1).toString().padStart(2, '0')}`]
+                : period === 'monthly' ? archive.pricePoints.daily[`${time}-${(+data + 1).toString().padStart(2, '0')}`]
+                  : archive.pricePoints.monthly[time];
+              let newValues = [];
+              if (newSource) {
+                for (let i = 0; i < newSource.length; i++) {
+                  if (newSource[i] === null) continue;
+                  if (Array.isArray(newSource[i])) {
+                    for (let j = newValues.length; j <= newSource[i].length; j++) {
+                      newValues[j] = 0;
+                    }
+                    for (let j = 0; j < newSource[i].length; j++) {
+                      newValues[j] += newSource[i][j];
+                    }
+                  } else {
+                    for (let j = newValues.length; j <= newSource[i]; j++) {
+                      newValues[j] = 0;
+                    }
+                    newValues[newSource[i]] += 1;
+                  }
+                }
+              }
+              if (newValues.length === 0) newValues = null;
+              this.log(`    ${data}: ${oldValues} => ${newValues}  | ${JSON.stringify(newSource)}`);
+              archive.pricePoints[period][time][data] = newValues;
+            }
+          }
+        }
+        this.homey.settings.set('archive', archive);
+      }
+      this.homey.settings.set('settingsVersion', 1);
     }
 
     // Version 0.18.xx
