@@ -85,7 +85,6 @@
         "settings.help.deviceTypeCharger",
         "settings.help.deviceTypeIgnore",
       ];
-      var graphTitle = "maxUsageGraph.title";
       var graphYAxis = "maxUsageGraph.yaxis";
       var graphXAxis = "maxUsageGraph.xaxis";
       var graphTariff = "maxUsageGraph.tariff";
@@ -112,7 +111,11 @@
         "month.oct",
         "month.nov",
         "month.dec"
-      ]
+      ];
+      var pricePointText = "graph.pricePoint";
+      var priceDistributionText = "graph.priceDistribution";
+      var unavailableText = "graph.unavailable";
+      var hoursText = "graph.hours";
 
       var debugMode = false;
 
@@ -955,6 +958,9 @@
 
       <table width="100%" class="tab">
         <tr>
+          <td class="subtablinks" id="maxHourButton">
+            <span data-i18n="graph.maxhour">graph.maxhour</span>
+          </td>
           <td class="subtablinks" id="consumptionButton">
             <span data-i18n="graph.consumption">graph.consumption</span>
           </td>
@@ -970,9 +976,9 @@
       <div style="background-color:#a0d0d6;">
         <div style="text-align:center; padding: 2px;">
           <button id="ltButton">&lt;</button>
-          <button id="dayButton">Day</button>
-          <button id="monthButton">Month</button>
-          <button id="yearButton">Year</button>
+          <button id="dayButton" data-i18n="graph.day">Day</button>
+          <button id="monthButton" data-i18n="graph.month">Month</button>
+          <button id="yearButton" data-i18n="graph.year">Year</button>
           <button id="gtButton">&gt;</button>
         </div>
 
@@ -1900,7 +1906,6 @@
         deviceTypeText[3] = Homey.__(deviceTypeText[3]);
         deviceTypeText[4] = Homey.__(deviceTypeText[4]);
         deviceTypeText[5] = Homey.__(deviceTypeText[5]);
-        graphTitle = Homey.__(graphTitle);
         graphYAxis = Homey.__(graphYAxis);
         graphXAxis = Homey.__(graphXAxis);
         graphTariff = Homey.__(graphTariff);
@@ -1914,6 +1919,10 @@
         chargePlanGraphCharge = Homey.__(chargePlanGraphCharge);
         chargePlanGraphNoCharge = Homey.__(chargePlanGraphNoCharge);
         chargePlanGraphNoPrice = Homey.__(chargePlanGraphNoPrice);
+        pricePointText = Homey.__(pricePointText);
+        priceDistributionText = Homey.__(priceDistributionText);
+        unavailableText = Homey.__(unavailableText);
+        hoursText = Homey.__(hoursText);
 
         for (var i = 0; i < monthText.length; i++) {
           monthText[i] = Homey.__(monthText[i]);
@@ -2253,6 +2262,7 @@
           }
         });
 
+        document.getElementById("maxHourButton").addEventListener("click", e => { onShowMaxHourGraph(Homey) });
         document.getElementById("consumptionButton").addEventListener("click", e => { onShowConsumptionGraph(Homey) });
         document.getElementById("pricesButton").addEventListener("click", e => { onShowPricesGraph(Homey) });
         document.getElementById("savingsButton").addEventListener("click", e => { onShowSavingsGraph(Homey) });

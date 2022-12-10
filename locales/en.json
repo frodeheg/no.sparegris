@@ -368,7 +368,7 @@
     "fixGraph": "**Piggy Bank** update: Unfortunately, due to an error, some of you may see a much higher hourly consumption than was actually the case on certain days in the last two weeks. Days that may have been affected have been removed from the graph and thus will no longer affect the estimated monthly tariff. To know your correct tariff for this particular month, it is recommended to check at elhub.no, sorry for the inconvenience."
   },
   "maxUsageGraph": {
-    "title": "Max Hourly usage per day",
+    "title": "Max Hourly usage",
     "yaxis": "kWh",
     "xaxis": "Day",
     "tariff": "Estimated power tariff",
@@ -404,8 +404,16 @@
     "hours": "h"
   },
   "graph": {
-    "consumption": "Consumption",
+    "consumption": "Usage",
+    "maxhour": "MaxUse",
     "prices": "Prices",
-    "savings": "Savings"
+    "savings": "Savings",
+    "pricePoint": "Price point",
+    "priceDistribution": "Price distribution",
+    "unavailable": "Unavailable",
+    "hours": "hours",
+    "day": "Day",
+    "month": "Month",
+    "year": "Year"
   }
 }

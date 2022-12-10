@@ -368,7 +368,7 @@
     "fixGraph": "**Sparegris** oppdatering: På grunn av en feil har noen dessverre fått rapportert et mye høyere timeforbruk enn det som faktisk var tilfelle på enkelte dager de to siste ukene. Dager som kan ha vært påvirket har blitt fjernet fra grafen og således vil ikke påvirke estimert månedstariff lenger. For å vite din korrekte tariff akkurat denne måneden anbefales det å sjekke på elhub.no, beklager ulempene."
   },
   "maxUsageGraph": {
-    "title": "Maks timeforbruk per dag",
+    "title": "Maks timeforbruk",
     "yaxis": "kWh",
     "xaxis": "Dag",
     "tariff": "Estimert effekttariff",
@@ -405,7 +405,15 @@
   },
   "graph": {
     "consumption": "Forbruk",
-    "prices": "Kostnad",
-    "savings": "Besparelse"
+    "maxhour": "TimeMaks",
+    "prices": "Strømpris",
+    "savings": "Besparelse",
+    "pricePoint": "Prispunkt",
+    "priceDistribution": "Prisfordeling",
+    "unavailable": "Utilgjengelig",
+    "hours": "timer",
+    "day": "Dag",
+    "month": "Måned",
+    "year": "År"
   }
 }
