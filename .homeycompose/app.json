@@ -4,7 +4,7 @@
     "homey:manager:api",
     "homey:app:no.almli.utilitycost"
   ],
-  "version": "0.19.12",
+  "version": "0.19.13",
   "compatibility": ">=5.0.0",
   "sdk": 3,
   "homeyCommunityTopicId": 66677,

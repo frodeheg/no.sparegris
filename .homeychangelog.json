@@ -628,5 +628,8 @@
   },
   "0.19.12": {
     "en": "New Override features for charging (tickets #92 and #94)"
+  },
+  "0.19.13": {
+    "en": "Added graphs for consumption and historic prices / price points"
   }
 }
