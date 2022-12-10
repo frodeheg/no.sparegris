@@ -28,30 +28,16 @@ let textPrices = 'graph.prices';
 let textSavings = 'graph.savings';
 
 function generateConsumptionData(stats) {
-  return [];
-/*
   // Calculate values
-  const dataset = stats.data.maxPower || [];
+  const dataset = stats.data.powUsage || [];
   chartDataOk = stats.dataGood || [];
-  const maxDays = getMax3(dataset);
-  const tariffGuide = Math.round(averageOfElements(dataset, maxDays));
-  const tariffAbove = getGridAbove(tariffGuide);
-  const tariffBelow = getGridBelow(tariffGuide);
   // Generate data
-  const dataTariffAbove = Array(chartDaysInMonth).fill(tariffAbove);
-  const dataTariffBelow = Array(chartDaysInMonth).fill(tariffBelow);
-  const dataTariffGuide = Array(chartDaysInMonth).fill(tariffGuide);
   const colorBars = Array(chartDaysInMonth).fill('pink');
   const colorBarLines = Array(chartDaysInMonth).fill('black');
   for (let i = 0; i < chartDaysInMonth; i++) {
     let barCol = '80,160,80';
     let barAlpha = 1;
-    let lineCol = '0,0,0';
     let lineAlpha = 1;
-    if (maxDays.includes(i)) {
-      lineCol = '0,0,128';
-      barCol = '80,210,80';
-    }
     if (!chartDataOk[i]) {
       barCol = '170,80,80';
     }
@@ -60,34 +46,9 @@ function generateConsumptionData(stats) {
       lineAlpha = 0.3;
     }
     colorBars[i] = `rgb(${barCol},${barAlpha})`;
-    colorBarLines[i] = `rgb(${lineCol},${lineAlpha})`;
+    colorBarLines[i] = `rgb(0,0,0,${lineAlpha})`;
   }
   return [{
-    type: 'line',
-    label: 'Trinn 3',
-    borderColor: 'black',
-    pointBackgroundColor: 'black',
-    data: dataTariffAbove,
-    borderWidth: 1,
-    pointRadius: 0,
-  }, {
-    type: 'line',
-    label: 'Trinn 2',
-    borderColor: 'black',
-    pointBackgroundColor: 'black',
-    data: dataTariffBelow,
-    borderWidth: 1,
-    pointRadius: 0,
-  }, {
-    type: 'line',
-    label: graphTariff,
-    borderDash: [10, 5],
-    borderColor: 'gray',
-    pointBackgroundColor: 'gray',
-    borderWidth: 1.5,
-    pointRadius: 0,
-    data: dataTariffGuide,
-  }, {
     type: 'bar',
     label: graphHighest,
     backgroundColor: colorBars,
@@ -95,13 +56,10 @@ function generateConsumptionData(stats) {
     borderWidth: 1,
     data: dataset.map(x => Math.round(x)),
   }];
-*/
 }
 
 function generateConsumptionOptions(stats, graphTitle) {
-  return {};
-/*
-  const dataset = stats.data.maxPower || [];
+  const dataset = stats.data.powUsage || [];
   chartDataOk = stats.dataGood || [];
   return {
     responsive: true,
@@ -114,7 +72,7 @@ function generateConsumptionOptions(stats, graphTitle) {
         },
         ticks: {
           callback(value, index, ticks) {
-            return `${Math.round(value / 100) / 10}`;
+            return (value / 1000).toFixed(2);
           },
         },
       },
@@ -136,10 +94,6 @@ function generateConsumptionOptions(stats, graphTitle) {
             return '';
           },
         },
-        filter(context) {
-          if (context.dataset.label.startsWith('Trinn')) return false;
-          return true;
-        },
       },
       legend: {
         display: false,
@@ -160,7 +114,6 @@ function generateConsumptionOptions(stats, graphTitle) {
       },
     },
   };
-*/
 }
 
 function generateHourlyMaxData(stats) {
@@ -183,7 +136,7 @@ function generateHourlyMaxData(stats) {
     let barAlpha = 1;
     let lineCol = '0,0,0';
     let lineAlpha = 1;
-    if (maxDays.includes(i)) {
+    if (showMonth && maxDays.includes(i)) {
       lineCol = '0,0,128';
       barCol = '80,210,80';
     }
@@ -246,7 +199,7 @@ function generateHourlyMaxOptions(stats, graphTitle) {
         },
         ticks: {
           callback(value, index, ticks) {
-            return `${Math.round(value / 100) / 10}`;
+            return (value / 1000).toFixed(2);
           },
         },
       },
@@ -510,7 +463,7 @@ function updateGraph(Homey) {
       break;
     case GRAPH_DATA_SAVINGS:
       chartHeader = textSavings;
-      graphTypeRequest = 'moneySavedTariff'; // moneySavedUsage
+      graphTypeRequest = '[moneySavedTariff,moneySavedUsage]';
       break;
   }
   Homey.api('GET', `/getStats?type=${graphTypeRequest}&time=${chartTime.getTime()}&granularity=${chartPeriod}`, null,
@@ -555,6 +508,8 @@ function updateGraph(Homey) {
           chartId.options = generatePriceOptions(res, graphTitle);
           break;
         case GRAPH_DATA_SAVINGS:
+          chartId.data.datasets = []; //generateSavingsData(res);
+          chartId.options = {}; //generateSavingsOptions(res, graphTitle);
           break;
         default:
       }

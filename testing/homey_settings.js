@@ -21,7 +21,7 @@ class FakeHomey {
     const err = undefined;
     let response;
     if (command.includes('/getStats')) {
-      /*response = {
+      response = {
         daysInMonth: 31,
         hoursInDay: 24,
         localTime: 123123123,
@@ -29,16 +29,21 @@ class FakeHomey {
         localMonth: 2,
         localYear: 2,
         data: {
-          maxPower: [4000, 4900, 4300, 4800, 4500, 4400, 4200, 3200, 1023, 4300],
+          // maxPower: [4000, 4900, 4300, 4800, 4500, 4400, 4200, 3200, 1023, 4300],
+          maxPower: [4704, 4938, 4021, 4297],
           chargeShedule: [4000, 4000, 0, 0, 4000],
           elPrices: [0.5, 0.43, 0.33, 0.64, 0.93, 0.45, 0.22],
-          currentHour: 2
+          currentHour: 2,
+          price: [1,null,3,4,0.5,1.4,5.2,3.2,2.2,4.2,1.1],
+          pricePoints: [[1,2,3,4,5],null,[1,2,3,4,5],[1,2,3,4,5],[1,2,3,4,5],[1,2,3,4,5],[1,2,3,4,5],[1,2,3,4,5],[1,2,3,4,5],[1,2,3,4,5],[1,2,3,4,5],[1,2,3,4,5],[1,2,3,4,5],[1,2,3,4,5]],
+          powUsage: [3, 5, 1, 6],
         },
-        dataGood: [true, true, false, true, true],
-      };*/
+        // dataGood: [true, true, false, true, true],
+        dataGood: [1, 1, 1, 1],
+      };
       // response = {"daysInMonth":31,"hoursInDay":1,"localTime":1670193702771,"localDay":4,"localMonth":11,"localYear":2022,"data":{"error":{}},"dataGood":false};
       // response = {"daysInMonth":31,"hoursInDay":24,"localTime":1670213729136,"localDay":5,"localMonth":11,"localYear":2022,"data":{"chargeShedule":[],"elPrices":[0.7127719530932262,0.6934892301956708,0.66827484805007,0.6659562841746125,0.6575514901260789,0.7758755332369289,0.8918657689005378,0.9225674188847215,0.9238812717474807,0.9452507021329477,0.9696729082877671,0.9994471327217678,0.9896898430792174,0.9827534728184737,1.0126436254462472,0.9887044534321479,0.9994664540873965,1.0567349818111982,1.1417489905779745,0.9994471327217678,0.97662859991414,0.967721450359257,0.8608122565411902,0.834921626598581],"currentHour":5,"maxPower":[4379.558582499998,4691.687735833334,1258.170082222223,4726.245076388889,8744.871345833333]},"dataGood":[true,true,true,false,true]};
-      response = {"daysInMonth":31,"hoursInDay":24,"localTime":1670303200188,"localDay":6,"localMonth":11,"localYear":2022,"data":{"price":[4.658776454687501,3.859296979166668,3.7131875369791665,3.7581720065217383,null]},"dataGood":[true,true,true,false,true]};
+      // response = {"daysInMonth":31,"hoursInDay":24,"localTime":1670303200188,"localDay":6,"localMonth":11,"localYear":2022,"data":{"price":[1,null,3,4,0.5,1.4,5.2,3.2,2.2,4.2,1.1],"pricePoints":[[1,2,3,4,5],null,[1,2,3,4,5],[1,2,3,4,5],[1,2,3,4,5],[1,2,3,4,5],[1,2,3,4,5],[1,2,3,4,5],[1,2,3,4,5],[1,2,3,4,5],[1,2,3,4,5],[1,2,3,4,5],[1,2,3,4,5],[1,2,3,4,5]]},"dataGood":[true,true,true,false,true]};
     } else if (command.includes('/apiCommand?cmd=createDeviceList')) {
       response = {
         id_a: { name:"DeviceNamenamenamenamename 1", room: "Stue",    image: "https://as2.ftcdn.net/v2/jpg/02/49/76/93/1000_F_249769389_7su5tYXOvcjcehNCcWTwcjnHvSMkLocJ.jpg", use: true, priority: 0, thermostat_cap: true, driverId: 'no.thermofloor:TF_Thermostat' },
