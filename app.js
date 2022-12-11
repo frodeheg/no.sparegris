@@ -2128,7 +2128,8 @@ class PiggyBank extends Homey.App {
       if (chargerOptions.chargeCycleType === c.OFFER_ENERGY) {
         chargerOptions.chargeRemaining -= this.__offeredEnergy;
         this.__offeredEnergy = 0;
-      } else { // OFFER_HOURS
+      } else if (this.__charge_plan[0] > 0) {
+        // OFFER_HOURS - Only subtract for active hours
         chargerOptions.chargeRemaining -= 1;
       }
       if (chargerOptions.chargeRemaining < 0) chargerOptions.chargeRemaining = 0;
