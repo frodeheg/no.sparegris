@@ -110,6 +110,11 @@ class PiggyBank extends Homey.App {
     if (this.logUnit === deviceId) this.updateLog(`attempt runDeviceCommands(${listRef}) for ${device.name}`, c.LOG_ALL);
     let stateChanged = false;
     for (const capName in list) {
+      if (device.capabilitiesObj && !(capName in device.capabilitiesObj)) {
+        const newErr = new Error(`Could not find the capability ${capName} for ${device.name}. Please install the most recent driver.`);
+        this.updateLog(newErr, c.LOG_ALL);
+        return Promise.reject(newErr);
+      }
       const maxVal = (device.capabilitiesObj === null) ? 32 : await device.capabilitiesObj[capName].max;
       const setVal = (list[capName] === Infinity) ? maxVal : list[capName];
       const prevVal = (device.capabilitiesObj === null) ? undefined : await device.capabilitiesObj[capName].value;
