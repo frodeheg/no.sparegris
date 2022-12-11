@@ -143,7 +143,7 @@ const DEVICE_CMD = {
   'com.datek.eva:meter-reader': DEFAULT_IGNORED,
   'com.elko:ESHSUPERTR': {
     ...DEFAULT_HEATER,
-    note: 'The developer need confirmation that on/off for this device is working before removing experimental flag',
+    note: 'Please contact the developer on frode.heggelund@gmail.com to help resolve/confirm any issues with this device. I get reports about this not working properly.',
     setOnOffCap: 'power_status',
     tempMax: 50,
     beta: true,
@@ -153,9 +153,25 @@ const DEVICE_CMD = {
   'com.fibaro:FGS-213': DEFAULT_SWITCH,
   'com.fibaro:FGWPE-101': DEFAULT_SWITCH,
   'com.gardena:water-control': DEFAULT_IGNORED,
+  'com.gree:gree_cooper_hunter_hvac': {
+    ...DEFAULT_AC,
+    tempMin: 16,
+    setModeDryValue: 'dry',
+    setModeFanValue: 'fan_only',
+    default: false
+  },
   'com.home-connect:dryer': DEFAULT_IGNORED,
   'com.ikea.tradfri:control_outlet': DEFAULT_SWITCH, // Not confirmed
   'com.neo:NAS-WR02ZE': DEFAULT_SWITCH,
+  'com.nibeuplink:com.nibeuplink.system': {
+    ...DEFAULT_SWITCH,
+    note: 'OnOff for this device control temporary lux. Please confirm that it works as intended.',
+    setOnOffCap: 'temporary_lux',
+    setOnValue: true,
+    setOffValue: false,
+    beta: true,
+    default: false
+  },
   'com.panasonic.PCC:comfortcloud': {
     ...DEFAULT_AC,
     tempMin: 4,
@@ -176,6 +192,16 @@ const DEVICE_CMD = {
     default: false
   },
   'com.swttt.devicegroups:light': DEFAULT_SWITCH,
+  'com.tado2:valve': {
+    ...DEFAULT_HEATER,
+    type: DEVICE_TYPE.HEATER,
+    setOnOffCap: 'power_mode',
+    setOnValue: 'ON',
+    setOffValue: 'OFF',
+    tempMax: 25,
+    default: false
+  },
+  'com.tibber:home': DEFAULT_IGNORED,
   'com.tibber:pulse': DEFAULT_IGNORED,
   'com.tuya.cloud:tuyalight': DEFAULT_SWITCH,
   'com.mill:mill': {

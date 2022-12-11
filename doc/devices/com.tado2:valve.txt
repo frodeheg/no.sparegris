@@ -1,0 +1,75 @@
++18:57:49.360: ----- ANALYZING DEVICE -----
++18:57:49.371: Report type: Device is not listed
++18:57:49.391: Device ID:   7b3a5e56-574e-4b84-a2af-6af4d943d1b7
++18:57:49.462: Device name: Albert Sov - Smart Radiator Thermostat
++18:57:49.478: Driver Uri: homey:app:com.tado2
++18:57:49.489: Driver Id: valve
++18:57:49.498: Error: TypeError: Cannot read properties of undefined (reading 'onoff_cap')
++18:57:49.515: Capabilities: target_temperature,power_mode,detect_open_window,measure_temperature,measure_humidity,alarm_battery
++18:57:49.524: Options for 'target_temperature': {"value":22,"lastUpdated":"2022-12-09T17:12:25.514Z","type":"number","getable":true,"setable":true,"title":"Ønsket temperatur","desc":null,"units":"°C","decimals":1,"min":5,"max":25,"step":0.5,"chartType":"stepLine","id":"target_temperature","options":{"min":5,"max":25,"step":0.5,"decimals":1,"duration":true}}
++18:57:49.526: Options for 'power_mode': {"value":"ON","lastUpdated":"2022-11-14T13:37:37.396Z","type":"enum","getable":true,"setable":true,"title":"Thermostat mode","desc":null,"units":null,"values":[{"id":"ON","title":"On"},{"id":"OFF","title":"Off"}],"id":"power_mode","options":{}}
++18:57:49.528: Options for 'detect_open_window': {"value":false,"lastUpdated":"2022-11-14T13:37:37.604Z","type":"boolean","getable":true,"setable":false,"title":"Open window detection","desc":null,"units":null,"iconObj":{"id":"d5374478100395182a912c1f2b6f5a6c","url":"/icon/d5374478100395182a912c1f2b6f5a6c/icon.svg"},"id":"detect_open_window","options":{}}
++18:57:49.530: Options for 'measure_temperature': {"value":19.3,"lastUpdated":"2022-12-09T18:56:06.611Z","type":"number","getable":true,"setable":false,"title":"Temperatur","desc":"Temperatur i grader Celsius (°C)","units":"°C","decimals":2,"chartType":"spline","id":"measure_temperature","options":{}}
++18:57:49.575: Options for 'measure_humidity': {"value":32.3,"lastUpdated":"2022-12-09T18:56:06.646Z","type":"number","getable":true,"setable":false,"title":"Luftfuktighet","desc":"Luftfuktighet i prosent (%)","units":"%","decimals":2,"chartType":"spline","id":"measure_humidity","options":{}}
++18:57:49.585: Options for 'alarm_battery': {"value":false,"lastUpdated":"2022-11-14T13:37:26.910Z","type":"boolean","getable":true,"setable":false,"title":"Batterialarm","desc":"Sant når det finnes en batteriadvarsel","units":null,"id":"alarm_battery","options":{}}
++18:57:49.607: --- ANALYZING DEVICE DONE ---
++18:57:52.016: ----- ANALYZING DEVICE -----
++18:57:52.023: Report type: Device is not listed
++18:57:52.025: Device ID:   8ec8673a-43c6-4517-9673-9296c1810683
++18:57:52.100: Device name: Edvin Sov - Smart Radiator Thermostat
++18:57:52.115: Driver Uri: homey:app:com.tado2
++18:57:52.176: Driver Id: valve
++18:57:52.221: Error: TypeError: Cannot read properties of undefined (reading 'onoff_cap')
++18:57:52.229: Capabilities: target_temperature,power_mode,detect_open_window,measure_temperature,measure_humidity,alarm_battery
++18:57:52.250: Options for 'target_temperature': {"value":22,"lastUpdated":"2022-12-09T16:29:25.191Z","type":"number","getable":true,"setable":true,"title":"Ønsket temperatur","desc":null,"units":"°C","decimals":1,"min":5,"max":25,"step":0.5,"chartType":"stepLine","id":"target_temperature","options":{"min":5,"max":25,"step":0.5,"decimals":1,"duration":true}}
++18:57:52.261: Options for 'power_mode': {"value":"ON","lastUpdated":"2022-11-14T13:37:37.403Z","type":"enum","getable":true,"setable":true,"title":"Thermostat mode","desc":null,"units":null,"values":[{"id":"ON","title":"On"},{"id":"OFF","title":"Off"}],"id":"power_mode","options":{}}
++18:57:52.272: Options for 'detect_open_window': {"value":false,"lastUpdated":"2022-11-14T13:37:37.611Z","type":"boolean","getable":true,"setable":false,"title":"Open window detection","desc":null,"units":null,"iconObj":{"id":"d5374478100395182a912c1f2b6f5a6c","url":"/icon/d5374478100395182a912c1f2b6f5a6c/icon.svg"},"id":"detect_open_window","options":{}}
++18:57:52.282: Options for 'measure_temperature': {"value":19.9,"lastUpdated":"2022-12-09T18:54:45.984Z","type":"number","getable":true,"setable":false,"title":"Temperatur","desc":"Temperatur i grader Celsius (°C)","units":"°C","decimals":2,"chartType":"spline","id":"measure_temperature","options":{}}
++18:57:52.295: Options for 'measure_humidity': {"value":31,"lastUpdated":"2022-12-09T18:46:46.455Z","type":"number","getable":true,"setable":false,"title":"Luftfuktighet","desc":"Luftfuktighet i prosent (%)","units":"%","decimals":2,"chartType":"spline","id":"measure_humidity","options":{}}
++18:57:52.307: Options for 'alarm_battery': {"value":false,"lastUpdated":"2022-11-14T13:37:27.106Z","type":"boolean","getable":true,"setable":false,"title":"Batterialarm","desc":"Sant når det finnes en batteriadvarsel","units":null,"id":"alarm_battery","options":{}}
++18:57:52.313: --- ANALYZING DEVICE DONE ---
++18:57:54.675: ----- ANALYZING DEVICE -----
++18:57:54.688: Report type: Device is not listed
++18:57:54.708: Device ID:   92689e5d-83e9-4c29-84ac-1a0abaf10854
++18:57:54.775: Device name: Hoved sov - Smart Radiator Thermostat
++18:57:54.803: Driver Uri: homey:app:com.tado2
++18:57:54.810: Driver Id: valve
++18:57:54.838: Error: TypeError: Cannot read properties of undefined (reading 'onoff_cap')
++18:57:54.848: Capabilities: target_temperature,power_mode,detect_open_window,measure_temperature,measure_humidity,alarm_battery
++18:57:54.866: Options for 'target_temperature': {"value":21,"lastUpdated":"2022-12-09T18:11:00.143Z","type":"number","getable":true,"setable":true,"title":"Ønsket temperatur","desc":null,"units":"°C","decimals":1,"min":5,"max":25,"step":0.5,"chartType":"stepLine","id":"target_temperature","options":{"min":5,"max":25,"step":0.5,"decimals":1,"duration":true}}
++18:57:54.881: Options for 'power_mode': {"value":"ON","lastUpdated":"2022-11-14T13:37:37.411Z","type":"enum","getable":true,"setable":true,"title":"Thermostat mode","desc":null,"units":null,"values":[{"id":"ON","title":"On"},{"id":"OFF","title":"Off"}],"id":"power_mode","options":{}}
++18:57:54.909: Options for 'detect_open_window': {"value":false,"lastUpdated":"2022-11-14T13:37:37.619Z","type":"boolean","getable":true,"setable":false,"title":"Open window detection","desc":null,"units":null,"iconObj":{"id":"d5374478100395182a912c1f2b6f5a6c","url":"/icon/d5374478100395182a912c1f2b6f5a6c/icon.svg"},"id":"detect_open_window","options":{}}
++18:57:54.918: Options for 'measure_temperature': {"value":18.9,"lastUpdated":"2022-12-09T18:51:58.094Z","type":"number","getable":true,"setable":false,"title":"Temperatur","desc":"Temperatur i grader Celsius (°C)","units":"°C","decimals":2,"chartType":"spline","id":"measure_temperature","options":{}}
++18:57:54.937: Options for 'measure_humidity': {"value":32.8,"lastUpdated":"2022-12-09T18:36:58.140Z","type":"number","getable":true,"setable":false,"title":"Luftfuktighet","desc":"Luftfuktighet i prosent (%)","units":"%","decimals":2,"chartType":"spline","id":"measure_humidity","options":{}}
++18:57:54.950: Options for 'alarm_battery': {"value":false,"lastUpdated":"2022-11-14T13:37:27.117Z","type":"boolean","getable":true,"setable":false,"title":"Batterialarm","desc":"Sant når det finnes en batteriadvarsel","units":null,"id":"alarm_battery","options":{}}
++18:57:54.965: --- ANALYZING DEVICE DONE ---
++18:57:57.720: ----- ANALYZING DEVICE -----
++18:57:57.727: Report type: Device is not listed
++18:57:57.743: Device ID:   96b9e235-fe26-4803-badd-2a0d0ff91006
++18:57:57.797: Device name: Gang - Smart Radiator Thermostat
++18:57:57.813: Driver Uri: homey:app:com.tado2
++18:57:57.828: Driver Id: valve
++18:57:57.842: Error: TypeError: Cannot read properties of undefined (reading 'onoff_cap')
++18:57:57.855: Capabilities: target_temperature,power_mode,detect_open_window,measure_temperature,measure_humidity,alarm_battery
++18:57:57.863: Options for 'target_temperature': {"value":19,"lastUpdated":"2022-12-09T18:50:41.854Z","type":"number","getable":true,"setable":true,"title":"Ønsket temperatur","desc":null,"units":"°C","decimals":1,"min":5,"max":25,"step":0.5,"chartType":"stepLine","id":"target_temperature","options":{"min":5,"max":25,"step":0.5,"decimals":1,"duration":true}}
++18:57:57.865: Options for 'power_mode': {"value":"ON","lastUpdated":"2022-11-14T13:37:37.419Z","type":"enum","getable":true,"setable":true,"title":"Thermostat mode","desc":null,"units":null,"values":[{"id":"ON","title":"On"},{"id":"OFF","title":"Off"}],"id":"power_mode","options":{}}
++18:57:57.867: Options for 'detect_open_window': {"value":false,"lastUpdated":"2022-11-14T13:37:37.626Z","type":"boolean","getable":true,"setable":false,"title":"Open window detection","desc":null,"units":null,"iconObj":{"id":"d5374478100395182a912c1f2b6f5a6c","url":"/icon/d5374478100395182a912c1f2b6f5a6c/icon.svg"},"id":"detect_open_window","options":{}}
++18:57:57.900: Options for 'measure_temperature': {"value":22.2,"lastUpdated":"2022-12-09T18:50:50.512Z","type":"number","getable":true,"setable":false,"title":"Temperatur","desc":"Temperatur i grader Celsius (°C)","units":"°C","decimals":2,"chartType":"spline","id":"measure_temperature","options":{}}
++18:57:57.906: Options for 'measure_humidity': {"value":28.3,"lastUpdated":"2022-12-09T18:50:50.587Z","type":"number","getable":true,"setable":false,"title":"Luftfuktighet","desc":"Luftfuktighet i prosent (%)","units":"%","decimals":2,"chartType":"spline","id":"measure_humidity","options":{}}
++18:57:57.909: Options for 'alarm_battery': {"value":false,"lastUpdated":"2022-11-14T13:37:27.118Z","type":"boolean","getable":true,"setable":false,"title":"Batterialarm","desc":"Sant når det finnes en batteriadvarsel","units":null,"id":"alarm_battery","options":{}}
++18:57:57.911: --- ANALYZING DEVICE DONE ---
++18:58:0.145: ----- ANALYZING DEVICE -----
++18:58:0.168: Report type: Device is not listed
++18:58:0.185: Device ID:   54f2189d-c4d2-4e61-aebd-463863c5b777
++18:58:0.278: Device name: Vaskerom - Smart Radiator Thermostat
++18:58:0.287: Driver Uri: homey:app:com.tado2
++18:58:0.317: Driver Id: valve
++18:58:0.334: Error: TypeError: Cannot read properties of undefined (reading 'onoff_cap')
++18:58:0.351: Capabilities: target_temperature,power_mode,detect_open_window,measure_temperature,measure_humidity,alarm_battery
++18:58:0.377: Options for 'target_temperature': {"value":19,"lastUpdated":"2022-12-09T18:50:21.646Z","type":"number","getable":true,"setable":true,"title":"Ønsket temperatur","desc":null,"units":"°C","decimals":1,"min":5,"max":25,"step":0.5,"chartType":"stepLine","id":"target_temperature","options":{"min":5,"max":25,"step":0.5,"decimals":1,"duration":true}}
++18:58:0.389: Options for 'power_mode': {"value":"ON","lastUpdated":"2022-11-14T13:37:37.427Z","type":"enum","getable":true,"setable":true,"title":"Thermostat mode","desc":null,"units":null,"values":[{"id":"ON","title":"On"},{"id":"OFF","title":"Off"}],"id":"power_mode","options":{}}
++18:58:0.416: Options for 'detect_open_window': {"value":false,"lastUpdated":"2022-11-14T13:37:37.634Z","type":"boolean","getable":true,"setable":false,"title":"Open window detection","desc":null,"units":null,"iconObj":{"id":"d5374478100395182a912c1f2b6f5a6c","url":"/icon/d5374478100395182a912c1f2b6f5a6c/icon.svg"},"id":"detect_open_window","options":{}}
++18:58:0.428: Options for 'measure_temperature': {"value":23,"lastUpdated":"2022-12-09T18:50:28.512Z","type":"number","getable":true,"setable":false,"title":"Temperatur","desc":"Temperatur i grader Celsius (°C)","units":"°C","decimals":2,"chartType":"spline","id":"measure_temperature","options":{}}
++18:58:0.453: Options for 'measure_humidity': {"value":28.4,"lastUpdated":"2022-12-09T18:42:42.314Z","type":"number","getable":true,"setable":false,"title":"Luftfuktighet","desc":"Luftfuktighet i prosent (%)","units":"%","decimals":2,"chartType":"spline","id":"measure_humidity","options":{}}
++18:58:0.468: Options for 'alarm_battery': {"value":false,"lastUpdated":"2022-11-14T13:37:27.179Z","type":"boolean","getable":true,"setable":false,"title":"Batterialarm","desc":"Sant når det finnes en batteriadvarsel","units":null,"id":"alarm_battery","options":{}}
++18:58:0.492: --- ANALYZING DEVICE DONE ---

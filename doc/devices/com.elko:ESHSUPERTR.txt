@@ -1,3 +1,40 @@
++16:21:48.476: ----- ANALYZING DEVICE -----
++16:21:48.482: Report type: Device does not set temperature
++16:21:48.485: Device ID:   0afd2fbe-f919-4309-8fe0-c2411105f6d0
++16:21:48.554: Device name: Termostat Baderom
++16:21:48.561: Driver Uri: homey:app:com.elko
++16:21:48.569: Driver Id: ESHSUPERTR
++16:21:48.574: Found onoff cap: power_status
++16:21:48.581: Found temp cap: target_temperature
++16:21:48.590: Device reliability: 1
++16:21:48.604: Capabilities: target_temperature,measure_temperature,measure_temperature.air,measure_temperature.floor,maxFloorTemp,measure_power,meter_power,power_status,childLock,heat,sensorMode,regulatorMode,thermostatLoad,regulatorTime,dateTime,tempCalibration,displayText,button.reset_kwh_meter,dateTime,night_switching,frost_guard,button.reset_kwhMeter
++16:21:48.609: Options for 'target_temperature': {"value":21,"lastUpdated":"2022-12-09T16:12:39.323Z","type":"number","getable":true,"setable":true,"title":"Ønsket temperatur","desc":null,"units":"°C","decimals":2,"min":5,"max":50,"step":0.5,"chartType":"stepLine","id":"target_temperature","options":{"min":5,"max":50,"step":0.5}}
++16:21:48.620: Options for 'measure_temperature': {"value":24.8,"lastUpdated":"2022-12-09T16:19:38.827Z","type":"number","getable":true,"setable":false,"title":"Temperatur","desc":"Temperatur i grader Celsius (°C)","units":"°C","decimals":2,"chartType":"spline","id":"measure_temperature","options":{}}
++16:21:48.625: Options for 'measure_temperature.air': {"value":19.3,"lastUpdated":"2022-12-09T16:19:38.819Z","type":"number","getable":true,"setable":false,"title":"Luft","desc":"Temperatur i grader Celsius (°C)","units":"°C","decimals":2,"chartType":"spline","id":"measure_temperature.air","options":{"title":{"en":"Air","no":"Luft"}}}
++16:21:48.633: Options for 'measure_temperature.floor': {"value":24.8,"lastUpdated":"2022-12-09T16:19:38.826Z","type":"number","getable":true,"setable":false,"title":"Gulv","desc":"Temperatur i grader Celsius (°C)","units":"°C","decimals":2,"chartType":"spline","id":"measure_temperature.floor","options":{"title":{"en":"Floor","no":"Gulv"}}}
++16:21:48.643: Options for 'maxFloorTemp': {"value":28,"lastUpdated":"2022-03-03T10:45:19.454Z","type":"number","getable":true,"setable":true,"title":"Makstemperatur ved bruk av gulvvakt","desc":null,"units":null,"min":20,"max":40,"step":1,"id":"maxFloorTemp","options":{"min":20,"max":40,"step":1}}
++16:21:48.646: Options for 'measure_power': {"value":0,"lastUpdated":"2022-12-09T16:09:40.518Z","type":"number","getable":true,"setable":false,"title":"Effekt","desc":"Effekt i watt (W)","units":"W","decimals":2,"chartType":"stepLine","id":"measure_power","options":{}}
++16:21:48.649: Options for 'meter_power': {"value":83875.31,"lastUpdated":"2022-12-09T16:19:46.116Z","type":"number","getable":true,"setable":false,"title":"Energi","desc":"Energiforbruk i kilowattimer (kWh)","units":"kWh","decimals":2,"chartType":"spline","id":"meter_power","options":{}}
++16:21:48.652: Options for 'power_status': {"value":true,"lastUpdated":"2022-11-19T18:17:11.767Z","type":"boolean","getable":true,"setable":true,"title":"Power","desc":"Power Status","units":null,"id":"power_status","options":{}}
++16:21:48.654: Options for 'childLock': {"value":false,"lastUpdated":"2022-10-03T16:57:12.183Z","type":"boolean","getable":true,"setable":true,"title":"Barnesikkring","desc":"Barnesikkring","units":null,"iconObj":{"id":"d17ed5dd36a0f49cd0fe5f8068c442ec","url":"/icon/d17ed5dd36a0f49cd0fe5f8068c442ec/icon.svg"},"id":"childLock","options":{}}
++16:21:48.659: Options for 'heat': {"value":false,"lastUpdated":"2022-12-09T16:09:40.504Z","type":"boolean","getable":true,"setable":false,"title":"Varmer","desc":"Varmer","units":null,"iconObj":{"id":"19bfcf5258f66e6791b069aa82bb6912","url":"/icon/19bfcf5258f66e6791b069aa82bb6912/icon.svg"},"id":"heat","options":{}}
++16:21:48.662: Options for 'sensorMode': {"value":"Floor","lastUpdated":"2022-03-03T10:45:19.197Z","type":"string","getable":true,"setable":true,"title":"Sensor modus","desc":null,"units":null,"id":"sensorMode","options":{}}
++16:21:48.672: Options for 'regulatorMode': {"value":false,"lastUpdated":"2022-03-03T10:45:19.324Z","type":"boolean","getable":true,"setable":true,"title":"Regulator modus","desc":null,"units":null,"id":"regulatorMode","options":{}}
++16:21:48.675: Options for 'thermostatLoad': {"value":840,"lastUpdated":"2022-03-23T11:36:05.995Z","type":"number","getable":true,"setable":true,"title":"Termostat Varmekabel effekt","desc":null,"units":null,"id":"thermostatLoad","options":{}}
++16:21:48.677: Options for 'regulatorTime': {"value":15,"lastUpdated":"2022-03-03T10:45:19.579Z","type":"number","getable":true,"setable":true,"title":"Tid mellom av/påslag av relé","desc":null,"units":null,"id":"regulatorTime","options":{}}
++16:21:48.685: Options for 'dateTime': {"value":null,"lastUpdated":null,"type":"number","getable":false,"setable":true,"title":"Dato og tid","desc":null,"units":null,"id":"dateTime","options":{}}
++16:21:48.687: Options for 'tempCalibration': {"value":0,"lastUpdated":"2022-03-03T10:45:19.722Z","type":"number","getable":true,"setable":false,"title":"Termostat temperatur kalibrering","desc":null,"units":null,"id":"tempCalibration","options":{}}
++16:21:48.689: Options for 'displayText': {"value":null,"lastUpdated":null,"type":"string","getable":true,"setable":false,"title":"Skjerm tekst","desc":null,"units":null,"id":"displayText","options":{}}
++16:21:48.692: Options for 'button.reset_kwh_meter': {"value":null,"lastUpdated":null,"type":"boolean","getable":false,"setable":true,"title":"Knapp","desc":null,"units":null,"id":"button.reset_kwh_meter","options":{}}
++16:21:48.694: Options for 'dateTime': {"value":null,"lastUpdated":null,"type":"number","getable":false,"setable":true,"title":"Dato og tid","desc":null,"units":null,"id":"dateTime","options":{}}
++16:21:48.699: Options for 'night_switching': {"value":false,"lastUpdated":"2022-03-04T22:28:35.055Z","type":"boolean","getable":true,"setable":true,"title":"Nattmodus","desc":"Nattmodus","units":null,"iconObj":{"id":"be2e07f2c69c203f769244bb130747ad","url":"/icon/be2e07f2c69c203f769244bb130747ad/icon.svg"},"id":"night_switching","options":{}}
++16:21:48.702: Options for 'frost_guard': {"value":false,"lastUpdated":"2022-03-03T10:45:20.754Z","type":"boolean","getable":true,"setable":true,"title":"Frostvakt","desc":"Frostvakt","units":null,"iconObj":{"id":"17eb3db1ea231986711796875dc2bbc9","url":"/icon/17eb3db1ea231986711796875dc2bbc9/icon.svg"},"id":"frost_guard","options":{}}
++16:21:48.705: Options for 'button.reset_kwhMeter': {"value":null,"type":"boolean","getable":false,"setable":true,"title":"Nullstill kw/t teller","desc":"Nullstill kwt teller, OBS! Data blir slettet!","units":null,"id":"button.reset_kwhMeter","options":{"maintenanceAction":true,"title":{"en":"Reset power meter","no":"Nullstill kw/t teller"},"desc":{"en":"Reset the accumulated power usage (kWh), note that this can not be reversed.","no":"Nullstill kwt teller, OBS! Data blir slettet!"}}}
++16:21:48.709: --- ANALYZING DEVICE DONE ---
++16:22:9.321: Email: optional.email@for.feedback
+Comment:Optional
++16:22:9.350: Sending log
+
 +20:42:8.569: ----- ANALYZING DEVICE -----
 +20:42:8.572: Report type: Device is not listed
 +20:42:8.574: Device ID:   b5e56f38-bcf5-4604-b560-491d0baffcc9

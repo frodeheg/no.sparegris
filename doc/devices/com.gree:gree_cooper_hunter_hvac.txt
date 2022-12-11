@@ -1,0 +1,26 @@
+Log ID: 2022-12-09T10:39:45.576Z
+App version 0.19.12
+
++10:39:45.576: ----- ANALYZING DEVICE -----
++10:39:45.581: Report type: Device does not set temperature
++10:39:45.583: Device ID:   e01a4729-832d-4aa0-b08e-b927df4ec804
++10:39:45.635: Device name: Varmepumpe
++10:39:45.637: Driver Uri: homey:app:com.gree
++10:39:45.638: Driver Id: gree_cooper_hunter_hvac
++10:39:45.640: Found onoff cap: onoff
++10:39:45.642: Found temp cap: true
++10:39:45.644: Device reliability: 1
++10:39:45.646: Capabilities: onoff,measure_temperature,target_temperature,thermostat_mode,fan_speed,turbo_mode,lights,xfan_mode,vertical_swing
++10:39:45.647: Options for 'onoff': {"value":true,"lastUpdated":"2022-11-28T04:33:56.599Z","type":"boolean","getable":true,"setable":true,"title":"Slått på","desc":null,"units":null,"id":"onoff","options":{}}
++10:39:45.649: Options for 'measure_temperature': {"value":18,"lastUpdated":"2022-12-09T10:22:59.220Z","type":"number","getable":true,"setable":false,"title":"Temperatur","desc":"Temperatur i grader Celsius (°C)","units":"°C","decimals":2,"chartType":"spline","id":"measure_temperature","options":{}}
++10:39:45.652: Options for 'target_temperature': {"value":18,"lastUpdated":"2022-12-09T10:30:21.442Z","type":"number","getable":true,"setable":true,"title":"Ønsket temperatur","desc":null,"units":"°C","decimals":2,"min":16,"max":30,"step":1,"chartType":"stepLine","id":"target_temperature","options":{"min":16,"max":30,"step":1}}
++10:39:45.654: Options for 'thermostat_mode': {"value":"heat","lastUpdated":"2022-11-22T20:59:19.688Z","type":"enum","getable":true,"setable":true,"title":"HVAC mode","desc":"Mode of the HVAC","units":null,"values":[{"id":"auto","title":"Auto"},{"id":"cool","title":"Cool"},{"id":"heat","title":"Heat"},{"id":"dry","title":"Dry"},{"id":"fan_only","title":"Fan Only"}],"id":"thermostat_mode","options":{}}
++10:39:45.656: Options for 'fan_speed': {"value":"auto","lastUpdated":"2022-11-22T20:59:19.688Z","type":"enum","getable":true,"setable":true,"title":"Fan speed","desc":"Speed of the HVAC's fan","units":null,"values":[{"id":"auto","title":"Auto"},{"id":"low","title":"Low"},{"id":"mediumLow","title":"Medium Low"},{"id":"medium","title":"Medium"},{"id":"mediumHigh","title":"Medium High"},{"id":"high","title":"High"}],"id":"fan_speed","options":{}}
++10:39:45.657: Options for 'turbo_mode': {"value":false,"lastUpdated":"2021-11-11T13:50:51.099Z","type":"boolean","getable":true,"setable":true,"title":"Turbo mode","desc":"Turbo mode of the HVAC's fan","units":null,"id":"turbo_mode","options":{}}
++10:39:45.659: Options for 'lights': {"value":true,"lastUpdated":"2022-06-30T13:02:09.320Z","type":"boolean","getable":true,"setable":true,"title":"Lights mode","desc":"Lights mode on the HVAC panel","units":null,"id":"lights","options":{}}
++10:39:45.661: Options for 'xfan_mode': {"value":null,"lastUpdated":null,"type":"boolean","getable":true,"setable":true,"title":"X-Fan mode","desc":"X-Fan mode of the HVAC's fan","units":null,"id":"xfan_mode","options":{}}
++10:39:45.662: Options for 'vertical_swing': {"value":"default","lastUpdated":"2022-09-08T19:40:22.753Z","type":"enum","getable":true,"setable":true,"title":"Vertical swing","desc":"Position of the fan swing","units":null,"values":[{"id":"default","title":"Disabled"},{"id":"full","title":"Full range"},{"id":"fixedTop","title":"Fixed top"},{"id":"fixedMidTop","title":"Fixed top middle"},{"id":"fixedMid","title":"Fixed middle"},{"id":"fixedMidBottom","title":"Fixed middle bottom"},{"id":"fixedBottom","title":"Fixed bottom"},{"id":"swingBottom","title":"Swing bottom"},{"id":"swingMid","title":"Swing middle"},{"id":"swingTop","title":"Swing top"}],"id":"vertical_swing","options":{}}
++10:39:45.665: --- ANALYZING DEVICE DONE ---
++10:41:3.603: Email: optional.email@for.feedback
+Comment:Feil med prisstyring 
++10:41:3.625: Sending log

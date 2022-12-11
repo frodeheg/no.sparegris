@@ -1,0 +1,17 @@
++18:58:6.218: ----- ANALYZING DEVICE -----
++18:58:6.227: Report type: Device is not listed
++18:58:6.246: Device ID:   6877cbe6-0319-4005-bfc6-cc6b0c45c890
++18:58:6.303: Device name: Trondheimsvegen 18
++18:58:6.314: Driver Uri: homey:app:com.tibber
++18:58:6.329: Driver Id: home
++18:58:6.339: Error: TypeError: Cannot read properties of undefined (reading 'onoff_cap')
++18:58:6.349: Capabilities: measure_price_total,measure_price_info_level,measure_price_lowest,measure_price_highest,price_level,measure_price_level
++18:58:6.361: Options for 'measure_price_total': {"value":5.76,"lastUpdated":"2022-12-09T18:00:00.154Z","type":"number","getable":true,"setable":false,"title":"Current price","desc":null,"units":"kr","decimals":2,"iconObj":{"id":"c465f7c0f74d10788c5c2eab1da9e2bb","url":"/icon/c465f7c0f74d10788c5c2eab1da9e2bb/icon.svg"},"id":"measure_price_total","options":{"decimals":2,"preventInsights":true}}
++18:58:6.374: Options for 'measure_price_info_level': {"value":"EXPENSIVE","lastUpdated":"2022-12-09T06:00:00.274Z","type":"enum","getable":true,"setable":false,"title":"Price level","desc":null,"units":null,"iconObj":{"id":"c465f7c0f74d10788c5c2eab1da9e2bb","url":"/icon/c465f7c0f74d10788c5c2eab1da9e2bb/icon.svg"},"values":[{"id":"VERY_CHEAP","title":"VERY_CHEAP"},{"id":"CHEAP","title":"CHEAP"},{"id":"NORMAL","title":"NORMAL"},{"id":"EXPENSIVE","title":"EXPENSIVE"},{"id":"VERY_EXPENSIVE","title":"VERY_EXPENSIVE"}],"id":"measure_price_info_level","options":{}}
++18:58:6.387: Options for 'measure_price_lowest': {"value":3.8136,"lastUpdated":"2022-12-08T23:00:00.498Z","type":"number","getable":true,"setable":false,"title":"Lowest price today","desc":null,"units":"kr","iconObj":{"id":"c465f7c0f74d10788c5c2eab1da9e2bb","url":"/icon/c465f7c0f74d10788c5c2eab1da9e2bb/icon.svg"},"id":"measure_price_lowest","options":{}}
++18:58:6.404: Options for 'measure_price_highest': {"value":6.4822,"lastUpdated":"2022-12-08T23:00:00.515Z","type":"number","getable":true,"setable":false,"title":"Highest price today","desc":null,"units":"kr","iconObj":{"id":"c465f7c0f74d10788c5c2eab1da9e2bb","url":"/icon/c465f7c0f74d10788c5c2eab1da9e2bb/icon.svg"},"id":"measure_price_highest","options":{}}
++18:58:6.419: Options for 'price_level': {"value":"EXPENSIVE","lastUpdated":"2022-12-09T06:00:00.280Z","type":"enum","getable":true,"setable":false,"title":"Price level (deprecated)","desc":null,"units":null,"iconObj":{"id":"c465f7c0f74d10788c5c2eab1da9e2bb","url":"/icon/c465f7c0f74d10788c5c2eab1da9e2bb/icon.svg"},"values":[{"id":"VERY_CHEAP","title":"VERY_CHEAP"},{"id":"CHEAP","title":"CHEAP"},{"id":"NORMAL","title":"NORMAL"},{"id":"EXPENSIVE","title":"EXPENSIVE"},{"id":"VERY_EXPENSIVE","title":"VERY_EXPENSIVE"}],"id":"price_level","options":{}}
++18:58:6.431: Options for 'measure_price_level': {"value":"HIGH","lastUpdated":"2022-12-09T06:00:00.290Z","type":"enum","getable":true,"setable":false,"title":"Price level (deprecated)","desc":null,"units":null,"iconObj":{"id":"c465f7c0f74d10788c5c2eab1da9e2bb","url":"/icon/c465f7c0f74d10788c5c2eab1da9e2bb/icon.svg"},"values":[{"id":"LOW","title":"LOW"},{"id":"NORMAL","title":"NORMAL"},{"id":"HIGH","title":"HIGH"}],"id":"measure_price_level","options":{}}
++18:58:6.438: --- ANALYZING DEVICE DONE ---
++18:58:22.937: Email:%20optional.email@for.feedback%0AComment:Manglende enheter
++18:58:22.964: Sending log
