@@ -631,5 +631,8 @@
   },
   "0.19.13": {
     "en": "Added graphs for consumption and historic prices / price points"
+  },
+  "0.19.14": {
+    "en": "Added support for some new devices + Fixed car charging flow for cheapest hours + Added more relevant crash-feedback for users that have still not yet installed the newest version of the Easee app."
   }
 }
