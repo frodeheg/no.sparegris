@@ -2209,7 +2209,9 @@ class PiggyBank extends Homey.App {
         }
         const isOn = this.getIsOn(device, deviceId);
         if (isOn === undefined) {
-          this.updateLog(`Refreshtemp: isOn was set to undefined ${isOn}`, c.LOG_ERROR);
+          // This most likely happens when a driver has been disabled
+          this.updateLog(`Refreshtemp: isOn was set to undefined for device ${device.name}`, c.LOG_ERROR);
+          return Promise.resolve([false, true]);
         }
         if (!isOn) {
           if (this.logUnit === deviceId) this.updateLog(`aborted refreshTemp() for ${device.name} - Device is off`, c.LOG_ALL);
