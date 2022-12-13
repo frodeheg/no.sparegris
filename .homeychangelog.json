@@ -634,5 +634,8 @@
   },
   "0.19.14": {
     "en": "Added support for some new devices + Fixed car charging flow for cheapest hours + Added more relevant crash-feedback for users that have still not yet installed the newest version of the Easee app."
+  },
+  "0.19.15": {
+    "en": "Improved detection of reboots. + Minor graph fixes + Improved handling of devices for disabled apps"
   }
 }
