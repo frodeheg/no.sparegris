@@ -380,9 +380,9 @@ class PiggyBank extends Homey.App {
     this.__current_power_time = new Date(await this.homey.settings.get('safeShutdown__current_power_time')); // When null then date is start of unix time
     this.__power_last_hour = toNumber(await this.homey.settings.get('safeShutdown__power_last_hour'));
     this.__offeredEnergy = toNumber(await this.homey.settings.get('safeShutdown__offeredEnergy'));
-    if (((now - this.__current_power_time) > (1000 * 60 * 60))
+    if (((now - this.__current_power_time) > (1000 * 60 * 5))
       || (this.__accum_energy === undefined)) {
-      // More than an hour since safe shutdown, pointless to try to restore state
+      // More than five minutes since safe shutdown, pointless to try to restore state
       this.__accum_energy = 0;
       this.__current_power = undefined;
       this.__current_power_time = new Date(now.getTime());
