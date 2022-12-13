@@ -89,7 +89,7 @@ function generateConsumptionOptions(stats, graphTitle) {
           },
           beforeFooter(context) {
             if (!dataset[context[0].dataIndex]) return graphMissing;
-            if (chartDataOk[context[0].dataIndex] !== true) return graphInaccurate;
+            if (!chartDataOk[context[0].dataIndex]) return graphInaccurate;
             if (context[0].dataIndex === dataset.length - 1) return graphIncomplete;
             return '';
           },
@@ -216,7 +216,7 @@ function generateHourlyMaxOptions(stats, graphTitle) {
           },
           beforeFooter(context) {
             if (!dataset[context[0].dataIndex]) return graphMissing;
-            if (chartDataOk[context[0].dataIndex] !== true) return graphInaccurate;
+            if (!chartDataOk[context[0].dataIndex]) return graphInaccurate;
             if (context[0].dataIndex === dataset.length - 1) return graphIncomplete;
             return '';
           },
