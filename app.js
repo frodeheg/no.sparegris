@@ -420,6 +420,7 @@ class PiggyBank extends Homey.App {
       || !('gridTaxNight' in futurePriceOptions)
       || !('VAT' in futurePriceOptions)
       || !('currency' in futurePriceOptions)
+      || !prices.isValidCurrency(futurePriceOptions.currency)
       || !(Array.isArray(futurePriceOptions.gridCosts))) {
       if (!futurePriceOptions) futurePriceOptions = {};
       if (!('minCheapTime' in futurePriceOptions)) futurePriceOptions.minCheapTime = 4;
@@ -437,7 +438,7 @@ class PiggyBank extends Homey.App {
       if (!('gridTaxDay' in futurePriceOptions)) futurePriceOptions.gridTaxDay = 0.3626; // Tensio default
       if (!('gridTaxNight' in futurePriceOptions)) futurePriceOptions.gridTaxNight = 0.2839; // Tensio default
       if (!('VAT' in futurePriceOptions)) futurePriceOptions.VAT = 25;
-      if (!('currency' in futurePriceOptions)) futurePriceOptions.currency = this.homey.__(prices.defaultCurrency);
+      if (!('currency' in futurePriceOptions) || !prices.isValidCurrency(futurePriceOptions.currency)) futurePriceOptions.currency = this.homey.__(prices.defaultCurrency);
       if (!(Array.isArray(futurePriceOptions.gridCosts))) futurePriceOptions.gridCosts = await this.fetchTariffTable();
       this.updateLog(`Resetting futurePriceOptions to ${JSON.stringify(futurePriceOptions)}`, c.LOG_DEBUG);
       this.homey.settings.set('futurePriceOptions', futurePriceOptions);
@@ -676,6 +677,14 @@ class PiggyBank extends Homey.App {
     this.__oldDeviceList = this.homey.settings.get('deviceList') || [];
 
     this.homey.settings.on('set', setting => {
+      if (setting === 'futurePriceOptions') {
+        // For some reason this
+        const futurePriceOptions = this.homey.settings.get('futurePriceOptions');
+        if (!('currency' in futurePriceOptions)
+          || !prices.isValidCurrency(futurePriceOptions.currency)) {
+          futurePriceOptions.currency = this.homey.__(prices.defaultCurrency);
+        }
+      }
       if (setting === 'deviceList') {
         this.__deviceList = this.homey.settings.get('deviceList');
         for (const deviceId in this.__deviceList) {
@@ -1050,7 +1059,9 @@ class PiggyBank extends Homey.App {
     await prices.currencyApiInit(this.homey.i18n.getLanguage());
     const currencies = await prices.fetchCurrencyTable();
     const namesOnly = {};
-    for (const id in currencies) {
+    const indices = Object.keys(currencies).sort();
+    for (const idx in indices) {
+      const id = indices[idx];
       namesOnly[id] = currencies[id].name;
     }
     return namesOnly;

@@ -54,7 +54,7 @@ class FakeHomey {
         id_e: { name:"Lader", room: "Ute",     image: "https://as2.ftcdn.net/v2/jpg/02/49/76/93/1000_F_249769389_7su5tYXOvcjcehNCcWTwcjnHvSMkLocJ.jpg", use: false, priority: 1, thermostat_cap: false, reliability: 1.0, driverId: 'no.easee:charger' }
       };
     } else if (command.includes('/apiCommand?cmd=getCurrencies')) {
-      response = { nok: 'NOK' };
+      response = { NOK: 'Norsk krone', SEK: 'Svensk Krone', DKK: 'Dansk Krone' };
     } else if (command.includes('/apiCommand?cmd=getAppConfigProgress')) {
       response = {
         numSpookeyChanges: 0,

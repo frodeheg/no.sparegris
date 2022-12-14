@@ -1996,7 +1996,7 @@
           if (err) return alertUser(Homey, err);
           let newCurrencyText = '';
           for (let currencyId in currencies) {
-            newCurrencyText += `<option value="${currencyId}">${currencies[currencyId]}</option>`;
+            newCurrencyText += `<option value="${currencyId}">${currencies[currencyId]} (${currencyId})</option>`;
           }
           currencyElement.innerHTML = newCurrencyText;
 

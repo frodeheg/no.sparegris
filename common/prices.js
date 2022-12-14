@@ -70,9 +70,17 @@ const defaultCurrency = {
   pl: 'PLN',
 };
 
+async function isValidCurrency(currency) {
+  return (currency in currencyTable);
+}
+
 async function getDecimals(currency) {
-  const decimals = 2 - Math.round(Math.log10(currencyTable['NOK'].rate / currencyTable[currency].rate));
-  return decimals;
+  try {
+    const decimals = 2 - Math.round(Math.log10(currencyTable['NOK'].rate / currencyTable[currency].rate));
+    return decimals;
+  } catch {
+    return undefined;
+  }
 }
 
 let currencyLocale = 'no'; // Updated on request
@@ -122,15 +130,19 @@ async function fetchCurrencyTable(currencies = '', date) {
         }
         const exchangeRate = +data.data.dataSets[0].series[`0:${i}:0:0`].observations[latestDateIndex][0] / multiplier;
         const exchangeDate = data.data.structure.dimensions.observation[0].values[latestDateIndex].start.substring(0, 10);
-        if (!(currencyNames[i].id in currencyTable)) currencyTable[currencyNames[i].id] = {};
-        currencyTable[currencyNames[i].id].rate = exchangeRate;
-        currencyTable[currencyNames[i].id].date = exchangeDate;
-        currencyTable[currencyNames[i].id].name = currencyNames[i].name;
+        if ((Number.isFinite(exchangeRate)) && (currencyNames[i].id in currencyTable)) {
+          console.log(`Updated currency ${currencyNames[i].id}: ${exchangeRate}`);
+          currencyTable[currencyNames[i].id].rate = exchangeRate;
+          currencyTable[currencyNames[i].id].date = exchangeDate;
+          currencyTable[currencyNames[i].id].name = currencyNames[i].name;
+        } else {
+          console.log(`New currency (ignored) ${currencyNames[i].id}: ${exchangeRate}`);
+        }
       }
     }
     //
     currencyCopy = JSON.parse(JSON.stringify(currencyTable));
-  } catch (err) {} // Ignore errors. Instead the currencyTable contain a date which indicate last working date
+  } catch {} // Ignore errors. Instead the currencyTable contain a date which indicate last working date
 
   if (currencies === '') return currencyCopy;
   const asArray = Object.entries(currencyCopy);
@@ -140,8 +152,12 @@ async function fetchCurrencyTable(currencies = '', date) {
 }
 
 async function getCurrencyModifier(fromCurrency, toCurrency, date) {
-  const currencyTable = await fetchCurrencyTable([toCurrency, fromCurrency], date);
-  return currencyTable[fromCurrency].rate / currencyTable[toCurrency].rate;
+  try {
+    const currencyTable2 = await fetchCurrencyTable([toCurrency, fromCurrency], date);
+    return currencyTable2[fromCurrency].rate / currencyTable2[toCurrency].rate;
+  } catch {
+    return undefined;
+  }
 }
 
 // =============================================================================
@@ -198,7 +214,7 @@ async function entsoeGetData(startTime, currency = 'NOK', biddingZone) {
         for (let item = 0; item < serieData.length; item++) {
           const timeUTC = new Date(serieTimeUTC.getTime());
           timeUTC.setHours(timeUTC.getHours() + serieData[item].position - 1);
-          const price = (serieData[item]['price.amount'] * currencyModifier) / 1000; // serieData is EUR/MW
+          const price = (currencyModifier === undefined) ? undefined : (serieData[item]['price.amount'] * currencyModifier) / 1000; // serieData is EUR/MW
           if (timeUTC >= startTime) {
             priceData.push({ time: timeUTC.getTime() / 1000, price });
           }
@@ -335,6 +351,7 @@ fetchFromEntsoe(); */
 module.exports = {
   currencyApiInit,
   defaultCurrency,
+  isValidCurrency,
   getDecimals,
   fetchCurrencyTable,
   entsoeApiInit,
