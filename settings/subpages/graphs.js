@@ -138,13 +138,15 @@ function generateHourlyMaxData(stats) {
   const tariffAbove = getGridAbove(tariffGuide);
   const tariffBelow = getGridBelow(tariffGuide);
   // Generate data
-  const dataTariffAbove = Array(chartDaysInMonth).fill(tariffAbove);
-  const dataTariffBelow = Array(chartDaysInMonth).fill(tariffBelow);
-  const dataTariffGuide = Array(chartDaysInMonth).fill(tariffGuide);
-  const colorBars = Array(chartDaysInMonth).fill('pink');
-  const colorBarLines = Array(chartDaysInMonth).fill('black');
+  const maxDataLength = (chartPeriod === GRANULARITY.DAY) ? chartDaysInMonth : dataset.length;
+
+  const dataTariffAbove = Array(maxDataLength).fill(tariffAbove);
+  const dataTariffBelow = Array(maxDataLength).fill(tariffBelow);
+  const dataTariffGuide = Array(maxDataLength).fill(tariffGuide);
+  const colorBars = Array(maxDataLength).fill('pink');
+  const colorBarLines = Array(maxDataLength).fill('black');
   const showMonth = (+chartPeriod === GRANULARITY.DAY);
-  for (let i = 0; i < chartDaysInMonth; i++) {
+  for (let i = 0; i < maxDataLength; i++) {
     let barCol = '80,160,80';
     let barAlpha = 1;
     let lineCol = '0,0,0';
@@ -245,7 +247,7 @@ function generateHourlyMaxOptions(stats, graphTitle) {
         },
         filter(context) {
           if (context.dataset.label.startsWith('Trinn')) return false;
-          //if (context.dataset.label === graphTariff && chartPeriod != GRANULARITY.DAY) return false;
+          if (context.dataset.label === graphTariff && chartPeriod != GRANULARITY.DAY) return false;
           return true;
         },
       },
