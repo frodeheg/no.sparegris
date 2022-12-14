@@ -24,10 +24,10 @@ class FakeHomey {
       response = {
         daysInMonth: 31,
         hoursInDay: 24,
-        localTime: 123123123,
-        localDay: 2,
-        localMonth: 2,
-        localYear: 2,
+        localTime: 1670989328353,
+        localDay: 14,
+        localMonth: 11,
+        localYear: 2022,
         data: {
           // maxPower: [4000, 4900, 4300, 4800, 4500, 4400, 4200, 3200, 1023, 4300],
           maxPower: [4704, 4938, 4021, 4297],

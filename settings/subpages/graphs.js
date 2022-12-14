@@ -18,6 +18,8 @@ let chartDayIdx = 1;
 let chartDaysInMonth = 31;
 let chartHoursInDay = 24;
 let chartTime = new Date();
+let chartStartTime = chartTime;
+let chartEndTime = chartTime;
 let chartAux;
 let chartDataOk;
 
@@ -41,7 +43,12 @@ function generateConsumptionData(stats) {
     if (!chartDataOk[i]) {
       barCol = '170,80,80';
     }
-    if (i === dataset.length - 1) {
+
+    const now = new Date();
+    if ((i === dataset.length - 1)
+      && (chartPeriod !== GRANULARITY.HOUR)
+      && (now >= chartStartTime)
+      && (now <= chartEndTime)) {
       barAlpha = 0.3;
       lineAlpha = 0.3;
     }
@@ -50,7 +57,7 @@ function generateConsumptionData(stats) {
   }
   return [{
     type: 'bar',
-    label: graphHighest,
+    label: chartPeriod === GRANULARITY.HOUR ? textConsumption : graphHighest,
     backgroundColor: colorBars,
     borderColor: colorBarLines,
     borderWidth: 1,
@@ -90,7 +97,13 @@ function generateConsumptionOptions(stats, graphTitle) {
           beforeFooter(context) {
             if (!dataset[context[0].dataIndex]) return graphMissing;
             if (!chartDataOk[context[0].dataIndex]) return graphInaccurate;
-            if (context[0].dataIndex === dataset.length - 1) return graphIncomplete;
+            const now = new Date();
+            if ((context[0].dataIndex === dataset.length - 1)
+              && (chartPeriod !== GRANULARITY.HOUR)
+              && (now > chartStartTime)
+              && (now < chartEndTime)) {
+              return graphIncomplete;
+            }
             return '';
           },
         },
@@ -143,7 +156,11 @@ function generateHourlyMaxData(stats) {
     if (!chartDataOk[i]) {
       barCol = '170,80,80';
     }
-    if (i === dataset.length - 1) {
+    const now = new Date();
+    if ((i === dataset.length - 1)
+      && (chartPeriod !== GRANULARITY.HOUR)
+      && (now > chartStartTime)
+      && (now < chartEndTime)) {
       barAlpha = 0.3;
       lineAlpha = 0.3;
     }
@@ -177,7 +194,7 @@ function generateHourlyMaxData(stats) {
     data: dataTariffGuide,
   }, {
     type: 'bar',
-    label: graphHighest,
+    label: chartPeriod === GRANULARITY.HOUR ? textConsumption : graphHighest,
     backgroundColor: colorBars,
     borderColor: colorBarLines,
     borderWidth: 1,
@@ -217,7 +234,12 @@ function generateHourlyMaxOptions(stats, graphTitle) {
           beforeFooter(context) {
             if (!dataset[context[0].dataIndex]) return graphMissing;
             if (!chartDataOk[context[0].dataIndex]) return graphInaccurate;
-            if (context[0].dataIndex === dataset.length - 1) return graphIncomplete;
+            if ((context[0].dataIndex === dataset.length - 1)
+              && (chartPeriod !== GRANULARITY.HOUR)
+              && (now > chartStartTime)
+              && (now < chartEndTime)) {
+              return graphIncomplete;
+            }
             return '';
           },
         },
@@ -481,14 +503,20 @@ function updateGraph(Homey) {
         case GRANULARITY.MONTH:
           timeString = `${chartYearIdx}`;
           labels = monthText;
+          chartStartTime = new Date(`${chartYearIdx}`);
+          chartEndTime = new Date(chartStartTime.getTime() + (1000 * 60 * 60 * 24 * 365));
           break;
         case GRANULARITY.DAY:
           timeString = monthText[chartMonthIdx];
           labels = Array.from(Array(chartDaysInMonth + 1).keys()).slice(1);
+          chartStartTime = new Date(`${chartYearIdx}-${chartMonthIdx+1}`);
+          chartEndTime = new Date(chartStartTime.getTime() + (1000 * 60 * 60 * 24 * chartDaysInMonth));
           break;
         case GRANULARITY.HOUR:
           timeString = `${monthText[chartMonthIdx]} - ${chartDayIdx}`;
           labels = Array.from(Array(chartHoursInDay).keys()).map(h => `${h}:00`);
+          chartStartTime = new Date(`${chartYearIdx}-${chartMonthIdx+1}-${chartDayIdx}`);
+          chartEndTime = new Date(chartStartTime.getTime() + (1000 * 60 * 60 * chartHoursInDay));
           break;
         default:
       }
@@ -605,6 +633,8 @@ function InitGraph(Homey, stats) {
   chartDaysInMonth = stats.daysInMonth;
   chartHoursInDay = stats.hoursInDay;
   chartTime = new Date(stats.localTime);
+  chartStartTime = new Date(chartTime.getTime());
+  chartEndTime = new Date(chartStartTime.getTime() + (1000 * 60 * 60 * 24 * chartDaysInMonth));
 
   // Generate labels
   const dataDays = Array.from(Array(chartDaysInMonth + 1).keys()).slice(1);
