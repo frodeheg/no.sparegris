@@ -131,7 +131,7 @@ async function fetchCurrencyTable(currencies = '', date) {
         const exchangeRate = +data.data.dataSets[0].series[`0:${i}:0:0`].observations[latestDateIndex][0] / multiplier;
         const exchangeDate = data.data.structure.dimensions.observation[0].values[latestDateIndex].start.substring(0, 10);
         if ((Number.isFinite(exchangeRate)) && (currencyNames[i].id in currencyTable)) {
-          console.log(`Updated currency ${currencyNames[i].id}: ${exchangeRate}`);
+          // console.log(`Updated currency ${currencyNames[i].id}: ${exchangeRate}`);
           currencyTable[currencyNames[i].id].rate = exchangeRate;
           currencyTable[currencyNames[i].id].date = exchangeDate;
           currencyTable[currencyNames[i].id].name = currencyNames[i].name;

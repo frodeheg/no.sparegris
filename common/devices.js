@@ -152,6 +152,7 @@ const DEVICE_CMD = {
   'com.everspring:AN179': DEFAULT_SWITCH,
   'com.fibaro:FGS-213': DEFAULT_SWITCH,
   'com.fibaro:FGWPE-101': DEFAULT_SWITCH,
+  'com.fibaro:FGWPx-102-PLUS': DEFAULT_SWITCH,
   'com.gardena:water-control': DEFAULT_IGNORED,
   'com.gree:gree_cooper_hunter_hvac': {
     ...DEFAULT_AC,
@@ -165,11 +166,10 @@ const DEVICE_CMD = {
   'com.neo:NAS-WR02ZE': DEFAULT_SWITCH,
   'com.nibeuplink:com.nibeuplink.system': {
     ...DEFAULT_SWITCH,
-    note: 'OnOff for this device control temporary lux. Please confirm that it works as intended.',
+    note: 'OnOff for this device control temporary lux.',
     setOnOffCap: 'temporary_lux',
     setOnValue: true,
     setOffValue: false,
-    beta: true,
     default: false
   },
   'com.panasonic.PCC:comfortcloud': {
@@ -300,6 +300,16 @@ const DEVICE_CMD = {
     tempMin: 5,
     tempMax: 40,
     tempStep: 0.5
+  },
+  'no.thermofloor:ZM-Thermostat-16A': {
+    ...DEFAULT_HEATER,
+    setOnOffCap: 'thermostat_mode_13570',
+    setOnValue: 'heat',
+    setOffValue: 'off',
+    tempMin: 4,
+    tempMax: 35,
+    tempStep: 0.5, // Actually 0.01
+    default: false
   },
   'no.thermofloor:Z-TRM2fx': {
     type: DEVICE_TYPE.HEATER,
