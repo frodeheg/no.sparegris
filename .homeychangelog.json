@@ -637,5 +637,8 @@
   },
   "0.19.15": {
     "en": "Improved detection of reboots. + Minor graph fixes + Improved handling of devices for disabled apps"
+  },
+  "0.19.16": {
+    "en": "Fixed 2 crash bugs and some minor issues with the graphs"
   }
 }
