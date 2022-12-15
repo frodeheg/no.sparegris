@@ -367,6 +367,7 @@ class PiggyBank extends Homey.App {
     // Version 0.19.18
     if (+settingsVersion < 2) {
       this.homey.settings.set('crossHourSmooth', 20);
+      this.homey.settings.set('settingsVersion', 2);
     }
 
     // Version 0.18.xx
