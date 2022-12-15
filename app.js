@@ -402,9 +402,8 @@ class PiggyBank extends Homey.App {
     this.__accum_since.setHours(0, 0, 0, 0);
     // ===== KEEPING STATE ACROSS RESTARTS END =====
     // Initialize missing settings
-    let crossHourSmooth = this.homey.settings.get('crossHourSmooth');
-    if (crossHourSmooth === null) {
-      crossHourSmooth = 2000;
+    if (this.homey.settings.get('crossHourSmooth') === null) {
+      this.homey.settings.set('crossHourSmooth', 2000);
     }
     let futurePriceOptions = this.homey.settings.get('futurePriceOptions');
     if (!futurePriceOptions
