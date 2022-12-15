@@ -364,6 +364,11 @@ class PiggyBank extends Homey.App {
       this.homey.settings.set('settingsVersion', 1);
     }
 
+    // Version 0.19.18
+    if (+settingsVersion < 2) {
+      this.homey.settings.set('crossHourSmooth', 20);
+    }
+
     // Version 0.18.xx
     // Delete the old statistics as they has been in the archive for a while
     // this.homey.settings.unset('stats_daily_max');
@@ -403,7 +408,7 @@ class PiggyBank extends Homey.App {
     // ===== KEEPING STATE ACROSS RESTARTS END =====
     // Initialize missing settings
     if (this.homey.settings.get('crossHourSmooth') === null) {
-      this.homey.settings.set('crossHourSmooth', 2000);
+      this.homey.settings.set('crossHourSmooth', 20);
     }
     let futurePriceOptions = this.homey.settings.get('futurePriceOptions');
     if (!futurePriceOptions
@@ -1640,7 +1645,7 @@ class PiggyBank extends Homey.App {
     const errorMarginWatts = trueMaxPower * errorMargin;
     const maxPower = trueMaxPower - errorMarginWatts;
     const safetyPower = +this.homey.settings.get('safetyPower');
-    const crossHourSmooth = +this.homey.settings.get('crossHourSmooth');
+    const crossHourSmooth = +this.homey.settings.get('crossHourSmooth') * (maxPower - this.__accum_energy);
     const negativeReserve = crossHourSmooth * (1 - (timeSinceLastHour(now) / 3600000));
 
     this.updateLog(`${'onPowerUpdate: '
