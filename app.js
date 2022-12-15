@@ -1646,7 +1646,7 @@ class PiggyBank extends Homey.App {
     const errorMarginWatts = trueMaxPower * errorMargin;
     const maxPower = trueMaxPower - errorMarginWatts;
     const safetyPower = +this.homey.settings.get('safetyPower');
-    const crossHourSmooth = +this.homey.settings.get('crossHourSmooth') * (maxPower - this.__accum_energy);
+    const crossHourSmooth = (+this.homey.settings.get('crossHourSmooth') / 100) * (maxPower - this.__accum_energy);
     const negativeReserve = crossHourSmooth * (1 - (timeSinceLastHour(now) / 3600000));
 
     this.updateLog(`${'onPowerUpdate: '
