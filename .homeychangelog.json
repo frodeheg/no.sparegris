@@ -640,5 +640,8 @@
   },
   "0.19.16": {
     "en": "Fixed 2 crash bugs and some minor issues with the graphs"
+  },
+  "0.19.17": {
+    "en": "Added a new feature for smoothing power across new hours + Fixed a minor graph issue + Added support for fibaro:FGWPx-102-PLUS and thermofloor:ZM-Thermostat-16A + removed experimental status for com.nibeuplink.system"
   }
 }
