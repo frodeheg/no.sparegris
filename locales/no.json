@@ -125,6 +125,8 @@
       "safetyPower" : "Reservert effekt",
       "safetyPowerHint1" : "Unngå å feile strømmålet ved å reservere strøm til ukontrollerbare enheter.",
       "safetyPowerHint2" : "Hint: Du kan bruke flytkort for å endre den reserverte effekten over tid. Det anbefales å reservere mer strøm før du lager middag.",
+      "crossHourSmooth" : "Utjevning mellom timer",
+      "crossHourSmoothHint" : "Denne funksjonen lar deg bruke mer strøm enn budsjettert i starten av hver time. Verdien blir lagt til tillatt effekt ved begynnelsen av hver time og gradvis redusert til 0 ved slutten av hver time.",
       "mainFuse" : "Hovedsikring",
       "mainFuseHint" : "Hovdedsikringen har betydning for hva som regnes ut som maks tilgjengelig effekt. Appen vil ikke la deg bruke mer effekt enn det hovedsikringen tillater.",
       "freeThreshold": "Terskelverdi ledig kapasitet",

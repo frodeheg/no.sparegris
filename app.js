@@ -402,6 +402,10 @@ class PiggyBank extends Homey.App {
     this.__accum_since.setHours(0, 0, 0, 0);
     // ===== KEEPING STATE ACROSS RESTARTS END =====
     // Initialize missing settings
+    let crossHourSmooth = this.homey.settings.get('crossHourSmooth');
+    if (crossHourSmooth === null) {
+      crossHourSmooth = 2000;
+    }
     let futurePriceOptions = this.homey.settings.get('futurePriceOptions');
     if (!futurePriceOptions
       || !('minCheapTime' in futurePriceOptions)
@@ -1637,16 +1641,19 @@ class PiggyBank extends Homey.App {
     const errorMarginWatts = trueMaxPower * errorMargin;
     const maxPower = trueMaxPower - errorMarginWatts;
     const safetyPower = +this.homey.settings.get('safetyPower');
+    const crossHourSmooth = +this.homey.settings.get('crossHourSmooth');
+    const negativeReserve = crossHourSmooth * (1 - (timeSinceLastHour(now) / 3600000));
 
     this.updateLog(`${'onPowerUpdate: '
       + 'Using: '}${String(newPower)}W, `
       + `Accum: ${String(this.__accum_energy.toFixed(2))} Wh, `
       + `Limit: ${String(maxPower)} Wh, `
       + `Reserved: ${String(Math.ceil(this.__reserved_energy + safetyPower))}W, `
+      + `Smoothing: ${String(Math.ceil(negativeReserve))}W, `
       + `(Estimated end: ${String(this.__power_estimated.toFixed(2))})`, c.LOG_DEBUG);
 
     // Try to control devices if the power is outside of the preferred bounds
-    let powerDiff = (((maxPower - this.__accum_energy - this.__reserved_energy) * (1000 * 60 * 60)) / remainingTime) - newPower - safetyPower;
+    let powerDiff = (((maxPower - this.__accum_energy - this.__reserved_energy) * (1000 * 60 * 60)) / remainingTime) - newPower - safetyPower + negativeReserve;
     const mainFuse = this.homey.settings.get('mainFuse'); // Amps
     const maxDrain = Math.round(1.732050808 * 230 * mainFuse);
     const maxFreeDrain = ((isNumber(maxDrain) && (maxDrain > trueMaxPower)) ? maxDrain : (trueMaxPower * 10)) - newPower;

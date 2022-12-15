@@ -125,6 +125,8 @@
       "safetyPower" : "Reserved power",
       "safetyPowerHint1" : "Avoid failing the power target by reserving power to uncontrollable devices.",
       "safetyPowerHint2" : "Hint: You can use flow cards to change the reserved power during the day. It is reccomended to reserve more power before making dinner.",
+      "crossHourSmooth" : "Cross Hour Smoothing",
+      "crossHourSmoothHint" : "This feature allow you to over-use power at the beginning of every hour. The amount given will be added to the allowed power usage at the beginning of every hour and gradually reduced to 0 at the end of every hour.",
       "mainFuse" : "Main fuse",
       "mainFuseHint" : "The main fuse is important for what is calculated as the maximum available power. The app will not let you use more power than the main fuse allows.",
       "freeThreshold": "Free capacity threshold",

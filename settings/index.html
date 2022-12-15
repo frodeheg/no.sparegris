@@ -1075,6 +1075,16 @@
 
         <table class="settings_table">
           <tr>
+            <td class="settings_row_name"><label for="crossHourSmooth" data-i18n="settings.global.crossHourSmooth">global.crossHourSmooth</label>:</td>
+            <td class="settings_row_input"><input id="crossHourSmooth" type="number" min="0" max="100000" step="100" value="2000" onchange="displaySaveHint()">W 
+              <div class="hintButton" onclick="toggle(this,'crossHourSmoothHint');return false;">i</div>
+            </td>
+          </tr>
+        </table>
+        <p id="crossHourSmoothHint" class="hint" data-i18n="settings.global.crossHourSmoothHint">global.crossHourSmoothHint</p>
+
+        <table class="settings_table">
+          <tr>
             <td class="settings_row_name"><label for="mainFuse" data-i18n="settings.global.mainFuse">global.mainFuse</label>:</td>
             <td class="settings_row_input"><input id="mainFuse" type="number" min="0" max="100000" value="63" onchange="displaySaveHint()">A 
               <div class="hintButton" onclick="toggle(this,'mainFuseHint');return false;">i</div>
@@ -1612,6 +1622,7 @@
       var expireDailyLoaded = false;
       var expireHourlyLoaded = false;
       var safetyPowerLoaded = false;
+      var crossHourSmoothLoaded = false;
       var maxPowerLoaded = false;
       var deviceListLoaded = false;
       var modeListLoaded = false;
@@ -1729,6 +1740,7 @@
           `expireDailyLoaded: ${expireDailyLoaded}<br>` +
           `expireHourlyLoaded: ${expireHourlyLoaded}<br>` +
           `safetyPowerLoaded: ${safetyPowerLoaded}<br>` +
+          `crossHourSmoothLoaded: ${crossHourSmoothLoaded}<br>` +
           `priceModeLoaded: ${priceModeLoaded}<br>` +
           `pricePointLoaded: ${pricePointLoaded}<br>` +
           `priceActionListLoaded: ${priceActionListLoaded}<br>` +
@@ -1753,6 +1765,7 @@
           && expireDailyLoaded
           && expireHourlyLoaded
           && safetyPowerLoaded
+          && crossHourSmoothLoaded
           && priceModeLoaded
           && pricePointLoaded
           && priceActionListLoaded
@@ -1843,6 +1856,7 @@
         var controlTempElement = document.getElementById("controlTemp");
         var freeThresholdElement = document.getElementById("freeThreshold");
         var safetyPowerElement = document.getElementById("safetyPower");
+        var crossHourSmoothElement = document.getElementById("crossHourSmooth");
         var priceModeElement = document.getElementById("priceMode");
         var pricePointElement = document.getElementById("pricePoint");
         var mainFuseElement = document.getElementById("mainFuse");
@@ -2162,6 +2176,12 @@
           safetyPowerLoaded = true;
           checkLoadingDone();
         });
+        Homey.get("crossHourSmooth", function (err, crossHourSmooth) {
+          if (err) return Homey.alert(err);
+          document.getElementById("crossHourSmooth").value = crossHourSmooth;
+          crossHourSmoothLoaded = true;
+          checkLoadingDone();
+        });
         Homey.get("mainFuse", function (err, mainFuse) {
           if (err) return Homey.alert(err);
           if (mainFuse !== null) {
@@ -2251,6 +2271,7 @@
               Homey.set("expireDaily",document.getElementById("expireDaily").value, errFunc);
               Homey.set("expireHourly",document.getElementById("expireHourly").value, errFunc);
               Homey.set("safetyPower", safetyPowerElement.value, errFunc);
+              Homey.set("crossHourSmooth", crossHourSmoothElement.value, errFunc);
               Homey.set("mainFuse", mainFuseElement.value, errFunc);
               Homey.set("settingsSaved", "", errFunc); // On settings is only called if the settings actually changed
               Homey.set("settingsSaved", "true", errFunc); // This one will throw the message settings.alert.settingssaved on success
