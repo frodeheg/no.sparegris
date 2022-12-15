@@ -57,7 +57,7 @@ function generateConsumptionData(stats) {
   }
   return [{
     type: 'bar',
-    label: chartPeriod === GRANULARITY.HOUR ? textConsumption : graphHighest,
+    label: textConsumption,
     backgroundColor: colorBars,
     borderColor: colorBarLines,
     borderWidth: 1,
