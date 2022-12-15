@@ -643,5 +643,8 @@
   },
   "0.19.17": {
     "en": "Added a new feature for smoothing power across new hours + Fixed a minor graph issue + Added support for fibaro:FGWPx-102-PLUS and thermofloor:ZM-Thermostat-16A + removed experimental status for com.nibeuplink.system"
+  },
+  "0.19.18": {
+    "en": "Changed the Cross hour smoothing to only add an amount based on what is remaining instead of a static amount. See ticket #50 for details."
   }
 }
