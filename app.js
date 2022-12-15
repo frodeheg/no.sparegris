@@ -405,7 +405,7 @@ class PiggyBank extends Homey.App {
       this.updateLog(`Restored state from safe shutdown values ${this.__accum_energy} ${this.__current_power} ${this.__current_power_time} ${this.__power_last_hour}`, c.LOG_ALL);
     }
     this.__accum_since = new Date(this.__current_power_time.getTime());
-    this.__accum_since.setHours(0, 0, 0, 0);
+    this.__accum_since.setMinutes(0, 0, 0);
     // ===== KEEPING STATE ACROSS RESTARTS END =====
     // Initialize missing settings
     if (this.homey.settings.get('crossHourSmooth') === null) {
