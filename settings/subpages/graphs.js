@@ -292,12 +292,13 @@ function generatePriceData(stats) {
   const ppNormMax = dataset.filter((p, i) => (+chartAux[i] === PP.NORM)).reduce((a, b) => { return a === undefined ? b : Math.max(a, b); }, ppLowMax);
   const ppHighMax = dataset.filter((p, i) => (+chartAux[i] === PP.HIGH)).reduce((a, b) => { return a === undefined ? b : Math.max(a, b); }, ppNormMax);
   const ppExtremeMax = dataset.filter((p, i) => (+chartAux[i] === PP.EXTREME)).reduce((a, b) => { return a === undefined ? b : Math.max(a, b); }, ppHighMax);
+  const ppMin = dataset.reduce((a, b) => { return a === undefined ? b : Math.min(a, b); }, 0);
   const colDirt = 'rgba(0,255,0,0.5)';
   const colCheap = 'rgba(0,128,0,0.5)';
   const colNorm = 'rgba(0,128,255,0.4)';
   const colHigh = 'rgba(128,0,0,0.3)';
   const colExtreme = 'rgba(255,0,0,0.2)';
-  if (!ppDirtMax) ppDirtMax = ppLowMax * 0.9;
+  if (!ppDirtMax) ppDirtMax = ppMin * 0.9;
   const skipped = (ctx, value) => ctx.p0.skip || ctx.p1.skip ? value : undefined;
   const chartData = [{
     type: 'line',
