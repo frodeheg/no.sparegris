@@ -2761,6 +2761,8 @@ class PiggyBank extends Homey.App {
 
   /**
    * Set up arrays for graph generation and return
+   * All data is fetched from the archive except for future prices.
+   * If future prices are requested then the price points are automatically calculated.
    * @param type = type of statistics to return
    * @param index = index of statistics to return
    * @returns Statistics to generate graphs
@@ -2802,6 +2804,13 @@ class PiggyBank extends Homey.App {
         timeId = `${statsTimeLocal.getFullYear()}-${String(statsTimeLocal.getMonth() + 1).padStart(2, '0')}-${String(statsTimeLocal.getDate()).padStart(2, '0')}`;
         break;
     }
+    // Fetch future data in case it's needed
+    let futureArchive = {};
+    const todayStart = roundToStartOfDay(new Date(), this.homey);
+    if ((+granularity === c.GRANULARITY.HOUR) && type.includes('price') && (statsTimeUTC > todayStart)) {
+      futureArchive = this.buildFutureData();
+    }
+    // Fetch data from archive
     let searchData;
     const searchDataGood = ('dataOk' in archive) ? archive.dataOk[period] : {};
     dataGood = searchDataGood[timeId];
@@ -2822,7 +2831,12 @@ class PiggyBank extends Homey.App {
         case 'overShootAvoided':
           this.log(`trying: ${part} ${period} ${timeId} granularity: ${granularity}`);
           try {
-            searchData = (part in archive) ? archive[part][period] : undefined;
+            const futureData = (part in futureArchive) ? futureArchive[part][period] : undefined;
+            const archiveData = (part in archive) ? archive[part][period] : undefined;
+            searchData = {
+              ...futureData,
+              ...archiveData
+            };
             data[part] = searchData[timeId];
             if (searchData === undefined) throw new Error('No searchData');
             if (data[part] === undefined) throw new Error('No data');
@@ -3351,6 +3365,40 @@ class PiggyBank extends Homey.App {
       }
     }
     return { prices: pricesOnly, now: currentIndex };
+  }
+
+  /**
+   * Builds an array of future data similar to the archive
+   */
+  async buildFutureData() {
+    const nowLocal = toLocalTime(new Date());
+    const todayHours = hoursInDay(nowLocal, this.homey);
+
+    console.log('Fetching day data');
+    const futureData = {};
+    futureData['price'] = {};
+    futureData['price']['hourly'] = {};
+    futureData['pricePoints'] = {};
+    futureData['pricePoints']['hourly'] = {};
+    if (this.__current_prices.length > 0) {
+      const todayIndex = `${nowLocal.getFullYear()}-${String(nowLocal.getMonth() + 1).padStart(2, '0')}-${String(nowLocal.getDate()).padStart(2, '0')}`;
+      futureData['price']['hourly'][todayIndex] = [];
+      futureData['pricePoints']['hourly'][todayIndex] = [];
+      for (let idx = 0; idx < todayHours; idx++) {
+        futureData['price']['hourly'][todayIndex][idx] = this.__current_prices[idx];
+      }
+    }
+    if (this.__current_prices.length >= todayHours) {
+      const tomorrowLocal = new Date(nowLocal.getTime());
+      tomorrowLocal.setDate(tomorrowLocal.getDate() + 1);
+      const tomorrowIndex = `${tomorrowLocal.getFullYear()}-${String(tomorrowLocal.getMonth() + 1).padStart(2, '0')}-${String(tomorrowLocal.getDate()).padStart(2, '0')}`;
+      futureData['price']['hourly'][tomorrowIndex] = [];
+      futureData['pricePoints']['hourly'][tomorrowIndex] = [];
+      for (let idx = todayHours; idx < this.__current_prices.length; idx++) {
+        futureData['price']['hourly'][tomorrowIndex][idx - todayHours] = this.__current_prices[idx];
+      }
+    }
+    return futureData;
   }
 
   /**
