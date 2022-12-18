@@ -649,5 +649,8 @@
   },
   "0.19.19": {
     "en": "Fix for the nev overuse function, it was broken."
+  },
+  "0.19.20": {
+    "en": "Added future price to price graph + Fixed some legend text in the graph + Fixed extimated usage after a restart of the app."
   }
 }
