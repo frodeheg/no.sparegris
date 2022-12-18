@@ -3435,8 +3435,9 @@ class PiggyBank extends Homey.App {
     // If min/max limit does not encompas enough hours, change the limits
     const orderedPriceTable = [...todayArray].sort();
     const lowPriceIndex = +futureData.minCheapTime;
-    const highPriceIndex = 23 - futureData.minExpensiveTime;
-    if (outState.__low_price_limit < orderedPriceTable[lowPriceIndex]) {
+    const highPriceIndex = 23 - +futureData.minExpensiveTime;
+    if ((lowPriceIndex > 0)
+      && (outState.__low_price_limit < orderedPriceTable[lowPriceIndex])) {
       outState.__low_price_limit = orderedPriceTable[lowPriceIndex];
       if (outState.__low_price_limit > outState.__high_price_limit) {
         outState.__high_price_limit = outState.__low_price_limit;
@@ -3445,7 +3446,8 @@ class PiggyBank extends Homey.App {
         outState.__extreme_price_limit = outState.__low_price_limit;
       }
     }
-    if (outState.__high_price_limit > orderedPriceTable[highPriceIndex]) {
+    if ((highPriceIndex < 23)
+      && (outState.__high_price_limit > orderedPriceTable[highPriceIndex])) {
       outState.__high_price_limit = orderedPriceTable[highPriceIndex];
       if (outState.__low_price_limit > outState.__high_price_limit) {
         outState.__low_price_limit = outState.__high_price_limit;

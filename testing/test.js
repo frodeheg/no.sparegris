@@ -184,8 +184,8 @@ async function testPricePoints() {
     0.2, 0.3, 0.5, 0.3, 0.2, 0.5, 0.9, 0.8, 0.1, 0.2, 0.2, 0.3,
     0.5, 0.3, 0.2, 0.5, 0.9, 0.8, 0.1, 0.2, 0.2, 0.3, 0.5, 0.3];
   const CorrectPP = [4, 0, 1, 0, 4, 1, 2, 3, 4, 4, 4, 0, 1, 0, 4, 1, 2, 2, 4, 4, 4, 0, 1, 0];
-  //const sortedPrices = app.__current_prices.slice(0, 24).sort((a, b) => b - a);
-  //console.log(`Sorted prices: ${sortedPrices}`); //High cap: 0.5, low cap: 0.2
+  // const sortedPrices = app.__current_prices.slice(0, 24).sort((a, b) => b - a);
+  // console.log(`Sorted prices: ${sortedPrices}`); //High cap: 0.5, low cap: 0.2
   app.homey.settings.set('averagePrice', 0.6);
 
   const now = roundToStartOfDay(new Date(1666396747401), app.homey);
@@ -200,7 +200,10 @@ async function testPricePoints() {
     await app.onNewHour(true, curTime);
     if (app.__current_price_index !== hour) throw new Error('Current hour is not calculated correctly');
     if (app.homey.settings.get('pricePoint') !== CorrectPP[hour]) throw new Error(`Invalid Price point at hour ${hour}`);
-    // console.log(`${String(hour).padStart(2, '0')}:00 Price: ${app.__current_prices[hour]} (${ppNames[app.homey.settings.get('pricePoint')]})`);
+    /* const ppNames = ['Billig', 'Normal', 'Dyrt', 'Kjempedyrt', 'Veldig billig'];
+    const avgPrice = +app.homey.settings.get('averagePrice');
+    console.log(`${String(hour).padStart(2, '0')}:00 Price: ${app.__current_prices[hour]}, avg: ${avgPrice.toFixed(2)} `
+      + `(${ppNames[app.homey.settings.get('pricePoint')].padStart(13, ' ')} vs. ${ppNames[CorrectPP[hour]].padStart(13, ' ')})`); */
   }
 
   await app.onUninit();
@@ -241,22 +244,31 @@ async function testArchive() {
   console.log('\x1b[1A[\x1b[32mPASSED\x1b[0m]');
 }
 
-/* async function testPricePoints2() {
-  console.log('[......] Minimum number of cheap/expensive hours');
+async function testIssue63() {
+  console.log('[......] Test Github issue #63: Incorrect price points');
   const app = new PiggyBank();
   await app.disableLog();
   await app.onInit();
   await applyBasicConfig(app);
+  const futurePriceOptions = app.homey.settings.get('futurePriceOptions');
+  futurePriceOptions.minCheapTime = 0;
+  futurePriceOptions.minExpensiveTime = 0;
+  futurePriceOptions.averageTime = 7;
+  futurePriceOptions.dirtCheapPriceModifier = -40;
+  futurePriceOptions.lowPriceModifier = -10;
+  futurePriceOptions.highPriceModifier = 10;
+  futurePriceOptions.extremePriceModifier = 75;
+  app.homey.settings.set('futurePriceOptions', futurePriceOptions);
   app.__all_prices = [];
+
   app.__current_prices = [
-    0.2, 0.3, 0.5, 0.3, 0.2, 0.5, 0.9, 1.8, 0.1, 0.2, 0.2, 0.3,
-    0.5, 0.3, 0.2, 0.5, 0.9, 0.8, 0.1, 0.2, 0.2, 0.3, 0.5, 0.3,
-    0.2, 0.3, 0.5, 0.3, 0.2, 0.5, 0.9, 0.8, 0.1, 0.2, 0.2, 0.3,
-    0.5, 0.3, 0.2, 0.5, 0.9, 0.8, 0.1, 0.2, 0.2, 0.3, 0.5, 0.3];
-  const CorrectPP = [4, 0, 1, 0, 4, 1, 2, 3, 4, 4, 4, 0, 1, 0, 4, 1, 2, 2, 4, 4, 4, 0, 1, 0];
-  //const sortedPrices = app.__current_prices.slice(0, 24).sort((a, b) => b - a);
-  //console.log(`Sorted prices: ${sortedPrices}`); //High cap: 0.5, low cap: 0.2
-  app.homey.settings.set('averagePrice', 0.6);
+    0.82449, 0.785, 0.7905, 0.7597, 0.79843,
+    0.82755, 0.93614, 0.9412499999999999, 1.01728, 1.10979,
+    1.21444, 1.17854, 1.1945000000000001, 1.04219, 1.01933,
+    1.0253299999999999, 1.0542, 1.1934900000000002, 1.1907999999999999, 1.08615,
+    1.0114, 0.90061, 0.84404, 0.74514];
+  const CorrectPP = [4, 4, 4, 4, 4, 4, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 4, 4];
+  app.homey.settings.set('averagePrice', 1.66);
 
   const now = roundToStartOfDay(new Date(1666396747401), app.homey);
   for (let i = 0; i < app.__current_prices.length; i++) {
@@ -270,12 +282,15 @@ async function testArchive() {
     await app.onNewHour(true, curTime);
     if (app.__current_price_index !== hour) throw new Error('Current hour is not calculated correctly');
     if (app.homey.settings.get('pricePoint') !== CorrectPP[hour]) throw new Error(`Invalid Price point at hour ${hour}`);
-    // console.log(`${String(hour).padStart(2, '0')}:00 Price: ${app.__current_prices[hour]} (${ppNames[app.homey.settings.get('pricePoint')]})`);
+    /* const ppNames = ['Billig', 'Normal', 'Dyrt', 'Kjempedyrt', 'Veldig billig'];
+    const avgPrice = +app.homey.settings.get('averagePrice');
+    console.log(`${String(hour).padStart(2, '0')}:00 Price: ${app.__current_prices[hour].toFixed(2)}, avg: ${avgPrice.toFixed(2)} `
+      + `(${ppNames[app.homey.settings.get('pricePoint')].padStart(13, ' ')} vs. ${ppNames[CorrectPP[hour]].padStart(13, ' ')})`); */
   }
 
   await app.onUninit();
   console.log('\x1b[1A[\x1b[32mPASSED\x1b[0m]');
-} */
+}
 
 /**
  * Test that all devices does power on in after a while
@@ -464,9 +479,9 @@ async function startAllTests() {
     await testCharging();
     await testReliability();
     await testPricePoints();
-    // await testPricePoints2();
     await testArchive();
     await testPowerOnAll();
+    await testIssue63();
     await testIssue84();
     await testIssue83And87();
     await testTicket88();
