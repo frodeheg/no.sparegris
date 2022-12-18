@@ -3426,6 +3426,7 @@ class PiggyBank extends Homey.App {
       averagePrice = (averagePrice * (hoursInInterval - 1) + todayArray[todayIndex]) / hoursInInterval;
     }
 
+    outState.averagePrice = averagePrice;
     outState.__dirtcheap_price_limit = averagePrice * (+futureData.dirtCheapPriceModifier / 100 + 1);
     outState.__low_price_limit = averagePrice * (+futureData.lowPriceModifier / 100 + 1);
     outState.__high_price_limit = averagePrice * (+futureData.highPriceModifier / 100 + 1);
