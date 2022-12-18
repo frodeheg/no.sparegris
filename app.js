@@ -31,7 +31,7 @@ const { addToArchive, cleanArchive, getArchive } = require('./common/archive');
 const {
   daysInMonth, toLocalTime, timeDiff, timeSinceLastHour, timeToNextHour, roundToNearestHour, roundToStartOfDay, isSameHour, hoursInDay, fromLocalTime
 } = require('./common/homeytime');
-const { isNumber, toNumber } = require('./common/tools');
+const { isNumber, toNumber, combine } = require('./common/tools');
 const prices = require('./common/prices');
 const { close } = require('node:fs');
 
@@ -2808,7 +2808,7 @@ class PiggyBank extends Homey.App {
     let futureArchive = {};
     const todayStart = roundToStartOfDay(new Date(), this.homey);
     if ((+granularity === c.GRANULARITY.HOUR) && type.includes('price') && (statsTimeUTC > todayStart)) {
-      futureArchive = this.buildFutureData();
+      futureArchive = await this.buildFutureData();
     }
     // Fetch data from archive
     let searchData;
@@ -2833,10 +2833,7 @@ class PiggyBank extends Homey.App {
           try {
             const futureData = (part in futureArchive) ? futureArchive[part][period] : undefined;
             const archiveData = (part in archive) ? archive[part][period] : undefined;
-            searchData = {
-              ...futureData,
-              ...archiveData
-            };
+            searchData = combine(archiveData, futureData);
             data[part] = searchData[timeId];
             if (searchData === undefined) throw new Error('No searchData');
             if (data[part] === undefined) throw new Error('No data');
@@ -3371,34 +3368,110 @@ class PiggyBank extends Homey.App {
    * Builds an array of future data similar to the archive
    */
   async buildFutureData() {
-    const nowLocal = toLocalTime(new Date());
+    const nowLocal = toLocalTime(new Date(), this.homey);
     const todayHours = hoursInDay(nowLocal, this.homey);
 
-    console.log('Fetching day data');
     const futureData = {};
     futureData['price'] = {};
     futureData['price']['hourly'] = {};
     futureData['pricePoints'] = {};
     futureData['pricePoints']['hourly'] = {};
+    let floatingPrice = +this.homey.settings.get('averagePrice') || undefined;
+    const todayArray = this.__current_prices.slice(0, todayHours);
     if (this.__current_prices.length > 0) {
       const todayIndex = `${nowLocal.getFullYear()}-${String(nowLocal.getMonth() + 1).padStart(2, '0')}-${String(nowLocal.getDate()).padStart(2, '0')}`;
       futureData['price']['hourly'][todayIndex] = [];
       futureData['pricePoints']['hourly'][todayIndex] = [];
-      for (let idx = 0; idx < todayHours; idx++) {
+      for (let idx = this.__current_price_index; idx < todayHours; idx++) {
+        const nextPP = await this.calculateNextPP(floatingPrice, todayArray, idx);
+        floatingPrice = nextPP.averagePrice;
         futureData['price']['hourly'][todayIndex][idx] = this.__current_prices[idx];
+        futureData['pricePoints']['hourly'][todayIndex][idx] = nextPP.mode;
       }
     }
-    if (this.__current_prices.length >= todayHours) {
+    if (this.__current_prices.length > todayHours) {
       const tomorrowLocal = new Date(nowLocal.getTime());
       tomorrowLocal.setDate(tomorrowLocal.getDate() + 1);
       const tomorrowIndex = `${tomorrowLocal.getFullYear()}-${String(tomorrowLocal.getMonth() + 1).padStart(2, '0')}-${String(tomorrowLocal.getDate()).padStart(2, '0')}`;
       futureData['price']['hourly'][tomorrowIndex] = [];
       futureData['pricePoints']['hourly'][tomorrowIndex] = [];
       for (let idx = todayHours; idx < this.__current_prices.length; idx++) {
+        const nextPP = await this.calculateNextPP(floatingPrice, todayArray, idx);
+        floatingPrice = nextPP.averagePrice;
         futureData['price']['hourly'][tomorrowIndex][idx - todayHours] = this.__current_prices[idx];
+        futureData['pricePoints']['hourly'][tomorrowIndex][idx] = nextPP.mode;
       }
     }
     return futureData;
+  }
+
+  /**
+   * Performs the calculation of next price point.
+   */
+  async calculateNextPP(averagePrice, todayArray, todayIndex) {
+    const priceMode = +this.homey.settings.get('priceMode');
+    const futureData = this.homey.settings.get('futurePriceOptions');
+    const priceKind = !futureData ? null : +futureData.priceKind;
+    const outState = {};
+
+    const hoursInInterval = +futureData.averageTime * 24;
+    if (!Number.isInteger(hoursInInterval)
+      || hoursInInterval === 0
+      || typeof (averagePrice) !== 'number'
+      || !Number.isFinite(averagePrice)) {
+      // Use today price average
+      averagePrice = todayArray.reduce((a, b) => a + b, 0) / todayArray.length; // Should always be divide by 24
+    } else {
+      // Calculate average price over time
+      averagePrice = (averagePrice * (hoursInInterval - 1) + todayArray[todayIndex]) / hoursInInterval;
+    }
+
+    outState.__dirtcheap_price_limit = averagePrice * (+futureData.dirtCheapPriceModifier / 100 + 1);
+    outState.__low_price_limit = averagePrice * (+futureData.lowPriceModifier / 100 + 1);
+    outState.__high_price_limit = averagePrice * (+futureData.highPriceModifier / 100 + 1);
+    outState.__extreme_price_limit = averagePrice * (+futureData.extremePriceModifier / 100 + 1);
+
+    // If min/max limit does not encompas enough hours, change the limits
+    const orderedPriceTable = [...todayArray].sort();
+    const lowPriceIndex = +futureData.minCheapTime;
+    const highPriceIndex = 23 - futureData.minExpensiveTime;
+    if (outState.__low_price_limit < orderedPriceTable[lowPriceIndex]) {
+      outState.__low_price_limit = orderedPriceTable[lowPriceIndex];
+      if (outState.__low_price_limit > outState.__high_price_limit) {
+        outState.__high_price_limit = outState.__low_price_limit;
+      }
+      if (outState.__low_price_limit > outState.__extreme_price_limit) {
+        outState.__extreme_price_limit = outState.__low_price_limit;
+      }
+    }
+    if (outState.__high_price_limit > orderedPriceTable[highPriceIndex]) {
+      outState.__high_price_limit = orderedPriceTable[highPriceIndex];
+      if (outState.__low_price_limit > outState.__high_price_limit) {
+        outState.__low_price_limit = outState.__high_price_limit;
+      }
+      if (outState.__dirtcheap_price_limit > outState.__high_price_limit) {
+        outState.__dirtcheap_price_limit = outState.__high_price_limit;
+      }
+    }
+
+    // Special case Fixed price
+    const isFixedPrice = (priceMode === c.PRICE_MODE_INTERNAL) && (priceKind === c.PRICE_KIND_FIXED);
+    if (isFixedPrice) {
+      outState.__low_price_limit = todayArray.reduce((a, b) => a + b, 0) / todayArray.length;
+    }
+
+    // Trigger new Price points
+    const isDirtCheapPrice = isFixedPrice ? false : (todayArray[todayIndex] < this.__dirtcheap_price_limit);
+    const isLowPrice = (todayArray[todayIndex] < this.__low_price_limit);
+    const isHighPrice = isFixedPrice ? false : (todayArray[todayIndex] > this.__high_price_limit);
+    const isExtremePrice = isFixedPrice ? false : (todayArray[todayIndex] > this.__extreme_price_limit) && Number.isInteger(+futureData.extremePriceModifier);
+    outState.mode = isDirtCheapPrice ? c.PP.DIRTCHEAP
+      : isLowPrice ? c.PP.LOW
+        : isExtremePrice ? c.PP.EXTREME
+          : isHighPrice ? c.PP.HIGH
+            : c.PP.NORM;
+
+    return outState;
   }
 
   /**
@@ -3428,7 +3501,6 @@ class PiggyBank extends Homey.App {
     this.statsSetLastHourPrice(this.__last_hour_price);
 
     // === Calculate price point if state is internal and have future prices ===
-    const futurePriceOptions = this.homey.settings.get('futurePriceOptions');
     if (priceMode !== c.PRICE_MODE_INTERNAL) {
       return Promise.resolve();
     }
@@ -3448,69 +3520,27 @@ class PiggyBank extends Homey.App {
     if (!this.app_is_configured) {
       return Promise.reject(new Error(this.homey.__('warnings.notConfigured')));
     }
-    const hoursInInterval = +futurePriceOptions.averageTime * 24;
-    let averagePrice = +this.homey.settings.get('averagePrice') || undefined;
-    const todayArray = this.__current_prices.slice(0, 24);
-    if (!Number.isInteger(hoursInInterval)
-      || hoursInInterval === 0
-      || typeof (averagePrice) !== 'number'
-      || !Number.isFinite(averagePrice)) {
-      // Use today price average
-      averagePrice = todayArray.reduce((a, b) => a + b, 0) / todayArray.length; // Should always be divide by 24
-    } else {
-      // Calculate average price over time
-      averagePrice = (averagePrice * (hoursInInterval - 1) + this.__current_prices[this.__current_price_index]) / hoursInInterval;
-    }
+    const averagePrice = +this.homey.settings.get('averagePrice') || undefined;
 
-    this.homey.settings.set('averagePrice', averagePrice);
+    const hoursToday = hoursInDay(now, this.homey);
+    const todayArray = this.__current_prices.slice(0, hoursToday);
+
+    const nextPP = await this.calculateNextPP(
+      averagePrice,
+      todayArray,
+      this.__current_price_index
+    );
+
+    this.homey.settings.set('averagePrice', nextPP.averagePrice);
+
     // Calculate min/max limits
-    this.__dirtcheap_price_limit = averagePrice * (+futurePriceOptions.dirtCheapPriceModifier / 100 + 1);
-    this.__low_price_limit = averagePrice * (+futurePriceOptions.lowPriceModifier / 100 + 1);
-    this.__high_price_limit = averagePrice * (+futurePriceOptions.highPriceModifier / 100 + 1);
-    this.__extreme_price_limit = averagePrice * (+futurePriceOptions.extremePriceModifier / 100 + 1);
+    this.__dirtcheap_price_limit = nextPP.__dirtcheap_price_limit;
+    this.__low_price_limit = nextPP.__low_price_limit;
+    this.__high_price_limit = nextPP.__high_price_limit;
+    this.__extreme_price_limit = nextPP.__extreme_price_limit;
 
-    // If min/max limit does not encompas enough hours, change the limits
-    const orderedPriceTable = [...todayArray].sort();
-    const lowPriceIndex = +futurePriceOptions.minCheapTime;
-    const highPriceIndex = 23 - futurePriceOptions.minExpensiveTime;
-    if (this.__low_price_limit < orderedPriceTable[lowPriceIndex]) {
-      this.__low_price_limit = orderedPriceTable[lowPriceIndex];
-      if (this.__low_price_limit > this.__high_price_limit) {
-        this.__high_price_limit = this.__low_price_limit;
-      }
-      if (this.__low_price_limit > this.__extreme_price_limit) {
-        this.__extreme_price_limit = this.__low_price_limit;
-      }
-    }
-    if (this.__high_price_limit > orderedPriceTable[highPriceIndex]) {
-      this.__high_price_limit = orderedPriceTable[highPriceIndex];
-      if (this.__low_price_limit > this.__high_price_limit) {
-        this.__low_price_limit = this.__high_price_limit;
-      }
-      if (this.__dirtcheap_price_limit > this.__high_price_limit) {
-        this.__dirtcheap_price_limit = this.__high_price_limit;
-      }
-    }
-
-    // Special case Fixed price
-    const isFixedPrice = (priceMode === c.PRICE_MODE_INTERNAL) && (priceKind === c.PRICE_KIND_FIXED);
-    if (isFixedPrice) {
-      this.__low_price_limit = (this.__current_prices[0] + this.__current_prices[12]) / 12;
-    }
-
-    // Trigger new Price points
-
-    const isDirtCheapPrice = isFixedPrice ? false : (this.__current_prices[this.__current_price_index] < this.__dirtcheap_price_limit);
-    const isLowPrice = (this.__current_prices[this.__current_price_index] < this.__low_price_limit);
-    const isHighPrice = isFixedPrice ? false : (this.__current_prices[this.__current_price_index] > this.__high_price_limit);
-    const isExtremePrice = isFixedPrice ? false : (this.__current_prices[this.__current_price_index] > this.__extreme_price_limit) && Number.isInteger(+futurePriceOptions.extremePriceModifier);
-    const mode = isDirtCheapPrice ? c.PP.DIRTCHEAP
-      : isLowPrice ? c.PP.LOW
-        : isExtremePrice ? c.PP.EXTREME
-          : isHighPrice ? c.PP.HIGH
-            : c.PP.NORM;
     if (!preventZigbee) {
-      return this.onPricePointUpdate(mode);
+      return this.onPricePointUpdate(nextPP.mode);
     }
     return Promise.resolve();
   }

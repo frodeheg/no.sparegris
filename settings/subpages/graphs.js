@@ -300,6 +300,7 @@ function generatePriceData(stats) {
   const colExtreme = 'rgba(255,0,0,0.2)';
   if (!ppDirtMax) ppDirtMax = ppMin * 0.9;
   const skipped = (ctx, value) => ctx.p0.skip || ctx.p1.skip ? value : undefined;
+  const future = (ctx, value) => chartDataOk[ctx.p0DataIndex] === undefined ? value : undefined;
   const chartData = [{
     type: 'line',
     stepped: perHour,
@@ -312,6 +313,10 @@ function generatePriceData(stats) {
     data: dataset.map((x, idx) => (x ? (perHour ? Math.min(x, ppDirtMax) : (x * (perDayCount[idx] ? chartAux[idx][4] / perDayCount[idx] : 1))) : undefined)),
     borderWidth: 1,
     pointRadius: 0,
+    segment: {
+      borderColor: ctx => future(ctx, 'rgba(0,255,0,0.2)'),
+      backgroundColor: ctx => future(ctx, 'rgba(0,255,0,0.2)'),
+    },
   },
   {
     type: 'line',
@@ -325,6 +330,10 @@ function generatePriceData(stats) {
     data: dataset.map((x, idx) => (x ? (perHour ? Math.min(x, ppLowMax) : (x * (perDayCount[idx] ? (chartAux[idx][4] + chartAux[idx][0]) / perDayCount[idx] : 1))) : undefined)),
     borderWidth: 1,
     pointRadius: 0,
+    segment: {
+      borderColor: ctx => future(ctx, 'rgba(0,128,0,0.2)'),
+      backgroundColor: ctx => future(ctx, 'rgba(0,128,0,0.2)'),
+    },
   },
   {
     type: 'line',
@@ -338,6 +347,10 @@ function generatePriceData(stats) {
     data: dataset.map((x, idx) => (x ? (perHour ? Math.min(x, ppNormMax) : (x * (perDayCount[idx] ? (chartAux[idx][4] + chartAux[idx][0] + chartAux[idx][1]) / perDayCount[idx] : 1))) : undefined)),
     borderWidth: 1,
     pointRadius: 0,
+    segment: {
+      borderColor: ctx => future(ctx, 'rgba(0,128,255,0.2)'),
+      backgroundColor: ctx => future(ctx, 'rgba(0,128,255,0.2)'),
+    },
   },
   {
     type: 'line',
@@ -351,6 +364,10 @@ function generatePriceData(stats) {
     data: dataset.map((x, idx) => (x ? (perHour ? Math.min(x, ppHighMax) : (x * (perDayCount[idx] ? (chartAux[idx][4] + chartAux[idx][0] + chartAux[idx][1] + chartAux[idx][2]) / perDayCount[idx] : 1))) : undefined)),
     borderWidth: 1,
     pointRadius: 0,
+    segment: {
+      borderColor: ctx => future(ctx, 'rgba(128,0,0,0.2)'),
+      backgroundColor: ctx => future(ctx, 'rgba(128,0,0,0.2)'),
+    },
   },
   {
     type: 'line',
@@ -364,6 +381,10 @@ function generatePriceData(stats) {
     data: dataset.map(x => (x ? (perHour ? Math.min(x, ppExtremeMax) : x) : undefined)),
     borderWidth: 1,
     pointRadius: 0,
+    segment: {
+      borderColor: ctx => future(ctx, 'rgba(255,0,0,0.1)'),
+      backgroundColor: ctx => future(ctx, 'rgba(255,0,0,0.1)'),
+    },
   },
   {
     type: 'line',
@@ -380,8 +401,8 @@ function generatePriceData(stats) {
     borderWidth: 1,
     pointRadius: 0,
     segment: {
-      borderColor: ctx => skipped(ctx, 'rgb(0,0,0,0.6)'),
-      backgroundColor: ctx => skipped(ctx, 'rgb(0,0,0,0.2'),
+      borderColor: ctx => skipped(ctx, 'rgb(0,0,0,0.6)') || future(ctx, 'rgb(0,0,0,0)'),
+      backgroundColor: ctx => skipped(ctx, 'rgb(0,0,0,0.2') || future(ctx, 'rgb(0,0,0,0)'),
       borderDash: ctx => skipped(ctx, [6, 6]),
     },
   }];
@@ -418,11 +439,13 @@ function generatePriceOptions(stats, graphTitle) {
             return graphTitle;
           },
           beforeFooter(context) {
-            const dataOkText = (context[0] && chartDataOk[context[0].dataIndex]) ? '' : `\n${graphInaccurate}`;
+            const isFutureValue = context[0] && (chartDataOk[context[0].dataIndex] === undefined);
+            const predictionText = isFutureValue ? ' predicted' : '';
+            const dataOkText = (isFutureValue || (context[0] && chartDataOk[context[0].dataIndex])) ? '' : `\n${graphInaccurate}`;
             if (+chartPeriod === GRANULARITY.HOUR) {
               let ppName;
               try {
-                ppName = `${pricePoints.filter(i => (i.value === chartAux[context[0].dataIndex]))[0].name}${dataOkText}`;
+                ppName = `${pricePoints.filter(i => (i.value === chartAux[context[0].dataIndex]))[0].name}${predictionText}${dataOkText}`;
               } catch (err) {
                 ppName = unavailableText;
               }

@@ -256,11 +256,6 @@ function changeToLogPage(debugMode) {
   diagLogElement.style.height = `${(window.innerHeight - diagLogElement.offsetTop - 120)}px`;
 }
 
-/**
- * Make sure the main page knows this page has finished loading
- */
-confirmSubPageLoaded(SUBPAGE_ID_LOGPAGE);
-
 module.exports = {
   initializeLogPage,
   isLoggingEnabled,

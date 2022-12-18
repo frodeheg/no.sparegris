@@ -21,6 +21,12 @@ class FakeHomey {
     const err = undefined;
     let response;
     if (command.includes('/getStats')) {
+      let pp;
+      if (command.includes('granularity=3')) {
+        pp = [1,null,2,3,4,5,1,2,3,4,5,1,2,3];
+      } else {
+        pp = [[1,2,3,4,5],null,[1,2,3,4,5],[1,2,3,4,5],[1,2,3,4,5],[1,2,3,4,5],[1,2,3,4,5],[1,2,3,4,5],[1,2,3,4,5],[1,2,3,4,5],[1,2,3,4,5],[1,2,3,4,5],[1,2,3,4,5],[1,2,3,4,5]];
+      }
       response = {
         daysInMonth: 31,
         hoursInDay: 24,
@@ -35,7 +41,7 @@ class FakeHomey {
           elPrices: [0.5, 0.43, 0.33, 0.64, 0.93, 0.45, 0.22],
           currentHour: 2,
           price: [1,null,3,4,0.5,1.4,5.2,3.2,2.2,4.2,1.1],
-          pricePoints: [[1,2,3,4,5],null,[1,2,3,4,5],[1,2,3,4,5],[1,2,3,4,5],[1,2,3,4,5],[1,2,3,4,5],[1,2,3,4,5],[1,2,3,4,5],[1,2,3,4,5],[1,2,3,4,5],[1,2,3,4,5],[1,2,3,4,5],[1,2,3,4,5]],
+          pricePoints: pp,
           powUsage: [3, 5, 1, 6],
         },
         // dataGood: [true, true, false, true, true],

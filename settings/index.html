@@ -3,26 +3,19 @@
 
   <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <script type="text/javascript" src="/homey.js" data-origin="settings"></script>
     <script type="text/javascript">
       let module = {}; // Just to get around that some of the included files are used both by node.js and in the browser
-      let SUBPAGE_ID_LOGPAGE = 0;
-      var subPageLoaded = {
-        LOGPAGE: false
-      };
-      function confirmSubPageLoaded(subPageId) {
-        subPageLoaded[subPageId] = true;
-      }
     </script>
-    <script type="text/javascript" src="/homey.js" data-origin="settings"></script>
-    <script type="text/javascript" src="./constants.js" data-origin="settings"></script>
-    <script type="text/javascript" src="./devices.js" data-origin="settings"></script>
-    <script type="text/javascript" src="./chart.js" data-origin="settings"></script>
-    <script type="text/javascript" src="./tools.js" data-origin="settings"></script>
-    <script type="text/javascript" src="./gridcost.js" data-origin="settings"></script>
-    <script type="text/javascript" src="./homeytime.js" data-origin="settings"></script>
-    <script type="text/javascript" src="subpages/logPage.js" data-origin="settings/subpages"></script>
-    <script type="text/javascript" src="subpages/graphs.js" data-origin="settings/subpages"></script>
-    <script type="text/javascript" src="subpages/advanced.js" data-origin="settings/subpages"></script>
+    <script type="text/javascript" src="./constants.js"></script>
+    <script type="text/javascript" src="./devices.js"></script>
+    <script type="text/javascript" src="./chart.js"></script>
+    <script type="text/javascript" src="./tools.js"></script>
+    <script type="text/javascript" src="./gridcost.js"></script>
+    <script type="text/javascript" src="./homeytime.js"></script>
+    <script type="text/javascript" src="subpages/logPage.js"></script>
+    <script type="text/javascript" src="subpages/graphs.js"></script>
+    <script type="text/javascript" src="subpages/advanced.js"></script>
     <link href="style.css" rel="stylesheet" type="text/css">
     <link href="trashcan.css" rel="stylesheet" type="text/css">
     <script type="text/javascript">
@@ -1728,7 +1721,7 @@
       // Called whenever things has been loaded
       function checkLoadingDone() {
         var loadElement = document.getElementById("loadingPage");
-/*        loadElement.innerHTML =
+        /* loadElement.innerHTML =
           `maxPowerLoaded: ${maxPowerLoaded}<br>` +
           `deviceListLoaded: ${deviceListLoaded}<br>` +
           `modeListLoaded: ${modeListLoaded}<br>` +
@@ -1753,7 +1746,7 @@
           `chargerOptionsLoaded: ${chargerOptionsLoaded}<br>` +
           `appConfigProgressLoaded: ${appConfigProgressLoaded}<br>` +
           `currenciesLoaded: ${currenciesLoaded}<br>` +
-          `onHomeyReadyCompleted: ${onHomeyReadyCompleted}<br>`;*/
+          `onHomeyReadyCompleted: ${onHomeyReadyCompleted}<br>`; */
         if (maxPowerLoaded
           && deviceListLoaded
           && modeListLoaded
@@ -1986,10 +1979,15 @@
           const instantly = new Date().getTime();
           Homey.api('GET', `/getStats?type=[chargePlan,maxPower]&time=${instantly}&granularity=${GRANULARITY.DAY}`, null, function (err, res) {
             if (err) return alertUser(Homey, err);
-            InitGraph(Homey, res);
-            updateCarSheduleGraph(res.data.chargeShedule || [], res.data.elPrices || [], res.data.currentHour);
-            noPrices = !Array.isArray(res.data.elPrices) || (res.data.elPrices.length == 0)
+            try {
+              InitGraph(Homey, res);
+              updateCarSheduleGraph(res.data.chargeShedule || [], res.data.elPrices || [], res.data.currentHour);
+              noPrices = !Array.isArray(res.data.elPrices) || (res.data.elPrices.length == 0)
+            } catch (err2) {
+              return alertUser(Homey, err2);
+            }
             graphLoaded = true;
+            checkLoadingDone();
           });
 
         });
@@ -2003,6 +2001,7 @@
             chargerOptions = {}
           }
           chargerOptionsLoaded = true;
+          checkLoadingDone();
         });
 
         // Refresh
