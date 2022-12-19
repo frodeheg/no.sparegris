@@ -658,5 +658,8 @@
   },
   "0.19.22": {
     "en": "Added more logging for easee chargers"
+  },
+  "0.19.23": {
+    "en": "Fixed crash bug that prevented new users from using the app (old users was unaffected)"
   }
 }
