@@ -661,5 +661,8 @@
   },
   "0.19.23": {
     "en": "Fixed crash bug that prevented new users from using the app (old users was unaffected)"
+  },
+  "0.19.24": {
+    "en": "Using prices from other regions did not work."
   }
 }
