@@ -1331,7 +1331,7 @@
                   <tr>
                     <td class="settings_row_name"><label for="priceCountry" data-i18n="settings.price.spotPrice.country">spotPrice.country</label>:</td>
                     <td class="settings_row_input">
-                      <select id="priceCountry" onchange="displaySaveHint()">
+                      <select id="priceCountry" onchange="updateRegions(this.value, futurePriceOptions.priceRegion);displaySaveHint()">
                         <option value="0" selected>Country selector</option>
                       </select>
                     </td>
