@@ -655,5 +655,8 @@
   },
   "0.19.21": {
     "en": "Changed reporting mail as the previous one had expired + Fixed issue when setting min cheap/expensive hours to 0 + Fixed issue from test version only where price points was incorrectly calculated + Added future prices to the price graph + Fixed issue in price point calculation when going to/from winter time. + Fixed issue where price point was displayed as dirt cheap even though it was not + Fixed legend in the usage graph + Fixed estimated usage for the current hour, this was wrong for the first hour after a restart."
+  },
+  "0.19.22": {
+    "en": "Added more logging for easee chargers"
   }
 }
