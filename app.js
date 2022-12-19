@@ -124,6 +124,8 @@ class PiggyBank extends Homey.App {
           this.updateLog(`Setting capname: ${capName} = ${setVal}`, c.LOG_INFO);
           if (this.logUnit === deviceId) this.updateLog(`Setting Device ${device.name}.${capName} = ${setVal} | Origin from list ${driverId}.${listRef}`, c.LOG_ALL);
           await device.setCapabilityValue({ capabilityId: capName, value: setVal }); // Just pass errors on
+        } else if (this.logUnit === deviceId) {
+          this.updateLog(`Ignored setting Device ${device.name}.${capName} = ${setVal} as the value is already ${prevVal}`, c.LOG_ALL);
         }
       } catch (err) {
         this.updateLog(`Error: ${err}`, c.LOG_ERROR);
