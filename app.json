@@ -651,8 +651,8 @@
           "no": "Endre Sparegris Prispunkt"
         },
         "titleFormatted": {
-          "en": "Set the Piggy Bank price point to [[mode]] price",
-          "no": "Sett Sparegris prispunkt til [[mode]] pris"
+          "en": "Set the Piggy Bank price point to [[mode]]",
+          "no": "Sett Sparegris prispunkt til [[mode]]"
         },
         "hint": {
           "en": "Inform Piggy Bank whether the energy is expensive or cheap",
