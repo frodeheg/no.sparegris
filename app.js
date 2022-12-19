@@ -2841,7 +2841,7 @@ class PiggyBank extends Homey.App {
             if (data[part] === undefined) throw new Error('No data');
           } catch (err) {
             if (searchData) {
-              let closestTime;
+              let closestTime = statsTimeLocal;
               let closestItem;
               let closestTimeDiff = Infinity;
               for (const timestamp in searchData) {
@@ -2855,7 +2855,7 @@ class PiggyBank extends Homey.App {
               data[part] = searchData[closestItem];
               dataGood = searchDataGood[closestItem];
               statsTimeLocal = closestTime;
-              statsTimeUTC = fromLocalTime(statsTimeUTC, this.homey);
+              statsTimeUTC = fromLocalTime(statsTimeLocal, this.homey);
             } else {
               data = { error: err };
               dataGood = false;
