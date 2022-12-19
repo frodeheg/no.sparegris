@@ -1,0 +1,23 @@
+Log ID: 2022-12-19T20:23:57.686Z
+App version 0.19.23
+
++20:23:57.686: ----- ANALYZING DEVICE -----
++20:23:57.690: Report type: Device is not listed
++20:23:57.692: Device ID:   fbf72a82-93e3-4df9-8c8b-6a7fdaea4b18
++20:23:57.722: Device name: Inngang Termostat
++20:23:57.723: Driver Uri: homey:app:fi.taelek.ecocontrol
++20:23:57.725: Driver Id: oled
++20:23:57.728: Error: TypeError: Cannot read properties of undefined (reading 'onoff_cap')
++20:23:57.730: Capabilities: target_temperature,measure_temperature,toggle_mode,relay_status,mode,temperature_control,user_program,error_code
++20:23:57.732: Options for 'target_temperature': {"value":15,"lastUpdated":"2022-12-13T13:55:10.462Z","type":"number","getable":true,"setable":true,"title":"Ønsket temperatur","desc":null,"units":"°C","decimals":2,"min":5,"max":30,"chartType":"stepLine","id":"target_temperature","options":{"min":5,"max":30}}
++20:23:57.734: Options for 'measure_temperature': {"value":15.3,"lastUpdated":"2022-12-19T20:23:46.072Z","type":"number","getable":true,"setable":false,"title":"Temperatur","desc":"Temperatur i grader Celsius (°C)","units":"°C","decimals":2,"chartType":"spline","id":"measure_temperature","options":{}}
++20:23:57.737: Options for 'toggle_mode': {"value":true,"lastUpdated":"2021-11-29T22:16:36.601Z","type":"boolean","getable":true,"setable":true,"title":"White = Normal operation, Black = Forced ECO","desc":null,"units":null,"id":"toggle_mode","options":{}}
++20:23:57.739: Options for 'relay_status': {"value":"off","lastUpdated":"2022-12-19T20:23:46.034Z","type":"enum","getable":true,"setable":false,"title":"Heating","desc":null,"units":null,"iconObj":{"id":"ed6efb132af92b41a91125157a73bf59","url":"/icon/ed6efb132af92b41a91125157a73bf59/icon.svg"},"values":[{"id":"on","title":"On"},{"id":"off","title":"Off"}],"id":"relay_status","options":{}}
++20:23:57.744: Options for 'mode': {"value":"comfort","lastUpdated":"2021-11-29T22:17:52.528Z","type":"enum","getable":true,"setable":false,"title":"Thermostat mode","desc":null,"units":null,"iconObj":{"id":"f6d0bbcaffb8e21ed565657243fc92ea","url":"/icon/f6d0bbcaffb8e21ed565657243fc92ea/icon.svg"},"values":[{"id":"comfort","title":"Comfort"},{"id":"eco","title":"ECO"},{"id":"boost","title":"Boost"}],"id":"mode","options":{}}
++20:23:57.748: Options for 'temperature_control': {"value":"floor","lastUpdated":"2021-11-22T14:56:29.829Z","type":"enum","getable":true,"setable":false,"title":"Temperature control","desc":null,"units":null,"iconObj":{"id":"1960cdafdfa144fa9730527233f9a7a4","url":"/icon/1960cdafdfa144fa9730527233f9a7a4/icon.svg"},"values":[{"id":"floor","title":"Floor"},{"id":"room","title":"Room"},{"id":"dual","title":"Dual"},{"id":"pwm","title":"PWM"},{"id":"snow_melting","title":"Snow melting"}],"id":"temperature_control","options":{}}
++20:23:57.750: Options for 'user_program': {"value":"auto","lastUpdated":"2021-11-29T22:17:52.544Z","type":"enum","getable":true,"setable":false,"title":"User program","desc":null,"units":null,"iconObj":{"id":"986b172079cad7badbe7c24ac27bddea","url":"/icon/986b172079cad7badbe7c24ac27bddea/icon.svg"},"values":[{"id":"manual","title":"Manual"},{"id":"auto","title":"Auto"}],"id":"user_program","options":{}}
++20:23:57.752: Options for 'error_code': {"value":null,"lastUpdated":null,"type":"number","getable":true,"setable":false,"title":"Error code","desc":null,"units":null,"iconObj":{"id":"48219e92fe6a1be6c6359b7d10bf58b1","url":"/icon/48219e92fe6a1be6c6359b7d10bf58b1/icon.svg"},"id":"error_code","options":{}}
++20:23:57.754: --- ANALYZING DEVICE DONE ---
++20:24:14.919: Email: johnanders.didriksen@gmail.com
+Comment:Optional
++20:24:14.926: Sending log

@@ -216,6 +216,17 @@ const DEVICE_CMD = {
     tempStep: 0.5
   },
   'com.xiaomi-mi:plug.maeu01': DEFAULT_SWITCH,
+  'fi.taelek.ecocontrol:oled': {
+    type: DEVICE_TYPE.HEATER,
+    note: 'This device has no onOff capability and will emulate Off by turning the temperature to absolute minimum',
+    setOnOffCap: null,
+    readTempCap: 'measure_temperature',
+    setTempCap: 'target_temperature',
+    tempMin: 6, // Min is 5, but using 5 as emulated Off
+    tempMax: 30,
+    tempStep: 0.5,
+    beta: true
+  },
   'me.nanoleaf:shapes': DEFAULT_SWITCH,
   'net.filllip-namron:4512744': {
     ...DEFAULT_HEATER,
