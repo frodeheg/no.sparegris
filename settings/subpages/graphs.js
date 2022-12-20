@@ -28,6 +28,7 @@ let textMaxHour = 'maxUsageGraph.title';
 let textConsumption = 'graph.consumption';
 let textPrices = 'graph.prices';
 let textSavings = 'graph.savings';
+let textPredicted = 'graph.predicted';
 
 function generateConsumptionData(stats) {
   // Calculate values
@@ -440,7 +441,7 @@ function generatePriceOptions(stats, graphTitle) {
           },
           beforeFooter(context) {
             const isFutureValue = context[0] && (chartDataOk[context[0].dataIndex] === undefined);
-            const predictionText = isFutureValue ? ' predicted' : '';
+            const predictionText = isFutureValue ? ` (${textPredicted})` : '';
             const dataOkText = (isFutureValue || (context[0] && chartDataOk[context[0].dataIndex])) ? '' : `\n${graphInaccurate}`;
             if (+chartPeriod === GRANULARITY.HOUR) {
               let ppName;
@@ -653,6 +654,7 @@ function InitGraph(Homey, stats) {
   textConsumption = Homey.__(textConsumption);
   textPrices = Homey.__(textPrices);
   textSavings = Homey.__(textSavings);
+  textPredicted = Homey.__(textPredicted);
 
   // Remember Chart latent state
   chartMonthIdx = stats.localMonth;

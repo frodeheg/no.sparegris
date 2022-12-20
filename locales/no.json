@@ -416,6 +416,7 @@
     "hours": "timer",
     "day": "Dag",
     "month": "Måned",
-    "year": "År"
+    "year": "År",
+    "predicted": "estimert"
   }
 }

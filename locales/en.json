@@ -416,6 +416,7 @@
     "hours": "hours",
     "day": "Day",
     "month": "Month",
-    "year": "Year"
+    "year": "Year",
+    "predicted": "predicted"
   }
 }
