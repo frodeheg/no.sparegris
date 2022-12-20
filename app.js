@@ -2782,6 +2782,7 @@ class PiggyBank extends Homey.App {
     const priceMode = +this.homey.settings.get('priceMode');
     let statsTimeUTC = new Date(this.homey.settings.get('stats_daily_max_last_update_time'));
     let statsTimeLocal = (time === null) ? toLocalTime(statsTimeUTC, this.homey) : new Date(+time);
+    statsTimeUTC = fromLocalTime(statsTimeLocal, this.homey);
     const archive = await getArchive(this.homey);
     let period;
     let timeId;
