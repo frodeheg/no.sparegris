@@ -664,5 +664,8 @@
   },
   "0.19.24": {
     "en": "Using prices from other regions did not work."
+  },
+  "0.19.25": {
+    "en": "Changed email for reporting to a more permanent address + Added support for the fi.taelek.ecocontrol:oled + Fixed missing future prices around midnight + Fixed incorrect handling of the main fuse + Fixed missing Norwegian translation in the price graph."
   }
 }
