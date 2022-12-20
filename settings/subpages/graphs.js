@@ -62,7 +62,7 @@ function generateConsumptionData(stats) {
     backgroundColor: colorBars,
     borderColor: colorBarLines,
     borderWidth: 1,
-    data: dataset.map(x => Math.round(x)),
+    data: dataset.map(x => Math.round(x) / 1000),
   }];
 }
 
@@ -80,7 +80,7 @@ function generateConsumptionOptions(stats, graphTitle) {
         },
         ticks: {
           callback(value, index, ticks) {
-            return (value / 1000).toFixed(2);
+            return (+value).toFixed(2);
           },
         },
       },
@@ -141,9 +141,9 @@ function generateHourlyMaxData(stats) {
   // Generate data
   const maxDataLength = (chartPeriod === GRANULARITY.DAY) ? chartDaysInMonth : dataset.length;
 
-  const dataTariffAbove = Array(maxDataLength).fill(tariffAbove);
-  const dataTariffBelow = Array(maxDataLength).fill(tariffBelow);
-  const dataTariffGuide = Array(maxDataLength).fill(tariffGuide);
+  const dataTariffAbove = Array(maxDataLength).fill(tariffAbove / 1000);
+  const dataTariffBelow = Array(maxDataLength).fill(tariffBelow / 1000);
+  const dataTariffGuide = Array(maxDataLength).fill(tariffGuide / 1000);
   const colorBars = Array(maxDataLength).fill('pink');
   const colorBarLines = Array(maxDataLength).fill('black');
   const showMonth = (+chartPeriod === GRANULARITY.DAY);
@@ -201,7 +201,7 @@ function generateHourlyMaxData(stats) {
     backgroundColor: colorBars,
     borderColor: colorBarLines,
     borderWidth: 1,
-    data: dataset.map(x => Math.round(x)),
+    data: dataset.map(x => Math.round(x) / 1000),
   }];
 }
 
@@ -219,7 +219,7 @@ function generateHourlyMaxOptions(stats, graphTitle) {
         },
         ticks: {
           callback(value, index, ticks) {
-            return (value / 1000).toFixed(2);
+            return (+value).toFixed(2);
           },
         },
       },
