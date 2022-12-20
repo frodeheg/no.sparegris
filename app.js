@@ -2810,7 +2810,7 @@ class PiggyBank extends Homey.App {
     // Fetch future data in case it's needed
     let futureArchive = {};
     const todayStart = roundToStartOfDay(new Date(), this.homey);
-    if ((+granularity === c.GRANULARITY.HOUR) && type.includes('price') && (statsTimeUTC > todayStart)) {
+    if ((+granularity === c.GRANULARITY.HOUR) && type.includes('price') && (statsTimeUTC >= todayStart)) {
       futureArchive = await this.buildFutureData();
     }
     // Fetch data from archive
