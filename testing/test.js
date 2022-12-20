@@ -469,6 +469,68 @@ async function testState(stateDump, simTime) {
   console.log('\x1b[1A[\x1b[32mPASSED\x1b[0m]');
 }
 
+// Test OnNewHour
+async function testTicket115() {
+  console.log('[......] Test Github ticket #115: Main fuse');
+  const app = new PiggyBank();
+  await app.disableLog();
+  await app.onInit();
+
+  // Just load some random devices
+  app.setLogLevel(c.LOG_DEBUG);
+  await disableTimers(app);
+  await applyStateFromFile(app, 'states/Frode_0.19.4_bug87.txt');
+  const devices = await getAllDeviceId(app);
+  // await writePowerStatus(app, devices);
+
+  app.homey.settings.set('maxPower', 10000);
+
+  // Simulate time going forward
+  for (let sim = 0; sim < 2; sim++) {
+    let mainFuse;
+    let simTime;
+    if (sim === 0) {
+      mainFuse = 10;
+      simTime = 400;
+    } else {
+      mainFuse = 63;
+      simTime = 800;
+    }
+    app.homey.settings.set('mainFuse', mainFuse);
+    const curTime = app.__current_power_time;
+    curTime.setUTCMinutes(2);
+    const startTime = new Date(curTime);
+    while ((curTime.getTime() - startTime.getTime()) / 1000 < simTime) {
+      curTime.setTime(curTime.getTime() + Math.round(10000 + Math.random() * 5000 - 2500));
+      const curPower = Math.round(1000 + Math.random() * 5000);
+      await app.onPowerUpdate(curPower, curTime);
+      // await writePowerStatus(app, devices);
+    }
+    // Count devices on
+    let numDev = 0;
+    let numOn = 0;
+    for (let i = 0; i < devices.length; i++) {
+      const deviceId = devices[i];
+      const device = await app.getDevice(deviceId);
+      const isOn = await app.getIsOn(device, deviceId);
+      if (app.__deviceList[deviceId].use) {
+        numDev++;
+        numOn += isOn;
+      }
+    }
+    if (sim === 0) {
+      // Check all off
+      if (numOn !== 0) throw new Error('All devices should be off, but they are not');
+    } else if (sim === 1) {
+      // Check all on
+      if ((numDev !== 14) || (numOn !== 8)) throw new Error('All devices should be on, but they are not');
+    }
+  }
+
+  await app.onUninit();
+  console.log('\x1b[1A[\x1b[32mPASSED\x1b[0m]');
+}
+
 // Start all tests
 async function startAllTests() {
   try {
@@ -485,6 +547,7 @@ async function startAllTests() {
     await testIssue84();
     await testIssue83And87();
     await testTicket88();
+    await testTicket115();
     await testMail();
   } catch (err) {
     console.log('\x1b[1A[\x1b[31mFAILED\x1b[0m]');
@@ -494,4 +557,4 @@ async function startAllTests() {
 
 // Run all the testing
 startAllTests();
-//testState('states/Anders_0.18.31_err.txt', 100);
+// testState('states/Anders_0.18.31_err.txt', 100);
