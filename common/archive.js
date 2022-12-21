@@ -1,3 +1,4 @@
+/* eslint-disable guard-for-in */
 /* eslint-disable object-curly-newline */
 /* eslint-disable no-restricted-syntax */
 
@@ -23,8 +24,8 @@ const { toLocalTime, roundToNearestHour, roundToStartOfDay } = require('./homeyt
  *   period:
  *     - "yearly" : One item stored per year (never expires)
  *     - "monthly": One item stored per month (never expires)
- *     - "daily"  : One item stored per day (expires after ARCHIVE_EXPIRE_TIME_DAILY)
- *     - "hourly" : One item stored per hour (expires after ARCHIVE_EXPIRE_TIME_HOURLY)
+ *     - "daily"  : One item stored per day (expires after homey.setting 'expireDaily' days)
+ *     - "hourly" : One item stored per hour (expires after homey.setting 'expireHourly' days)
  *   time:
  *     - "YYYY" for period "yearly"
  *     - "YYYY" for period "monthly"
@@ -36,9 +37,6 @@ const { toLocalTime, roundToNearestHour, roundToStartOfDay } = require('./homeyt
  *     - Array going from 0 to monthDays-1, one value for every day in the month for period "daily"
  *     - Array going from 0 to dayHours-1, one value for every hour for period "hourly"
  */
-
-const ARCHIVE_EXPIRE_TIME_DAILY = 2; // In past months to keep
-const ARCHIVE_EXPIRE_TIME_HOURLY = 2; // In past days to keep
 
 const SCHEMA = {
   NONE: 0,
@@ -186,7 +184,47 @@ async function getArchive(homey) {
 async function cleanArchive(homey, timeUTC = new Date()) {
   const archive = await homey.settings.get('archive') || {};
   const localTime = toLocalTime(timeUTC, homey);
-  console.log(`Expire archive TODO: ${localTime}`);
+  const ltYear = localTime.getFullYear();
+  const ltMonth = localTime.getMonth();
+  const ltDay = localTime.getDate() - 1; // Start index from 0
+  const dayId = `${String(ltYear).padStart(4, '0')}-${String(ltMonth + 1).padStart(2, '0')}-${String(ltDay + 1).padStart(2, '0')}`;
+  const monthId = `${String(ltYear).padStart(4, '0')}-${String(ltMonth + 1).padStart(2, '0')}`;
+  let hourlyExpireDays = +homey.settings.get('expireHourly');
+  let dailyExpireDays = +homey.settings.get('expireDaily');
+  if (!Number.isInteger(hourlyExpireDays) || (hourlyExpireDays < 1)) {
+    hourlyExpireDays = 7; // Set a value to avoid building the archive forever
+  }
+  if (!Number.isInteger(dailyExpireDays) || (dailyExpireDays < 1)) {
+    dailyExpireDays = 31; // Set a value to avoid building the archive forever
+  }
+  dailyExpireDays = Math.ceil(dailyExpireDays / 31) * 31;
+  const hourlyExpire = new Date(new Date(dayId).getTime() - 1000 * 60 * 60 * 24 * hourlyExpireDays);
+  const dailyExpire = new Date(new Date(monthId).getTime() - 1000 * 60 * 60 * 24 * dailyExpireDays);
+  homey.app.log(`Expire archive trigger time:  ${localTime}`);
+  homey.app.log(`  - Hourly expire older than: ${hourlyExpire}`);
+  homey.app.log(`  - Daily expire older than:  ${dailyExpire}`);
+  for (const dataId in archive) {
+    const hourlyData = archive[dataId].hourly;
+    if (hourlyData) {
+      for (const day in hourlyData) {
+        const timeStamp = new Date(day);
+        if (timeStamp < hourlyExpire) {
+          delete archive[dataId].hourly[day];
+        }
+        // console.log(`  Hour: ${day}: ${expired}: ${timeStamp} ${hourlyExpire}`);
+      }
+    }
+    const dailyData = archive[dataId].daily;
+    if (dailyData) {
+      for (const month in dailyData) {
+        const timeStamp = new Date(month);
+        if (timeStamp < dailyExpire) {
+          delete archive[dataId].daily[month];
+        }
+        // console.log(`  Daily: ${month}: ${expired}`);
+      }
+    }
+  }
   homey.settings.set('archive', archive);
 }
 

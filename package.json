@@ -12,9 +12,11 @@
     "@tsconfig/node12": "^1.0.9",
     "@types/homey": "npm:homey-apps-sdk-v3-types@^0.3.1",
     "@types/node": "^17.0.41",
+    "@types/seedrandom": "^3.0.2",
     "eslint": "^7.32.0",
     "eslint-config-athom": "^3.0.1",
-    "eslint-plugin-node": "^11.1.0"
+    "eslint-plugin-node": "^11.1.0",
+    "seedrandom": "^3.0.5"
   },
   "dependencies": {
     "async-mutex": "^0.3.2",
