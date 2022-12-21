@@ -242,11 +242,6 @@ class PiggyBank extends Homey.App {
       dailyMaxOk = dailyMaxOk.map(val => val || undefined);
       this.homey.settings.set('stats_daily_max', dailyMax);
       this.homey.settings.set('stats_daily_max_ok', dailyMaxOk);
-      // Recalculate this month maxes and average
-      const max3 = dailyMax.sort((a, b) => b - a).filter(data => data !== undefined).slice(0, 3);
-      const avg = max3.reduce((a, b) => a + b, 0) / max3.length;
-      this.homey.settings.set('stats_this_month_maxes', max3);
-      this.homey.settings.set('stats_this_month_average', avg || 0); // Set to 0 in case it is NaN
       // Notify the user about the incident
       this.homey.notifications.createNotification({ excerpt: this.homey.__('breaking.fixGraph') });
     }
@@ -269,11 +264,6 @@ class PiggyBank extends Homey.App {
       dailyMaxOk = dailyMaxOk.map(val => val || undefined);
       this.homey.settings.set('stats_daily_max', dailyMax);
       this.homey.settings.set('stats_daily_max_ok', dailyMaxOk);
-      // Recalculate this month maxes and average
-      const max3 = dailyMax.sort((a, b) => b - a).filter(data => data !== undefined).slice(0, 3);
-      const avg = max3.reduce((a, b) => a + b, 0) / max3.length;
-      this.homey.settings.set('stats_this_month_maxes', max3);
-      this.homey.settings.set('stats_this_month_average', avg || 0); // Set to 0 in case it is NaN
     }
 
     // Version 0.18.24 moved stats_daily_max into archive
@@ -372,10 +362,23 @@ class PiggyBank extends Homey.App {
       this.homey.settings.set('settingsVersion', 2);
     }
 
-    // Version 0.18.xx
-    // Delete the old statistics as they has been in the archive for a while
-    // this.homey.settings.unset('stats_daily_max');
-    // this.homey.settings.unset('stats_daily_max_ok');
+    // Version 0.19.27
+    if (+settingsVersion < 3) {
+      // Update the default value of stats history
+      const expireDaily = this.homey.settings.get('expireDaily');
+      if (!expireDaily || (expireDaily < 62)) this.homey.settings.set('expireDaily', 365);
+      const expireHourly = this.homey.settings.get('expireHourly');
+      if (!expireHourly || (expireHourly < 31)) this.homey.settings.set('expireHourly', 31);
+      // Delete the old statistics as they has been in the archive for a while
+      this.homey.settings.unset('stats_daily_max');
+      this.homey.settings.unset('stats_daily_max_ok');
+      this.homey.settings.unset('stats_this_month_maxes');
+      this.homey.settings.unset('stats_this_month_average');
+      this.homey.settings.unset('stats_last_month_max');
+      this.homey.settings.set('settingsVersion', 3);
+    }
+
+    // Internal state that preferably should be removed as it is in the archive
     // this.homey.settings.unset('stats_savings_all_time_use');
     // this.homey.settings.unset('stats_savings_all_time_power_part');
 
@@ -483,7 +486,7 @@ class PiggyBank extends Homey.App {
       this.homey.settings.set('chargerOptions', chargerOptions);
     }
     const expireDaily = this.homey.settings.get('expireDaily');
-    if (!expireDaily) this.homey.settings.set('expireDaily', 31);
+    if (!expireDaily) this.homey.settings.set('expireDaily', 62);
     const expireHourly = this.homey.settings.get('expireHourly');
     if (!expireHourly) this.homey.settings.set('expireHourly', 7);
 
@@ -2484,8 +2487,6 @@ class PiggyBank extends Homey.App {
     this.__stats_norm_energy = this.homey.settings.get('stats_norm_energy');
     this.__stats_high_energy = this.homey.settings.get('stats_high_energy');
     this.__stats_extreme_energy = this.homey.settings.get('stats_extreme_energy');
-    this.__stats_last_day_max = undefined;
-    this.__stats_this_month_maxes = this.homey.settings.get('stats_this_month_maxes'); // Todo: reject if the time is too far away
 
     this.__stats_cost_if_smooth = undefined;
     this.__stats_savings_yesterday = undefined;
@@ -2496,11 +2497,6 @@ class PiggyBank extends Homey.App {
     this.__stats_accum_use_today = 0;
     this.__stats_actual_cost = 0;
 
-    if (!Array.isArray(this.__stats_this_month_maxes)) {
-      this.__stats_this_month_maxes = [];
-    }
-    this.__stats_this_month_average = this.homey.settings.get('stats_this_month_average');
-    this.__stats_last_month_max = this.homey.settings.get('stats_last_month_max');
     this.__stats_app_restarts = this.homey.settings.get('stats_app_restarts'); // Reset every month
     if (this.__stats_app_restarts === null) {
       this.__stats_app_restarts = 0;
@@ -2546,8 +2542,6 @@ class PiggyBank extends Homey.App {
   async statsSetLastMonthPower(energy, timeLastUpdatedUTC) {
     const maxPower = this.homey.settings.get('maxPower');
     const overShootAvoided = this.homey.settings.get('overShootAvoided');
-    this.__stats_last_month_max = energy;
-    this.homey.settings.set('stats_last_month_max', this.__stats_last_month_max);
 
     // Add savings for power tariff, always assume one step down
     const { gridCosts } = this.homey.settings.get('futurePriceOptions');
@@ -2564,27 +2558,27 @@ class PiggyBank extends Homey.App {
   }
 
   async statsSetLastDayMaxEnergy(timeLastUpdatedUTC, newMonthTriggered) {
-    const dailyMax = this.homey.settings.get('stats_daily_max');
-    const lastDayLocal = toLocalTime(timeLastUpdatedUTC, this.homey).getDate() - 1;
-    this.__stats_last_day_max = dailyMax[lastDayLocal];
+    // Clean up archive
+    await cleanArchive();
 
-    // Keep largest 3 days:
-    this.__stats_this_month_maxes.push(dailyMax[lastDayLocal]);
-    this.__stats_this_month_maxes.sort((a, b) => b - a);
-    if (this.__stats_this_month_maxes.length > 3) {
-      this.__stats_this_month_maxes.pop();
-    }
-    this.__stats_this_month_average = this.__stats_this_month_maxes.reduce((a, b) => a + b, 0) / this.__stats_this_month_maxes.length;
+    // Get last Day Max
+    const timeLastUpdatedLocal = toLocalTime(timeLastUpdatedUTC, this.homey);
+    const ltYear = timeLastUpdatedLocal.getFullYear();
+    const ltMonth = timeLastUpdatedLocal.getMonth();
+    const ltDay = timeLastUpdatedLocal.getDate() - 1;
+    const timeIdx = `${String(ltYear).padStart(4, '0')}-${String(ltMonth + 1).padStart(2, '0')}`;
+    const lastDayMax = await getArchive(this.homey, 'maxPower', 'daily', timeIdx, ltDay);
+
+    // Average of Monthly max:
+    const thisMonthTariff = await getArchive(this.homey, 'maxPower', 'monthly', ltYear, ltMonth) || lastDayMax;
+
     // On new month:
     if (newMonthTriggered) {
-      await this.statsSetLastMonthPower(this.__stats_this_month_average, timeLastUpdatedUTC);
-      this.__stats_this_month_maxes = [];
+      await this.statsSetLastMonthPower(thisMonthTariff, timeLastUpdatedUTC);
       this.__stats_app_restarts = 0;
       this.homey.settings.set('stats_app_restarts', 0);
       this.homey.settings.set('overShootAvoided', 0);
     }
-    this.homey.settings.set('stats_this_month_maxes', this.__stats_this_month_maxes);
-    this.homey.settings.set('stats_this_month_average', this.__stats_this_month_average);
   }
 
   /**
@@ -2598,32 +2592,23 @@ class PiggyBank extends Homey.App {
     }
 
     const hourAgoUTC = roundToNearestHour(new Date(timeOfNewHourUTC.getTime() - (1000 * 60 * 60)));
-    const lastHourDateLocal = toLocalTime(hourAgoUTC, this.homey).getDate() - 1; // 0-30
+    const hourAgoLocal = toLocalTime(hourAgoUTC, this.homey);
 
-    let dailyMax = this.homey.settings.get('stats_daily_max');
-    let dailyMaxOk = this.homey.settings.get('stats_daily_max_ok');
     let overShootAvoided = this.homey.settings.get('overShootAvoided');
     const maxPower = this.homey.settings.get('maxPower');
     const dailyMaxPrevUpdateUTC = new Date(this.homey.settings.get('stats_daily_max_last_update_time'));
+    const dailyMaxPrevUpdateLocal = toLocalTime(dailyMaxPrevUpdateUTC, this.homey);
     const lastHourMissed = (hourAgoUTC - dailyMaxPrevUpdateUTC) > (1000 * 60 * 90); // More than 90 minutes ago
-    const firstEverHour = !Array.isArray(dailyMax);
+    const firstEverHour = getArchive(this.homey, 'maxPower') === null;
     const newDayTriggered = ((hourAgoUTC - dailyMaxPrevUpdateUTC) > (1000 * 60 * 60 * 24) // More than 24 hours or different day
-      || (toLocalTime(hourAgoUTC, this.homey).getDate() !== toLocalTime(dailyMaxPrevUpdateUTC, this.homey).getDate()));
+      || (hourAgoLocal.getDate() !== dailyMaxPrevUpdateLocal.getDate()));
     const newMonthTriggered = ((hourAgoUTC - dailyMaxPrevUpdateUTC) > (1000 * 60 * 60 * 24 * 31) // More than 31 days or different month
-      || (toLocalTime(hourAgoUTC, this.homey).getMonth() !== toLocalTime(dailyMaxPrevUpdateUTC, this.homey).getMonth()));
+      || (hourAgoLocal.getMonth() !== dailyMaxPrevUpdateLocal.getMonth()));
     if (newDayTriggered && !firstEverHour) {
       await this.statsSetLastDayMaxEnergy(dailyMaxPrevUpdateUTC, newMonthTriggered);
     }
-    if (firstEverHour || newMonthTriggered) {
-      dailyMax = [];
-      dailyMaxOk = [];
-    }
-    dailyMax[lastHourDateLocal] = (dailyMax[lastHourDateLocal] > energy) ? dailyMax[lastHourDateLocal] : energy; // Also set to energy if previous value is undefined
-    dailyMaxOk[lastHourDateLocal] = (dailyMaxOk[lastHourDateLocal] !== false) && (energyOk === true) && (lastHourMissed === false); // Need !== false on first to ensure undefined goes to true
     const timeSincePowerOff = this.__last_power_on_time - this.__last_power_off_time;
     overShootAvoided = (energyOk && (energy < maxPower) && (energy > maxPower * 0.9) && (timeSincePowerOff < 1000 * 60 * 15) && (maxPower > +overShootAvoided)) ? maxPower : overShootAvoided;
-    this.homey.settings.set('stats_daily_max', dailyMax);
-    this.homey.settings.set('stats_daily_max_ok', dailyMaxOk);
     this.homey.settings.set('stats_daily_max_last_update_time', hourAgoUTC);
     this.homey.settings.set('overShootAvoided', overShootAvoided);
 
@@ -2775,9 +2760,6 @@ class PiggyBank extends Homey.App {
     } else {
       type = [type];
     }
-
-    // const dailyMax = this.homey.settings.get('stats_daily_max');
-    // const dailyMaxGood = this.homey.settings.get('stats_daily_max_ok');
 
     const priceMode = +this.homey.settings.get('priceMode');
     let statsTimeUTC = new Date(this.homey.settings.get('stats_daily_max_last_update_time'));
@@ -3168,6 +3150,25 @@ class PiggyBank extends Homey.App {
         : (apiNeeded && (this.apiState === c.PRICE_API_NO_DEVICE)) ? c.APP_MISSING_PRICE_DEVICE
           : (apiNeeded && (this.apiState === c.PRICE_API_NO_DATA)) ? c.APP_MISSING_PRICE_DATA
             : c.APP_READY;
+
+    const timeLastUpdatedLocal = toLocalTime(new Date(), this.homey);
+    const ltYear = +timeLastUpdatedLocal.getFullYear();
+    const ltMonth = +timeLastUpdatedLocal.getMonth();
+    const ltMonthm1 = (ltMonth === 0) ? 11 : (ltMonth - 1);
+    const ltYearm1 = (ltMonth === 0) ? (ltYear - 1) : ltYear;
+    const ltDay = timeLastUpdatedLocal.getDate() - 1;
+    const timeIdx = (ltDay === 0)
+      ? (ltMonth === 0)
+        ? `${String(ltYearm1).padStart(4, '0')}-${String(ltMonthm1 + 1).padStart(2, '0')}`
+        : `${String(ltYear).padStart(4, '0')}-${String(ltMonthm1 + 1).padStart(2, '0')}`
+      : `${String(ltYear).padStart(4, '0')}-${String(ltMonth + 1).padStart(2, '0')}`;
+
+    // Read archive data
+    const eachDayMax = await getArchive(this.homey, 'maxPower', 'daily', timeIdx);
+    const lastDayMax = Array.isArray(eachDayMax) ? eachDayMax.slice(-1)[0] : eachDayMax ? eachDayMax[ltDay - 1] : undefined;
+    const thisMonthTariff = await getArchive(this.homey, 'maxPower', 'monthly', ltYear, ltMonth) || 0;
+    const lastMonthTariff = await getArchive(this.homey, 'maxPower', 'monthly', ltYearm1, ltMonthm1);
+
     return {
       power_last_hour: parseInt(this.__power_last_hour, 10), // Actually NaN the first hour of operation
       power_estimated: this.__power_estimated === undefined ? undefined : parseInt(this.__power_estimated.toFixed(0), 10),
@@ -3186,9 +3187,9 @@ class PiggyBank extends Homey.App {
       norm_price_energy_avg: this.__stats_norm_energy,
       high_price_energy_avg: this.__stats_high_energy,
       extreme_price_energy_avg: this.__stats_extreme_energy,
-      power_yesterday: this.__stats_last_day_max,
-      power_average: this.__stats_this_month_average,
-      power_last_month: this.__stats_last_month_max,
+      power_yesterday: lastDayMax,
+      power_average: thisMonthTariff,
+      power_last_month: lastMonthTariff,
       num_restarts: this.__stats_app_restarts,
 
       currency: futureData.currency,

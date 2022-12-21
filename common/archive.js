@@ -172,10 +172,19 @@ async function addToArchive(homey, data, timeUTC = new Date(), skipHours = false
 
 /**
  * Returns data from the archive. Only the requested data is returned
+ * The archive is build as follows: archive[dataId][period][time][data]
  */
-async function getArchive(homey) {
+async function getArchive(homey, dataId = undefined, period = undefined, time = undefined, dataIdx = undefined) {
   const archive = await homey.settings.get('archive') || {};
-  return archive;
+  if (!dataId) return archive;
+  if (!(dataId in archive)) return null;
+  if (!period) return archive[dataId];
+  if (!(period in archive[dataId])) return null;
+  if (!time) return archive[dataId][period];
+  if (!(time in archive[dataId][period])) return null;
+  if (!dataIdx) return archive[dataId][period][time];
+  if (!Array.isArray(archive[dataId][period][time])) return null;
+  return archive[dataId][period][time][dataIdx];
 }
 
 /**
