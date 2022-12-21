@@ -221,6 +221,8 @@ async function testArchive() {
   await app.disableLog();
   await app.onInit();
   await applyBasicConfig(app);
+  await app.homey.settings.set('expireDaily', 31);
+  await app.homey.settings.set('expireHourly', 7);
   seedrandom('mySeed', { global: true });
 
   let now = roundToStartOfDay(new Date(1666396747401 + (1000 * 60 * 60 * 24 * (8))), app.homey);

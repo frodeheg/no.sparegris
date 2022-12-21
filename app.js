@@ -2558,9 +2558,6 @@ class PiggyBank extends Homey.App {
   }
 
   async statsSetLastDayMaxEnergy(timeLastUpdatedUTC, newMonthTriggered) {
-    // Clean up archive
-    await cleanArchive();
-
     // Get last Day Max
     const timeLastUpdatedLocal = toLocalTime(timeLastUpdatedUTC, this.homey);
     const ltYear = timeLastUpdatedLocal.getFullYear();
@@ -2605,6 +2602,7 @@ class PiggyBank extends Homey.App {
     const newMonthTriggered = ((hourAgoUTC - dailyMaxPrevUpdateUTC) > (1000 * 60 * 60 * 24 * 31) // More than 31 days or different month
       || (hourAgoLocal.getMonth() !== dailyMaxPrevUpdateLocal.getMonth()));
     if (newDayTriggered && !firstEverHour) {
+      await cleanArchive(this.homey, timeOfNewHourUTC);
       await this.statsSetLastDayMaxEnergy(dailyMaxPrevUpdateUTC, newMonthTriggered);
     }
     const timeSincePowerOff = this.__last_power_on_time - this.__last_power_off_time;
