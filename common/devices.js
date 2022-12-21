@@ -301,6 +301,7 @@ const DEVICE_CMD = {
     tempMax: 85,
     tempStep: 0.5
   },
+  'no.sparegris:piggy-bank-insights': DEFAULT_IGNORED,
   'no.thermofloor:TF_Thermostat': {
     type: DEVICE_TYPE.HEATER,
     setOnOffCap: 'thermofloor_mode',
