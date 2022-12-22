@@ -8,6 +8,12 @@ const fs = require('fs');
 let uniqueID = 1;
 
 /**
+ * Due to test environment make the homey global and make sure there is only one instance of zones and devices;
+ */
+let zones;
+let devices;
+
+/**
  * Fake Device class
  */
 class FakeDeviceClass {
@@ -137,8 +143,10 @@ class FakeZonesClass {
 class HomeyAPIApp {
 
   constructor() {
-    this.devices = new FakeDevicesClass(this);
-    this.zones = new FakeZonesClass(this);
+    if (devices === undefined) devices = new FakeDevicesClass(this);
+    if (zones === undefined) zones = new FakeZonesClass(this);
+    this.devices = devices;
+    this.zones = zones;
   }
 
 }

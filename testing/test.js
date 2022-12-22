@@ -537,6 +537,33 @@ async function testTicket115() {
   console.log('\x1b[1A[\x1b[32mPASSED\x1b[0m]');
 }
 
+async function testAppRestart() {
+  console.log('[......] Test App restart');
+  const now = new Date('October 1, 2022, 00:59:50 GMT+2:00');
+  const app = new PiggyBank();
+  await app.disableLog();
+
+  // Load initial state from a file
+  await applyStateFromFile(app, 'states/Frode_0.19.26.txt', false);
+  // Set up some state for safe shutdown
+  app.homey.settings.set('safeShutdown__accum_energy', 10);
+  app.homey.settings.set('safeShutdown__current_power', 600000);
+  app.homey.settings.set('safeShutdown__current_power_time', new Date(now.getTime() - 1000 * 60 * 5)); // => __accum_since (start of hour)
+  app.homey.settings.set('safeShutdown__power_last_hour', 5023);
+  app.homey.settings.set('safeShutdown__offeredEnergy', 0);
+
+  await app.onInit(now);
+  await disableTimers(app);
+  await app.onNewHour(true, new Date(now.getTime() + 1000 * 10 + 100));
+  await app.onPowerUpdate(4000, new Date(now.getTime() + 1000 * 11 + 100));
+  if (Math.floor(app.__power_estimated) !== 5848
+    || Math.floor(app.__accum_energy) !== 1850) {
+    throw new Error('Accumulated energy at hour crossing was incorrect');
+  }
+  await app.onUninit();
+  console.log('\x1b[1A[\x1b[32mPASSED\x1b[0m]');
+}
+
 // Start all tests
 async function startAllTests() {
   try {
@@ -554,6 +581,7 @@ async function startAllTests() {
     await testIssue83And87();
     await testTicket88();
     await testTicket115();
+    await testAppRestart();
     await testMail();
   } catch (err) {
     console.log('\x1b[1A[\x1b[31mFAILED\x1b[0m]');

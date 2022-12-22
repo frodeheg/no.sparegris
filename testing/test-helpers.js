@@ -6,6 +6,7 @@
 const fs = require('fs');
 const d = require('../common/devices');
 const c = require('../common/constants');
+const { HomeyAPIApp } = require('./homey-api');
 
 const { MAIN_OP, TARGET_OP } = c;
 
@@ -92,7 +93,13 @@ async function applyBasicConfig(app) {
   await app.doPriceCalculations();
 }
 
-async function applyStateFromFile(app, file) {
+/**
+ * Reads the full state dump from a file
+ * @param {*} app The app instance to load the state to
+ * @param {*} file The file to load the state from
+ * @param {*} poweredOn if true then the state is loaded as if the app is in active mode, false when offline
+ */
+async function applyStateFromFile(app, file, poweredOn = true) {
   return new Promise((resolve, reject) => {
     fs.readFile(`testing/${file}`, (err, data) => {
       if (err) {
@@ -102,20 +109,25 @@ async function applyStateFromFile(app, file) {
     });
   }).then(data => {
     const parsed = JSON.parse(data);
+    // Settings are always loaded
     app.homey.settings.values = parsed.settings;
-    for (const v in parsed.state) {
-      switch (v) {
-        case '__intervalID':
-        case '__newHourID':
-        case '__statsIntervalID':
-          break;
-        case '__current_power_time':
-        case '__accum_since':
-          app[v] = new Date(parsed.state[v]);
-          break;
-        default:
-          app[v] = parsed.state[v];
-          break;
+    if (poweredOn) {
+      // These variables are only set by onInit so should only be loaded
+      // when trying to reproduce a state in the app
+      for (const v in parsed.state) {
+        switch (v) {
+          case '__intervalID':
+          case '__newHourID':
+          case '__statsIntervalID':
+            break;
+          case '__current_power_time':
+          case '__accum_since':
+            app[v] = new Date(parsed.state[v]);
+            break;
+          default:
+            app[v] = parsed.state[v];
+            break;
+        }
       }
     }
     // Create fake devices to match the loaded state
@@ -123,18 +135,19 @@ async function applyStateFromFile(app, file) {
     for (const deviceId in parsed.settings.deviceList) {
       const devInfo = parsed.settings.deviceList[deviceId];
       const fileName = `${devInfo.driverId}.txt`;
-      const zones = app.homeyApi.zones.getZones();
+      const homeyApi = new HomeyAPIApp({ homey: app.homey });
+      const zones = homeyApi.zones.getZones();
       for (let idx = devInfo.memberOf.length - 1; idx >= 0; idx--) {
         const zoneId = devInfo.memberOf[idx];
         const zoneName = (idx === 0) ? devInfo.room : `${devInfo.room}_parent_${idx}`;
         const parentId = devInfo.memberOf[idx + 1] || null;
-        if (!(zoneId in zones)) app.homeyApi.zones.addZone(zoneName, zoneId, parentId);
-        else if (idx === 0) app.homeyApi.zones.zones[zoneId].name = devInfo.room;
+        if (!(zoneId in zones)) homeyApi.zones.addZone(zoneName, zoneId, parentId);
+        else if (idx === 0) homeyApi.zones.zones[zoneId].name = devInfo.room;
       }
       devices.push(new Promise((resolve, reject) => {
         let fakeDev;
         try {
-          fakeDev = app.homeyApi.devices.addFakeDevice(fileName, devInfo.roomId, deviceId);
+          fakeDev = homeyApi.devices.addFakeDevice(fileName, devInfo.roomId, deviceId);
         } catch (err) {
           app.log(`Missing file: ${fileName} - overriding with defaults`);
           const dummyCap = {};
@@ -147,19 +160,22 @@ async function applyStateFromFile(app, file) {
           }
           const dummyDevice = { id: deviceId, capabilitiesObj: dummyCap };
           try {
-            fakeDev = app.homeyApi.devices.addFakeDevice(dummyDevice, devInfo.roomId);
+            fakeDev = homeyApi.devices.addFakeDevice(dummyDevice, devInfo.roomId);
             fakeDev.driverUri = `homey:app:${devInfo.driverId.slice(0, devInfo.driverId.indexOf(':'))}`;
             fakeDev.driverId = devInfo.driverId.slice(devInfo.driverId.indexOf(':') + 1);
           } catch (err2) {
             reject(err2);
           }
         }
-        const onOffCap = app.getOnOffCap(deviceId);
-        if (onOffCap) {
-          const { lastCmd } = app.__current_state[deviceId];
-          const isOn = (lastCmd === TARGET_OP.TURN_ON) || (lastCmd === TARGET_OP.DELTA_TEMP);
-          const setValue = isOn ? app.getOnOffTrue(deviceId) : app.getOnOffFalse(deviceId);
-          fakeDev.capabilitiesObj[onOffCap].value = setValue;
+        if (poweredOn) {
+          // app.__current_state is only available when the app is running
+          const onOffCap = app.getOnOffCap(deviceId);
+          if (onOffCap) {
+            const { lastCmd } = app.__current_state[deviceId];
+            const isOn = (lastCmd === TARGET_OP.TURN_ON) || (lastCmd === TARGET_OP.DELTA_TEMP);
+            const setValue = isOn ? app.getOnOffTrue(deviceId) : app.getOnOffFalse(deviceId);
+            fakeDev.capabilitiesObj[onOffCap].value = setValue;
+          }
         }
         fakeDev.name = devInfo.name;
         resolve(fakeDev);

@@ -138,7 +138,7 @@ class PiggyBank extends Homey.App {
   /**
    * onInit is called when the app is initialized.
    */
-  async onInit() {
+  async onInit(now = new Date()) {
     this.log('OnInit');
     this.homey.on('unload', () => this.onUninit());
 
@@ -385,7 +385,6 @@ class PiggyBank extends Homey.App {
     // ===== BREAKING CHANGES END =====
 
     // ===== KEEPING STATE ACROSS RESTARTS =====
-    const now = new Date();
     this.__accum_energy = toNumber(await this.homey.settings.get('safeShutdown__accum_energy'));
     this.__current_power = toNumber(await this.homey.settings.get('safeShutdown__current_power'));
     this.__current_power_time = new Date(await this.homey.settings.get('safeShutdown__current_power_time')); // When null then date is start of unix time
@@ -495,7 +494,7 @@ class PiggyBank extends Homey.App {
     this.__intervalID = undefined;
     this.__newHourID = undefined;
     this.__reserved_energy = 0;
-    this.__free_power_trigger_time = new Date();
+    this.__free_power_trigger_time = new Date(now.getTime());
     this.__power_estimated = undefined;
     this.__alarm_overshoot = false;
     this.__free_capacity = 0;
@@ -506,8 +505,8 @@ class PiggyBank extends Homey.App {
     this.__current_price_index = undefined;
     this.mutex = new Mutex();
     this.homeyApi = new HomeyAPIApp({ homey: this.homey });
-    this.__last_power_off_time = new Date();
-    this.__last_power_on_time = new Date();
+    this.__last_power_off_time = new Date(now.getTime());
+    this.__last_power_on_time = new Date(now.getTime());
     this.__last_power_off_time.setUTCMinutes(this.__last_power_off_time.getUTCMinutes() - 5); // Time in the past to allow turning on devices at app start
     this.__charge_plan = []; // No charge plan
     this.__charge_power_active = 0;
@@ -727,7 +726,7 @@ class PiggyBank extends Homey.App {
           this.__current_prices = [];
           this.__current_price_index = undefined;
           this.homey.settings.set('all_prices', this.__all_prices);
-          this.onNewHour(false); // Just to refresh prices and reschedule charging.
+          this.onNewHour(false, now); // Just to refresh prices and reschedule charging.
           this.homey.settings.set('settingsSaved', '');
           // The callback only returns on error so notify success with failure
           throw (new Error(this.homey.__('settings.alert.settingssaved')));
@@ -759,7 +758,7 @@ class PiggyBank extends Homey.App {
       if (Number.isNaN(this.__reserved_energy)) {
         this.__reserved_energy = 0;
       }
-      await this.onNewHour(false); // Not a new hour, hense false
+      await this.onNewHour(false, now); // Not a new hour, hense false
     } else {
       // Got some data from safe shutdown... Use this to calculate if new hour was crossed
       const lapsedTime = now - this.__current_power_time;
@@ -770,22 +769,23 @@ class PiggyBank extends Homey.App {
       }
       const energyUsed = (this.__current_power * timeToProcess) / (1000 * 60 * 60);
       this.__accum_energy += energyUsed;
+      this.__current_power_time = new Date(now.getTime());
       this.__reserved_energy = 0;
       if (timeToProcess < lapsedTime || timeWithinHour === 0) {
         // Only call onNewHour if the app restart crossed into a new hour
-        await this.onNewHour();
+        await this.onNewHour(true, now);
         // Add up initial part of next hour.
         const energyUsedNewHour = (this.__current_power * timeWithinHour) / (1000 * 60 * 60) + 100;
         this.__accum_energy = energyUsedNewHour;
         this.__current_power_time = new Date(now.getTime()); // When adding to this.__accum_energy then last power time must be reset.
         this.log(`NewHour energy from safe restart: ${this.__accum_energy}`, c.LOG_INFO);
       } else {
-        await this.onNewHour(false); // Not a new hour, hense false
+        await this.onNewHour(false, now); // Not a new hour, hense false
       }
     }
 
     // Start the onNewHour timer for coming hours
-    this.__newHourID = setTimeout(() => this.onNewHourWrapper(), timeToNextHour(new Date()));
+    this.__newHourID = setTimeout(() => this.onNewHourWrapper(), timeToNextHour(new Date(now.getTime())));
 
     // Monitor energy usage every 5 minute
     this.__monitorError = 0;
