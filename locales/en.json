@@ -153,7 +153,7 @@
       "settings": "Archive",
       "expireDaily": "Expire time Daily stats",
       "expireHourly": "Expire time Hourly stats",
-      "expireHint": "Number of days to keep statistics with the given granularity. For Monthly and Yearly granularity the statistics are kept forever."
+      "expireHint": "Number of days to keep statistics with the given granularity. For Monthly and Yearly granularity the statistics are kept forever.<p><b>NB!</b> More than a few months can degrade the performance of the app.</p>"
     },
     "deviceinfo": {
       "header": "Device reporting",
@@ -376,7 +376,7 @@
     "tariff": "Estimated power tariff",
     "highest": "Highest hourly usage",
     "missing": "Missing data.",
-    "inaccurate": "Inaccurate data (reboot or app restart detected).",
+    "inaccurate": "Inaccurate data\n(missing power from the fuse cabinet).",
     "incomplete": "Incomplete data, day not finished."
   },
   "chargePlanGraph": {

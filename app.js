@@ -511,6 +511,7 @@ class PiggyBank extends Homey.App {
     this.__charge_plan = []; // No charge plan
     this.__charge_power_active = 0;
     this.__spookey_check_activated = undefined;
+    this.__missing_power_this_hour = 0;
     // All elements of current_state will have the following:
     //  nComError: Number of communication errors since last time it worked - Used to depriorotize devices so we don't get stuck in an infinite retry loop
     //  lastCmd: The last onoff command that was sent to the device
@@ -775,7 +776,7 @@ class PiggyBank extends Homey.App {
         // Only call onNewHour if the app restart crossed into a new hour
         await this.onNewHour(true, now);
         // Add up initial part of next hour.
-        const energyUsedNewHour = (this.__current_power * timeWithinHour) / (1000 * 60 * 60) + 100;
+        const energyUsedNewHour = (this.__current_power * timeWithinHour) / (1000 * 60 * 60);
         this.__accum_energy = energyUsedNewHour;
         this.__current_power_time = new Date(now.getTime()); // When adding to this.__accum_energy then last power time must be reset.
         this.log(`NewHour energy from safe restart: ${this.__accum_energy}`, c.LOG_INFO);
@@ -1494,13 +1495,16 @@ class PiggyBank extends Homey.App {
   async onNewHour(isNewHour = true, now = new Date()) {
     if (isNewHour) {
       // Crossed into new hour
-      const energyOk = this.__power_last_hour !== undefined; // If undefined then this is not for the full hour
+      const energyOk = this.__power_last_hour !== undefined // If undefined then this is not for the full hour
+        && (this.__missing_power_this_hour === 0); // If set then there is more than 5 minutes gap between power reporting
 
       await this.statsSetLastHourEnergy(this.__accum_energy, energyOk, now);
       this.updateLog(`Hour finalized: ${String(this.__accum_energy)} Wh`, c.LOG_INFO);
       this.__power_last_hour = this.__accum_energy;
       this.__reserved_energy = 0;
       this.__accum_energy = 0;
+      this.__current_power_time = new Date(now.getTime());
+      this.__missing_power_this_hour = 0;
       this.__accum_since = new Date(now.getTime());
     }
 
@@ -1634,8 +1638,11 @@ class PiggyBank extends Homey.App {
       this.__accum_energy = 0;
       this.__offeredEnergy = 0;
     } else {
-      const lapsedTime = now - this.__current_power_time;
+      let lapsedTime = now - this.__current_power_time;
       const energyUsed = (this.__current_power * lapsedTime) / (1000 * 60 * 60);
+      this.__missing_power_this_hour = (lapsedTime > (1000 * 60 * 5));
+      const timeWithinHour = timeSinceLastHour(now);
+      if (lapsedTime > timeWithinHour) lapsedTime = timeWithinHour;
       this.__accum_energy += energyUsed;
       const energyOffered = (this.__charge_power_active * lapsedTime) / (1000 * 60 * 60);
       this.__offeredEnergy += energyOffered; // Offered or given, depending on flow or device

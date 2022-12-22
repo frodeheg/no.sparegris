@@ -153,7 +153,7 @@
       "settings": "Arkiv",
       "expireDaily": "Foreldelsestid daglig statistikk",
       "expireHourly": "Foreldelsestid timestatistikk",
-      "expireHint": "Antall dager å beholde statistikken med den angitte oppløsningen. Statistikk for månedlig og årlig oppløsning beholdes for evig."
+      "expireHint": "Antall dager å beholde statistikken med den angitte oppløsningen. Statistikk for månedlig og årlig oppløsning beholdes for evig.<p><b>NB!</b> Mer enn noen måneder kan forringe ytelsen på appen.</p>"
     },
     "deviceinfo": {
       "header": "Rapportering av enheter",
@@ -376,7 +376,7 @@
     "tariff": "Estimert effekttariff",
     "highest": "Høyeste timeforbruk",
     "missing": "Manglende data.",
-    "inaccurate": "Unøyaktige data (omstart ble detektert).",
+    "inaccurate": "Unøyaktige data\n(Manglet effekt fra sikringsskapet).",
     "incomplete": "Ufullstendige data, dagen er ikke ferdig enda."
   },
   "chargePlanGraph": {
