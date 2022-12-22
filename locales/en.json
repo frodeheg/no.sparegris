@@ -153,7 +153,7 @@
       "settings": "Archive",
       "expireDaily": "Expire time Daily stats",
       "expireHourly": "Expire time Hourly stats",
-      "expireHint": "Number of days to keep statistics with the given granularity. For Monthly and Yearly granularity the statistics are kept forever.<p><b>NB!</b> More than a few months can degrade the performance of the app.</p>"
+      "expireHint": "Number of days to keep statistics with the given granularity. For Monthly and Yearly granularity the statistics are kept forever.<br><b>NB!</b> More than a few months can degrade the performance of the app."
     },
     "deviceinfo": {
       "header": "Device reporting",

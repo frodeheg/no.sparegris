@@ -153,7 +153,7 @@
       "settings": "Arkiv",
       "expireDaily": "Foreldelsestid daglig statistikk",
       "expireHourly": "Foreldelsestid timestatistikk",
-      "expireHint": "Antall dager å beholde statistikken med den angitte oppløsningen. Statistikk for månedlig og årlig oppløsning beholdes for evig.<p><b>NB!</b> Mer enn noen måneder kan forringe ytelsen på appen.</p>"
+      "expireHint": "Antall dager å beholde statistikken med den angitte oppløsningen. Statistikk for månedlig og årlig oppløsning beholdes for evig.<br><b>NB!</b> Mer enn noen måneder kan forringe ytelsen på appen."
     },
     "deviceinfo": {
       "header": "Rapportering av enheter",
