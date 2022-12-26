@@ -223,7 +223,7 @@ async function entsoeGetData(startTime, currency = 'NOK', biddingZone) {
     }
   } catch (err) {
     // Ignore errors.
-    console.log(`Error: ${err}`);
+    console.log(`Error (entsoe.eu): ${err}`);
   }
 
   return priceData;

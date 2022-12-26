@@ -564,6 +564,41 @@ async function testAppRestart() {
   console.log('\x1b[1A[\x1b[32mPASSED\x1b[0m]');
 }
 
+async function testMissingPulse() {
+  console.log('[......] Test Missing Pulse');
+  const now = new Date('October 1, 2022, 00:59:50 GMT+2:00');
+  const firstHour = new Date(now.getTime() + 1000 * 10 + 100);
+  const app = new PiggyBank();
+  await app.disableLog();
+
+  // Load initial state from a file
+  await applyStateFromFile(app, 'states/Frode_0.19.26.txt', false);
+  // Clear the archive
+  app.homey.settings.set('archive', null);
+  app.homey.settings.set('stats_daily_max', null);
+  app.homey.settings.set('stats_daily_max_ok', null);
+  app.homey.settings.set('stats_daily_max_last_update_time', firstHour);
+
+  await app.onInit(now);
+  await disableTimers(app);
+  await app.onPowerUpdate(4000, new Date(now.getTime() + 1000 * 1));
+  await app.onNewHour(true, firstHour);
+  await app.onNewHour(true, new Date(firstHour.getTime() + 1000 * 60 * 60));
+  await app.onNewHour(true, new Date(firstHour.getTime() + 1000 * 60 * 60 * 2));
+  await app.onPowerUpdate(4000, new Date(firstHour.getTime() + 1000 * 60 * 60 * 3 - 5000));
+  await app.onNewHour(true, new Date(firstHour.getTime() + 1000 * 60 * 60 * 3));
+
+  // Check archive
+  const archive = app.homey.settings.get('archive');
+  if (JSON.stringify(archive.dataOk.hourly['2022-10-01']) !== '[0,0,0,0]'
+    || JSON.stringify(archive.powUsage.hourly['2022-10-01']) !== '[0,0,0,3994.4444444444443]'
+    || JSON.stringify(archive.maxPower.hourly['2022-10-01']) !== '[0,0,0,3994.4444444444443]') {
+    throw new Error('New Hour with missing Power updates does not behave correctly');
+  }
+  await app.onUninit();
+  console.log('\x1b[1A[\x1b[32mPASSED\x1b[0m]');
+}
+
 // Start all tests
 async function startAllTests() {
   try {
@@ -582,6 +617,7 @@ async function startAllTests() {
     await testTicket88();
     await testTicket115();
     await testAppRestart();
+    await testMissingPulse();
     await testMail();
   } catch (err) {
     console.log('\x1b[1A[\x1b[31mFAILED\x1b[0m]');
