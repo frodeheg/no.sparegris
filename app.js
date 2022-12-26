@@ -278,7 +278,6 @@ class PiggyBank extends Homey.App {
             maxPower: maxes[i],
             dataOk: maxesOk[i]
           };
-          this.log(`Adding: ${data}`);
           const dataTimeStart = new Date('October 1, 2022, 01:00:00 GMT+2:00');
           const dataTime = new Date(dataTimeStart.getTime() + i * 24 * 60 * 60 * 1000);
           await addToArchive(this.homey, data, dataTime, true);
@@ -1494,6 +1493,10 @@ class PiggyBank extends Homey.App {
    */
   async onNewHour(isNewHour = true, now = new Date()) {
     if (isNewHour) {
+      // Add up missing power
+      const lapsedTime = now - this.__current_power_time;
+      this.__missing_power_this_hour += (lapsedTime > (1000 * 60 * 5));
+
       // Crossed into new hour
       const energyOk = this.__power_last_hour !== undefined // If undefined then this is not for the full hour
         && (this.__missing_power_this_hour === 0); // If set then there is more than 5 minutes gap between power reporting
@@ -1640,7 +1643,7 @@ class PiggyBank extends Homey.App {
     } else {
       let lapsedTime = now - this.__current_power_time;
       const energyUsed = (this.__current_power * lapsedTime) / (1000 * 60 * 60);
-      this.__missing_power_this_hour = (lapsedTime > (1000 * 60 * 5));
+      this.__missing_power_this_hour += (lapsedTime > (1000 * 60 * 5));
       const timeWithinHour = timeSinceLastHour(now);
       if (lapsedTime > timeWithinHour) lapsedTime = timeWithinHour;
       this.__accum_energy += energyUsed;
@@ -2617,6 +2620,7 @@ class PiggyBank extends Homey.App {
     this.homey.settings.set('stats_daily_max_last_update_time', hourAgoUTC);
     this.homey.settings.set('overShootAvoided', overShootAvoided);
 
+    this.updateLog(`Adding data. isOk: ${energyOk} && ${!lastHourMissed}`, c.LOG_ALL);
     const data = {
       maxPower: energy,
       dataOk: energyOk && !lastHourMissed,
@@ -3305,7 +3309,7 @@ class PiggyBank extends Homey.App {
       // Fetch new prices if needed and add them
       // Nordpool updates the prices around 13-14 every day, meaning that there is no point in
       // fetching new prices before we have less than 12 hours with future prices left
-      if ((!this.__current_price_index) || (this.__all_prices.length - this.__current_price_index) < 12) {
+      if ((!isNumber(this.__current_price_index)) || (this.__all_prices.length - this.__current_price_index) < 12) {
         let futurePrices;
         if (priceMode === c.PRICE_MODE_INTERNAL) {
           const futurePriceOptions = await this.homey.settings.get('futurePriceOptions');
