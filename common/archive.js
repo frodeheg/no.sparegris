@@ -14,8 +14,9 @@ const { toLocalTime, roundToNearestHour, roundToStartOfDay } = require('./homeyt
  * Where the parameters are:
  *   dataId:
  *     - "maxPower"           : value : The maximum power measured in the interval (for monthly this is the 3-day average)
- *     - "dataOk"             : bool  : Indicating if the data is reliable or if a reboot / app restart was detected
+ *     - "dataOk"             : value : Indicates the relative amount of minutes that had power reported
  *     - "powUsage"           : value : The measured power usage for the given interval
+ *     - "charged"            : value : The amount of energy charged
  *     - "moneySavedTariff"   : value : The money saved by upholding the tariff in the interval
  *     - "moneySavedUsage"    : value : The money saved by moving power in the interval
  *     - "price"              : value : The electricity price per hour, for period day/month/year = averages
@@ -52,8 +53,9 @@ const SCHEMA = {
 
 const validTypes = {
   maxPower: { hourly: SCHEMA.SET, daily: SCHEMA.MAX, monthly: SCHEMA.AVG3, yearly: SCHEMA.MAX },
-  dataOk: { hourly: SCHEMA.SET, daily: SCHEMA.AND, monthly: SCHEMA.AND, yearly: SCHEMA.AND },
+  dataOk: { hourly: SCHEMA.SET, daily: SCHEMA.AVG, monthly: SCHEMA.AVG, yearly: SCHEMA.AVG },
   powUsage: { hourly: SCHEMA.SET, daily: SCHEMA.ADD, monthly: SCHEMA.ADD, yearly: SCHEMA.ADD },
+  charged: { hourly: SCHEMA.SET, daily: SCHEMA.ADD, monthly: SCHEMA.ADD, yearly: SCHEMA.ADD },
   moneySavedTariff: { hourly: SCHEMA.SET, daily: SCHEMA.ADD, monthly: SCHEMA.ADD, yearly: SCHEMA.ADD },
   moneySavedUsage: { hourly: SCHEMA.SET, daily: SCHEMA.ADD, monthly: SCHEMA.ADD, yearly: SCHEMA.ADD },
   price: { hourly: SCHEMA.SET, daily: SCHEMA.AVG, monthly: SCHEMA.AVG, yearly: SCHEMA.AVG },

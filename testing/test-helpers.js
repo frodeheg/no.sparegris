@@ -16,9 +16,9 @@ async function disableTimers(app) {
     clearInterval(app.__intervalID);
     app.__intervalID = undefined;
   }
-  if (app.__newHourID !== undefined) {
-    clearTimeout(app.__newHourID);
-    app.__newHourID = undefined;
+  if (app.__powerProcessID !== undefined) {
+    clearTimeout(app.__powerProcessID);
+    app.__powerProcessID = undefined;
   }
   if (app.__statsIntervalID !== undefined) {
     clearInterval(app.__statsIntervalID);
@@ -90,6 +90,35 @@ async function applyBasicConfig(app) {
   await app.homeyApi.devices.addFakeDevices(fakeDevices, zoneGangId);
   await app.createDeviceList(); // To initialize app.__current_state[...]
   app.app_is_configured = app.validateSettings();
+
+  app.__all_prices = [
+    { time: 1672095600, price: 1.6749716800000003 },
+    { time: 1672099200, price: 1.7764168000000002 },
+    { time: 1672102800, price: 1.7714555200000002 },
+    { time: 1672106400, price: 1.759444 },
+    { time: 1672110000, price: 1.8159764800000002 },
+    { time: 1672113600, price: 1.9013627200000003 },
+    { time: 1672117200, price: 2.10305024 },
+    { time: 1672120800, price: 2.20945664 },
+    { time: 1672124400, price: 2.21376512 },
+    { time: 1672128000, price: 2.22642944 },
+    { time: 1672131600, price: 2.2409216 },
+    { time: 1672135200, price: 2.24562176 },
+    { time: 1672138800, price: 2.2705587200000004 },
+    { time: 1672142400, price: 2.23400192 },
+    { time: 1672146000, price: 2.25632768 },
+    { time: 1672149600, price: 2.31351296 },
+    { time: 1672153200, price: 2.37056768 },
+    { time: 1672156800, price: 2.50804736 },
+    { time: 1672160400, price: 2.5846860800000004 },
+    { time: 1672164000, price: 2.4968192 },
+    { time: 1672167600, price: 2.34458624 },
+    { time: 1672171200, price: 2.14378496 },
+    { time: 1672174800, price: 1.78516432 },
+    { time: 1672178400, price: 1.60916944 }
+  ];
+  app.homey.settings.set('all_prices', app.__all_prices);
+  app.__current_price_index = 0;
   await app.doPriceCalculations();
 }
 
@@ -121,7 +150,6 @@ async function applyStateFromFile(app, file, poweredOn = true) {
           case '__statsIntervalID':
             break;
           case '__current_power_time':
-          case '__accum_since':
             app[v] = new Date(parsed.state[v]);
             break;
           default:
