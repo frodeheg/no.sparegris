@@ -99,8 +99,6 @@ function generateConsumptionOptions(stats, graphTitle) {
           },
           beforeFooter(context) {
             if (!dataset[context[0].dataIndex]) return graphMissing;
-            if (chartDataOk[context[0].dataIndex] < 0) return graphInaccurate.slice(0,graphInaccurate.indexOf('\n')); // Legacy archive before v. 0.19.27
-            if (chartDataOk[context[0].dataIndex] < 1) return graphInaccurate.replace('${percent}', Math.round(100 * (1 - chartDataOk[context[0].dataIndex])));
             const now = new Date();
             if ((context[0].dataIndex === dataset.length - 1)
               && (chartPeriod !== GRANULARITY.HOUR)
@@ -108,6 +106,8 @@ function generateConsumptionOptions(stats, graphTitle) {
               && (now < chartEndTime)) {
               return graphIncomplete;
             }
+            if (chartDataOk[context[0].dataIndex] < 0) return graphInaccurate.slice(0,graphInaccurate.indexOf('\n')); // Legacy archive before v. 0.19.27
+            if (chartDataOk[context[0].dataIndex] < 1) return graphInaccurate.replace('${percent}', Math.round(100 * (1 - chartDataOk[context[0].dataIndex])));
             return '';
           },
         },
@@ -239,14 +239,14 @@ function generateHourlyMaxOptions(stats, graphTitle) {
           },
           beforeFooter(context) {
             if (!dataset[context[0].dataIndex]) return graphMissing;
-            if (chartDataOk[context[0].dataIndex] < 0) return graphInaccurate.slice(0,graphInaccurate.indexOf('\n')); // Legacy archive before v. 0.19.27
-            if (chartDataOk[context[0].dataIndex] < 1) return graphInaccurate.replace('${percent}', Math.round(100 * (1 - chartDataOk[context[0].dataIndex])));
             if ((context[0].dataIndex === dataset.length - 1)
               && (chartPeriod !== GRANULARITY.HOUR)
               && (now > chartStartTime)
               && (now < chartEndTime)) {
               return graphIncomplete;
             }
+            if (chartDataOk[context[0].dataIndex] < 0) return graphInaccurate.slice(0,graphInaccurate.indexOf('\n')); // Legacy archive before v. 0.19.27
+            if (chartDataOk[context[0].dataIndex] < 1) return graphInaccurate.replace('${percent}', Math.round(100 * (1 - chartDataOk[context[0].dataIndex])));
             return '';
           },
         },
