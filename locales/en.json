@@ -376,8 +376,8 @@
     "tariff": "Estimated power tariff",
     "highest": "Highest hourly usage",
     "missing": "Missing data.",
-    "inaccurate": "Inaccurate data\n(Time without power: ${percent}%).",
-    "incomplete": "Incomplete data, day not finished."
+    "inaccurate": "Inaccurate data.\n(Time without power: ${percent}%)",
+    "incomplete": "Incomplete data, period not completed."
   },
   "chargePlanGraph": {
     "title": "Charge cycle plan",

@@ -376,8 +376,8 @@
     "tariff": "Estimert effekttariff",
     "highest": "Høyeste timeforbruk",
     "missing": "Manglende data.",
-    "inaccurate": "Unøyaktige data\n(Tid uten effekt: ${percent}%).",
-    "incomplete": "Ufullstendige data, dagen er ikke ferdig enda."
+    "inaccurate": "Unøyaktige data.\n(Tid uten effekt: ${percent}%)",
+    "incomplete": "Ufullstendige data, periode ikke fullført."
   },
   "chargePlanGraph": {
     "title": "Ladesyklus",
