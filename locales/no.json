@@ -376,7 +376,7 @@
     "tariff": "Estimert effekttariff",
     "highest": "Høyeste timeforbruk",
     "missing": "Manglende data.",
-    "inaccurate": "Unøyaktige data\n(Manglet effekt fra sikringsskapet).",
+    "inaccurate": "Unøyaktige data\n(Tid uten effekt: ${percent}%).",
     "incomplete": "Ufullstendige data, dagen er ikke ferdig enda."
   },
   "chargePlanGraph": {

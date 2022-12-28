@@ -144,7 +144,7 @@ async function addToArchive(homey, data, timeUTC = new Date(), skipHours = false
   const ltYear = localTime.getFullYear();
   const ltMonth = localTime.getMonth();
   const ltDay = localTime.getDate() - 1; // Start index from 0
-  const ltHour = Math.round((timeUTC - startOfDayUTC) / (1000 * 60 * 60));
+  const ltHour = Math.floor((timeUTC - startOfDayUTC) / (1000 * 60 * 60));
 
   for (const dataId in data) {
     if (!(dataId in validTypes)) continue;

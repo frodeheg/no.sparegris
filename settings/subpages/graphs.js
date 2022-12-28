@@ -8,6 +8,8 @@ const GRAPH_DATA_PRICES = 1;
 const GRAPH_DATA_SAVINGS = 2;
 const GRAPH_DATA_MAXHOUR = 3;
 
+const INACURACY_THRESHOLD = 0.91; // 5 minutes - only affect colour
+
 // Graphs
 let chartId;
 let chartContent = GRAPH_DATA_MAXHOUR;
@@ -41,7 +43,7 @@ function generateConsumptionData(stats) {
     let barCol = '80,160,80';
     let barAlpha = 1;
     let lineAlpha = 1;
-    if (!chartDataOk[i]) {
+    if (chartDataOk[i] < INACURACY_THRESHOLD) {
       barCol = '170,80,80';
     }
 
@@ -97,7 +99,8 @@ function generateConsumptionOptions(stats, graphTitle) {
           },
           beforeFooter(context) {
             if (!dataset[context[0].dataIndex]) return graphMissing;
-            if (!chartDataOk[context[0].dataIndex]) return graphInaccurate;
+            if (chartDataOk[context[0].dataIndex] < 0) return graphInaccurate.slice(0,graphInaccurate.indexOf('\n')); // Legacy archive before v. 0.19.27
+            if (chartDataOk[context[0].dataIndex] < 1) return graphInaccurate.replace('${percent}', Math.round(100 * (1 - chartDataOk[context[0].dataIndex])));
             const now = new Date();
             if ((context[0].dataIndex === dataset.length - 1)
               && (chartPeriod !== GRANULARITY.HOUR)
@@ -156,7 +159,7 @@ function generateHourlyMaxData(stats) {
       lineCol = '0,0,128';
       barCol = '80,210,80';
     }
-    if (!chartDataOk[i]) {
+    if (chartDataOk[i] < INACURACY_THRESHOLD) {
       barCol = '170,80,80';
     }
     const now = new Date();
@@ -236,7 +239,8 @@ function generateHourlyMaxOptions(stats, graphTitle) {
           },
           beforeFooter(context) {
             if (!dataset[context[0].dataIndex]) return graphMissing;
-            if (!chartDataOk[context[0].dataIndex]) return graphInaccurate;
+            if (chartDataOk[context[0].dataIndex] < 0) return graphInaccurate.slice(0,graphInaccurate.indexOf('\n')); // Legacy archive before v. 0.19.27
+            if (chartDataOk[context[0].dataIndex] < 1) return graphInaccurate.replace('${percent}', Math.round(100 * (1 - chartDataOk[context[0].dataIndex])));
             if ((context[0].dataIndex === dataset.length - 1)
               && (chartPeriod !== GRANULARITY.HOUR)
               && (now > chartStartTime)
@@ -442,7 +446,10 @@ function generatePriceOptions(stats, graphTitle) {
           beforeFooter(context) {
             const isFutureValue = context[0] && (chartDataOk[context[0].dataIndex] === undefined);
             const predictionText = isFutureValue ? ` (${textPredicted})` : '';
-            const dataOkText = (isFutureValue || (context[0] && chartDataOk[context[0].dataIndex])) ? '' : `\n${graphInaccurate}`;
+            const dataOkText = (isFutureValue || !context[0]) ? ''
+              : (chartDataOk[context[0].dataIndex] >= 1) ? ''
+                : (chartDataOk[context[0].dataIndex] >= 0) ? `\n${graphInaccurate.replace('${percent}', Math.round(100 * (1 - chartDataOk[context[0].dataIndex])))}`
+                  : `\n${graphInaccurate.slice(0,graphInaccurate.indexOf('\n'))}`; // Legacy archive before v. 0.19.27
             if (+chartPeriod === GRANULARITY.HOUR) {
               let ppName;
               try {

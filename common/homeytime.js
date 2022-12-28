@@ -28,7 +28,7 @@ function toLocalTime(homeyTime, homey) {
 function fromLocalTime(localTime, homey) {
   const UTCTime = toLocalTime(localTime, homey);
   const stupidTimeDiff = (localTime - UTCTime) / (60 * 60 * 1000);
-  UTCTime.setHours(UTCTime.getHours() + 2 * stupidTimeDiff); // Cancel the reverse offset and add it in the opposite direction
+  UTCTime.setUTCHours(UTCTime.getUTCHours() + 2 * stupidTimeDiff); // Cancel the reverse offset and add it in the opposite direction
   return UTCTime;
 }
 
@@ -90,6 +90,15 @@ function roundToNearestHour(date) {
 }
 
 /**
+ * Rounds a time object to the start of the hour
+ */
+function roundToStartOfHour(date) {
+  const newTime = new Date(date.getTime());
+  newTime.setUTCMinutes(0, 0, 0);
+  return newTime;
+}
+
+/**
  * Checks if two time objects belong to the same hour or not
  */
 function isSameHour(time1, time2) {
@@ -127,6 +136,7 @@ module.exports = {
   timeSinceLastHour,
   timeToNextHour,
   roundToNearestHour,
+  roundToStartOfHour,
   roundToStartOfDay,
   isSameHour,
   hoursInDay,

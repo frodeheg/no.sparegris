@@ -20,6 +20,10 @@ async function disableTimers(app) {
     clearTimeout(app.__powerProcessID);
     app.__powerProcessID = undefined;
   }
+  if (app.__pulseCheckerID !== undefined) {
+    clearTimeout(app.__pulseCheckerID);
+    app.__pulseCheckerID = undefined;
+  }
   if (app.__statsIntervalID !== undefined) {
     clearInterval(app.__statsIntervalID);
     app.__statsIntervalID = undefined;

@@ -29,7 +29,7 @@ const c = require('./common/constants');
 const d = require('./common/devices');
 const { addToArchive, cleanArchive, getArchive } = require('./common/archive');
 const {
-  daysInMonth, toLocalTime, timeDiff, timeSinceLastHour, timeToNextHour, roundToNearestHour, roundToStartOfDay, isSameHour, hoursInDay, fromLocalTime
+  daysInMonth, toLocalTime, timeDiff, timeSinceLastHour, timeToNextHour, roundToNearestHour, roundToStartOfHour, roundToStartOfDay, hoursInDay, fromLocalTime
 } = require('./common/homeytime');
 const { isNumber, toNumber, combine } = require('./common/tools');
 const prices = require('./common/prices');
@@ -364,9 +364,9 @@ class PiggyBank extends Homey.App {
     // Version 0.19.27
     if (+settingsVersion < 3) {
       // Update the default value of stats history
-      const expireDaily = this.homey.settings.get('expireDaily');
+      const expireDaily = await this.homey.settings.get('expireDaily');
       if (!expireDaily || (expireDaily < 62)) this.homey.settings.set('expireDaily', 365);
-      const expireHourly = this.homey.settings.get('expireHourly');
+      const expireHourly = await this.homey.settings.get('expireHourly');
       if (!expireHourly || (expireHourly < 31)) this.homey.settings.set('expireHourly', 31);
       // Delete the old statistics as they has been in the archive for a while
       this.homey.settings.unset('stats_daily_max');
@@ -374,6 +374,18 @@ class PiggyBank extends Homey.App {
       this.homey.settings.unset('stats_this_month_maxes');
       this.homey.settings.unset('stats_this_month_average');
       this.homey.settings.unset('stats_last_month_max');
+      // Change all previous okData values to -1 to indicate that we have no data at all on reliability
+      archive = await this.homey.settings.get('archive') || {};
+      const okData = archive['dataOk'];
+      for (const period in okData) {
+        for (const time in okData[period]) {
+          for (const dataIdx in okData[period][time]) {
+            const oldValue = okData[period][time][dataIdx];
+            archive['dataOk'][period][time][dataIdx] = ((oldValue === 0) || (oldValue === false)) ? -1 : oldValue;
+          }
+        }
+      }
+      this.homey.settings.set('archive', archive);
       this.homey.settings.set('settingsVersion', 3);
     }
 
@@ -390,6 +402,7 @@ class PiggyBank extends Homey.App {
     this.__power_last_hour = toNumber(await this.homey.settings.get('safeShutdown__power_last_hour'));
     this.__offeredEnergy = toNumber(await this.homey.settings.get('safeShutdown__offeredEnergy'));
     this.__missing_power_this_hour = toNumber(await this.homey.settings.get('safeShutdown_missing_power_this_hour')) || 0;
+    this.__fakePower = toNumber(await this.homey.settings.get('safeShutdown__fakePower')) || 0;
     if (this.__accum_energy === undefined) {
       // No stored data, set it to something senseful
       this.__accum_energy = 0;
@@ -398,6 +411,7 @@ class PiggyBank extends Homey.App {
       this.__power_last_hour = undefined;
       this.__offeredEnergy = 0;
       this.__missing_power_this_hour = 0; // Set later
+      this.__fakePower = 0;
       this.updateLog('No state from previous shutdown? Powerloss, deactivated or forced restart.', c.LOG_ALL);
     } else {
       // We got safe shutdown data, remove the old data
@@ -407,6 +421,7 @@ class PiggyBank extends Homey.App {
       this.homey.settings.unset('safeShutdown__power_last_hour');
       this.homey.settings.unset('safeShutdown__offeredEnergy');
       this.homey.settings.unset('safeShutdown_missing_power_this_hour');
+      this.homey.settings.unset('safeShutdown__fakePower');
       this.updateLog(`Restored state from safe shutdown values ${this.__accum_energy} ${this.__current_power} `
         + `${this.__current_power_time} ${this.__power_last_hour} ${this.__missing_power_this_hour}`, c.LOG_ALL);
     }
@@ -494,6 +509,7 @@ class PiggyBank extends Homey.App {
     this.__hasAC = false;
     this.__intervalID = undefined;
     this.__powerProcessID = undefined;
+    this.__pulseCheckerID = undefined;
     this.__reserved_energy = 0;
     this.__free_power_trigger_time = new Date(now.getTime());
     this.__alarm_overshoot = false;
@@ -531,7 +547,7 @@ class PiggyBank extends Homey.App {
       }, timeToPreventZigbee * 1000);
     }
 
-    this.statsInit();
+    this.statsInit(now);
 
     // Check that settings has been updated
     this.app_is_configured = this.validateSettings();
@@ -770,6 +786,9 @@ class PiggyBank extends Homey.App {
     // Start the onProcessPower timer
     this.__powerProcessID = setTimeout(() => this.onProcessPowerWrapper(), 1000 * 10);
 
+    // Start the pulse checker
+    this.__pulseCheckerID = setTimeout(() => this.onPowerUpdateWrapper(), 1000 * 10);
+
     // Monitor energy usage every 5 minute
     this.__monitorError = 0;
     this.__intervalID = setInterval(() => {
@@ -894,6 +913,7 @@ class PiggyBank extends Homey.App {
     this.homey.settings.set('safeShutdown__power_last_hour', this.__power_last_hour);
     this.homey.settings.set('safeShutdown__offeredEnergy', this.__offeredEnergy);
     this.homey.settings.set('safeShutdown_missing_power_this_hour', this.__missing_power_this_hour);
+    this.homey.settings.set('safeShutdown__fakePower', this.__fakePower);
     // ===== KEEPING STATE ACROSS RESTARTS END =====
 
     this.log('OnUnInit');
@@ -906,6 +926,10 @@ class PiggyBank extends Homey.App {
     if (this.__powerProcessID !== undefined) {
       clearTimeout(this.__powerProcessID);
       this.__powerProcessID = undefined;
+    }
+    if (this.__pulseCheckerID !== undefined) {
+      clearTimeout(this.__pulseCheckerID);
+      this.__pulseCheckerID = undefined;
     }
     this.statsUnInit();
 
@@ -1460,7 +1484,7 @@ class PiggyBank extends Homey.App {
   async onRefreshInternals(isNewHour = true, now = new Date()) {
     if (+this.homey.settings.get('operatingMode') !== c.MODE_DISABLED) {
       await this.doPriceCalculations(now)
-        .then(() => this.rescheduleCharging(isNewHour))
+        .then(() => this.rescheduleCharging(isNewHour, now))
         .catch(err => {
           // Either the app is not configured yet or the utility price API is not installed, just ignore
           return Promise.resolve();
@@ -1471,11 +1495,11 @@ class PiggyBank extends Homey.App {
   /**
    * onNewHour runs whenever a new hour starts.
    */
-  async onNewHour(now = new Date(), accumEnergy = undefined, offeredEnergy = undefined, missingMinutes = undefined) {
+  async onNewHour(now = new Date(), timeFromLastHourUTC = new Date(), accumEnergy = undefined, offeredEnergy = undefined, missingMinutes = undefined) {
     // Crossed into new hour
     const reliability = (60 - missingMinutes) / 60; // amount of the minutes we had power reported
 
-    await this.statsSetLastHourEnergy(accumEnergy, offeredEnergy, reliability, now);
+    await this.statsSetLastHourEnergy(accumEnergy, offeredEnergy, reliability, timeFromLastHourUTC);
     this.updateLog(`Hour finalized: ${String(accumEnergy)} Wh`, c.LOG_INFO);
 
     await this.onRefreshInternals(true, now);
@@ -1592,9 +1616,8 @@ class PiggyBank extends Homey.App {
   async onProcessPowerWrapper() {
     return this.mutexForPower.runExclusive(async () => this.onProcessPower())
       .finally(() => {
-        // Start timer to start exactly when a new hour starts
-        const now = new Date();
-        const timeToNextTrigger = 10000 - (now.getTime() % 10000);
+        // Schedule new event in 10 sec
+        const timeToNextTrigger = 1000 * 10;
         this.__powerProcessID = setTimeout(() => this.onProcessPowerWrapper(), timeToNextTrigger);
       });
   }
@@ -1604,10 +1627,11 @@ class PiggyBank extends Homey.App {
    * Called whenever we can process the new power situation
    */
   async onProcessPower(now = new Date()) {
+    // Check if we are missing pulse data
     // Check for new hour
     while (this.__pendingOnNewHour.length > 0) {
       const item = this.__pendingOnNewHour[0];
-      await this.onNewHour(new Date(item.time), item.accumEnergy, item.offeredEnergy, item.missingMinutes);
+      await this.onNewHour(now, new Date(item.time), item.accumEnergy, item.offeredEnergy, item.missingMinutes);
       this.__pendingOnNewHour = this.__pendingOnNewHour.slice(1);
     }
     // Check if power can be increased or reduced
@@ -1620,7 +1644,7 @@ class PiggyBank extends Homey.App {
     const crossHourSmooth = (+this.homey.settings.get('crossHourSmooth') / 100) * (maxPower - this.__accum_energy);
     const negativeReserve = crossHourSmooth * (1 - (timeSinceLastHour(now) / 3600000));
 
-    this.updateLog(`${'onPowerUpdate: '
+    this.updateLog(`${'onPowerProcess: '
       + 'Using: '}${String(this.__current_power)}W, `
       + `Accum: ${String(this.__accum_energy.toFixed(2))} Wh, `
       + `Limit: ${String(maxPower)} Wh, `
@@ -1628,7 +1652,7 @@ class PiggyBank extends Homey.App {
       + `Smoothing: ${String(Math.ceil(negativeReserve))}W`, c.LOG_DEBUG);
 
     // Try to control devices if the power is outside of the preferred bounds
-    let powerDiff = (((maxPower - this.__accum_energy - this.__reserved_energy) * (1000 * 60 * 60)) / remainingTime) - this.__current_power - safetyPower + negativeReserve;
+    let powerDiff = (((maxPower - this.__accum_energy + this.__fakePower - this.__reserved_energy) * (1000 * 60 * 60)) / remainingTime) - this.__current_power - safetyPower + negativeReserve;
     const mainFuse = this.homey.settings.get('mainFuse'); // Amps
     const maxDrain = Math.round(1.732050808 * 230 * mainFuse);
     const maxFreeDrain = ((isNumber(maxDrain) && (maxDrain > 0)) ? maxDrain : (trueMaxPower * 10)) - this.__current_power;
@@ -1652,54 +1676,78 @@ class PiggyBank extends Homey.App {
   }
 
   /**
+   * A wrapper function for whenever Piggy should handle the power situation
+   */
+  async onPowerUpdateWrapper() {
+    return this.mutexForPower.runExclusive(async () => this.onPowerUpdate(NaN))
+      .finally(() => {
+        // Schedule next pulse event in 10 sec.
+        const timeToNextTrigger = 1000 * 10;
+        this.__pulseCheckerID = setTimeout(() => this.onPowerUpdateWrapper(), timeToNextTrigger);
+      });
+  }
+
+  /**
    * onPowerUpdate is the action called whenever the power is updated from the power meter
    * Must never be called when operatingMode is set to Disabled
    */
   async onPowerUpdate(newPower, now = new Date()) {
-    this.updateLog(`Power reported from power meter: ${newPower}`, c.LOG_DEBUG);
-    if (Number.isNaN(+newPower)) {
-      // If newPower is invalid or app is not configured just ignore it
-      return Promise.resolve();
+    // when newPower is not a number it is called to keep the power handling alive
+    const fakePower = Number.isNaN(+newPower);
+    if (fakePower) {
+      this.updateLog('Power keep alive signal.', c.LOG_DEBUG);
+    } else {
+      this.updateLog(`Power reported from power meter: ${newPower}`, c.LOG_DEBUG);
     }
-    if (this.__current_power === undefined) {
-      console.log(`ERROR: This should not happen`);
-      throw new Error('Fix the code');
+
+    // Check how much time has lapsed
+    const lapsedTime = now - this.__current_power_time;
+    if (fakePower && lapsedTime < (1000 * 60)) {
+      // ignore fakePower if we got real power within the last minute
+      return Promise.resolve();
     }
 
     // Accumulate the power for the rest of the hour only
-    const lapsedTime = now - this.__current_power_time;
     const timeLeftInHour = timeToNextHour(this.__current_power_time);
     let timeToProcess = lapsedTime;
     if (lapsedTime > timeLeftInHour) {
       timeToProcess = timeLeftInHour;
     }
-    this.__missing_power_this_hour += Math.floor(timeToProcess / (1000 * 60));
-    const energyUsed = (this.__current_power * timeToProcess) / (1000 * 60 * 60);
+    const newMissingMinutes = Math.floor(timeToProcess / (1000 * 60));
+    this.__missing_power_this_hour += fakePower ? 0 : newMissingMinutes;
+    const energyUsed = ((this.__current_power * timeToProcess) / (1000 * 60 * 60)) || 0;
     const energyOffered = (this.__charge_power_active * timeToProcess) / (1000 * 60 * 60);
-    this.__accum_energy += energyUsed;
-    this.__offeredEnergy += energyOffered; // Offered or given, depending on flow or device
+    this.__fakePower = fakePower ? energyUsed : 0;
+    this.__accum_energy += fakePower ? 0 : energyUsed;
+    this.__offeredEnergy += fakePower ? 0 : energyOffered; // Offered or given, depending on flow or device
     const timeWithinHour = timeSinceLastHour(now);
-    if (timeToProcess < lapsedTime || timeWithinHour === 0) {
+    const newHour = timeToProcess < lapsedTime || timeWithinHour === 0;
+    if (newHour) {
       // A new hour (or more) has passed. Schedule onNewHour for the first of the passed hours
+      this.__power_last_hour = this.__accum_energy + this.__fakePower;
       this.__pendingOnNewHour.push({
-        accumEnergy: this.__accum_energy,
-        offeredEnergy: this.__offeredEnergy,
-        missingMinutes: this.__missing_power_this_hour,
+        accumEnergy: this.__power_last_hour,
+        offeredEnergy: this.__offeredEnergy + (fakePower ? energyOffered : 0),
+        missingMinutes: this.__missing_power_this_hour + (fakePower ? newMissingMinutes : 0),
         time: this.__current_power_time.getTime()
       });
       // Add up initial part of next hour.
       const energyUsedNewHour = (this.__current_power * timeWithinHour) / (1000 * 60 * 60);
       const energyOfferedNewHour = (this.__charge_power_active * timeWithinHour) / (1000 * 60 * 60);
-      this.__power_last_hour = this.__accum_energy;
+      this.__fakePower = 0;
       this.__accum_energy = energyUsedNewHour;
       this.__offeredEnergy = energyOfferedNewHour; // Offered or given, depending on flow or device
       this.__missing_power_this_hour = Math.floor(timeWithinHour / (1000 * 60));
       this.__reserved_energy = 0;
     }
 
-    this.__current_power = newPower;
-    this.__current_power_time = new Date(now.getTime());
-    this.__energy_meter_detected_time = new Date(now.getTime());
+    if (!fakePower) {
+      this.__current_power = newPower;
+      this.__energy_meter_detected_time = new Date(now.getTime());
+    }
+    if (newHour || !fakePower) {
+      this.__current_power_time = new Date(now.getTime());
+    }
     return Promise.resolve();
   }
 
@@ -1780,7 +1828,7 @@ class PiggyBank extends Homey.App {
   /**
    * onPricePointUpdate is called whenever the price point is changed
    */
-  async onPricePointUpdate(newMode) {
+  async onPricePointUpdate(newMode, now = new Date()) {
     // Do not continue if price points are disabled:
     if (+this.homey.settings.get('priceMode') === c.PRICE_MODE_DISABLED) {
       return Promise.resolve();
@@ -1792,7 +1840,7 @@ class PiggyBank extends Homey.App {
     }
     // Do not continue if the price point did not change
     const oldPricePoint = this.homey.settings.get('pricePoint');
-    this.statsSetLastHourPricePoint(+oldPricePoint);
+    this.statsSetLastHourPricePoint(+oldPricePoint, now);
     if ((+newMode === +oldPricePoint) && (oldPricePoint !== null)) {
       return Promise.resolve();
     }
@@ -2491,7 +2539,7 @@ class PiggyBank extends Homey.App {
   /**
    * Reset stats - called on app init
    */
-  statsInit() {
+  statsInit(now = new Date()) {
     this.__stats_failed_turn_on = +this.homey.settings.get('stats_failed_turn_on') | 0;
     this.__stats_failed_turn_off = +this.homey.settings.get('stats_failed_turn_off') | 0;
     this.__stats_failed_temp_change = +this.homey.settings.get('stats_failed_temp_change') | 0;
@@ -2521,7 +2569,7 @@ class PiggyBank extends Homey.App {
       this.__stats_app_restarts = +this.__stats_app_restarts + 1;
     }
     this.homey.settings.set('stats_app_restarts', this.__stats_app_restarts);
-    this.statsNewHour();
+    this.statsNewHour(now);
   }
 
   /**
@@ -2598,16 +2646,16 @@ class PiggyBank extends Homey.App {
   /**
    * Called when we have crossed into a new hour
    */
-  async statsSetLastHourEnergy(totalEnergy, chargeEnergy, reliability, timeOfNewHourUTC) {
+  async statsSetLastHourEnergy(totalEnergy, chargeEnergy, reliability, timeOfLastHourUTC) {
+    const hourAgoUTC = roundToStartOfHour(timeOfLastHourUTC);
     const energyOk = (reliability > 0.95);
     if (energyOk) {
       // Only use stats in calculations when more at least 95% of the minutes had power reported
-      this.__stats_energy_time = roundToNearestHour(new Date(timeOfNewHourUTC.getTime()));
+      this.__stats_energy_time = hourAgoUTC;
       this.updateLog(`Stats last energy time: ${this.__stats_energy_time}`, c.LOG_INFO);
       this.__stats_energy = totalEnergy;
     }
 
-    const hourAgoUTC = roundToNearestHour(new Date(timeOfNewHourUTC.getTime() - (1000 * 60 * 60)));
     const hourAgoLocal = toLocalTime(hourAgoUTC, this.homey);
 
     let overShootAvoided = this.homey.settings.get('overShootAvoided');
@@ -2615,12 +2663,10 @@ class PiggyBank extends Homey.App {
     const dailyMaxPrevUpdateUTC = new Date(this.homey.settings.get('stats_daily_max_last_update_time'));
     const dailyMaxPrevUpdateLocal = toLocalTime(dailyMaxPrevUpdateUTC, this.homey);
     const firstEverHour = getArchive(this.homey, 'maxPower') === null;
-    const newDayTriggered = ((hourAgoUTC - dailyMaxPrevUpdateUTC) > (1000 * 60 * 60 * 24) // More than 24 hours or different day
-      || (hourAgoLocal.getDate() !== dailyMaxPrevUpdateLocal.getDate()));
-    const newMonthTriggered = ((hourAgoUTC - dailyMaxPrevUpdateUTC) > (1000 * 60 * 60 * 24 * 31) // More than 31 days or different month
-      || (hourAgoLocal.getMonth() !== dailyMaxPrevUpdateLocal.getMonth()));
+    const newDayTriggered = hourAgoLocal.getDate() !== dailyMaxPrevUpdateLocal.getDate();
+    const newMonthTriggered = hourAgoLocal.getMonth() !== dailyMaxPrevUpdateLocal.getMonth();
     if (newDayTriggered && !firstEverHour) {
-      await cleanArchive(this.homey, timeOfNewHourUTC);
+      await cleanArchive(this.homey, timeOfLastHourUTC);
       await this.statsSetLastDayMaxEnergy(dailyMaxPrevUpdateUTC, newMonthTriggered);
     }
     const timeSincePowerOff = this.__last_power_on_time - this.__last_power_off_time;
@@ -2650,19 +2696,19 @@ class PiggyBank extends Homey.App {
     this.__stats_price = price;
   }
 
-  statsSetLastHourPricePoint(pp) {
-    this.__starts_price_point_time = new Date();
+  statsSetLastHourPricePoint(pp, now = new Date()) {
+    this.__starts_price_point_time = now;
     this.__stats_price_point = pp;
   }
 
-  statsNewHour() {
-    const now = new Date();
+  statsNewHour(now = new Date()) {
     const tenMinutes = 10 * 60 * 1000;
 
     try {
       // Energy based statistics
       const timeSinceEnergy = now - this.__stats_energy_time;
-      if (timeSinceEnergy < tenMinutes) {
+      const gotPreviousHourEnergy = (timeSinceEnergy > (60 * 60 * 1000)) && (timeSinceEnergy < (120 * 60 * 1000));
+      if (gotPreviousHourEnergy) {
         // Only register statistics if reported for the current hour
         let pricePointLastHour;
         const timeSincePricePoint = now - this.__starts_price_point_time;
@@ -2858,7 +2904,7 @@ class PiggyBank extends Homey.App {
               statsTimeUTC = fromLocalTime(statsTimeLocal, this.homey);
             } else {
               data = { error: err };
-              dataGood = false;
+              dataGood = 0;
             }
           }
           break;
@@ -3536,7 +3582,7 @@ class PiggyBank extends Homey.App {
         const noPriceText = this.homey.__('settings.welcome.taskNoPrices');
         this.homey.notifications.createNotification({ excerpt: noPriceText });
       }
-      return this.onPricePointUpdate(c.PP.NORM);
+      return this.onPricePointUpdate(c.PP.NORM, now);
     }
     if (this.homey.settings.get('__no_price_notification')) {
       this.homey.settings.unset('__no_price_notification');
@@ -3566,7 +3612,7 @@ class PiggyBank extends Homey.App {
     this.__extreme_price_limit = nextPP.__extreme_price_limit;
 
     if (!preventZigbee) {
-      return this.onPricePointUpdate(nextPP.mode);
+      return this.onPricePointUpdate(nextPP.mode, now);
     }
     return Promise.resolve();
   }

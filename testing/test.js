@@ -203,8 +203,10 @@ async function testPricePoints() {
 
   for (let hour = 0; hour < 24; hour++) {
     const curTime = new Date(now.getTime());
+    const lastHourTime = new Date(now.getTime());
     curTime.setHours(now.getHours() + hour, 0, 0, 0);
-    await app.onNewHour(true, curTime);
+    lastHourTime.setHours(now.getHours() + hour, -1, 0, 0);
+    await app.onNewHour(curTime, lastHourTime);
     if (app.__current_price_index !== hour) throw new Error('Current hour is not calculated correctly');
     if (app.homey.settings.get('pricePoint') !== CorrectPP[hour]) throw new Error(`Invalid Price point at hour ${hour}`);
     /* const ppNames = ['Billig', 'Normal', 'Dyrt', 'Kjempedyrt', 'Veldig billig'];
@@ -289,8 +291,10 @@ async function testIssue63() {
 
   for (let hour = 0; hour < 24; hour++) {
     const curTime = new Date(now.getTime());
+    const lastHourTime = new Date(now.getTime());
     curTime.setHours(now.getHours() + hour, 0, 0, 0);
-    await app.onNewHour(true, curTime);
+    lastHourTime.setHours(now.getHours() + hour, -1, 0, 0);
+    await app.onNewHour(curTime, lastHourTime);
     if (app.__current_price_index !== hour) throw new Error('Current hour is not calculated correctly');
     if (app.homey.settings.get('pricePoint') !== CorrectPP[hour]) throw new Error(`Invalid Price point at hour ${hour}`);
     /* const ppNames = ['Billig', 'Normal', 'Dyrt', 'Kjempedyrt', 'Veldig billig'];
@@ -592,7 +596,8 @@ async function testMissingPulse() {
   await app.onProcessPower(updateTime);
   for (let i = 1; i < (60 * 6 * 3 - 15); i++) {
     updateTime.setTime(now.getTime() + 1000 * 10 * i);
-    await app.onProcessPower(new Date(updateTime.getTime() + 1000 * 10 * i));
+    await app.onPowerUpdate(NaN, updateTime);
+    await app.onProcessPower(new Date(updateTime.getTime()));
   }
   updateTime = new Date(firstHour.getTime() + 1000 * 60 * 60 * 3 - 5000);
   await app.onPowerUpdate(4000, updateTime);
@@ -603,12 +608,12 @@ async function testMissingPulse() {
 
   // Check archive
   const archive = app.homey.settings.get('archive');
-  if (JSON.stringify(archive.dataOk.hourly['2022-10-01']) !== '[0.016666666666666666,null,null,0.016666666666666666]'
-    || JSON.stringify(archive.powUsage.hourly['2022-10-01']) !== '[12.777777777777779,null,null,4000]'
-    || JSON.stringify(archive.maxPower.hourly['2022-10-01']) !== '[12.777777777777779,null,null,4000]') {
-    console.log(JSON.stringify(archive.dataOk.hourly['2022-10-01']))
-    console.log(JSON.stringify(archive.powUsage.hourly['2022-10-01']));
-    console.log(JSON.stringify(archive.maxPower.hourly['2022-10-01']));
+  if (JSON.stringify(archive.dataOk.hourly['2022-10-01']) !== '[0.016666666666666666,0,0,0.016666666666666666]'
+    || JSON.stringify(archive.powUsage.hourly['2022-10-01']) !== '[12.777777777777779,4000,4000,4000]'
+    || JSON.stringify(archive.maxPower.hourly['2022-10-01']) !== '[12.777777777777779,4000,4000,4000]') {
+    console.error(JSON.stringify(archive.dataOk.hourly['2022-10-01']));
+    console.error(JSON.stringify(archive.powUsage.hourly['2022-10-01']));
+    console.error(JSON.stringify(archive.maxPower.hourly['2022-10-01']));
     throw new Error('New Hour with missing Power updates does not behave correctly');
   }
   await app.onUninit();
