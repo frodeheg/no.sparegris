@@ -1,0 +1,25 @@
+Log ID: 2022-12-23T06:41:44.378Z
+App version 0.19.26
+
++6:41:44.378: No state from previous shutdown? Powerloss, deactivated or forced restart.
++6:41:44.498: Homey reboot detected. Delaying device control by 593 seconds to improve Zigbee recovery.
++11:56:21.594: ----- ANALYZING DEVICE -----
++11:56:21.600: Report type: Device is not listed
++11:56:21.606: Device ID:   be564820-0d04-4752-b0a4-636f2c74730b
++11:56:21.638: Device name: Strømmåler
++11:56:21.639: Driver Uri: homey:app:no.easee
++11:56:21.641: Driver Id: equalizer
++11:56:21.644: Error: TypeError: Cannot read properties of undefined (reading 'onoff_cap')
++11:56:21.646: Capabilities: measure_power,measure_power.surplus,measure_current.L1,measure_voltage.L1,measure_current.L2,measure_voltage.L2,measure_current.L3,measure_voltage.L3,meter_power,meter_power.surplus
++11:56:21.649: Options for 'measure_power': {"value":5545,"lastUpdated":"2022-12-24T11:56:10.292Z","type":"number","getable":true,"setable":false,"title":"Power import","desc":"Effekt i watt (W)","units":"W","decimals":2,"chartType":"stepLine","id":"measure_power","options":{"title":{"en":"Power import","sv":"Strömimport"}}}
++11:56:21.652: Options for 'measure_power.surplus': {"value":0,"lastUpdated":"2022-12-08T10:39:22.874Z","type":"number","getable":true,"setable":false,"title":"Power export","desc":"Effekt i watt (W)","units":"W","decimals":2,"chartType":"stepLine","id":"measure_power.surplus","options":{"title":{"en":"Power export","sv":"Strömexport"}}}
++11:56:21.654: Options for 'measure_current.L1': {"value":7.29,"lastUpdated":"2022-12-24T11:55:39.408Z","type":"number","getable":true,"setable":false,"title":"L1 current","desc":"Elektrisk strøm (A)","units":"A","decimals":2,"chartType":"stepLine","id":"measure_current.L1","options":{"title":{"en":"L1 current","sv":"L1 ström"}}}
++11:56:21.656: Options for 'measure_voltage.L1': {"value":226,"lastUpdated":"2022-12-24T11:55:54.374Z","type":"number","getable":true,"setable":false,"title":"L1 voltage","desc":"Spenning (V)","units":"V","decimals":2,"chartType":"stepLine","id":"measure_voltage.L1","options":{"title":{"en":"L1 voltage","sv":"L1 spänning"}}}
++11:56:21.658: Options for 'measure_current.L2': {"value":1.54,"lastUpdated":"2022-12-24T11:53:54.197Z","type":"number","getable":true,"setable":false,"title":"L2 current","desc":"Elektrisk strøm (A)","units":"A","decimals":2,"chartType":"stepLine","id":"measure_current.L2","options":{"title":{"en":"L2 current","sv":"L2 ström"}}}
++11:56:21.660: Options for 'measure_voltage.L2': {"value":236,"lastUpdated":"2022-12-24T11:56:10.316Z","type":"number","getable":true,"setable":false,"title":"L2 voltage","desc":"Spenning (V)","units":"V","decimals":2,"chartType":"stepLine","id":"measure_voltage.L2","options":{"title":{"en":"L2 voltage","sv":"L2 spänning"}}}
++11:56:21.662: Options for 'measure_current.L3': {"value":14.96,"lastUpdated":"2022-12-24T11:50:38.973Z","type":"number","getable":true,"setable":false,"title":"L3 current","desc":"Elektrisk strøm (A)","units":"A","decimals":2,"chartType":"stepLine","id":"measure_current.L3","options":{"title":{"en":"L3 current","sv":"L3 ström"}}}
++11:56:21.663: Options for 'measure_voltage.L3': {"value":225,"lastUpdated":"2022-12-24T11:55:39.409Z","type":"number","getable":true,"setable":false,"title":"L3 voltage","desc":"Spenning (V)","units":"V","decimals":2,"chartType":"stepLine","id":"measure_voltage.L3","options":{"title":{"en":"L3 voltage","sv":"L3 spänning"}}}
++11:56:21.665: Options for 'meter_power': {"value":87345.87,"lastUpdated":"2022-12-24T11:00:32.198Z","type":"number","getable":true,"setable":false,"title":"Lifetime power import","desc":"Energiforbruk i kilowattimer (kWh)","units":"kWh","decimals":2,"chartType":"spline","id":"meter_power","options":{"title":{"en":"Lifetime power import","sv":"Livstid strömimport"}}}
++11:56:21.667: Options for 'meter_power.surplus': {"value":0,"lastUpdated":"2022-12-08T11:00:23.699Z","type":"number","getable":true,"setable":false,"title":"Lifetime power export","desc":"Energiforbruk i kilowattimer (kWh)","units":"kWh","decimals":2,"chartType":"spline","id":"meter_power.surplus","options":{"title":{"en":"Lifetime power export","sv":"Livstid strömexport"}}}
++11:56:21.669: --- ANALYZING DEVICE DONE ---
++11:58:53.598: Sending log

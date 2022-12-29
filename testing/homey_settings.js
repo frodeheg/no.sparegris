@@ -73,6 +73,8 @@ class FakeHomey {
       response = { fakestate: true };
     } else if (command.includes('/getDevices?type')) {
       response = [{name: 'Nothing selected', value: ''}, {name: 'something', value: 'avv-bbb'}, {name: 'another thing', value: 'ffe-bbb'}];
+    } else if (command.includes('/apiCommand?cmd=getMeterReaders')) {
+      response = { CCDEB: 'Eva Meter Reader', CAR: 'Easee Equaliser' };
     } else {
       // No return value expected
       // '/apiCommand?cmd=log'
@@ -184,6 +186,7 @@ class FakeHomey {
         response = null;
         break;
       default:
+        response = null;
     }
     callback(err, response);
   }

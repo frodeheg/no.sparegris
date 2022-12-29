@@ -49,6 +49,8 @@ module.exports = {
         return homey.app.getCurrencies();
       case 'getFullState':
         return homey.app.getFullState();
+      case 'getMeterReaders':
+        return homey.app.__meterReaders;
       default:
         throw (new Error(`Incorrect api command: ${query.cmd}`));
     }

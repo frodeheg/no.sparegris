@@ -3,7 +3,8 @@
 
 'use strict';
 
-// All device types has the following parameters:
+// ===== CONTROLLABLE DEVICES =====
+// All controllable devices has the following parameters:
 //   type           - Device type
 //   setOnOffCap    - Capability for turning on and off
 //   setOnValue     - Value for setOnOffCap to turn device on
@@ -31,6 +32,13 @@
 //   measurePowerCap   - Capability for reading used power
 //   measureVoltageCap - Capability for reading voltage
 //   statusCap         - Capability for reading charger state
+//
+// ===== INPUT DEVICES =====
+// All input devices has the following parameters:
+//   type          - Device type
+// METERREADER : Additional parameters
+//   readPowerCap  - Capability for reading power
+//   readExportCap - Capability for reading exported power (can be undefined)
 
 // Device types
 // Note for CHARGER:
@@ -42,7 +50,8 @@ const DEVICE_TYPE = {
   WATERHEATER: 2,
   AC: 3,
   CHARGER: 4,
-  IGNORE: 5
+  IGNORE: 5,
+  METERREADER: 6
 };
 
 // Default onoff device:
@@ -100,6 +109,12 @@ const DEFAULT_IGNORED = {
   type: DEVICE_TYPE.IGNORE
 };
 
+// Default Ignored device:
+const DEFAULT_METER = {
+  type: DEVICE_TYPE.METERREADER,
+  readPowerCap: 'measure_power'
+};
+
 // Supported devices and how to use them
 const DEVICE_CMD = {
   'ady.smartthings:stDevice': {
@@ -140,7 +155,7 @@ const DEVICE_CMD = {
   'cloud.shelly:shelly': DEFAULT_SWITCH,
   'com.aeotec:ZW078': DEFAULT_SWITCH,
   'com.arjankranenburg.virtual:mode': DEFAULT_SWITCH,
-  'com.datek.eva:meter-reader': DEFAULT_IGNORED,
+  'com.datek.eva:meter-reader': DEFAULT_METER,
   'com.elko:ESHSUPERTR': {
     ...DEFAULT_HEATER,
     note: 'Please contact the developer on frode.heggelund@gmail.com to help resolve/confirm any issues with this device. I get reports about this not working properly.',
@@ -202,7 +217,7 @@ const DEVICE_CMD = {
     default: false
   },
   'com.tibber:home': DEFAULT_IGNORED,
-  'com.tibber:pulse': DEFAULT_IGNORED,
+  'com.tibber:pulse': DEFAULT_METER,
   'com.tuya.cloud:tuyalight': DEFAULT_SWITCH,
   'com.mill:mill': {
     type: DEVICE_TYPE.HEATER,
@@ -289,6 +304,10 @@ const DEVICE_CMD = {
     statusCap: 'charger_status',
     statusUnavailable: ['Completed', 'Standby', 'Error'],
     default: false
+  },
+  'no.easee:equalizer': {
+    ...DEFAULT_METER,
+    readExportCap: 'measure_power.surplus'
   },
   'no.hoiax:hiax-connected-200': {
     type: DEVICE_TYPE.WATERHEATER,
