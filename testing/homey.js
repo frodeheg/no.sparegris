@@ -205,10 +205,15 @@ class FakeClockClass {
 
   constructor(homey) {
     this.homey = homey;
+    this.timeZone = 'Europe/Oslo';
   }
 
   getTimezone() {
-    return 'Europe/Oslo';
+    return this.timeZone;
+  }
+
+  setTimezone(newZone) {
+    this.timeZone = newZone;
   }
 
 }

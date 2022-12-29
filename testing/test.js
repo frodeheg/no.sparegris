@@ -11,7 +11,7 @@ const prices = require('../common/prices');
 const { addToArchive, cleanArchive, getArchive } = require('../common/archive');
 const Homey = require('./homey');
 const PiggyBank = require('../app');
-const { roundToStartOfDay, timeToNextHour } = require('../common/homeytime');
+const { roundToStartOfDay, timeToNextHour, toLocalTime, fromLocalTime } = require('../common/homeytime');
 const { disableTimers, applyBasicConfig, applyStateFromFile, getAllDeviceId, writePowerStatus } = require('./test-helpers');
 
 // Test Currency Converter
@@ -620,6 +620,22 @@ async function testMissingPulse() {
   console.log('\x1b[1A[\x1b[32mPASSED\x1b[0m]');
 }
 
+// Test if the local time is converted correctly (to some degree)
+async function testLocalTime() {
+  console.log('[......] Test Localtime');
+  const app = new PiggyBank();
+  await app.disableLog();
+
+  app.homey.clock.setTimezone('Asia/Jakarta');
+  const now = new Date('October 1, 2022, 00:59:50 GMT+2:00');
+  const lt = toLocalTime(now, app.homey);
+  const utc = fromLocalTime(lt, app.homey);
+  if (now.getTime() !== utc.getTime()) {
+    throw new Error('Local time is not equal when converted from/to');
+  }
+  console.log('\x1b[1A[\x1b[32mPASSED\x1b[0m]');
+}
+
 // Start all tests
 async function startAllTests() {
   try {
@@ -639,6 +655,7 @@ async function startAllTests() {
     await testTicket115();
     await testAppRestart();
     await testMissingPulse();
+    await testLocalTime();
     await testMail();
   } catch (err) {
     console.log('\x1b[1A[\x1b[31mFAILED\x1b[0m]');
