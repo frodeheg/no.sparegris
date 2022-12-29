@@ -239,6 +239,7 @@ function generateHourlyMaxOptions(stats, graphTitle) {
           },
           beforeFooter(context) {
             if (!dataset[context[0].dataIndex]) return graphMissing;
+            const now = new Date();
             if ((context[0].dataIndex === dataset.length - 1)
               && (chartPeriod !== GRANULARITY.HOUR)
               && (now > chartStartTime)
