@@ -5,6 +5,8 @@
  ** ****************************************************************************************************
  * Handling of insane localtime implementation for Homey.
  * Do NOT use this for anything other than display as it offset the UTC time!!!
+ * Note that the function toLocaleString is used which uses horribly much memory, so the function can
+ * not be used for large data sets, or we will run out of memory.
  * @param homeyTime is the localtime as reported by the Date object on Homey
  * @param homey an instance of homey to get which timezone it is in
  */
@@ -12,7 +14,7 @@ function toLocalTime(homeyTime, homey) {
   const tz = homey.clock.getTimezone();
   const homeyTimeHourAgo = new Date(homeyTime.getTime() - 3600000);
   const localeStringNow = homeyTime.toLocaleString('en-US', { timeZone: tz });
-  const localeStringHourAgo = homeyTimeHourAgo.toLocaleString('en-US', { timeZone: tz })
+  const localeStringHourAgo = homeyTimeHourAgo.toLocaleString('en-US', { timeZone: tz });
   const localTime = new Date(localeStringNow);
   if (localeStringNow === localeStringHourAgo) {
     localTime.setTime(localTime.getTime() + 3600000);

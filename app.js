@@ -34,6 +34,7 @@ const {
 const { isNumber, toNumber, combine } = require('./common/tools');
 const prices = require('./common/prices');
 const { close } = require('node:fs');
+const { start } = require('node:repl');
 
 const WAIT_TIME_TO_POWER_ON_AFTER_POWEROFF_MIN = 1 * 60 * 1000; // Wait 1 minute
 const WAIT_TIME_TO_POWER_ON_AFTER_POWEROFF_MAX = 5 * 60 * 1000; // Wait 5 minutes
@@ -387,6 +388,32 @@ class PiggyBank extends Homey.App {
           }
         }
       }
+      // Calculate cost for the duration of the archive
+      const { powUsage, price } = archive;
+      const dataTimeUTC = roundToNearestHour(new Date());
+      const dataTimeOffset = dataTimeUTC - toLocalTime(dataTimeUTC, this.homey);
+      if (powUsage && price && ('hourly' in powUsage) && ('hourly' in price)) {
+        for (const time in powUsage['hourly']) {
+          if (time in price['hourly']) {
+            for (const dataIdx in powUsage['hourly'][time]) {
+              if (dataIdx in price['hourly'][time]) {
+                const usedkW = powUsage['hourly'][time][dataIdx] / 1000;
+                const perkW = price['hourly'][time][dataIdx];
+                if (isNumber(usedkW) && isNumber(perkW)) {
+                  const data = {
+                    cost: usedkW * perkW
+                  };
+                  dataTimeUTC.setTime(new Date(`${time} ${dataIdx}:00`).getTime() + dataTimeOffset);
+                  const year = parseInt(time.slice(0, 4), 10);
+                  const month = parseInt(time.slice(5, 7), 10) - 1;
+                  const day = parseInt(time.slice(8, 10), 10) - 1;
+                  await addToArchive(this.homey, data, dataTimeUTC, false, false, archive, year, month, day, dataIdx);
+                }
+              }
+            }
+          }
+        }
+      }
       this.homey.settings.set('archive', archive);
       this.homey.settings.set('settingsVersion', 3);
     }
@@ -552,7 +579,7 @@ class PiggyBank extends Homey.App {
       }, timeToPreventZigbee * 1000);
     }
 
-    this.statsInit(now);
+    await this.statsInit(now);
 
     // Check that settings has been updated
     this.app_is_configured = this.validateSettings();
@@ -2589,7 +2616,7 @@ class PiggyBank extends Homey.App {
   /**
    * Reset stats - called on app init
    */
-  statsInit(now = new Date()) {
+  async statsInit(now = new Date()) {
     this.__stats_failed_turn_on = +this.homey.settings.get('stats_failed_turn_on') | 0;
     this.__stats_failed_turn_off = +this.homey.settings.get('stats_failed_turn_off') | 0;
     this.__stats_failed_temp_change = +this.homey.settings.get('stats_failed_temp_change') | 0;
@@ -2619,7 +2646,7 @@ class PiggyBank extends Homey.App {
       this.__stats_app_restarts = +this.__stats_app_restarts + 1;
     }
     this.homey.settings.set('stats_app_restarts', this.__stats_app_restarts);
-    this.statsNewHour(now);
+    await this.statsNewHour(now);
   }
 
   /**
@@ -2667,7 +2694,7 @@ class PiggyBank extends Homey.App {
       const newSaving = gridCosts[tariffIndex + 1].price - gridCosts[tariffIndex].price;
       this.__stats_savings_all_time_power_part += newSaving;
       const data = { moneySavedTariff: newSaving };
-      addToArchive(this.homey, data, timeLastUpdatedUTC, true, true);
+      await addToArchive(this.homey, data, timeLastUpdatedUTC, true, true);
       this.homey.settings.set('stats_savings_all_time_power_part', this.__stats_savings_all_time_power_part);
     } // else max tariff, nothing saved
   }
@@ -2752,7 +2779,7 @@ class PiggyBank extends Homey.App {
     this.__stats_price_point = pp;
   }
 
-  statsNewHour(now = new Date()) {
+  async statsNewHour(now = new Date()) {
     const tenMinutes = 10 * 60 * 1000;
 
     try {
@@ -2809,7 +2836,7 @@ class PiggyBank extends Homey.App {
           this.__stats_savings_yesterday = this.__stats_cost_if_smooth - this.__stats_actual_cost;
           if (Number.isFinite(this.__stats_savings_yesterday)) {
             const data = { moneySavedUsage: this.__stats_savings_yesterday };
-            addToArchive(this.homey, data, now, true);
+            await addToArchive(this.homey, data, now, true);
             this.__stats_savings_all_time_use += this.__stats_savings_yesterday;
             this.homey.settings.set('stats_savings_all_time_use', this.__stats_savings_all_time_use);
           }

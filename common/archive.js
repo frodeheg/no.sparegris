@@ -138,15 +138,17 @@ function setDataMacro(archive, dataId, period, time, idx, value) {
  * Adds data to the Archive
  * @data is of type Object and contains all the data types to archive: {dataId1: value1, dataId2: value2, ...}
  * @time is of type UTC and will be converted into localtime before deciding how to structure the archive by month/year
+ * @fakeArchive is only a workaround to modify the archive in place and then save the archive in the end to avoid 1000 disk writes when fixing archive bugs
  */
-async function addToArchive(homey, data, timeUTC = new Date(), skipHours = false, skipDays = false) {
-  const archive = await homey.settings.get('archive') || {};
-  const startOfDayUTC = roundToStartOfDay(timeUTC, homey);
-  const localTime = roundToNearestHour(toLocalTime(timeUTC, homey));
-  const ltYear = localTime.getFullYear();
-  const ltMonth = localTime.getMonth();
-  const ltDay = localTime.getDate() - 1; // Start index from 0
-  const ltHour = Math.floor((timeUTC - startOfDayUTC) / (1000 * 60 * 60));
+async function addToArchive(homey, data, timeUTC = new Date(), skipHours = false, skipDays = false,
+  fakeArchive = undefined, fakeYear = undefined, fakeMonth = undefined, fakeDay = undefined, fakeHour = undefined) {
+  const archive = fakeArchive || await homey.settings.get('archive') || {};
+  const startOfDayUTC = fakeArchive ? undefined : roundToStartOfDay(timeUTC, homey, true);
+  const localTime = fakeArchive ? undefined : roundToNearestHour(toLocalTime(timeUTC, homey));
+  const ltYear = fakeArchive ? fakeYear : localTime.getFullYear();
+  const ltMonth = fakeArchive ? fakeMonth : localTime.getMonth();
+  const ltDay = fakeArchive ? fakeDay : localTime.getDate() - 1; // Start index from 0
+  const ltHour = fakeArchive ? fakeHour : Math.floor((timeUTC - startOfDayUTC) / (1000 * 60 * 60));
 
   for (const dataId in data) {
     if (!(dataId in validTypes)) continue;
@@ -171,7 +173,7 @@ async function addToArchive(homey, data, timeUTC = new Date(), skipHours = false
     const yearIdx = monthIdx;
     setDataMacro(archive, dataId, 'yearly', yearIdx, 0, data[dataId]);
   }
-  homey.settings.set('archive', archive);
+  if (!fakeArchive) homey.settings.set('archive', archive);
 }
 
 /**
