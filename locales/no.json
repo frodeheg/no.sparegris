@@ -92,7 +92,7 @@
     "welcome": {
       "remaining": "Gjenværende oppgaver",
       "taskEnableApp": "Appen må slås på for at du skal spare penger.",
-      "taskCreateEnergyFlow": "Vennligst koble strømmålerens effektutgang inn til denne appens effektinngang.",
+      "taskCreateEnergyFlow": "Vennligst koble strømmålerens effektutgang inn til denne appens effektinngang. <a href=\"basicPage\" onclick=\"changeTab(event, 'basicPage');return false;\">Se her for detaljer</a>.",
       "taskEnergyFlowRate": "Hyppigheten strømmålerens effekt oppdateres med virker å være for lav (forrige signal mottatt for ${interval} minutter siden). Vennligst øk hyppigheten om mulig.",
       "taskChargerNotEnabled": "Du har startet en ladesyklus uten at en støttet lader er satt som kontrollerbar i appen. Enten må du velge laderen som kontrollerbar eller så må du sette ladestyringen til flytkort.",
       "taskNoPriceFlow": "Du har valgt prispunkt fra flytkort, men ingen slike signaler har blitt mottatt.",
