@@ -2736,6 +2736,7 @@ class PiggyBank extends Homey.App {
     }
     if (Array.isArray(this.__current_prices)) {
       data.price = this.__current_prices[this.__current_price_index];
+      data.cost = data.powUsage * data.price;
     }
     await addToArchive(this.homey, data, hourAgoUTC);
   }
