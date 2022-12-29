@@ -142,6 +142,17 @@ const DEVICE_CMD = {
     },
     default: false
   },
+  'climate.onecta.daikin:perfera_floor_fvxm': {
+    ...DEFAULT_AC,
+    tempStep: 0.5,
+    setModeCap: 'operation_mode',
+    setModeHeatValue: 'heating',
+    setModeCoolValue: 'cooling',
+    setModeAutoValue: 'auto',
+    setModeDryValue: 'dry',
+    setModeFanValue: 'fanOnly',
+    default: false
+  },
   'climate.onecta.daikin:stylish_ftxa': {
     ...DEFAULT_AC,
     tempStep: 0.5,
