@@ -60,6 +60,7 @@
       },
       "advanced": {
         "title": "Advanced",
+        "basic": "Basic settings",
         "settings": "Advanced settings",
         "charger": "Car chargers",
         "frost": "Frost guard",
@@ -169,6 +170,14 @@
       "noDeviceSelected": "Please select device",
       "unreliableDevice": "The selected device is only ${reliability}% reliable. Can this explain the problems you're having? If not, please include your email in the report so we can solve this together."
     },
+    "meter": {
+      "meterReader": "Meter reader",
+      "meterReaderNotFound": "No meter reader was found, you must use a flow card to send the power consumption to the app.",
+      "meterReaderHint": "If the app has support for your meter reader it will show up here, otherwise you have to input the power readings by using a flow",
+      "useFlow": "None - Use Flow instead",
+      "frequency": "Frequency",
+      "frequencyHint": "Specifies how often the meter reading should be checked. The reccomended value is 10 seconds."
+    },
     "help": {
       "notFound": "Instructions for non-supported devices",
       "notFoundHint": "<p>Unfortunately, there are some devices that do not use the standard mechanisms to be controlled. These will therefore not be detected as controllable by this app. Luckilly this can be easilly supported, just click the link below, generate a report and send the log to the developer.</p>",
@@ -180,6 +189,7 @@
       "deviceTypeAC": "Air Conditions",
       "deviceTypeCharger": "Chargers",
       "deviceTypeIgnore": "Ignored devices",
+      "deviceTypeMeter": "Meter readers",
       "ongoing": "Ongoing work",
       "aboutInfo": "About Piggy Bank",
       "aboutInfoHint": ["<p>This app was made in order for everyone to control their energy usage in a simple way and at the same time save as much money as possible on it.</p><!--",

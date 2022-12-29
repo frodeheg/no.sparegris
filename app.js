@@ -368,6 +368,8 @@ class PiggyBank extends Homey.App {
       if (!expireDaily || (expireDaily < 62)) this.homey.settings.set('expireDaily', 365);
       const expireHourly = await this.homey.settings.get('expireHourly');
       if (!expireHourly || (expireHourly < 31)) this.homey.settings.set('expireHourly', 31);
+      // Set the meterReader to Flow if and only if this was an upgrade (e.g. new users still default to the found reader)
+      if (this.homey.settings.get('maxPower') !== null) this.homey.settings.set('meterReader', 0);
       // Delete the old statistics as they has been in the archive for a while
       this.homey.settings.unset('stats_daily_max');
       this.homey.settings.unset('stats_daily_max_ok');
@@ -427,6 +429,9 @@ class PiggyBank extends Homey.App {
     }
     // ===== KEEPING STATE ACROSS RESTARTS END =====
     // Initialize missing settings
+    if (this.homey.settings.get('meterFrequency') === null) {
+      this.homey.settings.set('meterFrequency', 10);
+    }
     if (this.homey.settings.get('crossHourSmooth') === null) {
       this.homey.settings.set('crossHourSmooth', 20);
     }
@@ -951,10 +956,18 @@ class PiggyBank extends Homey.App {
 
     const oldDeviceList = this.homey.settings.get('deviceList');
     const relevantDevices = {};
+    const meterReaders = {};
 
     // Loop all devices
     for (const device of Object.values(devices)) {
       const driverId = `${device.driverUri.split(':').at(-1)}:${device.driverId}`;
+      if ((driverId in d.DEVICE_CMD) && (d.DEVICE_CMD[driverId].type === d.DEVICE_TYPE.METERREADER)) {
+        meterReaders[device.id] = {
+          name: device.name,
+          driverId
+        }
+        continue;
+      }
       // Relevant Devices must have an onoff capability
       // Unfortunately some devices like the SensiboSky heat pump controller invented their own onoff capability
       // so unless specially handled the capability might not be detected. The generic detection mechanism below
@@ -1033,6 +1046,7 @@ class PiggyBank extends Homey.App {
       relevantDevices[device.id] = relevantDevice;
     }
     this.__deviceList = relevantDevices;
+    this.__meterReaders = meterReaders;
 
     // Refresh current state for monitoring:
     if (!this.__current_state) {
@@ -1679,11 +1693,47 @@ class PiggyBank extends Homey.App {
    * A wrapper function for whenever Piggy should handle the power situation
    */
   async onPowerUpdateWrapper() {
-    return this.mutexForPower.runExclusive(async () => this.onPowerUpdate(NaN))
+    return Promise.resolve()
+      .then(() => {
+        const meterReader = this.homey.settings.get('meterReader');
+        if (meterReader in this.__meterReaders) {
+          return this.getDevice(meterReader);
+        }
+        return Promise.resolve(undefined);
+      })
+      .then(device => {
+        return Promise.resolve()
+          .then(() => {
+            if (device && device.capabilitiesObj) {
+              const meterReader = this.homey.settings.get('meterReader');
+              const { driverId } = this.__meterReaders[meterReader];
+              const { readPowerCap } = d.DEVICE_CMD[driverId];
+              const { value, lastUpdated } = device.capabilitiesObj[readPowerCap];
+              if (lastUpdated === this.__prevPowerTime) return Promise.reject();
+              this.__prevPowerTime = lastUpdated;
+              return Promise.resolve([value, new Date(lastUpdated)]);
+            }
+            return Promise.reject();
+          })
+          .catch(() => {
+            // Keep alive signal when no power was available
+            return Promise.resolve([NaN, new Date()]);
+          });
+      })
+      .then(([power, time]) => {
+        return this.mutexForPower.runExclusive(async () => this.onPowerUpdate(power, time));
+      })
       .finally(() => {
-        // Schedule next pulse event in 10 sec.
-        const timeToNextTrigger = 1000 * 10;
-        this.__pulseCheckerID = setTimeout(() => this.onPowerUpdateWrapper(), timeToNextTrigger);
+        // Schedule next pulse event
+        let timeToNextTrigger;
+        try {
+          timeToNextTrigger = this.homey.settings.get('meterFrequency');
+        } catch (err) { }
+        if (!isNumber(timeToNextTrigger)) timeToNextTrigger = 10;
+        if (timeToNextTrigger < 10) timeToNextTrigger = 10;
+        if (timeToNextTrigger > 60) timeToNextTrigger = 60;
+
+        this.__pulseCheckerID = setTimeout(() => this.onPowerUpdateWrapper(), 1000 * timeToNextTrigger - 200); // subtract 200 ms to avoid missing power
       });
   }
 

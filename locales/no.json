@@ -60,6 +60,7 @@
       },
       "advanced": {
         "title": "Avansert",
+        "basic": "Grunnleggende innstillinger",
         "settings": "Avanserte innstillinger",
         "charger": "Lading av elbil",
         "frost": "Frostsikring",
@@ -118,7 +119,7 @@
       "controlTemp": "Tillat temperatursyring",
       "controlTempYes": "Ja",
       "controlTempNo": "Nei",
-      "settings": "Global Innstillinger",
+      "settings": "Globale Innstillinger",
       "errorMargin" : "Feilmargin",
       "errorMarginHint1" : "Sørger for at du alltid ender opp på et nivå under effekttariffen.",
       "errorMarginHint2" : "Hint: Dette gir deg rom for en mindre overskridelse en annen dag ettersom tariffer regnes av snittet av effekttoppen i 3 dager.",
@@ -169,6 +170,14 @@
       "noDeviceSelected": "Vennligst velg enhet",
       "unreliableDevice": "Den valgte enheten er bare ${reliability}% pålitelig. Kan dette forklare problemene du har? Hvis ikke, vennligst inkluder epost-adresse i rapporten så vi kan løse problemet sammen."
     },
+    "meter": {
+      "meterReader": "Strømmåler",
+      "meterReaderNotFound": "Ingen strømmåler ble funnet, du må bruke et flytkort for å sende strømforbruket til appen.",
+      "meterReaderHint": "Dersom appen har støtte for strømmåleren din kan du velge den her, ellers må du sette opp en flow for å sende effekt-avlesningene til appen.",
+      "useFlow": "Ingen - Bruk flytkort",
+      "frequency": "Frekvens",
+      "frequencyHint": "Angir hvor ofte måleravlesningen skal sjekkes. Anbefalt verdi er 10 sekunder."
+    },
     "help": {
       "notFound": "Instruksjoner for manglende enheter",
       "notFoundHint": "<p>Dessverre finnes det enkelte enheter som ikke bruker standard mekanismer for å styres. Disse vil dermed ikke detekteres som kontrollerbare av denne appen. Heldigvis er dette lett å fikse, bare trykk på linken under, generer en rapport og send loggen til utvikleren:</p>",
@@ -180,6 +189,7 @@
       "deviceTypeAC": "Varmepumper",
       "deviceTypeCharger": "Ladere",
       "deviceTypeIgnore": "Ignorerte enheter",
+      "deviceTypeMeter": "Strømmålere",
       "ongoing": "Pågående arbeid",
       "aboutInfo": "Om Sparegris",
       "aboutInfoHint": ["<p>Denne appen er laget for at alle skal kunne styre strømmen sin på en enkel måte og samtidig spare så mye penger som mulig på det.</p><!--",

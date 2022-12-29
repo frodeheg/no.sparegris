@@ -77,6 +77,7 @@
         "settings.help.deviceTypeAC",
         "settings.help.deviceTypeCharger",
         "settings.help.deviceTypeIgnore",
+        "settings.help.deviceTypeMeter"
       ];
       var graphYAxis = "maxUsageGraph.yaxis";
       var graphXAxis = "maxUsageGraph.xaxis";
@@ -878,6 +879,7 @@
         <td class="dropdown" onclick="allowDropdown();">
           <a href="javascript:void(0)" class="dropbtn" data-i18n="settings.menu.advanced.title">Advanced</a>
           <div class="dropdown-content">
+            <a href="#" data-i18n="settings.menu.advanced.basic" onclick="changeTab(event, 'basicPage')">Basic settings</a>
             <a href="#" data-i18n="settings.menu.advanced.settings" onclick="changeTab(event, 'advancedPage')">Advanced settings</a>
             <a href="#" data-i18n="settings.menu.advanced.charger" onclick="changeTab(event, 'chargerPage')">Car Chargers</a>
             <a href="#" data-i18n="settings.menu.advanced.frost" onclick="changeTab(event, 'frostPage')">Frost guard</a>
@@ -1037,6 +1039,35 @@
       <fieldset>
         <legend data-i18n="settings.help.aboutInfo">help.aboutInfo</legend>
         <p data-i18n="settings.help.aboutInfoHint">help.aboutInfoHint</p>
+      </fieldset>
+    </div>
+
+    <!-- Basic page -->
+    <div id="basicPage" class="tabcontent">
+      <fieldset>
+        <legend data-i18n="settings.menu.advanced.basic">advanced.basic</legend>
+        <p id="meterReaderNotFound" class="hint" data-i18n="settings.meter.meterReaderNotFound">meter.meterReaderNotFound</p>
+        <table class="settings_table">
+          <tr>
+            <td class="settings_row_name"><label for="meterReader" data-i18n="settings.meter.meterReader">meter.meterReader</label>:</td>
+            <td class="settings_row_input">
+              <select id ="meterReader" onchange="displaySaveHint();">
+                <option value="0" selected>Error - should be replaced with meter readers</option>
+              </select>
+              <div class="hintButton" onclick="toggle(this,'meterReaderHint');return false;">i</div>
+            </td>
+          </tr>
+        </table>
+        <p id="meterReaderHint" class="hint" data-i18n="settings.meter.meterReaderHint">meter.meterReaderHint</p>
+        <table class="settings_table">
+          <tr>
+            <td class="settings_row_name"><label for="meterFrequency" data-i18n="settings.meter.frequency">meter.frequency</label>:</td>
+            <td class="settings_row_input"><input id="meterFrequency" type="number" min="10" max="60" value="10" onchange="limitElement(this);displaySaveHint()">s 
+              <div class="hintButton" onclick="toggle(this,'meterFrequencyHint');return false;">i</div>
+            </td>
+          </tr>
+        </table>
+        <p id="meterFrequencyHint" class="hint" data-i18n="settings.meter.frequencyHint">meter.frequencyHint</p>
       </fieldset>
     </div>
 
@@ -1627,6 +1658,8 @@
       var zoneListLoaded = false;
       var overrideListLoaded = false;
       var mainFuseLoaded = false;
+      var meterReaderLoaded = false;
+      var meterFrequencyLoaded = false;
       var graphLoaded = false;
       var futurePriceOptionsLoaded = false;
       var chargerOptionsLoaded = false;
@@ -1741,6 +1774,8 @@
           `zoneListLoaded: ${zoneListLoaded}<br>` +
           `overrideListLoaded: ${overrideListLoaded}<br>` +
           `mainFuseLoaded: ${mainFuseLoaded}<br>` +
+          `meterReaderLoaded: ${meterReaderLoaded}<br>` +
+          `meterFrequencyLoaded: ${meterFrequencyLoaded}<br>` +
           `graphLoaded: ${graphLoaded}<br>` +
           `futurePriceOptionsLoaded: ${futurePriceOptionsLoaded}<br>` +
           `chargerOptionsLoaded: ${chargerOptionsLoaded}<br>` +
@@ -1766,6 +1801,8 @@
           && zoneListLoaded
           && overrideListLoaded
           && mainFuseLoaded
+          && meterReaderLoaded
+          && meterFrequencyLoaded
           && graphLoaded
           && futurePriceOptionsLoaded
           && chargerOptionsLoaded
@@ -2004,7 +2041,7 @@
           checkLoadingDone();
         });
 
-        // Refresh
+        // Refresh currencies
         Homey.api('GET', '/apiCommand?cmd=getCurrencies', null, function (err, currencies) {
           if (err) return alertUser(Homey, err);
           let newCurrencyText = '';
@@ -2015,6 +2052,30 @@
 
           currenciesLoaded = true;
           checkLoadingDone();
+        });
+
+        // Refresh meter readers
+        Homey.api('GET', '/apiCommand?cmd=getMeterReaders', null, function (err, meterReaders) {
+          if (err) return alertUser(Homey, err);
+          if (typeof meterReaders !== 'object') return alertUser(Homey, new Error('The app has not initialized correctly, please contact the App developer'));
+          let newMeterReaderText = `<option value="0">${Homey.__('settings.meter.useFlow')}</option>`;
+          let selectedText = ' selected';
+          for (let readerId in meterReaders) {
+            newMeterReaderText += `<option value="${readerId}"${selectedText}>${meterReaders[readerId].name}</option>`;
+            selectedText = '';
+          }
+          document.getElementById('meterReader').innerHTML = newMeterReaderText;
+
+          if (Object.keys(meterReaders).length == 0) {
+            document.getElementById('meterReaderNotFound').style.display = 'block';
+          }
+
+          Homey.get("meterReader", function (err, meterReader) {
+            if (err) return Homey.alert(err);
+            if (meterReader !== null) document.getElementById('meterReader').value = meterReader;
+            meterReaderLoaded = true;
+            checkLoadingDone();
+          });
         });
 
         // Refresh API configuration progress
@@ -2191,6 +2252,12 @@
           mainFuseLoaded = true;
           checkLoadingDone();
         });
+        Homey.get("meterFrequency", function (err, meterFrequency) {
+          if (err) return Homey.alert(err);
+          document.getElementById('meterFrequency').value = meterFrequency;
+          meterFrequencyLoaded = true;
+          checkLoadingDone();
+        });
         // Refresh log data
         initializeLogPage(document, Homey)
         .catch(err => {
@@ -2272,6 +2339,8 @@
               Homey.set("safetyPower", safetyPowerElement.value, errFunc);
               Homey.set("crossHourSmooth", crossHourSmoothElement.value, errFunc);
               Homey.set("mainFuse", mainFuseElement.value, errFunc);
+              Homey.set("meterReader", document.getElementById("meterReader").value, errFunc);
+              Homey.set("meterFrequency", document.getElementById("meterFrequency").value, errFunc);
               Homey.set("settingsSaved", "", errFunc); // On settings is only called if the settings actually changed
               Homey.set("settingsSaved", "true", errFunc); // This one will throw the message settings.alert.settingssaved on success
             }
