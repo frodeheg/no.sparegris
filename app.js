@@ -551,7 +551,6 @@ class PiggyBank extends Homey.App {
     this.__all_prices = this.homey.settings.get('all_prices');
     this.__current_prices = [];
     this.__current_price_index = undefined;
-    this.mutex = new Mutex();
     this.mutexForPower = new Mutex();
     this.homeyApi = new HomeyAPIApp({ homey: this.homey });
     this.__last_power_off_time = new Date(now.getTime());
@@ -824,7 +823,7 @@ class PiggyBank extends Homey.App {
     // Monitor energy usage every 5 minute
     this.__monitorError = 0;
     this.__intervalID = setInterval(() => {
-      this.mutex.runExclusive(async () => this.onMonitor());
+      this.mutexForPower.runExclusive(async () => this.onMonitor());
     }, 1000 * 60 * 5);
 
     this.updateLog('PiggyBank has been initialized', c.LOG_INFO);
@@ -966,7 +965,6 @@ class PiggyBank extends Homey.App {
     this.statsUnInit();
 
     // Clear all pending Mutexes - probably not required if correctly written:
-    // this.mutex.cancel();
     // this.mutexForPower.cancel();
 
     this.updateLog('PiggyBank has been uninitialized', c.LOG_INFO);
