@@ -123,7 +123,7 @@ async function applyBasicConfig(app) {
   ];
   app.homey.settings.set('all_prices', app.__all_prices);
   app.__current_price_index = 0;
-  await app.doPriceCalculations();
+  await app.doPriceCalculations(new Date(1672095600));
 }
 
 /**
