@@ -1722,7 +1722,8 @@ class PiggyBank extends Homey.App {
       .then(() => {
         const meterReader = this.homey.settings.get('meterReader');
         if (meterReader in this.__meterReaders) {
-          return this.getDevice(meterReader);
+          return this.getDevice(meterReader)
+            .catch(() => Promise.resolve(undefined));
         }
         return Promise.resolve(undefined);
       })
