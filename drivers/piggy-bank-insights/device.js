@@ -352,13 +352,13 @@ class MyDevice extends Device {
       }
 
       if (piggyState.power_yesterday) {
-        this.setCapabilityValue('meter_power.last_day', piggyState.power_yesterday);
+        this.setCapabilityValue('meter_power.last_day', +piggyState.power_yesterday);
       }
       if (piggyState.power_last_month) {
-        this.setCapabilityValue('meter_power.last_month', piggyState.power_last_month);
+        this.setCapabilityValue('meter_power.last_month', +piggyState.power_last_month);
       }
       if (piggyState.power_average) {
-        this.setCapabilityValue('meter_power.month_estimate', piggyState.power_average);
+        this.setCapabilityValue('meter_power.month_estimate', +piggyState.power_average);
       }
 
       // Experimental capabilities, so only update if they exist
