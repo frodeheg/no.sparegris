@@ -3314,7 +3314,7 @@ class PiggyBank extends Homey.App {
     if (!this.__latestArchiveDateLocal) {
       this.__latestArchiveDateLocal = toLocalTime(new Date(), this.homey);
     }
-    const timeLastUpdatedLocal = this.__latestArchiveDate;
+    const timeLastUpdatedLocal = this.__latestArchiveDateLocal;
     const ltYear = +timeLastUpdatedLocal.getFullYear();
     const ltMonth = +timeLastUpdatedLocal.getMonth();
     const ltMonthm1 = (ltMonth === 0) ? 11 : (ltMonth - 1);
