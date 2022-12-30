@@ -670,5 +670,8 @@
   },
   "0.19.26": {
     "en": "Additional fix for the future price graph as it was still missing in some cases"
+  },
+  "0.19.27": {
+    "en": "Added archive expiration + Added power meter support + Reporting of missing data from power meter (rewrote energy usage function for this) + Added tracking of cost (no graph yet) + Added generic throttle for all devices + Added device climate.onecta.daikin:perfera_floor_fvxm to the supported list + UI & Graph fixes "
   }
 }
