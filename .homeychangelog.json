@@ -676,5 +676,8 @@
   },
   "0.19.28": {
     "en": "Fixed crash bug introduced in previous version. + Updated missing translation string in app setup page."
+  },
+  "0.19.29": {
+    "en": "Fixed crash bug introduced in version 0.19.27 + Adapted Easee charging to work for 3-phase charging."
   }
 }
