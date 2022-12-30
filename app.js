@@ -115,7 +115,11 @@ class PiggyBank extends Homey.App {
         return Promise.reject(newErr);
       }
       const maxVal = (device.capabilitiesObj === null) ? 32 : await device.capabilitiesObj[capName].max;
-      const setVal = (list[capName] === Infinity) ? maxVal : list[capName];
+      const chargerOptions = this.homey.settings.get('chargerOptions');
+      const minVal = (chargerOptions && +chargerOptions.overrideEnable) ? chargerOptions.overrideStop : 0;
+      const setVal = (list[capName] === Infinity) ? maxVal
+        : (list[capName] === 0) ? minVal
+          : list[capName];
       const prevVal = (device.capabilitiesObj === null) ? undefined : await device.capabilitiesObj[capName].value;
       try {
         if (prevVal !== setVal) {
@@ -1301,7 +1305,7 @@ class PiggyBank extends Homey.App {
     this.__current_state[deviceId].lastPower = powerUsed;
     this.__current_state[deviceId].confirmed = false;
     this.__current_state[deviceId].ongoing = true;
-    return this.chargeCycleValidation(deviceId, device, withinChargingCycle, throttleActive)
+    return this.chargeCycleValidation(deviceId, withinChargingCycle, throttleActive)
       .then(() => {
         const capName = d.DEVICE_CMD[driverId].setCurrentCap;
         if (this.logUnit === deviceId) this.updateLog(`Setting Device ${device.name}.${capName} = ${newOfferCurrent} | Origin ChangeDevicePower(${powerChange})`, c.LOG_ALL);
