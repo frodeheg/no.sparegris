@@ -1251,6 +1251,10 @@
                   </td>
                 </tr>
                 <tr>
+                  <td class="settings_row_name"><label for="overrideStart" data-i18n="settings.charge.overrideStart">charge.overrideStart</label>:</td>
+                  <td class="settings_row_input"><input id="overrideStart" class="inputElem" type="number" min="0" max="40" value="0" onchange="displaySaveHint()"> A</td>
+                </tr>
+                <tr>
                   <td class="settings_row_name"><label for="overrideStop" data-i18n="settings.charge.overrideStop">charge.overrideStop</label>:</td>
                   <td class="settings_row_input"><input id="overrideStop" class="inputElem" type="number" min="0" max="40" value="0" onchange="displaySaveHint()"> A</td>
                 </tr>
@@ -1862,6 +1866,7 @@
           document.getElementById('chargeRemainingUnit_h').style.display = (chargerOptions.chargeCycleType === OFFER_HOURS) ? 'inline-block' : 'none';
           document.getElementById('chargeEnd').value = toTimeString(new Date(chargerOptions.chargeEnd));
           document.getElementById('overrideEnable').value = +chargerOptions.overrideEnable;
+          document.getElementById('overrideStart').value = +chargerOptions.overrideStart;
           document.getElementById('overrideStop').value = +chargerOptions.overrideStop;
           document.getElementById('overridePause').value = +chargerOptions.overridePause;
           document.getElementById('overrideMinCurrent').value = +chargerOptions.overrideMinCurrent;
@@ -2334,6 +2339,7 @@
               // chargerOptions.chargeRemaining = +document.getElementById('chargeRemaining').value; // Ignore as it is read only
               // chargerOptions.chargeEnd = +document.getElementById('chargeEnd').value; // Ignore as it is read only (and converted to localtime)
               chargerOptions.overrideEnable = +document.getElementById('overrideEnable').value;
+              chargerOptions.overrideStart = +document.getElementById('overrideStart').value;
               chargerOptions.overrideStop = +document.getElementById('overrideStop').value;
               chargerOptions.overridePause = +document.getElementById('overridePause').value;
               chargerOptions.overrideMinCurrent = +document.getElementById('overrideMinCurrent').value;

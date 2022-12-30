@@ -44,6 +44,7 @@
       "overrideEnable": "Override",
       "overrideEnableNo": "Disabled",
       "overrideEnableYes": "Enabled",
+      "overrideStart": "Start current",
       "overrideStop": "Stop current",
       "overridePause": "Pause current",
       "overrideMinCurrent": "Minimum charging current"

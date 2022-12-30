@@ -44,6 +44,7 @@
       "overrideEnable": "Overstyring",
       "overrideEnableNo": "Deaktivert",
       "overrideEnableYes": "Aktivert",
+      "overrideStart": "Startstrøm",
       "overrideStop": "Stoppstrøm",
       "overridePause": "Pausestrøm",
       "overrideMinCurrent": "Minste ladestrøm"

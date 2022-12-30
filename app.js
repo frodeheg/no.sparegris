@@ -416,6 +416,17 @@ class PiggyBank extends Homey.App {
       this.homey.settings.set('settingsVersion', 3);
     }
 
+    // Version 0.19.28
+    if (+settingsVersion < 4) {
+      if (chargerOptionsRepair) {
+        // Make sure old users are unaffected by the introduction of overrideStart
+        // New users will get a different default value for this, but for old users it's better to keep this constant
+        chargerOptionsRepair.overrideStart = chargerOptionsRepair.overrideMinCurrent;
+        this.homey.settings.set('chargerOptions', chargerOptionsRepair);
+      }
+      this.homey.settings.set('settingsVersion', 4);
+    }
+
     // Internal state that preferably should be removed as it is in the archive
     // this.homey.settings.unset('stats_savings_all_time_use');
     // this.homey.settings.unset('stats_savings_all_time_power_part');
@@ -514,6 +525,7 @@ class PiggyBank extends Homey.App {
       || !('chargeCycleType' in chargerOptions)
       || !('chargeEnd' in chargerOptions)
       || !('overrideEnable' in chargerOptions)
+      || !('overrideStart' in chargerOptions)
       || !('overrideStop' in chargerOptions)
       || !('overridePause' in chargerOptions)
       || !('overrideMinCurrent' in chargerOptions)) {
@@ -526,6 +538,7 @@ class PiggyBank extends Homey.App {
       if (!('chargeCycleType' in chargerOptions)) chargerOptions.chargeCycleType = c.OFFER_HOURS;
       if (!('chargeEnd' in chargerOptions)) chargerOptions.chargeEnd = now;
       if (!('overrideEnable' in chargerOptions)) chargerOptions.overrideEnable = 0;
+      if (!('overrideStart' in chargerOptions)) chargerOptions.overrideStart = 11;
       if (!('overrideStop' in chargerOptions)) chargerOptions.overrideStop = 0;
       if (!('overridePause' in chargerOptions)) chargerOptions.overridePause = 4;
       if (!('overrideMinCurrent' in chargerOptions)) chargerOptions.overrideMinCurrent = 7;
@@ -560,6 +573,7 @@ class PiggyBank extends Homey.App {
     this.__charge_plan = []; // No charge plan
     this.__charge_power_active = 0;
     this.__spookey_check_activated = undefined;
+    this.__pendingStartCharge = false;
     // All elements of current_state will have the following:
     //  nComError: Number of communication errors since last time it worked - Used to depriorotize devices so we don't get stuck in an infinite retry loop
     //  lastCmd: The last onoff command that was sent to the device
@@ -1261,16 +1275,23 @@ class PiggyBank extends Homey.App {
 
     const chargerStatus = await device.capabilitiesObj[d.DEVICE_CMD[driverId].statusCap].value;
     const maxCurrent = +await device.capabilitiesObj[d.DEVICE_CMD[driverId].setCurrentCap].max;
+    const startCurrent = +chargerOptions.overrideEnable ? +chargerOptions.overrideStart : d.DEVICE_CMD[driverId].startCurrent;
     const stopCurrent = +chargerOptions.overrideEnable ? +chargerOptions.overrideStop : 0;
     const pauseCurrent = +chargerOptions.overrideEnable ? +chargerOptions.overridePause : d.DEVICE_CMD[driverId].pauseCurrent;
     const minCurrent = +chargerOptions.overrideEnable ? +chargerOptions.overrideMinCurrent : d.DEVICE_CMD[driverId].minCurrent;
     const maxPower = +this.homey.settings.get('maxPower');
     const cannotCharge = d.DEVICE_CMD[driverId].statusUnavailable.includes(chargerStatus);
     const newOfferPower = Math.min(Math.max(powerUsed + +powerChange, +chargerOptions.chargeMin), maxPower);
+    const pausedCharging = !withinChargingPlan || isEmergency || cannotCharge;
     const newOfferCurrent = (!withinChargingCycle) ? stopCurrent
-      : (!withinChargingPlan || isEmergency || cannotCharge) ? pauseCurrent
-        : (+powerUsed === 0) ? minCurrent
-          : Math.floor(Math.min(Math.max(ampsOffered * (newOfferPower / +powerUsed), minCurrent), +maxCurrent));
+      : (pausedCharging && this.__pendingStartCharge) ? stopCurrent
+        : pausedCharging ? pauseCurrent
+          : (+powerUsed === 0 && this.__pendingStartCharge) ? startCurrent
+            : (+powerUsed === 0) ? minCurrent
+              : Math.floor(Math.min(Math.max(ampsOffered * (newOfferPower / +powerUsed), minCurrent), +maxCurrent));
+    if (!pausedCharging && +powerUsed === 0) {
+      this.__pendingStartCharge = false;
+    }
     this.updateLog(`Setting ${newOfferCurrent} amp, was ${ampsActualOffer}`, c.LOG_DEBUG);
     if ((newOfferCurrent === ampsActualOffer) && (newOfferCurrent === ampsOffered)) {
       if (this.logUnit === deviceId) this.updateLog(`finished changeDevicePower() for ${device.name} - The new current is the same as the previous`, c.LOG_ALL);
@@ -2274,6 +2295,7 @@ class PiggyBank extends Homey.App {
     this.updateLog('Charging cycle started', c.LOG_INFO);
     this.__spookey_check_activated = undefined;
     this.__spookey_changes = 0;
+    this.__pendingStartCharge = true;
     const chargerOptions = this.homey.settings.get('chargerOptions');
     if (chargerOptions) {
       // Convert local end time to UTC
