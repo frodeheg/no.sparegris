@@ -673,5 +673,8 @@
   },
   "0.19.27": {
     "en": "Added archive expiration + Added power meter support + Reporting of missing data from power meter (rewrote energy usage function for this) + Added tracking of cost (no graph yet) + Added generic throttle for all devices + Added device climate.onecta.daikin:perfera_floor_fvxm to the supported list + UI & Graph fixes "
+  },
+  "0.19.28": {
+    "en": "Fixed crash bug introduced in previous version. + Updated missing translation string in app setup page."
   }
 }
