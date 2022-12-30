@@ -136,7 +136,9 @@
       "deviceListHint1" : "Only selected devices can be controlled by the app. If your device is not listed then follow the instructions in the Help panel.",
       "deviceListHint2" : "Tip: For optimal control, ensure that heavy adjustable current draws are set to a power that does not exceed the desired power tariff. Otherwise it will result in frequent switching on/off.",
       "missing" : "Missing or broken device?",
-      "problemsolver" : "Troubleshoot"
+      "problemsolver" : "Troubleshoot",
+      "toggleTime": "Toggle time:",
+      "toggleTimeHint": "After changing a device state, the app will wait to change other devices until: <ul style='font-size:1em'><li>The change has been registered or</li><li>The toggle time has expired</li></ul>If you have devices with slow response times like cloud devices, then it is recommended to use a longer toggle time to avoid toggling too many devices."
     },
     "cost" : {
       "header": "Cost settings",
@@ -174,7 +176,7 @@
       "meterReader": "Meter reader",
       "meterReaderNotFound": "No meter reader was found, you must use a flow card to send the power consumption to the app.",
       "meterReaderHint": "If the app has support for your meter reader it will show up here, otherwise you have to input the power readings by using a flow",
-      "useFlow": "None - Use Flow instead",
+      "useFlow": "None - Use Flow",
       "frequency": "Frequency",
       "frequencyHint": "Specifies how often the meter reading should be checked. The reccomended value is 10 seconds."
     },
@@ -368,7 +370,7 @@
     "savingFailed": "Failed to save, This should not happen, please notify the developer so this can be fixed",
     "noPriceApi": "You have to install the app 'no.almli.utilitycost' to get the electricity prices to work. Alternatively set the price point from flows.",
     "noPriceApiDevice": "You have to install the corresponding device to the app 'no.almli.utilitycost' in order to get the electricity prices from the app. Alternatively set the price point from flows.",
-    "noPriceApiData": "The Utilitycost app is set to use price from flows. Thus it will not forward the cost. Change to spot price in the Utilitycost app or set the price point from flows here.",
+    "noPriceApiData": "The Utilitycost app is set to use price from flows. Thus it will not forward the cost. Try to configure the price with the built in price function in piggy instead.",
     "notPMfromFlow": "In order to set price points with flows you first have to enable price management using flows in the app setup",
     "rememberToSave": "Remember to save!",
     "appDisabled": "The app operating mode is set to disabled. Please turn it on in app settings or with a flow.",

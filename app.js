@@ -33,8 +33,6 @@ const {
 } = require('./common/homeytime');
 const { isNumber, toNumber, combine } = require('./common/tools');
 const prices = require('./common/prices');
-const { close } = require('node:fs');
-const { start } = require('node:repl');
 
 const WAIT_TIME_TO_POWER_ON_AFTER_POWEROFF_MIN = 1 * 60 * 1000; // Wait 1 minute
 const WAIT_TIME_TO_POWER_ON_AFTER_POWEROFF_MAX = 5 * 60 * 1000; // Wait 5 minutes
@@ -456,6 +454,9 @@ class PiggyBank extends Homey.App {
     }
     // ===== KEEPING STATE ACROSS RESTARTS END =====
     // Initialize missing settings
+    if (this.homey.settings.get('toggleTime') === null) {
+      this.homey.settings.set('toggleTime', 10);
+    }
     if (this.homey.settings.get('meterFrequency') === null) {
       this.homey.settings.set('meterFrequency', 10);
     }
@@ -990,7 +991,7 @@ class PiggyBank extends Homey.App {
         meterReaders[device.id] = {
           name: device.name,
           driverId
-        }
+        };
         continue;
       }
       // Relevant Devices must have an onoff capability
@@ -1666,7 +1667,6 @@ class PiggyBank extends Homey.App {
    * Called whenever we can process the new power situation
    */
   async onProcessPower(now = new Date()) {
-    // Check if we are missing pulse data
     // Check for new hour
     while (this.__pendingOnNewHour.length > 0) {
       const item = this.__pendingOnNewHour[0];
@@ -2046,23 +2046,33 @@ class PiggyBank extends Homey.App {
     // Reset the power alarm as we now have sufficient power available
     this.__alarm_overshoot = false;
 
+    // Prevent turning on new devices before the previous on signal has been accounted for
+    const toggleTime = this.homey.settings.get('toggleTime') * 1000;
+    const timeSincePowerOn = now - this.__last_power_on_time;
+    if ((timeSincePowerOn < toggleTime) && (this.__last_power_on_power <= morePower)) {
+      this.updateLog(`Could use ${String(morePower)} W more power but was aborted due to recent turn on activity. Remaining wait = ${String((toggleTime - timeSincePowerOn) / 1000)} s`,
+        c.LOG_DEBUG);
+      return Promise.resolve();
+    }
+
     // If power was turned _OFF_ within the last 1-5 minutes then abort turning on anything.
     // The waiting time is 5 minutes at the beginning of an hour and reduces gradually to 1 minute for the last 5 minutes
     // This is to avoid excessive on/off cycles of high power devices such as electric car chargers
-    this.__last_power_on_time = new Date(now.getTime());
-    const timeLeftInHour = timeToNextHour(this.__last_power_on_time);
+    const timeLeftInHour = timeToNextHour(now);
     const powerCycleInterval = (timeLeftInHour > TIME_FOR_POWERCYCLE_MAX) ? WAIT_TIME_TO_POWER_ON_AFTER_POWEROFF_MAX
       : (timeLeftInHour < TIME_FOR_POWERCYCLE_MIN) ? WAIT_TIME_TO_POWER_ON_AFTER_POWEROFF_MIN
         : (WAIT_TIME_TO_POWER_ON_AFTER_POWEROFF_MIN + (WAIT_TIME_TO_POWER_ON_AFTER_POWEROFF_MAX - WAIT_TIME_TO_POWER_ON_AFTER_POWEROFF_MIN)
           * ((timeLeftInHour - TIME_FOR_POWERCYCLE_MIN) / (TIME_FOR_POWERCYCLE_MAX - TIME_FOR_POWERCYCLE_MIN)));
 
-    const timeSincePowerOff = this.__last_power_on_time - this.__last_power_off_time;
+    const timeSincePowerOff = now - this.__last_power_off_time;
     if (timeSincePowerOff < powerCycleInterval) {
       this.updateLog(`Could use ${String(morePower)} W more power but was aborted due to recent turn off activity. Remaining wait = ${String((5 * 60 * 1000 - timeSincePowerOff) / 1000)} s`,
         c.LOG_DEBUG);
       return Promise.resolve();
     }
     this.updateLog(`Can use ${String(morePower)}W more power`, c.LOG_DEBUG);
+    this.__last_power_on_time = new Date(now.getTime());
+    this.__last_power_on_power = morePower;
 
     const modeList = this.homey.settings.get('modeList');
     const currentMode = +this.homey.settings.get('operatingMode');
@@ -2130,8 +2140,18 @@ class PiggyBank extends Homey.App {
   async onAbovePowerLimit(lessPower, marginWatts, now = new Date()) {
     lessPower = Math.ceil(lessPower);
 
-    // Do not care whether devices was just recently turned on
+    // Prevent turning off devices before previous off signal has been accounted for
+    const toggleTime = this.homey.settings.get('toggleTime') * 1000;
+    const timeSincePowerOff = now - this.__last_power_off_time;
+    if ((timeSincePowerOff < toggleTime) && (this.__last_power_off_time_power <= lessPower)) {
+      this.updateLog(`Must use ${String(lessPower)} W less power but was aborted due to recent turn off activity. Remaining wait = ${String((toggleTime - timeSincePowerOff) / 1000)} s`,
+        c.LOG_DEBUG);
+      return Promise.resolve();
+    }
+
+    // Toggle time has expired
     this.__last_power_off_time = new Date(now.getTime());
+    this.__last_power_off_time_power = lessPower;
 
     const modeList = this.homey.settings.get('modeList');
     const currentMode = +this.homey.settings.get('operatingMode');

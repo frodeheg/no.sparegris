@@ -1068,6 +1068,15 @@
           </tr>
         </table>
         <p id="meterFrequencyHint" class="hint" data-i18n="settings.meter.frequencyHint">meter.frequencyHint</p>
+        <table class="settings_table">
+          <tr>
+            <td class="settings_row_name"><label for="toggleTime" data-i18n="settings.global.toggleTime">global.toggleTime</label>:</td>
+            <td class="settings_row_input"><input id="toggleTime" type="number" min="5" max="60" value="10" onchange="limitElement(this);displaySaveHint()">s 
+              <div class="hintButton" onclick="toggle(this,'toggleTimeHint');return false;">i</div>
+            </td>
+          </tr>
+        </table>
+        <p id="toggleTimeHint" class="hint" data-i18n="settings.global.toggleTimeHint">global.toggleTimeHint</p>
       </fieldset>
     </div>
 
@@ -1660,6 +1669,7 @@
       var mainFuseLoaded = false;
       var meterReaderLoaded = false;
       var meterFrequencyLoaded = false;
+      var toggleTimeLoaded = false;
       var graphLoaded = false;
       var futurePriceOptionsLoaded = false;
       var chargerOptionsLoaded = false;
@@ -1776,6 +1786,7 @@
           `mainFuseLoaded: ${mainFuseLoaded}<br>` +
           `meterReaderLoaded: ${meterReaderLoaded}<br>` +
           `meterFrequencyLoaded: ${meterFrequencyLoaded}<br>` +
+          `toggleTimeLoaded: ${toggleTimeLoaded}<br>` +
           `graphLoaded: ${graphLoaded}<br>` +
           `futurePriceOptionsLoaded: ${futurePriceOptionsLoaded}<br>` +
           `chargerOptionsLoaded: ${chargerOptionsLoaded}<br>` +
@@ -1803,6 +1814,7 @@
           && mainFuseLoaded
           && meterReaderLoaded
           && meterFrequencyLoaded
+          && toggleTimeLoaded
           && graphLoaded
           && futurePriceOptionsLoaded
           && chargerOptionsLoaded
@@ -2258,6 +2270,12 @@
           meterFrequencyLoaded = true;
           checkLoadingDone();
         });
+        Homey.get("toggleTime", function (err, toggleTime) {
+          if (err) return Homey.alert(err);
+          document.getElementById('toggleTime').value = toggleTime;
+          toggleTimeLoaded = true;
+          checkLoadingDone();
+        });
         // Refresh log data
         initializeLogPage(document, Homey)
         .catch(err => {
@@ -2341,6 +2359,7 @@
               Homey.set("mainFuse", mainFuseElement.value, errFunc);
               Homey.set("meterReader", document.getElementById("meterReader").value, errFunc);
               Homey.set("meterFrequency", document.getElementById("meterFrequency").value, errFunc);
+              Homey.set("toggleTime", document.getElementById("toggleTime").value, errFunc);
               Homey.set("settingsSaved", "", errFunc); // On settings is only called if the settings actually changed
               Homey.set("settingsSaved", "true", errFunc); // This one will throw the message settings.alert.settingssaved on success
             }

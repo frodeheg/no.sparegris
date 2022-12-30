@@ -5,6 +5,7 @@
 'use strict';
 
 const { toLocalTime, roundToNearestHour, roundToStartOfDay } = require('./homeytime');
+const c = require('./constants');
 
 /** ****************************************************************************************************
  * Archive
@@ -215,9 +216,9 @@ async function cleanArchive(homey, timeUTC = new Date()) {
   dailyExpireDays = Math.ceil(dailyExpireDays / 31) * 31;
   const hourlyExpire = new Date(new Date(dayId).getTime() - 1000 * 60 * 60 * 24 * hourlyExpireDays);
   const dailyExpire = new Date(new Date(monthId).getTime() - 1000 * 60 * 60 * 24 * dailyExpireDays);
-  homey.app.log(`Expire archive trigger time:  ${localTime}`);
-  homey.app.log(`  - Hourly expire older than: ${hourlyExpire}`);
-  homey.app.log(`  - Daily expire older than:  ${dailyExpire}`);
+  homey.app.updateLog(`Expire archive trigger time:  ${localTime}`, c.LOG_INFO);
+  homey.app.updateLog(`  - Hourly expire older than: ${hourlyExpire}`, c.LOG_INFO);
+  homey.app.updateLog(`  - Daily expire older than:  ${dailyExpire}`, c.LOG_INFO);
   for (const dataId in archive) {
     const hourlyData = archive[dataId].hourly;
     if (hourlyData) {
