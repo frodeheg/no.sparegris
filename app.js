@@ -2752,6 +2752,7 @@ class PiggyBank extends Homey.App {
     }
 
     const hourAgoLocal = toLocalTime(hourAgoUTC, this.homey);
+    this.__latestArchiveDateLocal = hourAgoLocal;
 
     let overShootAvoided = this.homey.settings.get('overShootAvoided');
     const maxPower = this.homey.settings.get('maxPower');
@@ -3310,7 +3311,10 @@ class PiggyBank extends Homey.App {
           : (apiNeeded && (this.apiState === c.PRICE_API_NO_DATA)) ? c.APP_MISSING_PRICE_DATA
             : c.APP_READY;
 
-    const timeLastUpdatedLocal = toLocalTime(new Date(), this.homey);
+    if (!this.__latestArchiveDateLocal) {
+      this.__latestArchiveDateLocal = toLocalTime(new Date(), this.homey);
+    }
+    const timeLastUpdatedLocal = this.__latestArchiveDate;
     const ltYear = +timeLastUpdatedLocal.getFullYear();
     const ltMonth = +timeLastUpdatedLocal.getMonth();
     const ltMonthm1 = (ltMonth === 0) ? 11 : (ltMonth - 1);
@@ -3533,7 +3537,7 @@ class PiggyBank extends Homey.App {
    * Builds an array of future data similar to the archive
    */
   async buildFutureData() {
-    const nowLocal = toLocalTime(new Date(), this.homey);
+    const nowLocal = toLocalTime(new Date(), this.homey); // TODO: Check if this can be removed
     const todayHours = hoursInDay(nowLocal, this.homey);
 
     const futureData = {};
