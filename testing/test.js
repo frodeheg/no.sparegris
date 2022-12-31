@@ -588,6 +588,11 @@ async function testMissingPulse() {
   app.homey.settings.set('stats_daily_max', null);
   app.homey.settings.set('stats_daily_max_ok', null);
   app.homey.settings.set('stats_daily_max_last_update_time', firstHour);
+  app.homey.settings.unset('safeShutdown__accum_energy');
+  app.homey.settings.unset('safeShutdown__current_power');
+  app.homey.settings.unset('safeShutdown__current_power_time');
+  app.homey.settings.unset('safeShutdown__power_last_hour');
+  app.homey.settings.unset('safeShutdown__offeredEnergy');
 
   await app.onInit(now);
   await disableTimers(app);
