@@ -577,7 +577,6 @@ class PiggyBank extends Homey.App {
     this.__charge_plan = []; // No charge plan
     this.__charge_power_active = 0;
     this.__spookey_check_activated = undefined;
-    this.__pendingStartCharge = false;
     // All elements of current_state will have the following:
     //  nComError: Number of communication errors since last time it worked - Used to depriorotize devices so we don't get stuck in an infinite retry loop
     //  lastCmd: The last onoff command that was sent to the device
@@ -1288,14 +1287,9 @@ class PiggyBank extends Homey.App {
     const newOfferPower = Math.min(Math.max(powerUsed + +powerChange, +chargerOptions.chargeMin), maxPower);
     const pausedCharging = !withinChargingPlan || isEmergency || cannotCharge;
     const newOfferCurrent = (!withinChargingCycle) ? stopCurrent
-      : (pausedCharging && this.__pendingStartCharge) ? stopCurrent
-        : pausedCharging ? pauseCurrent
-          : (+powerUsed === 0 && this.__pendingStartCharge) ? startCurrent
-            : (+powerUsed === 0) ? minCurrent
-              : Math.floor(Math.min(Math.max(ampsOffered * (newOfferPower / +powerUsed), minCurrent), +maxCurrent));
-    if (!pausedCharging && +powerUsed === 0) {
-      this.__pendingStartCharge = false;
-    }
+      : pausedCharging ? pauseCurrent
+        : (+powerUsed === 0) ? startCurrent
+          : Math.floor(Math.min(Math.max(ampsOffered * (newOfferPower / +powerUsed), minCurrent), +maxCurrent));
     this.updateLog(`Setting ${newOfferCurrent} amp, was ${ampsActualOffer}`, c.LOG_DEBUG);
     if ((newOfferCurrent === ampsActualOffer) && (newOfferCurrent === ampsOffered)) {
       if (this.logUnit === deviceId) this.updateLog(`finished changeDevicePower() for ${device.name} - The new current is the same as the previous`, c.LOG_ALL);
@@ -2299,7 +2293,6 @@ class PiggyBank extends Homey.App {
     this.updateLog('Charging cycle started', c.LOG_INFO);
     this.__spookey_check_activated = undefined;
     this.__spookey_changes = 0;
-    this.__pendingStartCharge = true;
     const chargerOptions = this.homey.settings.get('chargerOptions');
     if (chargerOptions) {
       // Convert local end time to UTC
