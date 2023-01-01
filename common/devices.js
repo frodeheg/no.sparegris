@@ -189,6 +189,23 @@ const DEVICE_CMD = {
   },
   'com.home-connect:dryer': DEFAULT_IGNORED,
   'com.ikea.tradfri:control_outlet': DEFAULT_SWITCH, // Not confirmed
+  'com.mecloud:melcloud': {
+    ...DEFAULT_AC,
+    tempMax: 38,
+    tempStep: 0.5,
+    default: false
+  },
+  'com.mill:mill': {
+    type: DEVICE_TYPE.HEATER,
+    setOnOffCap: 'onoff',
+    setOnValue: true,
+    setOffValue: false,
+    readTempCap: 'measure_temperature',
+    setTempCap: 'target_temperature',
+    tempMin: 4,
+    tempMax: 35,
+    tempStep: 0.5
+  },
   'com.neo:NAS-WR02ZE': DEFAULT_SWITCH,
   'com.nibeuplink:com.nibeuplink.system': {
     ...DEFAULT_SWITCH,
@@ -212,6 +229,16 @@ const DEVICE_CMD = {
     default: false
   },
   'com.philips.hue.zigbee:LCL001': DEFAULT_SWITCH,
+  'com.qubino:ZMNKID': {
+    ...DEFAULT_HEATER,
+    setOnOffCap: 'offAutoThermostatMode',
+    setOnValue: 'auto',
+    setOffValue: 'off',
+    setTempCap: 'target_temperature',
+    tempMin: -25,
+    tempMax: 85,
+    default: false
+  },
   'com.sensibo:Sensibo': {
     ...DEFAULT_AC,
     setOnOffCap: 'se_onoff',
@@ -230,17 +257,6 @@ const DEVICE_CMD = {
   'com.tibber:home': DEFAULT_IGNORED,
   'com.tibber:pulse': DEFAULT_METER,
   'com.tuya.cloud:tuyalight': DEFAULT_SWITCH,
-  'com.mill:mill': {
-    type: DEVICE_TYPE.HEATER,
-    setOnOffCap: 'onoff',
-    setOnValue: true,
-    setOffValue: false,
-    readTempCap: 'measure_temperature',
-    setTempCap: 'target_temperature',
-    tempMin: 4,
-    tempMax: 35,
-    tempStep: 0.5
-  },
   'com.xiaomi-mi:plug.maeu01': DEFAULT_SWITCH,
   'fi.taelek.ecocontrol:oled': {
     type: DEVICE_TYPE.HEATER,
@@ -309,6 +325,7 @@ const DEVICE_CMD = {
     },
     setCurrentCap: 'target_charger_current',
     getOfferedCap: 'measure_current.offered',
+    startCurrent: 11,
     minCurrent: 7,
     pauseCurrent: 4,
     measurePowerCap: 'measure_power',

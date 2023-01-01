@@ -1,0 +1,15 @@
++16:50:8.059: ----- ANALYZING DEVICE -----
++16:50:8.064: Report type: Device is not listed
++16:50:8.070: Device ID:   2c7ead73-1c14-42e4-a6ed-2c83ec6ac7e6
++16:50:8.118: Device name: VVB
++16:50:8.122: Driver Uri: homey:app:com.qubino
++16:50:8.124: Driver Id: ZMNKID
++16:50:8.129: Error: TypeError: Cannot read properties of undefined (reading 'onoff_cap')
++16:50:8.134: Capabilities: offAutoThermostatMode,target_temperature,measure_temperature,meter_power,measure_power,button.reset_meter
++16:50:8.137: Options for 'offAutoThermostatMode': {"value":"auto","lastUpdated":"2022-12-31T16:37:12.011Z","type":"enum","getable":true,"setable":true,"title":"Thermostat mode","desc":null,"units":null,"values":[{"id":"auto","title":"Heat/Cool"},{"id":"off","title":"Off"}],"id":"offAutoThermostatMode","options":{}}
++16:50:8.139: Options for 'target_temperature': {"value":76,"lastUpdated":"2022-12-31T16:42:23.099Z","type":"number","getable":true,"setable":true,"title":"Ønsket temperatur","desc":null,"units":"°C","decimals":2,"min":-25,"max":85,"step":0.5,"chartType":"stepLine","id":"target_temperature","options":{"step":0.5,"min":-25,"max":85}}
++16:50:8.141: Options for 'measure_temperature': {"value":75.1,"lastUpdated":"2022-12-31T16:47:08.386Z","type":"number","getable":true,"setable":false,"title":"Temperatur","desc":"Temperatur i grader Celsius (°C)","units":"°C","decimals":2,"chartType":"spline","id":"measure_temperature","options":{}}
++16:50:8.143: Options for 'meter_power': {"value":4.3,"lastUpdated":"2022-12-31T16:50:01.550Z","type":"number","getable":true,"setable":false,"title":"Energi","desc":"Energiforbruk i kilowattimer (kWh)","units":"kWh","decimals":2,"chartType":"spline","id":"meter_power","options":{}}
++16:50:8.145: Options for 'measure_power': {"value":2047.7,"lastUpdated":"2022-12-31T16:47:13.895Z","type":"number","getable":true,"setable":false,"title":"Effekt","desc":"Effekt i watt (W)","units":"W","decimals":2,"chartType":"stepLine","id":"measure_power","options":{}}
++16:50:8.147: Options for 'button.reset_meter': {"value":null,"lastUpdated":null,"type":"boolean","getable":false,"setable":true,"title":"Reset power meter","desc":"Reset the accumulated power usage (kWh), note that this can not be reversed.","units":null,"id":"button.reset_meter","options":{"maintenanceAction":true,"title":{"en":"Reset power meter","nl":"Stel stroomverbuik opnieuw in"},"desc":{"en":"Reset the accumulated power usage (kWh), note that this can not be reversed.","nl":"Stel geaccumuleerde stroomverbruik (kWh) opnieuw in, dit kan niet worden teruggedraaid."}}}
++16:50:8.150: --- ANALYZING DEVICE DONE ---
