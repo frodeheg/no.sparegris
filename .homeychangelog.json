@@ -682,5 +682,8 @@
   },
   "0.19.30": {
     "en": "Changes to Easee charging with regards to startCurrent. The startCurrent is now applied after every pause"
+  },
+  "0.19.31": {
+    "en": "Added missing default setting for startCurrent from Easee driver and overrid for maxCurrent. + Added support for com.mecloud:melcloud and com.qubino:ZMNKID"
   }
 }
