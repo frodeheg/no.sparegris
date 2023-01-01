@@ -36,18 +36,20 @@
       "chargeRemainingHint": "Denne verdien viser hvor mye energi som vil bli tilbydt til laderen før appen slutter å lade. Denne strømmen vil fordeles over all gjenværende tid frem til slutten på ladesyklusen. Du kan ikke sette denne verdien her, den må settes fra flytkortet for 'Start ladesyklus'.",
       "chargeEndHint": "Dette feltet viser når nåværende ladesyklus vil slutte. Du kan ikke sette denne verdien her, den må settes fra flytkortet for 'Start ladesyklus'.",
       "override": "Overstyring",
-      "overrideHint": ["ADVARSEL: Disse overstyringene er bare midlertidig tilgjengelig frem til slutten av januar 2023 for å eksperimentere for å løse noen problemer med lading.<!--",
-          "--><p>Hvordan den vanlige ladingen vil oppføre seg når overstyringsmekanismen fjernes er avhengig av tilbakemeldingene dine. Alle tilbakemeldinger må meldes <a href='https://github.com/frodeheg/no.sparegris/discussions/97'>i denne github-diskusjonen</a></p><!--",
-          "--><p>Stoppstrømmen er det tilbydd strøm er satt til når det ikke er noen ladesyklus. (0A for 3-fase lading)</p><!--",
-          "--><p>Pausestrømmen er det tilbydd strøm er satt til når den ikke lades i løpet av en ladesyklus. (0A for 3-fase lading)</p><!--",
-          "--><p>Minste ladestrøm sørger for at du aldri lader med mindre strøm enn dette. (minst 11A for 3-fase lading)</p>"],
+      "overrideHint": ["I utganspunktet skal ladingen virke uten overstyring. I noen situasjoner kan det likevel være ønskelig å endre dette.<!--",
+          "--><p>Startstrømmen er strømmen som tilbys når laderen brukte 0W fra før og er i en ladesyklus. (For å få 3-fase lading må minste startstrøm være 11A)</p><!--",
+          "--><p>Stoppstrømmen er strømmen som tilbys når det ikke er noen ladesyklus. (NB! Denne vil ikke forsøkes justeres)</p><!--",
+          "--><p>Pausestrømmen er strømmen som tilbys når det er en ladesyklus og strømprisen er for høy.</p><!--",
+          "--><p>Minste ladestrøm sørger for at du aldri lader med mindre strøm enn dette. (Forskjellig fra bil til bil. Kan fint være mindre enn 11A for 3-fase lading)</p><!--",
+          "--><p>Største ladestrøm sørger for at du aldri lader med mer strøm enn dette. (En tilleggssikring mot overforbruk når Homey eller Easee-api'et ikke oppfører seg)</p>"],
       "overrideEnable": "Overstyring",
       "overrideEnableNo": "Deaktivert",
       "overrideEnableYes": "Aktivert",
       "overrideStart": "Startstrøm",
       "overrideStop": "Stoppstrøm",
       "overridePause": "Pausestrøm",
-      "overrideMinCurrent": "Minste ladestrøm"
+      "overrideMinCurrent": "Minste ladestrøm",
+      "overrideMaxCurrent": "Største ladestrøm"
     },
     "menu": {
       "home": {

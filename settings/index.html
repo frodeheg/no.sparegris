@@ -1252,19 +1252,23 @@
                 </tr>
                 <tr>
                   <td class="settings_row_name"><label for="overrideStart" data-i18n="settings.charge.overrideStart">charge.overrideStart</label>:</td>
-                  <td class="settings_row_input"><input id="overrideStart" class="inputElem" type="number" min="0" max="40" value="0" onchange="displaySaveHint()"> A</td>
+                  <td class="settings_row_input"><input id="overrideStart" class="inputElem" type="number" min="0" max="40" value="0" onchange="limitElement(this);displaySaveHint()"> A</td>
                 </tr>
                 <tr>
                   <td class="settings_row_name"><label for="overrideStop" data-i18n="settings.charge.overrideStop">charge.overrideStop</label>:</td>
-                  <td class="settings_row_input"><input id="overrideStop" class="inputElem" type="number" min="0" max="40" value="0" onchange="displaySaveHint()"> A</td>
+                  <td class="settings_row_input"><input id="overrideStop" class="inputElem" type="number" min="0" max="40" value="0" onchange="limitElement(this);displaySaveHint()"> A</td>
                 </tr>
                 <tr>
                   <td class="settings_row_name"><label for="overridePause" data-i18n="settings.charge.overridePause">charge.overridePause</label>:</td>
-                  <td class="settings_row_input"><input id="overridePause" class="inputElem" type="number" min="0" max="40" value="4" onchange="displaySaveHint()"> A</td>
+                  <td class="settings_row_input"><input id="overridePause" class="inputElem" type="number" min="0" max="40" value="4" onchange="limitElement(this);displaySaveHint()"> A</td>
                 </tr>
                 <tr>
                   <td class="settings_row_name"><label for="overrideMinCurrent" data-i18n="settings.charge.overrideMinCurrent">charge.overrideMinCurrent</label>:</td>
-                  <td class="settings_row_input"><input id="overrideMinCurrent" class="inputElem" type="number" min="0" max="40" value="7" onchange="displaySaveHint()"> A</td>
+                  <td class="settings_row_input"><input id="overrideMinCurrent" class="inputElem" type="number" min="0" max="40" value="7" onchange="limitElement(this);displaySaveHint()"> A</td>
+                </tr>
+                <tr>
+                  <td class="settings_row_name"><label for="overrideMaxCurrent" data-i18n="settings.charge.overrideMaxCurrent">charge.overrideMaxCurrent</label>:</td>
+                  <td class="settings_row_input"><input id="overrideMaxCurrent" class="inputElem" type="number" min="0" max="40" value="40" onchange="limitElement(this);displaySaveHint()"> A</td>
                 </tr>
               </table>
             </div>
@@ -1870,6 +1874,7 @@
           document.getElementById('overrideStop').value = +chargerOptions.overrideStop;
           document.getElementById('overridePause').value = +chargerOptions.overridePause;
           document.getElementById('overrideMinCurrent').value = +chargerOptions.overrideMinCurrent;
+          document.getElementById('overrideMaxCurrent').value = +chargerOptions.overrideMaxCurrent;
           document.getElementById("energyFlowRateText").innerHTML = energyFlowRateText.replace("${interval}", Math.round(appConfigProgress.timeSinceEnergyMeter / 60));
           document.getElementById("spookeyText").innerHTML = spookeyText.replace("${times}", appConfigProgress.numSpookeyChanges);
           checkPriceMode(document.getElementById("priceMode")); // not called automatically when programatically changed
@@ -2343,6 +2348,7 @@
               chargerOptions.overrideStop = +document.getElementById('overrideStop').value;
               chargerOptions.overridePause = +document.getElementById('overridePause').value;
               chargerOptions.overrideMinCurrent = +document.getElementById('overrideMinCurrent').value;
+              chargerOptions.overrideMaxCurrent = +document.getElementById('overrideMaxCurrent').value;
               let opModeValue = (appEnabledElement.value === "1") ? operatingModeElement.value : 0
               Homey.set("futurePriceOptions", futurePriceOptions, errFunc);
               Homey.set('chargerOptions', chargerOptions, errFunc);

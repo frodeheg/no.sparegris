@@ -202,6 +202,11 @@ p {
 }
 
 .inputElem,
+#overrideStart,
+#overrideStop,
+#overridePause,
+#overrideMinCurrent,
+#overrideMaxCurrent,
 #meterReader,
 #meterFrequency,
 #toggleTime,
