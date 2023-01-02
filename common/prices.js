@@ -105,7 +105,6 @@ async function fetchCurrencyTable(currencies = '', date) {
     .replace('{toCurrency}', toString)
     .replace('{fromCurrency}', 'NOK')
     .replace('{locale}', currencyLocale);
-  let currencyCopy;
   try {
     const { data, res } = await request(webAddress, { dataType: 'json' });
     if (res.status === 200) {
@@ -128,8 +127,12 @@ async function fetchCurrencyTable(currencies = '', date) {
               break; // Ignore
           }
         }
-        const exchangeRate = +data.data.dataSets[0].series[`0:${i}:0:0`].observations[latestDateIndex][0] / multiplier;
-        const exchangeDate = data.data.structure.dimensions.observation[0].values[latestDateIndex].start.substring(0, 10);
+        let latestDateIndexLocal = latestDateIndex;
+        while (latestDateIndexLocal >= 0 && !data.data.dataSets[0].series[`0:${i}:0:0`].observations[latestDateIndexLocal]) {
+          latestDateIndexLocal--;
+        }
+        const exchangeRate = +data.data.dataSets[0].series[`0:${i}:0:0`].observations[latestDateIndexLocal][0] / multiplier;
+        const exchangeDate = data.data.structure.dimensions.observation[0].values[latestDateIndexLocal].start.substring(0, 10);
         if ((Number.isFinite(exchangeRate)) && (currencyNames[i].id in currencyTable)) {
           // console.log(`Updated currency ${currencyNames[i].id}: ${exchangeRate}`);
           currencyTable[currencyNames[i].id].rate = exchangeRate;
@@ -141,8 +144,9 @@ async function fetchCurrencyTable(currencies = '', date) {
       }
     }
     //
-    currencyCopy = JSON.parse(JSON.stringify(currencyTable));
   } catch {} // Ignore errors. Instead the currencyTable contain a date which indicate last working date
+
+  const currencyCopy = JSON.parse(JSON.stringify(currencyTable));
 
   if (currencies === '') return currencyCopy;
   const asArray = Object.entries(currencyCopy);

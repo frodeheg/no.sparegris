@@ -641,6 +641,17 @@ async function testLocalTime() {
   console.log('\x1b[1A[\x1b[32mPASSED\x1b[0m]');
 }
 
+// Test the currency api
+async function testCurrencies() {
+  console.log('[......] Test Currencies');
+  const app = new PiggyBank();
+  const cur = await app.getCurrencies();
+  if (!'NOK' in cur) {
+    throw new Error('Currency table is wrong');
+  }
+  console.log('\x1b[1A[\x1b[32mPASSED\x1b[0m]');
+}
+
 // Start all tests
 async function startAllTests() {
   try {
@@ -661,6 +672,7 @@ async function startAllTests() {
     await testAppRestart();
     await testMissingPulse();
     await testLocalTime();
+    await testCurrencies();
     await testMail();
   } catch (err) {
     console.log('\x1b[1A[\x1b[31mFAILED\x1b[0m]');
