@@ -1252,24 +1252,39 @@
                 </tr>
                 <tr>
                   <td class="settings_row_name"><label for="overrideStart" data-i18n="settings.charge.overrideStart">charge.overrideStart</label>:</td>
-                  <td class="settings_row_input"><input id="overrideStart" class="inputElem" type="number" min="0" max="40" value="0" onchange="limitElement(this);displaySaveHint()"> A</td>
+                  <td class="settings_row_input"><input id="overrideStart" class="inputElem" type="number" min="0" max="40" value="0" onchange="limitElement(this);displaySaveHint()"> A
+                    <div class="hintButton" onclick="toggle(this,'overrideHintStart', 'table-row');return false;">i</div>
+                  </td>
                 </tr>
+                <tr id="overrideHintStart" class="hint"><td colspan="2"><p data-i18n="settings.charge.overrideHintStart">charge.overrideHintStart</p></td></tr>
                 <tr>
                   <td class="settings_row_name"><label for="overrideStop" data-i18n="settings.charge.overrideStop">charge.overrideStop</label>:</td>
-                  <td class="settings_row_input"><input id="overrideStop" class="inputElem" type="number" min="0" max="40" value="0" onchange="limitElement(this);displaySaveHint()"> A</td>
+                  <td class="settings_row_input"><input id="overrideStop" class="inputElem" type="number" min="0" max="40" value="0" onchange="limitElement(this);displaySaveHint()"> A
+                    <div class="hintButton" onclick="toggle(this,'overrideHintStop', 'table-row');return false;">i</div>
+                  </td>
                 </tr>
+                <tr id="overrideHintStop" class="hint"><td colspan="2"><p data-i18n="settings.charge.overrideHintStop">charge.overrideHintStop</p></td></tr>
                 <tr>
                   <td class="settings_row_name"><label for="overridePause" data-i18n="settings.charge.overridePause">charge.overridePause</label>:</td>
-                  <td class="settings_row_input"><input id="overridePause" class="inputElem" type="number" min="0" max="40" value="4" onchange="limitElement(this);displaySaveHint()"> A</td>
+                  <td class="settings_row_input"><input id="overridePause" class="inputElem" type="number" min="0" max="40" value="4" onchange="limitElement(this);displaySaveHint()"> A
+                    <div class="hintButton" onclick="toggle(this,'overrideHintPause', 'table-row');return false;">i</div>
+                  </td>
                 </tr>
+                <tr id="overrideHintPause" class="hint"><td colspan="2"><p data-i18n="settings.charge.overrideHintPause">charge.overrideHintPause</p></td></tr>
                 <tr>
                   <td class="settings_row_name"><label for="overrideMinCurrent" data-i18n="settings.charge.overrideMinCurrent">charge.overrideMinCurrent</label>:</td>
-                  <td class="settings_row_input"><input id="overrideMinCurrent" class="inputElem" type="number" min="0" max="40" value="7" onchange="limitElement(this);displaySaveHint()"> A</td>
+                  <td class="settings_row_input"><input id="overrideMinCurrent" class="inputElem" type="number" min="0" max="40" value="7" onchange="limitElement(this);displaySaveHint()"> A
+                    <div class="hintButton" onclick="toggle(this,'overrideHintMin', 'table-row');return false;">i</div>
+                  </td>
                 </tr>
+                <tr id="overrideHintMin" class="hint"><td colspan="2"><p data-i18n="settings.charge.overrideHintMin">charge.overrideHintMin</p></td></tr>
                 <tr>
                   <td class="settings_row_name"><label for="overrideMaxCurrent" data-i18n="settings.charge.overrideMaxCurrent">charge.overrideMaxCurrent</label>:</td>
-                  <td class="settings_row_input"><input id="overrideMaxCurrent" class="inputElem" type="number" min="0" max="40" value="40" onchange="limitElement(this);displaySaveHint()"> A</td>
+                  <td class="settings_row_input"><input id="overrideMaxCurrent" class="inputElem" type="number" min="0" max="40" value="40" onchange="limitElement(this);displaySaveHint()"> A
+                    <div class="hintButton" onclick="toggle(this,'overrideHintMax', 'table-row');return false;">i</div>
+                  </td>
                 </tr>
+                <tr id="overrideHintMax" class="hint"><td colspan="2"><p data-i18n="settings.charge.overrideHintMax">charge.overrideHintMax</p></td></tr>
               </table>
             </div>
           </div>
