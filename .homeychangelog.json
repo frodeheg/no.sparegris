@@ -685,5 +685,8 @@
   },
   "0.19.31": {
     "en": "Added missing default setting for startCurrent from Easee driver and overrid for maxCurrent. + Added support for com.mecloud:melcloud and com.qubino:ZMNKID"
+  },
+  "0.19.32": {
+    "en": "Fixed 2 small bugs: Charge override hint was too long. + Statistics could dissappear if app was updated within 10 seconds of a new hour."
   }
 }
