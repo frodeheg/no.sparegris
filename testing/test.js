@@ -646,8 +646,26 @@ async function testCurrencies() {
   console.log('[......] Test Currencies');
   const app = new PiggyBank();
   const cur = await app.getCurrencies();
-  if (!'NOK' in cur) {
+  if (!('NOK' in cur)) {
     throw new Error('Currency table is wrong');
+  }
+  const currencies = await prices.fetchCurrencyTable();
+  if (Object.keys(currencies).length < 42) {
+    throw new Error('Too few currencies');
+  }
+  for (const currency in currencies) {
+    const { rate, date, name } = currencies[currency];
+    if (rate <= 0) {
+      throw new Error(`Currency ${name} (${currency}) has invalid rate: ${rate}`);
+    }
+    if (currency === 'NOK') continue; // Reference, so never changes
+    if (currency === 'RUB') continue; // Not currently being updated
+    const curDate = new Date(date);
+    const now = new Date();
+    const ageDays = (now - curDate) / (1000 * 60 * 60 * 24);
+    if (ageDays > 5) {
+      throw new Error(`Currency ${name} (${currency}) is too old (${ageDays.toFixed(2)} days : ${date})`);
+    }
   }
   console.log('\x1b[1A[\x1b[32mPASSED\x1b[0m]');
 }
