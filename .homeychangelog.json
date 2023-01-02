@@ -688,5 +688,8 @@
   },
   "0.19.32": {
     "en": "Fixed 2 small bugs: Charge override hint was too long. + Statistics could dissappear if app was updated within 10 seconds of a new hour."
+  },
+  "0.19.33": {
+    "en": "When a country did not publish a currency exchange rate for a specific date then the code parsing the response from Norges bank crashed."
   }
 }
