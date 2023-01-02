@@ -445,6 +445,7 @@ class PiggyBank extends Homey.App {
     this.__offeredEnergy = toNumber(await this.homey.settings.get('safeShutdown__offeredEnergy'));
     this.__missing_power_this_hour = toNumber(await this.homey.settings.get('safeShutdown_missing_power_this_hour')) || 0;
     this.__fakePower = toNumber(await this.homey.settings.get('safeShutdown__fakePower')) || 0;
+    this.__pendingOnNewHour = toNumber(await this.homey.settings.get('safeShutdown__pendingOnNewHour')) || [];
     if (this.__accum_energy === undefined) {
       // No stored data, set it to something senseful
       this.__accum_energy = 0;
@@ -454,6 +455,7 @@ class PiggyBank extends Homey.App {
       this.__offeredEnergy = 0;
       this.__missing_power_this_hour = 0; // Set later
       this.__fakePower = 0;
+      this.__pendingOnNewHour = [];
       this.updateLog('No state from previous shutdown? Powerloss, deactivated or forced restart.', c.LOG_ALL);
     } else {
       // We got safe shutdown data, remove the old data
@@ -464,6 +466,7 @@ class PiggyBank extends Homey.App {
       this.homey.settings.unset('safeShutdown__offeredEnergy');
       this.homey.settings.unset('safeShutdown_missing_power_this_hour');
       this.homey.settings.unset('safeShutdown__fakePower');
+      this.homey.settings.unset('safeShutdown__pendingOnNewHour');
       this.updateLog(`Restored state from safe shutdown values ${this.__accum_energy} ${this.__current_power} `
         + `${this.__current_power_time} ${this.__power_last_hour} ${this.__missing_power_this_hour}`, c.LOG_ALL);
     }
@@ -557,7 +560,6 @@ class PiggyBank extends Homey.App {
     if (!expireHourly) this.homey.settings.set('expireHourly', 7);
 
     // Initialize current state
-    this.__pendingOnNewHour = [];
     this.__hasAC = false;
     this.__intervalID = undefined;
     this.__powerProcessID = undefined;
@@ -965,6 +967,7 @@ class PiggyBank extends Homey.App {
     this.homey.settings.set('safeShutdown__offeredEnergy', this.__offeredEnergy);
     this.homey.settings.set('safeShutdown_missing_power_this_hour', this.__missing_power_this_hour);
     this.homey.settings.set('safeShutdown__fakePower', this.__fakePower);
+    this.homey.settings.set('safeShutdown__pendingOnNewHour', this.__pendingOnNewHour);
     // ===== KEEPING STATE ACROSS RESTARTS END =====
 
     this.log('OnUnInit');
