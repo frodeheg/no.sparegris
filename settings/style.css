@@ -202,6 +202,8 @@ p {
 }
 
 .inputElem,
+#maxPowerDay,
+#maxPowerMonth,
 #overrideStart,
 #overrideStop,
 #overridePause,

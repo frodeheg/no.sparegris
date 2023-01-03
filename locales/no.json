@@ -314,6 +314,8 @@
       "powerSettings": "Strøminnstillinger",
       "powerStep" : "Trinn",
       "maxPower": "Maks timeforbruk",
+      "maxPowerDay": "Maks dagsforbruk",
+      "maxPowerMonth": "Maks månedsforbruk",
       "priorities" : "Prioriteringer",
       "priorityHint1": "Ved overforbruk av strøm begynner appen å skru av enheter fra bunnen av listen. Enheter på toppen av listen blir de siste til å bli slått av.",
       "priorityHint2": "Når ønsket effekt-tariff er innenfor rekkevidde vil appen starte å skru på enheter igjen.",

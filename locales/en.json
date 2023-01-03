@@ -314,6 +314,8 @@
       "powerSettings": "Power settings",
       "powerStep" : "Step",
       "maxPower": "Maximum hourly consumption",
+      "maxPowerDay": "Maximum daily consumption",
+      "maxPowerMonth": "Maximum monthly consumption",
       "priorities" : "Priorities",
       "priorityHint1": "In case of excessive power consumption, the app starts turning off devices from the bottom of the list. Devices at the top of the list will be the last to be turned off.",
       "priorityHint2": "When the desired power tariff is within reach, the app will start turning on devices again.",

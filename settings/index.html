@@ -934,6 +934,18 @@
               </select> <div class="edit icon" onclick="updateMaxPowerEditor();toggle(this,'gridCostsEdit');"></div><div class="hintButton" onclick="toggle(this,'maxPowHint');return false;">i</div>
             </td>
           </tr>
+          <tr>
+            <td class="settings_row_name"><label for="maxPowerDay" data-i18n="settings.mode.maxPowerDay">mode.maxPowerDay</label>:</td>
+            <td class="settings_row_input">
+              <input id="maxPowerDay" type="number" min="10" max="1000" value="1000" onchange="limitElement(this);displaySaveHint()">kWh
+            </td>
+          </tr>
+          <tr>
+            <td class="settings_row_name"><label for="maxPowerMonth" data-i18n="settings.mode.maxPowerMonth">mode.maxPowerMonth</label>:</td>
+            <td class="settings_row_input">
+              <input id="maxPowerMonth" type="number" min="50" max="50000" value="5000" onchange="limitElement(this);displaySaveHint()">kWh
+            </td>
+          </tr>
         </table>
         <p id="maxPowHint" class="hint" data-i18n="settings.app.maxPowHint">app.maxPowHint</p>
 
@@ -1928,7 +1940,6 @@
         var pricePointElement = document.getElementById("pricePoint");
         var mainFuseElement = document.getElementById("mainFuse");
         var rememberToSaveElement = document.getElementById("rememberToSave");
-        var maxPowerElement = document.getElementById("maxPower");
         var currencyElement = document.getElementById("currency");
 
         // Fetch translation strings from Homey
@@ -2046,8 +2057,20 @@
               maxPower = 5000;
             }
             setMaxPower(+maxPower, 0, Infinity);
-            maxPowerLoaded = true;
-            checkLoadingDone();
+            Homey.get("maxPowerDay", function (err2, maxPower2) {
+              if (maxPower2 === null || !Number.isInteger(+maxPower2)) {
+                maxPower2 = 1000;
+              }
+              document.getElementById("maxPowerDay").value = maxPower2;
+              Homey.get("maxPowerMonth", function (err2, maxPower3) {
+                if (maxPower3 === null || !Number.isInteger(+maxPower3)) {
+                  maxPower3 = 100000;
+                }
+                document.getElementById("maxPowerMonth").value = maxPower3;
+                maxPowerLoaded = true;
+                checkLoadingDone();
+              });
+            });
           });
 
           // Aquire graphs (must be after setGridCost)
@@ -2372,7 +2395,9 @@
               Homey.set("modeNames", modeNames, errFunc);
               Homey.set("frostList", frostList, errFunc);
               Homey.set("zones", zoneList, errFunc);
-              Homey.set("maxPower", maxPowerElement.value, errFunc);
+              Homey.set("maxPower", document.getElementById("maxPower").value, errFunc);
+              Homey.set("maxPowerDay", document.getElementById("maxPowerDay").value, errFunc);
+              Homey.set("maxPowerMonth", document.getElementById("maxPowerMonth").value, errFunc);
               Homey.set("operatingMode", opModeValue, errFunc);
               Homey.set("priceMode", priceModeElement.value, errFunc);
               Homey.set("pricePoint", pricePointElement.value, errFunc);
