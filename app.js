@@ -1256,8 +1256,14 @@ class PiggyBank extends Homey.App {
       return Promise.resolve([false, false]);
     }
     const minCurrent = +chargerOptions.overrideEnable ? +chargerOptions.overrideMinCurrent : d.DEVICE_CMD[driverId].minCurrent;
+    const startCurrent = +chargerOptions.overrideEnable ? +chargerOptions.overrideStart : d.DEVICE_CMD[driverId].startCurrent;
+    const stopCurrent = +chargerOptions.overrideEnable ? +chargerOptions.overrideStop : 0;
+    const pauseCurrent = +chargerOptions.overrideEnable ? +chargerOptions.overridePause : d.DEVICE_CMD[driverId].pauseCurrent;
     const isEmergency = (+powerChange < 0) && (
-      ((powerUsed + +powerChange) < 0) || (ampsOffered === minCurrent));
+      ((powerUsed + +powerChange) < 0)
+      || ((ampsOffered === minCurrent)
+        && (minCurrent !== stopCurrent)
+        && (minCurrent !== pauseCurrent)));
     const now = new Date();
     const end = new Date(chargerOptions.chargeEnd);
     if ((end < now)
@@ -1298,9 +1304,6 @@ class PiggyBank extends Homey.App {
 
     const chargerStatus = await device.capabilitiesObj[d.DEVICE_CMD[driverId].statusCap].value;
     const toMaxCurrent = +await device.capabilitiesObj[d.DEVICE_CMD[driverId].setCurrentCap].max;
-    const startCurrent = +chargerOptions.overrideEnable ? +chargerOptions.overrideStart : d.DEVICE_CMD[driverId].startCurrent;
-    const stopCurrent = +chargerOptions.overrideEnable ? +chargerOptions.overrideStop : 0;
-    const pauseCurrent = +chargerOptions.overrideEnable ? +chargerOptions.overridePause : d.DEVICE_CMD[driverId].pauseCurrent;
     const maxCurrent = +chargerOptions.overrideEnable ? Math.min(+chargerOptions.overrideMaxCurrent, toMaxCurrent) : toMaxCurrent;
     const maxPower = +this.homey.settings.get('maxPower');
     const cannotCharge = d.DEVICE_CMD[driverId].statusUnavailable.includes(chargerStatus);
