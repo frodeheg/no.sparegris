@@ -167,155 +167,163 @@ class PiggyBank extends Homey.App {
     await prices.entsoeApiInit(Homey.env.ENTSOE_TOKEN);
 
     // ===== BREAKING CHANGES =====
-    // 1 person on 0.10.7 (2022.10.17)
-    // 1 person on 0.14.4 (2022.10.17)
-    // 1 person on 0.16.0 (2022.10.17)
-    // 3 persons on 0.17.14 (2022.10.19)
-    // 360 persons on 0.18.6 (2022.10.19)
-    // Version 0.10.8 changes from having maxPower per mode to one global setting
-    if (Array.isArray(this.homey.settings.get('maxPowerList'))) {
-      const maxPowerList = this.homey.settings.get('maxPowerList');
-      this.homey.settings.set('maxPower', maxPowerList[0]);
-      this.homey.settings.unset('maxPowerList');
-      const maxPowerText = `${this.homey.__('breaking.maxPower')} ${maxPowerList[0]} kWh`;
-      this.log(maxPowerText);
-      this.homey.notifications.createNotification({ excerpt: maxPowerText });
-    }
-    // Version 0.12.1 : An earlier version added an option to disregard temperature, this should default to 1 or problems arise
-    if (this.homey.settings.get('controlTemp') === null) {
-      this.homey.settings.set('controlTemp', 1);
-    }
+    // 1 person on 0.10.7 (2023.01.04)
+    // 1 person on 0.14.4 (2023.01.04)
+    // 1 person on 0.17.14 (2023.01.04)
+    // 1 person on 0.18.31 (2023.01.04)
+    // 1 person on 0.18.39 (2023.01.04)
+    // 2 persons on 0.19.4 (2023.01.04)
+    // 4 persons on 0.19.12 (2023.01.04)
+    // 11 persons on 0.19.26 (2023.01.04)
+    // 982 persons on 0.19.33 (2023.01.04)
+    const settingsVersion = await this.homey.settings.get('settingsVersion');
 
-    // Version 0.8.15 and 0.14.3: Added new price modes
-    const oldPriceActionList = this.homey.settings.get('priceActionList');
-    if (oldPriceActionList !== null && oldPriceActionList.length < 5) {
-      const cheapActionList = oldPriceActionList[0];
-      const normalActionList = oldPriceActionList[1];
-      const highActionList = oldPriceActionList[2];
-      const extremeActionList = oldPriceActionList[3] || highActionList; // Added in version 0.8.15
-      const dirtCheapActionList = oldPriceActionList[4] || cheapActionList; // Added in version 0.14.3
-      const newPriceActionList = [cheapActionList, normalActionList, highActionList, extremeActionList, dirtCheapActionList];
-      this.homey.settings.set('priceActionList', newPriceActionList);
-    }
-
-    // Version 0.12.12 Moved some settings into api commands
-    this.homey.settings.unset('logLevel');
-    this.homey.settings.unset('showState');
-    this.homey.settings.unset('showCaps');
-    this.homey.settings.unset('showPriceApi');
-    this.homey.settings.unset('diagLog');
-    this.homey.settings.unset('sendLog');
-    this.homey.settings.unset('charger');
-
-    // Version 0.14.5 Adds custom Modes
-    const modeNames = this.homey.settings.get('modeNames');
-    const modeList = this.homey.settings.get('modeList');
-    if (Array.isArray(modeList) && !Array.isArray(modeNames)) {
-      const modeNames = modeList.slice(3, 8).map(x => this.homey.__('settings.opMode.custom'));
-      this.homey.settings.set('modeNames', modeNames);
-    }
-
-    // Version 0.16.2 removed some settings:
-    this.homey.settings.unset('stats_tmp_max_power_today');
-
-    // Version 0.17.0 Added direct support for spot price
-    let futureData = this.homey.settings.get('futurePriceOptions');
-    const oldPriceKind = !futureData ? undefined : futureData.priceKind;
-    if ((+this.homey.settings.get('priceMode') === c.PRICE_MODE_INTERNAL)
-      && (oldPriceKind === undefined)) {
-      // The old setting was Spot price from external app, keep it that way
-      if (!futureData) futureData = {};
-      futureData.priceKind = c.PRICE_KIND_EXTERNAL; // The new default is SPOT, just set to EXTERNAL for those that used it
-      this.homey.settings.set('futurePriceOptions', futureData);
-      this.log('priceKind was set to External for backward compatability');
-    }
-
-    // Version 0.18.0 removed chargerOptions.minSwitchTime
-    // Also fix the broken history for the last few weeks + notify the user about the incident
-    const chargerOptionsRepair = this.homey.settings.get('chargerOptions');
-    if (chargerOptionsRepair && 'minSwitchTime' in chargerOptionsRepair) {
-      // Deprecate minSwitchTime
-      this.log('minSwitchTime has been deprecated and was removed from charger options');
-      delete chargerOptionsRepair.minSwitchTime;
-      this.homey.settings.set('chargerOptions', chargerOptionsRepair);
-      // Remove broken Graph elements
-      let dailyMax = this.homey.settings.get('stats_daily_max');
-      let dailyMaxOk = this.homey.settings.get('stats_daily_max_ok');
-      dailyMax = dailyMax.map((val, index) => (dailyMaxOk[index] ? val : undefined));
-      dailyMaxOk = dailyMaxOk.map(val => val || undefined);
-      this.homey.settings.set('stats_daily_max', dailyMax);
-      this.homey.settings.set('stats_daily_max_ok', dailyMaxOk);
-      // Notify the user about the incident
-      this.homey.notifications.createNotification({ excerpt: this.homey.__('breaking.fixGraph') });
-    }
-
-    // Version 0.18.1 removed {numPhases, chargeMax, chargeMargin, chargeDevice} from chargerOptions
-    if (chargerOptionsRepair && 'numPhases' in chargerOptionsRepair) {
-      // Set correct value for new values
-      chargerOptionsRepair.chargeThreshold = chargerOptionsRepair.chargeMin + chargerOptionsRepair.chargeMargin;
-      // Deprecate numPhases, chargeMax, chargeMargin and chargeDevice
-      this.log('numPhases, chargeMax, chargeMargin and chargeDevice has been deprecated and was removed from charger options');
-      delete chargerOptionsRepair.numPhases;
-      delete chargerOptionsRepair.chargeMax;
-      delete chargerOptionsRepair.chargeMargin;
-      delete chargerOptionsRepair.chargeDevice;
-      this.homey.settings.set('chargerOptions', chargerOptionsRepair);
-      // Remove broken Graph elements (again)
-      let dailyMax = this.homey.settings.get('stats_daily_max');
-      let dailyMaxOk = this.homey.settings.get('stats_daily_max_ok');
-      dailyMax = dailyMax.map((val, index) => (dailyMaxOk[index] ? val : undefined));
-      dailyMaxOk = dailyMaxOk.map(val => val || undefined);
-      this.homey.settings.set('stats_daily_max', dailyMax);
-      this.homey.settings.set('stats_daily_max_ok', dailyMaxOk);
-    }
-
-    // Version 0.18.24 moved stats_daily_max into archive
-    let archive = await this.homey.settings.get('archive');
-    const maxes = await this.homey.settings.get('stats_daily_max');
-    const maxesOk = await this.homey.settings.get('stats_daily_max_ok');
-    if (archive === null && maxes !== null) {
-      // Add max power
-      for (let i = 0; i < maxes.length; i++) {
-        if (maxes[i] !== undefined) {
-          const data = {
-            maxPower: maxes[i],
-            dataOk: maxesOk[i]
-          };
-          const dataTimeStart = new Date('October 1, 2022, 01:00:00 GMT+2:00');
-          const dataTime = new Date(dataTimeStart.getTime() + i * 24 * 60 * 60 * 1000);
-          await addToArchive(this.homey, data, dataTime, true);
-        }
+    // Additional safety guard around older versions to avoid accidential tripping of unneccessary updates
+    if (+settingsVersion < 1) {
+      // Version 0.10.8 changes from having maxPower per mode to one global setting
+      if (Array.isArray(this.homey.settings.get('maxPowerList'))) {
+        const maxPowerList = this.homey.settings.get('maxPowerList');
+        this.homey.settings.set('maxPower', maxPowerList[0]);
+        this.homey.settings.unset('maxPowerList');
+        const maxPowerText = `${this.homey.__('breaking.maxPower')} ${maxPowerList[0]} kWh`;
+        this.log(maxPowerText);
+        this.homey.notifications.createNotification({ excerpt: maxPowerText });
+      }
+      // Version 0.12.1 : An earlier version added an option to disregard temperature, this should default to 1 or problems arise
+      if (this.homey.settings.get('controlTemp') === null) {
+        this.homey.settings.set('controlTemp', 1);
       }
 
-      // Add saved money, month only as per day is missing
-      let dataTime = new Date('September 15, 2022, 01:00:00 GMT+2:00');
-      let data = {
-        moneySavedTariff: +this.homey.settings.get('stats_savings_all_time_power_part') || 0
-      };
-      await addToArchive(this.homey, data, dataTime, true, true);
-      dataTime = new Date('October 15, 2022, 01:00:00 GMT+2:00');
-      data = {
-        moneySavedUsage: +this.homey.settings.get('stats_savings_all_time_use') || 0
-      };
-      await addToArchive(this.homey, data, dataTime, true, true);
-    }
+      // Version 0.8.15 and 0.14.3: Added new price modes
+      const oldPriceActionList = this.homey.settings.get('priceActionList');
+      if (oldPriceActionList !== null && oldPriceActionList.length < 5) {
+        const cheapActionList = oldPriceActionList[0];
+        const normalActionList = oldPriceActionList[1];
+        const highActionList = oldPriceActionList[2];
+        const extremeActionList = oldPriceActionList[3] || highActionList; // Added in version 0.8.15
+        const dirtCheapActionList = oldPriceActionList[4] || cheapActionList; // Added in version 0.14.3
+        const newPriceActionList = [cheapActionList, normalActionList, highActionList, extremeActionList, dirtCheapActionList];
+        this.homey.settings.set('priceActionList', newPriceActionList);
+      }
 
-    // Version 0.18.38 - The minimum toggle time was changed to never come above 90 and a new default was set to 120s
-    if (chargerOptionsRepair && ('minToggleTime' in chargerOptionsRepair) && (+chargerOptionsRepair.minToggleTime < 90)) {
-      chargerOptionsRepair.minToggleTime = 120;
-      this.homey.settings.set('chargerOptions', chargerOptionsRepair);
-    }
+      // Version 0.12.12 Moved some settings into api commands
+      this.homey.settings.unset('logLevel');
+      this.homey.settings.unset('showState');
+      this.homey.settings.unset('showCaps');
+      this.homey.settings.unset('showPriceApi');
+      this.homey.settings.unset('diagLog');
+      this.homey.settings.unset('sendLog');
+      this.homey.settings.unset('charger');
 
-    // Version 0.18.40
-    if (chargerOptionsRepair && ('experimentalMode' in chargerOptionsRepair)) {
-      delete chargerOptionsRepair.experimentalMode;
-      this.homey.settings.set('chargerOptions', chargerOptionsRepair);
+      // Version 0.14.5 Adds custom Modes
+      const modeNames = this.homey.settings.get('modeNames');
+      const modeList = this.homey.settings.get('modeList');
+      if (Array.isArray(modeList) && !Array.isArray(modeNames)) {
+        const modeNames = modeList.slice(3, 8).map(x => this.homey.__('settings.opMode.custom'));
+        this.homey.settings.set('modeNames', modeNames);
+      }
+
+      // Version 0.16.2 removed some settings:
+      this.homey.settings.unset('stats_tmp_max_power_today');
+
+      // Version 0.17.0 Added direct support for spot price
+      let futureData = this.homey.settings.get('futurePriceOptions');
+      const oldPriceKind = !futureData ? undefined : futureData.priceKind;
+      if ((+this.homey.settings.get('priceMode') === c.PRICE_MODE_INTERNAL)
+        && (oldPriceKind === undefined)) {
+        // The old setting was Spot price from external app, keep it that way
+        if (!futureData) futureData = {};
+        futureData.priceKind = c.PRICE_KIND_EXTERNAL; // The new default is SPOT, just set to EXTERNAL for those that used it
+        this.homey.settings.set('futurePriceOptions', futureData);
+        this.log('priceKind was set to External for backward compatability');
+      }
+
+      // Version 0.18.0 removed chargerOptions.minSwitchTime
+      // Also fix the broken history for the last few weeks + notify the user about the incident
+      const chargerOptionsRepair = this.homey.settings.get('chargerOptions');
+      if (chargerOptionsRepair && 'minSwitchTime' in chargerOptionsRepair) {
+        // Deprecate minSwitchTime
+        this.log('minSwitchTime has been deprecated and was removed from charger options');
+        delete chargerOptionsRepair.minSwitchTime;
+        this.homey.settings.set('chargerOptions', chargerOptionsRepair);
+        // Remove broken Graph elements
+        let dailyMax = this.homey.settings.get('stats_daily_max');
+        let dailyMaxOk = this.homey.settings.get('stats_daily_max_ok');
+        dailyMax = dailyMax.map((val, index) => (dailyMaxOk[index] ? val : undefined));
+        dailyMaxOk = dailyMaxOk.map(val => val || undefined);
+        this.homey.settings.set('stats_daily_max', dailyMax);
+        this.homey.settings.set('stats_daily_max_ok', dailyMaxOk);
+        // Notify the user about the incident
+        this.homey.notifications.createNotification({ excerpt: this.homey.__('breaking.fixGraph') });
+      }
+
+      // Version 0.18.1 removed {numPhases, chargeMax, chargeMargin, chargeDevice} from chargerOptions
+      if (chargerOptionsRepair && 'numPhases' in chargerOptionsRepair) {
+        // Set correct value for new values
+        chargerOptionsRepair.chargeThreshold = chargerOptionsRepair.chargeMin + chargerOptionsRepair.chargeMargin;
+        // Deprecate numPhases, chargeMax, chargeMargin and chargeDevice
+        this.log('numPhases, chargeMax, chargeMargin and chargeDevice has been deprecated and was removed from charger options');
+        delete chargerOptionsRepair.numPhases;
+        delete chargerOptionsRepair.chargeMax;
+        delete chargerOptionsRepair.chargeMargin;
+        delete chargerOptionsRepair.chargeDevice;
+        this.homey.settings.set('chargerOptions', chargerOptionsRepair);
+        // Remove broken Graph elements (again)
+        let dailyMax = this.homey.settings.get('stats_daily_max');
+        let dailyMaxOk = this.homey.settings.get('stats_daily_max_ok');
+        dailyMax = dailyMax.map((val, index) => (dailyMaxOk[index] ? val : undefined));
+        dailyMaxOk = dailyMaxOk.map(val => val || undefined);
+        this.homey.settings.set('stats_daily_max', dailyMax);
+        this.homey.settings.set('stats_daily_max_ok', dailyMaxOk);
+      }
+
+      // Version 0.18.24 moved stats_daily_max into archive
+      const archive = await this.homey.settings.get('archive');
+      const maxes = await this.homey.settings.get('stats_daily_max');
+      const maxesOk = await this.homey.settings.get('stats_daily_max_ok');
+      if (archive === null && maxes !== null) {
+        // Add max power
+        for (let i = 0; i < maxes.length; i++) {
+          if (maxes[i] !== undefined) {
+            const data = {
+              maxPower: maxes[i],
+              dataOk: maxesOk[i]
+            };
+            const dataTimeStart = new Date('October 1, 2022, 01:00:00 GMT+2:00');
+            const dataTime = new Date(dataTimeStart.getTime() + i * 24 * 60 * 60 * 1000);
+            await addToArchive(this.homey, data, dataTime, true);
+          }
+        }
+
+        // Add saved money, month only as per day is missing
+        let dataTime = new Date('September 15, 2022, 01:00:00 GMT+2:00');
+        let data = {
+          moneySavedTariff: +this.homey.settings.get('stats_savings_all_time_power_part') || 0
+        };
+        await addToArchive(this.homey, data, dataTime, true, true);
+        dataTime = new Date('October 15, 2022, 01:00:00 GMT+2:00');
+        data = {
+          moneySavedUsage: +this.homey.settings.get('stats_savings_all_time_use') || 0
+        };
+        await addToArchive(this.homey, data, dataTime, true, true);
+      }
+
+      // Version 0.18.38 - The minimum toggle time was changed to never come above 90 and a new default was set to 120s
+      if (chargerOptionsRepair && ('minToggleTime' in chargerOptionsRepair) && (+chargerOptionsRepair.minToggleTime < 90)) {
+        chargerOptionsRepair.minToggleTime = 120;
+        this.homey.settings.set('chargerOptions', chargerOptionsRepair);
+      }
+
+      // Version 0.18.40
+      if (chargerOptionsRepair && ('experimentalMode' in chargerOptionsRepair)) {
+        delete chargerOptionsRepair.experimentalMode;
+        this.homey.settings.set('chargerOptions', chargerOptionsRepair);
+      }
     }
 
     // Version 0.19.13 - Corrects the Price points in the archive (issue #102)
-    const settingsVersion = await this.homey.settings.get('settingsVersion');
     if (+settingsVersion < 1) {
-      archive = await this.homey.settings.get('archive');
+      const archive = await this.homey.settings.get('archive');
       if (archive !== null && archive.pricePoints !== undefined) {
         this.log('Fixing broken price point in archive:');
         for (const period in { daily: 1, monthly: 1, yearly: 1 }) {
@@ -380,7 +388,7 @@ class PiggyBank extends Homey.App {
       this.homey.settings.unset('stats_this_month_average');
       this.homey.settings.unset('stats_last_month_max');
       // Change all previous okData values to -1 to indicate that we have no data at all on reliability
-      archive = await this.homey.settings.get('archive') || {};
+      const archive = await this.homey.settings.get('archive') || {};
       const okData = archive['dataOk'];
       for (const period in okData) {
         for (const time in okData[period]) {
@@ -422,6 +430,7 @@ class PiggyBank extends Homey.App {
 
     // Version 0.19.28
     if (+settingsVersion < 4) {
+      const chargerOptionsRepair = this.homey.settings.get('chargerOptions');
       if (chargerOptionsRepair) {
         // Make sure old users are unaffected by the introduction of overrideStart
         // New users will get a different default value for this, but for old users it's better to keep this constant
