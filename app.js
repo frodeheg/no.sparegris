@@ -1236,6 +1236,11 @@ class PiggyBank extends Homey.App {
       || (d.DEVICE_CMD[driverId].getOfferedCap === undefined)
       || (d.DEVICE_CMD[driverId].onChargeStart === undefined)
       || (d.DEVICE_CMD[driverId].onChargeEnd === undefined)
+      || (d.DEVICE_CMD[driverId].onAdd === undefined)
+      || (d.DEVICE_CMD[driverId].onRemove === undefined)
+      || (d.DEVICE_CMD[driverId].startCurrent === undefined)
+      || (d.DEVICE_CMD[driverId].minCurrent === undefined)
+      || (d.DEVICE_CMD[driverId].pauseCurrent === undefined)
       || (d.DEVICE_CMD[driverId].statusCap === undefined)
       || (d.DEVICE_CMD[driverId].statusUnavailable === undefined)) {
       if (this.logUnit === deviceId) this.updateLog(`abort changeDevicePower() for ${device.name} the charger definition in Piggy is incorrect`, c.LOG_ALL);
@@ -1250,8 +1255,9 @@ class PiggyBank extends Homey.App {
       if (this.logUnit === deviceId) this.updateLog(`abort changeDevicePower() for ${device.name} - available power was less than charge threshold`, c.LOG_ALL);
       return Promise.resolve([false, false]);
     }
+    const minCurrent = +chargerOptions.overrideEnable ? +chargerOptions.overrideMinCurrent : d.DEVICE_CMD[driverId].minCurrent;
     const isEmergency = (+powerChange < 0) && (
-      ((powerUsed + +powerChange) < 0) || (ampsOffered === d.DEVICE_CMD[driverId].minCurrent));
+      ((powerUsed + +powerChange) < 0) || (ampsOffered === minCurrent));
     const now = new Date();
     const end = new Date(chargerOptions.chargeEnd);
     if ((end < now)
@@ -1295,7 +1301,6 @@ class PiggyBank extends Homey.App {
     const startCurrent = +chargerOptions.overrideEnable ? +chargerOptions.overrideStart : d.DEVICE_CMD[driverId].startCurrent;
     const stopCurrent = +chargerOptions.overrideEnable ? +chargerOptions.overrideStop : 0;
     const pauseCurrent = +chargerOptions.overrideEnable ? +chargerOptions.overridePause : d.DEVICE_CMD[driverId].pauseCurrent;
-    const minCurrent = +chargerOptions.overrideEnable ? +chargerOptions.overrideMinCurrent : d.DEVICE_CMD[driverId].minCurrent;
     const maxCurrent = +chargerOptions.overrideEnable ? Math.min(+chargerOptions.overrideMaxCurrent, toMaxCurrent) : toMaxCurrent;
     const maxPower = +this.homey.settings.get('maxPower');
     const cannotCharge = d.DEVICE_CMD[driverId].statusUnavailable.includes(chargerStatus);
