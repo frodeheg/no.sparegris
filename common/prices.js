@@ -27,7 +27,6 @@ const currencyTable = {
   CNY: { rate: 1.4211, date: '2022-11-18', name: 'Kinesiske yuan' },
   CZK: { rate: 0.43062, date: '2022-11-18', name: 'Tsjekkiske koruna' },
   HKD: { rate: 1.2931, date: '2022-11-18', name: 'Hong Kong dollar' },
-  HRK: { rate: 1.3903999999999999, date: '2022-11-18', name: 'Kroatiske kuna' },
   HUF: { rate: 0.025737999999999997, date: '2022-11-18', name: 'Ungarske forinter' },
   I44: { rate: 112.85, date: '2022-11-18', name: 'Importveid kursindeks' },
   IDR: { rate: 0.00064631, date: '2022-11-18', name: 'Indonesiske rupiah' },

@@ -650,7 +650,7 @@ async function testCurrencies() {
     throw new Error('Currency table is wrong');
   }
   const currencies = await prices.fetchCurrencyTable();
-  if (Object.keys(currencies).length < 42) {
+  if (Object.keys(currencies).length < 41) {
     throw new Error('Too few currencies');
   }
   for (const currency in currencies) {
