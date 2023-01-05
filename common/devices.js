@@ -266,8 +266,7 @@ const DEVICE_CMD = {
     setTempCap: 'target_temperature',
     tempMin: 6, // Min is 5, but using 5 as emulated Off
     tempMax: 30,
-    tempStep: 0.5,
-    beta: true
+    tempStep: 0.5
   },
   'me.nanoleaf:shapes': DEFAULT_SWITCH,
   'net.filllip-namron:4512744': {
