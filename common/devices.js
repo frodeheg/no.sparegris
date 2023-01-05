@@ -330,6 +330,7 @@ const DEVICE_CMD = {
     measurePowerCap: 'measure_power',
     statusCap: 'charger_status',
     statusUnavailable: ['Completed', 'Standby', 'Error'],
+    statusProblem: ['Error'],
     default: false
   },
   'no.easee:equalizer': {

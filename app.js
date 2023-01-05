@@ -1199,7 +1199,7 @@ class PiggyBank extends Homey.App {
    * @return [success, noChange] - success means that the result is as requested, noChange indicate if the result was already as requested
    * @throw error in case of failure
    */
-  async changeDevicePower(deviceId, powerChange) {
+  async changeDevicePower(deviceId, powerChange, now = new Date()) {
     const chargerOptions = this.homey.settings.get('chargerOptions');
     if (chargerOptions.chargeTarget === c.CHARGE_TARGET_FLOW) {
       if (this.logUnit === deviceId) this.updateLog(`abort changeDevicePower() for '${deviceId} because you have selected to control charging using flows, not automaticly.`, c.LOG_ALL);
@@ -1264,7 +1264,6 @@ class PiggyBank extends Homey.App {
       || ((ampsOffered === minCurrent)
         && (minCurrent !== stopCurrent)
         && (minCurrent !== pauseCurrent)));
-    const now = new Date();
     const end = new Date(chargerOptions.chargeEnd);
     if ((end < now)
       || ((chargerOptions.chargeCycleType === c.OFFER_ENERGY) && (+chargerOptions.chargeRemaining < this.__offeredEnergy))) {
@@ -1307,9 +1306,20 @@ class PiggyBank extends Homey.App {
     const maxCurrent = +chargerOptions.overrideEnable ? Math.min(+chargerOptions.overrideMaxCurrent, toMaxCurrent) : toMaxCurrent;
     const maxPower = +this.homey.settings.get('maxPower');
     const cannotCharge = d.DEVICE_CMD[driverId].statusUnavailable.includes(chargerStatus);
+    const shouldntCharge = d.DEVICE_CMD[driverId].statusProblem.includes(chargerStatus);
+    const shouldntChargeThrottle = (this.prevChargeIgnoreErrorTime !== undefined) && ((now - this.prevChargeIgnoreErrorTime) < (5 * 60 * 1000)); // Every 5 min ok.
+    if (shouldntCharge && !shouldntChargeThrottle) {
+      this.prevChargeIgnoreErrorTime = new Date(now.getTime());
+    }
+    if (this.logUnit === deviceId) {
+      if (cannotCharge || (shouldntCharge && shouldntChargeThrottle)) {
+        this.updateLog(`Cannot charge ${device.name} due to device state ${chargerStatus}`, c.LOG_ALL);
+      }
+    }
     const newOfferPower = Math.min(Math.max(powerUsed + +powerChange, +chargerOptions.chargeMin), maxPower);
-    const pausedCharging = !withinChargingPlan || isEmergency || cannotCharge;
-    const newOfferCurrent = (!withinChargingCycle) ? stopCurrent
+    const stoppedCharging = !withinChargingCycle || cannotCharge;
+    const pausedCharging = !withinChargingPlan || isEmergency || (shouldntCharge && shouldntChargeThrottle);
+    const newOfferCurrent = stoppedCharging ? stopCurrent
       : pausedCharging ? pauseCurrent
         : (+powerUsed === 0) ? startCurrent
           : Math.floor(Math.min(Math.max(ampsOffered * (newOfferPower / +powerUsed), minCurrent), +maxCurrent));
@@ -2145,7 +2155,7 @@ class PiggyBank extends Homey.App {
             let success; let noChange;
             const { driverId } = this.__deviceList[deviceId];
             if ((driverId in d.DEVICE_CMD) && (d.DEVICE_CMD[driverId].type === d.DEVICE_TYPE.CHARGER)) {
-              [success, noChange] = await this.changeDevicePower(deviceId, morePower);
+              [success, noChange] = await this.changeDevicePower(deviceId, morePower, now);
             } else {
               [success, noChange] = await this.changeDeviceState(deviceId, undefined);
             }
@@ -2223,7 +2233,7 @@ class PiggyBank extends Homey.App {
           let success; let noChange;
           const { driverId } = this.__deviceList[deviceId];
           if ((driverId in d.DEVICE_CMD) && (d.DEVICE_CMD[driverId].type === d.DEVICE_TYPE.CHARGER)) {
-            [success, noChange] = await this.changeDevicePower(deviceId, -lessPower);
+            [success, noChange] = await this.changeDevicePower(deviceId, -lessPower, now);
           } else {
             [success, noChange] = await this.changeDeviceState(deviceId, operation);
           }
