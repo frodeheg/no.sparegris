@@ -61,6 +61,16 @@ class FakeDeviceClass {
     this.capabilitiesObj[data.capabilityId].value = data.value;
   }
 
+  /**
+   * This function is not part of the Homey api.
+   * It has only been added for testing purposes.
+   * The idea is that the state will be set without any random behaviour as can be applied to the
+   * setCapabilityValue function during testing.
+   */
+  async overrideDeviceState(data) {
+    this.capabilitiesObj[data.capabilityId].value = data.value;
+  }
+
 }
 
 /**

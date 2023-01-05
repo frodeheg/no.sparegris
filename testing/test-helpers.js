@@ -225,15 +225,85 @@ async function getAllDeviceId(app) {
   return deviceIdList;
 }
 
-async function writePowerStatus(app, devices) {
+async function writePowerStatus(app, devices, additional = '', verbose = false) {
   let line = '';
   for (let i = 0; i < devices.length; i++) {
     const deviceId = devices[i];
     const device = await app.getDevice(deviceId);
     const isOn = await app.getIsOn(device, deviceId);
+    if (verbose && isOn) {
+      console.log(`Device ${device.id} ${device.name} is on`);
+    }
     line += `${isOn ? 'X' : '-'}`;
   }
-  console.log(line);
+  console.log(`${line} ${additional}`);
+}
+
+async function setAllDeviceState(app, devices, wantOn) {
+  for (let i = 0; i < devices.length; i++) {
+    const deviceId = devices[i];
+    const device = await app.getDevice(deviceId);
+    const onOffCap = await app.getOnOffCap(deviceId);
+    if (onOffCap === null) {
+      // Using heating as onoff
+    } else if (onOffCap === undefined) {
+      // There is no onoff capability
+    } else {
+      const onValue = await app.getOnOffTrue(deviceId);
+      const offValue = await app.getOnOffFalse(deviceId);
+      const newState = { capabilityId: onOffCap, value: wantOn ? onValue : offValue };
+      await device.overrideDeviceState(newState);
+    }
+  }
+}
+
+/**
+ * Check that the modeList is completely valid
+ */
+async function validateModeList(app) {
+  const deviceList = app.__deviceList;
+  const modeList = app.homey.settings.get('modeList');
+  // Make sure that all modes has the same devices listed
+  for (const list in modeList) {
+    if (modeList[0].length !== modeList[list].length) {
+      throw new Error('Modelist length is not consistent');
+    }
+    for (const idx in modeList[list]) {
+      const idCurrent = modeList[list][idx].id;
+      let found = false;
+      for (const idxOrig in modeList[0]) {
+        if (modeList[0][idxOrig].id === idCurrent) {
+          found = true;
+          break;
+        }
+      }
+      if (!found) {
+        throw new Error(`Device ${idCurrent} is not consistent in modeList`);
+      }
+    }
+  }
+  // Check that all devices marked with Use are within the modelist
+  for (const deviceId in deviceList) {
+    if (deviceList[deviceId].use) {
+      let found = false;
+      for (const idxOrig in modeList[0]) {
+        if (modeList[0][idxOrig].id === deviceId) {
+          found = true;
+          break;
+        }
+      }
+      if (!found) {
+        throw new Error(`Device ${deviceId} was marked with use but not in modeList`);
+      }
+    }
+  }
+  // Check that all devices in the modelist is marked as Used
+  for (const deviceidx in modeList[0]) {
+    const deviceId = modeList[0][deviceidx].id;
+    if (!deviceList[deviceId].use) {
+      throw new Error(`Device ${deviceId} was in modeList but not marked with use`);
+    }
+  }
 }
 
 module.exports = {
@@ -242,4 +312,6 @@ module.exports = {
   applyStateFromFile,
   getAllDeviceId,
   writePowerStatus,
+  setAllDeviceState,
+  validateModeList,
 };

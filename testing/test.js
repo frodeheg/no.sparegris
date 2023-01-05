@@ -12,7 +12,7 @@ const { addToArchive, cleanArchive, getArchive } = require('../common/archive');
 const Homey = require('./homey');
 const PiggyBank = require('../app');
 const { roundToStartOfDay, timeToNextHour, toLocalTime, fromLocalTime } = require('../common/homeytime');
-const { disableTimers, applyBasicConfig, applyStateFromFile, getAllDeviceId, writePowerStatus } = require('./test-helpers');
+const { disableTimers, applyBasicConfig, applyStateFromFile, getAllDeviceId, writePowerStatus, setAllDeviceState, validateModeList } = require('./test-helpers');
 
 // Test Currency Converter
 // * Test that the date for the last currency fetched is recent... otherwise the API could have changed
@@ -670,6 +670,59 @@ async function testCurrencies() {
   console.log('\x1b[1A[\x1b[32mPASSED\x1b[0m]');
 }
 
+/**
+ * Test that no devices that should not be controlled indeed are not controlled
+ */
+async function testTicket158NotControllingOther() {
+  console.log('[......] Test Than no uncontrolled devices are being controlled');
+  const stateDump = 'states/Frode_0.19.26.txt';
+  const app = new PiggyBank();
+  await app.disableLog();
+  await app.onInit();
+  app.setLogLevel(c.LOG_DEBUG);
+  await disableTimers(app);
+  await applyStateFromFile(app, stateDump);
+  await validateModeList(app);
+  const devices = await getAllDeviceId(app);
+  // await writePowerStatus(app, devices, ': Initial state', true);
+  // Turn off all devices
+  await setAllDeviceState(app, devices, false);
+  // Disable control of all devices that could be turned on
+  app.__deviceList['33fa2e27-a8cb-4e65-87f8-13545305101a'].use = false; // Varmekabler Stue
+  app.__deviceList['734fab2d-2c19-4032-8726-d0a40624c3fb'].use = false; // Varmekabler Kjøkken
+  app.__deviceList['0a763eab-ffde-4581-af47-58755bbb22ed'].use = false; // Varmekabler Vaskerom
+  app.__deviceList['ef2c3457-0a55-4ccd-a943-58de258d07dd'].use = false; // Varmekabler Bad
+  app.__deviceList['7e844fe8-3f2e-4206-a849-aa5541883c9b'].use = false; // Varmekabler Indre Gang
+  app.__deviceList['1160d771-5a69-445c-add1-3943ccb16d43'].use = false; // Varmekabler Ytre Gang
+  app.__deviceList['eb3be21c-bcb2-47b2-9393-eae2d33737dc'].use = false; // Høiax CONNECTED
+  app.__deviceList['b4788083-9606-49a2-99d4-9efce7a4656d'].use = false; // Varmepumpe
+  app.__deviceList['e44abbf3-58df-448c-bd6b-58986768d3cb'].use = false; // Nanoleaf Trapp
+  // Regenerate modeList:
+  const modeList = [[], [], [], []];
+  app.homey.settings.set('modeList', modeList);
+  // Simulate time going forward
+  const simTime = 200;
+  const curTime = app.__current_power_time;
+  const startTime = new Date(curTime);
+  while ((curTime.getTime() - startTime.getTime()) / 1000 < simTime) {
+    curTime.setTime(curTime.getTime() + Math.round(10000 + Math.random() * 5000 - 2500));
+    const curPower = Math.round(1000 + Math.random() * 3000);
+    await app.onPowerUpdate(curPower, curTime);
+    await app.onProcessPower(curTime);
+    // const maxPower = await app.homey.settings.get('maxPower');
+    // await writePowerStatus(app, devices, `: ${curPower} ${maxPower}`);
+  }
+  // Test that all devices are off
+  for (let i = 0; i < devices.length; i++) {
+    const deviceId = devices[i];
+    const device = await app.getDevice(deviceId);
+    const isOn = await app.getIsOn(device, deviceId);
+    if (isOn) throw new Error(`Device ${device.name} is on. All devices should be off as they are not controllable`);
+  }
+  await app.onUninit();
+  console.log('\x1b[1A[\x1b[32mPASSED\x1b[0m]');
+}
+
 // Start all tests
 async function startAllTests() {
   try {
@@ -691,6 +744,7 @@ async function startAllTests() {
     await testMissingPulse();
     await testLocalTime();
     await testCurrencies();
+    await testTicket158NotControllingOther();
     await testMail();
   } catch (err) {
     console.log('\x1b[1A[\x1b[31mFAILED\x1b[0m]');
