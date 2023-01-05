@@ -359,6 +359,7 @@ const DEVICE_CMD = {
     tempMax: 40,
     tempStep: 0.5
   },
+  'no.thermofloor:ZM-Single-Relay-16A': DEFAULT_SWITCH,
   'no.thermofloor:ZM-Thermostat-16A': {
     ...DEFAULT_HEATER,
     setOnOffCap: 'thermostat_mode_13570',
@@ -369,6 +370,18 @@ const DEVICE_CMD = {
     tempStep: 0.5, // Actually 0.01
     default: false
   },
+  /* 'no.thermofloor:Z-Relay': {
+    type: DEVICE_TYPE.HEATER,
+    setOnOffCap: 'onoff',
+    setOnValue: true,
+    setOffValue: false,
+    readTempCap: 'measure_temperature.input1',
+    // setTempCap: undefined,
+    tempMin: -40,
+    tempMax: 85,
+    tempStep: 0.5,
+    beta: true
+  }, */
   'no.thermofloor:Z-TRM2fx': {
     type: DEVICE_TYPE.HEATER,
     setOnOffCap: 'thermofloor_mode',
@@ -385,7 +398,6 @@ const DEVICE_CMD = {
     workaround: 'The Z-TRM3 devices are known to lose connection with homey when using encryption. You can try to pair it again with code 0000 to make it unencrypted as this is much more reliable.',
     default: false
   },
-  'no.thermofloor:ZM-Single-Relay-16A': DEFAULT_SWITCH,
   'org.knx:knx_dimmer': DEFAULT_SWITCH,
   'org.knx:knx_thermostat': {
     type: DEVICE_TYPE.HEATER,
