@@ -1917,9 +1917,13 @@
           || String(message).includes('getDevices')
           || String(message).includes('apiCommand')
           || String(message).includes('getStats')) {
-          Homey.alert('It seems like Homey is updating the app version. Please try again in a minute or two when the app has been properly installed.')
+          try {
+            Homey.alert('It seems like Homey is updating the app version. Please try again in a minute or two when the app has been properly installed.');
+          } catch(err) {}; // Ignore popup blockers
         } else {
-          Homey.alert(message);
+          try {
+            Homey.alert(message);
+          } catch(err) {}; // Ignore popup blockers
         }
       }
 
@@ -2360,7 +2364,9 @@
             refreshFrostList(); // It's a pitty but the user did not even visit these pages. Probably they will do later
             refreshPriceActionList(); // It's a pitty but the user did not even visit these pages. Probably they will do later
             if (Object.keys(frostList).length === 0) {
-              Homey.alert(Homey.__('warnings.noDevices'))
+              try {
+                Homey.alert(Homey.__('warnings.noDevices'));
+              } catch(err) {}; // Ignore popup blockers
             } else {
               futurePriceOptions.averageTime = document.getElementById("averageTime").value;
               futurePriceOptions.minCheapTime = document.getElementById("minCheapTime").value;
@@ -2429,9 +2435,18 @@
         }
         saveElement.addEventListener("click", function (e) {
           if ((loadedMaxPower !== null) && (+document.getElementById("maxPower").value > +loadedMaxPower)) {
-            Homey.confirm(Homey.__('settings.alert.maxPowerChanged'), null, function (err, res) {
-              if (res) saveFunc();
-            });
+            try {
+              const before = new Date();
+              Homey.confirm(Homey.__('settings.alert.maxPowerChanged'), null, function (err, res) {
+                const called = new Date();
+                const diff = called - before;
+                // NB! Popup blockers will not give an error on the confirm dialogue
+                // If the diff < 0.1 sec then the confirm was likely aborted by a popup blocker
+                if (err || res || (diff < 100)) saveFunc();
+              });
+            } catch (err) {
+              saveFunc(); // In case of errors, save anyway
+            }
           } else {
             saveFunc();
           }
