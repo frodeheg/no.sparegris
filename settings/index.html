@@ -935,13 +935,13 @@
               </select> <div class="edit icon" onclick="updateMaxPowerEditor();toggle(this,'gridCostsEdit');"></div><div class="hintButton" onclick="toggle(this,'maxPowHint');return false;">i</div>
             </td>
           </tr>
-          <tr>
+          <tr style="display:none">
             <td class="settings_row_name"><label for="maxPowerDay" data-i18n="settings.mode.maxPowerDay">mode.maxPowerDay</label>:</td>
             <td class="settings_row_input">
               <input id="maxPowerDay" type="number" min="10" max="1000" value="1000" onchange="limitElement(this);displaySaveHint()">kWh
             </td>
           </tr>
-          <tr>
+          <tr style="display:none">
             <td class="settings_row_name"><label for="maxPowerMonth" data-i18n="settings.mode.maxPowerMonth">mode.maxPowerMonth</label>:</td>
             <td class="settings_row_input">
               <input id="maxPowerMonth" type="number" min="50" max="50000" value="5000" onchange="limitElement(this);displaySaveHint()">kWh
