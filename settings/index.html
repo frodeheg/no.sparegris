@@ -161,6 +161,7 @@
       var chargerOptions = {};
       var appConfigProgress = {ApiStatus:0};
       var currentModeTab = 0; // Normal
+      var loadedMaxPower = undefined;
 
       var pricePoints = [
         { name:"settings.pricetab.dirtcheap", value: PP_DIRTCHEAP },
@@ -2056,13 +2057,16 @@
               // use defaults set from the top (this is the first time)
               maxPower = 5000;
             }
+            loadedMaxPower = maxPower;
             setMaxPower(+maxPower, 0, Infinity);
             Homey.get("maxPowerDay", function (err2, maxPower2) {
+              if (err2) return Homey.alert(err2);
               if (maxPower2 === null || !Number.isInteger(+maxPower2)) {
                 maxPower2 = 1000;
               }
               document.getElementById("maxPowerDay").value = maxPower2;
-              Homey.get("maxPowerMonth", function (err2, maxPower3) {
+              Homey.get("maxPowerMonth", function (err3, maxPower3) {
+                if (err3) return Homey.alert(err3);
                 if (maxPower3 === null || !Number.isInteger(+maxPower3)) {
                   maxPower3 = 100000;
                 }
@@ -2347,7 +2351,7 @@
             document.getElementById("backupBlob").value = JSON.stringify(result, null, 2);
           });
         });
-        saveElement.addEventListener("click", function (e) {
+        const saveFunc = () => {
           saveElement.classList.add('is-loading');
           Homey.alert(Homey.__('warnings.savingWait'));
           try {
@@ -2415,11 +2419,21 @@
               Homey.set("toggleTime", document.getElementById("toggleTime").value, errFunc);
               Homey.set("settingsSaved", "", errFunc); // On settings is only called if the settings actually changed
               Homey.set("settingsSaved", "true", errFunc); // This one will throw the message settings.alert.settingssaved on success
+              loadedMaxPower = document.getElementById("maxPower").value;
             }
           }
           catch (err) {
             saveElement.classList.remove('is-loading');
             Homey.alert(Homey.__(`warnings.savingFailed: ${err}`));
+          }
+        }
+        saveElement.addEventListener("click", function (e) {
+          if ((loadedMaxPower !== null) && (+document.getElementById("maxPower").value > +loadedMaxPower)) {
+            Homey.confirm(Homey.__('settings.alert.maxPowerChanged'), null, function (err, res) {
+              if (res) saveFunc();
+            });
+          } else {
+            saveFunc();
           }
         });
 
