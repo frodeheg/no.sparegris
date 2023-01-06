@@ -691,5 +691,8 @@
   },
   "0.19.33": {
     "en": "When a country did not publish a currency exchange rate for a specific date then the code parsing the response from Norges bank crashed."
+  },
+  "0.19.34": {
+    "en": "Override for easee charger was not always working. + Made sure charging now also is retried when the Easee app reports error + Added confirm dialogue when going to a higher power tariff + fi.taelek.ecocontrol:oled is now out of beta. + Removed 'Kroatiske kuna' as a currency as this has been replaced with Euro."
   }
 }
