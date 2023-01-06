@@ -1316,6 +1316,9 @@ class PiggyBank extends Homey.App {
         this.updateLog(`Cannot charge ${device.name} due to device state ${chargerStatus}`, c.LOG_ALL);
       }
     }
+    if (shouldntCharge) {
+      this.updateLog(`The Charger may be malfunctioning as it reports state ${chargerStatus}`, c.LOG_ERROR);
+    }
     const newOfferPower = Math.min(Math.max(powerUsed + +powerChange, +chargerOptions.chargeMin), maxPower);
     const stoppedCharging = !withinChargingCycle || cannotCharge;
     const pausedCharging = !withinChargingPlan || isEmergency || (shouldntCharge && shouldntChargeThrottle);
