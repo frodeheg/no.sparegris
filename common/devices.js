@@ -254,6 +254,36 @@ const DEVICE_CMD = {
     tempMax: 25,
     default: false
   },
+  /* 'com.tesla.charger:Tesla': {
+    type: DEVICE_TYPE.CHARGER,
+    setOnOffCap: 'charge_mode',
+    setOnValue: 'charge_now',
+    setOffValue: 'off',
+    measurePowerCap: 'measure_power',
+    statusCap: 'charging_state',
+    statusUnavailable: ['Complete', 'Standby????', 'Error????'],
+    statusProblem: ['Error????'],
+
+    onChargeStart: {
+      target_circuit_current: Infinity
+    },
+    onChargeEnd: {
+      target_circuit_current: 0
+    },
+    onAdd: {
+      target_charger_current: 0,
+      target_circuit_current: 0
+    },
+    onRemove: {
+      target_charger_current: Infinity,
+      target_circuit_current: Infinity
+    },
+    setCurrentCap: 'target_charger_current',
+    getOfferedCap: 'measure_current.offered',
+    startCurrent: 11,
+    minCurrent: 7,
+    pauseCurrent: 4,
+  } */
   'com.tibber:home': DEFAULT_IGNORED,
   'com.tibber:pulse': DEFAULT_METER,
   'com.tuya.cloud:tuyalight': DEFAULT_SWITCH,
