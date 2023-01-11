@@ -23,6 +23,7 @@ class FakeDeviceClass {
     this.homey = homey;
     this.zone = zoneId;
     this.zoneName = homey.zones.getZones()[zoneId].name;
+    this.reliability = 1;
     if (typeof (definition) === 'string') {
       // File name
       const data = fs.readFileSync(`./doc/devices/${definition}`, 'utf8');
@@ -58,7 +59,15 @@ class FakeDeviceClass {
   }
 
   async setCapabilityValue(data) {
-    this.capabilitiesObj[data.capabilityId].value = data.value;
+    if (Math.random() < this.reliability) {
+      this.capabilitiesObj[data.capabilityId].value = data.value;
+      return Promise.resolve();
+    }
+    return new Promise((resolve, reject) => {
+      const error = new Error('Random unreliability');
+      const timeout = 0; // Math.floor(Math.random() * 100);
+      setTimeout(() => reject(error), timeout);
+    });
   }
 
   /**
@@ -69,6 +78,17 @@ class FakeDeviceClass {
    */
   async overrideDeviceState(data) {
     this.capabilitiesObj[data.capabilityId].value = data.value;
+  }
+
+  /**
+   * This function is not part of the Homey api.
+   * It has only been added for testing purposes.
+   * The idea is to reduce the reliability of a device such that it is possible to test out situations
+   * that normally are unlikely to happen.
+   * The default reliability value is 1 = 100% reliable
+   */
+  async setDeviceReliability(reliability) {
+    this.reliability = reliability;
   }
 
 }

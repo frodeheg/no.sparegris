@@ -674,7 +674,7 @@ async function testCurrencies() {
  * Test that no devices that should not be controlled indeed are not controlled
  */
 async function testTicket158NotControllingOther() {
-  console.log('[......] Test Than no uncontrolled devices are being controlled');
+  console.log('[......] Test that no uncontrolled devices are being controlled');
   const stateDump = 'states/Frode_0.19.26.txt';
   const app = new PiggyBank();
   await app.disableLog();
@@ -723,6 +723,63 @@ async function testTicket158NotControllingOther() {
   console.log('\x1b[1A[\x1b[32mPASSED\x1b[0m]');
 }
 
+// Testing bad devices:
+async function testTicket149BadDevices() {
+  console.log('[......] Test Bad behaving devices');
+  const stateDump = 'states/Frode_0.19.26.txt';
+  const app = new PiggyBank();
+  await app.disableLog();
+  await app.onInit();
+  app.setLogLevel(c.LOG_DEBUG);
+  await disableTimers(app);
+  await applyStateFromFile(app, stateDump);
+  app.homey.settings.set('maxPower', 1000);
+  await validateModeList(app);
+  const devices = await getAllDeviceId(app);
+  // Go through the devices and force them to misbehave:
+  for (let i = 0; i < devices.length; i++) {
+    const device = app.homeyApi.devices.getDevice({ id: devices[i] });
+    switch (i) {
+      case 28:
+      case 31:
+        device.setDeviceReliability(0);
+        break;
+      case 30:
+        device.setDeviceReliability(0.05);
+        break;
+      default:
+        device.setDeviceReliability(1);
+    }
+    app.__deviceList[devices[i]].use = 1;
+  }
+  // Simulate time going forward
+  const simTime = 300;
+  const curTime = app.__current_power_time;
+  const startTime = new Date(curTime);
+  while ((curTime.getTime() - startTime.getTime()) / 1000 < simTime) {
+    curTime.setTime(curTime.getTime() + Math.round(10000 + Math.random() * 5000 - 2500));
+    const curPower = Math.round(1000 + Math.random() * 3000);
+    await app.onPowerUpdate(curPower, curTime);
+    await app.onProcessPower(curTime);
+    const maxPower = await app.homey.settings.get('maxPower');
+    // await writePowerStatus(app, devices, `Blah ${maxPower}`);
+  }
+  // Test that all except 2 devices are off
+  let numOn = 0;
+  for (let i = 0; i < devices.length; i++) {
+    const deviceId = devices[i];
+    const device = await app.getDevice(deviceId);
+    const isOn = await app.getIsOn(device, deviceId);
+    // console.log(`Reliability: ${app.__deviceList[deviceId].reliability}`);
+    if (isOn) numOn += 1;
+  }
+  if (numOn !== 2) {
+    throw new Error('Number of devices powered on should be 2');
+  }
+  await app.onUninit();
+  console.log('\x1b[1A[\x1b[32mPASSED\x1b[0m]');
+}
+
 // Start all tests
 async function startAllTests() {
   try {
@@ -745,6 +802,7 @@ async function startAllTests() {
     await testLocalTime();
     await testCurrencies();
     await testTicket158NotControllingOther();
+    await testTicket149BadDevices();
     await testMail();
   } catch (err) {
     console.log('\x1b[1A[\x1b[31mFAILED\x1b[0m]');

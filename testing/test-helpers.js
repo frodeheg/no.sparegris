@@ -50,28 +50,28 @@ async function applyBasicConfig(app) {
       { id: 'b4788083-9606-49a2-99d4-9efce7a4656d-2', operation: c.CONTROLLED, targetTemp: 24 }], // Away
   ]);
   app.homey.settings.set('priceActionList', [
-    {id_a: {operation: c.EMERGENCY_OFF},
-      'b4788083-9606-49a2-99d4-9efce7a4656d-3': {operation: c.DELTA_TEMP},
-      'b4788083-9606-49a2-99d4-9efce7a4656d-2': {operation: c.DELTA_TEMP}},
-    {id_a: {operation: c.EMERGENCY_OFF},
-      'b4788083-9606-49a2-99d4-9efce7a4656d-3': {operation: c.DELTA_TEMP},
-      'b4788083-9606-49a2-99d4-9efce7a4656d-2': {operation: c.DELTA_TEMP}},
-    {id_a: {operation: c.EMERGENCY_OFF},
-      'b4788083-9606-49a2-99d4-9efce7a4656d-3': {operation: c.DELTA_TEMP},
-      'b4788083-9606-49a2-99d4-9efce7a4656d-2': {operation: c.DELTA_TEMP}},
-    {id_a: {operation: c.EMERGENCY_OFF},
-      'b4788083-9606-49a2-99d4-9efce7a4656d-3': {operation: c.DELTA_TEMP},
-      'b4788083-9606-49a2-99d4-9efce7a4656d-2': {operation: c.DELTA_TEMP}},
-    {id_a: {operation: c.EMERGENCY_OFF},
-      'b4788083-9606-49a2-99d4-9efce7a4656d-3': {operation: c.DELTA_TEMP},
-      'b4788083-9606-49a2-99d4-9efce7a4656d-2': {operation: c.DELTA_TEMP}}
+    {id_a: { operation: c.EMERGENCY_OFF },
+      'b4788083-9606-49a2-99d4-9efce7a4656d-3': { operation: c.DELTA_TEMP },
+      'b4788083-9606-49a2-99d4-9efce7a4656d-2': { operation: c.DELTA_TEMP }},
+    {id_a: { operation: c.EMERGENCY_OFF },
+      'b4788083-9606-49a2-99d4-9efce7a4656d-3': { operation: c.DELTA_TEMP },
+      'b4788083-9606-49a2-99d4-9efce7a4656d-2': { operation: c.DELTA_TEMP }},
+    {id_a: { operation: c.EMERGENCY_OFF },
+      'b4788083-9606-49a2-99d4-9efce7a4656d-3': { operation: c.DELTA_TEMP },
+      'b4788083-9606-49a2-99d4-9efce7a4656d-2': { operation: c.DELTA_TEMP }},
+    {id_a: { operation: c.EMERGENCY_OFF },
+      'b4788083-9606-49a2-99d4-9efce7a4656d-3': { operation: c.DELTA_TEMP },
+      'b4788083-9606-49a2-99d4-9efce7a4656d-2': { operation: c.DELTA_TEMP }},
+    {id_a: { operation: c.EMERGENCY_OFF },
+      'b4788083-9606-49a2-99d4-9efce7a4656d-3': { operation: c.DELTA_TEMP },
+      'b4788083-9606-49a2-99d4-9efce7a4656d-2': { operation: c.DELTA_TEMP }}
   ]);
   app.__deviceList = {
-    id_a: { name:"DeviceNamenamenamenamename 1", room: "Stue",    image: "x.jpg", use: true, priority: 0, thermostat_cap: true, reliability: 1.0, driverId: 'no.thermofloor:TF_Thermostat' },
-    id_b: { name:"DeviceName 2", room: "Kjøkken", image: "x.jpg", use: true, priority: 1, thermostat_cap: true, reliability: 0.5, driverId: 'no.thermofloor:Z-TRM2fx' },
-    id_c: { name:"DeviceName 3", room: "Bad",     image: "x.jpg", use: true, priority: 0, thermostat_cap: false, reliability: 0.6, driverId: 'no.thermofloor:Z-TRM3' },
-    id_d: { name:"DeviceName 4", room: "Bad",     image: "x.jpg", use: false, priority: 1, thermostat_cap: true, reliability: 0.7, driverId: 'se.husdata:H60' },
-    id_e: { name:"DeviceName 3", room: "Bad",     image: "x.jpg", use: true, priority: 0, thermostat_cap: false, reliability: 0.6, driverId: 'com.everspring:AN179' },
+    id_a: { name: 'DeviceNamenamenamenamename 1', room: 'Stue', image: 'x.jpg', use: true, priority: 0, thermostat_cap: true, reliability: 1.0, driverId: 'no.thermofloor:TF_Thermostat' },
+    id_b: { name: 'DeviceName 2', room: 'Kjøkken', image: 'x.jpg', use: true, priority: 1, thermostat_cap: true, reliability: 0.5, driverId: 'no.thermofloor:Z-TRM2fx' },
+    id_c: { name: 'DeviceName 3', room: 'Bad', image: 'x.jpg', use: true, priority: 0, thermostat_cap: false, reliability: 0.6, driverId: 'no.thermofloor:Z-TRM3' },
+    id_d: { name: 'DeviceName 4', room: 'Bad', image: 'x.jpg', use: false, priority: 1, thermostat_cap: true, reliability: 0.7, driverId: 'se.husdata:H60' },
+    id_e: { name: 'DeviceName 3', room: 'Bad', image: 'x.jpg', use: true, priority: 0, thermostat_cap: false, reliability: 0.6, driverId: 'com.everspring:AN179' },
   };
   app.homey.settings.set('priceMode', c.PRICE_MODE_INTERNAL);
   const futureData = app.homey.settings.get('futurePriceOptions');
@@ -119,7 +119,7 @@ async function applyBasicConfig(app) {
     { time: 1672167600, price: 2.34458624 },
     { time: 1672171200, price: 2.14378496 },
     { time: 1672174800, price: 1.78516432 },
-    { time: 1672178400, price: 1.60916944 }
+    { time: 1672178400, price: 1.60916944 },
   ];
   app.homey.settings.set('all_prices', app.__all_prices);
   app.__current_price_index = 0;
@@ -167,6 +167,8 @@ async function applyStateFromFile(app, file, poweredOn = true) {
     for (const deviceId in parsed.settings.deviceList) {
       const devInfo = parsed.settings.deviceList[deviceId];
       const fileName = `${devInfo.driverId}.txt`;
+      // NB! A new instance of HomeyAPIApp here will not create a duplicate version
+      //     of the zone and device list because it's unique and global to all instances
       const homeyApi = new HomeyAPIApp({ homey: app.homey });
       const zones = homeyApi.zones.getZones();
       for (let idx = devInfo.memberOf.length - 1; idx >= 0; idx--) {
