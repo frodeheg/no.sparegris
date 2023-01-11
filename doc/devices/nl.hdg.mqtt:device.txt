@@ -1,0 +1,25 @@
+Log ID: 2023-01-10T06:42:21.575Z
+App version 0.19.34
+
++6:42:21.575: ----- ANALYZING DEVICE -----
++6:42:21.577: Report type: Device is not listed
++6:42:21.579: Device ID:   9cd2c0cd-4140-4990-80b8-7d96cc7cc9e5
++6:42:21.705: Device name: AMS leser
++6:42:21.707: Driver Uri: homey:app:nl.hdg.mqtt
++6:42:21.709: Driver Id: device
++6:42:21.714: Error: TypeError: Cannot read properties of undefined (reading 'onoff_cap')
++6:42:21.716: Capabilities: measure_power,measure_current.l1,measure_current.l2,measure_current.l3,measure_voltage.l1,measure_voltage.l2,measure_voltage.l3,meter_power.acc,meter_power.hour,meter_power.day
++6:42:21.718: Options for 'measure_power': {"value":1834,"lastUpdated":"2023-01-10T06:42:21.603Z","type":"number","getable":true,"setable":false,"title":"Power","desc":"Power in watt (W)","units":"W","decimals":2,"chartType":"stepLine","id":"measure_power","options":{"capability":"measure_power","stateTopic":"ams/meter/import/active","setTopic":"","valueTemplate":"","outputTemplate":"","displayName":"Power"}}
++6:42:21.721: Options for 'measure_current.l1': {"value":0.79,"lastUpdated":"2023-01-10T06:23:51.578Z","type":"number","getable":true,"setable":false,"title":"Current","desc":"Electric current (A)","units":"A","decimals":2,"chartType":"stepLine","id":"measure_current.l1","options":{"capability":"measure_current","stateTopic":"ams/meter/l1/current","setTopic":"","valueTemplate":"","outputTemplate":"","displayName":"Current l1"}}
++6:42:21.731: Options for 'measure_current.l2': {"value":8.1,"lastUpdated":"2023-01-10T06:42:11.565Z","type":"number","getable":true,"setable":false,"title":"Current","desc":"Electric current (A)","units":"A","decimals":2,"chartType":"stepLine","id":"measure_current.l2","options":{"capability":"measure_current","stateTopic":"ams/meter/l2/current","setTopic":"","valueTemplate":"","outputTemplate":"","displayName":"Current l2"}}
++6:42:21.736: Options for 'measure_current.l3': {"value":1.32,"lastUpdated":"2023-01-10T06:42:21.540Z","type":"number","getable":true,"setable":false,"title":"Current","desc":"Electric current (A)","units":"A","decimals":2,"chartType":"stepLine","id":"measure_current.l3","options":{"capability":"measure_current","stateTopic":"ams/meter/l3/current","setTopic":"","valueTemplate":"","outputTemplate":"","displayName":"Current l3"}}
++6:42:21.743: Options for 'measure_voltage.l1': {"value":230,"lastUpdated":"2023-01-10T06:39:01.518Z","type":"number","getable":true,"setable":false,"title":"Voltage","desc":"Voltage (V)","units":"V","decimals":2,"chartType":"stepLine","id":"measure_voltage.l1","options":{"capability":"measure_voltage","stateTopic":"ams/meter/l1/voltage","setTopic":"","valueTemplate":"","outputTemplate":"","displayName":"Voltage l1"}}
++6:42:21.745: Options for 'measure_voltage.l2': {"value":229,"lastUpdated":"2023-01-10T06:42:11.575Z","type":"number","getable":true,"setable":false,"title":"Voltage","desc":"Voltage (V)","units":"V","decimals":2,"chartType":"stepLine","id":"measure_voltage.l2","options":{"capability":"measure_voltage","stateTopic":"ams/meter/l2/voltage","setTopic":"","valueTemplate":"","outputTemplate":"","displayName":"Voltage l2"}}
++6:42:21.748: Options for 'measure_voltage.l3': {"value":231,"lastUpdated":"2023-01-10T06:42:21.550Z","type":"number","getable":true,"setable":false,"title":"Voltage","desc":"Voltage (V)","units":"V","decimals":2,"chartType":"stepLine","id":"measure_voltage.l3","options":{"capability":"measure_voltage","stateTopic":"ams/meter/l3/voltage","setTopic":"","valueTemplate":"","outputTemplate":"","displayName":"Voltage l3"}}
++6:42:21.750: Options for 'meter_power.acc': {"value":145177,"lastUpdated":"2023-01-10T06:00:06.840Z","type":"number","getable":true,"setable":false,"title":"Energy","desc":"Energy usage in kilowatt-hour (kWh)","units":"kWh","decimals":2,"chartType":"spline","id":"meter_power.acc","options":{"capability":"meter_power","stateTopic":"ams/meter/import/active/accumulated","setTopic":"","valueTemplate":"","outputTemplate":"","displayName":"Energy"}}
++6:42:21.752: Options for 'meter_power.hour': {"value":2,"lastUpdated":"2023-01-10T06:42:21.617Z","type":"number","getable":true,"setable":false,"title":"Energy","desc":"Energy usage in kilowatt-hour (kWh)","units":"kWh","decimals":2,"chartType":"spline","id":"meter_power.hour","options":{"capability":"meter_power","stateTopic":"ams/realtime/import/hour","setTopic":"","valueTemplate":"","outputTemplate":"","displayName":"Energy this hour"}}
++6:42:21.754: Options for 'meter_power.day': {"value":20.28,"lastUpdated":"2023-01-10T06:42:21.653Z","type":"number","getable":true,"setable":false,"title":"Energy","desc":"Energy usage in kilowatt-hour (kWh)","units":"kWh","decimals":2,"chartType":"spline","id":"meter_power.day","options":{"capability":"meter_power","stateTopic":"ams/realtime/import/day","setTopic":"","valueTemplate":"","outputTemplate":"","displayName":"Energy this day"}}
++6:42:21.756: --- ANALYZING DEVICE DONE ---
++6:42:35.598: Email: birger.torjussen@gmail.com
+Comment:AMS leser Pow-K 
++6:42:35.639: Sending log

@@ -112,7 +112,8 @@ const DEFAULT_IGNORED = {
 // Default Ignored device:
 const DEFAULT_METER = {
   type: DEVICE_TYPE.METERREADER,
-  readPowerCap: 'measure_power'
+  readPowerCap: 'measure_power',
+  default: true
 };
 
 // Supported devices and how to use them
@@ -320,6 +321,10 @@ const DEVICE_CMD = {
     beta: true, // Need to be in beta until fan modes is supported otherwise it's heating only
     default: false
   },
+  'nl.hdg.mqtt:device': {
+    ...DEFAULT_METER,
+    default: false
+  },
   'nl.klikaanklikuit:ACC-250': DEFAULT_SWITCH,
   'nl.klikaanklikuit:AWMR-210': DEFAULT_SWITCH,
   'no.adax.smart-heater.homey-app:heater-wt': {
@@ -365,7 +370,8 @@ const DEVICE_CMD = {
   },
   'no.easee:equalizer': {
     ...DEFAULT_METER,
-    readExportCap: 'measure_power.surplus'
+    readExportCap: 'measure_power.surplus',
+    default: false
   },
   'no.hoiax:hiax-connected-200': {
     type: DEVICE_TYPE.WATERHEATER,
