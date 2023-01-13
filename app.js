@@ -1021,7 +1021,8 @@ class PiggyBank extends Homey.App {
       if ((driverId in d.DEVICE_CMD) && (d.DEVICE_CMD[driverId].type === d.DEVICE_TYPE.METERREADER)) {
         meterReaders[device.id] = {
           name: device.name,
-          driverId
+          driverId,
+          canUse: d.DEVICE_CMD[driverId].default
         };
         continue;
       }

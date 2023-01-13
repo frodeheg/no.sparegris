@@ -2130,8 +2130,7 @@
           let newMeterReaderText = `<option value="0">${Homey.__('settings.meter.useFlow')}</option>`;
           let selectedText = ' selected';
           for (let readerId in meterReaders) {
-            const { driverId } = meterReaders[readerId];
-            const canUse = d.DEVICE_CMD[driverId].default;
+            const { driverId, canUse } = meterReaders[readerId];
             newMeterReaderText += `<option value="${readerId}"${canUse?selectedText:''}>${meterReaders[readerId].name}</option>`;
             if (canUse) selectedText = '';
           }
