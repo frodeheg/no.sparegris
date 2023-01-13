@@ -697,5 +697,8 @@
   },
   "0.19.35": {
     "en": "Added mqtt device as meter reader. + Added support for Thermofloor:Z-Relay (switch mode only) + Made sure that other devices with no target-temperature like the ESHSUPERTR only show as a switch when configured to do so. +Added support for having multiple devises for the same driver + made the Altherma III Geo pump emulate onoff with minimum temperature"
+  },
+  "0.19.36": {
+    "en": "Fixes the issue in test version 0.19.35 that made the settings page unavailable"
   }
 }
