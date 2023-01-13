@@ -12,6 +12,10 @@
 //   beta           - true if not fully supported yet, undefined otherwise
 //   default        - true if the device is default, undefined otherwise
 //   workaround     - undefined except if the device is known to be unreliable and have a workaround
+// Special case devices may have these parameters:
+//   identifierCap  - A capability that need to be present in order to identify the device.
+//                    This is used in case multiple devices are represented in the same driver.
+//                    These will be represented in the table with an array index in the driverId.
 // HEATER : Additional parameters
 //   readTempCap    - Capability for reading temperature
 //   setTempCap     - Capability for setting temperature
@@ -128,20 +132,28 @@ const DEVICE_CMD = {
     setModeFanValue: 'wind',
     default: false
   },
-  'climate.onecta.daikin:altherma3_geo': {
-    ...DEFAULT_SWITCH,
-    note: 'The driver for this device does not follow proper design guidelines. If you experience problems please send a device report '
-      + 'and we can try to work around it. (Note: as this is a heat pump, for best energy saving give this device the highest priority)',
-    setOnOffCap: ['onoff', 'hotwatertank_onoff_altherma3'],
-    setOnValue: {
-      onoff: true,
-      hotwatertank_onoff_altherma3: 'on'
-    },
-    setOffValue: {
-      onoff: false,
-      hotwatertank_onoff_altherma3: 'off'
-    },
+  'climate.onecta.daikin:altherma3_geo:0': {
+    identifierCap: 'hotwatertank_onoff_altherma3',
+    type: DEVICE_TYPE.SWITCH,
+    setOnOffCap: 'hotwatertank_onoff_altherma3',
+    setOnValue: 'on',
+    setOffValue: 'off',
     default: false
+  },
+  'climate.onecta.daikin:altherma3_geo:1': {
+    identifierCap: 'operation_mode_altherma3',
+    type: DEVICE_TYPE.AC,
+    note: 'This device will emulate off by setting the temperature to the minimum setting',
+    setOnOffCap: null, // The onoff capability is unreliable
+    readTempCap: 'measure_temperature.leavingWaterTemperature',
+    setTempCap: 'target_temperature',
+    tempMin: 5, // Min is 4, but using 4 as emulated Off
+    tempMax: 35,
+    tempStep: 0.5,
+    setModeCap: 'operation_mode_altherma3',
+    setModeHeatValue: 'heating',
+    setModeCoolValue: 'cooling',
+    setModeAutoValue: 'auto'
   },
   'climate.onecta.daikin:perfera_floor_fvxm': {
     ...DEFAULT_AC,
@@ -432,7 +444,7 @@ const DEVICE_CMD = {
     type: DEVICE_TYPE.HEATER,
     note: 'This device has no onOff capability and will emulate Off by turning the temperature to absolute minimum',
     setOnOffCap: null, // There is no such capability for this device
-    readTempCap: 'measure_temperature', // Indoor temp does not work on the device in question...
+    readTempCap: 'measure_temperature',
     setTempCap: 'target_temperature',
     tempMin: 5, // Min is 4, but using 4 as emulated Off
     tempMax: 35,
@@ -458,7 +470,34 @@ const DEVICE_CMD = {
   default_switch: DEFAULT_SWITCH,
 };
 
+/**
+ * Generate a driverId to be used for lookups in the table above
+ */
+function generateDriverId(device) {
+  let driverId = `${device.driverUri.split(':').at(-1)}:${device.driverId}`;
+  if (!(driverId in DEVICE_CMD)) {
+    let idx = 0;
+    let checkForOddDriver = !(driverId in DEVICE_CMD);
+    while (checkForOddDriver) {
+      const newDriverId = `${driverId}:${idx}`;
+      if (newDriverId in DEVICE_CMD) {
+        if (device.capabilities.includes(DEVICE_CMD[newDriverId].identifierCap)) {
+          driverId = newDriverId;
+          checkForOddDriver = false;
+        } else {
+          idx++;
+          checkForOddDriver = true;
+        }
+      } else {
+        checkForOddDriver = false;
+      }
+    }
+  }
+  return driverId;
+}
+
 module.exports = {
   DEVICE_TYPE,
-  DEVICE_CMD
+  DEVICE_CMD,
+  generateDriverId
 };

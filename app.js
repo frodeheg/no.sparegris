@@ -1017,7 +1017,7 @@ class PiggyBank extends Homey.App {
 
     // Loop all devices
     for (const device of Object.values(devices)) {
-      const driverId = `${device.driverUri.split(':').at(-1)}:${device.driverId}`;
+      const driverId = d.generateDriverId(device);
       if ((driverId in d.DEVICE_CMD) && (d.DEVICE_CMD[driverId].type === d.DEVICE_TYPE.METERREADER)) {
         meterReaders[device.id] = {
           name: device.name,
@@ -3446,7 +3446,7 @@ class PiggyBank extends Homey.App {
           const isExperimental = (deviceId in this.__deviceList)
             && (!(this.__deviceList[deviceId].driverId in d.DEVICE_CMD)
               || (d.DEVICE_CMD[this.__deviceList[deviceId].driverId].beta === true));
-          const driverId = `${device.driverUri.split(':').at(-1)}:${device.driverId}`;
+          const driverId = d.generateDriverId(device);
           const ignoreDevice = (driverId in d.DEVICE_CMD) && (d.DEVICE_CMD[driverId].type === d.DEVICE_TYPE.IGNORE);
           if ((onoffCap === undefined && +type === 4 && !ignoreDevice) // Not listed
             || (onoffCap !== undefined && +type === 2) // Onoff problem
