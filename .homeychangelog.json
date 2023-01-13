@@ -694,5 +694,8 @@
   },
   "0.19.34": {
     "en": "Override for easee charger was not always working. + Made sure charging now also is retried when the Easee app reports error + Added confirm dialogue when going to a higher power tariff + fi.taelek.ecocontrol:oled is now out of beta. + Removed 'Kroatiske kuna' as a currency as this has been replaced with Euro."
+  },
+  "0.19.35": {
+    "en": "Added mqtt device as meter reader. + Added support for Thermofloor:Z-Relay (switch mode only) + Made sure that other devices with no target-temperature like the ESHSUPERTR only show as a switch when configured to do so. +Added support for having multiple devises for the same driver + made the Altherma III Geo pump emulate onoff with minimum temperature"
   }
 }
