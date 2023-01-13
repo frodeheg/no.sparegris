@@ -170,7 +170,10 @@ const DEVICE_CMD = {
   'com.datek.eva:meter-reader': DEFAULT_METER,
   'com.elko:ESHSUPERTR': {
     ...DEFAULT_HEATER,
-    note: 'Please contact the developer on frode.heggelund@gmail.com to help resolve/confirm any issues with this device. I get reports about this not working properly.',
+    note: 'Please note that the vendor of this device only expose the capability to set temperature in case the device is '
+      + 'configured as a thermostat. When in regulator mode this app will only be able to control it as a switch. You may '
+      + 'have to reinstall the device in Homey if you ever change this setting in order to make the device appear correctly '
+      + 'in Piggy.',
     setOnOffCap: 'power_status',
     tempMax: 50,
     beta: true,
@@ -407,18 +410,7 @@ const DEVICE_CMD = {
     tempStep: 0.5, // Actually 0.01
     default: false
   },
-  /* 'no.thermofloor:Z-Relay': {
-    type: DEVICE_TYPE.HEATER,
-    setOnOffCap: 'onoff',
-    setOnValue: true,
-    setOffValue: false,
-    readTempCap: 'measure_temperature.input1',
-    // setTempCap: undefined,
-    tempMin: -40,
-    tempMax: 85,
-    tempStep: 0.5,
-    beta: true
-  }, */
+  'no.thermofloor:Z-Relay': DEFAULT_SWITCH,
   'no.thermofloor:Z-TRM2fx': {
     type: DEVICE_TYPE.HEATER,
     setOnOffCap: 'thermofloor_mode',
