@@ -1160,7 +1160,7 @@ class PiggyBank extends Homey.App {
     appConfigProgress.numSpookeyChanges = this.__spookey_changes;
     appConfigProgress.energyMeterNotConnected = (this.__energy_meter_detected_time === undefined);
     appConfigProgress.timeSinceEnergyMeter = ((new Date() - this.__energy_meter_detected_time) / 1000);
-    appConfigProgress.gotPPFromFlow = this.homey.settings.get('gotPPFromFlow') === 'true';
+    appConfigProgress.gotPPFromFlow = this.homey.settings.get('gotPPFromFlow');
     appConfigProgress.ApiStatus = this.apiState;
     return appConfigProgress;
   }
