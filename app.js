@@ -440,7 +440,7 @@ class PiggyBank extends Homey.App {
       this.homey.settings.set('settingsVersion', 4);
     }
 
-    // Version 0.19.35
+    // Version 0.19.37
     if (+settingsVersion < 5) {
       const futurePriceOptions = this.homey.settings.get('futurePriceOptions');
       if (futurePriceOptions && ('averageTime' in futurePriceOptions)) {
