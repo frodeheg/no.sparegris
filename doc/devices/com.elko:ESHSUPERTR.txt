@@ -104,3 +104,40 @@ Comment:Elko Smart Super TR RF mangler
 +22:51:55.275: Email:
 %20hsiljuholtet@gmail.com
 %0AComment:Elko Super TR termostar er satt opp til regulator med %, men sparegris vil prisstyre den som termostat med Celsius
+
+Log ID: 2023-01-13T10:48:21.898Z
+App version 0.19.34
+
++10:48:21.898: ----- ANALYZING DEVICE -----
++10:48:21.900: Report type: Device does not set temperature
++10:48:21.902: Device ID:   dc1cbda6-c154-42c3-b0c2-35db0a28fb7e
++10:48:22.094: Device name: Varme Hovedbad
++10:48:22.096: Driver Uri: homey:app:com.elko
++10:48:22.097: Driver Id: ESHSUPERTR
++10:48:22.099: Found onoff cap: power_status
++10:48:22.101: Found temp cap: target_temperature
++10:48:22.102: Device reliability: 1
++10:48:22.104: Capabilities: target_temperature,measure_temperature,measure_temperature.air,measure_temperature.floor,maxFloorTemp,measure_power,meter_power,power_status,childLock,heat,sensorMode,regulatorMode,thermostatLoad,regulatorTime,tempCalibration,button.reset_kwh_meter,night_switching,frost_guard,button.reset_kwhMeter
++10:48:22.106: Options for 'target_temperature': {"value":5,"lastUpdated":"2023-01-13T10:38:48.101Z","type":"number","getable":true,"setable":true,"title":"Ønsket temperatur","desc":null,"units":"°C","decimals":2,"min":5,"max":50,"step":0.5,"chartType":"stepLine","id":"target_temperature","options":{"min":5,"max":50,"step":0.5}}
++10:48:22.109: Options for 'measure_temperature': {"value":null,"lastUpdated":null,"type":"number","getable":true,"setable":false,"title":"Temperatur","desc":"Temperatur i grader Celsius (°C)","units":"°C","decimals":2,"chartType":"spline","id":"measure_temperature","options":{}}
++10:48:22.111: Options for 'measure_temperature.air': {"value":23.9,"lastUpdated":"2023-01-13T10:46:47.018Z","type":"number","getable":true,"setable":false,"title":"Luft","desc":"Temperatur i grader Celsius (°C)","units":"°C","decimals":2,"chartType":"spline","id":"measure_temperature.air","options":{"title":{"en":"Air","no":"Luft"}}}
++10:48:22.112: Options for 'measure_temperature.floor': {"value":31,"lastUpdated":"2023-01-13T10:46:47.029Z","type":"number","getable":true,"setable":false,"title":"Gulv","desc":"Temperatur i grader Celsius (°C)","units":"°C","decimals":2,"chartType":"spline","id":"measure_temperature.floor","options":{"title":{"en":"Floor","no":"Gulv"}}}
++10:48:22.114: Options for 'maxFloorTemp': {"value":35,"lastUpdated":"2023-01-01T18:10:55.032Z","type":"number","getable":true,"setable":true,"title":"Makstemperatur ved bruk av gulvvakt","desc":null,"units":null,"min":20,"max":40,"step":1,"id":"maxFloorTemp","options":{"min":20,"max":40,"step":1}}
++10:48:22.116: Options for 'measure_power': {"value":0,"lastUpdated":"2023-01-13T10:34:31.308Z","type":"number","getable":true,"setable":false,"title":"Effekt","desc":"Effekt i watt (W)","units":"W","decimals":2,"chartType":"stepLine","id":"measure_power","options":{}}
++10:48:22.118: Options for 'meter_power': {"value":30,"lastUpdated":"2023-01-13T10:41:14.769Z","type":"number","getable":true,"setable":false,"title":"Energi","desc":"Energiforbruk i kilowattimer (kWh)","units":"kWh","decimals":2,"chartType":"spline","id":"meter_power","options":{}}
++10:48:22.120: Options for 'power_status': {"value":true,"lastUpdated":"2023-01-11T14:05:53.016Z","type":"boolean","getable":true,"setable":true,"title":"Power","desc":"Power Status","units":null,"id":"power_status","options":{}}
++10:48:22.123: Options for 'childLock': {"value":true,"lastUpdated":"2023-01-01T18:15:28.734Z","type":"boolean","getable":true,"setable":true,"title":"Barnesikkring","desc":"Barnesikkring","units":null,"iconObj":{"id":"ceaed6f8a1e09c8d50bbfb3beb048ca5","url":"/icon/ceaed6f8a1e09c8d50bbfb3beb048ca5/icon.svg"},"id":"childLock","options":{}}
++10:48:22.124: Options for 'heat': {"value":false,"lastUpdated":"2023-01-13T10:34:31.297Z","type":"boolean","getable":true,"setable":false,"title":"Varmer","desc":"Varmer","units":null,"iconObj":{"id":"31684dde2c4ba9cb0546741bab387414","url":"/icon/31684dde2c4ba9cb0546741bab387414/icon.svg"},"id":"heat","options":{}}
++10:48:22.126: Options for 'sensorMode': {"value":1,"lastUpdated":"2023-01-01T18:11:31.781Z","type":"number","getable":true,"setable":true,"title":"Sensor modus","desc":null,"units":null,"id":"sensorMode","options":{}}
++10:48:22.130: Options for 'regulatorMode': {"value":false,"lastUpdated":"2023-01-01T18:10:54.031Z","type":"boolean","getable":true,"setable":true,"title":"Regulator modus","desc":null,"units":null,"id":"regulatorMode","options":{}}
++10:48:22.133: Options for 'thermostatLoad': {"value":1800,"lastUpdated":"2023-01-02T06:46:52.359Z","type":"number","getable":true,"setable":true,"title":"Termostat Varmekabel effekt","desc":null,"units":null,"id":"thermostatLoad","options":{}}
++10:48:22.135: Options for 'regulatorTime': {"value":15,"lastUpdated":"2023-01-01T18:10:55.605Z","type":"number","getable":true,"setable":true,"title":"Tid mellom av/påslag av relé","desc":null,"units":null,"id":"regulatorTime","options":{}}
++10:48:22.137: Options for 'tempCalibration': {"value":0,"lastUpdated":"2023-01-01T18:10:55.841Z","type":"number","getable":true,"setable":false,"title":"Termostat temperatur kalibrering","desc":null,"units":null,"id":"tempCalibration","options":{}}
++10:48:22.139: Options for 'button.reset_kwh_meter': {"value":null,"lastUpdated":null,"type":"boolean","getable":false,"setable":true,"title":"Knapp","desc":null,"units":null,"id":"button.reset_kwh_meter","options":{}}
++10:48:22.141: Options for 'night_switching': {"value":true,"lastUpdated":"2023-01-01T18:16:03.526Z","type":"boolean","getable":true,"setable":true,"title":"Nattmodus","desc":"Nattmodus","units":null,"iconObj":{"id":"69c176040c2a1e0d63fc18ecfe9cc657","url":"/icon/69c176040c2a1e0d63fc18ecfe9cc657/icon.svg"},"id":"night_switching","options":{}}
++10:48:22.143: Options for 'frost_guard': {"value":false,"lastUpdated":"2023-01-01T18:15:33.247Z","type":"boolean","getable":true,"setable":true,"title":"Frostvakt","desc":"Frostvakt","units":null,"iconObj":{"id":"ab5d5d16702d754df127f207afccb4b0","url":"/icon/ab5d5d16702d754df127f207afccb4b0/icon.svg"},"id":"frost_guard","options":{}}
++10:48:22.145: Options for 'button.reset_kwhMeter': {"value":null,"type":"boolean","getable":false,"setable":true,"title":"Nullstill kw/t teller","desc":"Nullstill kwt teller, OBS! Data blir slettet!","units":null,"id":"button.reset_kwhMeter","options":{"maintenanceAction":true,"title":{"en":"Reset power meter","no":"Nullstill kw/t teller"},"desc":{"en":"Reset the accumulated power usage (kWh), note that this can not be reversed.","no":"Nullstill kwt teller, OBS! Data blir slettet!"}}}
++10:48:22.147: --- ANALYZING DEVICE DONE ---
++10:50:7.903: Email: ole.johan@tynes.no
+Comment:Setter temperatur til 5 grader på enheter jeg nylig har lagt til.
++10:50:7.910: Sending log

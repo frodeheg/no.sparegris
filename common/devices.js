@@ -186,6 +186,7 @@ const DEVICE_CMD = {
       + 'configured as a thermostat. When in regulator mode this app will only be able to control it as a switch. You may '
       + 'have to reinstall the device in Homey if you ever change this setting in order to make the device appear correctly '
       + 'in Piggy.',
+    readTempCap: 'measure_temperature.floor', // measure_temperature can be null if set to regulator mode
     setOnOffCap: 'power_status',
     tempMax: 50,
     beta: true,
