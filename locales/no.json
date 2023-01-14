@@ -270,13 +270,10 @@
         "extremePriceModifier": "Grense for ekstrempriser",
         "extremePriceModifierHint": "Dersom den gjeldende timeprisen kommer x% over grunnlaget for prissammenligning blir prispunkt alltid satt til ekstremt dyrt",
         "averageTime": "Grunnlag for prissammenligning",
-        "averageTimeHint": "Om en pris er dyr eller billig avgjøres ved å se om den er x% over/under snittprisen i det angitte intervallet.",
-        "day0": "Snittpris i dag",
-        "day1": "Siste døgn",
-        "day2": "Siste to døgn",
-        "day4": "Siste fire døgn",
-        "day7": "Siste uke",
-        "day30": "Siste måned"
+        "averageTimeHint": "Om en pris er dyr eller billig avgjøres ved å se om den er x% over/under snittprisen i de forrige X og neste Y timene. Hvis X+Y<1 så brukes dagens snittpris.",
+        "prev": "Forrige",
+        "next": "Neste",
+        "hours": "timer"
       }
     },
     "frost": {

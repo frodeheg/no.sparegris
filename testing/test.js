@@ -266,7 +266,8 @@ async function testIssue63() {
   const futurePriceOptions = app.homey.settings.get('futurePriceOptions');
   futurePriceOptions.minCheapTime = 0;
   futurePriceOptions.minExpensiveTime = 0;
-  futurePriceOptions.averageTime = 7;
+  futurePriceOptions.averageTimePast = 7 * 24;
+  futurePriceOptions.averageTimeFuture = 0;
   futurePriceOptions.dirtCheapPriceModifier = -40;
   futurePriceOptions.lowPriceModifier = -10;
   futurePriceOptions.highPriceModifier = 10;

@@ -1422,7 +1422,7 @@
                   </tr>
                   <tr>
                     <td class="settings_row_name"><label for="surcharge" data-i18n="settings.cost.surcharge">cost.surcharge</label>:</td>
-                    <td class="settings_row_input"><input id="surcharge" type="number" min="0" value="0" onchange="displaySaveHint()">/kWh</td>
+                    <td class="settings_row_input"><input id="surcharge" class="inputElem" type="number" min="0" value="0" onchange="displaySaveHint()">/kWh</td>
                   </tr>
                 </table>
               </span>
@@ -1431,7 +1431,7 @@
                 <table class="settings_table">
                   <tr>
                     <td class="settings_row_name"><label for="priceFixed" data-i18n="settings.price.priceFixed">price.fixed</label>:</td>
-                    <td class="settings_row_input"><input id="priceFixed" type="number" size="10" min="0" step="0.01" value="0.50" onchange="displaySaveHint()"> /kWh</td>
+                    <td class="settings_row_input"><input id="priceFixed" class="inputElem" type="number" size="10" min="0" step="0.01" value="0.50" onchange="displaySaveHint()"> /kWh</td>
                   </tr>
                 </table>
               </span>
@@ -1439,11 +1439,11 @@
                 <table class="settings_table">
                   <tr>
                     <td class="settings_row_name"><label for="gridTaxDay" data-i18n="settings.cost.gridTaxDay">cost.gridTaxDay</label>:</td>
-                    <td class="settings_row_input"><input id="gridTaxDay" type="number" min="0" value="0.3626" onchange="displaySaveHint()">/kWh</td>
+                    <td class="settings_row_input"><input id="gridTaxDay" class="inputElem" type="number" min="0" value="0.3626" onchange="displaySaveHint()">/kWh</td>
                   </tr>
                   <tr>
                     <td class="settings_row_name"><label for="gridTaxNight" data-i18n="settings.cost.gridTaxNight">cost.gridTaxNight</label>:</td>
-                    <td class="settings_row_input"><input id="gridTaxNight" type="number" min="0" value="0.2839" onchange="displaySaveHint()">/kWh</td>
+                    <td class="settings_row_input"><input id="gridTaxNight" class="inputElem" type="number" min="0" value="0.2839" onchange="displaySaveHint()">/kWh</td>
                   </tr>
                 </table>
               </span>
@@ -1452,7 +1452,7 @@
                   <tr>
                     <td class="settings_row_name"><label for="minCheapTime" data-i18n="settings.price.internal.minCheapTime">price.internal.minCheapTime</label>:</td>
                     <td class="settings_row_input">
-                      <input id="minCheapTime" type="number" size="10" min="0" max="10" step="1" value="4" onchange="displaySaveHint()">
+                      <input id="minCheapTime" class="inputElem" type="number" size="10" min="0" max="10" step="1" value="4" onchange="limitElement(this);displaySaveHint()">
                       <div class="hintButton" onclick="toggle(this,'minCheapTimeHint');return false;">i</div>
                     </td>
                   </tr>
@@ -1463,7 +1463,7 @@
                   <tr>
                     <td class="settings_row_name"><label for="minExpensiveTime" data-i18n="settings.price.internal.minExpensiveTime">price.internal.minExpensiveTime</label>:</td>
                     <td class="settings_row_input">
-                      <input id="minExpensiveTime" type="number" size="10" min="0" max="10" step="1" value="4" onchange="displaySaveHint()">
+                      <input id="minExpensiveTime" class="inputElem" type="number" size="10" min="0" max="10" step="1" value="4" onchange="limitElement(this);displaySaveHint()">
                       <div class="hintButton" onclick="toggle(this,'minExpensiveTimeHint');return false;">i</div>
                     </td>
                   </tr>
@@ -1472,16 +1472,14 @@
 
                 <table class="settings_table">
                   <tr>
-                    <td class="settings_row_name"><label for="averageTime" data-i18n="settings.price.internal.averageTime">price.internal.averageTime</label>:</td>
+                    <td class="settings_row_name" valign="top"><label for="averageTimePast" data-i18n="settings.price.internal.averageTime">price.internal.averageTime</label>:</td>
                     <td class="settings_row_input">
-                      <select id="averageTime" onchange="displaySaveHint()">
-                        <option value="0" data-i18n="settings.price.internal.day0" selected>price.internal.day0</option>
-                        <option value="1" data-i18n="settings.price.internal.day1">price.internal.day1</option>
-                        <option value="2" data-i18n="settings.price.internal.day2">price.internal.day2</option>
-                        <option value="4" data-i18n="settings.price.internal.day4">price.internal.day4</option>
-                        <option value="7" data-i18n="settings.price.internal.day7">price.internal.day7</option>
-                        <option value="30" data-i18n="settings.price.internal.day30">price.internal.day30</option>
-                      </select>
+                      <span data-i18n="settings.price.internal.prev">internal.prev</span>:<br>
+                      <input id="averageTimePast" class="inputElem" type="number" size="10" min="0" max="1000" step="1" value="4" onchange="limitElement(this);displaySaveHint()">
+                      <span data-i18n="settings.price.internal.hours">internal.hours</span><br>
+                      <span data-i18n="settings.price.internal.next">internal.next</span>:<br>
+                      <input id="averageTimeFuture" class="inputElem" type="number" size="10" min="0" max="12" step="1" value="4" onchange="limitElement(this);displaySaveHint()">
+                      <span data-i18n="settings.price.internal.hours">internal.hours</span>
                       <div class="hintButton" onclick="toggle(this,'averageTimeHint');return false;">i</div>
                     </td>
                   </tr>
@@ -1492,7 +1490,7 @@
                   <tr>
                     <td class="settings_row_name"><label for="dirtCheapPriceModifier" data-i18n="settings.price.internal.dirtCheapPriceModifier">price.internal.dirtCheapPriceModifier</label>:</td>
                     <td class="settings_row_input">
-                      <input id="dirtCheapPriceModifier" data-i18n="settings.price.internal.hour1" type="number" size="10" min="-100" max="-50" value="-50" onchange="displaySaveHint()">%
+                      <input id="dirtCheapPriceModifier" class="inputElem" data-i18n="settings.price.internal.hour1" type="number" size="10" min="-100" max="-50" value="-50" onchange="limitElement(this);displaySaveHint()">%
                       <div class="hintButton" onclick="toggle(this,'dirtCheapPriceModifierHint');return false;">i</div>
                     </td>
                   </tr>
@@ -1503,7 +1501,7 @@
                   <tr>
                     <td class="settings_row_name"><label for="lowPriceModifier" data-i18n="settings.price.internal.lowPriceModifier">price.internal.lowPriceModifier</label>:</td>
                     <td class="settings_row_input">
-                      <input id="lowPriceModifier" data-i18n="settings.price.internal.hour1" type="number" size="10" min="-50" max="-10" value="-10" onchange="displaySaveHint()">%
+                      <input id="lowPriceModifier" class="inputElem" data-i18n="settings.price.internal.hour1" type="number" size="10" min="-50" max="-10" value="-10" onchange="limitElement(this);displaySaveHint()">%
                       <div class="hintButton" onclick="toggle(this,'lowPriceModifierHint');return false;">i</div>
                     </td>
                   </tr>
@@ -1514,7 +1512,7 @@
                   <tr>
                     <td class="settings_row_name"><label for="highPriceModifier" data-i18n="settings.price.internal.highPriceModifier">price.internal.highPriceModifier</label>:</td>
                     <td class="settings_row_input">
-                      <input id="highPriceModifier" data-i18n="settings.price.internal.hour1" type="number" size="10" min="1" max="100" value="10" onchange="displaySaveHint()">%
+                      <input id="highPriceModifier" class="inputElem" data-i18n="settings.price.internal.hour1" type="number" size="10" min="1" max="100" value="10" onchange="limitElement(this);displaySaveHint()">%
                       <div class="hintButton" onclick="toggle(this,'highPriceModifierHint');return false;">i</div>
                     </td>
                   </tr>
@@ -1525,7 +1523,7 @@
                   <tr>
                     <td class="settings_row_name"><label for="extremePriceModifier" data-i18n="settings.price.internal.extremePriceModifier">price.internal.extremePriceModifier</label>:</td>
                     <td class="settings_row_input">
-                      <input id="extremePriceModifier" data-i18n="settings.price.internal.hour1" type="number" size="10" min="100" max="1000" value="10" onchange="displaySaveHint()">%
+                      <input id="extremePriceModifier" class="inputElem" data-i18n="settings.price.internal.hour1" type="number" size="10" min="100" max="1000" value="10" onchange="limitElement(this);displaySaveHint()">%
                       <div class="hintButton" onclick="toggle(this,'extremePriceModifierHint');return false;">i</div>
                     </td>
                   </tr>
@@ -1875,7 +1873,8 @@
           document.getElementById("safetyPower").value = currentSafetyPower;
           document.getElementById("pricePoint").value = currentPricePoint;
           document.getElementById("mainFuse").value = currentMainFuse;
-          document.getElementById("averageTime").value = futurePriceOptions.averageTime;
+          document.getElementById("averageTimePast").value = futurePriceOptions.averageTimePast;
+          document.getElementById("averageTimeFuture").value = futurePriceOptions.averageTimeFuture;
           document.getElementById("minCheapTime").value = futurePriceOptions.minCheapTime;
           document.getElementById("minExpensiveTime").value = futurePriceOptions.minExpensiveTime;
           document.getElementById("dirtCheapPriceModifier").value = futurePriceOptions.dirtCheapPriceModifier;
@@ -2369,7 +2368,8 @@
                 Homey.alert(Homey.__('warnings.noDevices'));
               } catch(err) {}; // Ignore popup blockers
             } else {
-              futurePriceOptions.averageTime = document.getElementById("averageTime").value;
+              futurePriceOptions.averageTimePast = document.getElementById("averageTimePast").value;
+              futurePriceOptions.averageTimeFuture = document.getElementById("averageTimeFuture").value;
               futurePriceOptions.minCheapTime = document.getElementById("minCheapTime").value;
               futurePriceOptions.minExpensiveTime = document.getElementById("minExpensiveTime").value;
               futurePriceOptions.dirtCheapPriceModifier = document.getElementById("dirtCheapPriceModifier").value;

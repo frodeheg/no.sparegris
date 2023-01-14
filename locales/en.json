@@ -270,13 +270,10 @@
         "extremePriceModifier": "Limit for extreme prices",
         "extremePriceModifierHint": "If the current hourly price is x% above the basis for price comparison, the price point is always set to Extremely Expensive",
         "averageTime": "Basis for price comparison",
-        "averageTimeHint": "Whether a price is expensive or cheap is determined by seeing if it is x% above/below the average price in the specified interval.",
-        "day0": "Average price today",
-        "day1": "Last day",
-        "day2": "Last two days",
-        "day4": "Last four days",
-        "day7": "Last week",
-        "day30": "Last month"
+        "averageTimeHint": "Whether a price is expensive or cheap is determined by seeing if it is x% above/below the average price in the previous X and next Y hours. If X+Y<1 then the average price today is used.",
+        "prev": "Prev",
+        "next": "Next",
+        "hours": "timer"
       }
     },
     "frost": {

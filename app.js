@@ -440,6 +440,19 @@ class PiggyBank extends Homey.App {
       this.homey.settings.set('settingsVersion', 4);
     }
 
+    // Version 0.19.35
+    if (+settingsVersion < 5) {
+      const futurePriceOptions = this.homey.settings.get('futurePriceOptions');
+      if (futurePriceOptions && ('averageTime' in futurePriceOptions)) {
+        // Only fix this for old users, new users get this defaulted later in the code
+        futurePriceOptions.averageTimeFuture = 0;
+        futurePriceOptions.averageTimePast = 24 * +futurePriceOptions.averageTime;
+        delete futurePriceOptions.averageTime;
+        this.homey.settings.set('futurePriceOptions', futurePriceOptions);
+      }
+      this.homey.settings.set('settingsVersion', 5);
+    }
+
     // Internal state that preferably should be removed as it is in the archive
     // this.homey.settings.unset('stats_savings_all_time_use');
     // this.homey.settings.unset('stats_savings_all_time_power_part');
@@ -494,7 +507,8 @@ class PiggyBank extends Homey.App {
     if (!futurePriceOptions
       || !('minCheapTime' in futurePriceOptions)
       || !('minExpensiveTime' in futurePriceOptions)
-      || !('averageTime' in futurePriceOptions)
+      || !('averageTimeFuture' in futurePriceOptions)
+      || !('averageTimePast' in futurePriceOptions)
       || !('dirtCheapPriceModifier' in futurePriceOptions)
       || !('lowPriceModifier' in futurePriceOptions)
       || !('highPriceModifier' in futurePriceOptions)
@@ -513,7 +527,8 @@ class PiggyBank extends Homey.App {
       if (!futurePriceOptions) futurePriceOptions = {};
       if (!('minCheapTime' in futurePriceOptions)) futurePriceOptions.minCheapTime = 4;
       if (!('minExpensiveTime' in futurePriceOptions)) futurePriceOptions.minExpensiveTime = 4;
-      if (!('averageTime' in futurePriceOptions)) futurePriceOptions.averageTime = 0;
+      if (!('averageTimeFuture' in futurePriceOptions)) futurePriceOptions.averageTimeFuture = 12;
+      if (!('averageTimePast' in futurePriceOptions)) futurePriceOptions.averageTimePast = 24;
       if (!('dirtCheapPriceModifier' in futurePriceOptions)) futurePriceOptions.dirtCheapPriceModifier = -50;
       if (!('lowPriceModifier' in futurePriceOptions)) futurePriceOptions.lowPriceModifier = -10;
       if (!('highPriceModifier' in futurePriceOptions)) futurePriceOptions.highPriceModifier = 10;
@@ -3640,16 +3655,20 @@ class PiggyBank extends Homey.App {
     const priceKind = !futureData ? null : +futureData.priceKind;
     const outState = {};
 
-    const hoursInInterval = +futureData.averageTime * 24;
+    const hoursInInterval = +futureData.averageTimePast + +futureData.averageTimeFuture;
+
     if (!Number.isInteger(hoursInInterval)
       || hoursInInterval === 0
       || typeof (averagePrice) !== 'number'
       || !Number.isFinite(averagePrice)) {
       // Use today price average
-      averagePrice = todayArray.reduce((a, b) => a + b, 0) / todayArray.length; // Should always be divide by 24
+      averagePrice = (todayArray.length === 0) ? undefined : todayArray.reduce((a, b) => a + b, 0) / todayArray.length; // Should always be divide by 24
     } else {
       // Calculate average price over time
-      averagePrice = (averagePrice * (hoursInInterval - 1) + todayArray[todayIndex]) / hoursInInterval;
+      let futurePriceIdx = todayIndex + +futureData.averageTimeFuture;
+      if (futurePriceIdx >= todayArray.length) futurePriceIdx = todayArray.length - 1;
+      const futurePrice = (futurePriceIdx >= 0) ? todayArray[futurePriceIdx] : averagePrice;
+      averagePrice = (averagePrice * (hoursInInterval - 1) + futurePrice) / hoursInInterval;
     }
 
     outState.averagePrice = averagePrice;
