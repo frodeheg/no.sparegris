@@ -700,5 +700,8 @@
   },
   "0.19.36": {
     "en": "Fixes the issue in test version 0.19.35 that made the settings page unavailable"
+  },
+  "0.19.37": {
+    "en": "Changed basis for price comparison to be average of prev X and next Y hours"
   }
 }
