@@ -706,5 +706,8 @@
   },
   "0.19.38": {
     "en": "Fixed the com.elko: ESHSUPERTR, frost guard did not work correctly on it. + Fixed feedback about missing flows for setting PP + Split the price from price points in the interface + Moved around the UI a bit to make it better organized."
+  },
+  "0.19.39": {
+    "en": "Added wizzard code for maxPower"
   }
 }
