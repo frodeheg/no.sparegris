@@ -919,6 +919,12 @@
               <div class="hintButton" onclick="toggle(this,'activationHint1');toggle(this,'activationHint2');return false;">i</div>
             </td>
           </tr>
+          <tr>
+            <td class="settings_row_name"><label data-i18n="settings.mode.maxPower">mode.maxPower</label>:</td>
+            <td class="settings_row_input"><label id="maxPowerDuplicate">maxPower</label>
+              <div class="edit icon" onclick="document.getElementById('collapsible4').checked = true;changeTab(event, 'costPage');flashElement('maxPower')"></div>
+            </td>
+          </tr>
         </table>
         <p id="activationHint1" class="hint" data-i18n="settings.app.activationHint1">app.activationHint1</p>
         <p id="activationHint2" class="hint" data-i18n="settings.app.activationHint2">app.activationHint2</p>
@@ -2692,6 +2698,7 @@
         // Update notifications in Welcome Page
         if (tabPage == 'welcomePage') {
           refreshTodoList();
+          document.getElementById('maxPowerDuplicate').innerHTML = String(+document.getElementById('maxPower').value / 1000) + " kWh";
         }
 
         // Update devicelist for Frost Page
