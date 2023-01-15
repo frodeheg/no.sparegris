@@ -680,7 +680,7 @@
           if (Number.isNaN(limitBelow)) limitBelow = 0;
           if ((limit > 0) && (limit <= 100000)) {
             let selectedText = (limit == maxPower) ? ' selected' : '';
-            lines += `<option value="${limit}"${selectedText}>${stepText} ${i+1} - ${limitBelow/1000}-${limit/1000} kW</option>`;
+            lines += `<option value="${limit}"${selectedText}>${stepText} ${i+1} - ${limitBelow/1000}-${limit/1000} kWh</option>`;
           }
         }
         selector.innerHTML = lines;

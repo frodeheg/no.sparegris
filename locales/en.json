@@ -350,9 +350,6 @@
       "sendConfirm": "Send the log contents to the developer?",
       "thankYou": "Thank you! (Please note that the messaging service is a bit unreliable. If you do not get any response, please try again later or use the forum)",
       "sendError": "Failed sending the log, please try again later or wait for app update. ",
-      "showState": "State",
-      "showPriceApi": "Info from Utilitycost",
-      "generic": "Generic Troubleshooting",
       "email": "Email",
       "comment": "Comment",
       "required": "You have not generated a report or described the problem. Please generate a report or describe the problem+your email address before you submit the log."

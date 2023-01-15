@@ -27,12 +27,8 @@ module.exports = {
         return homey.app.sendLog();
       case 'log':
         return homey.app.updateLog(query.text, query.loglevel);
-      case 'logShowState':
-        return homey.app.logShowState();
       case 'logShowCaps':
         return homey.app.logShowCaps(query.deviceId, query.filter);
-      case 'logShowPriceApi':
-        return homey.app.logShowPriceApi();
       case 'setLogLevel':
         return homey.app.setLogLevel(query.logLevel);
       case 'setLogUnit':

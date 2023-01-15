@@ -26,11 +26,6 @@ const logPageText = `
   <label for="showCaps"><span data-i18n="settings.deviceinfo.getinfo">deviceinfo.getinfo</span>:</label>
   <button id="showCaps" data-i18n="settings.deviceinfo.analyze">deviceinfo.analyze</button>
 </fieldset>
-<fieldset id="logGeneric" style="display:none">
-  <legend data-i18n="settings.log.generic">log.generic</legend>
-  <button id="showPriceApi" data-i18n="settings.log.showPriceApi">log.showPriceApi</button>
-  <button id="showState" data-i18n="settings.log.showState">log.showState</button>
-</fieldset>
 <fieldset>
   <legend data-i18n="settings.log.header">log.header</legend>
   <div id="logExtended" style="display:none">
@@ -56,9 +51,7 @@ const logPageText = `
 let logLevelElement;
 let logUnitElement;
 let diagLogElement;
-let showStateElement;
 let showCapsElement;
-let showPriceApiElement;
 let clearLogElement;
 let sendLogElement;
 let deviceFilterElement;
@@ -77,9 +70,7 @@ async function initializeLogPage(document, Homey) {
     logLevelElement = document.getElementById('logLevel');
     logUnitElement = document.getElementById('logUnit');
     diagLogElement = document.getElementById('diagLog');
-    showStateElement = document.getElementById('showState');
     showCapsElement = document.getElementById('showCaps');
-    showPriceApiElement = document.getElementById('showPriceApi');
     clearLogElement = document.getElementById('clearLog');
     sendLogElement = document.getElementById('sendLog');
     deviceFilterElement = document.getElementById('deviceFilter');
@@ -120,12 +111,6 @@ async function initializeLogPage(document, Homey) {
       });
     });
 
-    showStateElement.addEventListener('click', e => {
-      Homey.api('GET', '/apiCommand?cmd=logShowState', null, (err, result) => {
-        if (err) alertUser(Homey, err);
-      });
-    });
-
     showCapsElement.addEventListener('click', e => {
       const deviceId = deviceInfoSelectorElement.value;
       const deviceFilter = deviceFilterElement.value;
@@ -148,12 +133,6 @@ async function initializeLogPage(document, Homey) {
         });
         reportGenerated = true;
       }
-    });
-
-    showPriceApiElement.addEventListener('click', e => {
-      Homey.api('GET', '/apiCommand?cmd=logShowPriceApi', null, (err, result) => {
-        if (err) alertUser(Homey, err);
-      });
     });
 
     clearLogElement.addEventListener('click', e => {
@@ -240,13 +219,11 @@ function isLoggingEnabled() {
 function changeToLogPage(debugMode) {
   if (debugMode) {
     // Show debug options / Hide reporting
-    document.getElementById('logGeneric').style.display = 'none';// 'block';
     document.getElementById('logExtended').style.display = 'block';
     document.getElementById('reporting').style.display = 'none';
     document.getElementById('sendLog').style.display = 'none';
   } else {
     // Hide debug options / Show reporting
-    document.getElementById('logGeneric').style.display = 'none';
     document.getElementById('logExtended').style.display = 'none';
     document.getElementById('reporting').style.display = 'block';
     document.getElementById('sendLog').style.display = 'block';

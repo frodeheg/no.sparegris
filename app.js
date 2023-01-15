@@ -3252,43 +3252,6 @@ class PiggyBank extends Homey.App {
     throw new Error('Failed sending the log, please try again later or wait for app update');
   }
 
-  async logShowState() {
-    const frostList = this.homey.settings.get('frostList');
-    const numControlledDevices = Array.isArray(frostList) ? Object.keys(frostList).length : 0;
-    this.updateLog('========== INTERNAL STATE ==========', c.LOG_ALL);
-    this.updateLog(`Number of devices under control: ${numControlledDevices}`, c.LOG_ALL);
-    this.updateLog(`Current operating mode: ${this.homey.settings.get('operatingMode')}`, c.LOG_ALL);
-    this.updateLog(`Current price mode: ${this.homey.settings.get('priceMode')}`, c.LOG_ALL);
-    this.updateLog(`Current price point: ${this.homey.settings.get('pricePoint')}`, c.LOG_ALL);
-    this.updateLog(`Total signal failures On:${this.__stats_failed_turn_on} Off:${this.__stats_failed_turn_off} Temp:${this.__stats_failed_temp_change}`, c.LOG_ALL);
-    this.updateLog(`Total number of monitor errors: ${this.__monitorError}`, c.LOG_ALL);
-    this.updateLog('Device Name               | Location        | Is On      | Temperature | Com errors | Ongoing', c.LOG_ALL);
-    for (const deviceId in frostList) {
-      if (!(deviceId in this.__deviceList) || !this.__deviceList[deviceId].use) continue;
-      const { name, room } = this.__deviceList[deviceId];
-      const { lastCmd, nComError } = this.__current_state[deviceId];
-      const { temp, ongoing, confirmed } = this.__current_state[deviceId];
-      const { __monitorError, __monitorFixTemp, __monitorFixOn } = this.__current_state[deviceId];
-      this.getDevice(deviceId)
-        .then(device => {
-          const isOnActual = (this.getOnOffCap(deviceId) === undefined) ? undefined : this.getIsOn(device, deviceId);
-          const tempTargetCap = this.getTempSetCap(deviceId);
-          const tempMeasureCap = this.getTempGetCap(deviceId);
-          const tempActualTarget = (tempTargetCap in device.capabilitiesObj) ? device.capabilitiesObj[tempTargetCap].value : 'undef';
-          const tempActualMeasure = (tempMeasureCap in device.capabilitiesObj) ? device.capabilitiesObj[tempMeasureCap].value : 'undef';
-          this.updateLog(`${String(name).padEnd(25)} | ${String(room).padEnd(15)} | ${String(lastCmd).padEnd(10)} | ${
-            String(temp).padStart(11)} | ${String(nComError).padStart(10)} | ${String(ongoing).padEnd(7)}`, c.LOG_ALL);
-          this.updateLog(`${String('--->Actual').padEnd(13)} - Errs: ${String(__monitorError).padEnd(3)} | ${
-            String(__monitorFixOn).padEnd(7)},${String(__monitorFixTemp).padEnd(7)} | ${String(isOnActual).padEnd(10)} | ${
-            String(tempActualMeasure).padStart(5)}/${String(tempActualTarget).padStart(5)} | ${''.padStart(10)} | ${String(confirmed).padEnd(7)}`, c.LOG_ALL);
-        })
-        .catch(err => {
-          this.log(`Error log failed for device with name: ${name}`);
-        });
-    }
-    this.updateLog('======== INTERNAL STATE END ========', c.LOG_ALL);
-  }
-
   async logShowCaps(deviceId, filter) {
     const problems = [
       'No device',
@@ -3343,23 +3306,6 @@ class PiggyBank extends Homey.App {
       .finally(done => {
         this.updateLog('--- ANALYZING DEVICE DONE ---', c.LOG_ALL);
       });
-  }
-
-  async logShowPriceApi() {
-    this.updateLog('========== UTILITYCOST INTEGRATION ==========', c.LOG_ALL);
-    const apiState = await this._checkApi();
-    const installed = await this.elPriceApi.getInstalled();
-    const version = await this.elPriceApi.getVersion();
-    const prices = await this.elPriceApi.get('/prices');
-    const gridcosts = await this.elPriceApi.get('/gridcosts');
-    if (this.apiState === c.PRICE_API_NO_APP) this.updateLog('No Api or wrong version');
-    if (this.apiState === c.PRICE_API_NO_DEVICE) this.updateLog('No device found');
-    this.updateLog(`ApiState: ${apiState}`, c.LOG_ALL);
-    this.updateLog(`Installed: ${installed}`, c.LOG_ALL);
-    this.updateLog(`Version: ${version}`, c.LOG_ALL);
-    this.updateLog(`Prices: ${JSON.stringify(prices)}`, c.LOG_ALL);
-    this.updateLog(`GridCosts: ${JSON.stringify(gridcosts)}`, c.LOG_ALL);
-    this.updateLog('======== UTILITYCOST INTEGRATION END ========', c.LOG_ALL);
   }
 
   /** ****************************************************************************************************

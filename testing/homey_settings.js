@@ -80,9 +80,7 @@ class FakeHomey {
       // '/apiCommand?cmd=log'
       // '/apiCommand?cmd=setLogLevel&logLevel'
       // '/apiCommand?cmd=setLogUnit&logUnit'
-      // '/apiCommand?cmd=logShowState'
       // '/apiCommand?cmd=logShowCaps&deviceId'
-      // '/apiCommand?cmd=logShowPriceApi'
       // '/apiCommand?cmd=clearLog'
       // '/apiCommand?cmd=sendLog'
     }
