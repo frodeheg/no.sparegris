@@ -305,6 +305,7 @@ const DEVICE_CMD = {
   'com.tibber:pulse': DEFAULT_METER,
   'com.tuya.cloud:tuyalight': DEFAULT_SWITCH,
   'com.xiaomi-mi:plug.maeu01': DEFAULT_SWITCH,
+  'com.xiaomi-mi:sensor_motion.aq2': DEFAULT_IGNORED,
   'fi.taelek.ecocontrol:oled': {
     type: DEVICE_TYPE.HEATER,
     note: 'This device has no onOff capability and will emulate Off by turning the temperature to absolute minimum',

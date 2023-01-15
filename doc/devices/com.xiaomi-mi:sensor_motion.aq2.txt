@@ -1,0 +1,13 @@
++21:39:1.952: ----- ANALYZING DEVICE -----
++21:39:1.954: Report type: Device is not listed
++21:39:1.956: Device ID:   4b33c532-ce19-4b5d-9df7-aa128e060abd
++21:39:1.992: Device name: Bevegelse Sensor Bad
++21:39:1.994: Driver Uri: homey:app:com.xiaomi-mi
++21:39:1.996: Driver Id: sensor_motion.aq2
++21:39:1.998: Error: TypeError: Cannot read properties of undefined (reading 'onoff_cap')
++21:39:2.002: Capabilities: alarm_motion,measure_luminance,alarm_battery,measure_battery
++21:39:2.004: Options for 'alarm_motion': {"value":true,"lastUpdated":"2023-01-15T21:37:06.936Z","type":"boolean","getable":true,"setable":false,"title":"Bevegelsesalarm","desc":null,"units":null,"id":"alarm_motion","options":{}}
++21:39:2.006: Options for 'measure_luminance': {"value":58,"lastUpdated":"2023-01-15T21:38:07.444Z","type":"number","getable":true,"setable":false,"title":"Luminans","desc":"Luminans i Lux (lx)","units":"lx","decimals":2,"chartType":"spline","id":"measure_luminance","options":{}}
++21:39:2.007: Options for 'alarm_battery': {"value":false,"lastUpdated":"2022-04-10T21:37:03.519Z","type":"boolean","getable":true,"setable":false,"title":"Batterialarm","desc":"Sant når det finnes en batteriadvarsel","units":null,"id":"alarm_battery","options":{}}
++21:39:2.009: Options for 'measure_battery': {"value":100,"lastUpdated":"2022-04-10T21:37:03.505Z","type":"number","getable":true,"setable":false,"title":"Batteri","desc":"Batterilading i prosent (%)","units":"%","decimals":2,"min":0,"max":100,"chartType":"spline","id":"measure_battery","options":{}}
++21:39:2.011: --- ANALYZING DEVICE DONE ---
