@@ -57,13 +57,14 @@
       },
       "devices": {
         "title": "Enheter",
+        "meterReader": "Måleravleser",
         "controllable": "Kontrollerbare enheter",
         "modes": "Modus og prioritet",
         "prices": "Prisstyring"
       },
       "advanced": {
         "title": "Avansert",
-        "basic": "Grunnleggende innstillinger",
+        "cost": "Kostnad",
         "settings": "Avanserte innstillinger",
         "charger": "Lading av elbil",
         "frost": "Frostsikring",
@@ -150,7 +151,6 @@
       "VAT": "Moms",
       "gridTaxDay": "Nettleie 06-22",
       "gridTaxNight": "Nettleie 22-06",
-      "gridheader": "Nettleie kapasitetsledd",
       "gridLimit": "Kapasitetsledd (Wh)",
       "gridCost": "Kostnad per mnd.",
       "gridLimitHint": "Dersom du legger inn kostnad per kapasitetsledd fra din nettleverandør vil appen regne ut hvor mye du sparer over tid."
@@ -176,6 +176,7 @@
       "unreliableDevice": "Den valgte enheten er bare ${reliability}% pålitelig. Kan dette forklare problemene du har? Hvis ikke, vennligst inkluder epost-adresse i rapporten så vi kan løse problemet sammen."
     },
     "meter": {
+      "title": "Energiavlesning",
       "meterReader": "Strømmåler",
       "meterReaderNotFound": "Ingen strømmåler ble funnet, du må bruke et flytkort for å sende strømforbruket til appen.",
       "meterReaderHint": "Dersom appen har støtte for strømmåleren din kan du velge den her, ellers må du sette opp et flytkort for å sende effekt-avlesningene til appen.",
@@ -213,6 +214,9 @@
     },
     "price": {
       "header": "Prisstyring",
+      "usagePart": "Bruksledd",
+      "powerPart": "Effektledd",
+      "limitPart": "Begrensninger",
       "priceMode": "Modus",
       "mode": {
         "flow": "Manuelt fra flytkort",
@@ -246,7 +250,7 @@
            "--><p>Manuell styring fra flytkort gir deg størst fleksibilitet men overlater alt ansvaret for å tolke strømprisen til deg.</p><!--",
            "--><p>Automatisk tolker strømprisen etter preferansene i appen.</p>"],
       "priceErr1": "NB! Du må installere appen 'Strømregning' og tilhørende enhet for å velge eksterne priser. Strømprisen hentes sømløst uten å benytte flytkort.",
-      "priceAdvanced": "Avansert prisstyring",
+      "pricePointAdvanced": "Prisstyringsmagi",
       "pricePoint": "Prispunkt",
       "pricePointHint": "Oppførsel for hvert prispunkt kan endres nedenfor. Man kan bytte mellom ulike prispunkt ved hjelp av flytkort.",
       "action": "Handling",

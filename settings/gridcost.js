@@ -14,6 +14,13 @@ let gridCost = [
 
 function setGridCost(costTable) {
   gridCost = costTable;
+  let table = document.getElementById('gridCostsTable');
+  for (let i = 0; i < gridCost.length; i++) {
+    let { limit, price } = gridCost[i];
+    if (table.rows.length <= (i + 1)) {
+      addMaxPowerElement();
+    }
+  }
 }
 
 function getGridAbove(usage) {

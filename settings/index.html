@@ -171,6 +171,12 @@
         { name:"settings.pricetab.extreme", value: PP_EXTREME }
       ]
 
+      function flashElement(element) {
+        let classList = document.getElementById(element).classList;
+        classList.add('flash');
+        setTimeout(() => classList.remove('flash'), 2000);
+      }
+
       function limitText(text) {
         const splitText = text.split(" ", 5);
         for (let i = 0; i < splitText.length; i++) {
@@ -732,16 +738,6 @@
         updateMaxPowerList();
       }
 
-      function updateMaxPowerEditor() {
-        let table = document.getElementById('gridCostsTable');
-        for (let i = 0; i < gridCost.length; i++) {
-          let { limit, price } = gridCost[i];
-          if (table.rows.length <= (i+1)) {
-            addMaxPowerElement();
-          }
-        }
-      }
-
       function limitElement(object) {
         if(object.value != "") {
           if(parseInt(object.value) < parseInt(object.min)){
@@ -872,15 +868,16 @@
         <td class="dropdown" onclick="allowDropdown();">
           <a href="javascript:void(0)" class="dropbtn" data-i18n="settings.menu.devices.title">Devices</a>
           <div class="dropdown-content">
+            <a href="#" data-i18n="settings.menu.devices.meterReader" onclick="changeTab(event, 'meterPage')">Meter Reader</a>
             <a href="#" data-i18n="settings.menu.devices.controllable" onclick="changeTab(event, 'devicePage')">Controllable devices</a>
             <a href="#" data-i18n="settings.menu.devices.modes" onclick="changeTab(event, 'priorityPage', 0)">Modes and priority</a>
-            <a href="#" data-i18n="settings.menu.devices.prices" onclick="changeTab(event, 'pricePage')">Price control</a>
+            <a href="#" data-i18n="settings.menu.devices.prices" onclick="changeTab(event, 'pricePage')">Price points</a>
           </div>
         </td>
         <td class="dropdown" onclick="allowDropdown();">
           <a href="javascript:void(0)" class="dropbtn" data-i18n="settings.menu.advanced.title">Advanced</a>
           <div class="dropdown-content">
-            <a href="#" data-i18n="settings.menu.advanced.basic" onclick="changeTab(event, 'basicPage')">Basic settings</a>
+            <a href="#" data-i18n="settings.menu.advanced.cost" onclick="changeTab(event, 'costPage')">Price settings</a>
             <a href="#" data-i18n="settings.menu.advanced.settings" onclick="changeTab(event, 'advancedPage')">Advanced settings</a>
             <a href="#" data-i18n="settings.menu.advanced.charger" onclick="changeTab(event, 'chargerPage')">Car Chargers</a>
             <a href="#" data-i18n="settings.menu.advanced.frost" onclick="changeTab(event, 'frostPage')">Frost guard</a>
@@ -926,42 +923,6 @@
         <p id="activationHint1" class="hint" data-i18n="settings.app.activationHint1">app.activationHint1</p>
         <p id="activationHint2" class="hint" data-i18n="settings.app.activationHint2">app.activationHint2</p>
 
-        <table class="settings_table">
-          <tr>
-            <td class="settings_row_name"><label for="maxPower" data-i18n="settings.mode.maxPower">mode.maxPower</label>:</td>
-            <td class="settings_row_input">
-              <select id ="maxPower" onchange="setMaxPower(this.value,1000,100000);displaySaveHint();">
-                <option value="0" selected>Error - should be replaced with max power</option>
-              </select> <div class="edit icon" onclick="updateMaxPowerEditor();toggle(this,'gridCostsEdit');"></div><div class="hintButton" onclick="toggle(this,'maxPowHint');return false;">i</div>
-            </td>
-          </tr>
-          <tr style="display:none">
-            <td class="settings_row_name"><label for="maxPowerDay" data-i18n="settings.mode.maxPowerDay">mode.maxPowerDay</label>:</td>
-            <td class="settings_row_input">
-              <input id="maxPowerDay" type="number" min="10" max="1000" value="1000" onchange="limitElement(this);displaySaveHint()">kWh
-            </td>
-          </tr>
-          <tr style="display:none">
-            <td class="settings_row_name"><label for="maxPowerMonth" data-i18n="settings.mode.maxPowerMonth">mode.maxPowerMonth</label>:</td>
-            <td class="settings_row_input">
-              <input id="maxPowerMonth" type="number" min="50" max="50000" value="5000" onchange="limitElement(this);displaySaveHint()">kWh
-            </td>
-          </tr>
-        </table>
-        <p id="maxPowHint" class="hint" data-i18n="settings.app.maxPowHint">app.maxPowHint</p>
-
-        <fieldset id="gridCostsEdit" style="display:none;">
-          <legend data-i18n="settings.cost.gridheader">cost.gridheader</legend>
-          <p data-i18n="settings.cost.gridLimitHint">cost.gridLimitHint</p>
-          <table id = "gridCostsTable" class="settings_table">
-            <tr>
-              <th class="settings_row_input"><label for="gridLimit1" data-i18n="settings.cost.gridLimit">cost.gridLimit</label></th>
-              <th class="settings_row_input"><label for="gridCost1" data-i18n="settings.cost.gridCost">cost.gridCost</label></th>
-            </tr>
-          </table>
-          <input type="button" value="-" onclick="removeMaxPowerElement();">
-          <input type="button" value="+" onclick="addMaxPowerElement();">
-        </fieldset>
       </fieldset>
 
       <table width="100%" class="tab">
@@ -1055,10 +1016,10 @@
       </fieldset>
     </div>
 
-    <!-- Basic page -->
-    <div id="basicPage" class="tabcontent">
+    <!-- Meter reader page -->
+    <div id="meterPage" class="tabcontent">
       <fieldset>
-        <legend data-i18n="settings.menu.advanced.basic">advanced.basic</legend>
+        <legend data-i18n="settings.meter.title">meter.title</legend>
         <p id="meterReaderNotFound" class="hint" data-i18n="settings.meter.meterReaderNotFound">meter.meterReaderNotFound</p>
         <table class="settings_table">
           <tr>
@@ -1072,6 +1033,7 @@
           </tr>
         </table>
         <p id="meterReaderHint" class="hint" data-i18n="settings.meter.meterReaderHint">meter.meterReaderHint</p>
+
         <table class="settings_table">
           <tr>
             <td class="settings_row_name"><label for="meterFrequency" data-i18n="settings.meter.frequency">meter.frequency</label>:</td>
@@ -1081,22 +1043,7 @@
           </tr>
         </table>
         <p id="meterFrequencyHint" class="hint" data-i18n="settings.meter.frequencyHint">meter.frequencyHint</p>
-        <table class="settings_table">
-          <tr>
-            <td class="settings_row_name"><label for="toggleTime" data-i18n="settings.global.toggleTime">global.toggleTime</label>:</td>
-            <td class="settings_row_input"><input id="toggleTime" type="number" min="5" max="60" value="10" onchange="limitElement(this);displaySaveHint()">s 
-              <div class="hintButton" onclick="toggle(this,'toggleTimeHint');return false;">i</div>
-            </td>
-          </tr>
-        </table>
-        <p id="toggleTimeHint" class="hint" data-i18n="settings.global.toggleTimeHint">global.toggleTimeHint</p>
-      </fieldset>
-    </div>
 
-    <!-- Advanced page -->
-    <div id="advancedPage" class="tabcontent">
-      <fieldset>
-        <legend data-i18n="settings.global.settings">global.settings</legend>
         <table class="settings_table">
           <tr>
             <td class="settings_row_name"><label for="errorMargin" data-i18n="settings.global.errorMargin">global.errorMargin</label>:</td>
@@ -1128,7 +1075,144 @@
           </tr>
         </table>
         <p id="crossHourSmoothHint" class="hint" data-i18n="settings.global.crossHourSmoothHint">global.crossHourSmoothHint</p>
+      </fieldset>
+    </div>
 
+    <!-- Cost page -->
+    <div id="costPage" class="tabcontent">
+      <fieldset>
+        <legend data-i18n="settings.cost.header">cost.header</legend>
+        <table class="settings_table">
+          <tr>
+            <td class="settings_row_name"><label for="priceCountry" data-i18n="settings.price.spotPrice.country">spotPrice.country</label>:</td>
+            <td class="settings_row_input">
+              <select id="priceCountry" onchange="updateRegions(this.value, futurePriceOptions.priceRegion);displaySaveHint()">
+                <option value="0" selected>Country selector</option>
+              </select>
+            </td>
+          </tr>
+        </table>
+
+        <table class="settings_table">
+          <tr>
+            <td class="settings_row_name"><label for="currency" data-i18n="settings.cost.currency">cost.currency</label>:</td>
+            <td class="settings_row_input">
+              <select id ="currency" onchange="displaySaveHint();">
+                <option value="0" selected>Error - should be replaced with currencies</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td class="settings_row_name"><label for="VAT" data-i18n="settings.cost.VAT">cost.VAT</label>:</td>
+            <td class="settings_row_input"><input id="VAT" class="inputElem" type="number" min="0" max="100" value="25" onchange="displaySaveHint()">%</td>
+          </tr>
+        </table>
+      </fieldset>
+        <input id="collapsible2" class="toggle" type="checkbox">
+        <label for="collapsible2" class="lbl-toggle" data-i18n="settings.price.usagePart" style="color: whitesmoke;">price.usagePart</label>
+        <div class="collapsible-content"><div class="content-inner">
+          <table class="settings_table">
+            <tr>
+              <td class="settings_row_name"><label for="priceKind" data-i18n="settings.price.priceKind">price.priceKind</label>:</td>
+              <td class="settings_row_input">
+                <select id="priceKind" onchange="checkPriceKind(this);displaySaveHint()">
+                  <option value="0" data-i18n="settings.price.priceKindUtil" selected>UtilityCost</option>
+                  <option value="1" data-i18n="settings.price.priceKindSpot">Spot price</option>
+                  <option value="2" data-i18n="settings.price.priceKindFixed">Fixed price</option>
+                </select>
+                <div class="hintButton" onclick="toggle(this,'hintPriceKind');return false;">i</div>
+              </td>
+            </tr>
+          </table>
+          <p id="hintPriceKind" class="hint" data-i18n="settings.price.priceKindHint">price.priceKindHint</p>
+          <p id="errp1" class="error" data-i18n="settings.price.priceErr1">price.priceErr1</p>
+
+          <span id="priceSpotPart" style="display: none">
+            <table class="settings_table">
+              <tr>
+                <td class="settings_row_name"><label for="priceRegion" data-i18n="settings.price.spotPrice.region">spotPrice.region</label>:</td>
+                <td class="settings_row_input">
+                  <select id="priceRegion" onchange="displaySaveHint()">
+                    <option value="0" selected>Region selector</option>
+                  </select>
+                </td>
+              </tr>
+              <tr>
+                <td class="settings_row_name"><label for="surcharge" data-i18n="settings.cost.surcharge">cost.surcharge</label>:</td>
+                <td class="settings_row_input"><input id="surcharge" class="inputElem" type="number" min="0" value="0" onchange="displaySaveHint()">/kWh</td>
+              </tr>
+            </table>
+          </span>
+
+          <span id="priceFixedPart" style="display: none">
+            <table class="settings_table">
+              <tr>
+                <td class="settings_row_name"><label for="priceFixed" data-i18n="settings.price.priceFixed">price.fixed</label>:</td>
+                <td class="settings_row_input"><input id="priceFixed" class="inputElem" type="number" size="10" min="0" step="0.01" value="0.50" onchange="displaySaveHint()"> /kWh</td>
+              </tr>
+            </table>
+          </span>
+          <span id="priceFixedAndSpotPart" style="display: none">
+            <table class="settings_table">
+              <tr>
+                <td class="settings_row_name"><label for="gridTaxDay" data-i18n="settings.cost.gridTaxDay">cost.gridTaxDay</label>:</td>
+                <td class="settings_row_input"><input id="gridTaxDay" class="inputElem" type="number" min="0" value="0.3626" onchange="displaySaveHint()">/kWh</td>
+              </tr>
+              <tr>
+                <td class="settings_row_name"><label for="gridTaxNight" data-i18n="settings.cost.gridTaxNight">cost.gridTaxNight</label>:</td>
+                <td class="settings_row_input"><input id="gridTaxNight" class="inputElem" type="number" min="0" value="0.2839" onchange="displaySaveHint()">/kWh</td>
+              </tr>
+            </table>
+          </span>
+        </div></div>
+
+        <input id="collapsible3" class="toggle" type="checkbox">
+        <label for="collapsible3" class="lbl-toggle" data-i18n="settings.price.powerPart" style="color: whitesmoke;">price.powerPart</label>
+        <div class="collapsible-content"><div class="content-inner">
+          <p data-i18n="settings.cost.gridLimitHint">cost.gridLimitHint</p>
+          <table id = "gridCostsTable" class="settings_table">
+            <tr>
+              <th class="settings_row_input"><label for="gridLimit1" data-i18n="settings.cost.gridLimit">cost.gridLimit</label></th>
+              <th class="settings_row_input"><label for="gridCost1" data-i18n="settings.cost.gridCost">cost.gridCost</label></th>
+            </tr>
+          </table>
+          <input type="button" value="-" onclick="removeMaxPowerElement();">
+          <input type="button" value="+" onclick="addMaxPowerElement();">
+        </div></div>
+
+        <input id="collapsible4" class="toggle" type="checkbox">
+        <label for="collapsible4" class="lbl-toggle" data-i18n="settings.price.limitPart" style="color: whitesmoke;">price.limitPart</label>
+        <div class="collapsible-content"><div class="content-inner">
+          <table class="settings_table">
+            <tr>
+              <td class="settings_row_name"><label for="maxPower" data-i18n="settings.mode.maxPower">mode.maxPower</label>:</td>
+              <td class="settings_row_input">
+                <select id ="maxPower" onchange="setMaxPower(this.value,1000,100000);displaySaveHint();">
+                  <option value="0" selected>Error - should be replaced with max power</option>
+                </select> <div class="edit icon" onclick="document.getElementById('collapsible3').checked = true;flashElement('gridCostsTable')"></div><div class="hintButton" onclick="toggle(this,'maxPowHint');return false;">i</div>
+              </td>
+            </tr>
+            <tr style="display:none">
+              <td class="settings_row_name"><label for="maxPowerDay" data-i18n="settings.mode.maxPowerDay">mode.maxPowerDay</label>:</td>
+              <td class="settings_row_input">
+                <input id="maxPowerDay" type="number" min="10" max="1000" value="1000" onchange="limitElement(this);displaySaveHint()">kWh
+              </td>
+            </tr>
+            <tr style="display:none">
+              <td class="settings_row_name"><label for="maxPowerMonth" data-i18n="settings.mode.maxPowerMonth">mode.maxPowerMonth</label>:</td>
+              <td class="settings_row_input">
+                <input id="maxPowerMonth" type="number" min="50" max="50000" value="5000" onchange="limitElement(this);displaySaveHint()">kWh
+              </td>
+            </tr>
+          </table>
+          <p id="maxPowHint" class="hint" data-i18n="settings.app.maxPowHint">app.maxPowHint</p>
+        </div></div>
+    </div>
+
+    <!-- Advanced page -->
+    <div id="advancedPage" class="tabcontent">
+      <fieldset>
+        <legend data-i18n="settings.global.settings">global.settings</legend>
         <table class="settings_table">
           <tr>
             <td class="settings_row_name"><label for="mainFuse" data-i18n="settings.global.mainFuse">global.mainFuse</label>:</td>
@@ -1148,23 +1232,16 @@
           </tr>
         </table>
         <p id="freeThresholdHint" class="hint" data-i18n="settings.global.freeThresholdHint">global.freeThresholdHint</p>
-      </fieldset>
-      <fieldset>
-        <legend data-i18n="settings.cost.header">cost.header</legend>
+
         <table class="settings_table">
           <tr>
-            <td class="settings_row_name"><label for="currency" data-i18n="settings.cost.currency">cost.currency</label>:</td>
-            <td class="settings_row_input">
-              <select id ="currency" onchange="displaySaveHint();">
-                <option value="0" selected>Error - should be replaced with currencies</option>
-              </select>
+            <td class="settings_row_name"><label for="toggleTime" data-i18n="settings.global.toggleTime">global.toggleTime</label>:</td>
+            <td class="settings_row_input"><input id="toggleTime" type="number" min="5" max="60" value="10" onchange="limitElement(this);displaySaveHint()">s 
+              <div class="hintButton" onclick="toggle(this,'toggleTimeHint');return false;">i</div>
             </td>
           </tr>
-          <tr>
-            <td class="settings_row_name"><label for="VAT" data-i18n="settings.cost.VAT">cost.VAT</label>:</td>
-            <td class="settings_row_input"><input id="VAT" class="inputElem" type="number" min="0" max="100" value="25" onchange="displaySaveHint()">%</td>
-          </tr>
         </table>
+        <p id="toggleTimeHint" class="hint" data-i18n="settings.global.toggleTimeHint">global.toggleTimeHint</p>
       </fieldset>
       <fieldset>
         <legend data-i18n="settings.archive.settings">archive.settings</legend>
@@ -1382,156 +1459,95 @@
         </span>
 
         <span id="priceControl" style="display: none">
+        <span id="priceInterpretPart" style="display: none">
           <input id="collapsible1" class="toggle" type="checkbox">
-          <label for="collapsible1" class="lbl-toggle" data-i18n="settings.price.priceAdvanced" style="color: whitesmoke;">price.priceAdvanced</label>
-            <div class="collapsible-content"><div class="content-inner">
-
+          <label for="collapsible1" class="lbl-toggle" data-i18n="settings.price.pricePointAdvanced" style="color: whitesmoke;">price.pricePointAdvanced</label>
+          <div class="collapsible-content">
+            <div class="content-inner">
               <table class="settings_table">
                 <tr>
-                  <td class="settings_row_name"><label for="priceKind" data-i18n="settings.price.priceKind">price.priceKind</label>:</td>
+                  <td class="settings_row_name"><label for="minCheapTime" data-i18n="settings.price.internal.minCheapTime">price.internal.minCheapTime</label>:</td>
                   <td class="settings_row_input">
-                    <select id="priceKind" onchange="checkPriceKind(this);displaySaveHint()">
-                      <option value="0" data-i18n="settings.price.priceKindUtil" selected>UtilityCost</option>
-                      <option value="1" data-i18n="settings.price.priceKindSpot">Spot price</option>
-                      <option value="2" data-i18n="settings.price.priceKindFixed">Fixed price</option>
-                    </select>
-                    <div class="hintButton" onclick="toggle(this,'hintPriceKind');return false;">i</div>
+                    <input id="minCheapTime" class="inputElem" type="number" size="10" min="0" max="10" step="1" value="4" onchange="limitElement(this);displaySaveHint()">
+                    <div class="hintButton" onclick="toggle(this,'minCheapTimeHint');return false;">i</div>
                   </td>
                 </tr>
               </table>
-              <p id="hintPriceKind" class="hint" data-i18n="settings.price.priceKindHint">price.priceKindHint</p>
-              <p id="errp1" class="error" data-i18n="settings.price.priceErr1">price.priceErr1</p>
+              <p id="minCheapTimeHint" class="hint" data-i18n="settings.price.internal.minCheapTimeHint">price.internal.minCheapTimeHint</p>
 
-              <span id="priceSpotPart" style="display: none">
-                <table class="settings_table">
-                  <tr>
-                    <td class="settings_row_name"><label for="priceCountry" data-i18n="settings.price.spotPrice.country">spotPrice.country</label>:</td>
-                    <td class="settings_row_input">
-                      <select id="priceCountry" onchange="updateRegions(this.value, futurePriceOptions.priceRegion);displaySaveHint()">
-                        <option value="0" selected>Country selector</option>
-                      </select>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td class="settings_row_name"><label for="priceRegion" data-i18n="settings.price.spotPrice.region">spotPrice.region</label>:</td>
-                    <td class="settings_row_input">
-                      <select id="priceRegion" onchange="displaySaveHint()">
-                        <option value="0" selected>Region selector</option>
-                      </select>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td class="settings_row_name"><label for="surcharge" data-i18n="settings.cost.surcharge">cost.surcharge</label>:</td>
-                    <td class="settings_row_input"><input id="surcharge" class="inputElem" type="number" min="0" value="0" onchange="displaySaveHint()">/kWh</td>
-                  </tr>
-                </table>
-              </span>
+              <table class="settings_table">
+                <tr>
+                  <td class="settings_row_name"><label for="minExpensiveTime" data-i18n="settings.price.internal.minExpensiveTime">price.internal.minExpensiveTime</label>:</td>
+                  <td class="settings_row_input">
+                    <input id="minExpensiveTime" class="inputElem" type="number" size="10" min="0" max="10" step="1" value="4" onchange="limitElement(this);displaySaveHint()">
+                    <div class="hintButton" onclick="toggle(this,'minExpensiveTimeHint');return false;">i</div>
+                  </td>
+                </tr>
+              </table>
+              <p id="minExpensiveTimeHint" class="hint" data-i18n="settings.price.internal.minExpensiveTimeHint">price.internal.minExpensiveTimeHint</p>
 
-              <span id="priceFixedPart" style="display: none">
-                <table class="settings_table">
-                  <tr>
-                    <td class="settings_row_name"><label for="priceFixed" data-i18n="settings.price.priceFixed">price.fixed</label>:</td>
-                    <td class="settings_row_input"><input id="priceFixed" class="inputElem" type="number" size="10" min="0" step="0.01" value="0.50" onchange="displaySaveHint()"> /kWh</td>
-                  </tr>
-                </table>
-              </span>
-              <span id="priceFixedAndSpotPart" style="display: none">
-                <table class="settings_table">
-                  <tr>
-                    <td class="settings_row_name"><label for="gridTaxDay" data-i18n="settings.cost.gridTaxDay">cost.gridTaxDay</label>:</td>
-                    <td class="settings_row_input"><input id="gridTaxDay" class="inputElem" type="number" min="0" value="0.3626" onchange="displaySaveHint()">/kWh</td>
-                  </tr>
-                  <tr>
-                    <td class="settings_row_name"><label for="gridTaxNight" data-i18n="settings.cost.gridTaxNight">cost.gridTaxNight</label>:</td>
-                    <td class="settings_row_input"><input id="gridTaxNight" class="inputElem" type="number" min="0" value="0.2839" onchange="displaySaveHint()">/kWh</td>
-                  </tr>
-                </table>
-              </span>
-              <span id="priceInterpretPart" style="display: none">
-                <table class="settings_table">
-                  <tr>
-                    <td class="settings_row_name"><label for="minCheapTime" data-i18n="settings.price.internal.minCheapTime">price.internal.minCheapTime</label>:</td>
-                    <td class="settings_row_input">
-                      <input id="minCheapTime" class="inputElem" type="number" size="10" min="0" max="10" step="1" value="4" onchange="limitElement(this);displaySaveHint()">
-                      <div class="hintButton" onclick="toggle(this,'minCheapTimeHint');return false;">i</div>
-                    </td>
-                  </tr>
-                </table>
-                <p id="minCheapTimeHint" class="hint" data-i18n="settings.price.internal.minCheapTimeHint">price.internal.minCheapTimeHint</p>
+              <table class="settings_table">
+                <tr>
+                  <td class="settings_row_name" valign="top"><label for="averageTimePast" data-i18n="settings.price.internal.averageTime">price.internal.averageTime</label>:</td>
+                  <td class="settings_row_input">
+                    <span data-i18n="settings.price.internal.prev">internal.prev</span>:<br>
+                    <input id="averageTimePast" class="inputElem" type="number" size="10" min="0" max="1000" step="1" value="4" onchange="limitElement(this);displaySaveHint()">
+                    <span data-i18n="settings.price.internal.hours">internal.hours</span><br>
+                    <span data-i18n="settings.price.internal.next">internal.next</span>:<br>
+                    <input id="averageTimeFuture" class="inputElem" type="number" size="10" min="0" max="12" step="1" value="4" onchange="limitElement(this);displaySaveHint()">
+                    <span data-i18n="settings.price.internal.hours">internal.hours</span>
+                    <div class="hintButton" onclick="toggle(this,'averageTimeHint');return false;">i</div>
+                  </td>
+                </tr>
+              </table>
+              <p id="averageTimeHint" class="hint" data-i18n="settings.price.internal.averageTimeHint">price.internal.averageTimeHint</p>
 
-                <table class="settings_table">
-                  <tr>
-                    <td class="settings_row_name"><label for="minExpensiveTime" data-i18n="settings.price.internal.minExpensiveTime">price.internal.minExpensiveTime</label>:</td>
-                    <td class="settings_row_input">
-                      <input id="minExpensiveTime" class="inputElem" type="number" size="10" min="0" max="10" step="1" value="4" onchange="limitElement(this);displaySaveHint()">
-                      <div class="hintButton" onclick="toggle(this,'minExpensiveTimeHint');return false;">i</div>
-                    </td>
-                  </tr>
-                </table>
-                <p id="minExpensiveTimeHint" class="hint" data-i18n="settings.price.internal.minExpensiveTimeHint">price.internal.minExpensiveTimeHint</p>
+              <table class="settings_table">
+                <tr>
+                  <td class="settings_row_name"><label for="dirtCheapPriceModifier" data-i18n="settings.price.internal.dirtCheapPriceModifier">price.internal.dirtCheapPriceModifier</label>:</td>
+                  <td class="settings_row_input">
+                    <input id="dirtCheapPriceModifier" class="inputElem" data-i18n="settings.price.internal.hour1" type="number" size="10" min="-100" max="-50" value="-50" onchange="limitElement(this);displaySaveHint()">%
+                    <div class="hintButton" onclick="toggle(this,'dirtCheapPriceModifierHint');return false;">i</div>
+                  </td>
+                </tr>
+              </table>
+              <p id="dirtCheapPriceModifierHint" class="hint" data-i18n="settings.price.internal.dirtCheapPriceModifierHint">price.internal.dirtCheapPriceModifierHint</p>
 
-                <table class="settings_table">
-                  <tr>
-                    <td class="settings_row_name" valign="top"><label for="averageTimePast" data-i18n="settings.price.internal.averageTime">price.internal.averageTime</label>:</td>
-                    <td class="settings_row_input">
-                      <span data-i18n="settings.price.internal.prev">internal.prev</span>:<br>
-                      <input id="averageTimePast" class="inputElem" type="number" size="10" min="0" max="1000" step="1" value="4" onchange="limitElement(this);displaySaveHint()">
-                      <span data-i18n="settings.price.internal.hours">internal.hours</span><br>
-                      <span data-i18n="settings.price.internal.next">internal.next</span>:<br>
-                      <input id="averageTimeFuture" class="inputElem" type="number" size="10" min="0" max="12" step="1" value="4" onchange="limitElement(this);displaySaveHint()">
-                      <span data-i18n="settings.price.internal.hours">internal.hours</span>
-                      <div class="hintButton" onclick="toggle(this,'averageTimeHint');return false;">i</div>
-                    </td>
-                  </tr>
-                </table>
-                <p id="averageTimeHint" class="hint" data-i18n="settings.price.internal.averageTimeHint">price.internal.averageTimeHint</p>
+              <table class="settings_table">
+                <tr>
+                  <td class="settings_row_name"><label for="lowPriceModifier" data-i18n="settings.price.internal.lowPriceModifier">price.internal.lowPriceModifier</label>:</td>
+                  <td class="settings_row_input">
+                    <input id="lowPriceModifier" class="inputElem" data-i18n="settings.price.internal.hour1" type="number" size="10" min="-50" max="-10" value="-10" onchange="limitElement(this);displaySaveHint()">%
+                    <div class="hintButton" onclick="toggle(this,'lowPriceModifierHint');return false;">i</div>
+                  </td>
+                </tr>
+              </table>
+              <p id="lowPriceModifierHint" class="hint" data-i18n="settings.price.internal.lowPriceModifierHint">price.internal.lowPriceModifierHint</p>
 
-                <table class="settings_table">
-                  <tr>
-                    <td class="settings_row_name"><label for="dirtCheapPriceModifier" data-i18n="settings.price.internal.dirtCheapPriceModifier">price.internal.dirtCheapPriceModifier</label>:</td>
-                    <td class="settings_row_input">
-                      <input id="dirtCheapPriceModifier" class="inputElem" data-i18n="settings.price.internal.hour1" type="number" size="10" min="-100" max="-50" value="-50" onchange="limitElement(this);displaySaveHint()">%
-                      <div class="hintButton" onclick="toggle(this,'dirtCheapPriceModifierHint');return false;">i</div>
-                    </td>
-                  </tr>
-                </table>
-                <p id="dirtCheapPriceModifierHint" class="hint" data-i18n="settings.price.internal.dirtCheapPriceModifierHint">price.internal.dirtCheapPriceModifierHint</p>
+              <table class="settings_table">
+                <tr>
+                  <td class="settings_row_name"><label for="highPriceModifier" data-i18n="settings.price.internal.highPriceModifier">price.internal.highPriceModifier</label>:</td>
+                  <td class="settings_row_input">
+                    <input id="highPriceModifier" class="inputElem" data-i18n="settings.price.internal.hour1" type="number" size="10" min="1" max="100" value="10" onchange="limitElement(this);displaySaveHint()">%
+                    <div class="hintButton" onclick="toggle(this,'highPriceModifierHint');return false;">i</div>
+                  </td>
+                </tr>
+              </table>
+              <p id="highPriceModifierHint" class="hint" data-i18n="settings.price.internal.highPriceModifierHint">price.internal.highPriceModifierHint</p>
 
-                <table class="settings_table">
-                  <tr>
-                    <td class="settings_row_name"><label for="lowPriceModifier" data-i18n="settings.price.internal.lowPriceModifier">price.internal.lowPriceModifier</label>:</td>
-                    <td class="settings_row_input">
-                      <input id="lowPriceModifier" class="inputElem" data-i18n="settings.price.internal.hour1" type="number" size="10" min="-50" max="-10" value="-10" onchange="limitElement(this);displaySaveHint()">%
-                      <div class="hintButton" onclick="toggle(this,'lowPriceModifierHint');return false;">i</div>
-                    </td>
-                  </tr>
-                </table>
-                <p id="lowPriceModifierHint" class="hint" data-i18n="settings.price.internal.lowPriceModifierHint">price.internal.lowPriceModifierHint</p>
-
-                <table class="settings_table">
-                  <tr>
-                    <td class="settings_row_name"><label for="highPriceModifier" data-i18n="settings.price.internal.highPriceModifier">price.internal.highPriceModifier</label>:</td>
-                    <td class="settings_row_input">
-                      <input id="highPriceModifier" class="inputElem" data-i18n="settings.price.internal.hour1" type="number" size="10" min="1" max="100" value="10" onchange="limitElement(this);displaySaveHint()">%
-                      <div class="hintButton" onclick="toggle(this,'highPriceModifierHint');return false;">i</div>
-                    </td>
-                  </tr>
-                </table>
-                <p id="highPriceModifierHint" class="hint" data-i18n="settings.price.internal.highPriceModifierHint">price.internal.highPriceModifierHint</p>
-
-                <table class="settings_table">
-                  <tr>
-                    <td class="settings_row_name"><label for="extremePriceModifier" data-i18n="settings.price.internal.extremePriceModifier">price.internal.extremePriceModifier</label>:</td>
-                    <td class="settings_row_input">
-                      <input id="extremePriceModifier" class="inputElem" data-i18n="settings.price.internal.hour1" type="number" size="10" min="100" max="1000" value="10" onchange="limitElement(this);displaySaveHint()">%
-                      <div class="hintButton" onclick="toggle(this,'extremePriceModifierHint');return false;">i</div>
-                    </td>
-                  </tr>
-                </table>
-                <p id="extremePriceModifierHint" class="hint" data-i18n="settings.price.internal.extremePriceModifierHint">price.internal.extremePriceModifierHint</p>
-              </span>
+              <table class="settings_table">
+                <tr>
+                  <td class="settings_row_name"><label for="extremePriceModifier" data-i18n="settings.price.internal.extremePriceModifier">price.internal.extremePriceModifier</label>:</td>
+                  <td class="settings_row_input">
+                    <input id="extremePriceModifier" class="inputElem" data-i18n="settings.price.internal.hour1" type="number" size="10" min="100" max="1000" value="10" onchange="limitElement(this);displaySaveHint()">%
+                    <div class="hintButton" onclick="toggle(this,'extremePriceModifierHint');return false;">i</div>
+                  </td>
+                </tr>
+              </table>
+              <p id="extremePriceModifierHint" class="hint" data-i18n="settings.price.internal.extremePriceModifierHint">price.internal.extremePriceModifierHint</p>
             </div>
           </div>
+        </span>
         </span>
       </fieldset>
 

@@ -57,13 +57,14 @@
       },
       "devices": {
         "title": "Devices",
+        "meterReader": "Meter Reader",
         "controllable": "Controllable devices",
         "modes": "Modes and priority",
         "prices": "Price management"
       },
       "advanced": {
         "title": "Advanced",
-        "basic": "Basic settings",
+        "cost": "Cost settings",
         "settings": "Advanced settings",
         "charger": "Car chargers",
         "frost": "Frost guard",
@@ -150,7 +151,6 @@
       "VAT": "VAT",
       "gridTaxDay": "Grid charge 06-22",
       "gridTaxNight": "Grid charge 22-06",
-      "gridheader": "Grid capacity costs",
       "gridLimit": "Capacity step (Wh)",
       "gridCost": "Monthly cost",
       "gridLimitHint": "If you configure the cost per capacity step according to your grid provider, then your montly savings will be correctly calculated."
@@ -176,6 +176,7 @@
       "unreliableDevice": "The selected device is only ${reliability}% reliable. Can this explain the problems you're having? If not, please include your email in the report so we can solve this together."
     },
     "meter": {
+      "title": "Energy readings",
       "meterReader": "Meter reader",
       "meterReaderNotFound": "No meter reader was found, you must use a flow card to send the power consumption to the app.",
       "meterReaderHint": "If the app has support for your meter reader it will show up here, otherwise you have to input the power readings by using a flow",
@@ -213,6 +214,9 @@
     },
     "price": {
       "header": "Price management",
+      "usagePart": "Utility cost",
+      "powerPart": "Grid capacity costs",
+      "limitPart": "Limiter part",
       "priceMode": "Mode",
       "mode": {
         "flow": "Manually from flows",
@@ -246,7 +250,7 @@
       "--><p>Manual control from flow cards give you greatest flexibility but leave all the responsibility to interpret the electricity price to you.</p><!--",
       "--><p>Automatic interprets the prices according to the preferences set in the app.</p>"],
       "priceErr1": "Note! You have to install the app 'Norwegian Electricity Bill' and acompanying device for external prices to be fetched. The prices are fetched seamlessly, flow cards are not necessary.",
-      "priceAdvanced": "Advanced price settings",
+      "pricePointAdvanced": "Price point magic",
       "pricePoint": "Price point",
       "pricePointHint": "The behaviour of each price point is defined below. Price points can be changed by using flows.",
       "action": "Action",
