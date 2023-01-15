@@ -3485,7 +3485,7 @@ class PiggyBank extends Homey.App {
       // fetching new prices before we have less than 12 hours with future prices left
       if ((!isNumber(this.__current_price_index)) || (this.__all_prices.length - this.__current_price_index) < 12) {
         let futurePrices;
-        if (priceMode === c.PRICE_MODE_INTERNAL) {
+        if (priceMode !== c.PRICE_MODE_DISABLED) {
           const futurePriceOptions = await this.homey.settings.get('futurePriceOptions');
           if (priceKind === c.PRICE_KIND_EXTERNAL) {
             futurePrices = await this.elPriceApi.get('/prices');
@@ -3596,7 +3596,6 @@ class PiggyBank extends Homey.App {
    * Performs the calculation of next price point.
    */
   async calculateNextPP(averagePrice, todayArray, todayIndex) {
-    const priceMode = +this.homey.settings.get('priceMode');
     const futureData = this.homey.settings.get('futurePriceOptions');
     const priceKind = !futureData ? null : +futureData.priceKind;
     const outState = {};
@@ -3649,7 +3648,7 @@ class PiggyBank extends Homey.App {
     }
 
     // Special case Fixed price
-    const isFixedPrice = (priceMode === c.PRICE_MODE_INTERNAL) && (priceKind === c.PRICE_KIND_FIXED);
+    const isFixedPrice = priceKind === c.PRICE_KIND_FIXED;
     if (isFixedPrice) {
       outState.__low_price_limit = todayArray.reduce((a, b) => a + b, 0) / todayArray.length;
     }
