@@ -289,6 +289,7 @@ p {
   text-decoration: none;
 }
 
+.advancedMenuWizhover,
 .menuitem td:hover/*, .dropdown:hover .dropbtn*/ {
   background-color: rgb(70, 122, 118);
 }
@@ -309,8 +310,10 @@ p {
   text-align: left;
 }
 
-.dropdown-content a:hover {background-color: #f1f1f1;}
+.priceLinkWizhover,
+.dropdown-content a:hover {background-color: #c1c1c1;}
 
+.advancedMenuDropWizhover,
 .dropdown:hover .dropdown-content {
   display: block;
 }

@@ -13,6 +13,7 @@
     <script type="text/javascript" src="./tools.js"></script>
     <script type="text/javascript" src="./gridcost.js"></script>
     <script type="text/javascript" src="./homeytime.js"></script>
+    <script type="text/javascript" src="subpages/wizzard.js"></script>
     <script type="text/javascript" src="subpages/logPage.js"></script>
     <script type="text/javascript" src="subpages/graphs.js"></script>
     <script type="text/javascript" src="subpages/advanced.js"></script>
@@ -874,10 +875,10 @@
             <a href="#" data-i18n="settings.menu.devices.prices" onclick="changeTab(event, 'pricePage')">Price points</a>
           </div>
         </td>
-        <td class="dropdown" onclick="allowDropdown();">
+        <td id="advancedMenu" class="dropdown" onclick="allowDropdown();">
           <a href="javascript:void(0)" class="dropbtn" data-i18n="settings.menu.advanced.title">Advanced</a>
-          <div class="dropdown-content">
-            <a href="#" data-i18n="settings.menu.advanced.cost" onclick="changeTab(event, 'costPage')">Price settings</a>
+          <div id="advancedMenuDrop" class="dropdown-content">
+            <a id="priceLink" href="#" data-i18n="settings.menu.advanced.cost" onclick="changeTab(event, 'costPage')">Price settings</a>
             <a href="#" data-i18n="settings.menu.advanced.settings" onclick="changeTab(event, 'advancedPage')">Advanced settings</a>
             <a href="#" data-i18n="settings.menu.advanced.charger" onclick="changeTab(event, 'chargerPage')">Car Chargers</a>
             <a href="#" data-i18n="settings.menu.advanced.frost" onclick="changeTab(event, 'frostPage')">Frost guard</a>
@@ -922,7 +923,7 @@
           <tr>
             <td class="settings_row_name"><label data-i18n="settings.mode.maxPower">mode.maxPower</label>:</td>
             <td class="settings_row_input"><label id="maxPowerDuplicate">maxPower</label>
-              <div class="edit icon" onclick="document.getElementById('collapsible4').checked = true;changeTab(event, 'costPage');flashElement('maxPower')"></div>
+              <div class="edit icon" onclick="runActionQueue(wizGotoLimiters);"></div>
             </td>
           </tr>
         </table>
