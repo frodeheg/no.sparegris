@@ -1,0 +1,15 @@
++21:48:19.868: ----- ANALYZING DEVICE -----
++21:48:19.872: Report type: Experimental device is working
++21:48:19.873: Device ID:   dd2e4fd8-13d0-4c8c-b3ff-d773cada83a7
++21:48:19.906: Device name: Taklampe m. sensor
++21:48:19.909: Driver Uri: homey:app:com.elko
++21:48:19.910: Driver Id: SmartDimPir
++21:48:19.913: Found onoff cap: onoff
++21:48:19.916: Found temp cap: false
++21:48:19.919: Device reliability: 1
++21:48:19.923: Capabilities: measure_luminance,dim,onoff,alarm_motion
++21:48:19.925: Options for 'measure_luminance': {"value":31,"lastUpdated":"2023-01-15T21:47:51.506Z","type":"number","getable":true,"setable":false,"title":"Luminans","desc":"Luminans i Lux (lx)","units":"lx","decimals":2,"chartType":"spline","id":"measure_luminance","options":{}}
++21:48:19.930: Options for 'dim': {"value":0.73,"lastUpdated":"2023-01-15T09:56:46.660Z","type":"number","getable":true,"setable":true,"title":"Dempingsnivå","desc":null,"units":"%","decimals":2,"min":0,"max":1,"chartType":"stepLine","id":"dim","options":{}}
++21:48:19.932: Options for 'onoff': {"value":true,"lastUpdated":"2023-01-15T09:59:01.943Z","type":"boolean","getable":true,"setable":true,"title":"Slått på","desc":null,"units":null,"id":"onoff","options":{}}
++21:48:19.935: Options for 'alarm_motion': {"value":true,"lastUpdated":"2023-01-15T09:59:01.896Z","type":"boolean","getable":true,"setable":false,"title":"Bevegelsesalarm","desc":null,"units":null,"id":"alarm_motion","options":{}}
++21:48:19.938: --- ANALYZING DEVICE DONE ---

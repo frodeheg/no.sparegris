@@ -192,6 +192,7 @@ const DEVICE_CMD = {
     beta: true,
     default: false
   },
+  'com.elko:SmartDimPir': DEFAULT_SWITCH,
   'com.everspring:AN179': DEFAULT_SWITCH,
   'com.fibaro:FGS-213': DEFAULT_SWITCH,
   'com.fibaro:FGWPE-101': DEFAULT_SWITCH,
