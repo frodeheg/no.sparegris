@@ -114,9 +114,9 @@ p {
   /* Style the tab content */
   .tabcontent {
     display: none;
-    padding: 6px 12px;
-    border: 2px solid #ccc;
-    border-top: none;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border: none;
   }
   
   .settings_table {
