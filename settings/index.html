@@ -1488,15 +1488,23 @@
 
               <table class="settings_table">
                 <tr>
-                  <td class="settings_row_name" valign="top"><label for="averageTimePast" data-i18n="settings.price.internal.averageTime">price.internal.averageTime</label>:</td>
+                  <td colspan="2">
+                    <label data-i18n="settings.price.internal.averageTime">price.internal.averageTime</label>
+                    <div class="hintButton" onclick="toggle(this,'averageTimeHint');return false;">i</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="settings_row_name" valign="top"><label style="margin-left: 20px" for="averageTimePast" data-i18n="settings.price.internal.prev">internal.prev</label>:</td>
                   <td class="settings_row_input">
-                    <span data-i18n="settings.price.internal.prev">internal.prev</span>:<br>
                     <input id="averageTimePast" class="inputElem" type="number" size="10" min="0" max="1000" step="1" value="4" onchange="limitElement(this);displaySaveHint()">
-                    <span data-i18n="settings.price.internal.hours">internal.hours</span><br>
-                    <span data-i18n="settings.price.internal.next">internal.next</span>:<br>
+                    <span data-i18n="settings.price.internal.hours">internal.hours</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="settings_row_name" valign="top"><label style="margin-left: 20px" for="averageTimeFuture" data-i18n="settings.price.internal.next">internal.next</label>:</td>
+                  <td class="settings_row_input">
                     <input id="averageTimeFuture" class="inputElem" type="number" size="10" min="0" max="12" step="1" value="4" onchange="limitElement(this);displaySaveHint()">
                     <span data-i18n="settings.price.internal.hours">internal.hours</span>
-                    <div class="hintButton" onclick="toggle(this,'averageTimeHint');return false;">i</div>
                   </td>
                 </tr>
               </table>
