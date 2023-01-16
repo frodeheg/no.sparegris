@@ -82,12 +82,9 @@ p {
     border-top-left-radius: 15px;
     border-top-right-radius: 15px;
     text-align: center;
-    outline: solid 1px rgb(40,59,57);
-    outline-offset: -1px;
     color: #EEE;
     font-weight: bold;
-    border: none;
-    /* outline: none;*/
+    border: 1px solid rgb(40, 59, 57);
     cursor: pointer;
     padding: 0px 10px;
     line-height: 30px;
@@ -327,29 +324,29 @@ p {
   position: relative; /* So we can position the content as absolute */
   /* Using the borders to create a triangle  */
   border-left: 0.80em solid transparent;
-  border-right: 0.80em solid transparent;
+  border-right: 0.85em solid transparent;
   top: -1em;          /* Correction because of the CSS Triangle trick*/
   vertical-align: text-top;
 }
-  .⚠.err {
-    border-bottom: 1.35em solid red;
-  }
-  .⚠.warn {
-    border-bottom: 1.35em solid yellow;
-  }
-  .⚠.info {
-    border-bottom: 1.35em solid cornflowerblue;
-  }
-  .⚠::before {
-      content: "⚠";
-      /* Position the character over the triangle */
-      top: 0.45em;
-      left: -0.45em;
-      position: absolute;
-      color: black;
-      font-size: 2em;
-      line-height: 1em;
-  }
+.err {
+  border-bottom: 1.35em solid red;
+}
+.warn {
+  border-bottom: 1.35em solid yellow;
+}
+.info {
+  border-bottom: 1.35em solid cornflowerblue;
+}
+.⚠::before {
+  content: "⚠";
+  /* Position the character over the triangle */
+  top: 0.47em;
+  left: -0.47em;
+  position: absolute;
+  color: black;
+  font-size: 2em;
+  line-height: 1em;
+}
 
 /* --- Collapsible --- */
 input[type='checkbox'] { display: none; }
