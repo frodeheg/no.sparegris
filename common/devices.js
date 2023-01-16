@@ -189,7 +189,6 @@ const DEVICE_CMD = {
     readTempCap: 'measure_temperature.floor', // measure_temperature can be null if set to regulator mode
     setOnOffCap: 'power_status',
     tempMax: 50,
-    beta: true,
     default: false
   },
   'com.elko:SmartDimPir': DEFAULT_SWITCH,
