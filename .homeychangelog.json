@@ -709,5 +709,8 @@
   },
   "0.19.39": {
     "en": "Added wizzard code for maxPower"
+  },
+  "0.19.40": {
+    "en": "Added Xiaomi motion sensor to ignore list + Removed known meter readers from the listing of devices to report as missing + Added Elko SmartDimPir to the list of supported devices + UI Fixes for iphone + Moved ESHSUPERTR out of beta as it was reported working"
   }
 }
