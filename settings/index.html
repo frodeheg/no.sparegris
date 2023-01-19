@@ -889,7 +889,7 @@
         <td class="dropdown" style="text-align:right" onclick="allowDropdown();">
           <a href="javascript:void(0)" class="dropbtn" data-i18n="settings.menu.help.title">Help</a>
           <div class="dropdown-content" style="position:fixed;right:0">
-            <a href="#" data-i18n="settings.menu.help.save" onclick="changeTab(event, 'helpHowToPage')">How To Save Money</a>
+            <a href="#" data-i18n="settings.menu.help.wiz" onclick="changeTab(event, 'wizzardPage')">Wizzard</a>
             <a href="#" data-i18n="settings.menu.help.notfound" onclick="changeTab(event, 'helpNotFoundPage')">Not Found</a>
             <a href="#" data-i18n="settings.menu.help.debug" onclick="debugMode=true;changeTab(event, 'logPage')">Debug</a>
             <a href="#" data-i18n="settings.menu.help.supported" onclick="changeTab(event, 'helpSupportedPage')">Supported Devices</a>
@@ -988,15 +988,15 @@
 
     </div>
 
-    <!-- Help page: How to save money -->
-    <div id="helpHowToPage" class="tabcontent">
+    <!-- First time Wizzard page -->
+    <div id="wizzardPage" class="tabcontent">
       <fieldset>
-        <legend data-i18n="settings.help.saveMoney">help.saveMoney</legend>
-        <p data-i18n="settings.help.saveMoneyHint">help.saveMoneyHint</p>
+        <legend data-i18n="settings.wizzard.welcome">wizzard.welcome</legend>
+        <p data-i18n="settings.wizzard.guide">wizzard.guide</p>
       </fieldset>
     </div>
 
-    <!-- Help page: How to save money -->
+    <!-- Help page: Device not found -->
     <div id="helpNotFoundPage" class="tabcontent">
       <fieldset>
         <legend data-i18n="settings.help.notFound">help.notFound</legend>

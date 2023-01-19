@@ -73,7 +73,7 @@
       },
       "help": {
         "title": "Hjelp",
-        "save": "Hvordan spare penger",
+        "wiz": "Guidet tur",
         "notfound": "Appen finner ikke enheten min",
         "debug": "Feilsøking",
         "supported": "Støttede enheter",
@@ -208,9 +208,11 @@
           "-->      <p>Denne siden tar noen sekunder å laste, derfor er det lagt til en loading-skjerm for å informere om ventetiden. Dette kan være en fin reklameplass ettersom det er ventetid man ikke kommer foruten.</p><!--",
           "-->      <p>Dersom din bedrift ønsker å utnytte denne fine muligheten kan dere ta kontakt med utvikleren av appen.</p><!--",
           "-->  </li><!--",
-          "--></ol>"],
-      "saveMoney": "Hvordan spare penger",
-      "saveMoneyHint": "Mer hjelp kommer snart...."
+          "--></ol>"]
+    },
+    "wizzard": {
+      "welcome": "Velkommen",
+      "guide": "Her kommer det snart en guidet tur for å vise hvordan appen fungerer."
     },
     "price": {
       "header": "Prisstyring",

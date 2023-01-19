@@ -73,7 +73,7 @@
       },
       "help": {
         "title": "Help",
-        "save": "How to save money",
+        "wiz": "First time Wizzard",
         "notfound": "The app can't find my device",
         "debug": "Debug",
         "supported": "Supported Devices",
@@ -208,9 +208,11 @@
           "-->      <p>This page takes a few seconds to load, therefore a loading screen has been added to inform about the waiting time. This can be a good advertising space, as there is a waiting period that you cannot avoid.</p><!--",
           "-->      <p>If your company wants to make use of this great opportunity, you can contact the developer of the app.</p><!--",
           "-->  </li><!--",
-          "--></ol>"],
-      "saveMoney": "How to save money",
-      "saveMoneyHint": "More help is coming...."
+          "--></ol>"]
+    },
+    "wizzard": {
+      "welcome": "Welcome",
+      "guide": "A guided tour that will show you how the app works will come here soon."
     },
     "price": {
       "header": "Price management",
