@@ -293,13 +293,19 @@ function generatePriceData(stats) {
       perDayCount[i] = chartAux[i].reduce((a, b) => a + b, 0);
     }
   }
-  let ppDirtMax = dataset.filter((p, i) => (+chartAux[i] === PP.DIRTCHEAP)).reduce((a, b) => { return a === undefined ? b : Math.max(a, b); }, undefined) || 0;
+  const ppMax = dataset.filter((p, i) => (p !== null)).reduce((a, b) => { return a === undefined ? b : Math.max(a, b); }, 0);
+  const ppExtremeMin = dataset.filter((p, i) => (+chartAux[i] === PP.EXTREME)).reduce((a, b) => { return a === undefined ? b : Math.min(a, b); }, ppMax);
+  const ppHighMin = dataset.filter((p, i) => (+chartAux[i] === PP.HIGH)).reduce((a, b) => { return a === undefined ? b : Math.min(a, b); }, ppExtremeMin);
+  const ppNormMin = dataset.filter((p, i) => (+chartAux[i] === PP.NORM)).reduce((a, b) => { return a === undefined ? b : Math.min(a, b); }, ppHighMin);
+  const ppLowMin = dataset.filter((p, i) => (+chartAux[i] === PP.LOW)).reduce((a, b) => { return a === undefined ? b : Math.min(a, b); }, ppNormMin);
+
+  let ppDirtMax = Math.min(dataset.filter((p, i) => (+chartAux[i] === PP.DIRTCHEAP)).reduce((a, b) => { return a === undefined ? b : Math.max(a, b); }, undefined) || 0, ppLowMin);
   const ppMin = dataset.filter((p, i) => (p !== null)).reduce((a, b) => { return a === undefined ? b : Math.min(a, b); }, Infinity);
-  if (!ppDirtMax) ppDirtMax = ppMin * 0.9;
-  const ppLowMax = dataset.filter((p, i) => (+chartAux[i] === PP.LOW)).reduce((a, b) => { return a === undefined ? b : Math.max(a, b); }, ppDirtMax);
-  const ppNormMax = dataset.filter((p, i) => (+chartAux[i] === PP.NORM)).reduce((a, b) => { return a === undefined ? b : Math.max(a, b); }, ppLowMax);
-  const ppHighMax = dataset.filter((p, i) => (+chartAux[i] === PP.HIGH)).reduce((a, b) => { return a === undefined ? b : Math.max(a, b); }, ppNormMax);
-  const ppExtremeMax = dataset.filter((p, i) => (+chartAux[i] === PP.EXTREME)).reduce((a, b) => { return a === undefined ? b : Math.max(a, b); }, ppHighMax);
+  if (!ppDirtMax) ppDirtMax = ppMin - (ppMax - ppMin) * 0.9;
+  const ppLowMax = Math.min(dataset.filter((p, i) => (+chartAux[i] === PP.LOW)).reduce((a, b) => { return a === undefined ? b : Math.max(a, b); }, ppDirtMax), ppNormMin);
+  const ppNormMax = Math.min(dataset.filter((p, i) => (+chartAux[i] === PP.NORM)).reduce((a, b) => { return a === undefined ? b : Math.max(a, b); }, ppLowMax), ppHighMin);
+  const ppHighMax = Math.min(dataset.filter((p, i) => (+chartAux[i] === PP.HIGH)).reduce((a, b) => { return a === undefined ? b : Math.max(a, b); }, ppNormMax), ppExtremeMin);
+
   const colDirt = 'rgba(0,255,0,0.5)';
   const colCheap = 'rgba(0,128,0,0.5)';
   const colNorm = 'rgba(0,128,255,0.4)';
@@ -316,7 +322,7 @@ function generatePriceData(stats) {
     borderColor: colDirt,
     backgroundColor: colDirt,
     pointBackgroundColor: colDirt,
-    data: dataset.map((x, idx) => (x ? (perHour ? Math.min(x, ppDirtMax) : (x * (perDayCount[idx] ? chartAux[idx][4] / perDayCount[idx] : 1))) : undefined)),
+    data: dataset.map((x, idx) => (x ? (perHour ? ((+chartAux[idx] === PP.DIRTCHEAP) ? x : Math.min(x, ppDirtMax)) : (x * (perDayCount[idx] ? chartAux[idx][4] / perDayCount[idx] : 1))) : undefined)),
     borderWidth: 1,
     pointRadius: 0,
     segment: {
@@ -333,7 +339,7 @@ function generatePriceData(stats) {
     borderColor: colCheap,
     backgroundColor: colCheap,
     pointBackgroundColor: colCheap,
-    data: dataset.map((x, idx) => (x ? (perHour ? Math.min(x, ppLowMax) : (x * (perDayCount[idx] ? (chartAux[idx][4] + chartAux[idx][0]) / perDayCount[idx] : 1))) : undefined)),
+    data: dataset.map((x, idx) => (x ? (perHour ? ((+chartAux[idx] === PP.LOW) ? x : Math.min(x, ppLowMax)) : (x * (perDayCount[idx] ? (chartAux[idx][4] + chartAux[idx][0]) / perDayCount[idx] : 1))) : undefined)),
     borderWidth: 1,
     pointRadius: 0,
     segment: {
@@ -350,7 +356,7 @@ function generatePriceData(stats) {
     borderColor: colNorm,
     backgroundColor: colNorm,
     pointBackgroundColor: colNorm,
-    data: dataset.map((x, idx) => (x ? (perHour ? Math.min(x, ppNormMax) : (x * (perDayCount[idx] ? (chartAux[idx][4] + chartAux[idx][0] + chartAux[idx][1]) / perDayCount[idx] : 1))) : undefined)),
+    data: dataset.map((x, idx) => (x ? (perHour ? ((+chartAux[idx] === PP.NORM) ? x : Math.min(x, ppNormMax)) : (x * (perDayCount[idx] ? (chartAux[idx][4] + chartAux[idx][0] + chartAux[idx][1]) / perDayCount[idx] : 1))) : undefined)),
     borderWidth: 1,
     pointRadius: 0,
     segment: {
@@ -367,7 +373,7 @@ function generatePriceData(stats) {
     borderColor: colHigh,
     backgroundColor: colHigh,
     pointBackgroundColor: colHigh,
-    data: dataset.map((x, idx) => (x ? (perHour ? Math.min(x, ppHighMax) : (x * (perDayCount[idx] ? (chartAux[idx][4] + chartAux[idx][0] + chartAux[idx][1] + chartAux[idx][2]) / perDayCount[idx] : 1))) : undefined)),
+    data: dataset.map((x, idx) => (x ? (perHour ? ((+chartAux[idx] === PP.HIGH) ? x : Math.min(x, ppHighMax)) : (x * (perDayCount[idx] ? (chartAux[idx][4] + chartAux[idx][0] + chartAux[idx][1] + chartAux[idx][2]) / perDayCount[idx] : 1))) : undefined)),
     borderWidth: 1,
     pointRadius: 0,
     segment: {
@@ -384,7 +390,7 @@ function generatePriceData(stats) {
     borderColor: colExtreme,
     backgroundColor: colExtreme,
     pointBackgroundColor: colExtreme,
-    data: dataset.map(x => (x ? (perHour ? Math.min(x, ppExtremeMax) : x) : undefined)),
+    data: dataset.map(x => x),
     borderWidth: 1,
     pointRadius: 0,
     segment: {
