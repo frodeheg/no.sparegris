@@ -2399,6 +2399,8 @@
             refreshModeLists(); // It's a pitty but the user did not even visit these pages. Probably they will do later
             refreshFrostList(); // It's a pitty but the user did not even visit these pages. Probably they will do later
             refreshPriceActionList(); // It's a pitty but the user did not even visit these pages. Probably they will do later
+            updateChargerHints(deviceList); // In case the user added a charger as controllable then the charger mode is still FLOW and must be updated to AUTO
+            updateAdvancedSettings();
             if (Object.keys(frostList).length === 0) {
               try {
                 Homey.alert(Homey.__('warnings.noDevices'));

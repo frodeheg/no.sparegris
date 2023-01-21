@@ -453,6 +453,34 @@ class PiggyBank extends Homey.App {
       this.homey.settings.set('settingsVersion', 5);
     }
 
+    // Version 0.19.41
+    if (+settingsVersion < 6) {
+      // The charger state chargeTarget can in some cases be incorrect.
+      const chargerOptions = this.homey.settings.get('chargerOptions');
+      if (chargerOptions !== null) {
+        const deviceList = this.homey.settings.get('deviceList') || {};
+        let chargerUsed = false;
+        for (const key in deviceList) {
+          const device = deviceList[key];
+          if ((device.driverId in d.DEVICE_CMD) && (d.DEVICE_CMD[device.driverId].type === d.DEVICE_TYPE.CHARGER)) {
+            chargerUsed |= device.use;
+          }
+        }
+        if (chargerUsed) {
+          chargerOptions.chargeTarget = c.CHARGE_TARGET_AUTO;
+          if (+chargerOptions.chargeThreshold < 1700) {
+            chargerOptions.chargeThreshold = 1700;
+          }
+          chargerOptions.chargeMin = 1500;
+        } else {
+          chargerOptions.chargeTarget = c.CHARGE_TARGET_FLOW;
+        }
+        this.homey.settings.set('chargerOptions', chargerOptions);
+      }
+
+      this.homey.settings.set('settingsVersion', 6);
+    }
+
     // Internal state that preferably should be removed as it is in the archive
     // this.homey.settings.unset('stats_savings_all_time_use');
     // this.homey.settings.unset('stats_savings_all_time_power_part');
@@ -781,7 +809,7 @@ class PiggyBank extends Homey.App {
     });
 
     // Prepare which devices was on for setting deviceList which is called after this
-    this.__oldDeviceList = this.homey.settings.get('deviceList') || [];
+    this.__oldDeviceList = this.homey.settings.get('deviceList') || {};
 
     this.homey.settings.on('set', setting => {
       if (setting === 'futurePriceOptions') {

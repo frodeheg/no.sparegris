@@ -11,7 +11,7 @@ function checkForCharger(deviceList) {
     const device = deviceList[key];
     if ((device.driverId in DEVICE_CMD) && (DEVICE_CMD[device.driverId].type === DEVICE_TYPE.CHARGER)) {
       foundCharger = true;
-      chargerUsed = device.use;
+      chargerUsed |= device.use;
     }
   }
   return { foundCharger, chargerUsed };
