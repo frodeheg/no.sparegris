@@ -11,7 +11,7 @@ const { toLocalTime } = require('./homeytime');
 // =============================================================================
 
 const WWW_NORGES_BANK_CURRENCY = 'https://data.norges-bank.no/api/data/EXR/B.{toCurrency}.{fromCurrency}.SP?format=sdmx-json&startPeriod={startDate}&endPeriod={endDate}&locale={locale}';
-const currencyTable = {
+let currencyTable = {
   GBP: { rate: 12.0442, date: '2022-11-18', name: 'Britiske pund' },
   EUR: { rate: 10.486, date: '2022-11-18', name: 'Euro' },
   SEK: { rate: 0.955, date: '2022-11-18', name: 'Svenske kroner' },
@@ -84,14 +84,18 @@ async function getDecimals(currency) {
 
 let currencyLocale = 'no'; // Updated on request
 
-async function currencyApiInit(locale) {
-  currencyLocale = locale;
+async function currencyApiInit(homey) {
+  currencyLocale = homey.i18n.getLanguage();
+  const newCurrencyTable = homey.settings.get('currencyTable');
+  if (newCurrencyTable !== null) {
+    currencyTable = newCurrencyTable;
+  }
 }
 
 // Fetch the newest currency conversions
 // When failed, return the last known currencies
 // @param from - Sets the reference currency
-async function fetchCurrencyTable(currencies = '', date) {
+async function fetchCurrencyTable(currencies = '', date, homey) {
   const now = (date === undefined) ? new Date() : new Date(date);
   const someDaysAgo = new Date();
   someDaysAgo.setDate(now.getDate() - 4);
@@ -106,6 +110,7 @@ async function fetchCurrencyTable(currencies = '', date) {
     .replace('{locale}', currencyLocale);
   try {
     const { data, res } = await request(webAddress, { dataType: 'json' });
+    let updated = false;
     if (res.status === 200) {
       // Find latest date
       const latestDateIndex = data.data.structure.dimensions.observation[0].values.length - 1;
@@ -137,12 +142,16 @@ async function fetchCurrencyTable(currencies = '', date) {
           currencyTable[currencyNames[i].id].rate = exchangeRate;
           currencyTable[currencyNames[i].id].date = exchangeDate;
           currencyTable[currencyNames[i].id].name = currencyNames[i].name;
+          updated = true;
         } else {
           console.log(`New currency (ignored) ${currencyNames[i].id}: ${exchangeRate}`);
         }
       }
     }
-    //
+    // Save the new currencies
+    if (updated) {
+      homey.settings.set('currencyTable', currencyTable);
+    }
   } catch {} // Ignore errors. Instead the currencyTable contain a date which indicate last working date
 
   const currencyCopy = JSON.parse(JSON.stringify(currencyTable));
@@ -154,9 +163,9 @@ async function fetchCurrencyTable(currencies = '', date) {
   return asObject;
 }
 
-async function getCurrencyModifier(fromCurrency, toCurrency, date) {
+async function getCurrencyModifier(fromCurrency, toCurrency, date, homey) {
   try {
-    const currencyTable2 = await fetchCurrencyTable([toCurrency, fromCurrency], date);
+    const currencyTable2 = await fetchCurrencyTable([toCurrency, fromCurrency], date, homey);
     return currencyTable2[fromCurrency].rate / currencyTable2[toCurrency].rate;
   } catch {
     return undefined;

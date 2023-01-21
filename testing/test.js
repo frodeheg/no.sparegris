@@ -18,8 +18,11 @@ const { disableTimers, applyBasicConfig, applyStateFromFile, getAllDeviceId, wri
 // * Test that the date for the last currency fetched is recent... otherwise the API could have changed
 async function testCurrencyConverter() {
   console.log('[......] Currency Converter');
-  const currencyTable = await prices.fetchCurrencyTable('EUR');
   const now = new Date();
+  const app = new PiggyBank();
+  await app.disableLog();
+  await app.onInit();
+  const currencyTable = await prices.fetchCurrencyTable('EUR', now, app.homey);
   for (const currency in currencyTable) {
     const sampleTime = new Date(currencyTable[currency].date);
     if ((currency === 'NOK') || (currency === 'RUB')) continue;
@@ -27,6 +30,7 @@ async function testCurrencyConverter() {
       throw new Error(`No recent samples for currency ${currency}, last sample time: ${sampleTime}`);
     }
   }
+  await app.onUninit();
   console.log('\x1b[1A[\x1b[32mPASSED\x1b[0m]');
 }
 
@@ -650,7 +654,7 @@ async function testCurrencies() {
   if (!('NOK' in cur)) {
     throw new Error('Currency table is wrong');
   }
-  const currencies = await prices.fetchCurrencyTable();
+  const currencies = await prices.fetchCurrencyTable('', undefined, app.homey);
   if (Object.keys(currencies).length < 41) {
     throw new Error('Too few currencies');
   }

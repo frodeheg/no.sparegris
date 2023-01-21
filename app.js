@@ -163,7 +163,7 @@ class PiggyBank extends Homey.App {
       this.logInit();
     } catch (err) {} // Ignore logging errors, normal users don't care
 
-    await prices.currencyApiInit(this.homey.i18n.getLanguage());
+    await prices.currencyApiInit(this.homey);
     await prices.entsoeApiInit(Homey.env.ENTSOE_TOKEN);
 
     // ===== BREAKING CHANGES =====
@@ -1169,8 +1169,8 @@ class PiggyBank extends Homey.App {
    * Return a list of currencies that can be used
    */
   async getCurrencies() {
-    await prices.currencyApiInit(this.homey.i18n.getLanguage());
-    const currencies = await prices.fetchCurrencyTable();
+    await prices.currencyApiInit(this.homey);
+    const currencies = await prices.fetchCurrencyTable('', undefined, this.homey);
     const namesOnly = {};
     const indices = Object.keys(currencies).sort();
     for (const idx in indices) {
