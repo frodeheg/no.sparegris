@@ -712,5 +712,8 @@
   },
   "0.19.40": {
     "en": "Added Xiaomi motion sensor to ignore list + Removed known meter readers from the listing of devices to report as missing + Added Elko SmartDimPir to the list of supported devices + UI Fixes for iphone + Moved ESHSUPERTR out of beta as it was reported working"
+  },
+  "0.19.41": {
+    "en": "Improved visualization of price points in daily price graph + made currency exchange rates latent across app restarts + Fixed an issue where car chargers did not get enabled correctly when being added to the app."
   }
 }
