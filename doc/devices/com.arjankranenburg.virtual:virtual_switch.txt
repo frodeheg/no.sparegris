@@ -1,0 +1,12 @@
++19:36:0.782: ----- ANALYZING DEVICE -----
++19:36:0.784: Report type: Device is not listed
++19:36:0.786: Device ID:   f02befad-ac1c-4a33-8e47-cc4c416441c1
++19:36:0.913: Device name: Termostat Stue
++19:36:0.918: Driver Uri: homey:app:com.arjankranenburg.virtual
++19:36:0.924: Driver Id: virtual_switch
++19:36:0.930: Error: TypeError: Cannot read properties of undefined (reading 'onoff_cap')
++19:36:0.935: Capabilities: target_temperature,thermostat_mode,measure_temperature
++19:36:0.941: Options for 'target_temperature': {"value":22,"lastUpdated":"2022-10-04T16:15:16.458Z","type":"number","getable":true,"setable":true,"title":"Ønsket temperatur","desc":null,"units":"°C","decimals":2,"min":4,"max":50,"chartType":"stepLine","id":"target_temperature","options":{"max":50}}
++19:36:0.946: Options for 'thermostat_mode': {"value":"auto","lastUpdated":"2021-02-20T17:11:41.246Z","type":"enum","getable":true,"setable":true,"title":"Termostatmodus","desc":"Modus for termostaten","units":null,"values":[{"id":"auto","title":"Automatisk"},{"id":"heat","title":"Varme"},{"id":"cool","title":"Avkjøle"},{"id":"off","title":"Av"}],"id":"thermostat_mode","options":{}}
++19:36:0.950: Options for 'measure_temperature': {"value":22.9,"lastUpdated":"2023-01-22T19:10:51.102Z","type":"number","getable":true,"setable":false,"title":"Temperatur","desc":"Temperatur i grader Celsius (°C)","units":"°C","decimals":2,"chartType":"spline","id":"measure_temperature","options":{}}
++19:36:0.953: --- ANALYZING DEVICE DONE ---

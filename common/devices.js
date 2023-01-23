@@ -179,6 +179,19 @@ const DEVICE_CMD = {
   'cloud.shelly:shelly': DEFAULT_SWITCH,
   'com.aeotec:ZW078': DEFAULT_SWITCH,
   'com.arjankranenburg.virtual:mode': DEFAULT_SWITCH,
+  'com.arjankranenburg.virtual:virtual_switch': { // Similar to Vthermo
+    ...DEFAULT_AC,
+    note: 'This device has no onOff capability and will have to emulate On by turning the mode into heat. '
+      + 'For cool mode please wait until the app supports cooling (after winter).',
+    setOnOffCap: 'thermostat_mode',
+    setOnValue: 'heat', // This is unfortunate
+    setOffValue: 'off',
+    tempMin: undefined, // This depends on what is connected
+    tempMax: undefined, // --- " ---
+    beta: true, // Need to be in beta until fan modes is supported otherwise it's heating only
+    tempStep: 0.5,
+    default: false
+  },
   'com.datek.eva:meter-reader': DEFAULT_METER,
   'com.elko:ESHSUPERTR': {
     ...DEFAULT_HEATER,
