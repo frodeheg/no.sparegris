@@ -715,5 +715,8 @@
   },
   "0.19.41": {
     "en": "Improved visualization of price points in daily price graph + made currency exchange rates latent across app restarts + Fixed an issue where car chargers did not get enabled correctly when being added to the app."
+  },
+  "0.19.42": {
+    "en": "Added support for com.arjankranenburg.virtual:virtual_switch + Fixed bug where the reliability counters for all devices was reset when entering the setup."
   }
 }
