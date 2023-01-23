@@ -1054,7 +1054,7 @@ class PiggyBank extends Homey.App {
     const zones = await this.homeyApi.zones.getZones(); // Error thrown is catched by caller of createDeviceList
     // Note: The API calls above might time out, in which case the rest of the function will never be executed.
 
-    const oldDeviceList = this.homey.settings.get('deviceList');
+    const oldDeviceList = this.__deviceList || this.homey.settings.get('deviceList');
     const relevantDevices = {};
     const meterReaders = {};
 
