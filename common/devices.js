@@ -316,6 +316,17 @@ const DEVICE_CMD = {
   } */
   'com.tibber:home': DEFAULT_IGNORED,
   'com.tibber:pulse': DEFAULT_METER,
+  'com.toshiba:ac': { // Note! Has power-step modes (target_power_mode)
+    ...DEFAULT_AC,
+    tempMin: 5,
+    setModeCap: 'target_ac_mode1',
+    setModeHeatValue: 'Heat',
+    setModeCoolValue: 'Cool',
+    setModeAutoValue: 'Auto',
+    setModeDryValue: 'Dry',
+    setModeFanValue: 'Fan',
+    default: false
+  },
   'com.tuya.cloud:tuyalight': DEFAULT_SWITCH,
   'com.xiaomi-mi:plug.maeu01': DEFAULT_SWITCH,
   'com.xiaomi-mi:sensor_motion.aq2': DEFAULT_IGNORED,
