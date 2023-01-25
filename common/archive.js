@@ -136,6 +136,63 @@ function setDataMacro(archive, dataId, period, time, idx, value) {
 }
 
 /**
+ * Macro for removing items from the archive
+ * This is to undo broken operations
+ */
+function removeDataMacro(archive, dataId, period, time, idx, value) {
+  if (!(dataId in archive)) archive[dataId] = {};
+  if (!(period in archive[dataId])) archive[dataId][period] = {};
+  if (!(time in archive[dataId][period])) archive[dataId][period][time] = [];
+  const oldValue = archive[dataId][period][time][idx];
+  const oldValueUndef = (oldValue === undefined) || (oldValue === null);
+  const schema = validTypes[dataId][period];
+  let setValue;
+  switch (schema) {
+    case SCHEMA.NONE:
+      return;
+    case SCHEMA.COUNT:
+      setValue = oldValueUndef ? [] : oldValue;
+      if (value < setValue.length) {
+        setValue[value] = (setValue[value] > 0) ? (setValue[value] - 1) : 0;
+      }
+      break;
+    case SCHEMA.ADD:
+      setValue = oldValueUndef ? value : (oldValue - value);
+      break;
+    case SCHEMA.AND:
+      setValue = value ? oldValue : undefined;
+      break;
+    case SCHEMA.OR:
+      setValue = value ? undefined : oldValue;
+      break;
+    case SCHEMA.AVG3:
+      try {
+        setValue = calcAvg(archive, dataId, period, time, idx, 3);
+      } catch (err) {
+        // In case hourly data is skipped the value is unknown
+        setValue = undefined;
+      }
+      break;
+    case SCHEMA.AVG:
+      try {
+        setValue = calcAvg(archive, dataId, period, time, idx, Infinity);
+      } catch (err) {
+        // In case hourly data is skipped the value is unknown
+        setValue = undefined;
+      }
+      break;
+    case SCHEMA.MAX:
+      setValue = (+value < +oldValue) ? oldValue : undefined;
+      break;
+    case SCHEMA.SET:
+    default:
+      setValue = undefined;
+      break;
+  }
+  archive[dataId][period][time][idx] = setValue;
+}
+
+/**
  * Adds data to the Archive
  * @data is of type Object and contains all the data types to archive: {dataId1: value1, dataId2: value2, ...}
  * @time is of type UTC and will be converted into localtime before deciding how to structure the archive by month/year
@@ -175,6 +232,26 @@ async function addToArchive(homey, data, timeUTC = new Date(), skipHours = false
     setDataMacro(archive, dataId, 'yearly', yearIdx, 0, data[dataId]);
   }
   if (!fakeArchive) homey.settings.set('archive', archive);
+}
+
+/**
+ * Remove a value from the archive as it is disfunctional
+ */
+async function removeFromArchive(dataId, fakeArchive, ltYear, ltMonth, ltDay, ltHour) {
+  if (!(dataId in validTypes)) throw new Error('Invalid usage, dataId must be an archive element');
+  try {
+    const hourIdx = `${String(ltYear).padStart(4, '0')}-${String(ltMonth + 1).padStart(2, '0')}-${String(ltDay + 1).padStart(2, '0')}`;
+    const oldValue = fakeArchive[dataId]['hourly'][hourIdx][ltHour];
+    removeDataMacro(fakeArchive, dataId, 'hourly', hourIdx, ltHour, oldValue);
+    const dayIdx = `${String(ltYear).padStart(4, '0')}-${String(ltMonth + 1).padStart(2, '0')}`;
+    removeDataMacro(fakeArchive, dataId, 'daily', dayIdx, ltDay, oldValue);
+    const monthIdx = `${String(ltYear).padStart(4, '0')}`;
+    removeDataMacro(fakeArchive, dataId, 'monthly', monthIdx, ltMonth, oldValue);
+    const yearIdx = monthIdx;
+    removeDataMacro(fakeArchive, dataId, 'yearly', yearIdx, 0, oldValue);
+  } catch (err) {
+    // Item doesn't exist, nothing to remove from archive
+  }
 }
 
 /**
@@ -246,6 +323,7 @@ async function cleanArchive(homey, timeUTC = new Date()) {
 
 module.exports = {
   addToArchive,
+  removeFromArchive,
   cleanArchive,
   getArchive,
 };

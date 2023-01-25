@@ -27,7 +27,7 @@ const { HomeyAPIApp } = require('homey-api');
 const { resolve } = require('path');
 const c = require('./common/constants');
 const d = require('./common/devices');
-const { addToArchive, cleanArchive, getArchive } = require('./common/archive');
+const { addToArchive, removeFromArchive, cleanArchive, getArchive } = require('./common/archive');
 const {
   daysInMonth, toLocalTime, timeDiff, timeSinceLastHour, timeToNextHour, roundToNearestHour, roundToStartOfHour, roundToStartOfDay, hoursInDay, fromLocalTime
 } = require('./common/homeytime');
@@ -479,6 +479,40 @@ class PiggyBank extends Homey.App {
       }
 
       this.homey.settings.set('settingsVersion', 6);
+    }
+
+    // Version 0.19.43
+    if (+settingsVersion < 7) {
+      // Re-calculate cost as this has been updated incorrectly ever since version 0.19.27 which was sent to testing on Dec. 29th
+      const archive = await this.homey.settings.get('archive') || {};
+      const { powUsage, price } = archive;
+      const dataTimeUTC = roundToNearestHour(new Date());
+      const dataTimeOffset = dataTimeUTC - toLocalTime(dataTimeUTC, this.homey);
+      if (powUsage && price && ('hourly' in powUsage) && ('hourly' in price)) {
+        for (const time in powUsage['hourly']) {
+          if (time in price['hourly']) {
+            for (const dataIdx in powUsage['hourly'][time]) {
+              if (dataIdx in price['hourly'][time]) {
+                const usedkW = powUsage['hourly'][time][dataIdx] / 1000;
+                const perkW = price['hourly'][time][dataIdx];
+                if (isNumber(usedkW) && isNumber(perkW)) {
+                  const data = {
+                    cost: usedkW * perkW
+                  };
+                  dataTimeUTC.setTime(new Date(`${time} ${dataIdx}:00`).getTime() + dataTimeOffset);
+                  const year = parseInt(time.slice(0, 4), 10);
+                  const month = parseInt(time.slice(5, 7), 10) - 1;
+                  const day = parseInt(time.slice(8, 10), 10) - 1;
+                  await removeFromArchive('cost', archive, year, month, day, dataIdx);
+                  await addToArchive(this.homey, data, dataTimeUTC, false, false, archive, year, month, day, dataIdx);
+                }
+              }
+            }
+          }
+        }
+      }
+      this.homey.settings.set('archive', archive);
+      this.homey.settings.set('settingsVersion', 7);
     }
 
     // Internal state that preferably should be removed as it is in the archive
@@ -2881,8 +2915,8 @@ class PiggyBank extends Homey.App {
       data.pricePoints = +this.homey.settings.get('pricePoint');
     }
     if (Array.isArray(this.__current_prices)) {
-      data.price = this.__current_prices[this.__current_price_index];
-      data.cost = data.powUsage * data.price;
+      data.price = this.__current_prices[this.__current_price_index]; // Per kWh
+      data.cost = (data.powUsage / 1000) * data.price;
     }
     await addToArchive(this.homey, data, hourAgoUTC);
   }
