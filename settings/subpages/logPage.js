@@ -31,11 +31,11 @@ const logPageText = `
   <div id="logExtended" style="display:none">
     <label for="logUnit"><span data-i18n="settings.log.unit">log.unit</span>:</label>
     <select id="logUnit">
-      <option value=0>Please Wait while the list is being populated</option>
+      <option value="" selected>Please Wait while the list is being populated</option>
     </select><br>
     <label for="logLevel"><span data-i18n="settings.log.level">log.level</span>:</label>
     <select id="logLevel">
-      <option value=0 data-i18n="settings.log.error">log.error</option>
+      <option value=0 data-i18n="settings.log.error" selected>log.error</option>
       <option value=1 data-i18n="settings.log.basic">log.basic</option>
       <option value=2 data-i18n="settings.log.full">log.full</option>
     </select>
