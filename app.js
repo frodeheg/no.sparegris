@@ -3587,7 +3587,7 @@ class PiggyBank extends Homey.App {
 
         if (Array.isArray(futurePrices)) {
           for (let i = 0; i < futurePrices.length; i++) {
-            if (futurePrices[i].time > newestPriceWeGot) {
+            if ((futurePrices[i].time > newestPriceWeGot) && (futurePrices[i].time >= todayStartSec)) {
               this.__all_prices.push(futurePrices[i]);
             }
           }
@@ -3718,10 +3718,10 @@ class PiggyBank extends Homey.App {
     }
 
     // Trigger new Price points
-    const isDirtCheapPrice = isFixedPrice ? false : (todayArray[todayIndex] < this.__dirtcheap_price_limit);
-    const isLowPrice = (todayArray[todayIndex] < this.__low_price_limit);
-    const isHighPrice = isFixedPrice ? false : (todayArray[todayIndex] > this.__high_price_limit);
-    const isExtremePrice = isFixedPrice ? false : (todayArray[todayIndex] > this.__extreme_price_limit) && Number.isInteger(+futureData.extremePriceModifier);
+    const isDirtCheapPrice = isFixedPrice ? false : (todayArray[todayIndex] < outState.__dirtcheap_price_limit);
+    const isLowPrice = (todayArray[todayIndex] < outState.__low_price_limit);
+    const isHighPrice = isFixedPrice ? false : (todayArray[todayIndex] > outState.__high_price_limit);
+    const isExtremePrice = isFixedPrice ? false : (todayArray[todayIndex] > outState.__extreme_price_limit) && Number.isInteger(+futureData.extremePriceModifier);
     outState.mode = isDirtCheapPrice ? c.PP.DIRTCHEAP
       : isLowPrice ? c.PP.LOW
         : isExtremePrice ? c.PP.EXTREME
