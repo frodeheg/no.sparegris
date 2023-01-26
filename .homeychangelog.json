@@ -718,5 +718,8 @@
   },
   "0.19.42": {
     "en": "Added support for com.arjankranenburg.virtual:virtual_switch + Fixed bug where the reliability counters for all devices was reset when entering the setup."
+  },
+  "0.19.43": {
+    "en": "Added Toshiba heat pump to supported list + Fixed invalid Price points after restart and settings saved + Fixed the history for the cost calculation so it can be displayed correctly in a future update."
   }
 }
