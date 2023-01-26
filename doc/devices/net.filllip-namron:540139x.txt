@@ -1,0 +1,23 @@
++1:14:35.623: ----- ANALYZING DEVICE -----
++1:14:35.629: Report type: Experimental device is working
++1:14:35.636: Device ID:   ad09d8e9-3538-46d5-985c-fb656d6b6662
++1:14:35.672: Device name: Varmeovn Soverom 1
++1:14:35.674: Driver Uri: homey:app:net.filllip-namron
++1:14:35.675: Driver Id: 540139x
++1:14:35.677: Found onoff cap: onoff
++1:14:35.679: Found temp cap: true
++1:14:35.681: Device reliability: 1
++1:14:35.682: Capabilities: onoff,measure_power,meter_power,measure_temperature,target_temperature,zg9030a_modes,zg9030a_window_open_flag,zg9030a_internal_over_heat,zg9030a_datetime
++1:14:35.684: Options for 'onoff': {"value":true,"lastUpdated":"2023-01-26T01:11:00.561Z","type":"boolean","getable":true,"setable":true,"title":"Slått på","desc":null,"units":null,"id":"onoff","options":{}}
++1:14:35.686: Options for 'measure_power': {"value":0,"lastUpdated":"2023-01-26T00:39:45.636Z","type":"number","getable":true,"setable":false,"title":"Effekt","desc":"Effekt i watt (W)","units":"W","decimals":2,"chartType":"stepLine","id":"measure_power","options":{}}
++1:14:35.688: Options for 'meter_power': {"value":4.4,"lastUpdated":"2023-01-25T20:39:46.375Z","type":"number","getable":true,"setable":false,"title":"Energi","desc":"Energiforbruk i kilowattimer (kWh)","units":"kWh","decimals":2,"chartType":"spline","id":"meter_power","options":{}}
++1:14:35.691: Options for 'measure_temperature': {"value":22.8,"lastUpdated":"2023-01-26T01:05:33.185Z","type":"number","getable":true,"setable":false,"title":"Temperatur","desc":"Temperatur i grader Celsius (°C)","units":"°C","decimals":2,"chartType":"spline","id":"measure_temperature","options":{}}
++1:14:35.692: Options for 'target_temperature': {"value":17,"lastUpdated":"2023-01-26T01:11:05.494Z","type":"number","getable":true,"setable":true,"title":"Ønsket temperatur","desc":null,"units":"°C","decimals":2,"min":5,"max":35,"step":0.5,"chartType":"stepLine","id":"target_temperature","options":{"min":5,"max":35,"step":0.5}}
++1:14:35.694: Options for 'zg9030a_modes': {"value":"heat","lastUpdated":"2023-01-26T01:11:00.562Z","type":"enum","getable":true,"setable":true,"title":"Mode","desc":null,"units":null,"values":[{"id":"off","title":"Off"},{"id":"heat","title":"Manual"},{"id":"auto","title":"Auto"}],"id":"zg9030a_modes","options":{}}
++1:14:35.696: Options for 'zg9030a_window_open_flag': {"value":"Closed","lastUpdated":"2023-01-24T19:09:39.135Z","type":"string","getable":true,"setable":true,"title":"Window open flag","desc":null,"units":"","iconObj":{"id":"acbd3ab49f99285be046fd83c7453fca","url":"/icon/acbd3ab49f99285be046fd83c7453fca/icon.svg"},"id":"zg9030a_window_open_flag","options":{}}
++1:14:35.698: Options for 'zg9030a_internal_over_heat': {"value":"None","lastUpdated":"2023-01-24T19:09:39.220Z","type":"string","getable":true,"setable":true,"title":"Internal over heat","desc":null,"units":"","iconObj":{"id":"2947c76eb0cc5f43c12b2f29fde54fe1","url":"/icon/2947c76eb0cc5f43c12b2f29fde54fe1/icon.svg"},"id":"zg9030a_internal_over_heat","options":{}}
++1:14:35.701: Options for 'zg9030a_datetime': {"value":"2023-01-26 02","lastUpdated":"2023-01-26T01:05:18.889Z","type":"string","getable":true,"setable":true,"title":"Date","desc":null,"units":"","iconObj":{"id":"982f13ba560e37ba2a1a14a1dfa9b14b","url":"/icon/982f13ba560e37ba2a1a14a1dfa9b14b/icon.svg"},"id":"zg9030a_datetime","options":{}}
++1:14:35.703: --- ANALYZING DEVICE DONE ---
++1:14:42.190: Endringene har blitt lagret.
++1:14:45.478: Email:%20optional.email@for.feedback%0AComment:Tusen takk for jobben du gjer. Her er ein rapport som appen anbefalte å sende :)
++1:14:45.544: Sending log
