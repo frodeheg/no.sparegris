@@ -271,6 +271,8 @@ const DEVICE_CMD = {
   },
   'com.sensibo:Sensibo': {
     ...DEFAULT_AC,
+    note: 'In case your AC device makes a beeping sound whenever signaled by a remote control, please consult your AC device '
+      + 'service manual how to disable the sound before this app makes your head go crazy.',
     setOnOffCap: 'se_onoff',
     default: false
   },
