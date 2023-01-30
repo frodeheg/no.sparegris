@@ -721,5 +721,8 @@
   },
   "0.19.43": {
     "en": "Added Toshiba heat pump to supported list + Fixed invalid Price points after restart and settings saved + Fixed the history for the cost calculation so it can be displayed correctly in a future update."
+  },
+  "0.19.44": {
+    "en": "Added support for net.filllip-namron:540139x + Removed occational wrong-displays of extended logging. + Added note for sensibo sky devices + Added playground/preview of the upcoming feature for time schedules."
   }
 }
