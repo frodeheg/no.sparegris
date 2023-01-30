@@ -14,6 +14,13 @@
       "maxPowHint": "The maximum power can also be changed with flows for example when different maximums are wanted during winter and summer time.",
       "myTasks": "The App State"
     },
+    "schedule": {
+      "name": "Name",
+      "onoff": "OnOff operation",
+      "temp": "Temperature",
+      "schedule": "Current schedule",
+      "schedules": "Schedules"
+    },
     "charge": {
       "header": "Car chargers",
       "chargeTarget": "Charge control",
@@ -69,7 +76,8 @@
         "charger": "Car chargers",
         "frost": "Frost guard",
         "override": "Override",
-        "backup": "Backup"
+        "backup": "Backup",
+        "timetable": "Time Schedule"
       },
       "help": {
         "title": "Help",

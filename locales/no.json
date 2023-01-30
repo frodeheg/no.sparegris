@@ -14,6 +14,13 @@
       "maxPowHint": "Maks forbruk per time kan endres med flytkort dersom det er ønskelig. For eksempel kan man ha ulikt maks forbruk på sommeren og vinteren.",
       "myTasks": "Appens Tilstand"
     },
+    "schedule": {
+      "name": "Navn",
+      "onoff": "Operasjon",
+      "temp": "Temperatur",
+      "schedule": "Valgt plan",
+      "schedules": "Timeplaner"
+    },
     "charge": {
       "header": "Lading av Elbil",
       "chargeTarget": "Ladestyring",
@@ -69,7 +76,8 @@
         "charger": "Lading av elbil",
         "frost": "Frostsikring",
         "override": "Overstyring",
-        "backup": "Sikkerhetskopi"
+        "backup": "Sikkerhetskopi",
+        "timetable": "Tidsstyring"
       },
       "help": {
         "title": "Hjelp",

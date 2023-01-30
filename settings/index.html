@@ -554,13 +554,16 @@
       }
 
       function updateState(button, listNum, device_id, newstate = undefined) {
-        if (newstate == undefined) {
-          newstate = (modeList[listNum][device_id].operation + 1) % 3;
+        modeList[listNum][device_id].operation =
+          updateStateInner(button, modeList[listNum][device_id].operation, newstate);
+      }
+      function updateStateInner(button, oldstate, newstate = undefined) {
+        if (newstate === undefined) {
+          newstate = (oldstate + 1) % 3;
         } else if (newstate == KEEP) {
-          newstate = modeList[listNum][device_id].operation;
+          newstate = oldstate;
         }
-        modeList[listNum][device_id].operation = newstate;
-        switch (modeList[listNum][device_id].operation) {
+        switch (newstate) {
           case ALWAYS_OFF:
             button.innerHTML=alwaysOffText;
             button.style.backgroundImage = 'radial-gradient(white, lightgray, gray)';
@@ -574,6 +577,7 @@
             button.style.backgroundImage = 'radial-gradient(white, rgb(150, 255, 150), green)';
             break;
         }
+        return newstate;
       }
 
       function moveDevice(event, listNum, device_id, delta) {
@@ -884,6 +888,7 @@
             <a href="#" data-i18n="settings.menu.advanced.frost" onclick="changeTab(event, 'frostPage')">Frost guard</a>
             <a href="#" data-i18n="settings.menu.advanced.override" onclick="changeTab(event, 'overridePage')">Override</a>
             <a href="#" data-i18n="settings.menu.advanced.backup" onclick="changeTab(event, 'backupPage')">Backup</a>
+            <a href="#" data-i18n="settings.menu.advanced.timetable" onclick="changeTab(event, 'schedulePage')">Time Schedules</a>
           </div>
         </td>
         <td class="dropdown" style="text-align:right" onclick="allowDropdown();">
@@ -1432,7 +1437,289 @@
 
     <!-- Time schedule -->
     <div id="schedulePage" class="tabcontent">
-      Time schedule
+      <h3>Time Schedule Preview</h3>
+      <p>This is a preview / testing ground of upcoming functionality. The Layout may differ in the final version. Absolutely nothing will be affected if you play around here.</p>
+      <p>The intent is that you can assign a schedule per device under each mode instead of an operation.</p>
+      <p>Price behavior may also be moved into the schedule.</p>
+      <p>If you have any feedback before this is finalized please put it in the forum.</p>
+        <table class="scheduleLegend">
+          <tr>
+            <td><div class="scheduleLegendText">0:00</div></td>
+            <td class="scheduleTick"></td>
+            <td width="10" rowspan="25"></td>
+            <td id="scheduleContainer" class="schedulePlan" rowspan="25" onpointerup="dragStop(event)" onpointermove="moving(event)"></td>
+            <td width="10" rowspan="25"></td>
+            <td rowspan="25" valign="top">
+              <fieldset>
+                <legend data-i18n="settings.global.schedules">Schedules</legend>
+                <select id="allSchedules" size="6" onchange="selectSchedule(this.value);">
+                </select><br>
+                <input type="button" value="Add" onclick="addSchedule();">
+                <input type="button" value="Remove" onclick="removeSchedule();"><br>
+              </fieldset>
+              <fieldset>
+                <legend data-i18n="settings.global.schedule">Current schedule</legend>
+                <label for="timerOpName" data-i18n="settings.schedule.name">Name</label>:<br>
+                <input id="timerOpName" class="inputElem" type="text" disabled onchange="schedules[scheduleSelected].name = this.value || 'Noname';refreshSchedules();displaySaveHint()"><br>
+                <label for="timerOpOnOff" data-i18n="settings.global.onoff">OnOff operation</label>:<br>
+                <div class="imgButtonText" id="timerOpOnOff" onclick="changeSheduleOp(this);">N/A</div><br>
+                <label for="timerOpTemp" data-i18n="settings.global.temp">Temperature</label>:<br>
+                <input id="timerOpTemp" class="inputElem" type="number" disabled min="-30" max="90" step="0.5" onchange="displaySaveHint()"><br>
+                <input type="button" value="+" onclick="addTimer();">
+                <input type="button" value="-" onclick="removeTimer();"><br>
+              </fieldset>
+            </td>
+          </tr>
+          <tr><td><div class="scheduleLegendText">1:00</div></td><td class="scheduleTick"></td></tr>
+          <tr><td><div class="scheduleLegendText">2:00</div></td><td class="scheduleTick"></td></tr>
+          <tr><td><div class="scheduleLegendText">3:00</div></td><td class="scheduleTick"></td></tr>
+          <tr><td><div class="scheduleLegendText">4:00</div></td><td class="scheduleTick"></td></tr>
+          <tr><td><div class="scheduleLegendText">5:00</div></td><td class="scheduleTick"></td></tr>
+          <tr><td><div class="scheduleLegendText">6:00</div></td><td class="scheduleTick"></td></tr>
+          <tr><td><div class="scheduleLegendText">7:00</div></td><td class="scheduleTick"></td></tr>
+          <tr><td><div class="scheduleLegendText">8:00</div></td><td class="scheduleTick"></td></tr>
+          <tr><td><div class="scheduleLegendText">9:00</div></td><td class="scheduleTick"></td></tr>
+          <tr><td><div class="scheduleLegendText">10:00</div></td><td class="scheduleTick"></td></tr>
+          <tr><td><div class="scheduleLegendText">11:00</div></td><td class="scheduleTick"></td></tr>
+          <tr><td><div class="scheduleLegendText">12:00</div></td><td class="scheduleTick"></td></tr>
+          <tr><td><div class="scheduleLegendText">13:00</div></td><td class="scheduleTick"></td></tr>
+          <tr><td><div class="scheduleLegendText">14:00</div></td><td class="scheduleTick"></td></tr>
+          <tr><td><div class="scheduleLegendText">15:00</div></td><td class="scheduleTick"></td></tr>
+          <tr><td><div class="scheduleLegendText">16:00</div></td><td class="scheduleTick"></td></tr>
+          <tr><td><div class="scheduleLegendText">17:00</div></td><td class="scheduleTick"></td></tr>
+          <tr><td><div class="scheduleLegendText">18:00</div></td><td class="scheduleTick"></td></tr>
+          <tr><td><div class="scheduleLegendText">19:00</div></td><td class="scheduleTick"></td></tr>
+          <tr><td><div class="scheduleLegendText">20:00</div></td><td class="scheduleTick"></td></tr>
+          <tr><td><div class="scheduleLegendText">21:00</div></td><td class="scheduleTick"></td></tr>
+          <tr><td><div class="scheduleLegendText">22:00</div></td><td class="scheduleTick"></td></tr>
+          <tr><td><div class="scheduleLegendText">23:00</div></td><td class="scheduleTick"></td></tr>
+          <tr><td colspan="2"></td></tr>
+        </table>
+
+        <script type="text/javascript" >
+          const totalHeight = 24*16;
+          const dividerHeight = 10;
+          const pixelsPerMinute = (totalHeight) / (24 * 60);
+          let minuteSnap = 30;
+          let scheduleMin = 1;
+          let scheduleMax = 5;
+          let scheduleSelected = '';
+          let schedules = [{
+            name: "Living Room",
+            minutes: [60*6, 60*2, 60*7, 60*7, 60*2],
+            operations: [CONTROLLED,CONTROLLED,CONTROLLED,CONTROLLED,CONTROLLED],
+            temp: [15,24,20,24,15]
+          }];
+          let timerSelected = undefined;
+          let dragging = false;
+          let aboveIdx;
+          let belowIdx;
+          let prevPosY;
+          let aboveItem;
+          let belowItem;
+
+
+          function selectSchedule(value) {
+            scheduleSelected = value;
+            timerSelected = undefined;
+            const nameElement = document.getElementById('timerOpName');
+            if (value in schedules) {
+              nameElement.disabled = false;
+              nameElement.value = schedules[value].name;
+            } else {
+              nameElement.disabled = true;
+              nameElement.value = '';
+            }
+            refreshTimeTable();
+          }
+
+          function addSchedule() {
+            let newSchedule = {
+              name: 'New Schedule',
+              minutes: [60*24],
+              operations: [CONTROLLED],
+              temp: [23]
+            };
+            schedules.push(newSchedule);
+            refreshSchedules();
+          }
+
+          function removeSchedule() {
+            if ((scheduleSelected == '')
+              || (+scheduleSelected > (schedules.length-1))
+              || (schedules.length === 1)) {
+              return;
+            }
+            schedules.splice(scheduleSelected,1);
+            selectSchedule('');
+            refreshSchedules();
+          }
+
+          function refreshSchedules(change) {
+            let allSchedulesElement = document.getElementById('allSchedules');
+            let newList = '';
+            for (let i = 0; i < schedules.length; i++) {
+              const selectText = (i === scheduleSelected) ? ' selected' : '';
+              newList += `<option value="${i}"${selectText}>${schedules[i].name}</option>"`;
+            }
+            allSchedulesElement.innerHTML = newList;
+            refreshTimeTable();
+          }
+
+          function timerHeight(item) {
+            const minutes = schedules[scheduleSelected].minutes;
+            const numTimers = minutes.length;
+            const height = minutes[item] * pixelsPerMinute;
+            if (numTimers === 1)
+              return height;
+            if ((item === (numTimers - 1)) || (item === 0))
+              return height - (dividerHeight / 2);
+            return height - dividerHeight;
+          }
+
+          function addTimer() {
+            if (!(scheduleSelected in schedules)) {
+              return;
+            }
+            const curSchedule = schedules[scheduleSelected];
+            const minutes = curSchedule.minutes;
+            const numTimers = minutes.length;
+            if (numTimers < scheduleMax) {
+              let toSplit = minutes[numTimers - 1];
+              minutes[numTimers - 1] = Math.round(toSplit / 120) * 60;
+              minutes[numTimers] = toSplit - minutes[numTimers - 1];
+              curSchedule.operations[numTimers] = curSchedule.operations[numTimers-1];
+              curSchedule.temp[numTimers] =  curSchedule.temp[numTimers-1];
+              for (let i = numTimers; i > 0; i--) {
+                if (minutes[i] < 60) {
+                  minutes[i-1] += minutes[i] - 60;
+                  minutes[i] = 60;
+                }
+              }
+            }
+            console.log(schedules);
+            refreshTimeTable();
+          }
+
+          function removeTimer() {
+            if (!(scheduleSelected in schedules)
+              || (timerSelected === undefined)) {
+              return;
+            }
+            const minutes = schedules[scheduleSelected].minutes;
+            const numTimers = minutes.length;
+            if (numTimers > scheduleMin) {
+              const dest = (timerSelected === 0) ? 1 : (timerSelected - 1);
+              minutes[dest] += minutes[timerSelected];
+              minutes.splice(timerSelected, 1);
+            }
+            timerSelected = undefined;
+            console.log(schedules);
+            refreshTimeTable();
+          }
+
+          function getTimeBlockText(idx) {
+            const curShedule = schedules[scheduleSelected]
+            let startTime = 0;
+            for (let i = 0; i < idx; i++) {
+              startTime += curShedule.minutes[i];
+            }
+            const blockTime = curShedule.minutes[idx];
+            const endTime = startTime + blockTime;
+            const hourStart = String(Math.floor(startTime / 60)).padStart(2, '0');
+            const minStart = String(startTime % 60).padStart(2, '0');
+            const hourEnd = String(Math.floor(endTime / 60)).padStart(2, '0');
+            const minEnd = String(endTime % 60).padStart(2, '0');
+            const temp = curShedule.temp[idx];
+            const blockText = `${temp}°C<br>${hourStart}:${minStart} - ${hourEnd}:${minEnd}`;
+            return blockText;
+          }
+
+          function changeSheduleOp(origin) {
+            if (scheduleSelected in schedules && timerSelected !== undefined) {
+              const curSchedule = schedules[scheduleSelected];
+              const oldOp = curSchedule.operations[timerSelected];
+              const newOp =
+                updateStateInner(origin, curSchedule.operations[timerSelected]);
+              curSchedule.operations[timerSelected] = newOp;
+              const timerElement = document.getElementById(`si${timerSelected}`);
+              timerElement.classList.remove(`schedCol${oldOp}`);
+              timerElement.classList.add(`schedCol${newOp}`);
+              displaySaveHint();
+            }
+          }
+
+          function refreshTimeTable(change) {
+            const container = document.getElementById("scheduleContainer");
+            const currentSchedule = schedules[scheduleSelected];
+            const numTimers = (scheduleSelected in schedules) ? currentSchedule.minutes.length : 0;
+            let newContent = '';
+            for (let i = 0; i < numTimers; i++) {
+              if (i > 0) {
+                newContent += `<div id="s${i-1}" class="scheduleSpacer" onpointerdown="dragStart(event, this)" style="height:${dividerHeight}px"></div>`;
+              }
+              const blockText = getTimeBlockText(i);
+              const cc = +currentSchedule.operations[i];
+              newContent += `<div id="si${i}" class="scheduleItem schedCol${cc} ${timerSelected===i ? ' scheduleSelect' : ''}" onclick="selectTimer(${i})" style="height:${timerHeight(i)}px">${blockText}</div>`;
+            }
+            container.innerHTML = newContent;
+          }
+
+          function selectTimer(sourceId) {
+            const sourceElement = document.getElementById(`si${sourceId}`);
+            const onoffElement = document.getElementById('timerOpOnOff');
+            const tempElement = document.getElementById('timerOpTemp');
+            if (timerSelected !== undefined) {
+              const oldElement = document.getElementById(`si${timerSelected}`);
+              oldElement.classList.remove('scheduleSelect');
+              tempElement.disabled = true;
+            }
+            if (timerSelected === sourceId) {
+              timerSelected = undefined;
+            } else {
+              timerSelected = sourceId;
+              sourceElement.classList.add('scheduleSelect');
+              tempElement.disabled = false;
+            }
+            const currentSchedule = schedules[scheduleSelected];
+            const newOnOffOp = currentSchedule.operations[timerSelected]
+            updateStateInner(onoffElement, newOnOffOp, KEEP);
+            tempElement.value = currentSchedule.temp[timerSelected];
+          }
+
+          function dragStart(e, source) {
+            dragging = true;
+            aboveItem = source.previousElementSibling;
+            belowItem = source.nextElementSibling;
+            aboveIdx = +source.id.slice(1);
+            belowIdx = aboveIdx + 1;
+            prevPosY = event.clientY;
+          }
+          function moving(e) {
+            if (dragging) {
+              const minutes = schedules[scheduleSelected].minutes;
+              let deltaY = e.clientY - prevPosY;
+              let deltaMinutes = Math.round(deltaY / (pixelsPerMinute * minuteSnap)) * minuteSnap;
+              if (Math.abs(deltaMinutes) >= minuteSnap) {
+                const minSize = 60;
+                if (minutes[belowIdx] - deltaMinutes < minSize) deltaMinutes = minutes[belowIdx] - minSize;
+                if (minutes[aboveIdx] + deltaMinutes < minSize) deltaMinutes = minSize - minutes[aboveIdx];
+                minutes[belowIdx] -= deltaMinutes;
+                minutes[aboveIdx] += deltaMinutes;
+
+                aboveItem.style.height = `${timerHeight(aboveIdx)}px`;
+                belowItem.style.height = `${timerHeight(belowIdx)}px`;
+
+                prevPosY = (deltaMinutes * pixelsPerMinute) + prevPosY;
+              }
+              document.getElementById(`si${aboveIdx}`).innerHTML = getTimeBlockText(aboveIdx);
+              document.getElementById(`si${belowIdx}`).innerHTML = getTimeBlockText(belowIdx);
+            }
+          }
+          function dragStop(e) {
+            dragging = false;
+          }
+        </script>
     </div>
 
     <!-- Price page -->
@@ -2756,6 +3043,12 @@
             document.getElementById('customModeFlags').style.display = 'none';
           }
         }
+
+        // Refresh schedule page
+        if (tabPage == 'schedulePage') {
+          refreshSchedules();
+        }
+
 
         // Get all elements with class="tabcontent" and hide them
         tabcontent = document.getElementsByClassName("tabcontent");

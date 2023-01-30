@@ -443,3 +443,87 @@ input[type='checkbox'] { display: none; }
   animation-fill-mode: both;
   animation-name: flash;
 }
+
+.scheduleLegend {
+  display: table;
+  padding: 0px;
+  border-spacing: 0px;
+  border: solid 0px;
+}
+
+.scheduleLegendText {
+  width: 40px;
+  height: 14px;
+  vertical-align: top;
+  font-weight: bold;
+  font-family: monospace;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  text-align: right;
+  padding: 0px;
+  border: solid 0px;
+  overflow: hidden;
+}
+
+.scheduleTick {
+  display: table-cell;
+  width: 10px;
+  border-right: solid 1px;
+  border-top: solid 1px;
+  border-bottom: solid 1px;
+}
+
+.schedulePlan {
+  display: table-cell;
+  width: 130px;
+  vertical-align: top;
+  padding: 0rem;
+  border-right: solid 0px;
+  touch-action: none;
+}
+
+.scheduleItem {
+  display: block;
+  overflow: auto;
+  border-radius: 8px;
+  width: 100%;
+  padding: 0px;
+  padding-top: 5px;
+  border: solid 0px;
+  text-align:center;
+  font-size: 0.8rem;
+  box-sizing: border-box;
+}
+
+.schedCol0 {
+  /*background-color: gray;*/
+  border: solid gray 1px;
+  background-image: linear-gradient(lightgray, gray);
+}
+
+.schedCol1 {
+  /*background-color: red;*/
+  border: solid red 1px;
+  background-image: linear-gradient(rgb(255, 150, 150), red);
+}
+
+.schedCol2 {
+  /*background-color: green;*/
+  border: solid green 1px;
+  background-image: linear-gradient(rgb(150, 255, 150), green);
+}
+
+.scheduleSelect {
+  opacity: 0.7;
+}
+
+.scheduleSpacer {
+  display: block;
+  width: 100%;
+  padding: 0px;
+  border: 0px;
+}
+
+.scheduleSpacer:hover {
+  cursor: ns-resize;
+}
