@@ -727,5 +727,8 @@
   },
   "0.19.45": {
     "en": "Refined the time schedule playground."
+  },
+  "0.19.46": {
+    "en": "Fixed display of time schedule on android phones"
   }
 }
