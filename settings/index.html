@@ -1445,22 +1445,43 @@
       <fieldset>
         <legend data-i18n="settings.global.schedules">Schedules</legend>
         <select id="allSchedules" onchange="selectSchedule(this.value);">
-        </select>
+        </select><br>
+        <label for="timerOpName" data-i18n="settings.schedule.name">Name</label>:
+        <input id="timerOpName" class="inputElem" type="text" onchange="schedules[scheduleSelected].name = this.value || 'Noname';refreshSchedules();displaySaveHint()"><br>
         <input type="button" value="New" onclick="addSchedule();">
         <input type="button" value="Remove" onclick="removeSchedule();"><br>
       </fieldset>
       <table class="scheduleLegend">
         <tr>
-          <td class="scheduleLegendBox"><div class="scheduleLegendText">0:00</div></td>
-          <td width="10" rowspan="25"></td>
-          <td id="scheduleContainer" class="schedulePlan" rowspan="25" onpointerup="dragStop(event)" onpointermove="moving(event)"></td>
-          <td width="10" rowspan="26"></td>
-          <td rowspan="26" valign="top">
-            <fieldset id='scCommon'>
-              <legend data-i18n="settings.global.schedule">Schedule</legend>
-              <label for="timerOpName" data-i18n="settings.schedule.name">Name</label>:<br>
-              <input id="timerOpName" class="inputElem" type="text" onchange="schedules[scheduleSelected].name = this.value || 'Noname';refreshSchedules();displaySaveHint()"><br>
-            </fieldset>
+          <td class="scheduleLegendBox"><div class="scheduleLegendText">0:00</div>
+            <div class="scheduleLegendText">1:00</div>
+            <div class="scheduleLegendText">2:00</div>
+            <div class="scheduleLegendText">3:00</div>
+            <div class="scheduleLegendText">4:00</div>
+            <div class="scheduleLegendText">5:00</div>
+            <div class="scheduleLegendText">6:00</div>
+            <div class="scheduleLegendText">7:00</div>
+            <div class="scheduleLegendText">8:00</div>
+            <div class="scheduleLegendText">9:00</div>
+            <div class="scheduleLegendText">10:00</div>
+            <div class="scheduleLegendText">11:00</div>
+            <div class="scheduleLegendText">12:00</div>
+            <div class="scheduleLegendText">13:00</div>
+            <div class="scheduleLegendText">14:00</div>
+            <div class="scheduleLegendText">15:00</div>
+            <div class="scheduleLegendText">16:00</div>
+            <div class="scheduleLegendText">17:00</div>
+            <div class="scheduleLegendText">18:00</div>
+            <div class="scheduleLegendText">19:00</div>
+            <div class="scheduleLegendText">20:00</div>
+            <div class="scheduleLegendText">21:00</div>
+            <div class="scheduleLegendText">22:00</div>
+            <div class="scheduleLegendText">23:00</div>
+            <div class="scheduleLegendText">24:00</div></td>
+          <td width="10"></td>
+          <td id="scheduleContainer" class="schedulePlan" onpointerup="dragStop(event)" onpointermove="moving(event)"></td>
+          <td width="10"></td>
+          <td rowspan="2" valign="top">
             <fieldset id='scTime'>
               <legend data-i18n="settings.global.timeslot">Timeslot</legend>
               <label for="timerOpOnOff" data-i18n="settings.global.onoff">OnOff operation</label>:<br>
@@ -1481,31 +1502,7 @@
             </fieldset>
           </td>
         </tr>
-        <tr><td class="scheduleLegendBox"><div class="scheduleLegendText">1:00</div></td></tr>
-        <tr><td class="scheduleLegendBox"><div class="scheduleLegendText">2:00</div></td></tr>
-        <tr><td class="scheduleLegendBox"><div class="scheduleLegendText">3:00</div></td></tr>
-        <tr><td class="scheduleLegendBox"><div class="scheduleLegendText">4:00</div></td></tr>
-        <tr><td class="scheduleLegendBox"><div class="scheduleLegendText">5:00</div></td></tr>
-        <tr><td class="scheduleLegendBox"><div class="scheduleLegendText">6:00</div></td></tr>
-        <tr><td class="scheduleLegendBox"><div class="scheduleLegendText">7:00</div></td></tr>
-        <tr><td class="scheduleLegendBox"><div class="scheduleLegendText">8:00</div></td></tr>
-        <tr><td class="scheduleLegendBox"><div class="scheduleLegendText">9:00</div></td></tr>
-        <tr><td class="scheduleLegendBox"><div class="scheduleLegendText">10:00</div></td></tr>
-        <tr><td class="scheduleLegendBox"><div class="scheduleLegendText">11:00</div></td></tr>
-        <tr><td class="scheduleLegendBox"><div class="scheduleLegendText">12:00</div></td></tr>
-        <tr><td class="scheduleLegendBox"><div class="scheduleLegendText">13:00</div></td></tr>
-        <tr><td class="scheduleLegendBox"><div class="scheduleLegendText">14:00</div></td></tr>
-        <tr><td class="scheduleLegendBox"><div class="scheduleLegendText">15:00</div></td></tr>
-        <tr><td class="scheduleLegendBox"><div class="scheduleLegendText">16:00</div></td></tr>
-        <tr><td class="scheduleLegendBox"><div class="scheduleLegendText">17:00</div></td></tr>
-        <tr><td class="scheduleLegendBox"><div class="scheduleLegendText">18:00</div></td></tr>
-        <tr><td class="scheduleLegendBox"><div class="scheduleLegendText">19:00</div></td></tr>
-        <tr><td class="scheduleLegendBox"><div class="scheduleLegendText">20:00</div></td></tr>
-        <tr><td class="scheduleLegendBox"><div class="scheduleLegendText">21:00</div></td></tr>
-        <tr><td class="scheduleLegendBox"><div class="scheduleLegendText">22:00</div></td></tr>
-        <tr><td class="scheduleLegendBox"><div class="scheduleLegendText">23:00</div></td></tr>
-        <tr><td class="scheduleLegendBox"><div class="scheduleLegendText">24:00</div></td></tr>
-        <tr><td colspan="2"></td><td><input style="width:100%" type="button" value="+" onclick="addTimer();"></td></tr>
+        <tr><td colspan="2"></td><td style="vertical-align:top;"><input style="width:100%" type="button" value="+" onclick="addTimer();"></td></tr>
       </table>
 
         <script type="text/javascript" >
@@ -1534,7 +1531,6 @@
           function selectSchedule(value) {
             scheduleSelected = value;
             timerSelected = undefined;
-            const scElements = document.getElementById('scCommon');
             const ppElements = document.getElementById('scPP');
             const nameElement = document.getElementById('timerOpName');
             const ppDirtElement = document.getElementById('tempDirtCheap');
@@ -1542,7 +1538,7 @@
             const ppExpensiveElement = document.getElementById('tempExpensive');
             const ppExtremeElement = document.getElementById('tempExtreme');
             if (value in schedules) {
-              scElements.disabled = false;
+              nameElement.disabled = false;
               ppElements.disabled = false;
               nameElement.value = schedules[value].name;
               ppDirtElement.value = schedules[value].deltas[0];
@@ -1550,7 +1546,7 @@
               ppExpensiveElement.value = schedules[value].deltas[3];
               ppExtremeElement.value = schedules[value].deltas[4];
             } else {
-              scElements.disabled = true;
+              nameElement.disabled = true;
               ppElements.disabled = true;
               nameElement.value = '';
               ppDirtElement.value = '';
@@ -3086,6 +3082,7 @@
 
         // Refresh schedule page
         if (tabPage == 'schedulePage') {
+          selectSchedule(0);
           refreshSchedules();
         }
 

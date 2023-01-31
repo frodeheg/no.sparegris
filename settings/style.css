@@ -453,15 +453,14 @@ input[type='checkbox'] { display: none; }
 
 .scheduleLegendBox {
   width: 50px;
-  height: 14px;
   vertical-align: top;
   padding: 0px;
   border: solid 0px;
   border-right: solid 1px;
-  overflow: hidden;
 }
 
 .scheduleLegendText {
+  height: 16px;
   font-weight: bold;
   font-family: monospace;
   font-size: 0.8rem;
@@ -469,6 +468,7 @@ input[type='checkbox'] { display: none; }
   text-align: right;
   position: relative;
   padding-right: 10px;
+  overflow: hidden;
 }
 
 .scheduleLegendText:after{
