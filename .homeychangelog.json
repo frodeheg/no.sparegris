@@ -724,5 +724,8 @@
   },
   "0.19.44": {
     "en": "Added support for net.filllip-namron:540139x + Removed occational wrong-displays of extended logging. + Added note for sensibo sky devices + Added playground/preview of the upcoming feature for time schedules."
+  },
+  "0.19.45": {
+    "en": "Refined the time schedule playground."
   }
 }
