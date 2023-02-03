@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <link href="../style.css" rel="stylesheet" type="text/css">
+    <link href="../trashcan.css" rel="stylesheet" type="text/css">
+    <style>
+.scheduleLegend {
+  display: table;
+  padding: 0px;
+  border-spacing: 0px;
+  border: solid 0px;
+}
+
+.scheduleLegendBox {
+  width: 50px;
+  vertical-align: top;
+  padding: 0px;
+  border: solid 0px;
+  border-right: solid 1px;
+}
+
+.scheduleLegendText {
+  height: 16px;
+  font-weight: bold;
+  font-family: monospace;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  text-align: right;
+  position: relative;
+  padding-right: 10px;
+  overflow: hidden;
+}
+
+.scheduleLegendText:after{
+  content:"   ";
+  height: 2px;
+  width: 5px;
+  background: black;
+  display: block;
+  position: absolute;
+  top: 50%;
+  right: 0;
+}
+
+.schedulePlan {
+  display: table-cell;
+  width: 130px;
+  vertical-align: top;
+  padding: 0rem;
+  border-right: solid 0px;
+  touch-action: none;
+}
+
+.scheduleItem {
+  display: block;
+  overflow: auto;
+  border-radius: 8px;
+  width: 100%;
+  padding: 0px;
+  padding-top: 5px;
+  border: solid 0px;
+  text-align:center;
+  font-size: 0.8rem;
+  box-sizing: border-box;
+}
+
+.schedCol0 {
+  /* UNCONDITIONAL_OFF */
+  border: solid gray 1px;
+  background-image: linear-gradient(lightgray, gray);
+}
+
+.schedCol1 {
+  /* UNCONDITIONAL_ON*/
+  border: solid red 1px;
+  background-image: linear-gradient(rgb(255, 255, 150), orange);
+}
+
+.schedCol2 {
+  /* CONTROLLED_OFF */
+  border: solid black 1px;
+  background-image: linear-gradient(rgb(150, 255, 150), green);
+}
+
+.schedCol3 {
+  /* CONTROLLED_ON */
+  border: solid green 1px;
+  background-image: linear-gradient(green, rgb(150, 255, 150));
+}
+
+.schedCol4 {
+  /* IGNORE */
+  border: solid black 1px;
+  background-image: linear-gradient(gray, lightgray);
+}
+
+.scheduleSelect {
+  opacity: 0.6;
+}
+
+.scheduleSpacer {
+  display: block;
+  position: absolute;
+  opacity: 60%;
+  left: 20%;
+  right: 20%;
+  padding: 0px;
+  border: 0px;
+  height: 20px;
+  background-image: linear-gradient(rgba(100,100,100,0), gray 35%, black 35% 45%, gray 45% 55%, black 55% 65%, gray 65%, rgba(100,100,100,0));
+}
+
+.scheduleSpacer:hover {
+  cursor: ns-resize;
+}
+    </style>
+  </head>
+  <body>
+    <h3>Time Schedule Preview</h3>
+    <p>This is a preview / testing ground of upcoming functionality. The Layout may differ in the final version. Absolutely nothing will be affected if you play around here.</p>
+    <p>The intent is that you can assign a schedule per device under each mode instead of an operation.</p>
+    <p>Price behavior is likely to be part of the schedule.</p>
+    <p>If you have any feedback before this is finalized please put it in the forum.</p>
+    <fieldset>
+      <legend data-i18n="settings.schedule.schedules">Schedules</legend>
+      <select id="allSchedules" onchange="selectSchedule(this.value);">
+      </select><br>
+      <label for="timerOpName" data-i18n="settings.schedule.name">Name</label>:
+      <input id="timerOpName" type="text" onchange="schedules[scheduleSelected].name = this.value || 'Noname';refreshSchedules();displaySaveHint()"><br>
+      <input type="button" value="New" onclick="addSchedule();">
+      <input type="button" value="Remove" onclick="removeSchedule();"><br>
+    </fieldset>
+    <table class="scheduleLegend">
+      <tr>
+        <td class="scheduleLegendBox"><div class="scheduleLegendText">0:00</div>
+          <div class="scheduleLegendText">1:00</div>
+          <div class="scheduleLegendText">2:00</div>
+          <div class="scheduleLegendText">3:00</div>
+          <div class="scheduleLegendText">4:00</div>
+          <div class="scheduleLegendText">5:00</div>
+          <div class="scheduleLegendText">6:00</div>
+          <div class="scheduleLegendText">7:00</div>
+          <div class="scheduleLegendText">8:00</div>
+          <div class="scheduleLegendText">9:00</div>
+          <div class="scheduleLegendText">10:00</div>
+          <div class="scheduleLegendText">11:00</div>
+          <div class="scheduleLegendText">12:00</div>
+          <div class="scheduleLegendText">13:00</div>
+          <div class="scheduleLegendText">14:00</div>
+          <div class="scheduleLegendText">15:00</div>
+          <div class="scheduleLegendText">16:00</div>
+          <div class="scheduleLegendText">17:00</div>
+          <div class="scheduleLegendText">18:00</div>
+          <div class="scheduleLegendText">19:00</div>
+          <div class="scheduleLegendText">20:00</div>
+          <div class="scheduleLegendText">21:00</div>
+          <div class="scheduleLegendText">22:00</div>
+          <div class="scheduleLegendText">23:00</div>
+          <div class="scheduleLegendText">24:00</div></td>
+        <td width="10"></td>
+        <td id="scheduleContainer" class="schedulePlan" onpointerup="dragStop(event)" onpointermove="moving(event)"></td>
+        <td width="10"></td>
+        <td rowspan="2" valign="top">
+          <fieldset id='scTime'>
+            <legend data-i18n="settings.schedule.schedule">Timeslot</legend>
+            <label for="timerOpOnOff" data-i18n="settings.schedule.onoff">OnOff operation</label>:<br>
+            <div class="imgButtonText" id="timerOpOnOff" onclick="changeScheduleOp(this);">N/A</div><br>
+            <label for="timerOpTemp" data-i18n="settings.schedule.temp">Temperature</label>:<br>
+            <select id="timerOpTemp" onchange="changeTempOp(this.value);displaySaveHint();">
+                <option value="0" data-i18n="settings.schedule.notemp">No temp control</option>
+                <option value="1" data-i18n="settings.schedule.statictemp">Static temperature</option>
+                <option value="2" data-i18n="settings.schedule.pricetemp">Price controlled</option>
+            </select><br>
+            <div id="scTemp">
+            <label for="timerBaseTemp" data-i18n="settings.schedule.basetemp">Base temperature</label>:<br>
+            <input id="timerBaseTemp" class="inputElem" type="number" min="-30" max="90" step="0.5" onchange="displaySaveHint()">°C<br>
+            </div>
+          </fieldset>
+          <fieldset id='scPP'>
+            <legend data-i18n="settings.menu.devices.prices">Price adjust</legend>
+            <label for="tempDirtCheap" data-i18n="settings.pricetab.dirtcheap">Dirt Cheap</label>:<br>
+            <input id="tempDirtCheap" class="inputElem" type="number" min="-30" max="90" step="0.5" onchange="schedules[scheduleSelected].deltas[0]=value;displaySaveHint()">°C<br>
+            <label for="tempCheap" data-i18n="settings.pricetab.cheap">Cheap</label>:<br>
+            <input id="tempCheap" class="inputElem" type="number" min="-30" max="90" step="0.5" onchange="schedules[scheduleSelected].deltas[1]=value;displaySaveHint()">°C<br>
+            <label for="tempExpensive" data-i18n="settings.pricetab.expensive">Expensive</label>:<br>
+            <input id="tempExpensive" class="inputElem" type="number" min="-30" max="90" step="0.5" onchange="schedules[scheduleSelected].deltas[3]=value;displaySaveHint()">°C<br>
+            <label for="tempExtreme" data-i18n="settings.pricetab.extreme">Extreme</label>:<br>
+            <input id="tempExtreme" class="inputElem" type="number" min="-30" max="90" step="0.5" onchange="schedules[scheduleSelected].deltas[4]=value;displaySaveHint()">°C<br>
+          </fieldset>
+        </td>
+      </tr>
+      <tr><td colspan="2"></td><td style="vertical-align:top;"><input style="width:100%" type="button" value="+" onclick="addTimer();"></td></tr>
+    </table>
+
+    <script type="text/javascript">
+    const totalHeight = 24*16;
+    const pixelsPerMinute = (totalHeight) / (24 * 60);
+    let minuteSnap = 30;
+    let scheduleMin = 1;
+    let scheduleMax = 8;
+    let scheduleSelected = 0;
+    let schedules = [{
+        name: "Weekday - Living Room",
+        deltaTemp: 1,
+        items: [{
+          start: 0,
+          operation: parent.DEVICE_OP.CONTROLLED_ON,
+          tempOp: parent.TEMP_OP.PRICE,
+          temp: 15,
+          deltas: [3, 2, 0, -2, -3]
+        },
+        {
+          start: 6*60,
+          operation: parent.DEVICE_OP.CONTROLLED_ON,
+          tempOp: parent.TEMP_OP.PRICE,
+          temp: 24,
+          deltas: [3, 2, 0, -2, -3]
+        },
+        {
+          start: 8*60,
+          operation: parent.DEVICE_OP.CONTROLLED_ON,
+          tempOp: parent.TEMP_OP.PRICE,
+          temp: 20,
+          deltas: [3, 2, 0, -2, -3]
+        },
+        {
+          start: 15*60,
+          operation: parent.DEVICE_OP.CONTROLLED_ON,
+          tempOp: parent.TEMP_OP.PRICE,
+          temp: 24,
+          deltas: [3, 2, 0, -2, -3]
+        },
+        {
+          start: 22*60,
+          operation: parent.DEVICE_OP.CONTROLLED_ON,
+          tempOp: parent.TEMP_OP.PRICE,
+          temp: 15,
+          deltas: [3, 2, 0, -2, -3]
+        }]
+    }];
+    let timerSelected = undefined;
+    let dragging = false;
+    let aboveIdx;
+    let belowIdx;
+    let prevPosY;
+    let aboveItem;
+    let belowItem;
+
+    function changeTempOp(newTempOp) {
+      if (!(scheduleSelected in schedules) || (timerSelected == undefined)) {
+        return;
+      }
+      const curSchedule = schedules[scheduleSelected];
+      const items = curSchedule.items;
+      items[timerSelected].tempOp = newTempOp;
+      refreshTempOp();
+      refreshTimeTable();
+    }
+
+    function refreshTempOp() {
+      const tempElement = document.getElementById('scTemp');
+      const ppElements = document.getElementById('scPP');
+      const tempOp = +document.getElementById('timerOpTemp').value;
+      switch (tempOp) {
+        case parent.TEMP_OP.NONE:
+          tempElement.style.display = "none";
+          ppElements.style.display = "none";
+          break;
+        case parent.TEMP_OP.STATIC:
+          tempElement.style.display = "block";
+          ppElements.style.display = "none";
+          break;
+        default:
+        case parent.TEMP_OP.PRICE:
+          tempElement.style.display = "block";
+          ppElements.style.display = "block";
+          break;
+      }
+    }
+
+    function selectSchedule(value) {
+      scheduleSelected = value;
+      timerSelected = undefined;
+      const nameElement = document.getElementById('timerOpName');
+      const ppDirtElement = document.getElementById('tempDirtCheap');
+      const ppCheapElement = document.getElementById('tempCheap');
+      const ppExpensiveElement = document.getElementById('tempExpensive');
+      const ppExtremeElement = document.getElementById('tempExtreme');
+      if (value in schedules) {
+        nameElement.disabled = false;
+        nameElement.value = schedules[value].name;
+      } else {
+        nameElement.disabled = true;
+        nameElement.value = '';
+      }
+      selectTimer(undefined);
+      refreshTimeTable();
+    }
+
+    function addSchedule() {
+      let newSchedule = {
+        name: 'New Schedule',
+        deltaTemp: 1,
+        items: [{
+          start: 0,
+          operation: parent.DEVICE_OP.CONTROLLED_ON,
+          tempOp: parent.TEMP_OP.PRICE,
+          temp: 23,
+          deltas: [3, 2, 0, -2, -3]
+        }]
+      };
+      schedules.push(newSchedule);
+      selectSchedule(schedules.length - 1);
+      refreshSchedules();
+    }
+
+    function removeSchedule() {
+      if ((scheduleSelected == '')
+        || (+scheduleSelected > (schedules.length-1))
+        || (schedules.length === 1)) {
+        return;
+      }
+      if (timerSelected !== undefined) selectTimer(timerSelected); // Deselect timer if selected
+      schedules.splice(scheduleSelected,1);
+      selectSchedule('');
+      refreshSchedules();
+      document.getElementById('allSchedules').value='';
+    }
+
+    function refreshSchedules(change) {
+      let allSchedulesElement = document.getElementById('allSchedules');
+      let newList = '';
+      for (let i = 0; i < schedules.length; i++) {
+        const selectText = (i === scheduleSelected) ? ' selected' : '';
+        newList += `<option value="${i}"${selectText}>${schedules[i].name}</option>"`;
+      }
+      allSchedulesElement.innerHTML = newList;
+      refreshTimeTable();
+    }
+
+    function timerHeight(item) {
+      const items = schedules[scheduleSelected].items;
+      const abovePos = items[item].start;
+      const belowPos = ((item + 1) >= items.length) ? (24 * 60) : items[item + 1].start;
+      const height = (belowPos - abovePos) * pixelsPerMinute;
+      return height;
+    }
+
+    function addTimer() {
+      if (!(scheduleSelected in schedules)) {
+        return;
+      }
+      const curSchedule = schedules[scheduleSelected];
+      const items = curSchedule.items;
+      const numTimers = items.length;
+      if (numTimers < scheduleMax) {
+        items[numTimers] = {
+          ...items[numTimers-1],
+          start: (items[numTimers - 1].start + 24 * 60) / 2
+        }
+        let lastStart = 24 * 60;
+        for (let i = numTimers; i > 0; i--) {
+          if (lastStart - items[i].start < 60) {
+            items[i].start = lastStart - 60;
+          }
+          lastStart = items[i].start;
+        }
+      }
+      displaySaveHint();
+      refreshTimeTable();
+    }
+
+    function removeTimer(idx) {
+      if (!(scheduleSelected in schedules)) {
+        return;
+      }
+      if (timerSelected !== undefined) selectTimer(timerSelected); // Deselect timer if selected
+      const items = schedules[scheduleSelected].items;
+      const numTimers = items.length;
+      if (numTimers > scheduleMin) {
+        items.splice(idx, 1);
+        items[0].start = 0;
+      }
+      displaySaveHint();
+      refreshTimeTable();
+    }
+
+    function getTimeBlockText(idx) {
+      const curSchedule = schedules[scheduleSelected]
+      const items = curSchedule.items;
+      const startTime = items[idx].start;
+      const endTime = ((idx + 1) >= items.length) ? (24 * 60) : items[idx+1].start;
+      const hourStart = String(Math.floor(startTime / 60)).padStart(2, '0');
+      const minStart = String(startTime % 60).padStart(2, '0');
+      const hourEnd = String(Math.floor(endTime / 60)).padStart(2, '0');
+      const minEnd = String(endTime % 60).padStart(2, '0');
+      const tempOp = items[idx].tempOp;
+      const temp = items[idx].temp;
+      const trashCan = (items.length === 1) ? '' :
+        `<div id="scTrashCan" class="icon-trash" style="float:right; font-size:1rem" onClick="removeTimer(${idx});event.stopPropagation();displaySaveHint();">`
+        + '  <div class="trash-lid" style="background-color: #e44"></div>'
+        + '  <div class="trash-container" style="background-color: #e44"></div>'
+        + '  <div class="trash-line-1"></div>'
+        + '  <div class="trash-line-2"></div>'
+        + '  <div class="trash-line-3"></div>'
+        + '</div>';
+      const tempMin = temp + Math.min(...items[idx].deltas);
+      const tempMax = temp + Math.max(...items[idx].deltas);
+      const tempText = (tempOp == parent.TEMP_OP.NONE) ? ''
+        : (tempOp == parent.TEMP_OP.STATIC) ? `${temp}°C<br>`
+          : `${tempMin}°C - ${tempMax}°C<br>`;
+      const blockText = `${trashCan}${tempText}${hourStart}:${minStart} - ${hourEnd}:${minEnd}`;
+      return blockText;
+    }
+
+    function changeScheduleOp(origin) {
+      if (scheduleSelected in schedules && timerSelected !== undefined) {
+        const curSchedule = schedules[scheduleSelected];
+        const items = curSchedule.items
+        const oldOp = items[timerSelected].operation;
+        const newOp = changeDeviceAction(origin, items[timerSelected].operation);
+        items[timerSelected].operation = newOp;
+        const timerElement = document.getElementById(`si${timerSelected}`);
+        timerElement.classList.remove(`schedCol${oldOp}`);
+        timerElement.classList.add(`schedCol${newOp}`);
+        displaySaveHint();
+      }
+    }
+
+    function refreshTimeTable(change) {
+      const container = document.getElementById("scheduleContainer");
+      const currentSchedule = schedules[scheduleSelected];
+      const numTimers = (scheduleSelected in schedules) ? currentSchedule.items.length : 0;
+      let newContent = '<div style="position:relative;">';
+      newContent += `<div style="height:${pixelsPerMinute*30}px"></div>`;
+      let yPos = pixelsPerMinute*30;
+      for (let i = 0; i < numTimers; i++) {
+        if (i > 0) {
+          newContent += `<div id="s${i-1}" class="scheduleSpacer" onpointerdown="dragStart(event, this)" style="top:${yPos-10}px"></div>`;
+        }
+        const blockText = getTimeBlockText(i);
+        const cc = +currentSchedule.items[i].operation;
+        const thisHeight = timerHeight(i);
+        yPos += thisHeight;
+        newContent += `<div id="si${i}" class="scheduleItem schedCol${cc} ${timerSelected===i ? ' scheduleSelect' : ''}" onclick="selectTimer(${i})" style="height:${thisHeight}px">${blockText}</div>`;
+      }
+      newContent += "</div>";
+      container.innerHTML = newContent;
+    }
+
+    function selectTimer(sourceId) {
+      const sourceElement = document.getElementById(`si${sourceId}`);
+      const onoffElement = document.getElementById('timerOpOnOff');
+      const tempElement = document.getElementById('timerBaseTemp');
+      const timeElements = document.getElementById('scTime');
+      const ppElements = document.getElementById('scPP');
+      const ppDirtElement = document.getElementById('tempDirtCheap');
+      const ppCheapElement = document.getElementById('tempCheap');
+      const ppExpensiveElement = document.getElementById('tempExpensive');
+      const ppExtremeElement = document.getElementById('tempExtreme');
+      const tempOpElement = document.getElementById('timerOpTemp');
+      if (timerSelected !== undefined) {
+        const oldElement = document.getElementById(`si${timerSelected}`);
+        oldElement.classList.remove('scheduleSelect');
+      }
+      timeElements.disabled = true;
+      onoffElement.classList.add('imgButtonDisabled');
+      onoffElement.innerHTML = 'N/A';
+      ppElements.disabled = true;
+      ppDirtElement.value = '';
+      ppCheapElement.value = '';
+      ppExpensiveElement.value = '';
+      ppExtremeElement.value = '';
+      tempOpElement.value = 0;
+
+      let newOnOffOp = '';
+      let newTemp = '';
+      if (timerSelected === sourceId) {
+        timerSelected = undefined;
+      } else {
+        timerSelected = sourceId;
+        sourceElement.classList.add('scheduleSelect');
+        timeElements.disabled = false;
+        onoffElement.classList.remove('imgButtonDisabled');
+        const currentSchedule = schedules[scheduleSelected];
+        newOnOffOp = currentSchedule.items[timerSelected].operation;
+        newTemp = currentSchedule.items[timerSelected].temp;
+        ppElements.disabled = false;
+        ppDirtElement.value = currentSchedule.items[timerSelected].deltas[0];
+        ppCheapElement.value = currentSchedule.items[timerSelected].deltas[1];
+        ppExpensiveElement.value = currentSchedule.items[timerSelected].deltas[3];
+        ppExtremeElement.value = currentSchedule.items[timerSelected].deltas[4];
+        tempOpElement.value = currentSchedule.items[timerSelected].tempOp;
+      }
+      changeDeviceAction(onoffElement, newOnOffOp, parent.KEEP);
+      refreshTempOp();
+      tempElement.value = newTemp;
+    }
+
+    function dragStart(e, source) {
+      dragging = true;
+      aboveItem = source.previousElementSibling;
+      belowItem = source.nextElementSibling;
+      aboveIdx = +source.id.slice(1);
+      belowIdx = aboveIdx + 1;
+      prevPosY = event.clientY;
+    }
+
+    function moving(e) {
+      if (dragging) {
+        const items = schedules[scheduleSelected].items;
+        let deltaY = e.clientY - prevPosY;
+        let deltaMinutes = Math.round(deltaY / (pixelsPerMinute * minuteSnap)) * minuteSnap;
+        if (Math.abs(deltaMinutes) >= minuteSnap) {
+          const minSize = 60;
+          const minAbove = items[belowIdx].start - items[aboveIdx].start;
+          const minBelow = (((belowIdx+1)>=items.length) ? (24*60) :items[belowIdx+1].start) - items[belowIdx].start;
+          if (minBelow - deltaMinutes < minSize) deltaMinutes = minBelow - minSize;
+          if (minAbove + deltaMinutes < minSize) deltaMinutes = minSize - minAbove;
+          items[belowIdx].start += deltaMinutes;
+
+          aboveItem.style.height = `${timerHeight(aboveIdx)}px`;
+          belowItem.style.height = `${timerHeight(belowIdx)}px`;
+          const prevY = +document.getElementById(`s${aboveIdx}`).style.top.slice(0,-2);
+          document.getElementById(`s${aboveIdx}`).style.top = `${prevY + deltaMinutes * pixelsPerMinute}px`;
+
+          prevPosY = (deltaMinutes * pixelsPerMinute) + prevPosY;
+        }
+        document.getElementById(`si${aboveIdx}`).innerHTML = getTimeBlockText(aboveIdx);
+        document.getElementById(`si${belowIdx}`).innerHTML = getTimeBlockText(belowIdx);
+      }
+    }
+
+    function dragStop(e) {
+      dragging = false;
+      displaySaveHint();
+    }
+
+    function changeDeviceAction(button, oldstate, newstate = undefined) {
+      if (oldstate !== undefined) {
+        if (newstate == undefined) {
+          newstate = (oldstate + 1) % 5;
+        } else if (newstate == parent.KEEP) {
+          newstate = oldstate;
+        }
+      }
+      switch (newstate) {
+        case parent.DEVICE_OP.UNCONDITIONAL_OFF:
+          button.innerHTML = parent.turnOffText;
+          button.style.backgroundImage = 'radial-gradient(white, lightgray, gray)';
+          break;
+        case parent.DEVICE_OP.UNCONDITIONAL_ON:
+          button.innerHTML = parent.turnOnText;
+          button.style.backgroundImage = 'radial-gradient(white, rgb(255, 255, 150), orange)';
+          break;
+        case parent.DEVICE_OP.CONTROLLED_ON:
+          button.innerHTML = parent.controlledOnText;
+          button.style.backgroundImage = 'radial-gradient(white, rgb(150, 255, 150), green)';
+          break;
+        case parent.DEVICE_OP.CONTROLLED_OFF:
+          button.innerHTML = parent.emergencyOffText;
+          button.style.backgroundImage = 'radial-gradient(white, rgb(150, 255, 150), green)';
+          break;
+        case parent.DEVICE_OP.IGNORE:
+          button.innerHTML = parent.ignoreText;
+          button.style.backgroundImage = 'radial-gradient(white, lightgray, gray)';
+          break;
+      }
+      return newstate;
+    }
+
+    function displaySaveHint() {
+        parent.displaySaveHint();
+    }
+    </script>
+  </body>
+</html>

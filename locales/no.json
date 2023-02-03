@@ -18,8 +18,13 @@
       "name": "Navn",
       "onoff": "Operasjon",
       "temp": "Temperatur",
+      "notemp": "Ingen temp kontroll",
+      "statictemp": "Konstant temperatur",
+      "pricetemp": "Prisstyrt temperatur",
+      "basetemp": "Basistemp",
       "schedule": "Valgt plan",
-      "schedules": "Timeplaner"
+      "schedules": "Timeplaner",
+      "controlledOn": "Kontrollert På"
     },
     "charge": {
       "header": "Lading av Elbil",

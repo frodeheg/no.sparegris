@@ -18,8 +18,13 @@
       "name": "Name",
       "onoff": "OnOff operation",
       "temp": "Temperature",
+      "notemp": "No temp control",
+      "statictemp": "Constant temp",
+      "pricetemp": "Price controlled",
+      "basetemp": "Basistemp",
       "schedule": "Current schedule",
-      "schedules": "Schedules"
+      "schedules": "Schedules",
+      "controlledOn": "Controlled On"
     },
     "charge": {
       "header": "Car chargers",

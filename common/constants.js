@@ -41,6 +41,22 @@ const TARGET_OP = {
   IGNORE: 4,
 };
 
+// New device operations
+var DEVICE_OP = {
+  UNCONDITIONAL_OFF: 0,
+  UNCONDITIONAL_ON: 1,
+  CONTROLLED_OFF: 2,
+  CONTROLLED_ON: 3,
+  IGNORE: 4,
+};
+
+// Temperature operations
+var TEMP_OP = {
+  NONE: 0,
+  STATIC: 1,
+  PRICE: 2,
+};
+
 // App enable
 const APP_NOT_READY = 0;
 const APP_READY = 1;
@@ -149,6 +165,8 @@ module.exports = {
   MODE_CUSTOM,
   MAIN_OP,
   TARGET_OP,
+  DEVICE_OP,
+  TEMP_OP,
   PP,
   APP_NOT_READY,
   APP_READY,
