@@ -730,5 +730,8 @@
   },
   "0.19.46": {
     "en": "Fixed display of time schedule on android phones"
+  },
+  "0.19.47": {
+    "en": "Refinements for the time schedule."
   }
 }
