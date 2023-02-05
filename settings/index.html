@@ -8,6 +8,7 @@
       let module = {}; // Just to get around that some of the included files are used both by node.js and in the browser
     </script>
     <script type="text/javascript" src="./constants.js"></script>
+    <script type="text/javascript" src="./locale.js"></script>
     <script type="text/javascript" src="./devices.js"></script>
     <script type="text/javascript" src="./chart.js"></script>
     <script type="text/javascript" src="./tools.js"></script>
@@ -296,7 +297,7 @@
         const countries = Object.keys(ENTSOE_BIDDING_ZONES);
         for (var i = 0; i < countries.length; i++) {
           options += '<option value="' + countries[i] + '" '
-            + ((selectedCountry==countries[i]) ? 'selected' : '') + '>' + countries[i] + '</option>';
+            + ((selectedCountry==countries[i]) ? 'selected' : '') + `>${COUNTRY[countries[i]]} (${countries[i].toUpperCase()})</option>`;
         }
         list.innerHTML = options;
       }
@@ -514,6 +515,17 @@
         for (var i = 0; i < modeList[listNum].length; i++) {
           updateState(document.getElementById('deviceStateButton' + String(i)), listNum, i, KEEP);
         }
+      }
+
+      function updateCostSchemas() {
+        const costSchemaElement = document.getElementById('costSchema');
+        let newValues = '';
+        const schemeKeys = Object.keys(SCHEMA);
+        for (let i = 0; i < schemeKeys.length; i++) {
+          const scheme = SCHEMA[schemeKeys[i]];
+          newValues += `<option value='${schemeKeys[i]}'>${scheme.name}</option>`;
+        }
+        costSchemaElement.innerHTML = newValues;
       }
 
       function updatePriceAction(button, pricePoint, device_id, newstate = undefined) {
@@ -1103,8 +1115,16 @@
           <tr>
             <td class="settings_row_name"><label for="priceCountry" data-i18n="settings.price.spotPrice.country">spotPrice.country</label>:</td>
             <td class="settings_row_input">
-              <select id="priceCountry" onchange="updateRegions(this.value, futurePriceOptions.priceRegion);displaySaveHint()">
+              <select id="priceCountry" onchange="updateRegions(this.value, futurePriceOptions.priceRegion);changeSchema(this.value);displaySaveHint()">
                 <option value="0" selected>Country selector</option>
+              </select>
+            </td>
+          </tr>
+          <tr id="costSchemaBox">
+            <td class="settings_row_name"><label for="costSchema" data-i18n="settings.cost.schema">cost.schema</label>:</td>
+            <td class="settings_row_input">
+              <select id="costSchema" onchange="changeSchema(this.value);displaySaveHint()">
+                <option value="0" selected>Controller Schema</option>
               </select>
             </td>
           </tr>
@@ -1165,7 +1185,7 @@
             <table class="settings_table">
               <tr>
                 <td class="settings_row_name"><label for="priceFixed" data-i18n="settings.price.priceFixed">price.fixed</label>:</td>
-                <td class="settings_row_input"><input id="priceFixed" class="inputElem" type="number" size="10" min="0" step="0.01" value="0.50" onchange="displaySaveHint()"> /kWh</td>
+                <td class="settings_row_input"><input id="priceFixed" class="inputElem" type="number" size="10" min="0" step="0.01" value="0.50" onchange="displaySaveHint()">/kWh</td>
               </tr>
             </table>
           </span>
@@ -1179,6 +1199,18 @@
                 <td class="settings_row_name"><label for="gridTaxNight" data-i18n="settings.cost.gridTaxNight">cost.gridTaxNight</label>:</td>
                 <td class="settings_row_input"><input id="gridTaxNight" class="inputElem" type="number" min="0" value="0.2839" onchange="displaySaveHint()">/kWh</td>
               </tr>
+              <tr>
+                <td class="settings_row_name"><label for="peakStart" data-i18n="settings.cost.peakStart">cost.peakStart</label>:</td>
+                <td class="settings_row_input"><input id="peakStart" class="inputElem" type="time" value="07:00" pattern="[0-9]{2}:[0-9]{2}" onchange="displaySaveHint()"></td>
+              </tr>
+              <tr>
+                <td class="settings_row_name"><label for="peakEnd" data-i18n="settings.cost.peakEnd">cost.peakEnd</label>:</td>
+                <td class="settings_row_input"><input id="peakEnd" class="inputElem" type="time" value="22:00" pattern="[0-9]{2}:[0-9]{2}" onchange="displaySaveHint()"></td>
+              </tr>
+              <tr>
+                <td class="settings_row_name"><label for="WeekendOffPeak" data-i18n="settings.cost.WeekendOffPeak">cost.WeekendOffPeak</label>:</td>
+                <td class="settings_row_input"><input id="WeekendOffPeak" type="checkbox" onchange="displaySaveHint()"></td>
+              </tr>
             </table>
           </span>
         </div></div>
@@ -1186,6 +1218,25 @@
         <input id="collapsible3" class="toggle" type="checkbox">
         <label for="collapsible3" class="lbl-toggle" data-i18n="settings.price.powerPart" style="color: whitesmoke;">price.powerPart</label>
         <div class="collapsible-content"><div class="content-inner">
+          <table class="settings_table">
+            <tr>
+              <td class="settings_row_name"><label for="gridSteps" data-i18n="settings.cost.gridSteps">cost.gridSteps</label>:</td>
+              <td class="settings_row_input"><input id="gridSteps" type="checkbox" checked onchange="refreshSchema();displaySaveHint()"></td>
+            </tr>
+          </table>
+          <div id="gridLinearBlock">
+            <table class="settings_table">
+              <tr>
+                <td class="settings_row_name"><label for="peakMin" data-i18n="settings.cost.peakMin">cost.peakMin</label>:</td>
+                <td class="settings_row_input"><input id="peakMin" class="inputElem" type="number" min="0" value="2500" onchange="displaySaveHint()">Wh/h</td>
+              </tr>
+              <tr>
+                <td class="settings_row_name"><label for="peakTax" data-i18n="settings.cost.peakTax">cost.peakTax</label>:</td>
+                <td class="settings_row_input"><input id="peakTax" class="inputElem" type="number" min="0" value="0.2839" onchange="displaySaveHint()">/MWh</td>
+              </tr>
+            </table>
+          </div>
+          <div id="gridStepBlock">
           <p data-i18n="settings.cost.gridLimitHint">cost.gridLimitHint</p>
           <table id = "gridCostsTable" class="settings_table">
             <tr>
@@ -1195,6 +1246,7 @@
           </table>
           <input type="button" value="-" onclick="removeMaxPowerElement();">
           <input type="button" value="+" onclick="addMaxPowerElement();">
+          </div>
         </div></div>
 
         <input id="collapsible4" class="toggle" type="checkbox">
@@ -1202,24 +1254,33 @@
         <div class="collapsible-content"><div class="content-inner">
           <table class="settings_table">
             <tr>
+              <td class="settings_row_name">&nbsp;</td>
+              <td class="settings_row_en"><b>Enabled</b></td>
+              <td class="settings_row_input"><b>Limit</b></td>
+            </tr>
+            <tr>
+              <td class="settings_row_name"><label for="maxPower15min" data-i18n="settings.mode.maxPower15min">mode.maxPower15min</label>:</td>
+              <td class="settings_row_en"><input id="enLimit15" type="checkbox" onchange="refreshSchema();displaySaveHint()"></td>
+              <td class="settings_row_input"><input class="inputElem" id="maxPower15min" type="number" min="10" max="10000" value="1000" onchange="limitElement(this);displaySaveHint()">Wh</td>
+            </tr>
+            <tr>
               <td class="settings_row_name"><label for="maxPower" data-i18n="settings.mode.maxPower">mode.maxPower</label>:</td>
+              <td class="settings_row_en"><input id="enLimit60" type="checkbox" onchange="refreshSchema();displaySaveHint()"></td>
               <td class="settings_row_input">
                 <select id ="maxPower" onchange="setMaxPower(this.value,1000,100000);displaySaveHint();">
                   <option value="0" selected>Error - should be replaced with max power</option>
                 </select> <div class="edit icon" onclick="document.getElementById('collapsible3').checked = true;flashElement('gridCostsTable')"></div><div class="hintButton" onclick="toggle(this,'maxPowHint');return false;">i</div>
               </td>
             </tr>
-            <tr style="display:none">
+            <tr>
               <td class="settings_row_name"><label for="maxPowerDay" data-i18n="settings.mode.maxPowerDay">mode.maxPowerDay</label>:</td>
-              <td class="settings_row_input">
-                <input id="maxPowerDay" type="number" min="10" max="1000" value="1000" onchange="limitElement(this);displaySaveHint()">kWh
-              </td>
+              <td class="settings_row_en"><input id="enLimitDay" type="checkbox" onchange="refreshSchema();displaySaveHint()"></td>
+              <td class="settings_row_input"><input id="maxPowerDay" type="number" min="10" max="1000" value="1000" onchange="limitElement(this);displaySaveHint()">kWh</td>
             </tr>
-            <tr style="display:none">
+            <tr>
               <td class="settings_row_name"><label for="maxPowerMonth" data-i18n="settings.mode.maxPowerMonth">mode.maxPowerMonth</label>:</td>
-              <td class="settings_row_input">
-                <input id="maxPowerMonth" type="number" min="50" max="50000" value="5000" onchange="limitElement(this);displaySaveHint()">kWh
-              </td>
+              <td class="settings_row_en"><input id="enLimitMonth" type="checkbox" onchange="refreshSchema();displaySaveHint()"></td>
+              <td class="settings_row_input"><input id="maxPowerMonth" type="number" min="50" max="50000" value="5000" onchange="limitElement(this);displaySaveHint()">kWh</td>
             </tr>
           </table>
           <p id="maxPowHint" class="hint" data-i18n="settings.app.maxPowHint">app.maxPowHint</p>
@@ -2741,6 +2802,12 @@
         if (tabPage == 'chargerPage') {
           updateChargerHints(deviceList);
           updateAdvancedSettings();
+        }
+
+        // Refresh cost Schema page
+        if (tabPage == 'costPage') {
+          updateCostSchemas();
+          refreshSchema();
         }
         
         // Refresh the mode lists

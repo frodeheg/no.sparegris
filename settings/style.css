@@ -125,6 +125,10 @@ p {
     width: 40%;
   }
 
+  .settings_row_en {
+    text-align: center;
+  }
+
   .settings_row_input {
     width: 60%;
   }
@@ -356,7 +360,7 @@ p {
 }
 
 /* --- Collapsible --- */
-input[type='checkbox'] { display: none; }
+input.toggle[type='checkbox'] { display: none; }
 
 .wrap-collabsible { margin: 1.2rem 0; }
 

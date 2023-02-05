@@ -33,6 +33,7 @@ const {
 } = require('./common/homeytime');
 const { isNumber, toNumber, combine } = require('./common/tools');
 const prices = require('./common/prices');
+const locale = require('./settings/locale');
 
 const WAIT_TIME_TO_POWER_ON_AFTER_POWEROFF_MIN = 1 * 60 * 1000; // Wait 1 minute
 const WAIT_TIME_TO_POWER_ON_AFTER_POWEROFF_MAX = 5 * 60 * 1000; // Wait 5 minutes
@@ -163,6 +164,7 @@ class PiggyBank extends Homey.App {
       this.logInit();
     } catch (err) {} // Ignore logging errors, normal users don't care
 
+    await locale.initCostSchema(this.homey);
     await prices.currencyApiInit(this.homey);
     await prices.entsoeApiInit(Homey.env.ENTSOE_TOKEN);
 
@@ -515,6 +517,19 @@ class PiggyBank extends Homey.App {
       this.homey.settings.set('settingsVersion', 7);
     }
 
+    // Version 0.20.1
+    if (+settingsVersion < 8) {
+      // Changed country to identifier
+      const futurePriceOptions = this.homey.settings.get('futurePriceOptions');
+      try {
+        futurePriceOptions.priceCountry = futurePriceOptions.priceCountry.split('(')[1].substring(0,2).toLowerCase();
+      } catch (err) {
+        futurePriceOptions.priceCountry = 'no';
+      }
+      this.homey.settings.set('futurePriceOptions', futurePriceOptions);
+      this.homey.settings.set('settingsVersion', 8);
+    }
+
     // Internal state that preferably should be removed as it is in the archive
     // this.homey.settings.unset('stats_savings_all_time_use');
     // this.homey.settings.unset('stats_savings_all_time_power_part');
@@ -596,7 +611,7 @@ class PiggyBank extends Homey.App {
       if (!('highPriceModifier' in futurePriceOptions)) futurePriceOptions.highPriceModifier = 10;
       if (!('extremePriceModifier' in futurePriceOptions)) futurePriceOptions.extremePriceModifier = 100;
       if (!('priceKind' in futurePriceOptions)) futurePriceOptions.priceKind = c.PRICE_KIND_SPOT;
-      if (!('priceCountry' in futurePriceOptions)) futurePriceOptions.priceCountry = 'Norway (NO)';
+      if (!('priceCountry' in futurePriceOptions)) futurePriceOptions.priceCountry = 'no';
       if (!('priceRegion' in futurePriceOptions)) futurePriceOptions.priceRegion = 0;
       if (!('surcharge' in futurePriceOptions)) futurePriceOptions.surcharge = 0.0198; // Ramua kraft energi web
       if (!('priceFixed' in futurePriceOptions)) futurePriceOptions.priceFixed = 0.6;

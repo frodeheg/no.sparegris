@@ -158,6 +158,7 @@
       "toggleTimeHint": "After changing a device state, the app will wait to change other devices until: <ul style='font-size:1em'><li>The change has been registered or</li><li>The toggle time has expired</li></ul>If you have devices with slow response times like cloud devices, then it is recommended to use a longer toggle time to avoid toggling too many devices."
     },
     "cost" : {
+      "schema": "Schema",
       "header": "Cost settings",
       "surcharge": "Surcharge electricity provider",
       "currency": "Currency",

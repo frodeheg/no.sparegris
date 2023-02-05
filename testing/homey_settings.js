@@ -107,7 +107,7 @@ class FakeHomey {
           highPriceModifier: 10,
           extremePriceModifier: 100,
           priceKind: 1, // Spot
-          priceCountry: 'Norway (NO)',
+          priceCountry: 'no',
           priceRegion: 0,
           surcharge: 0.0198, // Ramua kraft energi web
           priceFixed: 0.6,
