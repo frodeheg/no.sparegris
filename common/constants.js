@@ -89,6 +89,14 @@ const PP = {
   DIRTCHEAP: 4,
 };
 
+// Max power indices
+const MAXPOWER = {
+  QUARTER: 0,
+  HOUR: 1,
+  DAY: 2,
+  MONTH: 3
+};
+
 // Logging classes
 const LOG_ERROR = 0;
 const LOG_INFO = 1;
@@ -168,6 +176,7 @@ module.exports = {
   DEVICE_OP,
   TEMP_OP,
   PP,
+  MAXPOWER,
   APP_NOT_READY,
   APP_READY,
   APP_MISSING_PRICE_API,

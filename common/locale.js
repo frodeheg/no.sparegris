@@ -30,13 +30,18 @@ const SCHEMA = {
     peakMin: 0,
     peakTax: 0,
     limits: {
-      quarter: false,
-      hour: true,
-      day: false,
-      month: true
+      quarter: Infinity,
+      hour: 5000,
+      day: Infinity,
+      month: 5000
     },
     hide: {
-      costSchemaBox: 'table-row'
+      costSchemaBox: 'table-row',
+      gridStepEn: 'table-row',
+      peakStartEn: 'table-row',
+      peakEndEn: 'table-row',
+      peakWeekendEn: 'table-row',
+      enLimit15Box: 'table-row',
     }
   },
   be: {
@@ -52,13 +57,15 @@ const SCHEMA = {
     peakMin: 2500,
     peakTax: 57.0831,
     limits: {
-      quarter: true,
-      hour: false,
-      day: false,
-      month: false
+      quarter: 1500,
+      hour: Infinity,
+      day: Infinity,
+      month: Infinity
     },
     hide: {
-      costSchemaBox: 'table-row'
+      costSchemaBox: 'table-row',
+      gridStepEn: 'table-row',
+      enLimit60Box: 'table-row',
     }
   },
   custom: {
@@ -74,10 +81,10 @@ const SCHEMA = {
     peakMin: 0,
     peakTax: 0,
     limits: {
-      quarter: false,
-      hour: true,
-      day: false,
-      month: false
+      quarter: Infinity,
+      hour: 5000,
+      day: Infinity,
+      month: Infinity
     },
     hide: {
     }
@@ -138,7 +145,6 @@ async function initCostSchema(homey) {
     const locale = homey.i18n.getLanguage();
     const newSchema = (locale === 'be') ? 'be' : 'no';
     homey.settings.set('costSchema', newSchema);
-    homey.settings.set('limits', SCHEMA[newSchema].limits);
     // TBD: futurePrices. VAT?
   }
 }
@@ -167,10 +173,14 @@ async function changeSchema(newSchema) {
     document.getElementById('gridSteps').checked = SCHEMA[newSchema].gridSteps;
     document.getElementById('peakMin').value = SCHEMA[newSchema].peakMin;
     document.getElementById('peakTax').value = SCHEMA[newSchema].peakTax;
-    document.getElementById('enLimit15').checked = SCHEMA[newSchema].limits.quarter;
-    document.getElementById('enLimit60').checked = SCHEMA[newSchema].limits.hour;
-    document.getElementById('enLimitDay').checked = SCHEMA[newSchema].limits.day;
-    document.getElementById('enLimitMonth').checked = SCHEMA[newSchema].limits.month;
+    document.getElementById('enLimit15').checked = SCHEMA[newSchema].limits.quarter !== Infinity;
+    document.getElementById('enLimit60').checked = SCHEMA[newSchema].limits.hour !== Infinity;
+    document.getElementById('enLimitDay').checked = SCHEMA[newSchema].limits.day !== Infinity;
+    document.getElementById('enLimitMonth').checked = SCHEMA[newSchema].limits.month !== Infinity;
+    document.getElementById('maxPower15min').value = Math.min(SCHEMA[newSchema].limits.quarter, 25000);
+    document.getElementById('maxPowerHour').value = Math.min(SCHEMA[newSchema].limits.hour, 100000);
+    document.getElementById('maxPowerDay').value = Math.min(SCHEMA[newSchema].limits.day, 1000);
+    document.getElementById('maxPowerMonth').value = Math.min(SCHEMA[newSchema].limits.month, 50000);
     await refreshSchema();
   }
 }
@@ -179,16 +189,20 @@ async function refreshSchema() {
   if (document.getElementById('gridSteps').checked) {
     document.getElementById('gridStepBlock').style.display = 'block';
     document.getElementById('gridLinearBlock').style.display = 'none';
+    document.getElementById('enLimit60InBox').style.display = 'none';
+    document.getElementById('enLimit60SelBox').style.display = 'block';
   } else {
     document.getElementById('gridStepBlock').style.display = 'none';
     document.getElementById('gridLinearBlock').style.display = 'block';
+    document.getElementById('enLimit60InBox').style.display = 'block';
+    document.getElementById('enLimit60SelBox').style.display = 'none';
   }
   const keys = Object.keys(SCHEMA[currentSchema].hide);
   for (let i = 0; i < keys.length; i++) {
     document.getElementById(keys[i]).style.display = 'none';
   }
   document.getElementById('maxPower15min').disabled = !document.getElementById('enLimit15').checked;
-  document.getElementById('maxPower').disabled = !document.getElementById('enLimit60').checked;
+  document.getElementById('maxPowerHour').disabled = !document.getElementById('enLimit60').checked;
   document.getElementById('maxPowerDay').disabled = !document.getElementById('enLimitDay').checked;
   document.getElementById('maxPowerMonth').disabled = !document.getElementById('enLimitMonth').checked;
 }

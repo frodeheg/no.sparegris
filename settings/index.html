@@ -693,8 +693,8 @@
       }
 
       function updateMaxPowerList() {
-        let selector = document.getElementById('maxPower');
-        let maxPower = selector.value;
+        let selector = document.getElementById('maxPowerList');
+        let maxPower = document.getElementById('maxPowerHour').value;
         let lines = '';
         for (let i = 0; i < gridCost.length; i++) {
           let { limit } = gridCost[i];
@@ -708,15 +708,15 @@
         selector.innerHTML = lines;
       }
 
-      function setMaxPower(value, min, max) {
+      function setMaxPowerHour(value, min, max) {
         // Update table
         updateMaxPowerList();
         // Select item
-        let selector = document.getElementById('maxPower');
         if(value != "") {
           if(parseInt(value) < parseInt(min)) { value = min; }
           if(parseInt(value) > parseInt(max)) { value = max; }
-          selector.value = value;
+          document.getElementById('maxPowerHour').value = value;
+          document.getElementById('maxPowerList').value = value;
         }
       }
 
@@ -943,9 +943,9 @@
             </td>
           </tr>
           <tr>
-            <td class="settings_row_name"><label data-i18n="settings.mode.maxPower">mode.maxPower</label>:</td>
-            <td class="settings_row_input"><label id="maxPowerDuplicate">maxPower</label>
-              <div class="edit icon" onclick="runActionQueue(wizGotoLimiters);"></div>
+            <td class="settings_row_name"><label data-i18n="settings.mode.limits">mode.limits</label>:</td>
+            <td class="settings_row_input"><label style="vertical-align: top" id="limitsDuplicate">limits</label>
+              <div class="edit icon" style="transform: translate(0px, -3px)" onclick="runActionQueue(wizGotoLimiters);"></div>
             </td>
           </tr>
         </table>
@@ -1199,15 +1199,15 @@
                 <td class="settings_row_name"><label for="gridTaxNight" data-i18n="settings.cost.gridTaxNight">cost.gridTaxNight</label>:</td>
                 <td class="settings_row_input"><input id="gridTaxNight" class="inputElem" type="number" min="0" value="0.2839" onchange="displaySaveHint()">/kWh</td>
               </tr>
-              <tr>
+              <tr id="peakStartEn">
                 <td class="settings_row_name"><label for="peakStart" data-i18n="settings.cost.peakStart">cost.peakStart</label>:</td>
                 <td class="settings_row_input"><input id="peakStart" class="inputElem" type="time" value="07:00" pattern="[0-9]{2}:[0-9]{2}" onchange="displaySaveHint()"></td>
               </tr>
-              <tr>
+              <tr id="peakEndEn">
                 <td class="settings_row_name"><label for="peakEnd" data-i18n="settings.cost.peakEnd">cost.peakEnd</label>:</td>
                 <td class="settings_row_input"><input id="peakEnd" class="inputElem" type="time" value="22:00" pattern="[0-9]{2}:[0-9]{2}" onchange="displaySaveHint()"></td>
               </tr>
-              <tr>
+              <tr id="peakWeekendEn">
                 <td class="settings_row_name"><label for="WeekendOffPeak" data-i18n="settings.cost.WeekendOffPeak">cost.WeekendOffPeak</label>:</td>
                 <td class="settings_row_input"><input id="WeekendOffPeak" type="checkbox" onchange="displaySaveHint()"></td>
               </tr>
@@ -1219,7 +1219,7 @@
         <label for="collapsible3" class="lbl-toggle" data-i18n="settings.price.powerPart" style="color: whitesmoke;">price.powerPart</label>
         <div class="collapsible-content"><div class="content-inner">
           <table class="settings_table">
-            <tr>
+            <tr id="gridStepEn">
               <td class="settings_row_name"><label for="gridSteps" data-i18n="settings.cost.gridSteps">cost.gridSteps</label>:</td>
               <td class="settings_row_input"><input id="gridSteps" type="checkbox" checked onchange="refreshSchema();displaySaveHint()"></td>
             </tr>
@@ -1252,35 +1252,43 @@
         <input id="collapsible4" class="toggle" type="checkbox">
         <label for="collapsible4" class="lbl-toggle" data-i18n="settings.price.limitPart" style="color: whitesmoke;">price.limitPart</label>
         <div class="collapsible-content"><div class="content-inner">
-          <table class="settings_table">
+          <table id="maxPowerTable" class="settings_table">
             <tr>
               <td class="settings_row_name">&nbsp;</td>
               <td class="settings_row_en"><b>Enabled</b></td>
-              <td class="settings_row_input"><b>Limit</b></td>
+              <td class="settings_row_input"><b>Limit</b>
+                <div class="hintButton" onclick="toggle(this,'maxPowHint');return false;">i</div>
+              </td>
             </tr>
-            <tr>
+            <tr id="enLimit15Box">
               <td class="settings_row_name"><label for="maxPower15min" data-i18n="settings.mode.maxPower15min">mode.maxPower15min</label>:</td>
               <td class="settings_row_en"><input id="enLimit15" type="checkbox" onchange="refreshSchema();displaySaveHint()"></td>
-              <td class="settings_row_input"><input class="inputElem" id="maxPower15min" type="number" min="10" max="10000" value="1000" onchange="limitElement(this);displaySaveHint()">Wh</td>
+              <td class="settings_row_input"><input class="inputElem" id="maxPower15min" type="number" min="10" max="25000" value="1000" onchange="limitElement(this);displaySaveHint()">Wh/15 min.</td>
             </tr>
-            <tr>
-              <td class="settings_row_name"><label for="maxPower" data-i18n="settings.mode.maxPower">mode.maxPower</label>:</td>
+            <tr id="enLimit60Box">
+              <td class="settings_row_name"><label for="maxPowerHour" data-i18n="settings.mode.maxPowerHour">mode.maxPowerHour</label>:</td>
               <td class="settings_row_en"><input id="enLimit60" type="checkbox" onchange="refreshSchema();displaySaveHint()"></td>
               <td class="settings_row_input">
-                <select id ="maxPower" onchange="setMaxPower(this.value,1000,100000);displaySaveHint();">
+                <div id="enLimit60InBox">
+                  <input class="inputElem" id="maxPowerHour" type="number" min="10" max="100000" value="1000" onchange="setMaxPowerHour(this.value,1000,100000);displaySaveHint()">Wh/hour
+                </div>
+                <div id="enLimit60SelBox">
+                <select id ="maxPowerList" onchange="setMaxPowerHour(this.value,1000,100000);displaySaveHint();">
                   <option value="0" selected>Error - should be replaced with max power</option>
-                </select> <div class="edit icon" onclick="document.getElementById('collapsible3').checked = true;flashElement('gridCostsTable')"></div><div class="hintButton" onclick="toggle(this,'maxPowHint');return false;">i</div>
+                </select>
+                <div class="edit icon" onclick="document.getElementById('collapsible3').checked = true;flashElement('gridCostsTable')"></div>
+                </div>
               </td>
             </tr>
             <tr>
               <td class="settings_row_name"><label for="maxPowerDay" data-i18n="settings.mode.maxPowerDay">mode.maxPowerDay</label>:</td>
               <td class="settings_row_en"><input id="enLimitDay" type="checkbox" onchange="refreshSchema();displaySaveHint()"></td>
-              <td class="settings_row_input"><input id="maxPowerDay" type="number" min="10" max="1000" value="1000" onchange="limitElement(this);displaySaveHint()">kWh</td>
+              <td class="settings_row_input"><input id="maxPowerDay" type="number" min="10" max="1000" value="1000" onchange="limitElement(this);displaySaveHint()">kWh/day</td>
             </tr>
             <tr>
               <td class="settings_row_name"><label for="maxPowerMonth" data-i18n="settings.mode.maxPowerMonth">mode.maxPowerMonth</label>:</td>
               <td class="settings_row_en"><input id="enLimitMonth" type="checkbox" onchange="refreshSchema();displaySaveHint()"></td>
-              <td class="settings_row_input"><input id="maxPowerMonth" type="number" min="50" max="50000" value="5000" onchange="limitElement(this);displaySaveHint()">kWh</td>
+              <td class="settings_row_input"><input id="maxPowerMonth" type="number" min="50" max="50000" value="5000" step="1" onchange="limitElement(this);displaySaveHint()">kWh/month</td>
             </tr>
           </table>
           <p id="maxPowHint" class="hint" data-i18n="settings.app.maxPowHint">app.maxPowHint</p>
@@ -1967,6 +1975,12 @@
           generateEnableList('lowPriDevices', 0);
           generateReliabilityList();
 
+          // Update max powers
+          document.getElementById("maxPower15min").value = Math.min(loadedMaxPower[MAXPOWER.QUARTER], 25000);
+          setMaxPowerHour(loadedMaxPower[MAXPOWER.HOUR], 0, 100000);
+          document.getElementById("maxPowerDay").value = Math.min(loadedMaxPower[MAXPOWER.DAY] / 1000, 1000);
+          document.getElementById("maxPowerMonth").value = Math.min(loadedMaxPower[MAXPOWER.MONTH] / 1000, 50000);
+
           // Initialize state and show the welcome page:
           updateOperatingModes(currentOperatingMode);
           updatePricePoints(currentPricePoint);
@@ -2164,28 +2178,13 @@
           // Maxpower cannot be updated before after setGridCost has been called
           Homey.get("maxPower", function (err, maxPower) {
             if (err) return Homey.alert(err);
-            if (maxPower === null || !Number.isInteger(+maxPower)) {
+            if (maxPower === null || !Array.isArray(maxPower)) {
               // use defaults set from the top (this is the first time)
-              maxPower = 5000;
+              maxPower = [Infinity, 5000, Infinity, 5000000];
             }
             loadedMaxPower = maxPower;
-            setMaxPower(+maxPower, 0, Infinity);
-            Homey.get("maxPowerDay", function (err2, maxPower2) {
-              if (err2) return Homey.alert(err2);
-              if (maxPower2 === null || !Number.isInteger(+maxPower2)) {
-                maxPower2 = 1000;
-              }
-              document.getElementById("maxPowerDay").value = maxPower2;
-              Homey.get("maxPowerMonth", function (err3, maxPower3) {
-                if (err3) return Homey.alert(err3);
-                if (maxPower3 === null || !Number.isInteger(+maxPower3)) {
-                  maxPower3 = 100000;
-                }
-                document.getElementById("maxPowerMonth").value = maxPower3;
-                maxPowerLoaded = true;
-                checkLoadingDone();
-              });
-            });
+            maxPowerLoaded = true;
+            checkLoadingDone();
           });
 
           // Aquire graphs (must be after setGridCost)
@@ -2508,7 +2507,15 @@
               chargerOptions.overridePause = +document.getElementById('overridePause').value;
               chargerOptions.overrideMinCurrent = +document.getElementById('overrideMinCurrent').value;
               chargerOptions.overrideMaxCurrent = +document.getElementById('overrideMaxCurrent').value;
-              let opModeValue = (appEnabledElement.value === "1") ? operatingModeElement.value : 0
+              let opModeValue = (appEnabledElement.value === "1") ? operatingModeElement.value : 0;
+              loadedMaxPower[MAXPOWER.QUARTER] = document.getElementById("enLimit15").checked
+                ? +document.getElementById("maxPower15min").value : Infinity;
+              loadedMaxPower[MAXPOWER.HOUR] = document.getElementById("enLimit60").checked
+                ? +document.getElementById("maxPowerHour").value : Infinity;
+              loadedMaxPower[MAXPOWER.DAY] = document.getElementById("enLimitDay").checked
+                ? +document.getElementById("maxPowerDay").value * 1000 : Infinity;
+              loadedMaxPower[MAXPOWER.MONTH] = document.getElementById("enLimitMonth").checked
+                ? +document.getElementById("maxPowerMonth").value * 1000 : Infinity;
               Homey.set("futurePriceOptions", futurePriceOptions, errFunc);
               Homey.set('chargerOptions', chargerOptions, errFunc);
               Homey.set("deviceList", deviceList, errFunc);
@@ -2516,9 +2523,7 @@
               Homey.set("modeNames", modeNames, errFunc);
               Homey.set("frostList", frostList, errFunc);
               Homey.set("zones", zoneList, errFunc);
-              Homey.set("maxPower", document.getElementById("maxPower").value, errFunc);
-              Homey.set("maxPowerDay", document.getElementById("maxPowerDay").value, errFunc);
-              Homey.set("maxPowerMonth", document.getElementById("maxPowerMonth").value, errFunc);
+              Homey.set("maxPower", loadedMaxPower, errFunc);
               Homey.set("operatingMode", opModeValue, errFunc);
               Homey.set("priceMode", priceModeElement.value, errFunc);
               Homey.set("pricePoint", pricePointElement.value, errFunc);
@@ -2536,7 +2541,6 @@
               Homey.set("toggleTime", document.getElementById("toggleTime").value, errFunc);
               Homey.set("settingsSaved", "", errFunc); // On settings is only called if the settings actually changed
               Homey.set("settingsSaved", "true", errFunc); // This one will throw the message settings.alert.settingssaved on success
-              loadedMaxPower = document.getElementById("maxPower").value;
             }
           }
           catch (err) {
@@ -2545,10 +2549,14 @@
           }
         }
         saveElement.addEventListener("click", function (e) {
-          if ((loadedMaxPower !== null) && (+document.getElementById("maxPower").value > +loadedMaxPower)) {
+          if ((loadedMaxPower !== null)
+            && ((document.getElementById("enLimit15").checked && +document.getElementById("maxPower15min").value > +loadedMaxPower[MAXPOWER.QUARTER])
+              || (document.getElementById("enLimit60").checked && +document.getElementById("maxPowerHour").value > +loadedMaxPower[MAXPOWER.HOUR])
+              || (document.getElementById("enLimitDay").checked && +document.getElementById("maxPowerDay").value > (+loadedMaxPower[MAXPOWER.DAY]/1000))
+              || (document.getElementById("enLimitMonth").checked && +document.getElementById("maxPowerMonth").value > (+loadedMaxPower[MAXPOWER.MONTH]/1000)))) {
             try {
               const before = new Date();
-              Homey.confirm(Homey.__('settings.alert.maxPowerChanged'), null, function (err, res) {
+              Homey.confirm(Homey.__('settings.alert.maxPowerChanged'), function (err, res) {
                 const called = new Date();
                 const diff = called - before;
                 // NB! Popup blockers will not give an error on the confirm dialogue
@@ -2778,7 +2786,23 @@
         // Update notifications in Welcome Page
         if (tabPage == 'welcomePage') {
           refreshTodoList();
-          document.getElementById('maxPowerDuplicate').innerHTML = String(+document.getElementById('maxPower').value / 1000) + " kWh";
+          let limitTxt = '';
+          if (document.getElementById('enLimit15').checked) {
+            limitTxt += String(+document.getElementById("maxPower15min").value) + " Wh/15 min.";
+          }
+          if (document.getElementById('enLimit60').checked) {
+            limitTxt += (limitTxt.length > 0) ? '<br>' : '';
+            limitTxt += String(+document.getElementById("maxPowerHour").value / 1000) + " kWh/hour";
+          }
+          if (document.getElementById('enLimitDay').checked) {
+            limitTxt += (limitTxt.length > 0) ? '<br>' : '';
+            limitTxt += String(+document.getElementById("maxPowerDay").value) + " kWh/day";
+          }
+          if (document.getElementById('enLimitMonth').checked) {
+            limitTxt += (limitTxt.length > 0) ? '<br>' : '';
+            limitTxt += String(+document.getElementById("maxPowerMonth").value) + " kWh/month";
+          }
+          document.getElementById('limitsDuplicate').innerHTML = limitTxt;
         }
 
         // Update devicelist for Frost Page

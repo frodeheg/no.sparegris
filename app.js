@@ -527,6 +527,15 @@ class PiggyBank extends Homey.App {
         futurePriceOptions.priceCountry = 'no';
       }
       this.homey.settings.set('futurePriceOptions', futurePriceOptions);
+      // Changed maxPower to array
+      const oldMaxPower = this.homey.settings.get('maxPower');
+      if (oldMaxPower) {
+        // Filter out new users so they get the defaults set later
+        const newMaxPower = [undefined, oldMaxPower, undefined, undefined];
+        this.homey.settings.set('maxPower', newMaxPower);
+      }
+      this.homey.settings.unset('maxPowerDay');
+      this.homey.settings.unset('maxPowerMonth');
       this.homey.settings.set('settingsVersion', 8);
     }
 

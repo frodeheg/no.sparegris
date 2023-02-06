@@ -8,6 +8,7 @@ const UI_FLASH = 4;
 const UI_HOVER = 5;
 const UI_PAGE = 6;
 const UI_DONEHOVER = 7;
+const UI_UNCHECK = 8;
 
 const delay = t => new Promise(resolve => setTimeout(resolve, t));
 
@@ -19,6 +20,9 @@ const wizGotoLimiters = [
   { action: UI_HOVER, id: 'priceLink' },
   { action: UI_DELAY, delay: 500 },
   { action: UI_PAGE, id: 'costPage' },
+  { action: UI_UNCHECK, id: 'collapsible2' },
+  { action: UI_UNCHECK, id: 'collapsible3' },
+  { action: UI_UNCHECK, id: 'collapsible4' },
   { action: UI_DELAY, delay: 500 },
   { action: UI_DONEHOVER, id: 'advancedMenu' },
   { action: UI_DONEHOVER, id: 'advancedMenuDrop' },
@@ -26,8 +30,8 @@ const wizGotoLimiters = [
   { action: UI_DELAY, delay: 250 },
   { action: UI_CHECK, id: 'collapsible4' },
   { action: UI_DELAY, delay: 250 },
-  { action: UI_FOCUS, id: 'maxPower' },
-  { action: UI_FLASH, id: 'maxPower' },
+  { action: UI_FOCUS, id: 'maxPowerTable' },
+  { action: UI_FLASH, id: 'maxPowerTable' },
 ];
 
 /**
@@ -44,6 +48,9 @@ async function runActionQueue(actionQueue) {
         break;
       case UI_CHECK:
         document.getElementById(actionQueue[i].id).checked = true;
+        break;
+      case UI_UNCHECK:
+        document.getElementById(actionQueue[i].id).checked = false;
         break;
       case UI_FLASH:
         flashElement(actionQueue[i].id);
