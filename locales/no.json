@@ -167,7 +167,15 @@
       "gridTaxNight": "Nettleie 22-06",
       "gridLimit": "Kapasitetsledd (Wh)",
       "gridCost": "Kostnad per mnd.",
-      "gridLimitHint": "Dersom du legger inn kostnad per kapasitetsledd fra din nettleverandør vil appen regne ut hvor mye du sparer over tid."
+      "gridLimitHint": "Dersom du legger inn kostnad per kapasitetsledd fra din nettleverandør vil appen regne ut hvor mye du sparer over tid.",
+      "enabled": "Aktivert",
+      "limit": "Grense",
+      "peakStart": "Dag start",
+      "peakEnd": "Dag slutt",
+      "WeekendOffPeak": "Billig helg",
+      "gridSteps": "Bruk effekttrinn",
+      "peakMin": "Minste makseffekt",
+      "peakTax": "Kostnad makseffekt"
     },
     "archive": {
       "settings": "Arkiv",

@@ -167,7 +167,15 @@
       "gridTaxNight": "Grid charge 22-06",
       "gridLimit": "Capacity step (Wh)",
       "gridCost": "Monthly cost",
-      "gridLimitHint": "If you configure the cost per capacity step according to your grid provider, then your montly savings will be correctly calculated."
+      "gridLimitHint": "If you configure the cost per capacity step according to your grid provider, then your montly savings will be correctly calculated.",
+      "enabled": "Active",
+      "limit": "Limit",
+      "peakStart": "Peak start",
+      "peakEnd": "Peak end",
+      "WeekendOffPeak": "Weekend is offpeak",
+      "gridSteps": "Use power steps",
+      "peakMin": "Lowest max power",
+      "peakTax": "Cost max power"
     },
     "archive": {
       "settings": "Archive",

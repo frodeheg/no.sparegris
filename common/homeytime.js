@@ -71,6 +71,15 @@ function timeToNextHour(inputTime) {
 }
 
 /**
+ * Returns the number of milliseconds since last X minutes
+ */
+function timeSinceLastXMinutes(inputTime, minutes) {
+  return ((inputTime.getMinutes() % minutes) * 60 * 1000)
+  + (inputTime.getSeconds() * 1000)
+  + inputTime.getMilliseconds();
+}
+
+/**
  * Rounds a time object to start of the day in local time
  * Returned time is in UTC
  */
@@ -130,6 +139,21 @@ function daysInMonth(timeUTC, homey) {
   return new Date(localTime.getFullYear(), localTime.getMonth() + 1, 0).getDate();
 }
 
+/**
+ * Convert a hour hh:mm to minutes since midnight
+ */
+function timeToMinSinceMidnight(time) {
+  let args = time.split(':');
+  return (+args[0])*60 + +args[1];
+}
+
+/**
+ * Convert minutes since midnight to a hour:minutes format
+ */
+function minToTime(minutes) {
+  return `${String(Math.floor(minutes/60)).padStart(2,'0')}:${String(minutes%60).padStart(2,'0')}`
+}
+
 module.exports = {
   toLocalTime,
   fromLocalTime,
@@ -137,10 +161,13 @@ module.exports = {
   toTimeString,
   timeSinceLastHour,
   timeToNextHour,
+  timeSinceLastXMinutes,
   roundToNearestHour,
   roundToStartOfHour,
   roundToStartOfDay,
   isSameHour,
   hoursInDay,
   daysInMonth,
+  timeToMinSinceMidnight,
+  minToTime,
 };

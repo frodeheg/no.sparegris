@@ -1254,11 +1254,11 @@
         <div class="collapsible-content"><div class="content-inner">
           <table id="maxPowerTable" class="settings_table">
             <tr>
-              <td class="settings_row_name">&nbsp;</td>
-              <td class="settings_row_en"><b>Enabled</b></td>
-              <td class="settings_row_input"><b>Limit</b>
+              <th class="settings_row_name">&nbsp;</th>
+              <th class="settings_row_en" data-i18n="settings.cost.enabled">cost.enabled</th>
+              <th class="settings_row_input"><div data-i18n="settings.cost.limit">cost.limit</div>
                 <div class="hintButton" onclick="toggle(this,'maxPowHint');return false;">i</div>
-              </td>
+              </th>
             </tr>
             <tr id="enLimit15Box">
               <td class="settings_row_name"><label for="maxPower15min" data-i18n="settings.mode.maxPower15min">mode.maxPower15min</label>:</td>
@@ -1994,6 +1994,13 @@
           document.getElementById("safetyPower").value = currentSafetyPower;
           document.getElementById("pricePoint").value = currentPricePoint;
           document.getElementById("mainFuse").value = currentMainFuse;
+          document.getElementById("costSchema").value = futurePriceOptions.costSchema;
+          document.getElementById("peakStart").value = minToTime(futurePriceOptions.peakStart);
+          document.getElementById("peakEnd").value = minToTime(futurePriceOptions.peakEnd);
+          document.getElementById("WeekendOffPeak").value = futurePriceOptions.WeekendOffPeak;
+          document.getElementById("gridSteps").value = futurePriceOptions.gridSteps;
+          document.getElementById("peakMin").value = futurePriceOptions.peakMin;
+          document.getElementById("peakTax").value = futurePriceOptions.peakTax;
           document.getElementById("averageTimePast").value = futurePriceOptions.averageTimePast;
           document.getElementById("averageTimeFuture").value = futurePriceOptions.averageTimeFuture;
           document.getElementById("minCheapTime").value = futurePriceOptions.minCheapTime;
@@ -2477,6 +2484,13 @@
                 Homey.alert(Homey.__('warnings.noDevices'));
               } catch(err) {}; // Ignore popup blockers
             } else {
+              futurePriceOptions.costSchema = document.getElementById("costSchema").value;
+              futurePriceOptions.peakStart = timeToMinSinceMidnight(document.getElementById("peakStart").value);
+              futurePriceOptions.peakEnd = timeToMinSinceMidnight(document.getElementById("peakEnd").value);
+              futurePriceOptions.WeekendOffPeak = document.getElementById("WeekendOffPeak").value;
+              futurePriceOptions.gridSteps = document.getElementById("gridSteps").value;
+              futurePriceOptions.peakMin = +document.getElementById("peakMin").value;
+              futurePriceOptions.peakTax = +document.getElementById("peakTax").value;
               futurePriceOptions.averageTimePast = document.getElementById("averageTimePast").value;
               futurePriceOptions.averageTimeFuture = document.getElementById("averageTimeFuture").value;
               futurePriceOptions.minCheapTime = document.getElementById("minCheapTime").value;

@@ -57,7 +57,9 @@ class PiggyBank extends Homey.App {
     // this.log(`priceActionList: ${JSON.stringify(this.homey.settings.get('priceActionList'))}`);
     try {
       if (this.homey.settings.get('operatingMode') === null) return false;
-      if (this.homey.settings.get('maxPower') === null) return false;
+      const limits = this.homey.settings.get('maxPower');
+      if (!Array.isArray(limits)) return false;
+      if (limits.length !== 4) return false;
       const frostList = this.homey.settings.get('frostList');
       const numControlledDevices = Object.keys(frostList).length;
       if (numControlledDevices === 0) return false;
@@ -164,7 +166,6 @@ class PiggyBank extends Homey.App {
       this.logInit();
     } catch (err) {} // Ignore logging errors, normal users don't care
 
-    await locale.initCostSchema(this.homey);
     await prices.currencyApiInit(this.homey);
     await prices.entsoeApiInit(Homey.env.ENTSOE_TOKEN);
 
@@ -531,7 +532,7 @@ class PiggyBank extends Homey.App {
       const oldMaxPower = this.homey.settings.get('maxPower');
       if (oldMaxPower) {
         // Filter out new users so they get the defaults set later
-        const newMaxPower = [undefined, oldMaxPower, undefined, undefined];
+        const newMaxPower = [Infinity, oldMaxPower, Infinity, Infinity];
         this.homey.settings.set('maxPower', newMaxPower);
       }
       this.homey.settings.unset('maxPowerDay');
@@ -609,7 +610,14 @@ class PiggyBank extends Homey.App {
       || !('VAT' in futurePriceOptions)
       || !('currency' in futurePriceOptions)
       || !prices.isValidCurrency(futurePriceOptions.currency)
-      || !(Array.isArray(futurePriceOptions.gridCosts))) {
+      || !(Array.isArray(futurePriceOptions.gridCosts))
+      || !('costSchema' in futurePriceOptions)
+      || !(Number.isInteger(futurePriceOptions.peakStart))
+      || !(Number.isInteger(futurePriceOptions.peakEnd))
+      || !('WeekendOffPeak' in futurePriceOptions)
+      || !('gridSteps' in futurePriceOptions)
+      || !(Number.isFinite(futurePriceOptions.peakMin))
+      || !(Number.isFinite(futurePriceOptions.peakTax))) {
       if (!futurePriceOptions) futurePriceOptions = {};
       if (!('minCheapTime' in futurePriceOptions)) futurePriceOptions.minCheapTime = 4;
       if (!('minExpensiveTime' in futurePriceOptions)) futurePriceOptions.minExpensiveTime = 4;
@@ -620,15 +628,24 @@ class PiggyBank extends Homey.App {
       if (!('highPriceModifier' in futurePriceOptions)) futurePriceOptions.highPriceModifier = 10;
       if (!('extremePriceModifier' in futurePriceOptions)) futurePriceOptions.extremePriceModifier = 100;
       if (!('priceKind' in futurePriceOptions)) futurePriceOptions.priceKind = c.PRICE_KIND_SPOT;
-      if (!('priceCountry' in futurePriceOptions)) futurePriceOptions.priceCountry = 'no';
       if (!('priceRegion' in futurePriceOptions)) futurePriceOptions.priceRegion = 0;
       if (!('surcharge' in futurePriceOptions)) futurePriceOptions.surcharge = 0.0198; // Ramua kraft energi web
       if (!('priceFixed' in futurePriceOptions)) futurePriceOptions.priceFixed = 0.6;
       if (!('gridTaxDay' in futurePriceOptions)) futurePriceOptions.gridTaxDay = 0.3626; // Tensio default
       if (!('gridTaxNight' in futurePriceOptions)) futurePriceOptions.gridTaxNight = 0.2839; // Tensio default
-      if (!('VAT' in futurePriceOptions)) futurePriceOptions.VAT = 25;
-      if (!('currency' in futurePriceOptions) || !prices.isValidCurrency(futurePriceOptions.currency)) futurePriceOptions.currency = this.homey.__(prices.defaultCurrency);
       if (!(Array.isArray(futurePriceOptions.gridCosts))) futurePriceOptions.gridCosts = await this.fetchTariffTable();
+      if (!('costSchema' in futurePriceOptions)) futurePriceOptions.costSchema = await locale.getDefaultSchema(this.homey);
+      const schema = futurePriceOptions.costSchema
+      if (!(Number.isInteger(futurePriceOptions.peakStart))) futurePriceOptions.peakStart = locale.SCHEMA[schema].peakStart;
+      if (!(Number.isInteger(futurePriceOptions.peakEnd))) futurePriceOptions.peakEnd = locale.SCHEMA[schema].peakEnd;
+      if (!('WeekendOffPeak' in futurePriceOptions)) futurePriceOptions.WeekendOffPeak = locale.SCHEMA[schema].WeekendOffPeak;
+      if (!('gridSteps' in futurePriceOptions)) futurePriceOptions.gridSteps = locale.SCHEMA[schema].gridSteps;
+      if (!(Number.isFinite(futurePriceOptions.peakMin))) futurePriceOptions.peakMin = locale.SCHEMA[schema].peakMin;
+      if (!(Number.isFinite(futurePriceOptions.peakTax))) futurePriceOptions.peakTax = locale.SCHEMA[schema].peakTax;
+      if (!('priceCountry' in futurePriceOptions)) futurePriceOptions.priceCountry = locale.SCHEMA[schema].country;
+      if (!('currency' in futurePriceOptions) || !prices.isValidCurrency(futurePriceOptions.currency)) futurePriceOptions.currency = locale.SCHEMA[schema].currency;
+      if (!('VAT' in futurePriceOptions)) futurePriceOptions.VAT = locale.SCHEMA[schema].vat;
+
       this.updateLog(`Resetting futurePriceOptions to ${JSON.stringify(futurePriceOptions)}`, c.LOG_DEBUG);
       this.homey.settings.set('futurePriceOptions', futurePriceOptions);
     }
@@ -926,20 +943,21 @@ class PiggyBank extends Homey.App {
 
     // ============== ON NEW HOUR SAFETY GUARD WHEN RESTARTING ==============
     // Check if the onNewHour was missed due to a restart
-    const timeWithinHour = timeSinceLastHour(now);
     if (this.__current_power === undefined) {
       // First time app was started or the time since restart exceeded an hour
       // Reserve energy for the time we have no data on
+      const timeUnit = locale.SCHEMA[this.homey.settings.get('futurePriceOptions').costSchema].granularity; TODO
+      const timeWithinSlot = timeSinceLastXMinutes(now, timeUnit); TODO
       const maxPower = this.homey.settings.get('maxPower');
       const errorMargin = this.homey.settings.get('errorMargin') ? (parseInt(this.homey.settings.get('errorMargin'), 10) / 100) : 1;
-      const lapsedTime = timeWithinHour;
-      // Assume 100% use this hour up until now (except for the errorMargin so we gett less warnings the first hour)
+      const lapsedTime = timeWithinSlot;
+      // Assume 100% use this hour up until now (except for the errorMargin so we get less warnings the first hour)
       this.__reserved_energy = (1 - errorMargin) * ((maxPower * lapsedTime) / (1000 * 60 * 60));
       if (Number.isNaN(this.__reserved_energy)) {
         this.__reserved_energy = 0;
       }
       this.__current_power = maxPower;
-      this.__missing_power_this_hour = Math.floor(timeWithinHour / (1000 * 60));
+      this.__missing_power_this_hour = Math.floor(timeWithinSlot / (1000 * 60));
     } else {
       // Got some data from safe shutdown... Use this to calculate if new hour was crossed
       await this.onPowerUpdate(this.__current_power, new Date(now.getTime()));

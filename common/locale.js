@@ -139,14 +139,13 @@ const COUNTRY = {
 // = APP FUNCTIONS
 // =============================================================================
 
-async function initCostSchema(homey) {
-  const schema = homey.settings.get('costSchema');
+async function getDefaultSchema(homey) {
+  let schema = homey.settings.get('costSchema');
   if (schema === null) {
     const locale = homey.i18n.getLanguage();
-    const newSchema = (locale === 'be') ? 'be' : 'no';
-    homey.settings.set('costSchema', newSchema);
-    // TBD: futurePrices. VAT?
+    schema = (locale === 'be') ? 'be' : 'no';
   }
+  return schema;
 }
 
 // =============================================================================
@@ -197,9 +196,11 @@ async function refreshSchema() {
     document.getElementById('enLimit60InBox').style.display = 'block';
     document.getElementById('enLimit60SelBox').style.display = 'none';
   }
-  const keys = Object.keys(SCHEMA[currentSchema].hide);
-  for (let i = 0; i < keys.length; i++) {
-    document.getElementById(keys[i]).style.display = 'none';
+  if (document.getElementById("priceCountry").value === currentSchema) {
+    const keys = Object.keys(SCHEMA[currentSchema].hide);
+    for (let i = 0; i < keys.length; i++) {
+      document.getElementById(keys[i]).style.display = 'none';
+    }
   }
   document.getElementById('maxPower15min').disabled = !document.getElementById('enLimit15').checked;
   document.getElementById('maxPowerHour').disabled = !document.getElementById('enLimit60').checked;
