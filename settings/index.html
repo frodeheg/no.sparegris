@@ -1219,6 +1219,14 @@
         <label for="collapsible3" class="lbl-toggle" data-i18n="settings.price.powerPart" style="color: whitesmoke;">price.powerPart</label>
         <div class="collapsible-content"><div class="content-inner">
           <table class="settings_table">
+            <tr id="granularityEn">
+              <td class="settings_row_name"><label for="granularity" data-i18n="settings.cost.granularity">cost.granularity</label>:</td>
+              <td class="settings_row_input">
+                <select id="granularity" onchange="refreshSchema();displaySaveHint()">
+                  <option value="15" data-i18n="settings.cost.granularity15">15 min</option>
+                  <option value="60" data-i18n="settings.cost.granularity60" selected>60 min</option>
+                </select></td>
+            </tr>
             <tr id="gridStepEn">
               <td class="settings_row_name"><label for="gridSteps" data-i18n="settings.cost.gridSteps">cost.gridSteps</label>:</td>
               <td class="settings_row_input"><input id="gridSteps" type="checkbox" checked onchange="refreshSchema();displaySaveHint()"></td>
@@ -1999,6 +2007,7 @@
           document.getElementById("peakEnd").value = minToTime(futurePriceOptions.peakEnd);
           document.getElementById("WeekendOffPeak").value = futurePriceOptions.WeekendOffPeak;
           document.getElementById("gridSteps").value = futurePriceOptions.gridSteps;
+          document.getElementById("granularity").value = futurePriceOptions.granularity;
           document.getElementById("peakMin").value = futurePriceOptions.peakMin;
           document.getElementById("peakTax").value = futurePriceOptions.peakTax;
           document.getElementById("averageTimePast").value = futurePriceOptions.averageTimePast;
@@ -2489,6 +2498,7 @@
               futurePriceOptions.peakEnd = timeToMinSinceMidnight(document.getElementById("peakEnd").value);
               futurePriceOptions.WeekendOffPeak = document.getElementById("WeekendOffPeak").value;
               futurePriceOptions.gridSteps = document.getElementById("gridSteps").value;
+              futurePriceOptions.granularity = +document.getElementById("granularity").value;
               futurePriceOptions.peakMin = +document.getElementById("peakMin").value;
               futurePriceOptions.peakTax = +document.getElementById("peakTax").value;
               futurePriceOptions.averageTimePast = document.getElementById("averageTimePast").value;

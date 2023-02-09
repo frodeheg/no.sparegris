@@ -1,4 +1,4 @@
-
+/* eslint-disable comma-dangle */
 /* eslint-disable max-len */
 
 'use strict';
@@ -42,6 +42,7 @@ const SCHEMA = {
       peakEndEn: 'table-row',
       peakWeekendEn: 'table-row',
       enLimit15Box: 'table-row',
+      granularityEn: 'table-row',
     }
   },
   be: {
@@ -66,6 +67,7 @@ const SCHEMA = {
       costSchemaBox: 'table-row',
       gridStepEn: 'table-row',
       enLimit60Box: 'table-row',
+      granularityEn: 'table-row',
     }
   },
   custom: {
@@ -89,7 +91,7 @@ const SCHEMA = {
     hide: {
     }
   }
-}
+};
 
 // Countries
 const COUNTRY = {
@@ -132,8 +134,8 @@ const COUNTRY = {
   ch: 'Switzerland',
   tr: 'Turkey',
   ua: 'Ukraine',
-  uk: 'United Kingdom'
-}
+  uk: 'United Kingdom',
+};
 
 // =============================================================================
 // = APP FUNCTIONS
@@ -172,6 +174,7 @@ async function changeSchema(newSchema) {
     document.getElementById('gridSteps').checked = SCHEMA[newSchema].gridSteps;
     document.getElementById('peakMin').value = SCHEMA[newSchema].peakMin;
     document.getElementById('peakTax').value = SCHEMA[newSchema].peakTax;
+    document.getElementById('granularity').value = SCHEMA[newSchema].granularity;
     document.getElementById('enLimit15').checked = SCHEMA[newSchema].limits.quarter !== Infinity;
     document.getElementById('enLimit60').checked = SCHEMA[newSchema].limits.hour !== Infinity;
     document.getElementById('enLimitDay').checked = SCHEMA[newSchema].limits.day !== Infinity;
@@ -196,7 +199,7 @@ async function refreshSchema() {
     document.getElementById('enLimit60InBox').style.display = 'block';
     document.getElementById('enLimit60SelBox').style.display = 'none';
   }
-  if (document.getElementById("priceCountry").value === currentSchema) {
+  if (document.getElementById('priceCountry').value === currentSchema) {
     const keys = Object.keys(SCHEMA[currentSchema].hide);
     for (let i = 0; i < keys.length; i++) {
       document.getElementById(keys[i]).style.display = 'none';
@@ -211,6 +214,7 @@ async function refreshSchema() {
 module.exports = {
   SCHEMA,
   COUNTRY,
-  initCostSchema,
+  getDefaultSchema,
   changeSchema,
+  refreshSchema,
 };

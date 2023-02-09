@@ -71,12 +71,19 @@ function timeToNextHour(inputTime) {
 }
 
 /**
- * Returns the number of milliseconds since last X minutes
+ * Returns the number of milliseconds since last slot of X minutes
  */
-function timeSinceLastXMinutes(inputTime, minutes) {
+function timeSinceLastSlot(inputTime, minutes) {
   return ((inputTime.getMinutes() % minutes) * 60 * 1000)
   + (inputTime.getSeconds() * 1000)
   + inputTime.getMilliseconds();
+}
+
+/**
+ * Returns the number of milliseconds until next slot of X minutes
+ */
+function timeToNextSlot(inputTime, minutes) {
+  return (minutes * 60 * 1000) - timeSinceLastSlot(inputTime, minutes);
 }
 
 /**
@@ -161,7 +168,8 @@ module.exports = {
   toTimeString,
   timeSinceLastHour,
   timeToNextHour,
-  timeSinceLastXMinutes,
+  timeSinceLastSlot,
+  timeToNextSlot,
   roundToNearestHour,
   roundToStartOfHour,
   roundToStartOfDay,
