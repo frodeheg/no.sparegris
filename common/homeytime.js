@@ -1,5 +1,7 @@
 'use strict';
 
+const { MAXPOWER } = require('./constants');
+
 /** ****************************************************************************************************
  * HomeyTime
  ** ****************************************************************************************************
@@ -51,7 +53,7 @@ function timeDiff(HourA, MinA, HourB, MinB) {
  */
 function toTimeString(inputTime) {
   return `${inputTime.getFullYear()}-${String(inputTime.getMonth() + 1).padStart(2, '0')}-${String(inputTime.getDate()).padStart(2, '0')}`
-        + `T${String(inputTime.getHours()).padStart(2, '0')}:${String(inputTime.getMinutes()).padStart(2, '0')}`
+        + `T${String(inputTime.getHours()).padStart(2, '0')}:${String(inputTime.getMinutes()).padStart(2, '0')}`;
 }
 
 /**
@@ -88,12 +90,131 @@ function timeToNextSlot(inputTime, minutes) {
 
 /**
  * Rounds a time object to start of the day in local time
- * Returned time is in UTC
+ * Returned time is in UTC. Cache to avoid insane memory usage.
  */
-function roundToStartOfDay(time, homey) {
-  const localTime = toLocalTime(time, homey);
-  localTime.setHours(0, 0, 0, 0);
-  return fromLocalTime(localTime, homey);
+let __cachedDayStart;
+let __cachedDayEnd;
+function roundToStartOfDay(timeUTC, homey) {
+  if (!__cachedDayStart
+    || (__cachedDayStart > timeUTC)
+    || !__cachedDayEnd
+    || (__cachedDayEnd < timeUTC)) {
+    const localTime = toLocalTime(timeUTC, homey);
+    localTime.setHours(0, 0, 0, 0);
+    __cachedDayStart = fromLocalTime(localTime, homey);
+    localTime.setDate(localTime.getDay() + 1);
+    __cachedDayEnd = fromLocalTime(localTime, homey);
+  }
+  return __cachedDayStart;
+}
+
+/**
+ * Rounds a time object to start of the day in local time
+ * Returned time is in UTC. Cache to avoid insane memory usage.
+ */
+let __cachedMonthStart;
+let __cachedMonthEnd;
+function roundToStartOfMonth(timeUTC, homey) {
+  if (!__cachedMonthStart
+    || (__cachedMonthStart > timeUTC)
+    || !__cachedMonthEnd
+    || (__cachedMonthEnd < timeUTC)) {
+    const localTime = toLocalTime(timeUTC, homey);
+    localTime.setDate(1);
+    localTime.setHours(0, 0, 0, 0);
+    __cachedMonthStart = fromLocalTime(localTime, homey);
+    localTime.setMonth(localTime.getMonth() + 1);
+    __cachedMonthEnd = fromLocalTime(localTime, homey);
+  }
+  return __cachedMonthStart;
+}
+
+/**
+ * Returns the number of milliseconds since last day - daylight savings safe
+ */
+function timeSinceLastDay(timeUTC, homey) {
+  return timeUTC - roundToStartOfDay(timeUTC, homey);
+}
+
+/**
+ * Returns the number of milliseconds until next slot of X minutes
+ */
+function timeToNextDay(timeUTC, homey) {
+  const startOfDayUTC = roundToStartOfDay(timeUTC, homey);
+  const startOfNextDayUTC = new Date(startOfDayUTC.getFullYear(), startOfDayUTC.getMonth(), startOfDayUTC.getDate() + 1, startOfDayUTC.getHours(), startOfDayUTC.getMinutes());
+  return startOfNextDayUTC - timeUTC;
+}
+
+/**
+ * Returns the number of milliseconds since last day - daylight savings safe
+ */
+function timeSinceLastMonth(timeUTC, homey) {
+  return timeUTC - roundToStartOfMonth(timeUTC, homey);
+}
+
+/**
+ * Returns the number of milliseconds until next slot of X minutes
+ */
+function timeToNextMonth(timeUTC, homey) {
+  const startOfMonthUTC = roundToStartOfMonth(timeUTC, homey);
+  const startOfNextMonthUTC = new Date(startOfMonthUTC.getFullYear(), startOfMonthUTC.getMonth() + 1, startOfMonthUTC.getDate(), startOfMonthUTC.getHours(), startOfMonthUTC.getMinutes());
+  return startOfNextMonthUTC - timeUTC;
+}
+
+/**
+ * Returns the number of milliseconds until next limiter (defined by MAXPOWER)
+ */
+function timeSinceLastLimiter(inputTime, limiter, homey) {
+  switch (limiter) {
+    case MAXPOWER.QUARTER:
+      return timeSinceLastSlot(inputTime, 15);
+    case MAXPOWER.HOUR:
+      return timeSinceLastSlot(inputTime, 60);
+    case MAXPOWER.DAY:
+      return timeSinceLastDay(inputTime, homey);
+    case MAXPOWER.MONTH:
+      return timeSinceLastMonth(inputTime, homey);
+    default:
+      throw (new Error(`Invalid limiter: ${limiter}`));
+  }
+}
+
+/**
+ * Returns the number of milliseconds until next limiter (defined by MAXPOWER)
+ */
+function timeToNextLimiter(inputTime, limiter, homey) {
+  switch (limiter) {
+    case MAXPOWER.QUARTER:
+      return timeToNextSlot(inputTime, 15);
+    case MAXPOWER.HOUR:
+      return timeToNextSlot(inputTime, 60);
+    case MAXPOWER.DAY:
+      return timeToNextDay(inputTime, homey);
+    case MAXPOWER.MONTH:
+      return timeToNextMonth(inputTime, homey);
+    default:
+      throw (new Error(`Invalid limiter: ${limiter}`));
+  }
+}
+
+/**
+ * Returns the length in milliseconds of a particular limiter (defined by MAXPOWER)
+ */
+function limiterLength(inputTime, limiter, homey) {
+  switch (limiter) {
+    case MAXPOWER.QUARTER:
+      return 15 * 60 * 1000;
+    case MAXPOWER.HOUR:
+      return 60 * 60 * 1000;
+    case MAXPOWER.DAY:
+      timeSinceLastDay(inputTime, homey); // Refresh cache, ignore result
+      return __cachedDayEnd - __cachedDayStart;
+    case MAXPOWER.MONTH:
+      timeSinceLastMonth(inputTime, homey); // Refresh cache, ignore result
+      return __cachedMonthEnd - __cachedMonthStart;
+    default:
+      throw (new Error(`Invalid limiter: ${limiter}`));
+  }
 }
 
 /**
@@ -150,15 +271,15 @@ function daysInMonth(timeUTC, homey) {
  * Convert a hour hh:mm to minutes since midnight
  */
 function timeToMinSinceMidnight(time) {
-  let args = time.split(':');
-  return (+args[0])*60 + +args[1];
+  const args = time.split(':');
+  return (+args[0]) * 60 + +args[1];
 }
 
 /**
  * Convert minutes since midnight to a hour:minutes format
  */
 function minToTime(minutes) {
-  return `${String(Math.floor(minutes/60)).padStart(2,'0')}:${String(minutes%60).padStart(2,'0')}`
+  return `${String(Math.floor(minutes / 60)).padStart(2, '0')}:${String(minutes % 60).padStart(2, '0')}`;
 }
 
 module.exports = {
@@ -170,6 +291,9 @@ module.exports = {
   timeToNextHour,
   timeSinceLastSlot,
   timeToNextSlot,
+  timeSinceLastLimiter,
+  timeToNextLimiter,
+  limiterLength,
   roundToNearestHour,
   roundToStartOfHour,
   roundToStartOfDay,

@@ -29,7 +29,8 @@ const c = require('./common/constants');
 const d = require('./common/devices');
 const { addToArchive, removeFromArchive, cleanArchive, getArchive } = require('./common/archive');
 const {
-  daysInMonth, toLocalTime, timeDiff, timeSinceLastHour, timeSinceLastSlot, timeToNextSlot,
+  daysInMonth, toLocalTime, timeDiff, timeSinceLastSlot, timeToNextSlot,
+  timeSinceLastLimiter, timeToNextLimiter, limiterLength,
   roundToNearestHour, roundToStartOfHour, roundToStartOfDay, hoursInDay, fromLocalTime
 } = require('./common/homeytime');
 const { isNumber, toNumber, combine } = require('./common/tools');
@@ -697,6 +698,7 @@ class PiggyBank extends Homey.App {
     if (!expireHourly) this.homey.settings.set('expireHourly', 7);
 
     // Initialize current state
+    this.__activeLimit = undefined;
     this.__hasAC = false;
     this.__intervalID = undefined;
     this.__powerProcessID = undefined;
@@ -1856,49 +1858,75 @@ class PiggyBank extends Homey.App {
    * Called whenever we can process the new power situation
    */
   async onProcessPower(now = new Date()) {
-    // Check for new hour
+    // Check for new timeslot
     while (this.__pendingOnNewSlot.length > 0) {
       const item = this.__pendingOnNewSlot[0];
       await this.onNewSlot(now, new Date(item.time), item.accumEnergy, item.offeredEnergy, item.missingMinutes);
       this.__pendingOnNewSlot = this.__pendingOnNewSlot.slice(1);
     }
-    // Check if power can be increased or reduced
-    const remainingTime = timeToNextSlot(now, this.granularity);
+    // Go through all limits to make sure they are met
+    const limits = this.homey.settings.get('maxPower');
     const errorMargin = this.homey.settings.get('errorMargin') ? (parseInt(this.homey.settings.get('errorMargin'), 10) / 100) : 0;
-    const trueMaxPower = this.homey.settings.get('maxPower'); TODO
-    const errorMarginWatts = trueMaxPower * errorMargin;
-    const maxPower = trueMaxPower - errorMarginWatts;
     const safetyPower = +this.homey.settings.get('safetyPower');
-    const crossHourSmooth = (+this.homey.settings.get('crossHourSmooth') / 100) * (maxPower - this.__accum_energy);
-    const negativeReserve = crossHourSmooth * (1 - (timeSinceLastHour(now) / 3600000));
+    let minPowerDiff = Infinity;
+    let trueMaxPower = Infinity;
+    let activeLimit;
+    for (let limitIdx = 0; limitIdx < limits.length; limitIdx++) {
+      if (limits(limitIdx) === Infinity) continue;
+      const remainingTime = timeToNextLimiter(now, limitIdx, this.homey);
+      const trueMaxEnergy = limits[limitIdx];
+      const errorMarginEnergy = trueMaxEnergy * errorMargin;
+      const maxEnergy = trueMaxEnergy - errorMarginEnergy;
+      const crossSlotSmooth = ((limitIdx === c.MAXPOWER.QUARTER) || (limitIdx === c.MAXPOWER.HOUR))
+        ? (+this.homey.settings.get('crossHourSmooth') / 100) * (maxEnergy - this.__accum_energy) : 0;
+      const intervalLength = limiterLength(now, limitIdx, this.homey);
+      const negativeReserve = ((limitIdx === c.MAXPOWER.QUARTER) || (limitIdx === c.MAXPOWER.HOUR))
+        ? crossSlotSmooth * (remainingTime(now, limitIdx, this.homey) / intervalLength) : 0;
 
-    this.updateLog(`${'onPowerProcess: '
+      this.updateLog(`${'onPowerProcess: '
       + 'Using: '}${String(this.__current_power)}W, `
       + `Accum: ${String(this.__accum_energy.toFixed(2))} Wh, `
-      + `Limit: ${String(maxPower)} Wh, `
+      + `Limit: ${String(maxEnergy)} Wh, `
       + `Reserved: ${String(Math.ceil(this.__reserved_energy + safetyPower))}W, `
       + `Smoothing: ${String(Math.ceil(negativeReserve))}W`, c.LOG_DEBUG);
 
-    // Try to control devices if the power is outside of the preferred bounds
-    let powerDiff = (((maxPower - this.__accum_energy + this.__fakePower - this.__reserved_energy) * (1000 * 60 * 60)) / remainingTime) - this.__current_power - safetyPower + negativeReserve;
-    const mainFuse = this.homey.settings.get('mainFuse'); // Amps
+      // Try to control devices if the power is outside of the preferred bounds
+      const energyReserveLeft = maxEnergy - this.__accum_energy - this.__fakePower - this.__reserved_energy;
+      const wattLeftPerHour = (energyReserveLeft * (1000 * 60 * 60)) / remainingTime;
+      const powerDiff = wattLeftPerHour + negativeReserve - this.__current_power - safetyPower;
+      if (powerDiff < minPowerDiff) {
+        minPowerDiff = powerDiff;
+        activeLimit = limitIdx;
+        trueMaxPower = (trueMaxEnergy / intervalLength) * (60 * 60 * 1000);
+      }
+    }
+
+    const mainFuse = +this.homey.settings.get('mainFuse'); // Amps
     const maxDrain = Math.round(1.732050808 * 230 * mainFuse);
     const maxFreeDrain = ((isNumber(maxDrain) && (maxDrain > 0)) ? maxDrain : (trueMaxPower * 10)) - this.__current_power;
-    if (powerDiff > maxFreeDrain) {
-      powerDiff = maxFreeDrain; // Cannot use more than the main fuse
+    if (minPowerDiff > maxFreeDrain) {
+      minPowerDiff = maxFreeDrain; // Cannot use more than the main fuse
     }
-    if (powerDiff < -maxDrain) {
-      powerDiff = -maxDrain; // If this is the case then we have most likely crossed the power roof already for this hour.
+    if (minPowerDiff < -maxDrain) {
+      minPowerDiff = -maxDrain; // If this is the case then we have most likely crossed the power roof already for this hour.
     }
     // Report free capacity:
-    this.onFreePowerChanged(powerDiff + safetyPower);
+    const errorMarginWatts = trueMaxPower * errorMargin;
+    this.onFreePowerChanged(minPowerDiff + safetyPower);
     let promise;
-    if (powerDiff < 0) {
-      promise = this.onAbovePowerLimit(-powerDiff, errorMarginWatts + safetyPower, now)
+    if (minPowerDiff < 0) {
+      this.__activeLimit = activeLimit;
+      promise = this.onAbovePowerLimit(-minPowerDiff, errorMarginWatts + safetyPower, now)
+        .then(() => resolve())
         .catch(() => resolve()); // Ignore failures
-    } else if (powerDiff > 0) {
-      promise = this.onBelowPowerLimit(powerDiff, now)
+    } else if (minPowerDiff > 0) {
+      this.__activeLimit = undefined;
+      promise = this.onBelowPowerLimit(minPowerDiff, now)
+        .then(() => resolve())
         .catch(() => resolve()); // Ignore failures
+    } else {
+      this.__activeLimit = undefined;
+      promise = Promise.resolve();
     }
     return promise;
   }
@@ -1972,7 +2000,7 @@ class PiggyBank extends Homey.App {
       return Promise.resolve();
     }
 
-    // Accumulate the power for the rest of the hour only
+    // Accumulate the power for the rest of the slot only
     const timeLeftInSlot = timeToNextSlot(this.__current_power_time, this.granularity);
     let timeToProcess = lapsedTime;
     if (lapsedTime > timeLeftInSlot) {
@@ -2248,6 +2276,7 @@ class PiggyBank extends Homey.App {
     // If power was turned _OFF_ within the last 1-5 minutes then abort turning on anything.
     // The waiting time is 5 minutes at the beginning of an hour and reduces gradually to 1 minute for the last 5 minutes
     // This is to avoid excessive on/off cycles of high power devices such as electric car chargers
+    // (e.g. in case the slot size is only 15 minutes this has little effect...)
     const timeLeftInSlot = timeToNextSlot(now, this.granularity);
     const powerCycleInterval = (timeLeftInSlot > TIME_FOR_POWERCYCLE_MAX) ? WAIT_TIME_TO_POWER_ON_AFTER_POWEROFF_MAX
       : (timeLeftInSlot < TIME_FOR_POWERCYCLE_MIN) ? WAIT_TIME_TO_POWER_ON_AFTER_POWEROFF_MIN
@@ -3468,7 +3497,7 @@ class PiggyBank extends Homey.App {
     const thisMonthTariff = await getArchive(this.homey, 'maxPower', 'monthly', ltYear, ltMonth) || 0;
     const lastMonthTariff = await getArchive(this.homey, 'maxPower', 'monthly', ltYearm1, ltMonthm1);
     const remainingTime = timeToNextSlot(this.__current_power_time, this.granularity);
-    const powerEstimated = this.__accum_energy + (this.__current_power * remainingTime) / (1000 * 60 * 60);
+    const powerEstimated = this.__accum_energy + (this.__current_power * remainingTime) / (1000 * 60 * this.granularity);
 
     return {
       power_last_hour: parseInt(this.__power_last_hour, 10), // Actually NaN the first hour of operation
