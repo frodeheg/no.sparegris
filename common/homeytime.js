@@ -238,6 +238,16 @@ function roundToStartOfHour(date) {
 }
 
 /**
+ * Rounds a time object to the start of the given slot
+ */
+function roundToStartOfSlot(date, slotSize) {
+  const newTime = new Date(date.getTime());
+  const minutes = slotSize * Math.floor(newTime.getUTCMinutes() / slotSize);
+  newTime.setUTCMinutes(minutes, 0, 0);
+  return newTime;
+}
+
+/**
  * Checks if two time objects belong to the same hour or not
  */
 function isSameHour(time1, time2) {
@@ -296,6 +306,7 @@ module.exports = {
   limiterLength,
   roundToNearestHour,
   roundToStartOfHour,
+  roundToStartOfSlot,
   roundToStartOfDay,
   isSameHour,
   hoursInDay,

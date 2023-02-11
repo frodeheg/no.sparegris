@@ -42,6 +42,7 @@ const TARGET_OP = {
 };
 
 // New device operations
+// eslint-disable-next-line no-var
 var DEVICE_OP = {
   UNCONDITIONAL_OFF: 0,
   UNCONDITIONAL_ON: 1,
@@ -51,6 +52,7 @@ var DEVICE_OP = {
 };
 
 // Temperature operations
+// eslint-disable-next-line no-var
 var TEMP_OP = {
   NONE: 0,
   STATIC: 1,
