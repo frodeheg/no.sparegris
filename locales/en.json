@@ -143,8 +143,8 @@
       "safetyPower" : "Reserved power",
       "safetyPowerHint1" : "Avoid failing the power target by reserving power to uncontrollable devices.",
       "safetyPowerHint2" : "Hint: You can use flow cards to change the reserved power during the day. It is reccomended to reserve more power before making dinner.",
-      "crossHourSmooth" : "Cross Hour Smoothing",
-      "crossHourSmoothHint" : "This feature allow you to over-use power at the beginning of every hour. The amount given will be added to the allowed power usage at the beginning of every hour and gradually reduced to 0 at the end of every hour.",
+      "crossSlotSmooth" : "Time window Smoothing",
+      "crossSlotSmoothHint" : "This feature allow you to over-use power at the beginning of every time window. The amount given will be added to the allowed power usage at the beginning of every time slot and gradually reduced to 0 at the end of every slot.",
       "mainFuse" : "Main fuse",
       "mainFuseHint" : "The main fuse is important for what is calculated as the maximum available power. The app will not let you use more power than the main fuse allows.",
       "freeThreshold": "Free capacity threshold",
@@ -175,7 +175,10 @@
       "WeekendOffPeak": "Weekend is offpeak",
       "gridSteps": "Use power steps",
       "peakMin": "Lowest max power",
-      "peakTax": "Cost max power"
+      "peakTax": "Cost max power",
+      "granularity": "Limiting interval",
+      "granularity15": "15 min",
+      "granularity60": "60 min"
     },
     "archive": {
       "settings": "Archive",
@@ -347,6 +350,7 @@
       "priorityHint1": "In case of excessive power consumption, the app starts turning off devices from the bottom of the list. Devices at the top of the list will be the last to be turned off.",
       "priorityHint2": "When the desired power tariff is within reach, the app will start turning on devices again.",
       "priorityHint3": "In order to prevent frequent switching on/off, the app will insert a waiting time after the last switch-off before appliances are switched on again. Therefore, set power consumption for electric car chargers roughly equal to the desired power tariff and low priority.",
+      "active": "limiting",
       "controlled": "Controlled",
       "alwaysOn": "Always On",
       "alwaysOff": "Always Off",

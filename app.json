@@ -1024,6 +1024,7 @@
         "meter_power.month_estimate",
         "measure_power.free_capacity",
         "alarm_generic.overshoot",
+        "alarm_generic.limited",
         "piggy_mode",
         "piggy_price",
         "piggy_mode_disabled",
@@ -1041,7 +1042,8 @@
         "piggy_price_expensive",
         "piggy_price_extreme",
         "measure_power.reserved_power",
-        "piggy_devices_on"
+        "piggy_devices_on",
+        "activeLimit"
       ],
       "capabilitiesOptions": {
         "button.reset_stats": {
@@ -1167,6 +1169,21 @@
             "en": "Power limit once again within reach",
             "no": "Forbrukstaket er nå innenfor rekkevidde"
           }
+        },
+        "alarm_generic.limited": {
+          "title": {
+            "en": "Limited Power!",
+            "no": "Begrenset strøm!"
+          },
+          "insightsTitleTrue": {
+            "en": "The power is being limited!",
+            "no": "Strømmen blir begrenset!"
+          },
+          "insightsTitleFalse": {
+            "en": "No limitation",
+            "no": "Ingen begrensning"
+          },
+          "icon": "/assets/limit.svg"
         },
         "meter_power.estimated": {
           "units": {
@@ -1390,6 +1407,55 @@
     }
   ],
   "capabilities": {
+    "activeLimit": {
+      "type": "enum",
+      "title": {
+        "en": "Active Limit",
+        "no": "Aktiv Begrensning"
+      },
+      "getable": true,
+      "setable": false,
+      "values": [
+        {
+          "id": "-1",
+          "title": {
+            "en": "None",
+            "no": "Ingen"
+          }
+        },
+        {
+          "id": "0",
+          "title": {
+            "en": "15 min. limit",
+            "no": "15 min. grense"
+          }
+        },
+        {
+          "id": "1",
+          "title": {
+            "en": "Hourly limit",
+            "no": "Timesgrense"
+          }
+        },
+        {
+          "id": "2",
+          "title": {
+            "en": "Day limit",
+            "no": "Dagsgrense"
+          }
+        },
+        {
+          "id": "3",
+          "title": {
+            "en": "Month limit",
+            "no": "Månedsgrense"
+          }
+        }
+      ],
+      "icon": "/assets/limit.svg",
+      "uiComponent": "sensor",
+      "uiQuickAction": false
+    },
     "piggy_devices_on": {
       "type": "number",
       "title": {

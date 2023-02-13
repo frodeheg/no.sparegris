@@ -67,7 +67,8 @@ class FakeHomey {
         energyMeterNotConnected: false,
         timeSinceEnergyMeter: 10,
         gotPPFromFlow: true,
-        ApiStatus: PRICE_API_OK
+        ApiStatus: PRICE_API_OK,
+        activeLimit: 3
       };
     } else if (command.includes('/apiCommand?cmd=getFullState')) {
       response = { fakestate: true };

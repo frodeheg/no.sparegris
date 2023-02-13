@@ -1,0 +1,49 @@
+{
+    "type": "enum",
+    "title": {
+        "en": "Active Limit",
+        "no": "Aktiv Begrensning"
+    },
+    "getable": true,
+    "setable": false,
+    "values": [
+      {
+        "id": "-1",
+        "title": {
+          "en": "None",
+          "no": "Ingen"
+        }
+      },
+      {
+        "id": "0",
+        "title": {
+          "en": "15 min. limit",
+          "no": "15 min. grense"
+        }
+      },
+      {
+        "id": "1",
+        "title": {
+          "en": "Hourly limit",
+          "no": "Timesgrense"
+        }
+      },
+      {
+        "id": "2",
+        "title": {
+          "en": "Day limit",
+          "no": "Dagsgrense"
+        }
+      },
+      {
+        "id": "3",
+        "title": {
+          "en": "Month limit",
+          "no": "Månedsgrense"
+        }
+      }
+    ],
+    "icon": "/assets/limit.svg",
+    "uiComponent": "sensor",
+    "uiQuickAction": false
+  }

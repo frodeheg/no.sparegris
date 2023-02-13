@@ -223,7 +223,7 @@ p {
 #gridLimit,
 #gridCost,
 #safetyPower,
-#crossHourSmooth,
+#crossSlotSmooth,
 #errorMargin,
 #mainFuse,
 #expireDaily,
@@ -465,4 +465,15 @@ input.toggle[type='checkbox'] { display: none; }
 .iframe-holder iframe {
   height: 100%;
   width: 100%;
+}
+
+.blink {
+  animation: blinker 1.5s step-start infinite;
+  color: red;
+  font-weight: bold;
+}
+@keyframes blinker {
+  50% {
+    opacity: 0;
+  }
 }

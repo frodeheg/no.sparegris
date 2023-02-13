@@ -1,22 +1,22 @@
 {
-    "type": "number",
-    "title": {
-        "en": "Power State",
-        "no": "Forbrukstilstand"
-    },
-    "units": {
-      "en": "%"
-    },
-    "insights": true,
-    "desc": {
-        "en": "Number of controllable enabled devices in percent (%)",
-        "no": "Antall kontrollerbare påslåtte enheter i (%)"
-    },
-    "chartType": "spline",
-    "decimals": 0,
-    "getable": true,
-    "setable": false,
-    "uiComponent": "sensor",
+  "type": "number",
+  "title": {
+    "en": "Power State",
+    "no": "Forbrukstilstand"
+  },
+  "units": {
+    "en": "%"
+  },
+  "insights": true,
+  "desc": {
+    "en": "Number of controllable enabled devices in percent (%)",
+    "no": "Antall kontrollerbare påslåtte enheter i (%)"
+  },
+  "chartType": "spline",
+  "decimals": 0,
+  "getable": true,
+  "setable": false,
+  "uiComponent": "sensor",
 
-    "icon": "/assets/percent.svg"
-  }
+  "icon": "/assets/percent.svg"
+}

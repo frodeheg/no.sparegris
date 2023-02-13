@@ -1,7 +1,5 @@
 'use strict';
 
-const { MAXPOWER } = require('./constants');
-
 /** ****************************************************************************************************
  * HomeyTime
  ** ****************************************************************************************************
@@ -308,6 +306,7 @@ module.exports = {
   roundToStartOfHour,
   roundToStartOfSlot,
   roundToStartOfDay,
+  roundToStartOfMonth,
   isSameHour,
   hoursInDay,
   daysInMonth,

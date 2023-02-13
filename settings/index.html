@@ -30,6 +30,7 @@
       }
 
       // Text strings that must be fetched from homey
+      var activeText = "settings.mode.active";
       var deltaText = "settings.price.delta";
       var actionText = "settings.price.action";
       var deviceText = "settings.mode.device";
@@ -1097,13 +1098,13 @@
 
         <table class="settings_table">
           <tr>
-            <td class="settings_row_name"><label for="crossHourSmooth" data-i18n="settings.global.crossHourSmooth">global.crossHourSmooth</label>:</td>
-            <td class="settings_row_input"><input id="crossHourSmooth" type="number" min="0" max="100" step="100" value="20" onchange="displaySaveHint()">%
-              <div class="hintButton" onclick="toggle(this,'crossHourSmoothHint');return false;">i</div>
+            <td class="settings_row_name"><label for="crossSlotSmooth" data-i18n="settings.global.crossSlotSmooth">global.crossSlotSmooth</label>:</td>
+            <td class="settings_row_input"><input id="crossSlotSmooth" type="number" min="0" max="100" step="100" value="20" onchange="displaySaveHint()">%
+              <div class="hintButton" onclick="toggle(this,'crossSlotSmoothHint');return false;">i</div>
             </td>
           </tr>
         </table>
-        <p id="crossHourSmoothHint" class="hint" data-i18n="settings.global.crossHourSmoothHint">global.crossHourSmoothHint</p>
+        <p id="crossSlotSmoothHint" class="hint" data-i18n="settings.global.crossSlotSmoothHint">global.crossSlotSmoothHint</p>
       </fieldset>
     </div>
 
@@ -1812,7 +1813,7 @@
       var expireDailyLoaded = false;
       var expireHourlyLoaded = false;
       var safetyPowerLoaded = false;
-      var crossHourSmoothLoaded = false;
+      var crossSlotSmoothLoaded = false;
       var maxPowerLoaded = false;
       var deviceListLoaded = false;
       var modeListLoaded = false;
@@ -1933,7 +1934,7 @@
           `expireDailyLoaded: ${expireDailyLoaded}<br>` +
           `expireHourlyLoaded: ${expireHourlyLoaded}<br>` +
           `safetyPowerLoaded: ${safetyPowerLoaded}<br>` +
-          `crossHourSmoothLoaded: ${crossHourSmoothLoaded}<br>` +
+          `crossSlotSmoothLoaded: ${crossSlotSmoothLoaded}<br>` +
           `priceModeLoaded: ${priceModeLoaded}<br>` +
           `pricePointLoaded: ${pricePointLoaded}<br>` +
           `priceActionListLoaded: ${priceActionListLoaded}<br>` +
@@ -1961,7 +1962,7 @@
           && expireDailyLoaded
           && expireHourlyLoaded
           && safetyPowerLoaded
-          && crossHourSmoothLoaded
+          && crossSlotSmoothLoaded
           && priceModeLoaded
           && pricePointLoaded
           && priceActionListLoaded
@@ -2076,7 +2077,7 @@
         var controlTempElement = document.getElementById("controlTemp");
         var freeThresholdElement = document.getElementById("freeThreshold");
         var safetyPowerElement = document.getElementById("safetyPower");
-        var crossHourSmoothElement = document.getElementById("crossHourSmooth");
+        var crossSlotSmoothElement = document.getElementById("crossSlotSmooth");
         var priceModeElement = document.getElementById("priceMode");
         var pricePointElement = document.getElementById("pricePoint");
         var mainFuseElement = document.getElementById("mainFuse");
@@ -2084,6 +2085,7 @@
         var currencyElement = document.getElementById("currency");
 
         // Fetch translation strings from Homey
+        activeText = Homey.__(activeText);
         deltaText = Homey.__(deltaText);
         actionText = Homey.__(actionText);
         deviceText = Homey.__(deviceText);
@@ -2428,10 +2430,10 @@
           safetyPowerLoaded = true;
           checkLoadingDone();
         });
-        Homey.get("crossHourSmooth", function (err, crossHourSmooth) {
+        Homey.get("crossSlotSmooth", function (err, crossSlotSmooth) {
           if (err) return Homey.alert(err);
-          document.getElementById("crossHourSmooth").value = crossHourSmooth;
-          crossHourSmoothLoaded = true;
+          document.getElementById("crossSlotSmooth").value = crossSlotSmooth;
+          crossSlotSmoothLoaded = true;
           checkLoadingDone();
         });
         Homey.get("mainFuse", function (err, mainFuse) {
@@ -2558,7 +2560,7 @@
               Homey.set("expireDaily",document.getElementById("expireDaily").value, errFunc);
               Homey.set("expireHourly",document.getElementById("expireHourly").value, errFunc);
               Homey.set("safetyPower", safetyPowerElement.value, errFunc);
-              Homey.set("crossHourSmooth", crossHourSmoothElement.value, errFunc);
+              Homey.set("crossSlotSmooth", crossSlotSmoothElement.value, errFunc);
               Homey.set("mainFuse", mainFuseElement.value, errFunc);
               Homey.set("meterReader", document.getElementById("meterReader").value, errFunc);
               Homey.set("meterFrequency", document.getElementById("meterFrequency").value, errFunc);
@@ -2812,19 +2814,19 @@
           refreshTodoList();
           let limitTxt = '';
           if (document.getElementById('enLimit15').checked) {
-            limitTxt += String(+document.getElementById("maxPower15min").value) + " Wh/15 min.";
+            limitTxt += `${+document.getElementById("maxPower15min").value} Wh/15 min.${appConfigProgress.activeLimit == MAXPOWER.QUARTER ? ' <span class="blink">('+activeText+')</span>' : ''}`;
           }
           if (document.getElementById('enLimit60').checked) {
             limitTxt += (limitTxt.length > 0) ? '<br>' : '';
-            limitTxt += String(+document.getElementById("maxPowerHour").value / 1000) + " kWh/hour";
+            limitTxt += `${+document.getElementById("maxPowerHour").value / 1000} kWh/hour${appConfigProgress.activeLimit == MAXPOWER.HOUR ? ' <span class="blink">('+activeText+')</span>' : ''}`;
           }
           if (document.getElementById('enLimitDay').checked) {
             limitTxt += (limitTxt.length > 0) ? '<br>' : '';
-            limitTxt += String(+document.getElementById("maxPowerDay").value) + " kWh/day";
+            limitTxt += `${+document.getElementById("maxPowerDay").value} kWh/day${appConfigProgress.activeLimit == MAXPOWER.DAY ? ' <span class="blink">('+activeText+')</span>' : ''}`;
           }
           if (document.getElementById('enLimitMonth').checked) {
             limitTxt += (limitTxt.length > 0) ? '<br>' : '';
-            limitTxt += String(+document.getElementById("maxPowerMonth").value) + " kWh/month";
+            limitTxt += `${+document.getElementById("maxPowerMonth").value} kWh/month${appConfigProgress.activeLimit == MAXPOWER.MONTH ? ' <span class="blink">('+activeText+')</span>' : ''}`;
           }
           document.getElementById('limitsDuplicate').innerHTML = limitTxt;
         }

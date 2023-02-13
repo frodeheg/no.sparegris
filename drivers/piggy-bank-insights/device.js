@@ -95,6 +95,14 @@ class MyDevice extends Device {
       this.addCapability('piggy_mode_custom5');
     }
 
+    // Added capabilities in version 0.20.00
+    if (this.hasCapability('activeLimit') === false) {
+      this.addCapability('activeLimit');
+    }
+    if (this.hasCapability('alarm_generic.limited') === false) {
+      this.addCapability('alarm_generic.limited');
+    }
+
     // === Athom seem to have disabled permission for apps to delete logs even for their own devices ===
     // if (this.homey.app.homeyApi.insights.getLog({ uri: `homey:device:${this.deviceId}`, id: 'piggy_money.acceptable_price' })) {
     //   this.homey.app.homeyApi.insights.deleteLog({ uri: `homey:device:${this.deviceId}`, id: 'piggy_money.acceptable_price' });
@@ -447,6 +455,11 @@ class MyDevice extends Device {
         await this.updateCapability('piggy_money.extreme_price_limit', currencyPerkWhOptions);
         this.currency = piggyState.currency;
       }
+
+      // Change limiter
+      const limiterState = (piggyState.activeLimit === undefined) ? '-1' : `${piggyState.activeLimit}`;
+      this.setCapabilityValue('activeLimit', limiterState);
+      this.setCapabilityValue('alarm_generic.limited', piggyState.activeLimit !== undefined);
 
       // Other things to report:
       // * 4: Average power used in every mode
