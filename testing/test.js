@@ -91,7 +91,7 @@ async function testNewHour(numTests) {
     const hourAfter = now.getHours();
 
     await app.onPowerUpdate(randomPow, now);
-    const accumData = [...app.__pendingOnNewHour][0];
+    const accumData = [...app.__pendingOnNewSlot][0];
     await app.onProcessPower(now);
     testAccum += (oldPow * limitedTime) / (1000 * 60 * 60);
     oldPow = randomPow;
@@ -569,7 +569,7 @@ async function testAppRestart() {
   await disableTimers(app);
   const updateTime = new Date(now.getTime() + 1000 * 11 + 100);
   await app.onPowerUpdate(4000, updateTime);
-  const accumData = [...app.__pendingOnNewHour][0];
+  const accumData = [...app.__pendingOnNewSlot][0];
   await app.onProcessPower(updateTime);
   if (app.__accum_energy !== 110
     || Math.floor(accumData.accumEnergy) !== 13010) {

@@ -30,8 +30,8 @@ const d = require('./common/devices');
 const { addToArchive, removeFromArchive, cleanArchive, getArchive } = require('./common/archive');
 const {
   daysInMonth, toLocalTime, timeDiff, timeSinceLastSlot, timeToNextSlot,
-  timeToNextLimiter, limiterLength, roundToStartOfMonth,
-  roundToNearestHour, roundToStartOfSlot, roundToStartOfDay, hoursInDay, fromLocalTime
+  timeToNextLimiter, limiterLength, roundToStartOfMonth, roundToNearestHour,
+  roundToStartOfSlot, roundToStartOfDay, hoursInDay, slotsInDay, fromLocalTime
 } = require('./common/homeytime');
 const { isNumber, toNumber, combine } = require('./common/tools');
 const prices = require('./common/prices');
@@ -524,12 +524,14 @@ class PiggyBank extends Homey.App {
     if (+settingsVersion < 8) {
       // Changed country to identifier
       const futurePriceOptions = this.homey.settings.get('futurePriceOptions');
-      try {
-        futurePriceOptions.priceCountry = futurePriceOptions.priceCountry.split('(')[1].substring(0,2).toLowerCase();
-      } catch (err) {
-        futurePriceOptions.priceCountry = 'no';
+      if (futurePriceOptions && ('priceCountry' in futurePriceOptions)) {
+        try {
+          futurePriceOptions.priceCountry = futurePriceOptions.priceCountry.split('(')[1].substring(0, 2).toLowerCase();
+        } catch (err) {
+          futurePriceOptions.priceCountry = 'no';
+        }
+        this.homey.settings.set('futurePriceOptions', futurePriceOptions);
       }
-      this.homey.settings.set('futurePriceOptions', futurePriceOptions);
       // Changed maxPower and accum energy to array
       const oldMaxPower = this.homey.settings.get('maxPower');
       if (oldMaxPower) {
@@ -1863,10 +1865,11 @@ class PiggyBank extends Homey.App {
     const limits = this.homey.settings.get('maxPower');
     const errorMargin = this.homey.settings.get('errorMargin') ? (parseInt(this.homey.settings.get('errorMargin'), 10) / 100) : 0;
     const safetyPower = +this.homey.settings.get('safetyPower');
+    const numLimits = Array.isArray(limits) ? limits.length : 0;
     let minPowerDiff = Infinity;
     let trueMaxPower = Infinity;
     let activeLimit;
-    for (let limitIdx = 0; limitIdx < limits.length; limitIdx++) {
+    for (let limitIdx = 0; limitIdx < numLimits; limitIdx++) {
       if (limits(limitIdx) === Infinity) continue;
       const remainingTime = timeToNextLimiter(now, limitIdx, this.homey);
       const trueMaxEnergy = limits[limitIdx];
@@ -1997,8 +2000,9 @@ class PiggyBank extends Homey.App {
 
     const limits = this.homey.settings.get('maxPower');
     const lowestLimit = (this.granularity === 15) ? c.MAXPOWER.QUARTER : c.MAXPOWER.HOUR;
+    const numLimits = Array.isArray(limits) ? limits.length : 0;
     let newSlotAny = false;
-    for (let limitIdx = 0; limitIdx < limits.length; limitIdx++) {
+    for (let limitIdx = 0; limitIdx < numLimits; limitIdx++) {
       // Accumulate the power for the rest of the slot only
       const timeLeftInSlot = timeToNextSlot(this.__current_power_time, this.granularity);
       let timeToProcess = lapsedTime;
@@ -3242,7 +3246,8 @@ class PiggyBank extends Homey.App {
 
     const stats = {
       daysInMonth: daysInMonth(statsTimeUTC, this.homey),
-      hoursInDay: hoursInDay(statsTimeUTC, this.homey),
+      slotsInDay: slotsInDay(statsTimeUTC, this.granularity, this.homey),
+      slotLength: this.granularity,
       localTime: statsTimeLocal.getTime(),
       localDay: statsTimeLocal.getDate(),
       localMonth: statsTimeLocal.getMonth(),
@@ -3719,7 +3724,7 @@ class PiggyBank extends Homey.App {
    */
   async buildFutureData() {
     const nowLocal = toLocalTime(new Date(), this.homey); // TODO: Check if this can be removed
-    const todayHours = hoursInDay(nowLocal, this.homey);
+    const todayHours = hoursInDay(nowLocal, this.granularity, this.homey);
 
     const futureData = {};
     futureData['price'] = {};

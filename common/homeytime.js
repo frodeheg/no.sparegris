@@ -267,6 +267,17 @@ function hoursInDay(timeUTC, homey) {
 }
 
 /**
+ * Returns how many slots it is in a day (local time)
+ * Hours or quarters
+ * @param time UTC time
+ * @param slotSize in minutes
+ */
+function slotsInDay(timeUTC, slotSize, homey) {
+  const hours = hoursInDay(timeUTC, homey);
+  return hours * (60 / slotSize);
+}
+
+/**
  * Returns how many days it is in a month (local time)
  * @param time UTC time
  */
@@ -309,6 +320,7 @@ module.exports = {
   roundToStartOfMonth,
   isSameHour,
   hoursInDay,
+  slotsInDay,
   daysInMonth,
   timeToMinSinceMidnight,
   minToTime,

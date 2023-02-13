@@ -18,7 +18,8 @@ let chartYearIdx = 2022;
 let chartMonthIdx = 0;
 let chartDayIdx = 1;
 let chartDaysInMonth = 31;
-let chartHoursInDay = 24;
+let chartSlotsInDay = 24;
+let chartSlotLength = 60;
 let chartTime = new Date();
 let chartStartTime = chartTime;
 let chartEndTime = chartTime;
@@ -536,7 +537,8 @@ function updateGraph(Homey) {
       chartYearIdx = res.localYear;
       chartDayIdx = res.localDay;
       chartDaysInMonth = res.daysInMonth;
-      chartHoursInDay = res.hoursInDay;
+      chartSlotsInDay = res.slotsInDay;
+      chartSlotLength = res.slotLength;
       chartTime = new Date(res.localTime);
       let timeString;
       let labels;
@@ -555,9 +557,9 @@ function updateGraph(Homey) {
           break;
         case GRANULARITY.HOUR:
           timeString = `${monthText[chartMonthIdx]} - ${chartDayIdx}`;
-          labels = Array.from(Array(chartHoursInDay).keys()).map(h => `${h}:00`);
-          chartStartTime = new Date(`${chartYearIdx}-${chartMonthIdx+1}-${chartDayIdx}`);
-          chartEndTime = new Date(chartStartTime.getTime() + (1000 * 60 * 60 * chartHoursInDay));
+          labels = Array.from(Array(chartSlotsInDay).keys()).map(h => `${h}:00`);
+          chartStartTime = new Date(`${chartYearIdx}-${chartMonthIdx + 1}-${chartDayIdx}`);
+          chartEndTime = new Date(chartStartTime.getTime() + (1000 * 60 * chartSlotLength * chartSlotsInDay));
           break;
         default:
       }
@@ -673,7 +675,8 @@ function InitGraph(Homey, stats) {
   // Remember Chart latent state
   chartMonthIdx = stats.localMonth;
   chartDaysInMonth = stats.daysInMonth;
-  chartHoursInDay = stats.hoursInDay;
+  chartSlotsInDay = stats.slotsInDay;
+  chartSlotLength = stats.slotLength;
   chartTime = new Date(stats.localTime);
   chartStartTime = new Date(chartTime.getTime());
   chartEndTime = new Date(chartStartTime.getTime() + (1000 * 60 * 60 * 24 * chartDaysInMonth));
