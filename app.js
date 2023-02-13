@@ -586,7 +586,7 @@ class PiggyBank extends Homey.App {
     this.__offeredEnergy = toNumber(await this.homey.settings.get('safeShutdown__offeredEnergy'));
     this.__missing_power_this_slot = toNumber(await this.homey.settings.get('safeShutdown_missing_power_this_slot')) || 0;
     this.__fakeEnergy = await this.homey.settings.get('safeShutdown__fakeEnergy') || [0, 0, 0, 0];
-    this.__pendingOnNewSlot = toNumber(await this.homey.settings.get('safeShutdown__pendingOnNewSlot')) || [];
+    this.__pendingOnNewSlot = await this.homey.settings.get('safeShutdown__pendingOnNewSlot') || [];
     if (!Array.isArray(this.__accum_energy)) {
       // No stored data, set it to something senseful
       this.__accum_energy = [0, 0, 0, 0];
