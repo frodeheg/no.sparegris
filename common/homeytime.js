@@ -1,5 +1,13 @@
 'use strict';
 
+// Max power indices
+const TIMESPAN = {
+  QUARTER: 0,
+  HOUR: 1,
+  DAY: 2,
+  MONTH: 3,
+};
+
 /** ****************************************************************************************************
  * HomeyTime
  ** ****************************************************************************************************
@@ -89,42 +97,50 @@ function timeToNextSlot(inputTime, minutes) {
 /**
  * Rounds a time object to start of the day in local time
  * Returned time is in UTC. Cache to avoid insane memory usage.
+ * Cache 2 items becuase the common usage goes back and forth
  */
-let __cachedDayStart;
-let __cachedDayEnd;
+const __cachedDayStart = [];
+const __cachedDayEnd = [];
 function roundToStartOfDay(timeUTC, homey) {
-  if (!__cachedDayStart
-    || (__cachedDayStart > timeUTC)
-    || !__cachedDayEnd
-    || (__cachedDayEnd < timeUTC)) {
-    const localTime = toLocalTime(timeUTC, homey);
-    localTime.setHours(0, 0, 0, 0);
-    __cachedDayStart = fromLocalTime(localTime, homey);
-    localTime.setDate(localTime.getDay() + 1);
-    __cachedDayEnd = fromLocalTime(localTime, homey);
+  for (let i = 0; i < 2; i++) {
+    if (__cachedDayStart[i] && (__cachedDayStart[i] <= timeUTC)
+      && __cachedDayEnd[i] && (__cachedDayEnd[i] > timeUTC)) {
+      return __cachedDayStart[i];
+    }
   }
-  return __cachedDayStart;
+  const localTime = toLocalTime(timeUTC, homey);
+  localTime.setHours(0, 0, 0, 0);
+  __cachedDayStart[1] = __cachedDayStart[0];
+  __cachedDayStart[0] = fromLocalTime(localTime, homey);
+  localTime.setDate(localTime.getDate() + 1);
+  __cachedDayEnd[1] = __cachedDayEnd[0];
+  __cachedDayEnd[0] = fromLocalTime(localTime, homey);
+  return __cachedDayStart[0];
 }
 
 /**
  * Rounds a time object to start of the day in local time
  * Returned time is in UTC. Cache to avoid insane memory usage.
+ * Cache 2 items becuase the common usage goes back and forth
  */
-let __cachedMonthStart;
-let __cachedMonthEnd;
+const __cachedMonthStart = [];
+const __cachedMonthEnd = [];
 function roundToStartOfMonth(timeUTC, homey) {
-  if (!__cachedMonthStart
-    || (__cachedMonthStart > timeUTC)
-    || !__cachedMonthEnd
-    || (__cachedMonthEnd < timeUTC)) {
-    const localTime = toLocalTime(timeUTC, homey);
-    localTime.setDate(1);
-    localTime.setHours(0, 0, 0, 0);
-    __cachedMonthStart = fromLocalTime(localTime, homey);
-    localTime.setMonth(localTime.getMonth() + 1);
-    __cachedMonthEnd = fromLocalTime(localTime, homey);
+  for (let i = 0; i < 2; i++) {
+    if (__cachedMonthStart[i] && (__cachedMonthStart[i] <= timeUTC)
+      && __cachedMonthEnd[i] && (__cachedMonthEnd[i] > timeUTC)) {
+      return __cachedMonthStart[i];
+    }
   }
-  return __cachedMonthStart;
+  const localTime = toLocalTime(timeUTC, homey);
+  localTime.setDate(1);
+  localTime.setHours(0, 0, 0, 0);
+  __cachedMonthStart[1] = __cachedMonthStart[0];
+  __cachedMonthStart[0] = fromLocalTime(localTime, homey);
+  localTime.setMonth(localTime.getMonth() + 1);
+  __cachedMonthEnd[1] = __cachedMonthEnd[0];
+  __cachedMonthEnd[0] = fromLocalTime(localTime, homey);
+  return __cachedMonthStart[0];
 }
 
 /**
@@ -160,17 +176,17 @@ function timeToNextMonth(timeUTC, homey) {
 }
 
 /**
- * Returns the number of milliseconds until next limiter (defined by MAXPOWER)
+ * Returns the number of milliseconds until next limiter (defined by TIMESPAN)
  */
 function timeSinceLastLimiter(inputTime, limiter, homey) {
   switch (limiter) {
-    case MAXPOWER.QUARTER:
+    case TIMESPAN.QUARTER:
       return timeSinceLastSlot(inputTime, 15);
-    case MAXPOWER.HOUR:
+    case TIMESPAN.HOUR:
       return timeSinceLastSlot(inputTime, 60);
-    case MAXPOWER.DAY:
+    case TIMESPAN.DAY:
       return timeSinceLastDay(inputTime, homey);
-    case MAXPOWER.MONTH:
+    case TIMESPAN.MONTH:
       return timeSinceLastMonth(inputTime, homey);
     default:
       throw (new Error(`Invalid limiter: ${limiter}`));
@@ -178,17 +194,17 @@ function timeSinceLastLimiter(inputTime, limiter, homey) {
 }
 
 /**
- * Returns the number of milliseconds until next limiter (defined by MAXPOWER)
+ * Returns the number of milliseconds until next limiter (defined by TIMESPAN)
  */
 function timeToNextLimiter(inputTime, limiter, homey) {
   switch (limiter) {
-    case MAXPOWER.QUARTER:
+    case TIMESPAN.QUARTER:
       return timeToNextSlot(inputTime, 15);
-    case MAXPOWER.HOUR:
+    case TIMESPAN.HOUR:
       return timeToNextSlot(inputTime, 60);
-    case MAXPOWER.DAY:
+    case TIMESPAN.DAY:
       return timeToNextDay(inputTime, homey);
-    case MAXPOWER.MONTH:
+    case TIMESPAN.MONTH:
       return timeToNextMonth(inputTime, homey);
     default:
       throw (new Error(`Invalid limiter: ${limiter}`));
@@ -196,18 +212,18 @@ function timeToNextLimiter(inputTime, limiter, homey) {
 }
 
 /**
- * Returns the length in milliseconds of a particular limiter (defined by MAXPOWER)
+ * Returns the length in milliseconds of a particular limiter (defined by TIMESPAN)
  */
 function limiterLength(inputTime, limiter, homey) {
   switch (limiter) {
-    case MAXPOWER.QUARTER:
+    case TIMESPAN.QUARTER:
       return 15 * 60 * 1000;
-    case MAXPOWER.HOUR:
+    case TIMESPAN.HOUR:
       return 60 * 60 * 1000;
-    case MAXPOWER.DAY:
+    case TIMESPAN.DAY:
       timeSinceLastDay(inputTime, homey); // Refresh cache, ignore result
       return __cachedDayEnd - __cachedDayStart;
-    case MAXPOWER.MONTH:
+    case TIMESPAN.MONTH:
       timeSinceLastMonth(inputTime, homey); // Refresh cache, ignore result
       return __cachedMonthEnd - __cachedMonthStart;
     default:
@@ -302,6 +318,7 @@ function minToTime(minutes) {
 }
 
 module.exports = {
+  TIMESPAN,
   toLocalTime,
   fromLocalTime,
   timeDiff,

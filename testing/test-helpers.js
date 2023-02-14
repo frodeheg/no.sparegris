@@ -32,7 +32,7 @@ async function disableTimers(app) {
 
 async function applyBasicConfig(app) {
   app.homey.settings.set('operatingMode', c.MODE_NORMAL);
-  app.homey.settings.set('maxPower', 5000);
+  app.homey.settings.set('maxPower', [Infinity, 5000, Infinity, Infinity]);
   app.homey.settings.set('zones', {});
   app.homey.settings.set('frostList', { id_a: { minTemp: 3 },
     'b4788083-9606-49a2-99d4-9efce7a4656d-3': { minTemp: 5 },

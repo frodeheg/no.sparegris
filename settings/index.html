@@ -1985,10 +1985,10 @@
           generateReliabilityList();
 
           // Update max powers
-          document.getElementById("maxPower15min").value = Math.min(loadedMaxPower[MAXPOWER.QUARTER], 25000);
-          setMaxPowerHour(loadedMaxPower[MAXPOWER.HOUR], 0, 100000);
-          document.getElementById("maxPowerDay").value = Math.min(loadedMaxPower[MAXPOWER.DAY] / 1000, 1000);
-          document.getElementById("maxPowerMonth").value = Math.min(loadedMaxPower[MAXPOWER.MONTH] / 1000, 50000);
+          document.getElementById("maxPower15min").value = Math.min(loadedMaxPower[TIMESPAN.QUARTER], 25000);
+          setMaxPowerHour(loadedMaxPower[TIMESPAN.HOUR], 0, 100000);
+          document.getElementById("maxPowerDay").value = Math.min(loadedMaxPower[TIMESPAN.DAY] / 1000, 1000);
+          document.getElementById("maxPowerMonth").value = Math.min(loadedMaxPower[TIMESPAN.MONTH] / 1000, 50000);
 
           // Initialize state and show the welcome page:
           updateOperatingModes(currentOperatingMode);
@@ -2534,13 +2534,13 @@
               chargerOptions.overrideMinCurrent = +document.getElementById('overrideMinCurrent').value;
               chargerOptions.overrideMaxCurrent = +document.getElementById('overrideMaxCurrent').value;
               let opModeValue = (appEnabledElement.value === "1") ? operatingModeElement.value : 0;
-              loadedMaxPower[MAXPOWER.QUARTER] = document.getElementById("enLimit15").checked
+              loadedMaxPower[TIMESPAN.QUARTER] = document.getElementById("enLimit15").checked
                 ? +document.getElementById("maxPower15min").value : Infinity;
-              loadedMaxPower[MAXPOWER.HOUR] = document.getElementById("enLimit60").checked
+              loadedMaxPower[TIMESPAN.HOUR] = document.getElementById("enLimit60").checked
                 ? +document.getElementById("maxPowerHour").value : Infinity;
-              loadedMaxPower[MAXPOWER.DAY] = document.getElementById("enLimitDay").checked
+              loadedMaxPower[TIMESPAN.DAY] = document.getElementById("enLimitDay").checked
                 ? +document.getElementById("maxPowerDay").value * 1000 : Infinity;
-              loadedMaxPower[MAXPOWER.MONTH] = document.getElementById("enLimitMonth").checked
+              loadedMaxPower[TIMESPAN.MONTH] = document.getElementById("enLimitMonth").checked
                 ? +document.getElementById("maxPowerMonth").value * 1000 : Infinity;
               Homey.set("futurePriceOptions", futurePriceOptions, errFunc);
               Homey.set('chargerOptions', chargerOptions, errFunc);
@@ -2576,10 +2576,10 @@
         }
         saveElement.addEventListener("click", function (e) {
           if ((loadedMaxPower !== null)
-            && ((document.getElementById("enLimit15").checked && +document.getElementById("maxPower15min").value > +loadedMaxPower[MAXPOWER.QUARTER])
-              || (document.getElementById("enLimit60").checked && +document.getElementById("maxPowerHour").value > +loadedMaxPower[MAXPOWER.HOUR])
-              || (document.getElementById("enLimitDay").checked && +document.getElementById("maxPowerDay").value > (+loadedMaxPower[MAXPOWER.DAY]/1000))
-              || (document.getElementById("enLimitMonth").checked && +document.getElementById("maxPowerMonth").value > (+loadedMaxPower[MAXPOWER.MONTH]/1000)))) {
+            && ((document.getElementById("enLimit15").checked && +document.getElementById("maxPower15min").value > +loadedMaxPower[TIMESPAN.QUARTER])
+              || (document.getElementById("enLimit60").checked && +document.getElementById("maxPowerHour").value > +loadedMaxPower[TIMESPAN.HOUR])
+              || (document.getElementById("enLimitDay").checked && +document.getElementById("maxPowerDay").value > (+loadedMaxPower[TIMESPAN.DAY]/1000))
+              || (document.getElementById("enLimitMonth").checked && +document.getElementById("maxPowerMonth").value > (+loadedMaxPower[TIMESPAN.MONTH]/1000)))) {
             try {
               const before = new Date();
               Homey.confirm(Homey.__('settings.alert.maxPowerChanged'), function (err, res) {
@@ -2814,19 +2814,19 @@
           refreshTodoList();
           let limitTxt = '';
           if (document.getElementById('enLimit15').checked) {
-            limitTxt += `${+document.getElementById("maxPower15min").value} Wh/15 min.${appConfigProgress.activeLimit == MAXPOWER.QUARTER ? ' <span class="blink">('+activeText+')</span>' : ''}`;
+            limitTxt += `${+document.getElementById("maxPower15min").value} Wh/15 min.${appConfigProgress.activeLimit == TIMESPAN.QUARTER ? ' <span class="blink">('+activeText+')</span>' : ''}`;
           }
           if (document.getElementById('enLimit60').checked) {
             limitTxt += (limitTxt.length > 0) ? '<br>' : '';
-            limitTxt += `${+document.getElementById("maxPowerHour").value / 1000} kWh/hour${appConfigProgress.activeLimit == MAXPOWER.HOUR ? ' <span class="blink">('+activeText+')</span>' : ''}`;
+            limitTxt += `${+document.getElementById("maxPowerHour").value / 1000} kWh/hour${appConfigProgress.activeLimit == TIMESPAN.HOUR ? ' <span class="blink">('+activeText+')</span>' : ''}`;
           }
           if (document.getElementById('enLimitDay').checked) {
             limitTxt += (limitTxt.length > 0) ? '<br>' : '';
-            limitTxt += `${+document.getElementById("maxPowerDay").value} kWh/day${appConfigProgress.activeLimit == MAXPOWER.DAY ? ' <span class="blink">('+activeText+')</span>' : ''}`;
+            limitTxt += `${+document.getElementById("maxPowerDay").value} kWh/day${appConfigProgress.activeLimit == TIMESPAN.DAY ? ' <span class="blink">('+activeText+')</span>' : ''}`;
           }
           if (document.getElementById('enLimitMonth').checked) {
             limitTxt += (limitTxt.length > 0) ? '<br>' : '';
-            limitTxt += `${+document.getElementById("maxPowerMonth").value} kWh/month${appConfigProgress.activeLimit == MAXPOWER.MONTH ? ' <span class="blink">('+activeText+')</span>' : ''}`;
+            limitTxt += `${+document.getElementById("maxPowerMonth").value} kWh/month${appConfigProgress.activeLimit == TIMESPAN.MONTH ? ' <span class="blink">('+activeText+')</span>' : ''}`;
           }
           document.getElementById('limitsDuplicate').innerHTML = limitTxt;
         }

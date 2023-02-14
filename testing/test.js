@@ -70,9 +70,9 @@ async function testEntsoe() {
   console.log('\x1b[1A[\x1b[32mPASSED\x1b[0m]');
 }
 
-// Test OnNewHour
+// Test OnNewSlot
 async function testNewHour(numTests) {
-  console.log('[......] onNewHour');
+  console.log('[......] onNewSlot');
   const app = new PiggyBank();
   await app.disableLog();
   await app.onInit();
@@ -102,8 +102,8 @@ async function testNewHour(numTests) {
       if (!accumData || (accumData.accumEnergy < marginLow) || (accumData.accumEnergy > marginHigh)) {
         throw new Error(`Accumulated energy not within bounds: ${accumData.accumEnergy} not in [${marginLow}, ${marginHigh}]`);
       }
-      if (app.__power_last_hour === undefined) {
-        throw new Error('Last hour power is undefined');
+      if (app.__energy_last_slot === undefined) {
+        throw new Error('Last hour energy usage is undefined');
       }
       testAccum = 0;
     }
@@ -210,7 +210,7 @@ async function testPricePoints() {
     const lastHourTime = new Date(now.getTime());
     curTime.setHours(now.getHours() + hour, 0, 0, 0);
     lastHourTime.setHours(now.getHours() + hour, -1, 0, 0);
-    await app.onNewHour(curTime, lastHourTime);
+    await app.onNewSlot(curTime, lastHourTime);
     if (app.__current_price_index !== hour) throw new Error('Current hour is not calculated correctly');
     if (app.homey.settings.get('pricePoint') !== CorrectPP[hour]) throw new Error(`Invalid Price point at hour ${hour}`);
     /* const ppNames = ['Billig', 'Normal', 'Dyrt', 'Kjempedyrt', 'Veldig billig'];
@@ -299,7 +299,7 @@ async function testIssue63() {
     const lastHourTime = new Date(now.getTime());
     curTime.setHours(now.getHours() + hour, 0, 0, 0);
     lastHourTime.setHours(now.getHours() + hour, -1, 0, 0);
-    await app.onNewHour(curTime, lastHourTime);
+    await app.onNewSlot(curTime, lastHourTime);
     if (app.__current_price_index !== hour) throw new Error('Current hour is not calculated correctly');
     if (app.homey.settings.get('pricePoint') !== CorrectPP[hour]) throw new Error(`Invalid Price point at hour ${hour}`);
     /* const ppNames = ['Billig', 'Normal', 'Dyrt', 'Kjempedyrt', 'Veldig billig'];
@@ -413,10 +413,11 @@ async function testTicket88() {
   const stateDump = 'states/Frode_0.19.7_ticket88.txt';
   const app = new PiggyBank();
   await app.disableLog();
+  await applyStateFromFile(app, stateDump);
   await app.onInit();
+  await app.createDeviceList(); // Rebuild __current_state
   app.setLogLevel(c.LOG_DEBUG);
   await disableTimers(app);
-  await applyStateFromFile(app, stateDump);
   const devices = await getAllDeviceId(app);
   const curTime = app.__current_power_time;
 
@@ -436,10 +437,10 @@ async function testTicket88() {
       const isOn = await app.getIsOn(device, deviceId);
       if (app.__deviceList[deviceId].use && isOn) throw new Error(`Device is still on: ${deviceId}`);
     }
-    curTime.setTime(curTime.getTime() + Math.round(10*60000));
+    curTime.setTime(curTime.getTime() + Math.round(10 * 60000));
     await app.onPowerUpdate(0, curTime);
     await app.onProcessPower(curTime);
-    curTime.setTime(curTime.getTime() + Math.round(10*60000));
+    curTime.setTime(curTime.getTime() + Math.round(10 * 60000));
     // Run some more to turn everything on again
     for (let i = 0; i < 5; i++) {
       curTime.setTime(curTime.getTime() + Math.round(10000 + Math.random() * 5000 - 2500));
@@ -487,7 +488,7 @@ async function testState(stateDump, simTime) {
   console.log('\x1b[1A[\x1b[32mPASSED\x1b[0m]');
 }
 
-// Test OnNewHour
+// Test OnNewSlot
 async function testTicket115() {
   console.log('[......] Test Github ticket #115: Main fuse');
   const app = new PiggyBank();
@@ -816,5 +817,6 @@ async function startAllTests() {
 }
 
 // Run all the testing
-startAllTests();
+//startAllTests();
+testTicket88();
 // testState('states/Anders_0.18.31_err.txt', 100);
