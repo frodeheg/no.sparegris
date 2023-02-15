@@ -32,7 +32,8 @@ const {
   daysInMonth, toLocalTime, timeDiff, timeSinceLastLimiter, timeToNextSlot,
   timeToNextLimiter, limiterLength, roundToStartOfMonth, roundToNearestHour,
   roundToStartOfSlot, roundToStartOfDay, hoursInDay, slotsInDay, fromLocalTime,
-  TIMESPAN
+  TIMESPAN,
+  timeSinceLastSlot
 } = require('./common/homeytime');
 const { isNumber, toNumber, combine } = require('./common/tools');
 const prices = require('./common/prices');
@@ -2013,7 +2014,7 @@ class PiggyBank extends Homey.App {
     const limits = this.homey.settings.get('maxPower');
     const lowestLimit = (this.granularity === 15) ? TIMESPAN.QUARTER : TIMESPAN.HOUR;
     const numLimits = Array.isArray(limits) ? limits.length : 0;
-    let newSlotAny = false;
+    let newBaseSlot = false;
     for (let limitIdx = 0; limitIdx < numLimits; limitIdx++) {
       // Accumulate the power for the rest of the slot only
       const timeLeftInSlot = timeToNextLimiter(this.__current_power_time, limitIdx, this.homey);
@@ -2021,21 +2022,21 @@ class PiggyBank extends Homey.App {
       if (lapsedTime > timeLeftInSlot) {
         timeToProcess = timeLeftInSlot;
       }
+      const newMissingMinutes = Math.floor(timeToProcess / (1000 * 60));
       const energyUsed = ((this.__current_power * timeToProcess) / (1000 * 60 * 60)) || 0;
       const energyOffered = (this.__charge_power_active * timeToProcess) / (1000 * 60 * 60);
-
       this.__fakeEnergy[limitIdx] = fakePower ? energyUsed : 0;
-
       this.__accum_energy[limitIdx] += fakePower ? 0 : energyUsed;
       const timeWithinLimit = timeSinceLastLimiter(now, limitIdx, this.homey);
+      if (limitIdx === lowestLimit) {
+        this.__missing_power_this_slot += fakePower ? 0 : newMissingMinutes;
+        this.__offeredEnergy += fakePower ? 0 : energyOffered; // Offered or given, depending on flow or device
+      }
       const newSlot = timeToProcess < lapsedTime || timeWithinLimit === 0;
-      newSlotAny |= newSlot;
       if (newSlot) {
         if (limitIdx === lowestLimit) {
-          const newMissingMinutes = Math.floor(timeToProcess / (1000 * 60));
+          newBaseSlot = true;
           this.__energy_last_slot = this.__accum_energy[limitIdx] + this.__fakeEnergy[limitIdx];
-          this.__offeredEnergy += fakePower ? 0 : energyOffered; // Offered or given, depending on flow or device
-          this.__missing_power_this_slot += fakePower ? 0 : newMissingMinutes;
           this.__pendingOnNewSlot.push({
             accumEnergy: this.__energy_last_slot,
             offeredEnergy: this.__offeredEnergy + (fakePower ? energyOffered : 0),
@@ -2057,7 +2058,7 @@ class PiggyBank extends Homey.App {
       this.__current_power = newPower;
       this.__energy_meter_detected_time = new Date(now.getTime());
     }
-    if (newSlotAny || !fakePower) {
+    if (newBaseSlot || !fakePower) {
       this.__current_power_time = new Date(now.getTime());
     }
     return Promise.resolve();

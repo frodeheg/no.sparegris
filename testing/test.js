@@ -11,7 +11,7 @@ const prices = require('../common/prices');
 const { addToArchive, cleanArchive, getArchive } = require('../common/archive');
 const Homey = require('./homey');
 const PiggyBank = require('../app');
-const { roundToStartOfDay, timeToNextHour, toLocalTime, fromLocalTime } = require('../common/homeytime');
+const { TIMESPAN, roundToStartOfDay, timeToNextHour, toLocalTime, fromLocalTime } = require('../common/homeytime');
 const { disableTimers, applyBasicConfig, applyStateFromFile, getAllDeviceId, writePowerStatus, setAllDeviceState, validateModeList } = require('./test-helpers');
 
 // Test Currency Converter
@@ -72,13 +72,13 @@ async function testEntsoe() {
 
 // Test OnNewSlot
 async function testNewHour(numTests) {
-  console.log('[......] onNewSlot');
+  console.log('[......] onNewHour');
+  let now = new Date('October 1, 2022, 00:30:00 GMT+2:00');// = new Date();
   const app = new PiggyBank();
   await app.disableLog();
-  await app.onInit();
+  await app.onInit(now);
   await disableTimers(app);
-  let testAccum = 0;
-  let now = new Date();
+  let testAccum = app.homey.settings.get('maxPower')[TIMESPAN.HOUR] * 0.5;
   // console.log(`Start: ${now}`);
   let oldPow = 0;
   for (let i = 0; i < numTests; i++) {
@@ -410,20 +410,20 @@ async function testIssue83And87() {
  */
 async function testTicket88() {
   console.log('[......] Test Github ticket #88: Override controlled');
+  const curTime = new Date('October 1, 2022, 00:59:50 GMT+2:00');
   const stateDump = 'states/Frode_0.19.7_ticket88.txt';
   const app = new PiggyBank();
   await app.disableLog();
   await applyStateFromFile(app, stateDump);
-  await app.onInit();
+  await app.onInit(curTime);
   await app.createDeviceList(); // Rebuild __current_state
   app.setLogLevel(c.LOG_DEBUG);
   await disableTimers(app);
   const devices = await getAllDeviceId(app);
-  const curTime = app.__current_power_time;
 
   for (let times = 0; times < 2; times++) {
     // First run a little with insane power to turn everything off
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 10; i++) {
       curTime.setTime(curTime.getTime() + Math.round(10000 + Math.random() * 5000 - 2500));
       try {
         await app.onPowerUpdate(7000, curTime);
@@ -442,7 +442,7 @@ async function testTicket88() {
     await app.onProcessPower(curTime);
     curTime.setTime(curTime.getTime() + Math.round(10 * 60000));
     // Run some more to turn everything on again
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 10; i++) {
       curTime.setTime(curTime.getTime() + Math.round(10000 + Math.random() * 5000 - 2500));
       await app.onPowerUpdate(0, curTime);
       await app.onProcessPower(curTime);
@@ -455,7 +455,6 @@ async function testTicket88() {
       if (app.__deviceList[deviceId].use && !isOn) throw new Error(`Device is still off: ${deviceId}`);
     }
   }
-
   await app.onUninit();
   console.log('\x1b[1A[\x1b[32mPASSED\x1b[0m]');
 }
@@ -560,7 +559,7 @@ async function testAppRestart() {
   // Load initial state from a file
   await applyStateFromFile(app, 'states/Frode_0.19.26.txt', false);
   // Set up some state for safe shutdown
-  app.homey.settings.set('safeShutdown__accum_energy', 10);
+  app.homey.settings.set('safeShutdown__accum_energy', [0, 10, 0, 0]);
   app.homey.settings.set('safeShutdown__current_power', 360000);
   app.homey.settings.set('safeShutdown__current_power_time', new Date(now.getTime() - 1000 * 60 * 2)); // => __accum_since (start of hour)
   app.homey.settings.set('safeShutdown__power_last_hour', 5023);
@@ -572,7 +571,7 @@ async function testAppRestart() {
   await app.onPowerUpdate(4000, updateTime);
   const accumData = [...app.__pendingOnNewSlot][0];
   await app.onProcessPower(updateTime);
-  if (app.__accum_energy !== 110
+  if (app.__accum_energy[TIMESPAN.HOUR] !== 110
     || Math.floor(accumData.accumEnergy) !== 13010) {
     throw new Error('Accumulated energy at hour crossing was incorrect');
   }
@@ -620,8 +619,8 @@ async function testMissingPulse() {
   // Check archive
   const archive = app.homey.settings.get('archive');
   if (JSON.stringify(archive.dataOk.hourly['2022-10-01']) !== '[0.016666666666666666,0,0,0.016666666666666666]'
-    || JSON.stringify(archive.powUsage.hourly['2022-10-01']) !== '[12.777777777777779,4000,4000,4000]'
-    || JSON.stringify(archive.maxPower.hourly['2022-10-01']) !== '[12.777777777777779,4000,4000,4000]') {
+    || JSON.stringify(archive.powUsage.hourly['2022-10-01']) !== '[9985,4000,4000,4000]'
+    || JSON.stringify(archive.maxPower.hourly['2022-10-01']) !== '[9985,4000,4000,4000]') {
     console.error(JSON.stringify(archive.dataOk.hourly['2022-10-01']));
     console.error(JSON.stringify(archive.powUsage.hourly['2022-10-01']));
     console.error(JSON.stringify(archive.maxPower.hourly['2022-10-01']));
@@ -817,6 +816,5 @@ async function startAllTests() {
 }
 
 // Run all the testing
-//startAllTests();
-testTicket88();
+startAllTests();
 // testState('states/Anders_0.18.31_err.txt', 100);
