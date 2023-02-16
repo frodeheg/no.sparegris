@@ -192,6 +192,13 @@ const DEVICE_CMD = {
     tempStep: 0.5,
     default: false
   },
+  'com.ctmlyng.op:mtouch-one': {
+    ...DEFAULT_HEATER,
+    setOnOffCap: 'operationMode',
+    setOnValue: '3',
+    setOffValue: '0',
+    default: false
+  },
   'com.datek.eva:meter-reader': DEFAULT_METER,
   'com.elko:ESHSUPERTR': {
     ...DEFAULT_HEATER,
@@ -343,6 +350,12 @@ const DEVICE_CMD = {
     tempStep: 0.5
   },
   'me.nanoleaf:shapes': DEFAULT_SWITCH,
+  'net.filllip-namron:4512725': {
+    ...DEFAULT_HEATER,
+    tempMin: 4,
+    tempMax: 35,
+    default: false
+  },
   'net.filllip-namron:4512744': {
     ...DEFAULT_HEATER,
     tempMin: 4,
