@@ -2400,10 +2400,14 @@ class PiggyBank extends Homey.App {
     const currentModeList = modeList[currentMode - 1];
     const numDevices = currentModeList.length;
     const reorderedModeList = [...currentModeList]; // Make sure all devices with communication errors are handled last (e.g. in case nothing else was possible)
-    reorderedModeList.sort((a, b) => { // Err first
-      return this.__current_state[b.id].nComError
-        - this.__current_state[a.id].nComError;
-    });
+    try {
+      reorderedModeList.sort((a, b) => { // Err first
+        return this.__current_state[b.id].nComError
+          - this.__current_state[a.id].nComError;
+      });
+    } catch (err) {
+      console.log(`__current_state was not set up. Please update the testcase such that __deviceList = undefined before onInit is called. (${err})`);
+    }
     // Turn off devices from bottom and up in the priority list
     // Only turn off one device at the time
     let numForcedOnDevices;

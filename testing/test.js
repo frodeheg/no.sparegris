@@ -734,11 +734,15 @@ async function testTicket149BadDevices() {
   const stateDump = 'states/Frode_0.19.26.txt';
   const app = new PiggyBank();
   await app.disableLog();
-  await app.onInit();
+  await applyStateFromFile(app, stateDump);
+  app.homey.settings.set('toggleTime', 1);
+  app.__deviceList = undefined; // Recreate it in onInit
+  const curTime = app.__current_power_time;
+  const startTime = new Date(curTime);
+  await app.onInit(startTime);
   app.setLogLevel(c.LOG_DEBUG);
   await disableTimers(app);
-  await applyStateFromFile(app, stateDump);
-  app.homey.settings.set('maxPower', 1000);
+  app.homey.settings.set('maxPower', [Infinity, 1000, Infinity, Infinity]);
   await validateModeList(app);
   const devices = await getAllDeviceId(app);
   // Go through the devices and force them to misbehave:
@@ -759,15 +763,13 @@ async function testTicket149BadDevices() {
   }
   // Simulate time going forward
   const simTime = 300;
-  const curTime = app.__current_power_time;
-  const startTime = new Date(curTime);
   while ((curTime.getTime() - startTime.getTime()) / 1000 < simTime) {
     curTime.setTime(curTime.getTime() + Math.round(10000 + Math.random() * 5000 - 2500));
     const curPower = Math.round(1000 + Math.random() * 3000);
     await app.onPowerUpdate(curPower, curTime);
     await app.onProcessPower(curTime);
-    const maxPower = await app.homey.settings.get('maxPower');
-    // await writePowerStatus(app, devices, `Blah ${maxPower}`);
+    // const maxPower = await app.homey.settings.get('maxPower');
+    // await writePowerStatus(app, devices, `Maxpower: [${maxPower}]`);
   }
   // Test that all except 2 devices are off
   let numOn = 0;
@@ -779,7 +781,7 @@ async function testTicket149BadDevices() {
     if (isOn) numOn += 1;
   }
   if (numOn !== 2) {
-    throw new Error('Number of devices powered on should be 2');
+    throw new Error(`Number of devices powered on should be 2 but was ${numOn}. Fix error or increase simulation time.`);
   }
   await app.onUninit();
   console.log('\x1b[1A[\x1b[32mPASSED\x1b[0m]');
