@@ -1,0 +1,17 @@
+----- ANALYZING DEVICE -----
++19:0:1.539: Report type: Experimental device is working
++19:0:1.541: Device ID:   1c2e10c4-80eb-4458-80aa-d232ca664d08
++19:0:1.584: Device name: Stue Termo Plugg
++19:0:1.586: Driver Uri: homey:app:net.filllip-namron
++19:0:1.590: Driver Id: 4512725
++19:0:1.594: Found onoff cap: onoff
++19:0:1.599: Found temp cap: true
++19:0:1.607: Device reliability: 0.9999999999999946
++19:0:1.614: Capabilities: onoff,measure_power,meter_power,measure_temperature,target_temperature,my_device_operating_mode
++19:0:1.619: Options for 'onoff': {"value":true,"lastUpdated":"2023-02-12T18:05:20.786Z","type":"boolean","getable":true,"setable":true,"title":"Slått på","desc":null,"units":null,"id":"onoff","options":{}}
++19:0:1.621: Options for 'measure_power': {"value":1022.7,"lastUpdated":"2023-02-12T18:57:54.497Z","type":"number","getable":true,"setable":false,"title":"Effekt","desc":"Effekt i watt (W)","units":"W","decimals":2,"chartType":"stepLine","id":"measure_power","options":{}}
++19:0:1.624: Options for 'meter_power': {"value":505.3,"lastUpdated":"2023-02-12T18:36:04.333Z","type":"number","getable":true,"setable":false,"title":"Energi","desc":"Energiforbruk i kilowattimer (kWh)","units":"kWh","decimals":2,"chartType":"spline","id":"meter_power","options":{}}
++19:0:1.626: Options for 'measure_temperature': {"value":17.2,"lastUpdated":"2023-02-12T18:56:27.008Z","type":"number","getable":true,"setable":false,"title":"Temperatur","desc":"Temperatur i grader Celsius (°C)","units":"°C","decimals":2,"chartType":"spline","id":"measure_temperature","options":{}}
++19:0:1.628: Options for 'target_temperature': {"value":18,"lastUpdated":"2023-02-12T18:52:16.967Z","type":"number","getable":true,"setable":true,"title":"Ønsket temperatur","desc":null,"units":"°C","decimals":2,"min":4,"max":35,"chartType":"stepLine","id":"target_temperature","options":{}}
++19:0:1.633: Options for 'my_device_operating_mode': {"value":"thermostat_mode","lastUpdated":"2023-01-08T16:11:51.637Z","type":"enum","getable":true,"setable":true,"title":"Device operating mode","desc":null,"units":null,"values":[{"id":"switch_mode","title":"Switch mode"},{"id":"thermostat_mode","title":"Thermostat mode"}],"id":"my_device_operating_mode","options":{}}
++19:0:1.635: --- ANALYZING DEVICE DONE ---
