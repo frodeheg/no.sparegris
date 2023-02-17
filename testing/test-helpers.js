@@ -203,7 +203,7 @@ async function applyStateFromFile(app, file, poweredOn = true) {
         }
         if (poweredOn) {
           // app.__current_state is only available when the app is running
-          const onOffCap = app.getOnOffCap(deviceId);
+          const onOffCap = (deviceId in app.__deviceList) ? app.getOnOffCap(deviceId) : null;
           if (onOffCap) {
             const { lastCmd } = app.__current_state[deviceId];
             const isOn = (lastCmd === TARGET_OP.TURN_ON) || (lastCmd === TARGET_OP.DELTA_TEMP);
@@ -217,6 +217,23 @@ async function applyStateFromFile(app, file, poweredOn = true) {
     }
     return Promise.all(devices);
   });
+}
+
+/**
+ * Dumps the full state to a file
+ * @param {*} app The app instance to load the state to
+ * @param {*} file The file to load the state from
+ */
+async function dumpStateToFile(app, outFile) {
+  return app.getFullState()
+    .then(state => {
+      fs.writeFile(outFile, JSON.stringify(state, null, 2), err => {
+        if (err) {
+          return Promise.reject(err);
+        }
+        return Promise.resolve(true);
+      });
+    });
 }
 
 async function getAllDeviceId(app) {
@@ -312,6 +329,7 @@ module.exports = {
   disableTimers,
   applyBasicConfig,
   applyStateFromFile,
+  dumpStateToFile,
   getAllDeviceId,
   writePowerStatus,
   setAllDeviceState,
