@@ -4,7 +4,7 @@
 
 'use strict';
 
-const { toLocalTime, roundToNearestHour, roundToStartOfDay } = require('./homeytime');
+const { toLocalTime, roundToStartOfDay } = require('./homeytime');
 const c = require('./constants');
 
 /** ****************************************************************************************************
@@ -29,16 +29,22 @@ const c = require('./constants');
  *     - "monthly": One item stored per month (never expires)
  *     - "daily"  : One item stored per day (expires after homey.setting 'expireDaily' days)
  *     - "hourly" : One item stored per hour (expires after homey.setting 'expireHourly' days)
+ *     - "quarter": One item stored per quarter (expires after homey.settings 'expireHourly' days)
  *   time:
  *     - "YYYY" for period "yearly"
  *     - "YYYY" for period "monthly"
  *     - "YYYY-MM" for period "daily"
- *     - "YYYY-MM-DD" for period "hourly"
+ *     - "YYYY-MM-DD" for period "hourly" and "quarter"
  *   data:
  *     - Single value for period "yearly"
  *     - Array going from 0 to 11, one value for every month for period "monthly"
  *     - Array going from 0 to monthDays-1, one value for every day in the month for period "daily"
  *     - Array going from 0 to dayHours-1, one value for every hour for period "hourly"
+ *     - Array going from 0 to dayQuarters-1, one value for every 15 minute for period "quarter"
+ *
+ * NOTES:
+ *   - There can only be one of the lowest units "hourly" or "quarter". If both are present it's because the
+ *     mode changed during the interval.
  */
 
 const SCHEMA = {
@@ -54,23 +60,60 @@ const SCHEMA = {
 };
 
 const validTypes = {
-  maxPower: { hourly: SCHEMA.SET, daily: SCHEMA.MAX, monthly: SCHEMA.AVG3, yearly: SCHEMA.MAX },
-  dataOk: { hourly: SCHEMA.SET, daily: SCHEMA.AVG, monthly: SCHEMA.AVG, yearly: SCHEMA.AVG },
-  powUsage: { hourly: SCHEMA.SET, daily: SCHEMA.ADD, monthly: SCHEMA.ADD, yearly: SCHEMA.ADD },
-  charged: { hourly: SCHEMA.SET, daily: SCHEMA.ADD, monthly: SCHEMA.ADD, yearly: SCHEMA.ADD },
-  moneySavedTariff: { hourly: SCHEMA.SET, daily: SCHEMA.ADD, monthly: SCHEMA.ADD, yearly: SCHEMA.ADD },
-  moneySavedUsage: { hourly: SCHEMA.SET, daily: SCHEMA.ADD, monthly: SCHEMA.ADD, yearly: SCHEMA.ADD },
-  price: { hourly: SCHEMA.SET, daily: SCHEMA.AVG, monthly: SCHEMA.AVG, yearly: SCHEMA.AVG },
-  pricePoints: { hourly: SCHEMA.SET, daily: SCHEMA.COUNT, monthly: SCHEMA.COUNT, yearly: SCHEMA.COUNT },
-  overShootAvoided: { hourly: SCHEMA.SET, daily: SCHEMA.OR, monthly: SCHEMA.OR, yearly: SCHEMA.OR },
-  cost: { hourly: SCHEMA.SET, daily: SCHEMA.ADD, monthly: SCHEMA.ADD, yearly: SCHEMA.ADD },
+  maxPower: { slots: SCHEMA.SET, daily: SCHEMA.MAX, monthly: SCHEMA.AVG3, yearly: SCHEMA.MAX },
+  dataOk: { slots: SCHEMA.SET, daily: SCHEMA.AVG, monthly: SCHEMA.AVG, yearly: SCHEMA.AVG },
+  powUsage: { slots: SCHEMA.SET, daily: SCHEMA.ADD, monthly: SCHEMA.ADD, yearly: SCHEMA.ADD },
+  charged: { slots: SCHEMA.SET, daily: SCHEMA.ADD, monthly: SCHEMA.ADD, yearly: SCHEMA.ADD },
+  moneySavedTariff: { slots: SCHEMA.SET, daily: SCHEMA.ADD, monthly: SCHEMA.ADD, yearly: SCHEMA.ADD },
+  moneySavedUsage: { slots: SCHEMA.SET, daily: SCHEMA.ADD, monthly: SCHEMA.ADD, yearly: SCHEMA.ADD },
+  price: { slots: SCHEMA.SET, daily: SCHEMA.AVG, monthly: SCHEMA.AVG, yearly: SCHEMA.AVG },
+  pricePoints: { slots: SCHEMA.SET, daily: SCHEMA.COUNT, monthly: SCHEMA.COUNT, yearly: SCHEMA.COUNT },
+  overShootAvoided: { slots: SCHEMA.SET, daily: SCHEMA.OR, monthly: SCHEMA.OR, yearly: SCHEMA.OR },
+  cost: { slots: SCHEMA.SET, daily: SCHEMA.ADD, monthly: SCHEMA.ADD, yearly: SCHEMA.ADD },
 };
+
+const MODE = {
+  NORWAY: {
+    id: 'no',
+    minUnit: 'hourly',
+    maxPower: { slots: SCHEMA.SET, daily: SCHEMA.MAX, monthly: SCHEMA.AVG3, yearly: SCHEMA.MAX },
+  },
+  BELGIUM: {
+    id: 'be',
+    minUnit: 'quarter',
+    maxPower: { slots: SCHEMA.SET, daily: SCHEMA.MAX, monthly: SCHEMA.MAX, yearly: SCHEMA.MAX },
+  },
+};
+let mode = MODE.NORWAY;
+
+/**
+ * Clears the entire archive... happens whenever the changing modes
+ */
+function clearArchive(homey) {
+  homey.settings.set('archive', null);
+}
+
+/**
+ * Changes the Archive Mode
+ * returns true if the mode changed, false otherwise
+ */
+function changeArchiveMode(newMode) {
+  const oldMode = mode;
+  if (newMode === MODE.BELGIUM.id) {
+    mode = MODE.BELGIUM;
+    validTypes.maxPower = MODE.BELGIUM.maxPower;
+  } else {
+    mode = MODE.NORWAY;
+    validTypes.maxPower = MODE.NORWAY.maxPower;
+  }
+  return oldMode !== mode;
+}
 
 /**
  * Calculate the average of the n maximum values
  */
 function calcAvg(archive, dataId, period, time, idx, numValues) {
-  const levelBelow = { hourly: undefined, daily: 'hourly', monthly: 'daily', yearly: 'monthly' };
+  const levelBelow = { slots: undefined, daily: mode.minUnit, monthly: 'daily', yearly: 'monthly' };
   const subIdx = (period === 'yearly') ? '' : `-${String(idx + 1).padStart(2, '0')}`;
   const allValues = [...archive[dataId][levelBelow[period]][`${time}${subIdx}`]];
   const maxN = allValues.sort((a, b) => b - a).filter(data => (data !== undefined) && (data !== null)).slice(0, numValues);
@@ -82,10 +125,11 @@ function calcAvg(archive, dataId, period, time, idx, numValues) {
  * Set the data macro
  */
 function setDataMacro(archive, dataId, period, time, idx, value) {
+  const archivePeriod = (period === 'slots') ? mode.minUnit : period;
   if (!(dataId in archive)) archive[dataId] = {};
-  if (!(period in archive[dataId])) archive[dataId][period] = {};
-  if (!(time in archive[dataId][period])) archive[dataId][period][time] = [];
-  const oldValue = archive[dataId][period][time][idx];
+  if (!(archivePeriod in archive[dataId])) archive[dataId][archivePeriod] = {};
+  if (!(time in archive[dataId][archivePeriod])) archive[dataId][archivePeriod][time] = [];
+  const oldValue = archive[dataId][archivePeriod][time][idx];
   const oldValueUndef = (oldValue === undefined) || (oldValue === null);
   const schema = validTypes[dataId][period];
   let setValue;
@@ -112,7 +156,7 @@ function setDataMacro(archive, dataId, period, time, idx, value) {
       try {
         setValue = calcAvg(archive, dataId, period, time, idx, 3);
       } catch (err) {
-        // In case hourly data is skipped the value is the average
+        // In case slot data is skipped the value is the average
         setValue = value;
       }
       break;
@@ -120,7 +164,7 @@ function setDataMacro(archive, dataId, period, time, idx, value) {
       try {
         setValue = calcAvg(archive, dataId, period, time, idx, Infinity);
       } catch (err) {
-        // In case hourly data is skipped the value is the average
+        // In case slot data is skipped the value is the average
         setValue = value;
       }
       break;
@@ -132,7 +176,7 @@ function setDataMacro(archive, dataId, period, time, idx, value) {
       setValue = +value;
       break;
   }
-  archive[dataId][period][time][idx] = setValue;
+  archive[dataId][archivePeriod][time][idx] = setValue;
 }
 
 /**
@@ -140,10 +184,11 @@ function setDataMacro(archive, dataId, period, time, idx, value) {
  * This is to undo broken operations
  */
 function removeDataMacro(archive, dataId, period, time, idx, value) {
+  const archivePeriod = (period === 'slots') ? mode.minUnit : period;
   if (!(dataId in archive)) archive[dataId] = {};
-  if (!(period in archive[dataId])) archive[dataId][period] = {};
-  if (!(time in archive[dataId][period])) archive[dataId][period][time] = [];
-  const oldValue = archive[dataId][period][time][idx];
+  if (!(archivePeriod in archive[dataId])) archive[dataId][archivePeriod] = {};
+  if (!(time in archive[dataId][archivePeriod])) archive[dataId][archivePeriod][time] = [];
+  const oldValue = archive[dataId][archivePeriod][time][idx];
   const oldValueUndef = (oldValue === undefined) || (oldValue === null);
   const schema = validTypes[dataId][period];
   let setValue;
@@ -169,7 +214,7 @@ function removeDataMacro(archive, dataId, period, time, idx, value) {
       try {
         setValue = calcAvg(archive, dataId, period, time, idx, 3);
       } catch (err) {
-        // In case hourly data is skipped the value is unknown
+        // In case slot data is skipped the value is unknown
         setValue = undefined;
       }
       break;
@@ -177,7 +222,7 @@ function removeDataMacro(archive, dataId, period, time, idx, value) {
       try {
         setValue = calcAvg(archive, dataId, period, time, idx, Infinity);
       } catch (err) {
-        // In case hourly data is skipped the value is unknown
+        // In case slot data is skipped the value is unknown
         setValue = undefined;
       }
       break;
@@ -189,7 +234,7 @@ function removeDataMacro(archive, dataId, period, time, idx, value) {
       setValue = undefined;
       break;
   }
-  archive[dataId][period][time][idx] = setValue;
+  archive[dataId][archivePeriod][time][idx] = setValue;
 }
 
 /**
@@ -202,19 +247,20 @@ async function addToArchive(homey, data, timeUTC = new Date(), skipHours = false
   fakeArchive = undefined, fakeYear = undefined, fakeMonth = undefined, fakeDay = undefined, fakeHour = undefined) {
   const archive = fakeArchive || await homey.settings.get('archive') || {};
   const startOfDayUTC = fakeArchive ? undefined : roundToStartOfDay(timeUTC, homey, true);
-  const localTime = fakeArchive ? undefined : roundToNearestHour(toLocalTime(timeUTC, homey));
+  const localTime = fakeArchive ? undefined : toLocalTime(timeUTC, homey);
   const ltYear = fakeArchive ? fakeYear : localTime.getFullYear();
   const ltMonth = fakeArchive ? fakeMonth : localTime.getMonth();
   const ltDay = fakeArchive ? fakeDay : localTime.getDate() - 1; // Start index from 0
-  const ltHour = fakeArchive ? fakeHour : Math.floor((timeUTC - startOfDayUTC) / (1000 * 60 * 60));
+  const slotLength = (mode.minUnit === 'quarter') ? 15 : 60;
+  const ltSlot = fakeArchive ? fakeHour : Math.floor((timeUTC - startOfDayUTC) / (1000 * 60 * slotLength));
 
   for (const dataId in data) {
     if (!(dataId in validTypes)) continue;
 
-    // Update Hourly first
+    // Update slot first
     if (skipHours === false) {
       const hourIdx = `${String(ltYear).padStart(4, '0')}-${String(ltMonth + 1).padStart(2, '0')}-${String(ltDay + 1).padStart(2, '0')}`;
-      setDataMacro(archive, dataId, 'hourly', hourIdx, ltHour, data[dataId]);
+      setDataMacro(archive, dataId, 'slots', hourIdx, ltSlot, data[dataId]);
     }
 
     // Update Daily
@@ -241,8 +287,8 @@ async function removeFromArchive(dataId, fakeArchive, ltYear, ltMonth, ltDay, lt
   if (!(dataId in validTypes)) throw new Error('Invalid usage, dataId must be an archive element');
   try {
     const hourIdx = `${String(ltYear).padStart(4, '0')}-${String(ltMonth + 1).padStart(2, '0')}-${String(ltDay + 1).padStart(2, '0')}`;
-    const oldValue = fakeArchive[dataId]['hourly'][hourIdx][ltHour];
-    removeDataMacro(fakeArchive, dataId, 'hourly', hourIdx, ltHour, oldValue);
+    const oldValue = fakeArchive[dataId][mode.minUnit][hourIdx][ltHour];
+    removeDataMacro(fakeArchive, dataId, 'slots', hourIdx, ltHour, oldValue);
     const dayIdx = `${String(ltYear).padStart(4, '0')}-${String(ltMonth + 1).padStart(2, '0')}`;
     removeDataMacro(fakeArchive, dataId, 'daily', dayIdx, ltDay, oldValue);
     const monthIdx = `${String(ltYear).padStart(4, '0')}`;
@@ -294,9 +340,20 @@ async function cleanArchive(homey, timeUTC = new Date()) {
   const hourlyExpire = new Date(new Date(dayId).getTime() - 1000 * 60 * 60 * 24 * hourlyExpireDays);
   const dailyExpire = new Date(new Date(monthId).getTime() - 1000 * 60 * 60 * 24 * dailyExpireDays);
   homey.app.updateLog(`Expire archive trigger time:  ${localTime}`, c.LOG_INFO);
+  homey.app.updateLog(`  - Quarter expire older than: ${hourlyExpire}`, c.LOG_INFO);
   homey.app.updateLog(`  - Hourly expire older than: ${hourlyExpire}`, c.LOG_INFO);
   homey.app.updateLog(`  - Daily expire older than:  ${dailyExpire}`, c.LOG_INFO);
   for (const dataId in archive) {
+    const quarterData = archive[dataId].quarter;
+    if (quarterData) {
+      for (const day in quarterData) {
+        const timeStamp = new Date(day);
+        if (timeStamp < hourlyExpire) {
+          delete archive[dataId].quarter[day];
+        }
+        // console.log(`  Quarter: ${day}: ${expired}: ${timeStamp} ${hourlyExpire}`);
+      }
+    }
     const hourlyData = archive[dataId].hourly;
     if (hourlyData) {
       for (const day in hourlyData) {
@@ -322,6 +379,8 @@ async function cleanArchive(homey, timeUTC = new Date()) {
 }
 
 module.exports = {
+  clearArchive,
+  changeArchiveMode,
   addToArchive,
   removeFromArchive,
   cleanArchive,

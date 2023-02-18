@@ -134,7 +134,7 @@ async function applyBasicConfig(app) {
  */
 async function applyStateFromFile(app, file, poweredOn = true) {
   return new Promise((resolve, reject) => {
-    fs.readFile(`testing/${file}`, (err, data) => {
+    fs.readFile(file, (err, data) => {
       if (err) {
         reject(err);
       }
@@ -163,14 +163,17 @@ async function applyStateFromFile(app, file, poweredOn = true) {
       }
     }
     // Create fake devices to match the loaded state
+    const devInput = {...parsed.state.__meterReaders, ...parsed.settings.deviceList};
     const devices = [];
-    for (const deviceId in parsed.settings.deviceList) {
-      const devInfo = parsed.settings.deviceList[deviceId];
+    for (const deviceId in devInput) {
+      const devInfo = devInput[deviceId];
       const fileName = `${devInfo.driverId}.txt`;
       // NB! A new instance of HomeyAPIApp here will not create a duplicate version
       //     of the zone and device list because it's unique and global to all instances
       const homeyApi = new HomeyAPIApp({ homey: app.homey });
       const zones = homeyApi.zones.getZones();
+      if (!('memberOf' in devInfo)) devInfo.memberOf = ['none'];
+      if (!('roomId' in devInfo)) devInfo.roomId = 'none';
       for (let idx = devInfo.memberOf.length - 1; idx >= 0; idx--) {
         const zoneId = devInfo.memberOf[idx];
         const zoneName = (idx === 0) ? devInfo.room : `${devInfo.room}_parent_${idx}`;
@@ -212,6 +215,11 @@ async function applyStateFromFile(app, file, poweredOn = true) {
           }
         }
         fakeDev.name = devInfo.name;
+        fakeDev.iconObj = { url: devInfo.image };
+        fakeDev.reliability = devInfo.reliability;
+        if ('target_temperature' in fakeDev.capabilitiesObj) {
+          fakeDev.capabilitiesObj['target_temperature'].value = devInfo.targetTemp;
+        }
         resolve(fakeDev);
       }));
     }

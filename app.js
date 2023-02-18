@@ -27,13 +27,15 @@ const { HomeyAPIApp } = require('homey-api');
 const { resolve } = require('path');
 const c = require('./common/constants');
 const d = require('./common/devices');
-const { addToArchive, removeFromArchive, cleanArchive, getArchive } = require('./common/archive');
+const {
+  addToArchive, removeFromArchive, cleanArchive, getArchive,
+  changeArchiveMode, clearArchive
+} = require('./common/archive');
 const {
   daysInMonth, toLocalTime, timeDiff, timeSinceLastLimiter, timeToNextSlot,
   timeToNextLimiter, limiterLength, roundToStartOfMonth, roundToNearestHour,
   roundToStartOfSlot, roundToStartOfDay, hoursInDay, slotsInDay, fromLocalTime,
-  TIMESPAN,
-  timeSinceLastSlot
+  TIMESPAN
 } = require('./common/homeytime');
 const { isNumber, toNumber, combine } = require('./common/tools');
 const prices = require('./common/prices');
@@ -721,6 +723,9 @@ class PiggyBank extends Homey.App {
     const expireHourly = this.homey.settings.get('expireHourly');
     if (!expireHourly) this.homey.settings.set('expireHourly', 7);
 
+    // Initialize archive
+    changeArchiveMode(futurePriceOptions.priceCountry);
+
     // Initialize current state
     this.__activeLimit = undefined;
     this.__hasAC = false;
@@ -927,6 +932,7 @@ class PiggyBank extends Homey.App {
         // For some reason this
         const futurePriceOptions = this.homey.settings.get('futurePriceOptions');
         this.granularity = +futurePriceOptions.granularity;
+        if (changeArchiveMode(futurePriceOptions.priceCountry)) clearArchive(this.homey);
         if (!('currency' in futurePriceOptions)
           || !prices.isValidCurrency(futurePriceOptions.currency)) {
           futurePriceOptions.currency = this.homey.__(prices.defaultCurrency);
@@ -983,6 +989,9 @@ class PiggyBank extends Homey.App {
       // Set current power to max power to make sure we don't overuse the first hour
       const limits = this.homey.settings.get('maxPower');
       this.__current_power = (this.granularity === 15) ? (limits[TIMESPAN.QUARTER] * 4) : limits[TIMESPAN.HOUR];
+      if (this.__current_power === Infinity) {
+        this.__current_power = Math.min(...limits);
+      }
     }
     // Send power keep-alive signal to handle if new slots has been crossed since last shutdown (and initialize fake power)
     await this.onPowerUpdate(NaN, new Date(now.getTime()));
@@ -2037,12 +2046,14 @@ class PiggyBank extends Homey.App {
         if (limitIdx === lowestLimit) {
           newBaseSlot = true;
           this.__energy_last_slot = this.__accum_energy[limitIdx] + this.__fakeEnergy[limitIdx];
-          this.__pendingOnNewSlot.push({
-            accumEnergy: this.__energy_last_slot,
-            offeredEnergy: this.__offeredEnergy + (fakePower ? energyOffered : 0),
-            missingMinutes: this.__missing_power_this_slot + (fakePower ? newMissingMinutes : 0),
-            time: this.__current_power_time.getTime()
-          });
+          if (this.__accum_energy[limitIdx] !== 0) {
+            this.__pendingOnNewSlot.push({
+              accumEnergy: this.__energy_last_slot,
+              offeredEnergy: this.__offeredEnergy + (fakePower ? energyOffered : 0),
+              missingMinutes: this.__missing_power_this_slot + (fakePower ? newMissingMinutes : 0),
+              time: this.__current_power_time.getTime()
+            });
+          }
           const energyOfferedNewSlot = (this.__charge_power_active * timeWithinLimit) / (1000 * 60 * 60);
           this.__offeredEnergy = energyOfferedNewSlot; // Offered or given, depending on flow or device
           this.__missing_power_this_slot = Math.floor(timeWithinLimit / (1000 * 60));

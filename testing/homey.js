@@ -15,6 +15,7 @@ class FakeSettingsClass {
   constructor(homey) {
     this.homey = homey;
     this.values = {};
+    this.callbacks = [];
   }
 
   get(target) {
@@ -26,10 +27,15 @@ class FakeSettingsClass {
 
   set(target, value) {
     this.values[target] = value;
+    for (let i = 0; i < this.callbacks.length; i++) {
+      if (this.callbacks[i].when === 'set') {
+        this.callbacks[i].callback(target);
+      }
+    }
   }
 
   on(target, callback) {
-    if (this.homey.__debug) console.log('TBD: Implement settings.on');
+    this.callbacks.push({ when: target, callback });
   }
 
   unset(target) {

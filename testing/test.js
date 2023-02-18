@@ -8,10 +8,10 @@
 const seedrandom = require('seedrandom');
 const c = require('../common/constants');
 const prices = require('../common/prices');
-const { addToArchive, cleanArchive, getArchive } = require('../common/archive');
+const { addToArchive, cleanArchive, getArchive, changeArchiveMode, clearArchive } = require('../common/archive');
 const Homey = require('./homey');
 const PiggyBank = require('../app');
-const { TIMESPAN, roundToStartOfDay, timeToNextHour, toLocalTime, fromLocalTime } = require('../common/homeytime');
+const { TIMESPAN, roundToStartOfDay, timeToNextHour, toLocalTime, fromLocalTime, timeToNextSlot } = require('../common/homeytime');
 const { disableTimers, applyBasicConfig, applyStateFromFile, getAllDeviceId, writePowerStatus, setAllDeviceState, validateModeList } = require('./test-helpers');
 
 // Test Currency Converter
@@ -79,7 +79,6 @@ async function testNewHour(numTests) {
   await app.onInit(now);
   await disableTimers(app);
   let testAccum = app.homey.settings.get('maxPower')[TIMESPAN.HOUR] * 0.5;
-  // console.log(`Start: ${now}`);
   let oldPow = 0;
   for (let i = 0; i < numTests; i++) {
     const randomTime = Math.round((2 + (Math.random() * 30)) * 1000);
@@ -317,7 +316,7 @@ async function testIssue63() {
  */
 async function testPowerOnAll() {
   console.log('[......] Test Power On after Failure');
-  const stateDump = 'states/Anders_0.18.31_err.txt';
+  const stateDump = 'testing/states/Anders_0.18.31_err.txt';
   const app = new PiggyBank();
   await app.disableLog();
   await app.onInit();
@@ -363,7 +362,7 @@ async function testIssue84() {
  */
 async function testIssue83And87() {
   console.log('[......] Test Github issue #83 and #87: Incorrect temperature');
-  const stateDump = 'states/Frode_0.19.4_bug87.txt';
+  const stateDump = 'testing/states/Frode_0.19.4_bug87.txt';
   const app = new PiggyBank();
   await app.disableLog();
   await app.onInit();
@@ -411,7 +410,7 @@ async function testIssue83And87() {
 async function testTicket88() {
   console.log('[......] Test Github ticket #88: Override controlled');
   const curTime = new Date('October 1, 2022, 00:59:50 GMT+2:00');
-  const stateDump = 'states/Frode_0.19.7_ticket88.txt';
+  const stateDump = 'testing/states/Frode_0.19.7_ticket88.txt';
   const app = new PiggyBank();
   await app.disableLog();
   await applyStateFromFile(app, stateDump);
@@ -475,7 +474,7 @@ async function testState(stateDump, simTime) {
   await writePowerStatus(app, devices);
   // Simulate time going forward
   const curTime = app.__current_power_time;
-  const startTime = new Date(curTime);
+  const startTime = new Date(curTime.getTime());
   while ((curTime.getTime() - startTime.getTime()) / 1000 < simTime) {
     curTime.setTime(curTime.getTime() + Math.round(10000 + Math.random() * 5000 - 2500));
     const curPower = Math.round(1000 + Math.random() * 3000);
@@ -492,16 +491,17 @@ async function testTicket115() {
   console.log('[......] Test Github ticket #115: Main fuse');
   const app = new PiggyBank();
   await app.disableLog();
+  await applyStateFromFile(app, 'testing/states/Frode_0.19.4_bug87.txt');
+  app.__deviceList = undefined;
   await app.onInit();
 
   // Just load some random devices
   app.setLogLevel(c.LOG_DEBUG);
   await disableTimers(app);
-  await applyStateFromFile(app, 'states/Frode_0.19.4_bug87.txt');
   const devices = await getAllDeviceId(app);
   // await writePowerStatus(app, devices);
 
-  app.homey.settings.set('maxPower', 10000);
+  app.homey.settings.set('maxPower', [Infinity, 10000, Infinity, Infinity]);
 
   // Simulate time going forward
   for (let sim = 0; sim < 2; sim++) {
@@ -517,7 +517,7 @@ async function testTicket115() {
     app.homey.settings.set('mainFuse', mainFuse);
     const curTime = app.__current_power_time;
     curTime.setUTCMinutes(2);
-    const startTime = new Date(curTime);
+    const startTime = new Date(curTime.getTime());
     while ((curTime.getTime() - startTime.getTime()) / 1000 < simTime) {
       curTime.setTime(curTime.getTime() + Math.round(10000 + Math.random() * 5000 - 2500));
       const curPower = Math.round(1000 + Math.random() * 5000);
@@ -557,7 +557,7 @@ async function testAppRestart() {
   await app.disableLog();
 
   // Load initial state from a file
-  await applyStateFromFile(app, 'states/Frode_0.19.26.txt', false);
+  await applyStateFromFile(app, 'testing/states/Frode_0.19.26.txt', false);
   // Set up some state for safe shutdown
   app.homey.settings.set('safeShutdown__accum_energy', [0, 10, 0, 0]);
   app.homey.settings.set('safeShutdown__current_power', 360000);
@@ -587,7 +587,7 @@ async function testMissingPulse() {
   await app.disableLog();
 
   // Load initial state from a file
-  await applyStateFromFile(app, 'states/Frode_0.19.26.txt', false);
+  await applyStateFromFile(app, 'testing/states/Frode_0.19.26.txt', false);
   // Clear the archive
   app.homey.settings.set('archive', null);
   app.homey.settings.set('stats_daily_max', null);
@@ -680,7 +680,7 @@ async function testCurrencies() {
  */
 async function testTicket158NotControllingOther() {
   console.log('[......] Test that no uncontrolled devices are being controlled');
-  const stateDump = 'states/Frode_0.19.26.txt';
+  const stateDump = 'testing/states/Frode_0.19.26.txt';
   const app = new PiggyBank();
   await app.disableLog();
   await app.onInit();
@@ -708,7 +708,7 @@ async function testTicket158NotControllingOther() {
   // Simulate time going forward
   const simTime = 200;
   const curTime = app.__current_power_time;
-  const startTime = new Date(curTime);
+  const startTime = new Date(curTime.getTime());
   while ((curTime.getTime() - startTime.getTime()) / 1000 < simTime) {
     curTime.setTime(curTime.getTime() + Math.round(10000 + Math.random() * 5000 - 2500));
     const curPower = Math.round(1000 + Math.random() * 3000);
@@ -731,14 +731,14 @@ async function testTicket158NotControllingOther() {
 // Testing bad devices:
 async function testTicket149BadDevices() {
   console.log('[......] Test Bad behaving devices');
-  const stateDump = 'states/Frode_0.19.26.txt';
+  const stateDump = 'testing/states/Frode_0.19.26.txt';
   const app = new PiggyBank();
   await app.disableLog();
   await applyStateFromFile(app, stateDump);
   app.homey.settings.set('toggleTime', 1);
   app.__deviceList = undefined; // Recreate it in onInit
   const curTime = app.__current_power_time;
-  const startTime = new Date(curTime);
+  const startTime = new Date(curTime.getTime());
   await app.onInit(startTime);
   app.setLogLevel(c.LOG_DEBUG);
   await disableTimers(app);
@@ -762,7 +762,7 @@ async function testTicket149BadDevices() {
     app.__deviceList[devices[i]].use = 1;
   }
   // Simulate time going forward
-  const simTime = 300;
+  const simTime = 400;
   while ((curTime.getTime() - startTime.getTime()) / 1000 < simTime) {
     curTime.setTime(curTime.getTime() + Math.round(10000 + Math.random() * 5000 - 2500));
     const curPower = Math.round(1000 + Math.random() * 3000);
@@ -782,6 +782,88 @@ async function testTicket149BadDevices() {
   }
   if (numOn !== 2) {
     throw new Error(`Number of devices powered on should be 2 but was ${numOn}. Fix error or increase simulation time.`);
+  }
+  await app.onUninit();
+  console.log('\x1b[1A[\x1b[32mPASSED\x1b[0m]');
+}
+
+async function testBelgiumPowerTariff(numTests) {
+  console.log('[......] Test Belgian Power Tariff');
+  const app = new PiggyBank();
+  await app.disableLog();
+  seedrandom('mySeed', { global: true });
+
+  // Load initial state from a file
+  await applyStateFromFile(app, 'testing/states/Belgium_test_0.19.47.txt');
+  app.__deviceList = undefined; // Recreate it in onInit
+  const startTime = new Date(app.__current_power_time.getTime() - 1000 * 60 * 60 * 24 * 5);
+  app.__current_power_time = new Date(startTime.getTime());
+  startTime.setMinutes(0, 0, 0);
+
+  // Clear the archive
+  app.homey.settings.set('stats_daily_max', null);
+  app.homey.settings.set('stats_daily_max_ok', null);
+  app.homey.settings.set('stats_daily_max_last_update_time', startTime);
+  app.homey.settings.unset('safeShutdown__accum_energy');
+  app.homey.settings.unset('safeShutdown__current_power');
+  app.homey.settings.unset('safeShutdown__current_power_time');
+  app.homey.settings.unset('safeShutdown__power_last_hour');
+  app.homey.settings.unset('safeShutdown__offeredEnergy');
+
+  await app.onInit(startTime);
+  await disableTimers(app);
+
+  const futurePriceOptions = app.homey.settings.get('futurePriceOptions');
+  futurePriceOptions.priceCountry = 'be';
+  futurePriceOptions.priceRegion = 0;
+  futurePriceOptions.costSchema = 'be';
+  futurePriceOptions.gridSteps = false;
+  futurePriceOptions.granularity = 15;
+  app.homey.settings.set('futurePriceOptions', futurePriceOptions);
+
+  clearArchive(app.homey);
+
+  app.homey.settings.set('maxPower', [2000, Infinity, Infinity, Infinity]);
+  app.__accum_energy = [0, 0, 0, 0]; // TODO: Reset in app
+  app.__fakeEnergy = [0, 0, 0, 0]; // TODO: Reset in app
+  app.granularity = 15; // TODO: Reset in app
+
+  let now = new Date(startTime.getTime());
+  let testAccum = 0;
+  let oldPow = 2000;
+  for (let i = 0; i < numTests; i++) {
+    const randomTime = Math.round((2 + (Math.random() * 30)) * 1000);
+    const randomPow = 300 + (Math.random() * 5000);
+    const quarterBefore = Math.floor(now.getHours() * 60 + now.getMinutes() / 15);
+    const timeLimit = timeToNextSlot(now, app.granularity);
+    const limitedTime = randomTime < timeLimit ? randomTime : timeLimit;
+    now = new Date(now.getTime() + randomTime);
+    const quarterAfter = Math.floor(now.getHours() * 60 + now.getMinutes() / 15);
+    await app.onPowerUpdate(randomPow, now);
+    const accumData = [...app.__pendingOnNewSlot][0];
+    await app.onProcessPower(now);
+
+    testAccum += (oldPow * limitedTime) / (1000 * 60 * 60);
+    if (quarterBefore !== quarterAfter) {
+      const marginLow = Math.floor(testAccum * 0.97);
+      const marginHigh = Math.ceil(testAccum * 1.03);
+      if (!accumData || (accumData.accumEnergy < marginLow) || (accumData.accumEnergy > marginHigh)) {
+        throw new Error(`Accumulated energy not within bounds: ${accumData.accumEnergy} not in [${marginLow}, ${marginHigh}]`);
+      }
+      if (app.__energy_last_slot === undefined) {
+        throw new Error('Last hour energy usage is undefined');
+      }
+      testAccum = (oldPow * (randomTime - limitedTime)) / (1000 * 60 * 60);
+    }
+    oldPow = randomPow;
+  }
+
+  // Check archive
+  const archive = app.homey.settings.get('archive');
+  // eslint-disable-next-line max-len
+  if (JSON.stringify(archive.powUsage) !== '{"quarter":{"2023-02-12":[null,null,null,null,null,null,null,null,null,null,null,null,649.7341485355206,636.5543326506654,745.2810489710204,736.7924123982192,709.8492817730607,712.8376713425326,616.3369721701923,626.8770923681751,646.7849485333621,765.6134216424525,652.6188171026276,670.2402555007449,733.3446331966816,649.9803564340237,744.7149016659997,684.2713805257598,686.6644479172061,659.9468425528052,658.1804883294135,705.6434675285349,654.5590123098964,767.7459624524306,581.1968199255474,748.0747697567674,695.7076634534986,652.6544192148182,759.9909735744551,591.7918429784947,748.6020847618112,722.5882107050011,684.5473529559489,644.2667079462635,698.1569625798293,769.493734558472,792.8656122518416,721.9228991869606,778.2829239155822,695.4724177877238,654.0158605902225,715.9126201575154,754.6568616367746,693.3244944181736,638.0353587954063,681.9745025953138,687.3347936789031,795.5325583251547,805.565184204212,722.2206040885542,710.1382133850433,637.4566367145727,771.2788068917413,594.4850786930897,755.3401346248093,705.1965662122286,729.7391534294437,658.5582097577683,674.7148062381458,696.3787307920666,814.1083429073349,757.2116308467248,730.4453308459621,705.1748821737647,792.7363294614279,811.2158473929844,710.3364745640845,640.883239575323,738.0347898156133,607.3341814384949,723.6796252318038,711.9024706209244,766.3850101559401,759.1489372723888,706.0689603279739,561.6745158379267,691.7975900889031,661.3346323330774,751.2840290196887,743.4638304974839,805.6296205949495,690.5886376097205,731.0278192470968,577.5590453034696,655.8612407776122,690.5402791208786],"2023-02-13":[670.0969543694412,678.664995016518,692.2601746629551,694.3576429261626,751.1013165080712,681.988209436385,650.8266619094146,730.9332887810673,621.0154970613984,668.8609967131725,710.1377340620478,584.612354626301,742.2007276990499,747.6846392015923,763.2464691399613,674.9737236081212,717.6282382168848,754.7868013854077,728.8211430744456,659.5989021906155,663.1585117941994,742.6500268198039,646.2918555361726,645.1603800682637,696.4437631558106,753.3913379158605,777.8714596135551,824.4713144789158,631.7525507166375,623.4398534092156,699.9421593290347,760.7269058301548,597.103703003652,793.5975691804514,703.550962849461,760.5324348692446,686.2341636709389,685.0396061232783,668.3746578438792,681.5966306455878,746.8921172401436,773.9546836012922,656.5005251906914,668.5773903701705,745.2524456939485,761.0164633291843,682.7178046524758,775.7435928133565,573.8027551998975,676.1733828841518,720.1539815073821,729.7166307918477,762.060650733029,645.4288085728475,675.6456134717331,785.7463724363836,694.3971846251006,675.4920685053863,702.4560820773796,697.3086900948064,730.3667423620345,743.3737820981515,805.9343098417362,693.1865812364559,682.6902265257883,665.6460913918803,634.2616552846055,675.902254962808,772.4746657546264,671.532799542199,851.0399469253955,668.70516799907,724.5979001705531,725.6201077245561,725.9959481192636,659.7182323644438,709.7620871368102,775.2935938158255,728.2152574190831,734.3469528527207,663.8624420089286,641.3356467627485,650.8987450267117,699.451643886963,689.0106078478105,756.209047225339,711.5559188797133,707.2374455340084,733.5125491768885,619.5454016432353,678.1407050850654,701.320809541011,721.8678434542722,732.8207999794037,645.7628011385485,638.0652603768954],"2023-02-14":[811.6285997382853,682.868105902737,712.6524802337251,701.2041984697654,675.0867000602797,630.875000230989,720.2676302558207,747.7885361765683,767.6029575897545]},"daily":{"2023-02":[null,null,null,null,null,null,null,null,null,null,null,59017.47375974502,67483.42553232991,6449.974208657926]},"monthly":{"2023":[null,132950.87350073276]},"yearly":{"2023":[132950.87350073276]}}')
+  {
+    throw new Error('Belgian Power tariff does not behave correctly');
   }
   await app.onUninit();
   console.log('\x1b[1A[\x1b[32mPASSED\x1b[0m]');
@@ -810,6 +892,7 @@ async function startAllTests() {
     await testCurrencies();
     await testTicket158NotControllingOther();
     await testTicket149BadDevices();
+    await testBelgiumPowerTariff(10000);
     await testMail();
   } catch (err) {
     console.log('\x1b[1A[\x1b[31mFAILED\x1b[0m]');
@@ -819,4 +902,4 @@ async function startAllTests() {
 
 // Run all the testing
 startAllTests();
-// testState('states/Anders_0.18.31_err.txt', 100);
+// testState('testing/states/Anders_0.18.31_err.txt', 100);
