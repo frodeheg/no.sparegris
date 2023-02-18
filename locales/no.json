@@ -155,7 +155,8 @@
       "missing" : "Manglende eller trøblete enhet?",
       "problemsolver" : "Feilsøking",
       "toggleTime": "Vekslingstid",
-      "toggleTimeHint": "Etter å ha endret en enhetstilstand, vil appen vente med å endre andre enheter til: <ul style='font-size:1em'><li>Endringen er registrert eller</li><li>Vekslingstiden er utløpt</li></ul>Hvis du har enheter med treg respons som f.eks. skyenheter, anbefales det å bruke en lengre vekslingstid for å unngå å slå for mange enheter av/på."
+      "toggleTimeHint": "Etter å ha endret en enhetstilstand, vil appen vente med å endre andre enheter til: <ul style='font-size:1em'><li>Endringen er registrert eller</li><li>Vekslingstiden er utløpt</li></ul>Hvis du har enheter med treg respons som f.eks. skyenheter, anbefales det å bruke en lengre vekslingstid for å unngå å slå for mange enheter av/på.",
+      "countryHint": "<p>Bare Norge og Belgia har innebygd støtte. Andre land kan virke eller ikke. Kontakt utvikleren dersom endringer er påkrevd.</p><p>NB! All statistikk og grafer blir nullstilt dersom landet endres.</p>"
     },
     "cost" : {
       "schema": "Beregningsmetode",

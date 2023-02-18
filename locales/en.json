@@ -155,7 +155,8 @@
       "missing" : "Missing or broken device?",
       "problemsolver" : "Troubleshoot",
       "toggleTime": "Toggle time:",
-      "toggleTimeHint": "After changing a device state, the app will wait to change other devices until: <ul style='font-size:1em'><li>The change has been registered or</li><li>The toggle time has expired</li></ul>If you have devices with slow response times like cloud devices, then it is recommended to use a longer toggle time to avoid toggling too many devices."
+      "toggleTimeHint": "After changing a device state, the app will wait to change other devices until: <ul style='font-size:1em'><li>The change has been registered or</li><li>The toggle time has expired</li></ul>If you have devices with slow response times like cloud devices, then it is recommended to use a longer toggle time to avoid toggling too many devices.",
+      "countryHint": "<p>Only Norway and Belgium have built in support. Other countries may or may not work. Contact the developer if additional changes are needed</p><p>Note that all statistics and graphs are cleared if you change the country.</p>"
     },
     "cost" : {
       "schema": "Schema",

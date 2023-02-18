@@ -2046,7 +2046,7 @@ class PiggyBank extends Homey.App {
         if (limitIdx === lowestLimit) {
           newBaseSlot = true;
           this.__energy_last_slot = this.__accum_energy[limitIdx] + this.__fakeEnergy[limitIdx];
-          if (this.__accum_energy[limitIdx] !== 0) {
+          if (this.__accum_energy[limitIdx] !== 0 || this.__first_time_handled) {
             this.__pendingOnNewSlot.push({
               accumEnergy: this.__energy_last_slot,
               offeredEnergy: this.__offeredEnergy + (fakePower ? energyOffered : 0),
@@ -2054,6 +2054,7 @@ class PiggyBank extends Homey.App {
               time: this.__current_power_time.getTime()
             });
           }
+          this.__first_time_handled = true;
           const energyOfferedNewSlot = (this.__charge_power_active * timeWithinLimit) / (1000 * 60 * 60);
           this.__offeredEnergy = energyOfferedNewSlot; // Offered or given, depending on flow or device
           this.__missing_power_this_slot = Math.floor(timeWithinLimit / (1000 * 60));

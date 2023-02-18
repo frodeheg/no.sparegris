@@ -1119,8 +1119,10 @@
               <select id="priceCountry" onchange="updateRegions(this.value, futurePriceOptions.priceRegion);changeSchema(this.value);displaySaveHint()">
                 <option value="0" selected>Country selector</option>
               </select>
+              <div class="hintButton" onclick="toggle(this,'countryHint');return false;">i</div>
             </td>
           </tr>
+          <tr id="countryHint" class="hint"><td colspan="2" data-i18n="settings.global.countryHint">global.countryHint</td></tr>
           <tr id="costSchemaBox">
             <td class="settings_row_name"><label for="costSchema" data-i18n="settings.cost.schema">cost.schema</label>:</td>
             <td class="settings_row_input">
@@ -1129,9 +1131,6 @@
               </select>
             </td>
           </tr>
-        </table>
-
-        <table class="settings_table">
           <tr>
             <td class="settings_row_name"><label for="currency" data-i18n="settings.cost.currency">cost.currency</label>:</td>
             <td class="settings_row_input">

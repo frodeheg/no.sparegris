@@ -22,6 +22,7 @@ const SCHEMA = {
     country: 'no',
     currency: 'NOK',
     granularity: 60,
+    expireHourly: 7,
     vat: 25,
     peakStart: '06:00',
     peakEnd: '22:00',
@@ -50,6 +51,7 @@ const SCHEMA = {
     country: 'be',
     currency: 'EUR',
     granularity: 15,
+    expireHourly: 2,
     vat: 6, // 25 after March 31, 2023
     peakStart: '07:00', // Varies across Belgium
     peakEnd: '22:00', // Varies across Belgium
@@ -75,6 +77,7 @@ const SCHEMA = {
     country: 'de',
     currency: 'EUR',
     granularity: 60,
+    expireHourly: 2,
     vat: 25,
     peakStart: '06:00',
     peakEnd: '22:00',
@@ -175,6 +178,7 @@ async function changeSchema(newSchema) {
     document.getElementById('peakMin').value = SCHEMA[newSchema].peakMin;
     document.getElementById('peakTax').value = SCHEMA[newSchema].peakTax;
     document.getElementById('granularity').value = SCHEMA[newSchema].granularity;
+    document.getElementById('expireHourly').value = SCHEMA[newSchema].expireHourly;
     document.getElementById('enLimit15').checked = SCHEMA[newSchema].limits.quarter !== Infinity;
     document.getElementById('enLimit60').checked = SCHEMA[newSchema].limits.hour !== Infinity;
     document.getElementById('enLimitDay').checked = SCHEMA[newSchema].limits.day !== Infinity;
