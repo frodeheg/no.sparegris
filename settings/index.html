@@ -1208,8 +1208,8 @@
                 <td class="settings_row_input"><input id="peakEnd" class="inputElem" type="time" value="22:00" pattern="[0-9]{2}:[0-9]{2}" onchange="displaySaveHint()"></td>
               </tr>
               <tr id="peakWeekendEn">
-                <td class="settings_row_name"><label for="WeekendOffPeak" data-i18n="settings.cost.WeekendOffPeak">cost.WeekendOffPeak</label>:</td>
-                <td class="settings_row_input"><input id="WeekendOffPeak" type="checkbox" onchange="displaySaveHint()"></td>
+                <td class="settings_row_name"><label for="weekendOffPeak" data-i18n="settings.cost.weekendOffPeak">cost.weekendOffPeak</label>:</td>
+                <td class="settings_row_input"><input id="weekendOffPeak" type="checkbox" onchange="displaySaveHint()"></td>
               </tr>
             </table>
           </span>
@@ -2005,8 +2005,8 @@
           document.getElementById("costSchema").value = futurePriceOptions.costSchema;
           document.getElementById("peakStart").value = minToTime(futurePriceOptions.peakStart);
           document.getElementById("peakEnd").value = minToTime(futurePriceOptions.peakEnd);
-          document.getElementById("WeekendOffPeak").value = futurePriceOptions.WeekendOffPeak;
-          document.getElementById("gridSteps").value = futurePriceOptions.gridSteps;
+          document.getElementById("weekendOffPeak").checked = futurePriceOptions.weekendOffPeak;
+          document.getElementById("gridSteps").checked = futurePriceOptions.gridSteps;
           document.getElementById("granularity").value = futurePriceOptions.granularity;
           document.getElementById("peakMin").value = futurePriceOptions.peakMin;
           document.getElementById("peakTax").value = futurePriceOptions.peakTax;
@@ -2497,8 +2497,8 @@
               futurePriceOptions.costSchema = document.getElementById("costSchema").value;
               futurePriceOptions.peakStart = timeToMinSinceMidnight(document.getElementById("peakStart").value);
               futurePriceOptions.peakEnd = timeToMinSinceMidnight(document.getElementById("peakEnd").value);
-              futurePriceOptions.WeekendOffPeak = document.getElementById("WeekendOffPeak").value;
-              futurePriceOptions.gridSteps = document.getElementById("gridSteps").value;
+              futurePriceOptions.weekendOffPeak = document.getElementById("weekendOffPeak").checked;
+              futurePriceOptions.gridSteps = document.getElementById("gridSteps").checked;
               futurePriceOptions.granularity = +document.getElementById("granularity").value;
               futurePriceOptions.peakMin = +document.getElementById("peakMin").value;
               futurePriceOptions.peakTax = +document.getElementById("peakTax").value;

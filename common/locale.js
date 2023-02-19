@@ -26,7 +26,7 @@ const SCHEMA = {
     vat: 25,
     peakStart: '06:00',
     peakEnd: '22:00',
-    WeekendOffPeak: false,
+    weekendOffPeak: false,
     gridSteps: true,
     peakMin: 0,
     peakTax: 0,
@@ -55,7 +55,7 @@ const SCHEMA = {
     vat: 6, // 25 after March 31, 2023
     peakStart: '07:00', // Varies across Belgium
     peakEnd: '22:00', // Varies across Belgium
-    WeekendOffPeak: true,
+    weekendOffPeak: true,
     gridSteps: false,
     peakMin: 2500,
     peakTax: 57.0831,
@@ -81,7 +81,7 @@ const SCHEMA = {
     vat: 25,
     peakStart: '06:00',
     peakEnd: '22:00',
-    WeekendOffPeak: false,
+    weekendOffPeak: false,
     gridSteps: true,
     peakMin: 0,
     peakTax: 0,
@@ -173,7 +173,7 @@ async function changeSchema(newSchema) {
     document.getElementById('VAT').value = SCHEMA[newSchema].vat;
     document.getElementById('peakStart').value = SCHEMA[newSchema].peakStart;
     document.getElementById('peakEnd').value = SCHEMA[newSchema].peakEnd;
-    document.getElementById('WeekendOffPeak').checked = SCHEMA[newSchema].WeekendOffPeak;
+    document.getElementById('weekendOffPeak').checked = SCHEMA[newSchema].weekendOffPeak;
     document.getElementById('gridSteps').checked = SCHEMA[newSchema].gridSteps;
     document.getElementById('peakMin').value = SCHEMA[newSchema].peakMin;
     document.getElementById('peakTax').value = SCHEMA[newSchema].peakTax;

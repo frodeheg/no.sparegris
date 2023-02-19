@@ -173,7 +173,7 @@
       "limit": "Grense",
       "peakStart": "Dag start",
       "peakEnd": "Dag slutt",
-      "WeekendOffPeak": "Billig helg",
+      "weekendOffPeak": "Billig helg",
       "gridSteps": "Bruk effekttrinn",
       "peakMin": "Minste makseffekt",
       "peakTax": "Kostnad makseffekt",

@@ -55,14 +55,6 @@ function timeDiff(HourA, MinA, HourB, MinB) {
 }
 
 /**
- * Create a time string
- */
-function toTimeString(inputTime) {
-  return `${inputTime.getFullYear()}-${String(inputTime.getMonth() + 1).padStart(2, '0')}-${String(inputTime.getDate()).padStart(2, '0')}`
-        + `T${String(inputTime.getHours()).padStart(2, '0')}:${String(inputTime.getMinutes()).padStart(2, '0')}`;
-}
-
-/**
  * Returns the number of milliseconds since last hour
  */
 function timeSinceLastHour(inputTime) {
@@ -302,6 +294,18 @@ function daysInMonth(timeUTC, homey) {
   return new Date(localTime.getFullYear(), localTime.getMonth() + 1, 0).getDate();
 }
 
+/** *************
+ * HTML FUNCTIONS
+ ** ************* */
+
+/**
+ * Create a time string
+ */
+function toTimeString(inputTime) {
+  return `${inputTime.getFullYear()}-${String(inputTime.getMonth() + 1).padStart(2, '0')}-${String(inputTime.getDate()).padStart(2, '0')}`
+        + `T${String(inputTime.getHours()).padStart(2, '0')}:${String(inputTime.getMinutes()).padStart(2, '0')}`;
+}
+
 /**
  * Convert a hour hh:mm to minutes since midnight
  */
@@ -322,7 +326,6 @@ module.exports = {
   toLocalTime,
   fromLocalTime,
   timeDiff,
-  toTimeString,
   timeSinceLastHour,
   timeToNextHour,
   timeSinceLastSlot,
@@ -339,6 +342,4 @@ module.exports = {
   hoursInDay,
   slotsInDay,
   daysInMonth,
-  timeToMinSinceMidnight,
-  minToTime,
 };

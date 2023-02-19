@@ -649,7 +649,7 @@ class PiggyBank extends Homey.App {
       || !('costSchema' in futurePriceOptions)
       || !(Number.isInteger(futurePriceOptions.peakStart))
       || !(Number.isInteger(futurePriceOptions.peakEnd))
-      || !('WeekendOffPeak' in futurePriceOptions)
+      || !('weekendOffPeak' in futurePriceOptions)
       || !('gridSteps' in futurePriceOptions)
       || !(Number.isFinite(futurePriceOptions.peakMin))
       || !(Number.isFinite(futurePriceOptions.peakTax))
@@ -671,10 +671,10 @@ class PiggyBank extends Homey.App {
       if (!('gridTaxNight' in futurePriceOptions)) futurePriceOptions.gridTaxNight = 0.2839; // Tensio default
       if (!(Array.isArray(futurePriceOptions.gridCosts))) futurePriceOptions.gridCosts = await this.fetchTariffTable();
       if (!('costSchema' in futurePriceOptions)) futurePriceOptions.costSchema = await locale.getDefaultSchema(this.homey);
-      const schema = futurePriceOptions.costSchema;
+      const schema = (futurePriceOptions.costSchema in locale.SCHEMA) ? futurePriceOptions.costSchema : 'no';
       if (!(Number.isInteger(futurePriceOptions.peakStart))) futurePriceOptions.peakStart = locale.SCHEMA[schema].peakStart;
       if (!(Number.isInteger(futurePriceOptions.peakEnd))) futurePriceOptions.peakEnd = locale.SCHEMA[schema].peakEnd;
-      if (!('WeekendOffPeak' in futurePriceOptions)) futurePriceOptions.WeekendOffPeak = locale.SCHEMA[schema].WeekendOffPeak;
+      if (!('weekendOffPeak' in futurePriceOptions)) futurePriceOptions.weekendOffPeak = locale.SCHEMA[schema].weekendOffPeak;
       if (!('gridSteps' in futurePriceOptions)) futurePriceOptions.gridSteps = locale.SCHEMA[schema].gridSteps;
       if (!(Number.isFinite(futurePriceOptions.peakMin))) futurePriceOptions.peakMin = locale.SCHEMA[schema].peakMin;
       if (!(Number.isFinite(futurePriceOptions.peakTax))) futurePriceOptions.peakTax = locale.SCHEMA[schema].peakTax;
@@ -3697,6 +3697,9 @@ class PiggyBank extends Homey.App {
               futurePriceOptions.VAT / 100,
               futurePriceOptions.gridTaxDay, // Between 6-22
               futurePriceOptions.gridTaxNight, // Between 22-6
+              futurePriceOptions.peakStart,
+              futurePriceOptions.peakEnd,
+              futurePriceOptions.weekendOffPeak,
               this.homey
             );
           } else { // priceKind === PRICE_KIND_FIXED
@@ -3711,6 +3714,9 @@ class PiggyBank extends Homey.App {
               0, // VAT is already included in the fixed price
               futurePriceOptions.gridTaxDay, // Between 6-22
               futurePriceOptions.gridTaxNight, // Between 22-6
+              futurePriceOptions.peakStart,
+              futurePriceOptions.peakEnd,
+              futurePriceOptions.weekendOffPeak,
               this.homey
             );
           }

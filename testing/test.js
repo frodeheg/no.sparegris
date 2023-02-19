@@ -60,7 +60,10 @@ async function testEntsoe() {
   const VAT = 0.25; // 25% moms
   const gridTaxDay = 0.3626; // Between 6-22
   const gridTaxNight = 0.2839; // Between 22-6
-  const finalPrices = await prices.applyTaxesOnSpotprice(priceData, surcharge, VAT, gridTaxDay, gridTaxNight, app.homey);
+  const peakStart = 6 * 60;
+  const peakEnd = 22 * 60;
+  const weekendOffPeak = false;
+  const finalPrices = await prices.applyTaxesOnSpotprice(priceData, surcharge, VAT, gridTaxDay, gridTaxNight, peakStart, peakEnd, weekendOffPeak, app.homey);
   if (finalPrices.length < 24) {
     console.log(finalPrices);
     throw new Error('Entsoe API is not returning the prices');

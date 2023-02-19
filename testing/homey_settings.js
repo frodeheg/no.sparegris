@@ -10,7 +10,8 @@ class FakeHomey {
 
   constructor(homey) {
     this.callbacks = [];
-    this.values = {
+    // Set up some fake settings
+    this.settings = {
       expireDaily: 31,
       expireHourly: 7,
       futurePriceOptions: {
@@ -149,7 +150,7 @@ class FakeHomey {
   }
 
   set(settingName, value, callback) {
-    this.values[settingName] = value;
+    this.settings[settingName] = value;
     for (let i = 0; i < this.callbacks.length; i++) {
       if (this.callbacks[i].when === 'set') {
         this.callbacks[i].callback(settingName);
@@ -162,7 +163,7 @@ class FakeHomey {
 
   get(settingName, callback) {
     const err = undefined;
-    const response = this.values[settingName] || null;
+    const response = this.settings[settingName] || null;
     callback(err, response);
   }
 

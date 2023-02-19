@@ -173,7 +173,7 @@
       "limit": "Limit",
       "peakStart": "Peak start",
       "peakEnd": "Peak end",
-      "WeekendOffPeak": "Weekend is offpeak",
+      "weekendOffPeak": "Weekend is offpeak",
       "gridSteps": "Use power steps",
       "peakMin": "Lowest max power",
       "peakTax": "Cost max power",

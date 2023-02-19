@@ -557,7 +557,9 @@ function updateGraph(Homey) {
           break;
         case GRANULARITY.HOUR:
           timeString = `${monthText[chartMonthIdx]} - ${chartDayIdx}`;
-          labels = Array.from(Array(chartSlotsInDay).keys()).map(h => `${h}:00`);
+          labels = (chartSlotLength === 15)
+            ? Array.from(Array(chartSlotsInDay).keys()).map(s => `${Math.floor(s / 4)}:${String(15 * (s % 4)).padStart(2, '0')}`)
+            : Array.from(Array(chartSlotsInDay).keys()).map(h => `${h}:00`)
           chartStartTime = new Date(`${chartYearIdx}-${chartMonthIdx + 1}-${chartDayIdx}`);
           chartEndTime = new Date(chartStartTime.getTime() + (1000 * 60 * chartSlotLength * chartSlotsInDay));
           break;
