@@ -8,6 +8,66 @@
 
 class FakeHomey {
 
+  constructor(homey) {
+    this.callbacks = [];
+    this.values = {
+      expireDaily: 31,
+      expireHourly: 7,
+      futurePriceOptions: {
+        minCheapTime: 4,
+        minExpensiveTime: 4,
+        averageTime: 0,
+        dirtCheapPriceModifier: -50,
+        lowPriceModifier: -10,
+        highPriceModifier: 10,
+        extremePriceModifier: 100,
+        priceKind: 1, // Spot
+        priceCountry: 'no',
+        priceRegion: 0,
+        surcharge: 0.0198, // Ramua kraft energi web
+        priceFixed: 0.6,
+        gridTaxDay: 0.3626, // Tensio default
+        gridTaxNight: 0.2839, // Tensio default
+        VAT: 25,
+        currency: 'NOK',
+        gridCosts: [{ limit: 2000, price: 73 }, { limit: 5000, price: 128 }, { limit: 10000, price: 219 }]
+      },
+      maxPower: 5000,
+      chargerOptions: {
+        chargeTarget: 1, // CHARGE_TARGET_AUTO
+        chargeMin: 1500,
+        chargeThreshold: 2000,
+        minToggleTime: 120,
+        chargeCycleType: 2, // OFFER_HOURS
+        chargeRemaining: 0,
+        chargeEnd: '2022-10-15T06:00:08.708Z'
+      },
+      modeList: [
+        // Normal
+        [{ id: 'id_a', operation: 2 /* CONTROLLED */, targetTemp: 24 },
+          { id: 'id_b', operation: 0 /* ALWAYS_OFF */, targetTemp: 15 },
+          { id: 'id_c', operation: 2 /* CONTROLLED */, targetTemp: 20 },
+          { id: 'id_d', operation: 2 /* CONTROLLED */, targetTemp: 20 }
+        ],
+        [], // Night
+        [] // Away
+      ],
+      modeNames: ['Blah', 'Nomode', 'alsoNoMode'],
+      frostList: null,
+      zones: null,
+      override: null,
+      priceActionList: null,
+      operatingMode: null,
+      priceMode: null,
+      pricePoint: null,
+      errorMargin: null,
+      controlTemp: null,
+      freeThreshold: null,
+      safetyPower: null,
+      mainFuse: null,
+    };
+  }
+
   ready() {
     // ok, you're ready
   }
@@ -88,105 +148,21 @@ class FakeHomey {
     callback(err, response);
   }
 
+  set(settingName, value, callback) {
+    this.values[settingName] = value;
+    for (let i = 0; i < this.callbacks.length; i++) {
+      if (this.callbacks[i].when === 'set') {
+        this.callbacks[i].callback(settingName);
+      }
+    }
+    if (settingName === 'settingsSaved' && value === 'true') {
+      callback(new Error('Prentending to have saved'));
+    }
+  }
+
   get(settingName, callback) {
     const err = undefined;
-    let response;
-    switch (settingName) {
-      case 'expireDaily':
-        response = 31;
-        break;
-      case 'expireHourly':
-        response = 7;
-        break;
-      case 'futurePriceOptions':
-        response = {
-          minCheapTime: 4,
-          minExpensiveTime: 4,
-          averageTime: 0,
-          dirtCheapPriceModifier: -50,
-          lowPriceModifier: -10,
-          highPriceModifier: 10,
-          extremePriceModifier: 100,
-          priceKind: 1, // Spot
-          priceCountry: 'no',
-          priceRegion: 0,
-          surcharge: 0.0198, // Ramua kraft energi web
-          priceFixed: 0.6,
-          gridTaxDay: 0.3626, // Tensio default
-          gridTaxNight: 0.2839, // Tensio default
-          VAT: 25,
-          currency: 'NOK',
-          gridCosts: [{ limit: 2000, price: 73 }, { limit: 5000, price: 128 }, { limit: 10000, price: 219 }]
-        };
-        break;
-      case 'maxPower':
-        response = 5000;
-        break;
-      case 'chargerOptions':
-        response = {
-          chargeTarget: CHARGE_TARGET_AUTO,
-          chargeMin: 1500,
-          chargeThreshold: 2000,
-          minToggleTime: 120,
-          chargeCycleType: OFFER_HOURS,
-          chargeRemaining: 0,
-          chargeEnd: '2022-10-15T06:00:08.708Z'
-        };
-        break;
-      case 'modeList':
-        response = [
-          // Normal
-          [{ id: 'id_a', operation: CONTROLLED, targetTemp: 24 },
-            { id: 'id_b', operation: ALWAYS_OFF, targetTemp: 15 },
-            { id: 'id_c', operation: CONTROLLED, targetTemp: 20 },
-            { id: 'id_d', operation: CONTROLLED, targetTemp: 20 }
-          ],
-          [], // Night
-          [] // Away
-        ];
-        break;
-      case 'modeNames':
-        response = ['Blah', 'Nomode', 'alsoNoMode'];
-        break;
-      case 'frostList':
-        response = null;
-        break;
-      case 'zones':
-        response = null;
-        break;
-      case 'override':
-        response = null;
-        break;
-      case 'priceActionList':
-        response = null;
-        break;
-      case 'operatingMode':
-        response = null;
-        break;
-      case 'priceMode':
-        response = null;
-        break;
-      case 'pricePoint':
-        response = null;
-        break;
-      case 'errorMargin':
-        response = null;
-        break;
-      case 'controlTemp':
-        response = null;
-        break;
-      case 'freeThreshold':
-        response = null;
-        break;
-      case 'safetyPower':
-        response = null;
-        break;
-      case 'mainFuse':
-        response = null;
-        break;
-      default:
-        response = null;
-    }
+    const response = this.values[settingName] || null;
     callback(err, response);
   }
 
@@ -216,3 +192,130 @@ function activate() {
 
 // Using timeout to activate because onHomeyReady is not defined yet at this point
 setTimeout(activate, 100);
+
+/** **********************************************************************************
+ *                           DEBUG FUNCTIONALITY                                     *
+ *********************************************************************************** */
+
+// Show a debug window:
+document.write(`
+<style>
+#mydiv {
+  position: absolute;
+  z-index: 9;
+  background-color: #f1f1f1;
+  text-align: center;
+  border: 1px solid #d3d3d3;
+}
+
+#mydivheader {
+  padding: 10px;
+  cursor: move;
+  z-index: 10;
+  background-color: #2196F3;
+  color: #fff;
+}
+</style>
+
+<div id="mydiv">
+  <div id="mydivheader">Debug Window</div>
+  <p><button onClick="reloadPage();">Reload page</button></p>
+  <p><button onClick="showSettings();">Show settings</button></p>
+</div>`);
+
+dragElement(document.getElementById("mydiv"));
+
+function dragElement(elmnt) {
+  var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+  if (document.getElementById(elmnt.id + "header")) {
+    /* if present, the header is where you move the DIV from:*/
+    document.getElementById(elmnt.id + "header").onmousedown = dragMouseDown;
+  } else {
+    /* otherwise, move the DIV from anywhere inside the DIV:*/
+    elmnt.onmousedown = dragMouseDown;
+  }
+
+  function dragMouseDown(e) {
+    e = e || window.event;
+    e.preventDefault();
+    // get the mouse cursor position at startup:
+    pos3 = e.clientX;
+    pos4 = e.clientY;
+    document.onmouseup = closeDragElement;
+    // call a function whenever the cursor moves:
+    document.onmousemove = elementDrag;
+  }
+
+  function elementDrag(e) {
+    e = e || window.event;
+    e.preventDefault();
+    // calculate the new cursor position:
+    pos1 = pos3 - e.clientX;
+    pos2 = pos4 - e.clientY;
+    pos3 = e.clientX;
+    pos4 = e.clientY;
+    // set the element's new position:
+    elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+    elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+  }
+
+  function closeDragElement() {
+    /* stop moving when mouse button is released:*/
+    document.onmouseup = null;
+    document.onmousemove = null;
+  }
+}
+
+function reloadPage() {
+  console.log('Reloading');
+  // Clear old charts
+  let chartStatus = Chart.getChart("chargeSheduleChart"); // <canvas> id
+  if (chartStatus != undefined) {
+    chartStatus.destroy();
+  }
+  // Show load page
+  document.getElementById("loadingPage").style.display = 'block';
+  // Get all elements with class="tabcontent" and hide them
+  let tabcontent = document.getElementsByClassName("tabcontent");
+  for (let i = 0; i < tabcontent.length; i++) {
+    tabcontent[i].style.display = "none";
+  }
+  // Hide menu and save button
+  document.getElementById("main_menu").style.display = 'none';
+  document.getElementById("saveOuter").style.display = 'none';
+  // Reset loading status:
+  maxPowerLoaded = false;
+  deviceListLoaded = false;
+  modeListLoaded = false;
+  modeNamesLoaded = false;
+  operatingModeLoaded = false;
+  errorMarginLoaded = false;
+  controlTempLoaded = false;
+  freeThresholdLoaded = false;
+  expireDailyLoaded = false;
+  expireHourlyLoaded = false;
+  safetyPowerLoaded = false;
+  crossSlotSmoothLoaded = false;
+  priceModeLoaded = false;
+  pricePointLoaded = false;
+  priceActionListLoaded = false;
+  frostListLoaded = false;
+  zoneListLoaded = false;
+  overrideListLoaded = false;
+  mainFuseLoaded = false;
+  meterReaderLoaded = false;
+  meterFrequencyLoaded = false;
+  toggleTimeLoaded = false;
+  graphLoaded = false;
+  futurePriceOptionsLoaded = false;
+  chargerOptionsLoaded = false;
+  appConfigProgressLoaded = false;
+  currenciesLoaded = false;
+  onHomeyReadyCompleted = false;
+  // Refresh page
+  onHomeyReady(Homey);
+}
+
+function showSettings() {
+  console.log(Homey.values);
+}
