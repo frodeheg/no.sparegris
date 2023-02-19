@@ -333,6 +333,28 @@ async function validateModeList(app) {
   }
 }
 
+/**
+ * Applies the onUnit function on the state as if it were on the dump that was created:
+ */
+async function applyUnInit(app) {
+  const dumpVersion = app.homey.settings.get('settingsVersion');
+  switch (dumpVersion) {
+    case 7:
+      app.homey.settings.set('safeShutdown__accum_energy', app.__accum_energy);
+      app.homey.settings.set('safeShutdown__current_power', app.__current_power);
+      app.homey.settings.set('safeShutdown__current_power_time', app.__current_power_time);
+      app.homey.settings.set('safeShutdown__power_last_hour', app.__power_last_hour);
+      app.homey.settings.set('safeShutdown__offeredEnergy', app.__offeredEnergy);
+      app.homey.settings.set('safeShutdown_missing_power_this_hour', app.__missing_power_this_hour);
+      app.homey.settings.set('safeShutdown__fakePower', app.__fakePower);
+      app.homey.settings.set('safeShutdown__pendingOnNewHour', app.__pendingOnNewHour);
+      break;
+    default:
+      console.log(`Cannot Apply onUninit, dump version ${dumpVersion} not supported`);
+      break;
+  }
+}
+
 module.exports = {
   disableTimers,
   applyBasicConfig,
@@ -342,4 +364,5 @@ module.exports = {
   writePowerStatus,
   setAllDeviceState,
   validateModeList,
+  applyUnInit,
 };

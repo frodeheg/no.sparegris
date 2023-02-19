@@ -72,8 +72,16 @@ function combine(base, additional) {
   return result;
 }
 
+/**
+ * Sums an array
+ */
+function sumArray(arr) {
+  return arr.reduce((partialSum, a) => partialSum + a, 0);
+}
+
 module.exports = {
   isNumber,
   toNumber,
   combine,
+  sumArray,
 };

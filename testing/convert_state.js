@@ -5,14 +5,9 @@
 'use strict';
 
 // eslint-disable-next-line import/no-extraneous-dependencies
-const seedrandom = require('seedrandom');
 const c = require('../common/constants');
-const prices = require('../common/prices');
-const { addToArchive, cleanArchive, getArchive } = require('../common/archive');
-const Homey = require('./homey');
 const PiggyBank = require('../app');
-const { TIMESPAN, roundToStartOfDay, timeToNextHour, toLocalTime, fromLocalTime } = require('../common/homeytime');
-const { disableTimers, applyBasicConfig, applyStateFromFile, dumpStateToFile, getAllDeviceId, writePowerStatus, setAllDeviceState, validateModeList } = require('./test-helpers');
+const { disableTimers, applyStateFromFile, dumpStateToFile, validateModeList, applyUnInit } = require('./test-helpers');
 
 // Testing bad devices:
 async function convertState(oldFile, newFile) {
@@ -20,6 +15,7 @@ async function convertState(oldFile, newFile) {
   const app = new PiggyBank();
   await app.disableLog();
   await applyStateFromFile(app, oldFile);
+  await applyUnInit(app);
   app.__deviceList = undefined; // Recreate it in onInit
   await app.onInit(app.__current_power_time);
   app.setLogLevel(c.LOG_DEBUG);

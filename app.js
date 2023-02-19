@@ -37,7 +37,7 @@ const {
   roundToStartOfSlot, roundToStartOfDay, hoursInDay, slotsInDay, fromLocalTime,
   TIMESPAN
 } = require('./common/homeytime');
-const { isNumber, toNumber, combine } = require('./common/tools');
+const { isNumber, toNumber, combine, sumArray } = require('./common/tools');
 const prices = require('./common/prices');
 const locale = require('./settings/locale');
 
@@ -545,7 +545,12 @@ class PiggyBank extends Homey.App {
       }
       const oldAccumEnergy = toNumber(await this.homey.settings.get('safeShutdown__accum_energy'));
       if (oldAccumEnergy) {
-        const newAccumEnergy = [0, oldAccumEnergy, 0, 0];
+        this.granularity = 60;
+        const archived = await this.getStats('powUsage', null, c.GRANULARITY.DAY);
+        const archivedValid = archived && ('data' in archived) && (Array.isArray(archived.data.powUsage) && (archived.data.powUsage.length > 0));
+        const oldDayEnergy = archivedValid ? archived.data.powUsage[archived.data.powUsage.length - 1] : 0;
+        const oldMonthEnergy = archivedValid ? sumArray(archived.data.powUsage) : 0;
+        const newAccumEnergy = [0, oldAccumEnergy, oldDayEnergy + oldAccumEnergy, oldMonthEnergy + oldAccumEnergy];
         this.homey.settings.set('safeShutdown__accum_energy', newAccumEnergy);
       }
       const oldFakeEnergy = toNumber(await this.homey.settings.get('safeShutdown__fakePower'));
@@ -567,7 +572,7 @@ class PiggyBank extends Homey.App {
       // Changed name on some safe shutdown variables
       const missingPowerSlot = await this.homey.settings.get('safeShutdown_missing_power_this_hour');
       const pendingNewSlot = await this.homey.settings.get('safeShutdown__pendingOnNewHour');
-      this.homey.settings.set('safeShutdown_missing_power_this_slot', missingPowerSlot);
+      this.homey.settings.set('safeShutdown__missing_power_this_slot', missingPowerSlot);
       this.homey.settings.set('safeShutdown__pendingOnNewSlot', pendingNewSlot);
       this.homey.settings.unset('safeShutdown_missing_power_this_hour');
       this.homey.settings.unset('safeShutdown__pendingOnNewHour');
@@ -588,11 +593,11 @@ class PiggyBank extends Homey.App {
     this.__current_power_time = new Date(await this.homey.settings.get('safeShutdown__current_power_time')); // When null then date is start of unix time
     this.__energy_last_slot = toNumber(await this.homey.settings.get('safeShutdown__energy_last_slot'));
     this.__offeredEnergy = toNumber(await this.homey.settings.get('safeShutdown__offeredEnergy'));
-    this.__missing_power_this_slot = toNumber(await this.homey.settings.get('safeShutdown_missing_power_this_slot')) || 0;
+    this.__missing_power_this_slot = toNumber(await this.homey.settings.get('safeShutdown__missing_power_this_slot')) || 0;
     this.__fakeEnergy = await this.homey.settings.get('safeShutdown__fakeEnergy') || [0, 0, 0, 0];
     this.__pendingOnNewSlot = await this.homey.settings.get('safeShutdown__pendingOnNewSlot') || [];
     if (!Array.isArray(this.__accum_energy)) {
-      // No stored data, set it to something senseful
+      // No stored data, set it to something senseful (first time only)
       this.__accum_energy = [0, 0, 0, 0];
       this.__current_power = undefined;
       this.__current_power_time = roundToStartOfMonth(new Date(now.getTime()), this.homey); // Create fake power since start of month
@@ -1126,7 +1131,7 @@ class PiggyBank extends Homey.App {
     this.homey.settings.set('safeShutdown__current_power_time', this.__current_power_time);
     this.homey.settings.set('safeShutdown__energy_last_slot', this.__energy_last_slot);
     this.homey.settings.set('safeShutdown__offeredEnergy', this.__offeredEnergy);
-    this.homey.settings.set('safeShutdown_missing_power_this_slot', this.__missing_power_this_slot);
+    this.homey.settings.set('safeShutdown__missing_power_this_slot', this.__missing_power_this_slot);
     this.homey.settings.set('safeShutdown__fakeEnergy', this.__fakeEnergy);
     this.homey.settings.set('safeShutdown__pendingOnNewSlot', this.__pendingOnNewSlot);
     // ===== KEEPING STATE ACROSS RESTARTS END =====
@@ -2418,6 +2423,7 @@ class PiggyBank extends Homey.App {
           - this.__current_state[a.id].nComError;
       });
     } catch (err) {
+      // This error cannot occur in live version, only in testing, thus console.log
       console.log(`__current_state was not set up. Please update the testcase such that __deviceList = undefined before onInit is called. (${err})`);
     }
     // Turn off devices from bottom and up in the priority list
