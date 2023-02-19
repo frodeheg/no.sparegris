@@ -3221,7 +3221,7 @@ class PiggyBank extends Homey.App {
     }
     // Fetch data from archive
     let searchData;
-    const searchDataGood = ('dataOk' in archive) ? archive.dataOk[period] : {};
+    const searchDataGood = (('dataOk' in archive) ? archive.dataOk[period] : undefined) || {};
     dataGood = searchDataGood[timeId];
     for (const partIdx in type) {
       const part = type[partIdx];
@@ -3240,8 +3240,8 @@ class PiggyBank extends Homey.App {
         case 'overShootAvoided':
           this.log(`trying: ${part} ${period} ${timeId} granularity: ${granularity}`);
           try {
-            const futureData = (part in futureArchive) ? futureArchive[part][period] : undefined;
-            const archiveData = (part in archive) ? archive[part][period] : undefined;
+            const futureData = ((part in futureArchive) ? futureArchive[part][period] : undefined) || {};
+            const archiveData = ((part in archive) ? archive[part][period] : undefined) || {};
             searchData = combine(archiveData, futureData);
             data[part] = searchData[timeId];
             if (searchData === undefined) throw new Error('No searchData');

@@ -318,5 +318,5 @@ function reloadPage() {
 }
 
 function showSettings() {
-  console.log(Homey.values);
+  console.log(Homey.settings);
 }
