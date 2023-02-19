@@ -141,7 +141,9 @@ async function applyStateFromFile(app, file, poweredOn = true) {
       resolve(data);
     });
   }).then(data => {
-    const parsed = JSON.parse(data);
+    const parsed = JSON.parse(data, (key, value) => {
+      return value === 'Infinity' ? Infinity : value;
+    });
     // Settings are always loaded
     app.homey.settings.values = parsed.settings;
     if (poweredOn) {
@@ -235,7 +237,9 @@ async function applyStateFromFile(app, file, poweredOn = true) {
 async function dumpStateToFile(app, outFile) {
   return app.getFullState()
     .then(state => {
-      fs.writeFile(outFile, JSON.stringify(state, null, 2), err => {
+      fs.writeFile(outFile, JSON.stringify(state, (key, value) => {
+        return value === Infinity ? 'Infinity' : value;
+      }, 2), err => {
         if (err) {
           return Promise.reject(err);
         }

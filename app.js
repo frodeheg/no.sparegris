@@ -537,7 +537,7 @@ class PiggyBank extends Homey.App {
         this.homey.settings.set('futurePriceOptions', futurePriceOptions);
       }
       // Changed maxPower and accum energy to array
-      const oldMaxPower = this.homey.settings.get('maxPower');
+      const oldMaxPower = +this.homey.settings.get('maxPower');
       if (oldMaxPower) {
         // Filter out new users so they get the defaults set later
         const newMaxPower = [Infinity, oldMaxPower, Infinity, Infinity];

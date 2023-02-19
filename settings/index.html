@@ -2476,7 +2476,9 @@
         document.getElementById("getState").addEventListener("click", e => {
           Homey.api('GET', '/apiCommand?cmd=getFullState', null, function (err, result) {
             if (err) alertUser(Homey, err);
-            document.getElementById("backupBlob").value = JSON.stringify(result, null, 2);
+            document.getElementById("backupBlob").value = JSON.stringify(result, (key, value) => {
+              return value === Infinity ? 'Infinity' : value;
+            }, 2);
           });
         });
         const saveFunc = () => {
