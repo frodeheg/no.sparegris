@@ -6,6 +6,7 @@ const GRANULARITY = {
   MONTH: 1,
   DAY: 2,
   HOUR: 3,
+  QUARTER: 4,
 };
 
 // Overrides

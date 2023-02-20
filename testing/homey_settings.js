@@ -107,6 +107,14 @@ class FakeHomey {
         },
         // dataGood: [true, true, false, true, true],
         dataGood:[0, 1, 1, 0, 1],
+        chartSlotLength: {
+          maxPower: 60,
+          chargeShedule: 60,
+          elPrices: 60,
+          price: 60,
+          pricePoints: 60,
+          powUsage: 15,
+        }
       };
       // response = {"daysInMonth":31,slotsInDay:1,"localTime":1670193702771,"localDay":4,"localMonth":11,"localYear":2022,"data":{"error":{}},"dataGood":false};
       // response = {"daysInMonth":31,slotsInDay:24,"localTime":1670213729136,"localDay":5,"localMonth":11,"localYear":2022,"data":{"chargeShedule":[],"elPrices":[0.7127719530932262,0.6934892301956708,0.66827484805007,0.6659562841746125,0.6575514901260789,0.7758755332369289,0.8918657689005378,0.9225674188847215,0.9238812717474807,0.9452507021329477,0.9696729082877671,0.9994471327217678,0.9896898430792174,0.9827534728184737,1.0126436254462472,0.9887044534321479,0.9994664540873965,1.0567349818111982,1.1417489905779745,0.9994471327217678,0.97662859991414,0.967721450359257,0.8608122565411902,0.834921626598581],"currentHour":5,"maxPower":[4379.558582499998,4691.687735833334,1258.170082222223,4726.245076388889,8744.871345833333]},"dataGood":[true,true,true,false,true]};

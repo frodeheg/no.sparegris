@@ -28,13 +28,13 @@ const { resolve } = require('path');
 const c = require('./common/constants');
 const d = require('./common/devices');
 const {
-  addToArchive, removeFromArchive, cleanArchive, getArchive,
+  getMinUnit, addToArchive, removeFromArchive, cleanArchive, getArchive,
   changeArchiveMode, clearArchive
 } = require('./common/archive');
 const {
   daysInMonth, toLocalTime, timeDiff, timeSinceLastLimiter, timeToNextSlot,
   timeToNextLimiter, limiterLength, roundToStartOfMonth, roundToNearestHour,
-  roundToStartOfSlot, roundToStartOfDay, hoursInDay, slotsInDay, fromLocalTime,
+  roundToStartOfSlot, roundToStartOfDay, hoursInDay, fromLocalTime,
   TIMESPAN
 } = require('./common/homeytime');
 const { isNumber, toNumber, combine, sumArray } = require('./common/tools');
@@ -3214,8 +3214,8 @@ class PiggyBank extends Homey.App {
         period = 'yearly';
         timeId = `${statsTimeLocal.getFullYear()}`;
         break;
-      case c.GRANULARITY.HOUR:
-        period = 'hourly';
+      case c.GRANULARITY.HOUR: // Slot, not hour
+        period = getMinUnit('dataOk');
         timeId = `${statsTimeLocal.getFullYear()}-${String(statsTimeLocal.getMonth() + 1).padStart(2, '0')}-${String(statsTimeLocal.getDate()).padStart(2, '0')}`;
         break;
     }
@@ -3228,9 +3228,13 @@ class PiggyBank extends Homey.App {
     // Fetch data from archive
     let searchData;
     const searchDataGood = (('dataOk' in archive) ? archive.dataOk[period] : undefined) || {};
+    const slotLength = { dataOk: this.granularity };
     dataGood = searchDataGood[timeId];
     for (const partIdx in type) {
       const part = type[partIdx];
+      const minUnit = getMinUnit(part);
+      slotLength[part] = (minUnit === 'quarter') ? 15 : 60;
+      if (+granularity === c.GRANULARITY.HOUR) period = minUnit;
       switch (part) {
         case 'chargePlan':
           data['chargeShedule'] = this.__charge_plan;
@@ -3281,8 +3285,8 @@ class PiggyBank extends Homey.App {
 
     const stats = {
       daysInMonth: daysInMonth(statsTimeUTC, this.homey),
-      slotsInDay: slotsInDay(statsTimeUTC, this.granularity, this.homey),
-      slotLength: this.granularity,
+      hoursInDay: hoursInDay(statsTimeUTC, this.homey),
+      slotLength,
       localTime: statsTimeLocal.getTime(),
       localDay: statsTimeLocal.getDate(),
       localMonth: statsTimeLocal.getMonth(),

@@ -501,6 +501,7 @@ async function testTicket115() {
   const app = new PiggyBank();
   await app.disableLog();
   await applyStateFromFile(app, 'testing/states/Frode_0.19.4_bug87.txt');
+  app.homey.settings.set('toggleTime', 1);
   app.__deviceList = undefined;
   await app.onInit();
 

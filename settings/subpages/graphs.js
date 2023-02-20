@@ -18,13 +18,14 @@ let chartYearIdx = 2022;
 let chartMonthIdx = 0;
 let chartDayIdx = 1;
 let chartDaysInMonth = 31;
-let chartSlotsInDay = 24;
+let chartHoursInDay = 24;
 let chartSlotLength = 60;
 let chartTime = new Date();
 let chartStartTime = chartTime;
 let chartEndTime = chartTime;
 let chartAux;
-let chartDataOk;
+let chartDataOk15;
+let chartDataOk60;
 
 // Translation text
 let textMaxHour = 'maxUsageGraph.title';
@@ -33,14 +34,24 @@ let textPrices = 'graph.prices';
 let textSavings = 'graph.savings';
 let textPredicted = 'graph.predicted';
 
+function applyReliability(stats) {
+  chartDataOk15 = stats.dataGood || [];
+  chartDataOk60 = [];
+  for (let i = 0; i < (chartDataOk15.length / 4); i++) {
+    chartDataOk60[i] = +chartDataOk15[4 * i + 0] * +chartDataOk15[4 * i + 1] * +chartDataOk15[4 * i + 2] * +chartDataOk15[4 * i + 3];
+  }
+}
+
 function generateConsumptionData(stats) {
   // Calculate values
   const dataset = stats.data.powUsage || [];
-  chartDataOk = stats.dataGood || [];
+  applyReliability(stats);
   // Generate data
-  const colorBars = Array(chartDaysInMonth).fill('pink');
-  const colorBarLines = Array(chartDaysInMonth).fill('black');
-  for (let i = 0; i < chartDaysInMonth; i++) {
+  const multiplier = 60 / chartSlotLength;
+  const colorBars = Array(chartDaysInMonth * multiplier).fill('pink');
+  const colorBarLines = Array(chartDaysInMonth * multiplier).fill('black');
+  const chartDataOk = (chartSlotLength === 15) ? chartDataOk15 : chartDataOk60;
+  for (let i = 0; i < chartDaysInMonth * multiplier; i++) {
     let barCol = '80,160,80';
     let barAlpha = 1;
     let lineAlpha = 1;
@@ -64,14 +75,14 @@ function generateConsumptionData(stats) {
     label: textConsumption,
     backgroundColor: colorBars,
     borderColor: colorBarLines,
-    borderWidth: 1,
+    borderWidth: (chartSlotLength === 15) ? 0 : 1,
     data: dataset.map(x => Math.round(x) / 1000),
   }];
 }
 
 function generateConsumptionOptions(stats, graphTitle) {
   const dataset = stats.data.powUsage || [];
-  chartDataOk = stats.dataGood || [];
+  const chartDataOk = (chartSlotLength === 15) ? chartDataOk15 : chartDataOk60;
   return {
     responsive: true,
     maintainAspectRatio: false,
@@ -137,7 +148,7 @@ function generateConsumptionOptions(stats, graphTitle) {
 function generateHourlyMaxData(stats) {
   // Calculate values
   const dataset = stats.data.maxPower || [];
-  chartDataOk = stats.dataGood || [];
+  applyReliability(stats);
   const maxDays = getMax3(dataset);
   const tariffGuide = Math.round(averageOfElements(dataset, maxDays));
   const tariffAbove = getGridAbove(tariffGuide);
@@ -151,6 +162,7 @@ function generateHourlyMaxData(stats) {
   const colorBars = Array(maxDataLength).fill('pink');
   const colorBarLines = Array(maxDataLength).fill('black');
   const showMonth = (+chartPeriod === GRANULARITY.DAY);
+  const chartDataOk = (chartSlotLength === 15) ? chartDataOk15 : chartDataOk60;
   for (let i = 0; i < maxDataLength; i++) {
     let barCol = '80,160,80';
     let barAlpha = 1;
@@ -204,14 +216,14 @@ function generateHourlyMaxData(stats) {
     label: chartPeriod === GRANULARITY.HOUR ? textConsumption : graphHighest,
     backgroundColor: colorBars,
     borderColor: colorBarLines,
-    borderWidth: 1,
+    borderWidth: (chartSlotLength === 15) ? 0 : 1,
     data: dataset.map(x => Math.round(x) / 1000),
   }];
 }
 
 function generateHourlyMaxOptions(stats, graphTitle) {
   const dataset = stats.data.maxPower || [];
-  chartDataOk = stats.dataGood || [];
+  const chartDataOk = (chartSlotLength === 15) ? chartDataOk15 : chartDataOk60;
   return {
     responsive: true,
     maintainAspectRatio: false,
@@ -281,6 +293,8 @@ function generateHourlyMaxOptions(stats, graphTitle) {
 
 function generatePriceData(stats) {
   // Calculate values
+  applyReliability(stats);
+  const chartDataOk = (chartSlotLength === 15) ? chartDataOk15 : chartDataOk60;
   const perHour = (chartPeriod === GRANULARITY.HOUR);
   const dataset = stats.data.price || [];
   chartAux = Array.isArray(stats.data.pricePoints) ? stats.data.pricePoints : []; // 0: PP_LOW, 1: PP_NORM, 2: PP_HIGH, 3: PP_EXTREME, 4: PP_DIRTCHEAP
@@ -423,7 +437,7 @@ function generatePriceData(stats) {
 }
 
 function generatePriceOptions(stats, graphTitle) {
-  chartDataOk = stats.dataGood || [];
+  const chartDataOk = (chartSlotLength === 15) ? chartDataOk15 : chartDataOk60;
   return {
     responsive: true,
     maintainAspectRatio: false,
@@ -515,31 +529,32 @@ function updateGraph(Homey) {
     default:
     case GRAPH_DATA_MAXHOUR:
       chartHeader = textMaxHour;
-      graphTypeRequest = 'maxPower'; // overShootAvoided
+      graphTypeRequest = ['maxPower']; // overShootAvoided
       break;
     case GRAPH_DATA_CONSUMPTION:
       chartHeader = textConsumption;
-      graphTypeRequest = 'powUsage';
+      graphTypeRequest = ['powUsage'];
       break;
     case GRAPH_DATA_PRICES:
       chartHeader = textPrices;
-      graphTypeRequest = '[price,pricePoints]'; // pricePoints
+      graphTypeRequest = ['price', 'pricePoints']; // pricePoints
       break;
     case GRAPH_DATA_SAVINGS:
       chartHeader = textSavings;
-      graphTypeRequest = '[moneySavedTariff,moneySavedUsage]';
+      graphTypeRequest = ['moneySavedTariff', 'moneySavedUsage'];
       break;
   }
-  Homey.api('GET', `/getStats?type=${graphTypeRequest}&time=${chartTime.getTime()}&granularity=${chartPeriod}`, null,
+  Homey.api('GET', `/getStats?type=[${graphTypeRequest.join(',')}]&time=${chartTime.getTime()}&granularity=${chartPeriod}`, null,
     (err, res) => {
       if (err) return alertUser(Homey, err);
       chartMonthIdx = res.localMonth;
       chartYearIdx = res.localYear;
       chartDayIdx = res.localDay;
       chartDaysInMonth = res.daysInMonth;
-      chartSlotsInDay = res.slotsInDay;
-      chartSlotLength = res.slotLength;
+      chartHoursInDay = res.hoursInDay;
+      const slotLengthArray = res.slotLength;
       chartTime = new Date(res.localTime);
+      let chartSlotsInDay;
       let timeString;
       let labels;
       switch (chartPeriod) {
@@ -556,10 +571,12 @@ function updateGraph(Homey) {
           chartEndTime = new Date(chartStartTime.getTime() + (1000 * 60 * 60 * 24 * chartDaysInMonth));
           break;
         case GRANULARITY.HOUR:
+          chartSlotLength = slotLengthArray[graphTypeRequest[0]];
+          chartSlotsInDay = chartHoursInDay * (60 / chartSlotLength);
           timeString = `${monthText[chartMonthIdx]} - ${chartDayIdx}`;
           labels = (chartSlotLength === 15)
             ? Array.from(Array(chartSlotsInDay).keys()).map(s => `${Math.floor(s / 4)}:${String(15 * (s % 4)).padStart(2, '0')}`)
-            : Array.from(Array(chartSlotsInDay).keys()).map(h => `${h}:00`)
+            : Array.from(Array(chartSlotsInDay).keys()).map(h => `${h}:00`);
           chartStartTime = new Date(`${chartYearIdx}-${chartMonthIdx + 1}-${chartDayIdx}`);
           chartEndTime = new Date(chartStartTime.getTime() + (1000 * 60 * chartSlotLength * chartSlotsInDay));
           break;
@@ -677,8 +694,8 @@ function InitGraph(Homey, stats) {
   // Remember Chart latent state
   chartMonthIdx = stats.localMonth;
   chartDaysInMonth = stats.daysInMonth;
-  chartSlotsInDay = stats.slotsInDay;
-  chartSlotLength = stats.slotLength;
+  chartHoursInDay = stats.hoursInDay;
+  chartSlotLength = stats.slotLength.maxPower;
   chartTime = new Date(stats.localTime);
   chartStartTime = new Date(chartTime.getTime());
   chartEndTime = new Date(chartStartTime.getTime() + (1000 * 60 * 60 * 24 * chartDaysInMonth));
