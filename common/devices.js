@@ -400,8 +400,14 @@ const DEVICE_CMD = {
     tempMax: undefined, // --- " ---
     default: false
   },
-  'no.connecte:smart_socket': DEFAULT_SWITCH,
   'no.connecte:puck_relay': DEFAULT_SWITCH,
+  'no.connecte:smart_socket': DEFAULT_SWITCH,
+  'no.connecte:thermostat': {
+    ...DEFAULT_HEATER,
+    tempMax: 35,
+    tempStep: 1,
+    default: false
+  },
   'no.easee:charger': {
     ...DEFAULT_CHARGER,
     onChargeStart: {
