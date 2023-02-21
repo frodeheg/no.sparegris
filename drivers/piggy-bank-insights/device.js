@@ -13,6 +13,7 @@ class MyDevice extends Device {
    * onInit is called when the device is initialized.
    */
   async onInit() {
+    this.alive = true;
     this.intervalID = undefined;
     this.currency = 'NOK';
 
@@ -280,6 +281,7 @@ class MyDevice extends Device {
    * onDeleted is called when the user deleted the device.
    */
   async onDeleted() {
+    this.alive = false;
     this.homey.app.updateLog('MyDevice has been deleted', 1);
     // Make sure the interval is cleared if it was started, otherwise it will continue to
     // trigger but on an unknown device.
@@ -471,7 +473,9 @@ class MyDevice extends Device {
       // * 1: Average power moved to lower price points
       // * 1: Money spent by moving between price points
     } finally {
-      this.intervalID = setTimeout(() => this.updateState(), this.__pollIntervalTime);
+      if (this.alive) {
+        this.intervalID = setTimeout(() => this.updateState(), this.__pollIntervalTime);
+      }
     }
   }
 
