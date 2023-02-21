@@ -418,10 +418,12 @@
   },
   "maxUsageGraph": {
     "title": "Maks timeforbruk",
+    "titleQ": "Maks forbruk per 15 min.",
     "yaxis": "kWh",
     "xaxis": "Dag",
     "tariff": "Estimert effekttariff",
     "highest": "Høyeste timeforbruk",
+    "highestQ": "Høyeste forbruk per 15 min.",
     "missing": "Manglende data.",
     "inaccurate": "Unøyaktige data.\n(Tid uten effekt: ${percent}%)",
     "incomplete": "Ufullstendige data, periode ikke fullført."

@@ -33,7 +33,7 @@ class FakeHomey {
         currency: 'NOK',
         gridCosts: [{ limit: 2000, price: 73 }, { limit: 5000, price: 128 }, { limit: 10000, price: 219 }]
       },
-      maxPower: 5000,
+      maxPower: [null, 5000, null, 50000],
       chargerOptions: {
         chargeTarget: 1, // CHARGE_TARGET_AUTO
         chargeMin: 1500,
@@ -90,7 +90,7 @@ class FakeHomey {
       }
       response = {
         daysInMonth: 31,
-        slotsInDay: 24,
+        hoursInDay: 24,
         localTime: 1670989328353,
         localDay: 14,
         localMonth: 11,
@@ -107,7 +107,7 @@ class FakeHomey {
         },
         // dataGood: [true, true, false, true, true],
         dataGood:[0, 1, 1, 0, 1],
-        chartSlotLength: {
+        slotLength: {
           maxPower: 60,
           chargeShedule: 60,
           elPrices: 60,

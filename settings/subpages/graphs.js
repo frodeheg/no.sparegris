@@ -20,6 +20,7 @@ let chartDayIdx = 1;
 let chartDaysInMonth = 31;
 let chartHoursInDay = 24;
 let chartSlotLength = 60;
+let chartGranularity = 60;
 let chartTime = new Date();
 let chartStartTime = chartTime;
 let chartEndTime = chartTime;
@@ -29,16 +30,40 @@ let chartDataOk60;
 
 // Translation text
 let textMaxHour = 'maxUsageGraph.title';
+let textMaxHourQ = 'maxUsageGraph.titleQ';
 let textConsumption = 'graph.consumption';
 let textPrices = 'graph.prices';
 let textSavings = 'graph.savings';
 let textPredicted = 'graph.predicted';
+let textHours = 'graph.hours';
+let textYAxis = 'maxUsageGraph.yaxis';
+let textXAxis = 'maxUsageGraph.xaxis';
+let textTariff = 'maxUsageGraph.tariff';
+let textMissing = 'maxUsageGraph.missing';
+let textHighest = 'maxUsageGraph.highest';
+let textHighestQ = 'maxUsageGraph.highestQ';
+let textInaccurate = 'maxUsageGraph.inaccurate';
+let textIncomplete = 'maxUsageGraph.incomplete';
+const textMonth = [
+  'month.jan',
+  'month.feb',
+  'month.mar',
+  'month.apr',
+  'month.may',
+  'month.jun',
+  'month.jul',
+  'month.aug',
+  'month.sep',
+  'month.oct',
+  'month.nov',
+  'month.dec',
+];
 
 function applyReliability(stats) {
   chartDataOk15 = stats.dataGood || [];
   chartDataOk60 = [];
   for (let i = 0; i < (chartDataOk15.length / 4); i++) {
-    chartDataOk60[i] = +chartDataOk15[4 * i + 0] * +chartDataOk15[4 * i + 1] * +chartDataOk15[4 * i + 2] * +chartDataOk15[4 * i + 3];
+    chartDataOk60[i] = (+chartDataOk15[4 * i + 0] + +chartDataOk15[4 * i + 1] + +chartDataOk15[4 * i + 2] + +chartDataOk15[4 * i + 3]) / 4;
   }
 }
 
@@ -90,7 +115,7 @@ function generateConsumptionOptions(stats, graphTitle) {
       y: {
         title: {
           display: true,
-          text: graphYAxis,
+          text: textYAxis,
         },
         ticks: {
           callback(value, index, ticks) {
@@ -107,19 +132,19 @@ function generateConsumptionOptions(stats, graphTitle) {
       tooltip: {
         callbacks: {
           title(context) {
-            return `${monthText[chartMonthIdx]} ${context[0].label}`;
+            return `${textMonth[chartMonthIdx]} ${context[0].label}`;
           },
           beforeFooter(context) {
-            if (!dataset[context[0].dataIndex]) return graphMissing;
+            if (!dataset[context[0].dataIndex]) return textMissing;
             const now = new Date();
             if ((context[0].dataIndex === dataset.length - 1)
               && (chartPeriod !== GRANULARITY.HOUR)
               && (now > chartStartTime)
               && (now < chartEndTime)) {
-              return graphIncomplete;
+              return textIncomplete;
             }
-            if (chartDataOk[context[0].dataIndex] < 0) return graphInaccurate.slice(0,graphInaccurate.indexOf('\n')); // Legacy archive before v. 0.19.27
-            if (chartDataOk[context[0].dataIndex] < 1) return graphInaccurate.replace('${percent}', Math.round(100 * (1 - chartDataOk[context[0].dataIndex])));
+            if (chartDataOk[context[0].dataIndex] < 0) return textInaccurate.slice(0, textInaccurate.indexOf('\n')); // Legacy archive before v. 0.19.27
+            if (chartDataOk[context[0].dataIndex] < 1) return textInaccurate.replace('${percent}', Math.round(100 * (1 - chartDataOk[context[0].dataIndex])));
             return '';
           },
         },
@@ -204,7 +229,7 @@ function generateHourlyMaxData(stats) {
     pointRadius: 0,
   }, {
     type: 'line',
-    label: graphTariff,
+    label: textTariff,
     borderDash: [10, 5],
     borderColor: showMonth ? 'gray' : 'rgba(0,0,0,0)',
     pointBackgroundColor: showMonth ? 'gray' : 'rgba(0,0,0,0)',
@@ -213,7 +238,7 @@ function generateHourlyMaxData(stats) {
     data: dataTariffGuide,
   }, {
     type: 'bar',
-    label: chartPeriod === GRANULARITY.HOUR ? textConsumption : graphHighest,
+    label: (chartPeriod === GRANULARITY.HOUR && chartGranularity === 60) ? textConsumption : (chartGranularity === 15) ? textHighestQ : textHighest,
     backgroundColor: colorBars,
     borderColor: colorBarLines,
     borderWidth: (chartSlotLength === 15) ? 0 : 1,
@@ -231,7 +256,7 @@ function generateHourlyMaxOptions(stats, graphTitle) {
       y: {
         title: {
           display: true,
-          text: graphYAxis,
+          text: textYAxis,
         },
         ticks: {
           callback(value, index, ticks) {
@@ -248,25 +273,25 @@ function generateHourlyMaxOptions(stats, graphTitle) {
       tooltip: {
         callbacks: {
           title(context) {
-            return `${monthText[chartMonthIdx]} ${context[0].label}`;
+            return `${textMonth[chartMonthIdx]} ${context[0].label}`;
           },
           beforeFooter(context) {
-            if (!dataset[context[0].dataIndex]) return graphMissing;
+            if (!dataset[context[0].dataIndex]) return textMissing;
             const now = new Date();
             if ((context[0].dataIndex === dataset.length - 1)
               && (chartPeriod !== GRANULARITY.HOUR)
               && (now > chartStartTime)
               && (now < chartEndTime)) {
-              return graphIncomplete;
+              return textIncomplete;
             }
-            if (chartDataOk[context[0].dataIndex] < 0) return graphInaccurate.slice(0,graphInaccurate.indexOf('\n')); // Legacy archive before v. 0.19.27
-            if (chartDataOk[context[0].dataIndex] < 1) return graphInaccurate.replace('${percent}', Math.round(100 * (1 - chartDataOk[context[0].dataIndex])));
+            if (chartDataOk[context[0].dataIndex] < 0) return textInaccurate.slice(0, textInaccurate.indexOf('\n')); // Legacy archive before v. 0.19.27
+            if (chartDataOk[context[0].dataIndex] < 1) return textInaccurate.replace('${percent}', Math.round(100 * (1 - chartDataOk[context[0].dataIndex])));
             return '';
           },
         },
         filter(context) {
           if (context.dataset.label.startsWith('Trinn')) return false;
-          if (context.dataset.label === graphTariff && chartPeriod != GRANULARITY.DAY) return false;
+          if (context.dataset.label === textTariff && chartPeriod !== GRANULARITY.DAY) return false;
           return true;
         },
       },
@@ -326,8 +351,8 @@ function generatePriceData(stats) {
   const colNorm = 'rgba(0,128,255,0.4)';
   const colHigh = 'rgba(128,0,0,0.3)';
   const colExtreme = 'rgba(255,0,0,0.2)';
-  const skipped = (ctx, value) => ctx.p0.skip || ctx.p1.skip ? value : undefined;
-  const future = (ctx, value) => chartDataOk[ctx.p0DataIndex] === undefined ? value : undefined;
+  const skipped = (ctx, value) => (ctx.p0.skip || ctx.p1.skip ? value : undefined);
+  const future = (ctx, value) => (chartDataOk[ctx.p0DataIndex] === undefined ? value : undefined);
   const chartData = [{
     type: 'line',
     stepped: perHour,
@@ -470,8 +495,8 @@ function generatePriceOptions(stats, graphTitle) {
             const predictionText = isFutureValue ? ` (${textPredicted})` : '';
             const dataOkText = (isFutureValue || !context[0]) ? ''
               : (chartDataOk[context[0].dataIndex] >= 1) ? ''
-                : (chartDataOk[context[0].dataIndex] >= 0) ? `\n${graphInaccurate.replace('${percent}', Math.round(100 * (1 - chartDataOk[context[0].dataIndex])))}`
-                  : `\n${graphInaccurate.slice(0,graphInaccurate.indexOf('\n'))}`; // Legacy archive before v. 0.19.27
+                : (chartDataOk[context[0].dataIndex] >= 0) ? `\n${textInaccurate.replace('${percent}', Math.round(100 * (1 - chartDataOk[context[0].dataIndex])))}`
+                  : `\n${textInaccurate.slice(0, textInaccurate.indexOf('\n'))}`; // Legacy archive before v. 0.19.27
             if (+chartPeriod === GRANULARITY.HOUR) {
               let ppName;
               try {
@@ -489,11 +514,11 @@ function generatePriceOptions(stats, graphTitle) {
             }
             if (!Array.isArray(dayData)) return `${priceDistributionText}: ${unavailableText}`;
             return `${priceDistributionText}:\n`
-              + `  ${pricePoints[0].name}: ${dayData[pricePoints[0].value]} ${hoursText}\n`
-              + `  ${pricePoints[1].name}: ${dayData[pricePoints[1].value]} ${hoursText}\n`
-              + `  ${pricePoints[2].name}: ${dayData[pricePoints[2].value]} ${hoursText}\n`
-              + `  ${pricePoints[3].name}: ${dayData[pricePoints[3].value]} ${hoursText}\n`
-              + `  ${pricePoints[4].name}: ${dayData[pricePoints[4].value]} ${hoursText}${dataOkText}`;
+              + `  ${pricePoints[0].name}: ${dayData[pricePoints[0].value]} ${textHours}\n`
+              + `  ${pricePoints[1].name}: ${dayData[pricePoints[1].value]} ${textHours}\n`
+              + `  ${pricePoints[2].name}: ${dayData[pricePoints[2].value]} ${textHours}\n`
+              + `  ${pricePoints[3].name}: ${dayData[pricePoints[3].value]} ${textHours}\n`
+              + `  ${pricePoints[4].name}: ${dayData[pricePoints[4].value]} ${textHours}${dataOkText}`;
           },
         },
         filter(context) {
@@ -528,7 +553,7 @@ function updateGraph(Homey) {
   switch (chartContent) {
     default:
     case GRAPH_DATA_MAXHOUR:
-      chartHeader = textMaxHour;
+      chartHeader = (chartGranularity === 15) ? textMaxHourQ : textMaxHour;
       graphTypeRequest = ['maxPower']; // overShootAvoided
       break;
     case GRAPH_DATA_CONSUMPTION:
@@ -560,12 +585,12 @@ function updateGraph(Homey) {
       switch (chartPeriod) {
         case GRANULARITY.MONTH:
           timeString = `${chartYearIdx}`;
-          labels = monthText;
+          labels = textMonth;
           chartStartTime = new Date(`${chartYearIdx}`);
           chartEndTime = new Date(chartStartTime.getTime() + (1000 * 60 * 60 * 24 * 365));
           break;
         case GRANULARITY.DAY:
-          timeString = monthText[chartMonthIdx];
+          timeString = textMonth[chartMonthIdx];
           labels = Array.from(Array(chartDaysInMonth + 1).keys()).slice(1);
           chartStartTime = new Date(`${chartYearIdx}-${chartMonthIdx+1}`);
           chartEndTime = new Date(chartStartTime.getTime() + (1000 * 60 * 60 * 24 * chartDaysInMonth));
@@ -573,7 +598,7 @@ function updateGraph(Homey) {
         case GRANULARITY.HOUR:
           chartSlotLength = slotLengthArray[graphTypeRequest[0]];
           chartSlotsInDay = chartHoursInDay * (60 / chartSlotLength);
-          timeString = `${monthText[chartMonthIdx]} - ${chartDayIdx}`;
+          timeString = `${textMonth[chartMonthIdx]} - ${chartDayIdx}`;
           labels = (chartSlotLength === 15)
             ? Array.from(Array(chartSlotsInDay).keys()).map(s => `${Math.floor(s / 4)}:${String(15 * (s % 4)).padStart(2, '0')}`)
             : Array.from(Array(chartSlotsInDay).keys()).map(h => `${h}:00`);
@@ -683,19 +708,33 @@ function onForwardClick(Homey) {
   updateGraph(Homey);
 }
 
-function InitGraph(Homey, stats) {
+function InitGraph(Homey, stats, granularity) {
   // Translate strings
   textMaxHour = Homey.__(textMaxHour);
+  textMaxHourQ = Homey.__(textMaxHourQ);
   textConsumption = Homey.__(textConsumption);
   textPrices = Homey.__(textPrices);
   textSavings = Homey.__(textSavings);
   textPredicted = Homey.__(textPredicted);
+  textHours = Homey.__(textHours);
+  textYAxis = Homey.__(textYAxis);
+  textXAxis = Homey.__(textXAxis);
+  textTariff = Homey.__(textTariff);
+  textMissing = Homey.__(textMissing);
+  textHighest = Homey.__(textHighest);
+  textHighestQ = Homey.__(textHighestQ);
+  textInaccurate = Homey.__(textInaccurate);
+  textIncomplete = Homey.__(textIncomplete);
+  for (let i = 0; i < textMonth.length; i++) {
+    textMonth[i] = Homey.__(textMonth[i]);
+  }
 
   // Remember Chart latent state
   chartMonthIdx = stats.localMonth;
   chartDaysInMonth = stats.daysInMonth;
   chartHoursInDay = stats.hoursInDay;
   chartSlotLength = stats.slotLength.maxPower;
+  chartGranularity = granularity;
   chartTime = new Date(stats.localTime);
   chartStartTime = new Date(chartTime.getTime());
   chartEndTime = new Date(chartStartTime.getTime() + (1000 * 60 * 60 * 24 * chartDaysInMonth));

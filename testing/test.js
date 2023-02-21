@@ -835,9 +835,6 @@ async function testBelgiumPowerTariff(numTests) {
   clearArchive(app.homey);
 
   app.homey.settings.set('maxPower', [2000, Infinity, Infinity, Infinity]);
-  app.__accum_energy = [0, 0, 0, 0]; // TODO: Reset in app
-  app.__fakeEnergy = [0, 0, 0, 0]; // TODO: Reset in app
-  app.granularity = 15; // TODO: Reset in app
 
   let now = new Date(startTime.getTime());
   let testAccum = 0;

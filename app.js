@@ -54,6 +54,16 @@ const { MAIN_OP, TARGET_OP } = c;
 class PiggyBank extends Homey.App {
 
   /**
+   * Makes sure maxPower is read from the settings with Infinity support
+   * Infinity is stored as null in the settings because JSON doesn't support Infinity.
+   */
+  readMaxPower() {
+    const limits = this.homey.settings.get('maxPower');
+    if (Array.isArray(limits)) return limits.map(val => ((val === null) ? Infinity : val));
+    return null;
+  }
+
+  /**
    * Validates the settings
    */
   validateSettings() {
@@ -992,7 +1002,7 @@ class PiggyBank extends Homey.App {
     // ============== ON NEW HOUR SAFETY GUARD WHEN RESTARTING ==============
     if (this.__current_power === undefined) {
       // Set current power to max power to make sure we don't overuse the first hour
-      const limits = this.homey.settings.get('maxPower');
+      const limits = this.readMaxPower();
       this.__current_power = (this.granularity === 15) ? (limits[TIMESPAN.QUARTER] * 4) : limits[TIMESPAN.HOUR];
       if (this.__current_power === Infinity) {
         this.__current_power = Math.min(...limits);
@@ -1463,7 +1473,7 @@ class PiggyBank extends Homey.App {
     const chargerStatus = await device.capabilitiesObj[d.DEVICE_CMD[driverId].statusCap].value;
     const toMaxCurrent = +await device.capabilitiesObj[d.DEVICE_CMD[driverId].setCurrentCap].max;
     const maxCurrent = +chargerOptions.overrideEnable ? Math.min(+chargerOptions.overrideMaxCurrent, toMaxCurrent) : toMaxCurrent;
-    const maxPowers = this.homey.settings.get('maxPower');
+    const maxPowers = this.readMaxPower();
     const maxPower = (maxPowers[TIMESPAN.QUARTER] !== Infinity) ? maxPowers[TIMESPAN.QUARTER] : maxPowers[TIMESPAN.HOUR];
     const cannotCharge = d.DEVICE_CMD[driverId].statusUnavailable.includes(chargerStatus);
     const shouldntCharge = d.DEVICE_CMD[driverId].statusProblem.includes(chargerStatus);
@@ -1889,7 +1899,7 @@ class PiggyBank extends Homey.App {
       this.__pendingOnNewSlot = this.__pendingOnNewSlot.slice(1);
     }
     // Go through all limits to make sure they are met
-    const limits = this.homey.settings.get('maxPower');
+    const limits = this.readMaxPower();
     const errorMargin = this.homey.settings.get('errorMargin') ? (parseInt(this.homey.settings.get('errorMargin'), 10) / 100) : 0;
     const safetyPower = +this.homey.settings.get('safetyPower');
     const numLimits = Array.isArray(limits) ? limits.length : 0;
@@ -2025,7 +2035,7 @@ class PiggyBank extends Homey.App {
       return Promise.resolve();
     }
 
-    const limits = this.homey.settings.get('maxPower');
+    const limits = this.readMaxPower();
     const lowestLimit = (this.granularity === 15) ? TIMESPAN.QUARTER : TIMESPAN.HOUR;
     const numLimits = Array.isArray(limits) ? limits.length : 0;
     let newBaseSlot = false;
@@ -2214,7 +2224,7 @@ class PiggyBank extends Homey.App {
    * onMaxUsageUpdate is called whenever the max usage per hour is changed
    */
   async onMaxUsageUpdate(newVal) {
-    const maxPower = await this.homey.settings.get('maxPower');
+    const maxPower = this.readMaxPower();
     maxPower[TIMESPAN.HOUR] = newVal;
     this.updateLog(`Changing the max usage per hour to: ${String(newVal)}`, c.LOG_INFO);
     this.homey.settings.set('maxPower', maxPower);
@@ -2261,7 +2271,7 @@ class PiggyBank extends Homey.App {
       const waitUpdate = (this.prevChargerTime !== undefined) && (timeLapsed < chargerOptions.minToggleTime) && (!isEmergency);
       if ((!waitUpdate) && ((chargerOptions.chargeRemaining > 0) || this.__charger_flow_is_on)) {
         this.prevChargerTime = new Date(now.getTime());
-        const maxLimits = this.homey.settings.get('maxPower');
+        const maxLimits = this.readMaxPower();
         const maxPower = Math.min(+maxLimits[TIMESPAN.QUARTER] * 4, +maxLimits[TIMESPAN.HOUR]);
         const newOfferPower = Math.min(Math.max(this.__charge_power_active + +powerDiff, +chargerOptions.chargeMin), maxPower);
         if (wantOn && !isOn && (+powerDiff >= chargerOptions.chargeThreshold)) {
@@ -2605,7 +2615,7 @@ class PiggyBank extends Homey.App {
         priceArray.push(futurePrice);
       }
     }
-    const maxLimits = this.homey.settings.get('maxPower');
+    const maxLimits = this.readMaxPower();
     const maxPower = Math.min(+maxLimits[TIMESPAN.QUARTER] * 4, +maxLimits[TIMESPAN.HOUR]);
     const priceSorted = Array.from(priceArray.keys()).sort((a, b) => ((priceArray[a] === priceArray[b]) ? (a - b) : (priceArray[a] - priceArray[b])));
     let scheduleRemaining = chargerOptions.chargeRemaining;
@@ -2963,7 +2973,7 @@ class PiggyBank extends Homey.App {
 
   // Must only be called once every month
   async statsSetLastMonthPower(maxSlotEnergy, timeLastUpdatedUTC) {
-    const maxLimits = this.homey.settings.get('maxPower');
+    const maxLimits = this.readMaxPower();
     const maxEnergy = (this.granularity === 15) ? maxLimits[TIMESPAN.QUARTER] : maxLimits[TIMESPAN.HOUR];
     const overShootAvoided = +this.homey.settings.get('overShootAvoided');
     const didMeetTariff = (maxSlotEnergy < maxEnergy);
@@ -3023,7 +3033,7 @@ class PiggyBank extends Homey.App {
     this.__latestArchiveDateLocal = slotStartLocal;
 
     let overShootAvoided = this.homey.settings.get('overShootAvoided');
-    const maxLimits = this.homey.settings.get('maxPower');
+    const maxLimits = this.readMaxPower();
     const maxEnergy = (this.granularity === 15) ? maxLimits[TIMESPAN.QUARTER] : maxLimits[TIMESPAN.HOUR];
     const dailyMaxPrevUpdateUTC = new Date(this.homey.settings.get('stats_daily_max_last_update_time'));
     const dailyMaxPrevUpdateLocal = toLocalTime(dailyMaxPrevUpdateUTC, this.homey);

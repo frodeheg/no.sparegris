@@ -90,37 +90,15 @@
         "settings.help.deviceTypeIgnore",
         "settings.help.deviceTypeMeter"
       ];
-      var graphYAxis = "maxUsageGraph.yaxis";
-      var graphXAxis = "maxUsageGraph.xaxis";
-      var graphTariff = "maxUsageGraph.tariff";
-      var graphHighest = "maxUsageGraph.highest";
-      var graphMissing = "maxUsageGraph.missing";
-      var graphInaccurate = "maxUsageGraph.inaccurate";
-      var graphIncomplete = "maxUsageGraph.incomplete";
       var chargePlanGraphTitle = "chargePlanGraph.title";
       var chargePlanGraphYAxis = "chargePlanGraph.yaxis";
       var chargePlanGraphPrice = "chargePlanGraph.price";
       var chargePlanGraphCharge = "chargePlanGraph.charging";
       var chargePlanGraphNoCharge = "chargePlanGraph.nocharge";
       var chargePlanGraphNoPrice = "chargePlanGraph.noPrice";
-      var monthText = [
-        "month.jan",
-        "month.feb",
-        "month.mar",
-        "month.apr",
-        "month.may",
-        "month.jun",
-        "month.jul",
-        "month.aug",
-        "month.sep",
-        "month.oct",
-        "month.nov",
-        "month.dec"
-      ];
       var pricePointText = "graph.pricePoint";
       var priceDistributionText = "graph.priceDistribution";
       var unavailableText = "graph.unavailable";
-      var hoursText = "graph.hours";
 
       var debugMode = false;
 
@@ -1988,6 +1966,10 @@
           setMaxPowerHour(loadedMaxPower[TIMESPAN.HOUR], 0, 100000);
           document.getElementById("maxPowerDay").value = Math.min(loadedMaxPower[TIMESPAN.DAY] / 1000, 1000);
           document.getElementById("maxPowerMonth").value = Math.min(loadedMaxPower[TIMESPAN.MONTH] / 1000, 50000);
+          document.getElementById('enLimit15').checked = loadedMaxPower[TIMESPAN.QUARTER] !== Infinity;
+          document.getElementById('enLimit60').checked = loadedMaxPower[TIMESPAN.HOUR] !== Infinity;
+          document.getElementById('enLimitDay').checked = loadedMaxPower[TIMESPAN.DAY] !== Infinity;
+          document.getElementById('enLimitMonth').checked = loadedMaxPower[TIMESPAN.MONTH] !== Infinity;
 
           // Initialize state and show the welcome page:
           updateOperatingModes(currentOperatingMode);
@@ -2142,13 +2124,6 @@
         deviceTypeText[4] = Homey.__(deviceTypeText[4]);
         deviceTypeText[5] = Homey.__(deviceTypeText[5]);
         deviceTypeText[6] = Homey.__(deviceTypeText[6]);
-        graphYAxis = Homey.__(graphYAxis);
-        graphXAxis = Homey.__(graphXAxis);
-        graphTariff = Homey.__(graphTariff);
-        graphHighest = Homey.__(graphHighest);
-        graphMissing = Homey.__(graphMissing);
-        graphInaccurate = Homey.__(graphInaccurate);
-        graphIncomplete = Homey.__(graphIncomplete);
         chargePlanGraphTitle = Homey.__(chargePlanGraphTitle);
         chargePlanGraphYAxis = Homey.__(chargePlanGraphYAxis);
         chargePlanGraphPrice = Homey.__(chargePlanGraphPrice);
@@ -2158,11 +2133,6 @@
         pricePointText = Homey.__(pricePointText);
         priceDistributionText = Homey.__(priceDistributionText);
         unavailableText = Homey.__(unavailableText);
-        hoursText = Homey.__(hoursText);
-
-        for (var i = 0; i < monthText.length; i++) {
-          monthText[i] = Homey.__(monthText[i]);
-        }
 
         for (var i = 0; i < pricePoints.length; i++) {
           pricePoints[i].name = Homey.__(pricePoints[i].name);
@@ -2199,7 +2169,7 @@
               // use defaults set from the top (this is the first time)
               maxPower = [Infinity, 5000, Infinity, 5000000];
             }
-            loadedMaxPower = maxPower;
+            loadedMaxPower = maxPower.map(val => ((val === null) ? Infinity : val));
             maxPowerLoaded = true;
             checkLoadingDone();
           });
@@ -2209,7 +2179,7 @@
           Homey.api('GET', `/getStats?type=[chargePlan,maxPower]&time=${instantly}&granularity=${GRANULARITY.DAY}`, null, function (err, res) {
             if (err) return alertUser(Homey, err);
             try {
-              InitGraph(Homey, res);
+              InitGraph(Homey, res, futurePriceOptions.granularity);
               updateCarSheduleGraph(res.data.chargeShedule || [], res.data.elPrices || [], res.data.currentHour);
               noPrices = !Array.isArray(res.data.elPrices) || (res.data.elPrices.length == 0)
             } catch (err2) {
