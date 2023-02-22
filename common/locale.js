@@ -70,6 +70,7 @@ const SCHEMA = {
       gridStepEn: 'table-row',
       enLimit60Box: 'table-row',
       granularityEn: 'table-row',
+      priceKindOptionUtil: null
     }
   },
   custom: {
@@ -92,6 +93,7 @@ const SCHEMA = {
       month: Infinity
     },
     hide: {
+      priceKindOptionUtil: null
     }
   }
 };
@@ -165,7 +167,10 @@ async function changeSchema(newSchema) {
     // Display old hidden elements
     const keys = Object.keys(SCHEMA[currentSchema].hide);
     for (let i = 0; i < keys.length; i++) {
-      document.getElementById(keys[i]).style.display = SCHEMA[currentSchema].hide[keys[i]];
+      const item = document.getElementById(keys[i]);
+      const value = SCHEMA[currentSchema].hide[keys[i]];
+      if (value === null) item.hidden = false;
+      else item.style.display = value;
     }
     currentSchema = newSchema;
     document.getElementById('costSchema').value = newSchema;
@@ -203,11 +208,12 @@ async function refreshSchema() {
     document.getElementById('enLimit60InBox').style.display = 'block';
     document.getElementById('enLimit60SelBox').style.display = 'none';
   }
-  if (document.getElementById('priceCountry').value === currentSchema) {
-    const keys = Object.keys(SCHEMA[currentSchema].hide);
-    for (let i = 0; i < keys.length; i++) {
-      document.getElementById(keys[i]).style.display = 'none';
-    }
+  const keys = Object.keys(SCHEMA[currentSchema].hide);
+  for (let i = 0; i < keys.length; i++) {
+    const item = document.getElementById(keys[i]);
+    const value = SCHEMA[currentSchema].hide[keys[i]];
+    if (value === null) item.hidden = true;
+    else item.style.display = 'none';
   }
   document.getElementById('maxPower15min').disabled = !document.getElementById('enLimit15').checked;
   document.getElementById('maxPowerHour').disabled = !document.getElementById('enLimit60').checked;

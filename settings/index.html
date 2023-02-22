@@ -1131,9 +1131,9 @@
               <td class="settings_row_name"><label for="priceKind" data-i18n="settings.price.priceKind">price.priceKind</label>:</td>
               <td class="settings_row_input">
                 <select id="priceKind" onchange="checkPriceKind(this);displaySaveHint()">
-                  <option value="0" data-i18n="settings.price.priceKindUtil" selected>UtilityCost</option>
-                  <option value="1" data-i18n="settings.price.priceKindSpot">Spot price</option>
+                  <option value="1" data-i18n="settings.price.priceKindSpot" selected>Spot price</option>
                   <option value="2" data-i18n="settings.price.priceKindFixed">Fixed price</option>
+                  <option id="priceKindOptionUtil" value="0" data-i18n="settings.price.priceKindUtil">UtilityCost</option>
                 </select>
                 <div class="hintButton" onclick="toggle(this,'hintPriceKind');return false;">i</div>
               </td>
