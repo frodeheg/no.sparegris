@@ -1987,8 +1987,10 @@ class PiggyBank extends Homey.App {
               const { driverId } = this.__meterReaders[meterReader];
               const { readPowerCap } = d.DEVICE_CMD[driverId];
               const { value, lastUpdated } = device.capabilitiesObj[readPowerCap];
-              if (lastUpdated === this.__prevPowerTime) return Promise.reject();
+              const prevPowerTime = this.__prevPowerTime;
               this.__prevPowerTime = lastUpdated;
+              // Skip reporting the very first time (because this means it is an update in the past) and when unchanged
+              if (lastUpdated === prevPowerTime || prevPowerTime === undefined) return Promise.reject();
               return Promise.resolve([value, new Date(lastUpdated)]);
             }
             return Promise.reject();
@@ -2033,6 +2035,13 @@ class PiggyBank extends Homey.App {
     if (fakePower && lapsedTime < (1000 * 60)) {
       // ignore fakePower if we got real power within the last minute
       return Promise.resolve();
+    }
+    if (lapsedTime < 0) {
+      // This should not really happen
+      const message = 'The reported power time was from the past. This should not happen...';
+      this.updateLog(message, c.LOG_ERROR);
+      this.__current_power_time = now; // just update the time to ensure the following Forced crash below will recover
+      return Promise.reject(new Error(message)); // Crash the app by purpose to make sure the problem is reported
     }
 
     const limits = this.readMaxPower();
