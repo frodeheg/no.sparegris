@@ -183,10 +183,14 @@ function generateHourlyMaxData(stats) {
   // Calculate values
   const dataset = stats.data.maxPower || [];
   applyReliability(stats);
-  const maxDays = getMax3(dataset);
-  const tariffGuide = Math.round(averageOfElements(dataset, maxDays));
-  const tariffAbove = getGridAbove(tariffGuide);
-  const tariffBelow = getGridBelow(tariffGuide);
+  const dataIsQuarterMax = stats.slotLength.dataGood === 15;
+  const showSteps = !dataIsQuarterMax;
+  const multiplier = dataIsQuarterMax ? 4 : 1;
+  const maxDays = showSteps ? getMax3(dataset) : [dataset.indexOf(Math.max(...dataset))];
+  const peakMin = +document.getElementById('peakMin').value;
+  const tariffGuide = Math.max(Math.round(averageOfElements(dataset, maxDays)) * multiplier, peakMin);
+  const tariffAbove = showSteps ? getGridAbove(tariffGuide) : (tariffGuide * 1.02);
+  const tariffBelow = showSteps ? getGridBelow(tariffGuide) : (tariffGuide * 0.98);
   // Generate data
   const maxDataLength = (chartPeriod === GRANULARITY.DAY) ? chartDaysInMonth : dataset.length;
 
@@ -223,16 +227,16 @@ function generateHourlyMaxData(stats) {
   return [{
     type: 'line',
     label: 'Trinn 3',
-    borderColor: showMonth ? 'black' : 'rgba(0,0,0,0)',
-    pointBackgroundColor: showMonth ? 'black' : 'rgba(0,0,0,0)',
+    borderColor: showMonth && showSteps ? 'black' : 'rgba(0,0,0,0)',
+    pointBackgroundColor: showMonth && showSteps ? 'black' : 'rgba(0,0,0,0)',
     data: dataTariffAbove,
     borderWidth: 1,
     pointRadius: 0,
   }, {
     type: 'line',
     label: 'Trinn 2',
-    borderColor: showMonth ? 'black' : 'rgba(0,0,0,0)',
-    pointBackgroundColor: showMonth ? 'black' : 'rgba(0,0,0,0)',
+    borderColor: showMonth && showSteps ? 'black' : 'rgba(0,0,0,0)',
+    pointBackgroundColor: showMonth && showSteps ? 'black' : 'rgba(0,0,0,0)',
     data: dataTariffBelow,
     borderWidth: 1,
     pointRadius: 0,
@@ -251,7 +255,7 @@ function generateHourlyMaxData(stats) {
     backgroundColor: colorBars,
     borderColor: colorBarLines,
     borderWidth: (chartSlotLength === 15) ? 0 : 1,
-    data: dataset.map(x => Math.round(x) / 1000),
+    data: dataset.map(x => Math.round(x * multiplier) / 1000),
   }];
 }
 
