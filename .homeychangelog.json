@@ -736,5 +736,8 @@
   },
   "0.20.0": {
     "en": "Added support for Belgian energy tariff + added energy limiters for day and month + Fixed a bug that didn't accumulate estimated power correctly in case of missing power reporting. + Added device support for com.ctmlyng.op:mtouch-one, net.filllip-namron:4512725, no.connecte:thermostat + added alarm to show when power is being limited. + Fixed a bug that ran code after the insights device was deleted. + Fixed a rare issue where the reported power could be negative after a restart."
+  },
+  "0.20.1": {
+    "en": "Removed the assert that power must not be reported from the past. Instead reset the time and continue like before. A better handler should be implemented in the future."
   }
 }
