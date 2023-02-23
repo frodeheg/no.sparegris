@@ -90,7 +90,6 @@ let mode = MODE.NORWAY;
  * Figures out what is the minimum unit for a set of data and mode
  */
 function getMinUnit(dataId) {
-  try {
   if (mode.minUnit === c.GRANULARITY.HOUR) return 'hourly';
   if (dataId === 'chargePlan') return 'hourly';
   switch (validTypes[dataId].minUnit) {
@@ -101,9 +100,6 @@ function getMinUnit(dataId) {
     default:
     case c.GRANULARITY.YEAR: return 'yearly';
   }
-} catch (err) {
-  console.log(`Oooooops: ${mode} |||| ${dataId}  ||||`)
-}
 }
 
 /**
