@@ -96,9 +96,6 @@
       var chargePlanGraphCharge = "chargePlanGraph.charging";
       var chargePlanGraphNoCharge = "chargePlanGraph.nocharge";
       var chargePlanGraphNoPrice = "chargePlanGraph.noPrice";
-      var pricePointText = "graph.pricePoint";
-      var priceDistributionText = "graph.priceDistribution";
-      var unavailableText = "graph.unavailable";
 
       var debugMode = false;
 
@@ -2130,9 +2127,6 @@
         chargePlanGraphCharge = Homey.__(chargePlanGraphCharge);
         chargePlanGraphNoCharge = Homey.__(chargePlanGraphNoCharge);
         chargePlanGraphNoPrice = Homey.__(chargePlanGraphNoPrice);
-        pricePointText = Homey.__(pricePointText);
-        priceDistributionText = Homey.__(priceDistributionText);
-        unavailableText = Homey.__(unavailableText);
 
         for (var i = 0; i < pricePoints.length; i++) {
           pricePoints[i].name = Homey.__(pricePoints[i].name);

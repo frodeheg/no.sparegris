@@ -106,14 +106,15 @@ class FakeHomey {
           powUsage: [3, 5, 1, 6],
         },
         // dataGood: [true, true, false, true, true],
-        dataGood:[0, 1, 1, 0, 1],
+        dataGood:[0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 0, 1],
         slotLength: {
+          dataGood: 60,
           maxPower: 60,
           chargeShedule: 60,
           elPrices: 60,
           price: 60,
           pricePoints: 60,
-          powUsage: 15,
+          powUsage: 60,
         }
       };
       // response = {"daysInMonth":31,slotsInDay:1,"localTime":1670193702771,"localDay":4,"localMonth":11,"localYear":2022,"data":{"error":{}},"dataGood":false};

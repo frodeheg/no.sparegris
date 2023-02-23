@@ -27,6 +27,7 @@ let chartEndTime = chartTime;
 let chartAux;
 let chartDataOk15;
 let chartDataOk60;
+let chartDataOk;
 
 // Translation text
 let textMaxHour = 'maxUsageGraph.title';
@@ -44,6 +45,9 @@ let textHighest = 'maxUsageGraph.highest';
 let textHighestQ = 'maxUsageGraph.highestQ';
 let textInaccurate = 'maxUsageGraph.inaccurate';
 let textIncomplete = 'maxUsageGraph.incomplete';
+let pricePointText = 'graph.pricePoint';
+let priceDistributionText = 'graph.priceDistribution';
+let unavailableText = 'graph.unavailable';
 const textMonth = [
   'month.jan',
   'month.feb',
@@ -60,10 +64,15 @@ const textMonth = [
 ];
 
 function applyReliability(stats) {
-  chartDataOk15 = stats.dataGood || [];
-  chartDataOk60 = [];
-  for (let i = 0; i < (chartDataOk15.length / 4); i++) {
-    chartDataOk60[i] = (+chartDataOk15[4 * i + 0] + +chartDataOk15[4 * i + 1] + +chartDataOk15[4 * i + 2] + +chartDataOk15[4 * i + 3]) / 4;
+  if (stats.slotLength['dataGood'] === 15) {
+    chartDataOk15 = stats.dataGood || [];
+    chartDataOk60 = [];
+    for (let i = 0; i < (chartDataOk15.length / 4); i++) {
+      chartDataOk60[i] = (+chartDataOk15[4 * i + 0] + +chartDataOk15[4 * i + 1] + +chartDataOk15[4 * i + 2] + +chartDataOk15[4 * i + 3]) / 4;
+    }
+  } else {
+    chartDataOk15 = [];
+    chartDataOk60 = stats.dataGood || [];
   }
 }
 
@@ -75,7 +84,7 @@ function generateConsumptionData(stats) {
   const multiplier = 60 / chartSlotLength;
   const colorBars = Array(chartDaysInMonth * multiplier).fill('pink');
   const colorBarLines = Array(chartDaysInMonth * multiplier).fill('black');
-  const chartDataOk = (chartSlotLength === 15) ? chartDataOk15 : chartDataOk60;
+  chartDataOk = (chartSlotLength === 15) ? chartDataOk15 : chartDataOk60;
   for (let i = 0; i < chartDaysInMonth * multiplier; i++) {
     let barCol = '80,160,80';
     let barAlpha = 1;
@@ -107,7 +116,7 @@ function generateConsumptionData(stats) {
 
 function generateConsumptionOptions(stats, graphTitle) {
   const dataset = stats.data.powUsage || [];
-  const chartDataOk = (chartSlotLength === 15) ? chartDataOk15 : chartDataOk60;
+  chartDataOk = (chartSlotLength === 15) ? chartDataOk15 : chartDataOk60;
   return {
     responsive: true,
     maintainAspectRatio: false,
@@ -187,7 +196,7 @@ function generateHourlyMaxData(stats) {
   const colorBars = Array(maxDataLength).fill('pink');
   const colorBarLines = Array(maxDataLength).fill('black');
   const showMonth = (+chartPeriod === GRANULARITY.DAY);
-  const chartDataOk = (chartSlotLength === 15) ? chartDataOk15 : chartDataOk60;
+  chartDataOk = (chartSlotLength === 15) ? chartDataOk15 : chartDataOk60;
   for (let i = 0; i < maxDataLength; i++) {
     let barCol = '80,160,80';
     let barAlpha = 1;
@@ -248,7 +257,7 @@ function generateHourlyMaxData(stats) {
 
 function generateHourlyMaxOptions(stats, graphTitle) {
   const dataset = stats.data.maxPower || [];
-  const chartDataOk = (chartSlotLength === 15) ? chartDataOk15 : chartDataOk60;
+  chartDataOk = (chartSlotLength === 15) ? chartDataOk15 : chartDataOk60;
   return {
     responsive: true,
     maintainAspectRatio: false,
@@ -319,7 +328,7 @@ function generateHourlyMaxOptions(stats, graphTitle) {
 function generatePriceData(stats) {
   // Calculate values
   applyReliability(stats);
-  const chartDataOk = (chartSlotLength === 15) ? chartDataOk15 : chartDataOk60;
+  chartDataOk = (chartSlotLength === 15) ? chartDataOk15 : chartDataOk60;
   const perHour = (chartPeriod === GRANULARITY.HOUR);
   const dataset = stats.data.price || [];
   chartAux = Array.isArray(stats.data.pricePoints) ? stats.data.pricePoints : []; // 0: PP_LOW, 1: PP_NORM, 2: PP_HIGH, 3: PP_EXTREME, 4: PP_DIRTCHEAP
@@ -341,7 +350,7 @@ function generatePriceData(stats) {
 
   let ppDirtMax = Math.min(dataset.filter((p, i) => (+chartAux[i] === PP.DIRTCHEAP)).reduce((a, b) => { return a === undefined ? b : Math.max(a, b); }, undefined) || 0, ppLowMin);
   const ppMin = dataset.filter((p, i) => (p !== null)).reduce((a, b) => { return a === undefined ? b : Math.min(a, b); }, Infinity);
-  if (!ppDirtMax) ppDirtMax = ppMin - (ppMax - ppMin) * 0.9;
+  if (!ppDirtMax) ppDirtMax = Math.max(ppMin - (ppMax - ppMin) * 0.9, 0);
   const ppLowMax = Math.min(dataset.filter((p, i) => (+chartAux[i] === PP.LOW)).reduce((a, b) => { return a === undefined ? b : Math.max(a, b); }, ppDirtMax), ppNormMin);
   const ppNormMax = Math.min(dataset.filter((p, i) => (+chartAux[i] === PP.NORM)).reduce((a, b) => { return a === undefined ? b : Math.max(a, b); }, ppLowMax), ppHighMin);
   const ppHighMax = Math.min(dataset.filter((p, i) => (+chartAux[i] === PP.HIGH)).reduce((a, b) => { return a === undefined ? b : Math.max(a, b); }, ppNormMax), ppExtremeMin);
@@ -462,7 +471,7 @@ function generatePriceData(stats) {
 }
 
 function generatePriceOptions(stats, graphTitle) {
-  const chartDataOk = (chartSlotLength === 15) ? chartDataOk15 : chartDataOk60;
+  chartDataOk = (chartSlotLength === 15) ? chartDataOk15 : chartDataOk60;
   return {
     responsive: true,
     maintainAspectRatio: false,
@@ -725,6 +734,9 @@ function InitGraph(Homey, stats, granularity) {
   textHighestQ = Homey.__(textHighestQ);
   textInaccurate = Homey.__(textInaccurate);
   textIncomplete = Homey.__(textIncomplete);
+  pricePointText = Homey.__(pricePointText);
+  priceDistributionText = Homey.__(priceDistributionText);
+  unavailableText = Homey.__(unavailableText);
   for (let i = 0; i < textMonth.length; i++) {
     textMonth[i] = Homey.__(textMonth[i]);
   }

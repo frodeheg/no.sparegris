@@ -1990,7 +1990,7 @@ class PiggyBank extends Homey.App {
               const prevPowerTime = this.__prevPowerTime;
               this.__prevPowerTime = lastUpdated;
               // Skip reporting the very first time (because this means it is an update in the past) and when unchanged
-              if (lastUpdated === prevPowerTime || prevPowerTime === undefined) return Promise.reject();
+              if (lastUpdated === prevPowerTime || prevPowerTime === undefined || !lastUpdated) return Promise.reject();
               return Promise.resolve([value, new Date(lastUpdated)]);
             }
             return Promise.reject();
@@ -3247,7 +3247,7 @@ class PiggyBank extends Homey.App {
     // Fetch data from archive
     let searchData;
     const searchDataGood = (('dataOk' in archive) ? archive.dataOk[period] : undefined) || {};
-    const slotLength = { dataOk: this.granularity };
+    const slotLength = { dataGood: this.granularity };
     dataGood = searchDataGood[timeId];
     for (const partIdx in type) {
       const part = type[partIdx];
@@ -3294,7 +3294,7 @@ class PiggyBank extends Homey.App {
               statsTimeUTC = fromLocalTime(statsTimeLocal, this.homey);
             } else {
               data = { error: err };
-              dataGood = 0;
+              dataGood = [];
             }
           }
           break;
