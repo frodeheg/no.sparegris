@@ -142,6 +142,8 @@ const COUNTRY = {
   uk: 'United Kingdom',
 };
 
+let currentSchema = 'no';
+
 // =============================================================================
 // = APP FUNCTIONS
 // =============================================================================
@@ -159,19 +161,43 @@ async function getDefaultSchema(homey) {
 // = SETUP PAGE
 // =============================================================================
 
-var currentSchema = 'no';
+async function displayHiddenSchema() {
+  const keys = Object.keys(SCHEMA[currentSchema].hide);
+  for (let i = 0; i < keys.length; i++) {
+    const item = document.getElementById(keys[i]);
+    const value = SCHEMA[currentSchema].hide[keys[i]];
+    if (value === null) item.hidden = false;
+    else item.style.display = value;
+  }
+}
 
+async function hideScemaObjects() {
+  const keys = Object.keys(SCHEMA[currentSchema].hide);
+  for (let i = 0; i < keys.length; i++) {
+    const item = document.getElementById(keys[i]);
+    const value = SCHEMA[currentSchema].hide[keys[i]];
+    if (value === null) item.hidden = true;
+    else item.style.display = 'none';
+  }
+}
+/**
+ * Programatically set the new schema without changing anything else.
+ */
+async function setSchema(newSchema) {
+  await displayHiddenSchema();
+  currentSchema = newSchema;
+  await hideScemaObjects();
+}
+
+/**
+ * Changes the schema and updates all related values
+ * @param {} newSchema
+ */
 async function changeSchema(newSchema) {
   if (!(newSchema in SCHEMA)) newSchema = 'custom';
   if (newSchema !== currentSchema) {
     // Display old hidden elements
-    const keys = Object.keys(SCHEMA[currentSchema].hide);
-    for (let i = 0; i < keys.length; i++) {
-      const item = document.getElementById(keys[i]);
-      const value = SCHEMA[currentSchema].hide[keys[i]];
-      if (value === null) item.hidden = false;
-      else item.style.display = value;
-    }
+    await displayHiddenSchema();
     currentSchema = newSchema;
     document.getElementById('costSchema').value = newSchema;
     document.getElementById('currency').value = SCHEMA[newSchema].currency;
@@ -208,13 +234,8 @@ async function refreshSchema() {
     document.getElementById('enLimit60InBox').style.display = 'block';
     document.getElementById('enLimit60SelBox').style.display = 'none';
   }
-  const keys = Object.keys(SCHEMA[currentSchema].hide);
-  for (let i = 0; i < keys.length; i++) {
-    const item = document.getElementById(keys[i]);
-    const value = SCHEMA[currentSchema].hide[keys[i]];
-    if (value === null) item.hidden = true;
-    else item.style.display = 'none';
-  }
+  // Hide hidden elements
+  await hideScemaObjects();
   document.getElementById('maxPower15min').disabled = !document.getElementById('enLimit15').checked;
   document.getElementById('maxPowerHour').disabled = !document.getElementById('enLimit60').checked;
   document.getElementById('maxPowerDay').disabled = !document.getElementById('enLimitDay').checked;
@@ -224,6 +245,7 @@ async function refreshSchema() {
 module.exports = {
   SCHEMA,
   COUNTRY,
+  setSchema,
   getDefaultSchema,
   changeSchema,
   refreshSchema,

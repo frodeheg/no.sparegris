@@ -269,6 +269,7 @@
 
       function updateCountries(selectedCountry) {
         var list = document.getElementById('priceCountry');
+        setSchema(selectedCountry);
         var options = '';
         const countries = Object.keys(ENTSOE_BIDDING_ZONES);
         for (var i = 0; i < countries.length; i++) {
@@ -1094,7 +1095,7 @@
               <select id="priceCountry" onchange="updateRegions(this.value, futurePriceOptions.priceRegion);changeSchema(this.value);displaySaveHint()">
                 <option value="0" selected>Country selector</option>
               </select>
-              <div class="hintButton" onclick="toggle(this,'countryHint');return false;">i</div>
+              <div class="hintButton" onclick="toggle(this,'countryHint', 'table-row');return false;">i</div>
             </td>
           </tr>
           <tr id="countryHint" class="hint"><td colspan="2"><p data-i18n="settings.global.countryHint">global.countryHint</p></td></tr>
@@ -1239,7 +1240,7 @@
             <tr>
               <th class="settings_row_name">&nbsp;</th>
               <th class="settings_row_en" data-i18n="settings.cost.enabled">cost.enabled</th>
-              <th class="settings_row_input"><div data-i18n="settings.cost.limit">cost.limit</div>
+              <th class="settings_row_input"><span data-i18n="settings.cost.limit">cost.limit</span>
                 <div class="hintButton" onclick="toggle(this,'maxPowHint');return false;">i</div>
               </th>
             </tr>
