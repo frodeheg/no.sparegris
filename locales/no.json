@@ -204,7 +204,7 @@
     "meter": {
       "title": "Energiavlesning",
       "meterReader": "Strømmåler",
-      "meterReaderNotFound": "Ingen strømmåler ble funnet, du må bruke et flytkort for å sende strømforbruket til appen.",
+      "meterReaderNotFound": "Ingen strømmåler ble funnet, du må bruke et flytkort for å sende strømforbruket til appen. Ønsker du å få lagt inn støtte for din strømmåler kan du gå inn på <a href=\"ShowLog\" onclick=\"changeTab(event, 'logPage');return false;\">enhetsrapportering</a> og sende inn en rapport over den manglende enheten.",
       "meterReaderHint": "Dersom appen har støtte for strømmåleren din kan du velge den her, ellers må du sette opp et flytkort for å sende effekt-avlesningene til appen.",
       "useFlow": "Ingen - Bruk flytkort",
       "frequency": "Frekvens",

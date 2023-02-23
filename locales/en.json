@@ -204,7 +204,7 @@
     "meter": {
       "title": "Energy readings",
       "meterReader": "Meter reader",
-      "meterReaderNotFound": "No meter reader was found, you must use a flow card to send the power consumption to the app.",
+      "meterReaderNotFound": "No meter reader was found, you must use a flow card to send the power consumption to the app. If you want to add support for your electricity meter, you can go to <a href=\"ShowLog\" onclick=\"changeTab(event, 'logPage');return false;\">unit reporting</a>, generate a report of the missing device and send the log to the developer.",
       "meterReaderHint": "If the app has support for your meter reader it will show up here, otherwise you have to input the power readings by using a flow",
       "useFlow": "None - Use Flow",
       "frequency": "Frequency",
