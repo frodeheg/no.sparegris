@@ -2041,7 +2041,7 @@ class PiggyBank extends Homey.App {
       const message = 'The reported power time was from the past. This should not happen...';
       this.updateLog(message, c.LOG_ERROR);
       this.__current_power_time = now; // just update the time to ensure the following Forced crash below will recover
-      return Promise.reject(new Error(message)); // Crash the app by purpose to make sure the problem is reported
+      return Promise.resolve(); // Just return and do nothing as the archive will be messed up
     }
 
     const limits = this.readMaxPower();
