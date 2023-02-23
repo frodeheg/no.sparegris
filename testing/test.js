@@ -1,3 +1,4 @@
+/* eslint-disable no-multi-spaces */
 /* eslint-disable guard-for-in */
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable no-console */
@@ -877,6 +878,90 @@ async function testBelgiumPowerTariff(numTests) {
   console.log('\x1b[1A[\x1b[32mPASSED\x1b[0m]');
 }
 
+async function testLimiters() {
+  console.log('[......] Test Power limitations');
+  const app = new PiggyBank();
+  await app.disableLog();
+  seedrandom('mySeed', { global: true });
+
+  // Load initial state from a file
+  await applyStateFromFile(app, 'testing/states/Belgium_test_0.19.47.txt');
+  app.__deviceList = undefined; // Recreate it in onInit
+  const startTime = new Date(app.__current_power_time.getTime() - 1000 * 60 * 60 * 24 * 5);
+  app.__current_power_time = new Date(startTime.getTime());
+  startTime.setMinutes(0, 0, 0);
+
+  // Clear the archive
+  app.homey.settings.set('stats_daily_max', null);
+  app.homey.settings.set('stats_daily_max_ok', null);
+  app.homey.settings.set('stats_daily_max_last_update_time', startTime);
+  app.homey.settings.unset('safeShutdown__accum_energy');
+  app.homey.settings.unset('safeShutdown__current_power');
+  app.homey.settings.unset('safeShutdown__current_power_time');
+  app.homey.settings.unset('safeShutdown__power_last_hour');
+  app.homey.settings.unset('safeShutdown__offeredEnergy');
+
+  await app.onInit(startTime);
+  await disableTimers(app);
+
+  const futurePriceOptions = app.homey.settings.get('futurePriceOptions');
+  futurePriceOptions.priceCountry = 'be';
+  futurePriceOptions.priceRegion = 0;
+  futurePriceOptions.costSchema = 'be';
+  futurePriceOptions.gridSteps = false;
+  futurePriceOptions.granularity = 15;
+  futurePriceOptions.priceKind = c.PRICE_KIND_FIXED;
+  app.homey.settings.set('futurePriceOptions', futurePriceOptions);
+
+  const limitsToTest = [300, 3000, 8000, 2000000];
+  const lowerLimit   = [250, 2500, 7500, 1850000];
+  const timeSteps    = [1000, 1000, 8000, 600000];
+  const timeLimit    = [6 * 60 * 4, 6 * 60 * 4, 6 * 60 * 6, 6 * 60 * 3];
+
+  for (let limit = 0; limit < 4; limit++) {
+    const newLimits = [Infinity, Infinity, Infinity, Infinity];
+    newLimits[limit] = limitsToTest[limit];
+    app.homey.settings.set('maxPower', newLimits);
+    app.__accum_energy[limit] = 0;
+
+    // console.log(`LIMITS: ${app.homey.settings.get('maxPower')}`);
+
+    clearArchive(app.homey);
+    let now = new Date(startTime.getTime());
+    app.__current_power_time = now;
+    app.__last_power_off_time = now;
+    app.__last_power_on_time = now;
+
+    let observedMax = 0;
+    const numDevices = Object.keys(app.homey.settings.get('frostList')).length;
+    for (let i = 0; i < timeLimit[limit]; i++) {
+      const randomTime = Math.round((5 + (Math.random() * 10)) * timeSteps[limit]); // average 10 sec
+      const numOnDevices = numDevices - app.__num_off_devices;
+      const randomPow = 300 + 500 * numOnDevices;
+      //if (limit > 0) {
+      //  console.log(`${now} on: ${numOnDevices} pow: ${randomPow}, ${app.__accum_energy}`);
+      //}
+      now = new Date(now.getTime() + randomTime);
+      await app.onPowerUpdate(randomPow, now);
+      await app.onProcessPower(now);
+
+      if (observedMax < app.__accum_energy[limit]) {
+        observedMax = app.__accum_energy[limit];
+      }
+    }
+    // console.log(`Observed max: ${observedMax}`);
+    if (observedMax > limitsToTest[limit]) {
+      throw new Error(`Power did overshoot limit ${limit}: Observed: ${observedMax} >  limit: ${limitsToTest[limit]}`);
+    }
+    if (observedMax < lowerLimit[limit]) {
+      throw new Error(`Power was too low ${limit}: Observed: ${observedMax} <  limit: ${lowerLimit[limit]}`);
+    }
+  }
+
+  await app.onUninit();
+  console.log('\x1b[1A[\x1b[32mPASSED\x1b[0m]');
+}
+
 // Start all tests
 async function startAllTests() {
   try {
@@ -901,6 +986,7 @@ async function startAllTests() {
     await testTicket158NotControllingOther();
     await testTicket149BadDevices();
     await testBelgiumPowerTariff(10000);
+    await testLimiters();
     await testMail();
   } catch (err) {
     console.log('\x1b[1A[\x1b[31mFAILED\x1b[0m]');
