@@ -739,5 +739,8 @@
   },
   "0.20.1": {
     "en": "Removed the assert that power must not be reported from the past. Instead reset the time and continue like before. A better handler should be implemented in the future."
+  },
+  "0.20.2": {
+    "en": "Fixed a rare crash in the insights device caused by the upgrade to version 0.20.1. This only affect some of the old users and no new users."
   }
 }
