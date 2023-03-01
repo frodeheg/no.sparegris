@@ -742,5 +742,8 @@
   },
   "0.20.2": {
     "en": "Fixed a rare crash in the insights device caused by the upgrade to version 0.20.1. This only affect some of the old users and no new users."
+  },
+  "0.20.3": {
+    "en": "New attempt to fix the crash bug introduced in version 0.20.1"
   }
 }
