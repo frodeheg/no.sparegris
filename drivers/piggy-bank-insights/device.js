@@ -19,7 +19,7 @@ class MyDevice extends Device {
 
     // Fetch poll interval and set up timer
     const settings = this.getSettings();
-    this.updateCapabilities(settings);
+    await this.updateCapabilities(settings);
     this.setPollIntervalTime(settings['refreshRate']);
     this.updateState();
     // this.deviceId = await this.getDeviceId();
@@ -55,7 +55,7 @@ class MyDevice extends Device {
   /**
    * Update which capabilities to show
    */
-  updateCapabilities(settings) {
+  async updateCapabilities(settings) {
     // New normal capabilities in version 0.5.15
     if (this.hasCapability('meter_power.last_day') === false) {
       this.addCapability('meter_power.last_day');
@@ -264,7 +264,7 @@ class MyDevice extends Device {
       // The new setting will be applied after next refresh
     }
     if (changedKeys.includes('debugCap') || changedKeys.includes('extendedCap') || changedKeys.includes('experimentalCap')) {
-      this.updateCapabilities(newSettings);
+      await this.updateCapabilities(newSettings);
     }
   }
 
