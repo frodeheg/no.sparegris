@@ -745,5 +745,8 @@
   },
   "0.20.3": {
     "en": "New attempt to fix the crash bug introduced in version 0.20.1"
+  },
+  "0.20.4": {
+    "en": "Fixed the broken accumulation values for daily and monthly limiters"
   }
 }
