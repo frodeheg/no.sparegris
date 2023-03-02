@@ -1970,12 +1970,10 @@ class PiggyBank extends Homey.App {
         .then(() => resolve())
         .catch(() => resolve()); // Ignore failures
     } else if (minPowerDiff > 0) {
-      this.__activeLimit = undefined;
       promise = this.onBelowPowerLimit(minPowerDiff, now)
         .then(() => resolve())
         .catch(() => resolve()); // Ignore failures
     } else {
-      this.__activeLimit = undefined;
       promise = Promise.resolve();
     }
     return promise;
@@ -2366,6 +2364,8 @@ class PiggyBank extends Homey.App {
     this.updateLog(`Can use ${String(morePower)}W more power`, c.LOG_DEBUG);
     this.__last_power_on_time = new Date(now.getTime());
     this.__last_power_on_power = morePower;
+    this.__activeLimit = undefined;
+
 
     const modeList = this.homey.settings.get('modeList');
     const currentMode = +this.homey.settings.get('operatingMode');
