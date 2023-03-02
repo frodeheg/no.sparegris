@@ -591,6 +591,21 @@ class PiggyBank extends Homey.App {
       this.homey.settings.set('settingsVersion', 8);
     }
 
+    // Version 0.20.4 - Fix the accumEnergy for months and days
+    if (+settingsVersion < 9) {
+      const oldAccumEnergy = await this.homey.settings.get('safeShutdown__accum_energy');
+      if (Array.isArray(oldAccumEnergy)) {
+        this.granularity = 60;
+        const archived = await this.getStats('powUsage', null, c.GRANULARITY.DAY);
+        const archivedValid = archived && ('data' in archived) && (Array.isArray(archived.data.powUsage) && (archived.data.powUsage.length > 0));
+        const oldDayEnergy = archivedValid ? archived.data.powUsage[archived.data.powUsage.length - 1] : 0;
+        const oldMonthEnergy = archivedValid ? sumArray(archived.data.powUsage) : 0;
+        const newAccumEnergy = [oldAccumEnergy[0], oldAccumEnergy[1], oldDayEnergy + oldAccumEnergy[0], oldMonthEnergy + oldAccumEnergy[0]];
+        this.homey.settings.set('safeShutdown__accum_energy', newAccumEnergy);
+      }
+      this.homey.settings.set('settingsVersion', 9);
+    }
+
     // Internal state that preferably should be removed as it is in the archive
     // this.homey.settings.unset('stats_savings_all_time_use');
     // this.homey.settings.unset('stats_savings_all_time_power_part');
