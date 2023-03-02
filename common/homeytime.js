@@ -93,10 +93,12 @@ function timeToNextSlot(inputTime, minutes) {
  */
 const __cachedDayStart = [];
 const __cachedDayEnd = [];
+let __cachedDayLast;
 function roundToStartOfDay(timeUTC, homey) {
   for (let i = 0; i < 2; i++) {
     if (__cachedDayStart[i] && (__cachedDayStart[i] <= timeUTC)
       && __cachedDayEnd[i] && (__cachedDayEnd[i] > timeUTC)) {
+      __cachedDayLast = i;
       return __cachedDayStart[i];
     }
   }
@@ -107,6 +109,7 @@ function roundToStartOfDay(timeUTC, homey) {
   localTime.setDate(localTime.getDate() + 1);
   __cachedDayEnd[1] = __cachedDayEnd[0];
   __cachedDayEnd[0] = fromLocalTime(localTime, homey);
+  __cachedDayLast = 0;
   return __cachedDayStart[0];
 }
 
@@ -117,10 +120,12 @@ function roundToStartOfDay(timeUTC, homey) {
  */
 const __cachedMonthStart = [];
 const __cachedMonthEnd = [];
+let __cachedMonthLast;
 function roundToStartOfMonth(timeUTC, homey) {
   for (let i = 0; i < 2; i++) {
     if (__cachedMonthStart[i] && (__cachedMonthStart[i] <= timeUTC)
       && __cachedMonthEnd[i] && (__cachedMonthEnd[i] > timeUTC)) {
+      __cachedMonthLast = i;
       return __cachedMonthStart[i];
     }
   }
@@ -132,6 +137,7 @@ function roundToStartOfMonth(timeUTC, homey) {
   localTime.setMonth(localTime.getMonth() + 1);
   __cachedMonthEnd[1] = __cachedMonthEnd[0];
   __cachedMonthEnd[0] = fromLocalTime(localTime, homey);
+  __cachedMonthLast = 0;
   return __cachedMonthStart[0];
 }
 
@@ -146,8 +152,8 @@ function timeSinceLastDay(timeUTC, homey) {
  * Returns the number of milliseconds until next slot of X minutes
  */
 function timeToNextDay(timeUTC, homey) {
-  const startOfDayUTC = roundToStartOfDay(timeUTC, homey);
-  const startOfNextDayUTC = new Date(startOfDayUTC.getFullYear(), startOfDayUTC.getMonth(), startOfDayUTC.getDate() + 1, startOfDayUTC.getHours(), startOfDayUTC.getMinutes());
+  roundToStartOfDay(timeUTC, homey); // Refresh cache - ignore result
+  const startOfNextDayUTC = __cachedDayEnd[__cachedDayLast];
   return startOfNextDayUTC - timeUTC;
 }
 
@@ -162,9 +168,9 @@ function timeSinceLastMonth(timeUTC, homey) {
  * Returns the number of milliseconds until next slot of X minutes
  */
 function timeToNextMonth(timeUTC, homey) {
-  const startOfMonthUTC = roundToStartOfMonth(timeUTC, homey);
-  const startOfNextMonthUTC = new Date(startOfMonthUTC.getFullYear(), startOfMonthUTC.getMonth() + 1, startOfMonthUTC.getDate(), startOfMonthUTC.getHours(), startOfMonthUTC.getMinutes());
-  return startOfNextMonthUTC - timeUTC;
+  roundToStartOfMonth(timeUTC, homey); // Refresh cache - ignore result
+  const monthEnd = __cachedMonthEnd[__cachedMonthLast];
+  return monthEnd - timeUTC;
 }
 
 /**
@@ -214,10 +220,10 @@ function limiterLength(inputTime, limiter, homey) {
       return 60 * 60 * 1000;
     case TIMESPAN.DAY:
       timeSinceLastDay(inputTime, homey); // Refresh cache, ignore result
-      return __cachedDayEnd - __cachedDayStart;
+      return __cachedDayEnd[__cachedDayLast] - __cachedDayStart[__cachedDayLast];
     case TIMESPAN.MONTH:
       timeSinceLastMonth(inputTime, homey); // Refresh cache, ignore result
-      return __cachedMonthEnd - __cachedMonthStart;
+      return __cachedMonthEnd[__cachedMonthLast] - __cachedMonthStart[__cachedMonthLast];
     default:
       throw (new Error(`Invalid limiter: ${limiter}`));
   }
