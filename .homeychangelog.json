@@ -748,5 +748,8 @@
   },
   "0.20.4": {
     "en": "Fixed the broken accumulation values for daily and monthly limiters"
+  },
+  "0.20.5": {
+    "en": "Fixed the alarm for active power limitation"
   }
 }
