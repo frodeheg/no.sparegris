@@ -1034,53 +1034,60 @@
               <select id ="meterReader" onchange="displaySaveHint();">
                 <option value="0" selected>Error - should be replaced with meter readers</option>
               </select>
-              <div class="hintButton" onclick="toggle(this,'meterReaderHint');return false;">i</div>
+              <div class="hintButton" onclick="toggle(this,'meterReaderHint', 'table-row');return false;">i</div>
             </td>
           </tr>
-        </table>
-        <p id="meterReaderHint" class="hint" data-i18n="settings.meter.meterReaderHint">meter.meterReaderHint</p>
+          <tr id="meterReaderHint" class="hint"><td colspan="2"><p data-i18n="settings.meter.meterReaderHint">meter.meterReaderHint</p></td></tr>
 
-        <table class="settings_table">
           <tr>
             <td class="settings_row_name"><label for="meterFrequency" data-i18n="settings.meter.frequency">meter.frequency</label>:</td>
             <td class="settings_row_input"><input id="meterFrequency" type="number" min="10" max="60" value="10" onchange="limitElement(this);displaySaveHint()">s 
-              <div class="hintButton" onclick="toggle(this,'meterFrequencyHint');return false;">i</div>
+              <div class="hintButton" onclick="toggle(this,'meterFrequencyHint', 'table-row');return false;">i</div>
             </td>
           </tr>
-        </table>
-        <p id="meterFrequencyHint" class="hint" data-i18n="settings.meter.frequencyHint">meter.frequencyHint</p>
+          <tr id="meterFrequencyHint" class="hint"><td colspan="2"><p data-i18n="settings.meter.frequencyHint">meter.frequencyHint</p></td></tr>
 
-        <table class="settings_table">
           <tr>
             <td class="settings_row_name"><label for="errorMargin" data-i18n="settings.global.errorMargin">global.errorMargin</label>:</td>
             <td class="settings_row_input"><input id="errorMargin" type="number" min="0" max="30" value="5" onchange="displaySaveHint()">% 
-              <div class="hintButton" onclick="toggle(this,'hintEm1');toggle(this,'hintEm2');return false;">i</div>
+              <div class="hintButton" onclick="toggle(this,'hintEm', 'table-row');return false;">i</div>
             </td>
           </tr>
-        </table>
-        <p id="hintEm1" class="hint" data-i18n="settings.global.errorMarginHint1">global.errorMarginHint1</p>
-        <p id="hintEm2" class="hint" data-i18n="settings.global.errorMarginHint2">global.errorMarginHint2</p>
+          <tr id="hintEm" class="hint"><td colspan="2">
+            <p data-i18n="settings.global.errorMarginHint1">global.errorMarginHint1</p>
+            <p data-i18n="settings.global.errorMarginHint2">global.errorMarginHint2</p></td>
+          </tr>
 
-        <table class="settings_table">
           <tr>
             <td class="settings_row_name"><label for="safetyPower" data-i18n="settings.global.safetyPower">global.safetyPower</label>:</td>
             <td class="settings_row_input"><input id="safetyPower" type="number" min="0" max="100000" step="100" value="500" onchange="displaySaveHint()">W 
-              <div class="hintButton" onclick="toggle(this,'hint3');toggle(this,'hint4');return false;">i</div>
+              <div class="hintButton" onclick="toggle(this,'hint3', 'table-row');return false;">i</div>
             </td>
           </tr>
-        </table>
-        <p id="hint3" class="hint" data-i18n="settings.global.safetyPowerHint1">global.safetyPowerHint1</p>
-        <p id="hint4" class="hint" data-i18n="settings.global.safetyPowerHint2">global.safetyPowerHint2</p>
+          <tr id="hint3" class="hint"><td colspan="2">
+            <p data-i18n="settings.global.safetyPowerHint1">global.safetyPowerHint1</p>
+            <p data-i18n="settings.global.safetyPowerHint2">global.safetyPowerHint2</p></td>
+          </tr>
 
-        <table class="settings_table">
+          <tr>
+            <td class="settings_row_name"><label for="missingPower" data-i18n="settings.global.missingPower">global.missingPower</label>:</td>
+            <td class="settings_row_input"><select id ="missingPower" onchange="displaySaveHint();">
+              <option value="0" selected data-i18n="settings.global.noPowerPrevious">global.noPowerPrevious</option>
+              <option value="1" selected data-i18n="settings.global.noPowerShutdown">global.noPowerShutdown</option>
+            </select>
+              <div class="hintButton" onclick="toggle(this,'missingPowerHint', 'table-row');return false;">i</div>
+            </td>
+          </tr>
+          <tr id="missingPowerHint" class="hint"><td colspan="2"><p data-i18n="settings.global.missingPowerHint">global.missingPowerHint</p></td></tr>
+
           <tr>
             <td class="settings_row_name"><label for="crossSlotSmooth" data-i18n="settings.global.crossSlotSmooth">global.crossSlotSmooth</label>:</td>
             <td class="settings_row_input"><input id="crossSlotSmooth" type="number" min="0" max="100" step="100" value="20" onchange="displaySaveHint()">%
-              <div class="hintButton" onclick="toggle(this,'crossSlotSmoothHint');return false;">i</div>
+              <div class="hintButton" onclick="toggle(this,'crossSlotSmoothHint', 'table-row');return false;">i</div>
             </td>
           </tr>
+          <tr id="crossSlotSmoothHint" class="hint"><td colspan="2"><p data-i18n="settings.global.crossSlotSmoothHint">global.crossSlotSmoothHint</p></td></tr>
         </table>
-        <p id="crossSlotSmoothHint" class="hint" data-i18n="settings.global.crossSlotSmoothHint">global.crossSlotSmoothHint</p>
       </fieldset>
     </div>
 
@@ -1241,7 +1248,7 @@
               <th class="settings_row_name">&nbsp;</th>
               <th class="settings_row_en" data-i18n="settings.cost.enabled">cost.enabled</th>
               <th class="settings_row_input"><span data-i18n="settings.cost.limit">cost.limit</span>
-                <div class="hintButton" onclick="toggle(this,'maxPowHint');return false;">i</div>
+                <div class="hintButton" onclick="toggle(this,'maxPowHint', 'table-row');return false;">i</div>
               </th>
             </tr>
             <tr id="enLimit15Box">
@@ -1274,8 +1281,16 @@
               <td class="settings_row_en"><input id="enLimitMonth" type="checkbox" onchange="refreshSchema();displaySaveHint()"></td>
               <td class="settings_row_input"><input id="maxPowerMonth" type="number" min="50" max="50000" value="5000" step="1" onchange="limitElement(this);displaySaveHint()">kWh/month</td>
             </tr>
+            <tr id="maxPowHint" class="hint"><td colspan="2"><p data-i18n="settings.app.maxPowHint">app.maxPowHint</p></td></tr>
+            <tr>
+              <td class="settings_row_name"><label for="maxPowerMissing" data-i18n="settings.mode.maxPowerMissing">mode.maxPowerMissing</label>:</td>
+              <td class="settings_row_en"><input id="enLimitMissing" type="checkbox" checked onchange="displaySaveHint()"></td>
+              <td class="settings_row_input">
+                <div class="hintButton" onclick="toggle(this,'maxPowMissingHint', 'table-row');return false;">i</div>
+              </td>
+            </tr>
+            <tr id="maxPowMissingHint" class="hint"><td colspan="2"><p data-i18n="settings.app.maxPowMissingHint">app.maxPowMissingHint</p></td></tr>
           </table>
-          <p id="maxPowHint" class="hint" data-i18n="settings.app.maxPowHint">app.maxPowHint</p>
         </div></div>
     </div>
 
