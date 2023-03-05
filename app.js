@@ -35,7 +35,7 @@ const {
   daysInMonth, toLocalTime, timeDiff, timeSinceLastLimiter, timeToNextSlot,
   timeToNextLimiter, limiterLength, roundToStartOfMonth, roundToNearestHour,
   roundToStartOfSlot, roundToStartOfDay, hoursInDay, fromLocalTime,
-  TIMESPAN
+  TIMESPAN, timeToNextHour
 } = require('./common/homeytime');
 const { isNumber, toNumber, combine, sumArray } = require('./common/tools');
 const prices = require('./common/prices');
@@ -1927,11 +1927,24 @@ class PiggyBank extends Homey.App {
       const trueMaxEnergy = limits[limitIdx];
       const errorMarginEnergy = trueMaxEnergy * errorMargin;
       const maxEnergy = trueMaxEnergy - errorMarginEnergy;
-      const crossSlotSmooth = ((limitIdx === TIMESPAN.QUARTER) || (limitIdx === TIMESPAN.HOUR))
-        ? (+this.homey.settings.get('crossSlotSmooth') / 100) * (maxEnergy - this.__accum_energy[limitIdx]) : 0;
+      const lessThanHour = (limitIdx === TIMESPAN.QUARTER) || (limitIdx === TIMESPAN.HOUR);
+      const crossSlotSmooth = lessThanHour ? (+this.homey.settings.get('crossSlotSmooth') / 100) * (maxEnergy - this.__accum_energy[limitIdx]) : 0;
       const intervalLength = limiterLength(now, limitIdx, this.homey);
-      const negativeReserve = ((limitIdx === TIMESPAN.QUARTER) || (limitIdx === TIMESPAN.HOUR))
-        ? crossSlotSmooth * (remainingTime / intervalLength) : 0;
+      const negativeReserve = lessThanHour ? crossSlotSmooth * (remainingTime / intervalLength) : 0;
+      // For time-spans greater than an hour, do a very conservative estimate of what the used power might be at the end of the hour/day
+      // This is only to avoid limiting the power for longer tingspans when the current power exceed the monthly target for 15 minutes for example.
+      // Short bursts of high power must be allowed as long as the full hour power is still within the limit.
+      let hourPower = this.__current_power;
+      if (!lessThanHour) {
+        const lowPower = this.__current_power * 0.5;
+        const remainingFactorHour = timeToNextHour(this.__current_power_time) / 3600000;
+        hourPower = Math.min(hourPower, this.__accum_energy[TIMESPAN.HOUR] + remainingFactorHour * lowPower);
+        if (limitIdx === TIMESPAN.MONTH) {
+          const remainingFactorDay = timeToNextLimiter(this.__current_power_time, TIMESPAN.DAY, this.homey) / 3600000;
+          const hoursInDay = limiterLength(this.__current_power_time, TIMESPAN.DAY, this.homey) / 3600000;
+          hourPower = Math.min(hourPower, (this.__accum_energy[TIMESPAN.DAY] + remainingFactorDay * lowPower) / hoursInDay);
+        }
+      }
 
       this.updateLog(`onProcessPower (limit ${limitIdx}): `
       + `Using: ${String(this.__current_power)}W, `
@@ -1943,7 +1956,7 @@ class PiggyBank extends Homey.App {
       // Try to control devices if the power is outside of the preferred bounds
       const energyReserveLeft = maxEnergy - this.__accum_energy[limitIdx] - this.__fakeEnergy[limitIdx];
       const wattLeftPerHour = (energyReserveLeft * (1000 * 60 * 60)) / remainingTime;
-      const powerDiff = wattLeftPerHour + negativeReserve - this.__current_power - safetyPower;
+      const powerDiff = wattLeftPerHour + negativeReserve - hourPower - safetyPower;
       if (powerDiff < minPowerDiff) {
         minPowerDiff = powerDiff;
         activeLimit = limitIdx;

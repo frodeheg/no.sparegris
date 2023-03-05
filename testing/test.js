@@ -553,7 +553,7 @@ async function testTicket115() {
       if (numOn !== 0) throw new Error('All devices should be off, but they are not');
     } else if (sim === 1) {
       // Check all on
-      if ((numDev !== 14) || (numOn !== 8)) throw new Error('All devices should be on, but they are not');
+      if ((numDev !== 14) || (numOn !== 8)) throw new Error(`All devices should be on, but only ${numOn}/8 are`);
     }
   }
 
