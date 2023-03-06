@@ -1271,7 +1271,7 @@
               <td class="settings_row_en"><input id="enLimitMonth" type="checkbox" onchange="refreshSchema();displaySaveHint()"></td>
               <td class="settings_row_input"><input id="maxPowerMonth" type="number" min="50" max="50000" value="5000" step="1" onchange="limitElement(this);displaySaveHint()">kWh/month</td>
             </tr>
-            <tr id="maxPowHint" class="hint"><td colspan="2"><p data-i18n="settings.app.maxPowHint">app.maxPowHint</p></td></tr>
+            <tr id="maxPowHint" class="hint"><td colspan="3"><p data-i18n="settings.app.maxPowHint">app.maxPowHint</p></td></tr>
             <tr>
               <td class="settings_row_name"><label for="maxAlarmRate" data-i18n="settings.mode.maxAlarmRate">mode.maxAlarmRate</label>:</td>
               <td class="settings_row_en"><input id="enLimitMissing" type="checkbox" checked onchange="refreshSchema();displaySaveHint();elem = document.getElementById('maxAlarmRate'); if (this.checked) elem.value = 50; else elem.value=0;"></td>
@@ -1279,7 +1279,7 @@
                 <div class="hintButton" onclick="toggle(this,'maxAlarmRateHint', 'table-row');return false;">i</div>
               </td>
             </tr>
-            <tr id="maxAlarmRateHint" class="hint"><td colspan="2"><p data-i18n="settings.app.maxAlarmRateHint">app.maxAlarmRateHint</p></td></tr>
+            <tr id="maxAlarmRateHint" class="hint"><td colspan="3"><p data-i18n="settings.app.maxAlarmRateHint">app.maxAlarmRateHint</p></td></tr>
 
           </table>
         </div></div>
