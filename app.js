@@ -1990,7 +1990,8 @@ class PiggyBank extends Homey.App {
     }
 
     // Handle missing power - e.g. > 1 minute since last power signal
-    if (now - this.__current_power_time > 60000) {
+    const waitMissingPower = Math.max(60, +this.homey.settings.get('meterFrequency') * 2);
+    if (now - this.__current_power_time > (waitMissingPower * 1000)) {
       const maxAlarmRate = +this.homey.settings.get('maxAlarmRate') / 100;
       if (this.__missing_rate_this_slot < maxAlarmRate) {
         // Pretend that we use the budget and start turning off
