@@ -497,7 +497,8 @@ async function testState(stateDump, simTime) {
 
 // Test OnNewSlot
 async function testTicket115() {
-  seedrandom('mySeed5', { global: true });
+  const seed = 5;
+  const myrng = seedrandom(`mySeed${seed}`);
   console.log('[......] Test Github ticket #115: Main fuse');
   const app = new PiggyBank();
   await app.disableLog();
@@ -505,6 +506,9 @@ async function testTicket115() {
   app.homey.settings.set('toggleTime', 1);
   app.__deviceList = undefined;
   await app.onInit();
+  const futurePriceOptions = app.homey.settings.get('futurePriceOptions');
+  futurePriceOptions.priceKind = c.PRICE_KIND_FIXED;
+  app.homey.settings.set('futurePriceOptions', futurePriceOptions);
 
   // Just load some random devices
   app.setLogLevel(c.LOG_DEBUG);
@@ -519,7 +523,7 @@ async function testTicket115() {
     let mainFuse;
     let simTime;
     if (sim === 0) {
-      mainFuse = 10;
+      mainFuse = 9;
       simTime = 400;
     } else {
       mainFuse = 63;
@@ -530,8 +534,8 @@ async function testTicket115() {
     curTime.setUTCMinutes(2);
     const startTime = new Date(curTime.getTime());
     while ((curTime.getTime() - startTime.getTime()) / 1000 < simTime) {
-      curTime.setTime(curTime.getTime() + Math.round(10000 + Math.random() * 5000 - 2500));
-      const curPower = Math.round(1000 + Math.random() * 5000);
+      curTime.setTime(curTime.getTime() + Math.round(10000 + myrng() * 5000 - 2500));
+      const curPower = Math.round(1000 + myrng() * 5000);
       await app.onPowerUpdate(curPower, curTime);
       await app.onProcessPower(curTime);
       // await writePowerStatus(app, devices);
@@ -550,7 +554,7 @@ async function testTicket115() {
     }
     if (sim === 0) {
       // Check all off
-      if (numOn !== 0) throw new Error('All devices should be off, but they are not');
+      if (numOn !== 0) throw new Error(`All devices should be off, but only ${8 - numOn}/8 are`);
     } else if (sim === 1) {
       // Check all on
       if ((numDev !== 14) || (numOn !== 8)) throw new Error(`All devices should be on, but only ${numOn}/8 are`);
@@ -609,6 +613,7 @@ async function testMissingPulse() {
   app.homey.settings.unset('safeShutdown__current_power_time');
   app.homey.settings.unset('safeShutdown__power_last_hour');
   app.homey.settings.unset('safeShutdown__offeredEnergy');
+  app.homey.settings.set('maxPower', [Infinity, 10000, Infinity, Infinity]);
 
   await app.onInit(now);
   await disableTimers(app);
@@ -630,8 +635,8 @@ async function testMissingPulse() {
   // Check archive
   const archive = app.homey.settings.get('archive');
   if (JSON.stringify(archive.dataOk.hourly['2022-10-01']) !== '[0.016666666666666666,0,0,0.016666666666666666]'
-    || JSON.stringify(archive.powUsage.hourly['2022-10-01']) !== '[9985,4000,4000,4000]'
-    || JSON.stringify(archive.maxPower.hourly['2022-10-01']) !== '[9985,4000,4000,4000]') {
+    || JSON.stringify(archive.powUsage.hourly['2022-10-01']) !== '[9985,9900,10000,9991.833333333334]'
+    || JSON.stringify(archive.maxPower.hourly['2022-10-01']) !== '[9985,9900,10000,9991.833333333334]') {
     console.error(JSON.stringify(archive.dataOk.hourly['2022-10-01']));
     console.error(JSON.stringify(archive.powUsage.hourly['2022-10-01']));
     console.error(JSON.stringify(archive.maxPower.hourly['2022-10-01']));
