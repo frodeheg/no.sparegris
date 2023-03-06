@@ -1,5 +1,14 @@
 'use strict';
 
+// Alarms
+const ALARMS = {
+  POW_LIMIT_QUARTER: 0,
+  POW_LIMIT_HOUR: 1,
+  POW_LIMIT_DAY: 2,
+  POW_LIMIT_MONTH: 3,
+  NO_POWER: 4,
+};
+
 // Granularity for archive
 const GRANULARITY = {
   YEAR: 0,
@@ -159,6 +168,7 @@ const ENTSOE_BIDDING_ZONES = {
 };
 
 module.exports = {
+  ALARMS,
   GRANULARITY,
   OVERRIDE,
   MODE_DISABLED,

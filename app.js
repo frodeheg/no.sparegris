@@ -196,6 +196,7 @@ class PiggyBank extends Homey.App {
     // 11 persons on 0.19.26 (2023.01.04)
     // 982 persons on 0.19.33 (2023.01.04)
     const settingsVersion = await this.homey.settings.get('settingsVersion');
+    const firstInstall = (settingsVersion === null);
 
     // Additional safety guard around older versions to avoid accidential tripping of unneccessary updates
     if (+settingsVersion < 1) {
@@ -606,6 +607,16 @@ class PiggyBank extends Homey.App {
       this.homey.settings.set('settingsVersion', 9);
     }
 
+    // Version 0.20.6 - Alert about the new alarm for missing power data
+    if (+settingsVersion < 10) {
+      if (!firstInstall) {
+        const alertText = this.homey.__('breaking.maxAlarm');
+        this.log(alertText);
+        this.homey.notifications.createNotification({ excerpt: alertText });
+      }
+      this.homey.settings.set('settingsVersion', 10);
+    }
+
     // Internal state that preferably should be removed as it is in the archive
     // this.homey.settings.unset('stats_savings_all_time_use');
     // this.homey.settings.unset('stats_savings_all_time_power_part');
@@ -654,6 +665,9 @@ class PiggyBank extends Homey.App {
     }
     if (this.homey.settings.get('crossSlotSmooth') === null) {
       this.homey.settings.set('crossSlotSmooth', 20);
+    }
+    if (this.homey.settings.get('maxAlarmRate') === null) {
+      this.homey.settings.set('maxAlarmRate', 50);
     }
     let futurePriceOptions = this.homey.settings.get('futurePriceOptions');
     if (!futurePriceOptions
@@ -757,6 +771,7 @@ class PiggyBank extends Homey.App {
     changeArchiveMode(futurePriceOptions.priceCountry);
 
     // Initialize current state
+    this.__missing_rate_this_slot = 0;
     this.__activeLimit = undefined;
     this.__hasAC = false;
     this.__intervalID = undefined;
@@ -1973,6 +1988,26 @@ class PiggyBank extends Homey.App {
     if (minPowerDiff < -maxDrain) {
       minPowerDiff = -maxDrain; // If this is the case then we have most likely crossed the power roof already for this hour.
     }
+
+    // Handle missing power - e.g. > 1 minute since last power signal
+    if (now - this.__current_power_time > 60000) {
+      const maxAlarmRate = +this.homey.settings.get('maxAlarmRate') / 100;
+      if (this.__missing_rate_this_slot < maxAlarmRate) {
+        // Pretend that we use the budget and start turning off
+        const limits = this.readMaxPower();
+        const lowestLimit = (this.granularity === 15) ? TIMESPAN.QUARTER : TIMESPAN.HOUR;
+        if (Number.isFinite(limits[lowestLimit])) {
+          this.__current_power = Math.max(this.__current_power, limits[lowestLimit]);
+        }
+        // Signal something to power off
+        minPowerDiff = -1000;
+      } else {
+        // Allow over-use the rest of the timespan / don't change alarm
+        minPowerDiff = 1;
+      }
+      activeLimit = c.ALARMS.NO_POWER;
+    }
+
     // Report free capacity:
     const errorMarginWatts = trueMaxPower * errorMargin;
     this.onFreePowerChanged(minPowerDiff + safetyPower);
@@ -2088,6 +2123,7 @@ class PiggyBank extends Homey.App {
       this.__accum_energy[limitIdx] += fakePower ? 0 : energyUsed;
       const timeWithinLimit = timeSinceLastLimiter(now, limitIdx, this.homey);
       if (limitIdx === lowestLimit) {
+        this.__missing_rate_this_slot = (this.__missing_power_this_slot + newMissingMinutes) / this.granularity;
         this.__missing_power_this_slot += fakePower ? 0 : newMissingMinutes;
         this.__offeredEnergy += fakePower ? 0 : energyOffered; // Offered or given, depending on flow or device
       }
@@ -2378,7 +2414,6 @@ class PiggyBank extends Homey.App {
     this.__last_power_on_time = new Date(now.getTime());
     this.__last_power_on_power = morePower;
     this.__activeLimit = undefined;
-
 
     const modeList = this.homey.settings.get('modeList');
     const currentMode = +this.homey.settings.get('operatingMode');

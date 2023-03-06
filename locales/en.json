@@ -12,6 +12,7 @@
       "activationHint1": "Before you activate the app, please completa all actions in the todo list below.",
       "activationHint2": "Note: To avoid conflicting settings you should carefully make sure no external flows are working against this app before before activating it.",
       "maxPowHint": "The maximum power can also be changed with flows for example when different maximums are wanted during winter and summer time.",
+      "maxAlarmRateHint": "Max power shortage is a quality assurance to make sure you don't cross the power ceiling when the power meter is malfunctioning. It is not recommended to turn this off unless you do not care about the maximum power. As long as the power meter is working, this setting will have no effect, but if the app does not receive a power report from the power meter, it will enter a limiting state after 1 minute. In this state, it will turn off devices. When the time without a reported effect exceeds the specified % of the tariff interval, the restriction will cease and everything will be turned on again. Preferably start with 50% and increase it if you see that the power ceiling is crossed because your power meter is unreliable.",
       "myTasks": "The App State"
     },
     "schedule": {
@@ -343,15 +344,17 @@
       "powerSettings": "Power settings",
       "powerStep" : "Step",
       "limits": "Limitations",
-      "maxPower15min": "Maximum consumption per 15 min.",
-      "maxPowerHour": "Maximum hourly consumption",
-      "maxPowerDay": "Maximum daily consumption",
-      "maxPowerMonth": "Maximum monthly consumption",
+      "maxPower15min": "Max consumption per 15 min.",
+      "maxPowerHour": "Max hourly consumption",
+      "maxPowerDay": "Max daily consumption",
+      "maxPowerMonth": "Max monthly consumption",
+      "maxAlarmRate": "Max power shortage",
       "priorities" : "Priorities",
       "priorityHint1": "In case of excessive power consumption, the app starts turning off devices from the bottom of the list. Devices at the top of the list will be the last to be turned off.",
       "priorityHint2": "When the desired power tariff is within reach, the app will start turning on devices again.",
       "priorityHint3": "In order to prevent frequent switching on/off, the app will insert a waiting time after the last switch-off before appliances are switched on again. Therefore, set power consumption for electric car chargers roughly equal to the desired power tariff and low priority.",
       "active": "limiting",
+      "noMeterPower": "Unreliable meter reader",
       "controlled": "Controlled",
       "alwaysOn": "Always On",
       "alwaysOff": "Always Off",
@@ -414,7 +417,8 @@
   },
   "breaking": {
     "maxPower": "Important change for **Piggy Bank**: Max Power is now a single global setting instead of per mode. Please check that the new setting is ok. The new setting is ",
-    "fixGraph": "**Piggy Bank** update: Unfortunately, due to an error, some of you may see a much higher hourly consumption than was actually the case on certain days in the last two weeks. Days that may have been affected have been removed from the graph and thus will no longer affect the estimated monthly tariff. To know your correct tariff for this particular month, it is recommended to check at elhub.no, sorry for the inconvenience."
+    "fixGraph": "**Piggy Bank** update: Unfortunately, due to an error, some of you may see a much higher hourly consumption than was actually the case on certain days in the last two weeks. Days that may have been affected have been removed from the graph and thus will no longer affect the estimated monthly tariff. To know your correct tariff for this particular month, it is recommended to check at elhub.no, sorry for the inconvenience.",
+    "maxAlarm": "**Piggy Bank** - Important change: To ensure that power consumption does not breach the power tariff when the meter reader is unreliable, a restriction has been added that turns off devices when power is not reported. You may need to change this setting if your meter reader is unreliable. It can be found under Advanced->Cost->Limits."
   },
   "maxUsageGraph": {
     "title": "Max Hourly usage",

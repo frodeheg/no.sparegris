@@ -1450,6 +1450,13 @@
             "en": "Month limit",
             "no": "Månedsgrense"
           }
+        },
+        {
+          "id": "4",
+          "title": {
+            "en": "Unknown power",
+            "no": "Ukjent effekt"
+          }
         }
       ],
       "icon": "/assets/limit.svg",

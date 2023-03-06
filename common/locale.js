@@ -240,6 +240,7 @@ async function refreshSchema() {
   document.getElementById('maxPowerHour').disabled = !document.getElementById('enLimit60').checked;
   document.getElementById('maxPowerDay').disabled = !document.getElementById('enLimitDay').checked;
   document.getElementById('maxPowerMonth').disabled = !document.getElementById('enLimitMonth').checked;
+  document.getElementById('maxAlarmRate').disabled = !document.getElementById('enLimitMissing').checked;
 }
 
 module.exports = {

@@ -31,6 +31,7 @@
 
       // Text strings that must be fetched from homey
       var activeText = "settings.mode.active";
+      var noPowText = "settings.mode.noMeterPower";
       var deltaText = "settings.price.delta";
       var actionText = "settings.price.action";
       var deviceText = "settings.mode.device";
@@ -1070,17 +1071,6 @@
           </tr>
 
           <tr>
-            <td class="settings_row_name"><label for="missingPower" data-i18n="settings.global.missingPower">global.missingPower</label>:</td>
-            <td class="settings_row_input"><select id ="missingPower" onchange="displaySaveHint();">
-              <option value="0" selected data-i18n="settings.global.noPowerPrevious">global.noPowerPrevious</option>
-              <option value="1" selected data-i18n="settings.global.noPowerShutdown">global.noPowerShutdown</option>
-            </select>
-              <div class="hintButton" onclick="toggle(this,'missingPowerHint', 'table-row');return false;">i</div>
-            </td>
-          </tr>
-          <tr id="missingPowerHint" class="hint"><td colspan="2"><p data-i18n="settings.global.missingPowerHint">global.missingPowerHint</p></td></tr>
-
-          <tr>
             <td class="settings_row_name"><label for="crossSlotSmooth" data-i18n="settings.global.crossSlotSmooth">global.crossSlotSmooth</label>:</td>
             <td class="settings_row_input"><input id="crossSlotSmooth" type="number" min="0" max="100" step="100" value="20" onchange="displaySaveHint()">%
               <div class="hintButton" onclick="toggle(this,'crossSlotSmoothHint', 'table-row');return false;">i</div>
@@ -1283,13 +1273,14 @@
             </tr>
             <tr id="maxPowHint" class="hint"><td colspan="2"><p data-i18n="settings.app.maxPowHint">app.maxPowHint</p></td></tr>
             <tr>
-              <td class="settings_row_name"><label for="maxPowerMissing" data-i18n="settings.mode.maxPowerMissing">mode.maxPowerMissing</label>:</td>
-              <td class="settings_row_en"><input id="enLimitMissing" type="checkbox" checked onchange="displaySaveHint()"></td>
-              <td class="settings_row_input">
-                <div class="hintButton" onclick="toggle(this,'maxPowMissingHint', 'table-row');return false;">i</div>
+              <td class="settings_row_name"><label for="maxAlarmRate" data-i18n="settings.mode.maxAlarmRate">mode.maxAlarmRate</label>:</td>
+              <td class="settings_row_en"><input id="enLimitMissing" type="checkbox" checked onchange="refreshSchema();displaySaveHint();elem = document.getElementById('maxAlarmRate'); if (this.checked) elem.value = 50; else elem.value=0;"></td>
+              <td class="settings_row_input"><input id="maxAlarmRate" type="number" min="0" max="100" step="100" value="20" onchange="displaySaveHint()">%
+                <div class="hintButton" onclick="toggle(this,'maxAlarmRateHint', 'table-row');return false;">i</div>
               </td>
             </tr>
-            <tr id="maxPowMissingHint" class="hint"><td colspan="2"><p data-i18n="settings.app.maxPowMissingHint">app.maxPowMissingHint</p></td></tr>
+            <tr id="maxAlarmRateHint" class="hint"><td colspan="2"><p data-i18n="settings.app.maxAlarmRateHint">app.maxAlarmRateHint</p></td></tr>
+
           </table>
         </div></div>
     </div>
@@ -1804,6 +1795,7 @@
       var expireHourlyLoaded = false;
       var safetyPowerLoaded = false;
       var crossSlotSmoothLoaded = false;
+      var maxAlarmRateLoaded = false;
       var maxPowerLoaded = false;
       var deviceListLoaded = false;
       var modeListLoaded = false;
@@ -1925,6 +1917,7 @@
           `expireHourlyLoaded: ${expireHourlyLoaded}<br>` +
           `safetyPowerLoaded: ${safetyPowerLoaded}<br>` +
           `crossSlotSmoothLoaded: ${crossSlotSmoothLoaded}<br>` +
+          `maxAlarmRateLoaded: ${maxAlarmRateLoaded}<br>` +
           `priceModeLoaded: ${priceModeLoaded}<br>` +
           `pricePointLoaded: ${pricePointLoaded}<br>` +
           `priceActionListLoaded: ${priceActionListLoaded}<br>` +
@@ -1953,6 +1946,7 @@
           && expireHourlyLoaded
           && safetyPowerLoaded
           && crossSlotSmoothLoaded
+          && maxAlarmRateLoaded
           && priceModeLoaded
           && pricePointLoaded
           && priceActionListLoaded
@@ -2072,6 +2066,7 @@
         var freeThresholdElement = document.getElementById("freeThreshold");
         var safetyPowerElement = document.getElementById("safetyPower");
         var crossSlotSmoothElement = document.getElementById("crossSlotSmooth");
+        var maxAlarmRateElement = document.getElementById("maxAlarmRate");
         var priceModeElement = document.getElementById("priceMode");
         var pricePointElement = document.getElementById("pricePoint");
         var mainFuseElement = document.getElementById("mainFuse");
@@ -2080,6 +2075,7 @@
 
         // Fetch translation strings from Homey
         activeText = Homey.__(activeText);
+        noPowText = Homey.__(noPowText);
         deltaText = Homey.__(deltaText);
         actionText = Homey.__(actionText);
         deviceText = Homey.__(deviceText);
@@ -2415,6 +2411,12 @@
           crossSlotSmoothLoaded = true;
           checkLoadingDone();
         });
+        Homey.get("maxAlarmRate", function (err, maxAlarmRate) {
+          if (err) return Homey.alert(err);
+          document.getElementById("maxAlarmRate").value = maxAlarmRate;
+          maxAlarmRateLoaded = true;
+          checkLoadingDone();
+        });
         Homey.get("mainFuse", function (err, mainFuse) {
           if (err) return Homey.alert(err);
           if (mainFuse !== null) {
@@ -2542,6 +2544,7 @@
               Homey.set("expireHourly",document.getElementById("expireHourly").value, errFunc);
               Homey.set("safetyPower", safetyPowerElement.value, errFunc);
               Homey.set("crossSlotSmooth", crossSlotSmoothElement.value, errFunc);
+              Homey.set("maxAlarmRate", maxAlarmRateElement.value, errFunc);
               Homey.set("mainFuse", mainFuseElement.value, errFunc);
               Homey.set("meterReader", document.getElementById("meterReader").value, errFunc);
               Homey.set("meterFrequency", document.getElementById("meterFrequency").value, errFunc);
@@ -2808,6 +2811,10 @@
           if (document.getElementById('enLimitMonth').checked) {
             limitTxt += (limitTxt.length > 0) ? '<br>' : '';
             limitTxt += `${+document.getElementById("maxPowerMonth").value} kWh/month${appConfigProgress.activeLimit == TIMESPAN.MONTH ? ' <span class="blink">('+activeText+')</span>' : ''}`;
+          }
+          if (appConfigProgress.activeLimit == ALARMS.NO_POWER) {
+            limitTxt += (limitTxt.length > 0) ? '<br>' : '';
+            limitTxt += `${noPowText}. <span class="blink">(${activeText})</span>`;
           }
           document.getElementById('limitsDuplicate').innerHTML = limitTxt;
         }

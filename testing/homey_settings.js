@@ -66,6 +66,7 @@ class FakeHomey {
       freeThreshold: null,
       safetyPower: null,
       mainFuse: null,
+      maxAlarmRate: 60,
     };
   }
 
