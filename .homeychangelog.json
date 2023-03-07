@@ -751,5 +751,8 @@
   },
   "0.20.5": {
     "en": "Fixed the alarm for active power limitation"
+  },
+  "0.20.6": {
+    "en": "Improved limiters for day and months + Added limiter for missing power to improve reliability when the meter reader is not working."
   }
 }
