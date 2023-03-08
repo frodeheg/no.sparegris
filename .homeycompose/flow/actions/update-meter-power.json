@@ -17,8 +17,8 @@
       "type": "number",
       "name": "CurrentPower",
       "placeholder": {
-        "en": "Current Power from Energy meter",
-        "no": "Nåværende effektbruk fra Strømmåleren"
+        "en": "Current Power usage from the power meter",
+        "no": "Nåværende effektbruk fra strømmåleren"
       },
       "min": 0,
       "max": 100000,

@@ -43,6 +43,7 @@
 // METERREADER : Additional parameters
 //   readPowerCap  - Capability for reading power
 //   readExportCap - Capability for reading exported power (can be undefined)
+//   readMeterCap  - Capability for reading meter (it can be reset every day/hour, this is auto-detected, the important part is to use one that updates often)
 
 // Device types
 // Note for CHARGER:
@@ -117,6 +118,7 @@ const DEFAULT_IGNORED = {
 const DEFAULT_METER = {
   type: DEVICE_TYPE.METERREADER,
   readPowerCap: 'measure_power',
+  readMeterCap: 'meter_power',
   default: true
 };
 
@@ -384,6 +386,7 @@ const DEVICE_CMD = {
   },
   'nl.hdg.mqtt:device': {
     ...DEFAULT_METER,
+    readMeterCap: 'meter_power.day',
     default: false
   },
   'nl.klikaanklikuit:ACC-250': DEFAULT_SWITCH,

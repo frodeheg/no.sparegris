@@ -952,25 +952,25 @@
       },
       {
         "title": {
-          "en": "Update PiggyBank with the total energy used",
-          "no": "Oppdater Sparegris med totalt energiforbruk"
+          "en": "Update PiggyBank with the energy used",
+          "no": "Oppdater Sparegris med energiforbruk"
         },
-        "deprecated": true,
         "titleFormatted": {
-          "en": "Set the total energy used to [[TotalEnergyUsage]] kWh",
-          "no": "Sett totalt energiforbruk til [[TotalEnergyUsage]] kWh"
+          "en": "Set the energy used to [[TotalEnergyUsage]] kWh",
+          "no": "Sett energiforbruk til [[TotalEnergyUsage]] kWh"
         },
         "hint": {
-          "en": "Attach the total energy usage output of your energy meter to this action card in order to enable the app",
-          "no": "Koble total energiforbruk fra strømmåleren din til dette kortet for å få appen til å virke"
+          "en": "Attach the energy usage (per day/hour/total etc.) output of your meter reader to this action card in order to enable the app. In case you have several readings for different intervals (day/hour etc.) then only send one of them to this app and make sure it's the one that updates most often.",
+          "no": "Koble energiforbruket (per dag/time/total etc.) fra strømmåleren din til dette kortet for å få appen til å virke. Hvis du har flere målinger for forskjellige intervaller (dag/time osv.), så send bare en av dem til denne appen og sørg for at det er den som oppdateres oftest."
         },
+        "highlight": true,
         "args": [
           {
             "type": "number",
             "name": "TotalEnergyUsage",
             "placeholder": {
-              "en": "Connect to energy meter total energy usage",
-              "no": "Koble til strømmålerens avlesning for totalt energiforbruk"
+              "en": "Connect to the power meter's consumption reading",
+              "no": "Koble til strømmålerens forbruksavlesning"
             },
             "min": 0,
             "step": 0.01
@@ -997,8 +997,8 @@
             "type": "number",
             "name": "CurrentPower",
             "placeholder": {
-              "en": "Current Power from Energy meter",
-              "no": "Nåværende effektbruk fra Strømmåleren"
+              "en": "Current Power usage from the power meter",
+              "no": "Nåværende effektbruk fra strømmåleren"
             },
             "min": 0,
             "max": 100000,

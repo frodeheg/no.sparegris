@@ -839,8 +839,10 @@ class PiggyBank extends Homey.App {
     // Enable action cards
     const cardActionEnergyUpdate = this.homey.flow.getActionCard('update-meter-energy'); // Marked as deprecated so nobody will see it yet
     cardActionEnergyUpdate.registerRunListener(async args => {
-      const newTotal = args.TotalEnergyUsage;
-      this.updateLog(`Total energy changed to: ${String(newTotal)}`, c.LOG_INFO);
+      if (preventZigbee) return Promise.reject(new Error(this.homey.__('warnings.homeyReboot')));
+      if (!this.app_is_configured) return Promise.reject(new Error(this.homey.__('warnings.notConfigured')));
+      if (+this.homey.settings.get('operatingMode') === c.MODE_DISABLED) return Promise.reject(new Error(this.homey.__('warnings.notEnabled')));
+      return this.mutexForPower.runExclusive(async () => this.onMeterUpdate(args.TotalEnergyUsage));
     });
     const cardActionPowerUpdate = this.homey.flow.getActionCard('update-meter-power');
     cardActionPowerUpdate.registerRunListener(async args => {
@@ -2047,23 +2049,32 @@ class PiggyBank extends Homey.App {
             if (device && device.capabilitiesObj) {
               const meterReader = this.homey.settings.get('meterReader');
               const { driverId } = this.__meterReaders[meterReader];
-              const { readPowerCap } = d.DEVICE_CMD[driverId];
-              const { value, lastUpdated } = device.capabilitiesObj[readPowerCap];
+              const { readPowerCap, readMeterCap } = d.DEVICE_CMD[driverId];
+              const { powerValue, powerLastUpdated } = device.capabilitiesObj[readPowerCap];
+              const { meterValue, meterLastUpdated } = device.capabilitiesObj[readMeterCap];
               const prevPowerTime = this.__prevPowerTime;
-              this.__prevPowerTime = lastUpdated;
+              const prevMeterTime = this.__prevMeterTime;
+              this.__prevPowerTime = powerLastUpdated;
+              this.__prevMeterTime = meterLastUpdated;
               // Skip reporting the very first time (because this means it is an update in the past) and when unchanged
-              if (lastUpdated === prevPowerTime || prevPowerTime === undefined || !lastUpdated) return Promise.reject();
-              return Promise.resolve([value, new Date(lastUpdated)]);
+              if ((powerLastUpdated === prevPowerTime && meterLastUpdated === prevMeterTime)
+                || (prevPowerTime === undefined && prevMeterTime === undefined)
+                || (!powerLastUpdated && !meterLastUpdated)) return Promise.reject();
+              return Promise.resolve([powerValue, new Date(powerLastUpdated), meterValue, new Date(meterLastUpdated)]);
             }
             return Promise.reject();
           })
           .catch(() => {
             // Keep alive signal when no power was available
-            return Promise.resolve([NaN, new Date()]);
+            return Promise.resolve([NaN, new Date(), undefined, new Date()]);
           });
       })
-      .then(([power, time]) => {
-        return this.mutexForPower.runExclusive(async () => this.onPowerUpdate(power, time));
+      .then(([power, time, meter, meterTime]) => {
+        if (+this.homey.settings.get('operatingMode') === c.MODE_DISABLED) {
+          return Promise.resolve();
+        }
+        return this.mutexForPower.runExclusive(async () => this.onMeterUpdate(meter, meterTime)
+          .then(() => this.onPowerUpdate(power, time)));
       })
       .finally(() => {
         // Schedule next pulse event
@@ -2080,10 +2091,54 @@ class PiggyBank extends Homey.App {
   }
 
   /**
+   * onMeterUpdate is the action called whenever the accumulated usage is updated on the power meter
+   * Must never be called when operatingMode is set to Disabled
+   */
+  async onMeterUpdate(newMeter, now = new Date()) {
+    // Input checking
+    if (!newMeter) return Promise.resolve();
+    if (newMeter === this.__oldMeterValue) {
+      this.updateLog('onMeterUpdate was called with an invalid trigger (meter value did not change)', c.LOG_ERROR);
+      return Promise.resolve();
+    }
+    if (Number.isNan(now.getTime())) {
+      this.updateLog('onMeterUpdate was called with an invalid date', c.LOG_ERROR);
+      now = new Date();
+    }
+
+    // Update all timeslots
+    const limits = this.readMaxPower();
+    const numLimits = Array.isArray(limits) ? limits.length : 0;
+    for (let limitIdx = 0; limitIdx < numLimits; limitIdx++) {
+      this.__fakeEnergy[limitIdx] = 0;
+      this.__pendingEnergy[limitIdx] = 0; // New
+      this.__accum_energy[limitIdx] = estimatedEnergy;
+      this.__accum_energyTime[limitIdx] = new Date(now.getTime()); // New
+    }
+
+    // Estimate power in case now > this.__current_power_time
+    if (now > this.__current_power_time) {
+      this.__current_power = estimatedPower;
+      this.__current_power_time = new Date(now.getTime());
+    }
+
+    this.__oldMeterValue = newMeter;
+    this.__oldMeterTime = now;
+    this.__energy_meter_detected_time = new Date(now.getTime());
+    return Promise.resolve();
+  }
+
+  /**
    * onPowerUpdate is the action called whenever the power is updated from the power meter
    * Must never be called when operatingMode is set to Disabled
    */
   async onPowerUpdate(newPower, now = new Date()) {
+    // Input checking
+    if (Number.isNan(now.getTime())) {
+      this.updateLog('onPowerUpdate was called with an invalid date', c.LOG_ERROR);
+      now = new Date();
+    }
+
     // when newPower is not a number it is called to keep the power handling alive
     const fakePower = Number.isNaN(+newPower);
     if (fakePower) {
