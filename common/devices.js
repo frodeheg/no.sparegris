@@ -41,9 +41,9 @@
 // All input devices has the following parameters:
 //   type          - Device type
 // METERREADER : Additional parameters
-//   readPowerCap  - Capability for reading power
+//   readPowerCap  - Capability for reading power (W)
 //   readExportCap - Capability for reading exported power (can be undefined)
-//   readMeterCap  - Capability for reading meter (it can be reset every day/hour, this is auto-detected, the important part is to use one that updates often)
+//   readMeterCap  - Capability for reading meter (kWh) (it can be reset every day/hour, this is auto-detected, the important part is to use one that updates often)
 
 // Device types
 // Note for CHARGER:

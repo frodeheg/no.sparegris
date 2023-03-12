@@ -624,24 +624,23 @@ class PiggyBank extends Homey.App {
     // ===== BREAKING CHANGES END =====
 
     // ===== KEEPING STATE ACROSS RESTARTS =====
+    this.__oldMeterValue = await this.homey.settings.get('safeShutdown__oldMeterValue') || undefined;
+    this.__oldMeterTime = new Date(await this.homey.settings.get('safeShutdown__oldMeterTime')); // When null then date is start of unix time
     this.__accum_energy = await this.homey.settings.get('safeShutdown__accum_energy');
-    this.__current_power = toNumber(await this.homey.settings.get('safeShutdown__current_power'));
+    this.__accum_energyTime = new Date(await this.homey.settings.get('safeShutdown__accum_energyTime')); // When null then date is start of unix time
+    this.__pendingEnergy = await this.homey.settings.get('safeShutdown__pendingEnergy') || [0, 0, 0, 0];
+    this.__current_power = toNumber(await this.homey.settings.get('safeShutdown__current_power')) || undefined;
     this.__current_power_time = new Date(await this.homey.settings.get('safeShutdown__current_power_time')); // When null then date is start of unix time
-    this.__energy_last_slot = toNumber(await this.homey.settings.get('safeShutdown__energy_last_slot'));
-    this.__offeredEnergy = toNumber(await this.homey.settings.get('safeShutdown__offeredEnergy'));
-    this.__missing_power_this_slot = toNumber(await this.homey.settings.get('safeShutdown__missing_power_this_slot')) || 0;
+    this.__energy_last_slot = toNumber(await this.homey.settings.get('safeShutdown__energy_last_slot')) || undefined;
+    this.__offeredEnergy = toNumber(await this.homey.settings.get('safeShutdown__offeredEnergy')) || 0;
+    this.__missing_power_this_slot = toNumber(await this.homey.settings.get('safeShutdown__missing_power_this_slot')) || 0; // Set later when 0
     this.__fakeEnergy = await this.homey.settings.get('safeShutdown__fakeEnergy') || [0, 0, 0, 0];
     this.__pendingOnNewSlot = await this.homey.settings.get('safeShutdown__pendingOnNewSlot') || [];
     if (!Array.isArray(this.__accum_energy)) {
       // No stored data, set it to something senseful (first time only)
       this.__accum_energy = [0, 0, 0, 0];
-      this.__current_power = undefined;
       this.__current_power_time = roundToStartOfMonth(new Date(now.getTime()), this.homey); // Create fake power since start of month
-      this.__energy_last_slot = undefined;
-      this.__offeredEnergy = 0;
-      this.__missing_power_this_slot = 0; // Set later
-      this.__fakeEnergy = [0, 0, 0, 0];
-      this.__pendingOnNewSlot = [];
+      this.__accum_energyTime = new Date(this.__current_power_time.getTime());
       this.updateLog('No state from previous shutdown? Powerloss, deactivated or forced restart.', c.LOG_ALL);
     } else {
       // We got safe shutdown data, remove the old data
@@ -1168,7 +1167,11 @@ class PiggyBank extends Homey.App {
     // ===== KEEPING STATE ACROSS RESTARTS =====
     // We only got 1s to do this so need to save state before anything else
     // For onPowerUpdate + onNewSlot
+    this.homey.settings.set('safeShutdown__oldMeterValue', this.__oldMeterValue);
+    this.homey.settings.set('safeShutdown__oldMeterTime', this.__oldMeterTime);
     this.homey.settings.set('safeShutdown__accum_energy', this.__accum_energy);
+    this.homey.settings.set('safeShutdown__accum_energyTime', this.__accum_energyTime);
+    this.homey.settings.set('safeShutdown__pendingEnergy', this.__pendingEnergy);
     this.homey.settings.set('safeShutdown__current_power', this.__current_power);
     this.homey.settings.set('safeShutdown__current_power_time', this.__current_power_time);
     this.homey.settings.set('safeShutdown__energy_last_slot', this.__energy_last_slot);
@@ -1945,7 +1948,7 @@ class PiggyBank extends Homey.App {
       const errorMarginEnergy = trueMaxEnergy * errorMargin;
       const maxEnergy = trueMaxEnergy - errorMarginEnergy;
       const lessThanHour = (limitIdx === TIMESPAN.QUARTER) || (limitIdx === TIMESPAN.HOUR);
-      const crossSlotSmooth = lessThanHour ? (+this.homey.settings.get('crossSlotSmooth') / 100) * (maxEnergy - this.__accum_energy[limitIdx]) : 0;
+      const crossSlotSmooth = lessThanHour ? (+this.homey.settings.get('crossSlotSmooth') / 100) * (maxEnergy - this.__accum_energy[limitIdx] - this.__pendingEnergy[limitIdx]) : 0;
       const intervalLength = limiterLength(now, limitIdx, this.homey);
       const negativeReserve = lessThanHour ? crossSlotSmooth * (remainingTime / intervalLength) : 0;
       // For time-spans greater than an hour, do a very conservative estimate of what the used power might be at the end of the hour/day
@@ -1955,23 +1958,24 @@ class PiggyBank extends Homey.App {
       if (!lessThanHour) {
         const lowPower = this.__current_power * 0.5;
         const remainingFactorHour = timeToNextHour(this.__current_power_time) / 3600000;
-        hourPower = Math.min(hourPower, this.__accum_energy[TIMESPAN.HOUR] + remainingFactorHour * lowPower);
+        hourPower = Math.min(hourPower, this.__accum_energy[TIMESPAN.HOUR] + this.__pendingEnergy[TIMESPAN.HOUR] + remainingFactorHour * lowPower);
         if (limitIdx === TIMESPAN.MONTH) {
           const remainingFactorDay = timeToNextLimiter(this.__current_power_time, TIMESPAN.DAY, this.homey) / 3600000;
           const hoursInDay = limiterLength(this.__current_power_time, TIMESPAN.DAY, this.homey) / 3600000;
-          hourPower = Math.min(hourPower, (this.__accum_energy[TIMESPAN.DAY] + remainingFactorDay * lowPower) / hoursInDay);
+          hourPower = Math.min(hourPower, (this.__accum_energy[TIMESPAN.DAY] + this.__pendingEnergy[TIMESPAN.DAY] + remainingFactorDay * lowPower) / hoursInDay);
         }
       }
 
       this.updateLog(`onProcessPower (limit ${limitIdx}): `
       + `Using: ${String(this.__current_power)}W, `
       + `Accum: ${String(this.__accum_energy[limitIdx].toFixed(2))} Wh, `
+      + `Pending: ${String(this.__pendingEnergy[limitIdx].toFixed(2))} Wh, `
       + `Limit: ${String(maxEnergy)} Wh, `
       + `Reserved: ${String(Math.ceil(this.__fakeEnergy[limitIdx] + safetyPower))}W, `
       + `Smoothing: ${String(Math.ceil(negativeReserve))}W`, c.LOG_DEBUG);
 
       // Try to control devices if the power is outside of the preferred bounds
-      const energyReserveLeft = maxEnergy - this.__accum_energy[limitIdx] - this.__fakeEnergy[limitIdx];
+      const energyReserveLeft = maxEnergy - this.__accum_energy[limitIdx] - this.__pendingEnergy[limitIdx] - this.__fakeEnergy[limitIdx];
       const wattLeftPerHour = (energyReserveLeft * (1000 * 60 * 60)) / remainingTime;
       const powerDiff = wattLeftPerHour + negativeReserve - hourPower - safetyPower;
       if (powerDiff < minPowerDiff) {
@@ -2101,29 +2105,101 @@ class PiggyBank extends Homey.App {
       this.updateLog('onMeterUpdate was called with an invalid trigger (meter value did not change)', c.LOG_ERROR);
       return Promise.resolve();
     }
-    if (Number.isNan(now.getTime())) {
+    if (Number.isNaN(now.getTime())) {
       this.updateLog('onMeterUpdate was called with an invalid date', c.LOG_ERROR);
       now = new Date();
     }
-
-    // Update all timeslots
+    if (this.__accum_energyTime > this.__current_power_time) {
+      throw new Error(`Internal error, timestamp for meter reading is greater than timestamp for power reading ${this.__accum_energyTime}`);
+    }
+    const lowestLimit = (this.granularity === 15) ? TIMESPAN.QUARTER : TIMESPAN.HOUR;
     const limits = this.readMaxPower();
     const numLimits = Array.isArray(limits) ? limits.length : 0;
-    for (let limitIdx = 0; limitIdx < numLimits; limitIdx++) {
-      this.__fakeEnergy[limitIdx] = 0;
-      this.__pendingEnergy[limitIdx] = 0; // New
-      this.__accum_energy[limitIdx] = estimatedEnergy;
-      this.__accum_energyTime[limitIdx] = new Date(now.getTime()); // New
+    if (Number.isNaN(+this.__oldMeterValue)) {
+      const timeSincePower = now - this.__current_power_time;
+      const fakeEnergy = this.__current_power * (timeSincePower / 3600000);
+      this.__accum_energyTime = new Date(this.__current_power_time.getTime());
+      this.__oldMeterTime = new Date(this.__current_power_time.getTime());
+      this.__oldMeterValue = newMeter - (fakeEnergy / 1000);
+      for (let limitIdx = 0; limitIdx < numLimits; limitIdx++) {
+        this.__accum_energy[limitIdx] = this.__pendingEnergy[limitIdx];
+        this.__pendingEnergy[limitIdx] = 0;
+        this.__fakeEnergy[limitIdx] = 0;
+      }
     }
 
-    // Estimate power in case now > this.__current_power_time
-    if (now > this.__current_power_time) {
-      this.__current_power = estimatedPower;
-      this.__current_power_time = new Date(now.getTime());
+    // Ignore the meter value whenever it is reset
+    if (newMeter > this.__oldMeterValue) {
+      const allUsedEnergy = (newMeter - this.__oldMeterValue) * 1000;
+      const lapsedTimeMeter = now - this.__oldMeterTime;
+      const lapsedTimePower = now - this.__current_power_time;
+      // Update all timeslots
+      for (let limitIdx = 0; limitIdx < numLimits; limitIdx++) {
+        if (this.__accum_energyTime > now) {
+          continue;
+        }
+        const timeLeftInSlotMeter = timeToNextLimiter(this.__accum_energyTime, limitIdx, this.homey);
+        const timeToProcessMeter = Math.min(timeLeftInSlotMeter, lapsedTimeMeter);
+        const timeWithinLimit = timeSinceLastLimiter(now, limitIdx, this.homey);
+        const newSlot = timeToProcessMeter < lapsedTimeMeter || timeWithinLimit === 0;
+        const energyUsedInTimeslot = allUsedEnergy * (timeToProcessMeter / lapsedTimeMeter);
+        this.__accum_energy[limitIdx] += energyUsedInTimeslot;
+
+        const oldPendingTime = this.__current_power_time - this.__accum_energyTime;
+        this.__fakeEnergy[limitIdx] = 0;
+
+        if (now > this.__current_power_time) {
+          const timeBeforeAccum = this.__oldMeterTime - this.__accum_energyTime;
+          const pendEnergyNotAdded = this.__pendingEnergy[limitIdx] * (timeBeforeAccum / oldPendingTime) || 0;
+          this.__accum_energy[limitIdx] += pendEnergyNotAdded;
+          this.__pendingEnergy[limitIdx] = 0; // All was moved to accum
+          if (limitIdx === lowestLimit) {
+            const timeLeftInSlotPower = timeToNextLimiter(this.__current_power_time, limitIdx, this.homey);
+            const timeToProcessPower = Math.min(timeLeftInSlotPower, lapsedTimePower);
+            const energyOffered = (this.__charge_power_active * timeToProcessPower) / (1000 * 60 * 60);
+            this.__offeredEnergy += energyOffered;
+          }
+        } else {
+          const newPendingTime = this.__current_power_time - now;
+          this.__pendingEnergy[limitIdx] *= newPendingTime / oldPendingTime; // The rest was moved to accum
+        }
+
+        if (newSlot) {
+          if (limitIdx === lowestLimit) {
+            this.__energy_last_slot = this.__accum_energy[limitIdx] + this.__pendingEnergy[limitIdx];
+            if (this.__accum_energy[limitIdx] !== 0 || this.__first_time_handled) {
+              this.__pendingOnNewSlot.push({
+                accumEnergy: Math.round(this.__energy_last_slot),
+                offeredEnergy: Math.round(this.__offeredEnergy),
+                missingMinutes: this.__missing_power_this_slot,
+                time: this.__current_power_time.getTime()
+              });
+            }
+            this.__first_time_handled = true;
+            const energyOfferedNewSlot = (this.__charge_power_active * timeWithinLimit) / (1000 * 60 * 60);
+            this.__offeredEnergy = energyOfferedNewSlot; // Offered or given, depending on flow or device
+            this.__missing_power_this_slot = Math.floor(timeWithinLimit / (1000 * 60));
+          }
+          // Add up initial part of next slot.
+          const energyUsedNewSlot = allUsedEnergy * (timeWithinLimit / lapsedTimeMeter);
+          this.__fakeEnergy[limitIdx] = 0;
+          this.__accum_energy[limitIdx] = energyUsedNewSlot;
+          this.__pendingEnergy[limitIdx] = 0; // New
+        }
+      }
+      this.__accum_energyTime = new Date(now.getTime()); // New
+
+      // Estimate power in case all full-power reports are greater than the last reported power
+      if (now > this.__current_power_time) {
+        if (this.__oldMeterTime >= this.__current_power_time) {
+          this.__current_power = (allUsedEnergy / lapsedTimeMeter) * 3600000;
+        }
+        this.__current_power_time = this.__accum_energyTime;
+      }
     }
 
     this.__oldMeterValue = newMeter;
-    this.__oldMeterTime = now;
+    this.__oldMeterTime = new Date(now.getTime());
     this.__energy_meter_detected_time = new Date(now.getTime());
     return Promise.resolve();
   }
@@ -2134,7 +2210,7 @@ class PiggyBank extends Homey.App {
    */
   async onPowerUpdate(newPower, now = new Date()) {
     // Input checking
-    if (Number.isNan(now.getTime())) {
+    if (Number.isNaN(now.getTime())) {
       this.updateLog('onPowerUpdate was called with an invalid date', c.LOG_ERROR);
       now = new Date();
     }
@@ -2176,7 +2252,7 @@ class PiggyBank extends Homey.App {
       const energyUsed = ((this.__current_power * timeToProcess) / (1000 * 60 * 60)) || 0;
       const energyOffered = (this.__charge_power_active * timeToProcess) / (1000 * 60 * 60);
       this.__fakeEnergy[limitIdx] = fakePower ? energyUsed : 0;
-      this.__accum_energy[limitIdx] += fakePower ? 0 : energyUsed;
+      this.__pendingEnergy[limitIdx] += fakePower ? 0 : energyUsed;
       const timeWithinLimit = timeSinceLastLimiter(now, limitIdx, this.homey);
       if (limitIdx === lowestLimit) {
         this.__missing_rate_this_slot = (this.__missing_power_this_slot + newMissingMinutes) / this.granularity;
@@ -2187,11 +2263,11 @@ class PiggyBank extends Homey.App {
       if (newSlot) {
         if (limitIdx === lowestLimit) {
           newBaseSlot = true;
-          this.__energy_last_slot = this.__accum_energy[limitIdx] + this.__fakeEnergy[limitIdx];
-          if (this.__accum_energy[limitIdx] !== 0 || this.__first_time_handled) {
+          this.__energy_last_slot = this.__accum_energy[limitIdx] + this.__pendingEnergy[limitIdx] + this.__fakeEnergy[limitIdx];
+          if (this.__accum_energy[limitIdx] !== 0 || this.__pendingEnergy[limitIdx] !== 0 || this.__first_time_handled) {
             this.__pendingOnNewSlot.push({
-              accumEnergy: this.__energy_last_slot,
-              offeredEnergy: this.__offeredEnergy + (fakePower ? energyOffered : 0),
+              accumEnergy: Math.round(this.__energy_last_slot),
+              offeredEnergy: Math.round(this.__offeredEnergy + (fakePower ? energyOffered : 0)),
               missingMinutes: this.__missing_power_this_slot + (fakePower ? newMissingMinutes : 0),
               time: this.__current_power_time.getTime()
             });
@@ -2200,11 +2276,14 @@ class PiggyBank extends Homey.App {
           const energyOfferedNewSlot = (this.__charge_power_active * timeWithinLimit) / (1000 * 60 * 60);
           this.__offeredEnergy = energyOfferedNewSlot; // Offered or given, depending on flow or device
           this.__missing_power_this_slot = Math.floor(timeWithinLimit / (1000 * 60));
+          this.__missing_rate_this_slot = this.__missing_power_this_slot / this.granularity;
+          this.__accum_energyTime = new Date(now.getTime());
         }
         // Add up initial part of next slot.
         const energyUsedNewSlot = (this.__current_power * timeWithinLimit) / (1000 * 60 * 60);
         this.__fakeEnergy[limitIdx] = 0;
-        this.__accum_energy[limitIdx] = energyUsedNewSlot;
+        this.__pendingEnergy[limitIdx] = energyUsedNewSlot;
+        this.__accum_energy[limitIdx] = 0;
       }
     }
 
@@ -3692,7 +3771,7 @@ class PiggyBank extends Homey.App {
     const lastMonthTariff = await getArchive(this.homey, 'maxPower', 'monthly', ltYearm1, ltMonthm1);
     const remainingTime = timeToNextSlot(this.__current_power_time, this.granularity);
     const slotSize = (this.granularity === 15) ? TIMESPAN.QUARTER : TIMESPAN.HOUR;
-    const powerEstimated = (this.__accum_energy[slotSize] + (this.__current_power * remainingTime) / (1000 * 60 * this.granularity)) * (60 / this.granularity);
+    const powerEstimated = (this.__accum_energy[slotSize] + this.__pendingEnergy[slotSize] + (this.__current_power * remainingTime) / (1000 * 60 * this.granularity)) * (60 / this.granularity);
 
     return {
       power_last_hour: parseInt(this.__energy_last_slot, 10), // Actually NaN the first hour of operation
