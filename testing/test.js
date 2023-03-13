@@ -12,7 +12,7 @@ const prices = require('../common/prices');
 const { addToArchive, cleanArchive, getArchive, changeArchiveMode, clearArchive } = require('../common/archive');
 const Homey = require('./homey');
 const PiggyBank = require('../app');
-const { TIMESPAN, roundToStartOfDay, timeToNextHour, toLocalTime, fromLocalTime, timeToNextSlot } = require('../common/homeytime');
+const { TIMESPAN, roundToStartOfDay, timeToNextHour, toLocalTime, fromLocalTime, timeToNextSlot, timeSinceLastSlot } = require('../common/homeytime');
 const { disableTimers, applyBasicConfig, applyStateFromFile, getAllDeviceId, writePowerStatus, setAllDeviceState, validateModeList } = require('./test-helpers');
 
 // Test Currency Converter
@@ -1034,6 +1034,218 @@ async function testMeter() {
   console.log('\x1b[1A[\x1b[32mPASSED\x1b[0m]');
 }
 
+async function testMeterAndPower() {
+  console.log('[......] Test Meter and Power');
+  const startTime = new Date('October 1, 2022, 00:00:00 GMT+2:00');
+  const firstHour = new Date(startTime.getTime() + 1000 * 10 + 100);
+  const app = new PiggyBank();
+  await app.disableLog();
+  seedrandom('testMeterAndPowerSeed', { global: true });
+
+  // Load initial state from a file
+  await applyStateFromFile(app, 'testing/states/Frode_0.19.26.txt', false);
+  // Clear the archive
+  app.homey.settings.set('archive', null);
+  app.homey.settings.set('stats_daily_max', null);
+  app.homey.settings.set('stats_daily_max_ok', null);
+  app.homey.settings.set('stats_daily_max_last_update_time', firstHour);
+  app.homey.settings.unset('safeShutdown__accum_energy');
+  app.homey.settings.unset('safeShutdown__current_power');
+  app.homey.settings.unset('safeShutdown__current_power_time');
+  app.homey.settings.unset('safeShutdown__power_last_hour');
+  app.homey.settings.unset('safeShutdown__offeredEnergy');
+  app.homey.settings.set('maxPower', [Infinity, 10000, Infinity, Infinity]);
+
+  await app.onInit(startTime);
+  await disableTimers(app);
+
+  const futurePriceOptions = app.homey.settings.get('futurePriceOptions');
+  futurePriceOptions.priceCountry = 'be';
+  futurePriceOptions.priceRegion = 0;
+  futurePriceOptions.costSchema = 'be';
+  futurePriceOptions.gridSteps = false;
+  futurePriceOptions.granularity = 15;
+  app.homey.settings.set('futurePriceOptions', futurePriceOptions);
+
+  clearArchive(app.homey);
+
+  const meterTime = new Date(startTime.getTime());
+  let meterPower = 4000;
+  let meterValue = (meterPower / 1000) * ((meterTime - startTime) / 3600000);
+  let prevQuarter;
+  app.__current_power = meterPower;
+
+  // Queue indices are:
+  //   0        : middle-1 | Past
+  //   middle              | Current
+  //   middle+1 : length-1 | Future
+  const queue = [];
+  let lastReported = new Date(startTime.getTime());
+  let lastReportedValue = meterValue;
+  let lastReportedPower = meterPower;
+  let prevSlotValue = 0;
+  let prevLastReportedPower = 0;
+  let noPowerTime = 0;
+
+  // Cases that need to hit:
+  let hitMeterPast = false;
+  let hitMeterEqual = false;
+  let hitPowerPast = false;
+  let hitPowerEqual = false;
+  let hitDoubleCross = false;
+
+  let finished = false;
+  let i;
+  for (i = 0; !finished; i++) {
+    const deltaTime = Math.round((2 + (Math.random() * 30)) * 1000);
+    const randomPow = 300 + (Math.random() * 5000);
+    const energyUsed = (meterPower * deltaTime) / 3600000;
+    meterTime.setTime(meterTime.getTime() + deltaTime);
+
+    meterPower = randomPow;
+    meterValue += energyUsed;
+
+    const powerElem = { meterTime: new Date(meterTime.getTime()), meterPower, meterValue, deltaTime };
+    queue.push(powerElem);
+
+    // Dummy power in the end just to reset app logic
+    if (queue.length <= 3) {
+      await app.onPowerUpdate(powerElem.meterPower, powerElem.meterTime);
+      await app.onProcessPower(powerElem.meterTime);
+      prevQuarter = Math.floor(powerElem.meterTime.getHours() * 60 + powerElem.meterTime.getMinutes() / futurePriceOptions.granularity);
+      const accPow = (app.__pendingEnergy[0] + app.__fakeEnergy[0] + app.__accum_energy[0]);
+      console.log(`${powerElem.meterTime} : ${powerElem.meterValue} != ${accPow}: ${powerElem.meterPower} : ${powerElem.meterValue-accPow}`);
+    }
+
+    // Report Power / Meter values a bit delayed
+    if (queue.length >= 7) {
+      const queueCenter = Math.floor(queue.length / 2);
+      const centerTime = queue[queueCenter].meterTime;
+      if (Math.random() < 0.1) {
+        // 10% chance Meter was reported
+        const reportIdx = Math.floor(Math.random() * queue.length);
+        const newReport = queue[reportIdx];
+        if (!newReport.reported) {
+          await app.onMeterUpdate(newReport.meterValue / 1000, newReport.meterTime);
+          if (newReport.meterTime > lastReported) {
+            lastReported = newReport.meterTime;
+            prevLastReportedPower = lastReportedPower;
+            lastReportedValue = newReport.meterValue;
+            lastReportedPower = newReport.meterPower;
+          } else if (newReport.meterTime < lastReported) {
+            hitMeterPast = true;
+          } else {
+            hitMeterEqual = true;
+          }
+          for (let i = 0; i <= reportIdx; i++) {
+            queue[i].reported = true;
+          }
+          //const statusString = 'M'.padStart(reportIdx + 1, ' ').padEnd(queue.length, ' ');
+          //console.log(`[${statusString}] ${newReport.meterTime}`);
+        }
+      }
+      const newReport = queue[queueCenter];
+      if (Math.random() < 0.9) {
+        // 90% Power was reported (else meter was malafunctioning)
+        await app.onPowerUpdate(newReport.meterPower, newReport.meterTime);
+        if (newReport.meterTime > lastReported) {
+          lastReported = newReport.meterTime;
+          prevLastReportedPower = lastReportedPower;
+          lastReportedValue = newReport.meterValue;
+          lastReportedPower = newReport.meterPower;
+        } else if (newReport.meterTime < lastReported) {
+          hitPowerPast = true;
+        } else {
+          hitPowerEqual = true;
+        }
+        //const statusString = 'P'.padStart(queueCenter + 1, ' ').padEnd(queue.length, ' ');
+        //console.log(`[${statusString}] ${newReport.meterTime}`);
+      } else {
+        await app.onPowerUpdate(NaN, newReport.meterTime);
+        noPowerTime += queue[queueCenter].deltaTime;
+      }
+      queue.splice(0, 1);
+
+      // console.log(`${app.__pendingEnergy[0]} : ${lastReportedValue} : ${lastReported}`)
+
+      // Check for hour crossings
+      const nextQuarter = Math.floor(lastReported.getHours() * 60 + lastReported.getMinutes() / futurePriceOptions.granularity);
+      if (prevQuarter !== nextQuarter) {
+        const accumData = [...app.__pendingOnNewSlot][0];
+        const lastOvershoot = (prevLastReportedPower * timeSinceLastSlot(lastReported, futurePriceOptions.granularity)) / 3600000;
+        const estimateMeter = lastReportedValue - prevSlotValue - lastOvershoot;
+        const noPowerError = noPowerTime / (futurePriceOptions.granularity * 60 * 1000);
+        const marginLow = Math.floor(estimateMeter * 0.95 * (1 / (1 + noPowerError)));
+        let marginHigh = Math.ceil(estimateMeter * 1.05 * (1 + noPowerError));
+        if (marginHigh > app.homey.settings.get('maxPower')[TIMESPAN.QUARTER]) {
+          marginHigh = app.homey.settings.get('maxPower')[TIMESPAN.QUARTER];
+        }
+        // console.log(`Ehhhh: ${estimateMeter} ${prevSlotValue} ${lastOvershoot} ${noPowerError}`)
+        prevSlotValue = lastReportedValue - lastOvershoot;
+        if (!accumData) {
+          throw new Error(`New slot was not detected between ${prevQuarter} -> ${nextQuarter}`);
+        }
+        if ((accumData.accumEnergy < marginLow) || (accumData.accumEnergy > marginHigh)) {
+          throw new Error(`Accumulated energy not within bounds: ${accumData.accumEnergy} not in [${marginLow}, ${marginHigh}]`);
+        }
+        if (app.__energy_last_slot === undefined) {
+          throw new Error('Last hour energy usage is undefined');
+        }
+        console.log('crossing detected');
+        prevQuarter = nextQuarter;
+        if (lastReported > centerTime) {
+          hitDoubleCross = true;
+          console.log('future crossing reported');
+        }
+      }
+      if (lastReported > centerTime) {
+        console.log('future reported');
+      }
+
+      // Process power using meterTime... e.g. a bit delayed from power reporting
+      await app.onProcessPower(centerTime);
+
+      // Exit condition
+    }
+    finished = hitMeterPast && hitMeterEqual && hitPowerPast && hitPowerEqual && hitDoubleCross;
+  }
+  console.log(`crossed: ${i} ${finished}: ${hitMeterPast} ${hitMeterEqual} ${hitPowerPast} ${hitPowerEqual} ${hitDoubleCross}`);
+
+  /*await app.onMeterUpdate(meterValue, meterTime);
+  await app.onProcessPower(meterTime);
+  for (let i = 1; i < (60 * 6 * 3 - 15); i++) {
+    lastTime.setTime(meterTime.getTime());
+    meterTime.setTime(startTime.getTime() + 1000 * 10 * i);
+    meterValue += (meterPower / 1000) * ((meterTime - lastTime) / 3600000);
+    await app.onMeterUpdate(meterValue, meterTime);
+    await app.onProcessPower(new Date(meterTime.getTime()));
+  }
+  lastTime.setTime(meterTime.getTime());
+  meterTime = new Date(firstHour.getTime() + 1000 * 60 * 60 * 3 - 5000);
+  meterValue += (meterPower / 1000) * ((meterTime - lastTime) / 3600000);
+  await app.onMeterUpdate(meterValue, meterTime);
+  await app.onProcessPower(meterTime);
+  lastTime.setTime(meterTime.getTime());
+  meterTime = new Date(firstHour.getTime() + 1000 * 60 * 60 * 4 - 5000);
+  meterValue += (meterPower / 1000) * ((meterTime - lastTime) / 3600000);
+  await app.onMeterUpdate(meterValue, meterTime);
+  await app.onProcessPower(meterTime);
+
+  // Check archive
+  const archive = app.homey.settings.get('archive');
+  if (JSON.stringify(archive.dataOk.hourly['2022-10-01']) !== '[1,1,1,1]'
+    || JSON.stringify(archive.powUsage.hourly['2022-10-01']) !== '[9985,4000,4000,4000]'
+    || JSON.stringify(archive.maxPower.hourly['2022-10-01']) !== '[9985,4000,4000,4000]') {
+    console.error(JSON.stringify(archive.dataOk.hourly['2022-10-01']));
+    console.error(JSON.stringify(archive.powUsage.hourly['2022-10-01']));
+    console.error(JSON.stringify(archive.maxPower.hourly['2022-10-01']));
+    console.error('---');
+    throw new Error('New Hour with missing Power updates does not behave correctly');
+  }*/
+  await app.onUninit();
+  console.log('\x1b[1A[\x1b[32mPASSED\x1b[0m]');
+}
+
 // Start all tests
 async function startAllTests() {
   try {
@@ -1060,6 +1272,7 @@ async function startAllTests() {
     await testBelgiumPowerTariff(10000);
     await testLimiters();
     await testMeter();
+    await testMeterAndPower();
     await testMail();
   } catch (err) {
     console.log('\x1b[1A[\x1b[31mFAILED\x1b[0m]');
@@ -1068,5 +1281,6 @@ async function startAllTests() {
 }
 
 // Run all the testing
-startAllTests();
+//startAllTests();
+testMeterAndPower();
 // testState('testing/states/Anders_0.18.31_err.txt', 100);
