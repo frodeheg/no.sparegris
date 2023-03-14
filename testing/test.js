@@ -1088,11 +1088,11 @@ async function testMeterAndPower() {
   let noPowerTime = 0;
 
   // Cases that need to hit:
-  let hitMeterPast = false;
-  let hitMeterEqual = false;
-  let hitPowerPast = false;
-  let hitPowerEqual = false;
-  let hitDoubleCross = false;
+  let hitMeterPast = 0;
+  let hitMeterEqual = 0;
+  let hitPowerPast = 0;
+  let hitPowerEqual = 0;
+  let hitDoubleCross = 0;
 
   let finished = false;
   let i;
@@ -1113,8 +1113,6 @@ async function testMeterAndPower() {
       await app.onPowerUpdate(powerElem.meterPower, powerElem.meterTime);
       await app.onProcessPower(powerElem.meterTime);
       prevQuarter = Math.floor(powerElem.meterTime.getHours() * 60 + powerElem.meterTime.getMinutes() / futurePriceOptions.granularity);
-      const accPow = (app.__pendingEnergy[0] + app.__fakeEnergy[0] + app.__accum_energy[0]);
-      console.log(`${powerElem.meterTime} : ${powerElem.meterValue} != ${accPow}: ${powerElem.meterPower} : ${powerElem.meterValue-accPow}`);
     }
 
     // Report Power / Meter values a bit delayed
@@ -1133,9 +1131,9 @@ async function testMeterAndPower() {
             lastReportedValue = newReport.meterValue;
             lastReportedPower = newReport.meterPower;
           } else if (newReport.meterTime < lastReported) {
-            hitMeterPast = true;
+            hitMeterPast++;
           } else {
-            hitMeterEqual = true;
+            hitMeterEqual++;
           }
           for (let i = 0; i <= reportIdx; i++) {
             queue[i].reported = true;
@@ -1154,9 +1152,9 @@ async function testMeterAndPower() {
           lastReportedValue = newReport.meterValue;
           lastReportedPower = newReport.meterPower;
         } else if (newReport.meterTime < lastReported) {
-          hitPowerPast = true;
+          hitPowerPast++;
         } else {
-          hitPowerEqual = true;
+          hitPowerEqual++;
         }
         //const statusString = 'P'.padStart(queueCenter + 1, ' ').padEnd(queue.length, ' ');
         //console.log(`[${statusString}] ${newReport.meterTime}`);
@@ -1165,8 +1163,6 @@ async function testMeterAndPower() {
         noPowerTime += queue[queueCenter].deltaTime;
       }
       queue.splice(0, 1);
-
-      // console.log(`${app.__pendingEnergy[0]} : ${lastReportedValue} : ${lastReported}`)
 
       // Check for hour crossings
       const nextQuarter = Math.floor(lastReported.getHours() * 60 + lastReported.getMinutes() / futurePriceOptions.granularity);
@@ -1180,10 +1176,12 @@ async function testMeterAndPower() {
         if (marginHigh > app.homey.settings.get('maxPower')[TIMESPAN.QUARTER]) {
           marginHigh = app.homey.settings.get('maxPower')[TIMESPAN.QUARTER];
         }
-        // console.log(`Ehhhh: ${estimateMeter} ${prevSlotValue} ${lastOvershoot} ${noPowerError}`)
         prevSlotValue = lastReportedValue - lastOvershoot;
         if (!accumData) {
-          throw new Error(`New slot was not detected between ${prevQuarter} -> ${nextQuarter}`);
+          throw new Error(`New slot ${accumData} was not detected between ${prevQuarter} -> ${nextQuarter}`);
+        }
+        if (Number.isNaN(accumData.accumEnergy)) {
+          throw new Error('The accumulated energy is NaN');
         }
         if ((accumData.accumEnergy < marginLow) || (accumData.accumEnergy > marginHigh)) {
           throw new Error(`Accumulated energy not within bounds: ${accumData.accumEnergy} not in [${marginLow}, ${marginHigh}]`);
@@ -1191,15 +1189,13 @@ async function testMeterAndPower() {
         if (app.__energy_last_slot === undefined) {
           throw new Error('Last hour energy usage is undefined');
         }
-        console.log('crossing detected');
         prevQuarter = nextQuarter;
         if (lastReported > centerTime) {
-          hitDoubleCross = true;
-          console.log('future crossing reported');
+          hitDoubleCross++;
         }
       }
       if (lastReported > centerTime) {
-        console.log('future reported');
+        //console.log('future reported');
       }
 
       // Process power using meterTime... e.g. a bit delayed from power reporting
@@ -1207,7 +1203,11 @@ async function testMeterAndPower() {
 
       // Exit condition
     }
-    finished = hitMeterPast && hitMeterEqual && hitPowerPast && hitPowerEqual && hitDoubleCross;
+    finished = (hitMeterPast > 10)
+    && (hitMeterEqual > 10)
+    && (hitPowerPast > 10)
+    && (hitPowerEqual > 10)
+    && (hitDoubleCross > 50);
   }
   console.log(`crossed: ${i} ${finished}: ${hitMeterPast} ${hitMeterEqual} ${hitPowerPast} ${hitPowerEqual} ${hitDoubleCross}`);
 
