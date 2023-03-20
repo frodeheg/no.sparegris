@@ -2055,8 +2055,8 @@ class PiggyBank extends Homey.App {
               const meterReader = this.homey.settings.get('meterReader');
               const { driverId } = this.__meterReaders[meterReader];
               const { readPowerCap, readMeterCap } = d.DEVICE_CMD[driverId];
-              const { powerValue, powerLastUpdated } = device.capabilitiesObj[readPowerCap];
-              const { meterValue, meterLastUpdated } = device.capabilitiesObj[readMeterCap];
+              const { value: powerValue, lastUpdated: powerLastUpdated } = device.capabilitiesObj[readPowerCap];
+              const { value: meterValue, lastUpdated: meterLastUpdated } = device.capabilitiesObj[readMeterCap];
               const prevPowerTime = this.__prevPowerTime;
               const prevMeterTime = this.__prevMeterTime;
               this.__prevPowerTime = powerLastUpdated;
@@ -2103,7 +2103,7 @@ class PiggyBank extends Homey.App {
     // Input checking
     if (!newMeter) return Promise.resolve();
     if (newMeter === this.__oldMeterValue) {
-      this.updateLog('onMeterUpdate was called with an invalid trigger (meter value did not change)', c.LOG_ERROR);
+      this.updateLog('onMeterUpdate was called with an invalid trigger (meter value did not change)', c.LOG_INFO);
       return Promise.resolve();
     }
     if (Number.isNaN(now.getTime())) {
