@@ -2271,8 +2271,8 @@ class PiggyBank extends Homey.App {
       if (now > this.__current_power_time) {
         if (this.__oldMeterTime >= this.__current_power_time) {
           this.__current_power = (allUsedEnergy / lapsedTimeMeter) * 3600000;
+          this.__current_power_time = this.__accum_energyTime;
         }
-        this.__current_power_time = this.__accum_energyTime;
       }
     }
 
