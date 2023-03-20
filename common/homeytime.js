@@ -260,6 +260,24 @@ function roundToStartOfSlot(date, slotSize) {
 }
 
 /**
+ * Rounds a time object to the start of the given slot
+ */
+function roundToStartOfLimit(date, limiter, homey) {
+  switch (limiter) {
+    case TIMESPAN.QUARTER:
+      return roundToStartOfSlot(date, 15);
+    case TIMESPAN.HOUR:
+      return roundToStartOfHour(date);
+    case TIMESPAN.DAY:
+      return roundToStartOfDay(date, homey);
+    case TIMESPAN.MONTH:
+      return roundToStartOfMonth(date, homey);
+    default:
+      throw (new Error(`Invalid limiter: ${limiter}`));
+  }
+}
+
+/**
  * Checks if two time objects belong to the same hour or not
  */
 function isSameHour(time1, time2) {
@@ -344,6 +362,7 @@ module.exports = {
   roundToStartOfSlot,
   roundToStartOfDay,
   roundToStartOfMonth,
+  roundToStartOfLimit,
   isSameHour,
   hoursInDay,
   slotsInDay,

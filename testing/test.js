@@ -12,7 +12,7 @@ const prices = require('../common/prices');
 const { addToArchive, cleanArchive, getArchive, changeArchiveMode, clearArchive } = require('../common/archive');
 const Homey = require('./homey');
 const PiggyBank = require('../app');
-const { TIMESPAN, roundToStartOfDay, timeToNextHour, toLocalTime, fromLocalTime, timeToNextSlot, timeSinceLastSlot } = require('../common/homeytime');
+const { TIMESPAN, roundToStartOfDay, timeToNextHour, toLocalTime, fromLocalTime, timeToNextSlot, timeSinceLastSlot, timeSinceLastLimiter } = require('../common/homeytime');
 const { disableTimers, applyBasicConfig, applyStateFromFile, getAllDeviceId, writePowerStatus, setAllDeviceState, validateModeList } = require('./test-helpers');
 
 // Test Currency Converter
@@ -973,7 +973,7 @@ async function testLimiters() {
 async function testMeter() {
   console.log('[......] Test Meter Reader');
   const startTime = new Date('October 1, 2022, 00:59:50 GMT+2:00');
-  const firstHour = new Date(startTime.getTime() + 1000 * 10 + 100);
+  const firstHour = new Date(startTime.getTime() + 1000 * 10);
   const app = new PiggyBank();
   await app.disableLog();
 
@@ -1014,7 +1014,7 @@ async function testMeter() {
   await app.onMeterUpdate(meterValue, meterTime);
   await app.onProcessPower(meterTime);
   lastTime.setTime(meterTime.getTime());
-  meterTime = new Date(firstHour.getTime() + 1000 * 60 * 60 * 4 - 5000);
+  meterTime = new Date(firstHour.getTime() + 1000 * 60 * 60 * 4);
   meterValue += (meterPower / 1000) * ((meterTime - lastTime) / 3600000);
   await app.onMeterUpdate(meterValue, meterTime);
   await app.onProcessPower(meterTime);
@@ -1080,12 +1080,14 @@ async function testMeterAndPower() {
   //   middle              | Current
   //   middle+1 : length-1 | Future
   const queue = [];
+  let lastPingTime = new Date(startTime.getTime());
   let lastReported = new Date(startTime.getTime());
   let lastReportedValue = meterValue;
   let lastReportedPower = meterPower;
   let prevSlotValue = 0;
   let prevLastReportedPower = 0;
   let noPowerTime = 0;
+  let pendPowerTime = 0;
 
   // Cases that need to hit:
   let hitMeterPast = 0;
@@ -1093,6 +1095,10 @@ async function testMeterAndPower() {
   let hitPowerPast = 0;
   let hitPowerEqual = 0;
   let hitDoubleCross = 0;
+
+  let numErrors = 0;
+  let accErrors = 0;
+  let maxError = 0;
 
   let finished = false;
   let i;
@@ -1112,7 +1118,7 @@ async function testMeterAndPower() {
     if (queue.length <= 3) {
       await app.onPowerUpdate(powerElem.meterPower, powerElem.meterTime);
       await app.onProcessPower(powerElem.meterTime);
-      prevQuarter = Math.floor(powerElem.meterTime.getHours() * 60 + powerElem.meterTime.getMinutes() / futurePriceOptions.granularity);
+      prevQuarter = Math.floor((powerElem.meterTime.getHours() * 60 + powerElem.meterTime.getMinutes()) / futurePriceOptions.granularity);
     }
 
     // Report Power / Meter values a bit delayed
@@ -1123,10 +1129,13 @@ async function testMeterAndPower() {
         // 10% chance Meter was reported
         const reportIdx = Math.floor(Math.random() * queue.length);
         const newReport = queue[reportIdx];
+        noPowerTime += pendPowerTime / 1;
+        pendPowerTime = 0;
         if (!newReport.reported) {
           await app.onMeterUpdate(newReport.meterValue / 1000, newReport.meterTime);
           if (newReport.meterTime > lastReported) {
             lastReported = newReport.meterTime;
+            lastPingTime = lastReported;
             prevLastReportedPower = lastReportedPower;
             lastReportedValue = newReport.meterValue;
             lastReportedPower = newReport.meterPower;
@@ -1138,8 +1147,9 @@ async function testMeterAndPower() {
           for (let i = 0; i <= reportIdx; i++) {
             queue[i].reported = true;
           }
-          //const statusString = 'M'.padStart(reportIdx + 1, ' ').padEnd(queue.length, ' ');
-          //console.log(`[${statusString}] ${newReport.meterTime}`);
+          // const est = lastReportedValue - prevSlotValue;
+          // const statusString = 'M'.padStart(reportIdx + 1, ' ').padEnd(queue.length, ' ');
+          // console.log(`[${statusString}] ${newReport.meterTime} : ${newReport.meterValue} : ${newReport.meterPower} ---> ${est}`);
         }
       }
       const newReport = queue[queueCenter];
@@ -1148,43 +1158,59 @@ async function testMeterAndPower() {
         await app.onPowerUpdate(newReport.meterPower, newReport.meterTime);
         if (newReport.meterTime > lastReported) {
           lastReported = newReport.meterTime;
+          lastPingTime = lastReported;
           prevLastReportedPower = lastReportedPower;
           lastReportedValue = newReport.meterValue;
           lastReportedPower = newReport.meterPower;
         } else if (newReport.meterTime < lastReported) {
+          pendPowerTime += queue[queueCenter].deltaTime;
           hitPowerPast++;
         } else {
           hitPowerEqual++;
         }
-        //const statusString = 'P'.padStart(queueCenter + 1, ' ').padEnd(queue.length, ' ');
-        //console.log(`[${statusString}] ${newReport.meterTime}`);
+        // const est = newReport.meterValue - prevSlotValue;
+        // const statusString = 'P'.padStart(queueCenter + 1, ' ').padEnd(queue.length, ' ');
+        // console.log(`[${statusString}] ${newReport.meterTime} : ${newReport.meterValue} : ${newReport.meterPower} ---> ${est}`);
       } else {
+        if (newReport.meterTime.getTime() > (lastReported.getTime() + 60000)) {
+          lastPingTime = newReport.meterTime; // Need to ignore NaN power if within 1 minute
+        }
         await app.onPowerUpdate(NaN, newReport.meterTime);
-        noPowerTime += queue[queueCenter].deltaTime;
+        pendPowerTime += queue[queueCenter].deltaTime;
       }
       queue.splice(0, 1);
 
       // Check for hour crossings
-      const nextQuarter = Math.floor(lastReported.getHours() * 60 + lastReported.getMinutes() / futurePriceOptions.granularity);
+      const nextQuarter = Math.floor((lastPingTime.getHours() * 60 + lastPingTime.getMinutes()) / futurePriceOptions.granularity);
+      const accumData = [...app.__pendingOnNewSlot][0];
       if (prevQuarter !== nextQuarter) {
-        const accumData = [...app.__pendingOnNewSlot][0];
-        const lastOvershoot = (prevLastReportedPower * timeSinceLastSlot(lastReported, futurePriceOptions.granularity)) / 3600000;
-        const estimateMeter = lastReportedValue - prevSlotValue - lastOvershoot;
+        noPowerTime += pendPowerTime;
+        const lastOvershoot = (prevLastReportedPower * timeSinceLastSlot(lastPingTime, futurePriceOptions.granularity)) / 3600000;
+        const notReported = lastReportedPower * ((lastPingTime - lastReported) / 3600000);
+        const estimateMeter = lastReportedValue + notReported - prevSlotValue - lastOvershoot;
         const noPowerError = noPowerTime / (futurePriceOptions.granularity * 60 * 1000);
+        if (noPowerError > 1) {
+          // console.log(`Nopower: ${noPowerError}`);
+        }
         const marginLow = Math.floor(estimateMeter * 0.95 * (1 / (1 + noPowerError)));
         let marginHigh = Math.ceil(estimateMeter * 1.05 * (1 + noPowerError));
         if (marginHigh > app.homey.settings.get('maxPower')[TIMESPAN.QUARTER]) {
           marginHigh = app.homey.settings.get('maxPower')[TIMESPAN.QUARTER];
         }
-        prevSlotValue = lastReportedValue - lastOvershoot;
+        prevSlotValue = lastReportedValue + notReported - lastOvershoot;
         if (!accumData) {
-          throw new Error(`New slot ${accumData} was not detected between ${prevQuarter} -> ${nextQuarter}`);
+          throw new Error(`New slot was not detected between ${prevQuarter} -> ${nextQuarter} : ${lastReported}`);
         }
         if (Number.isNaN(accumData.accumEnergy)) {
           throw new Error('The accumulated energy is NaN');
         }
+        // console.log(`NewHour: ${accumData.accumEnergy} [${String(marginLow).padStart(5, ' ')},${String(marginHigh).padStart(5, ' ')}] Meter:${String(Math.floor(lastReportedValue)).padStart(6, ' ')} : ${noPowerTime/60000}`)
+        const err = Math.abs(1 - accumData.accumEnergy / estimateMeter);
+        numErrors++;
+        accErrors += err;
+        maxError = Math.max(maxError, err);
         if ((accumData.accumEnergy < marginLow) || (accumData.accumEnergy > marginHigh)) {
-          throw new Error(`Accumulated energy not within bounds: ${accumData.accumEnergy} not in [${marginLow}, ${marginHigh}]`);
+          throw new Error(`Accumulated energy not within bounds: ${accumData.accumEnergy} not in [${marginLow}, ${marginHigh}] | err: ${noPowerError}`);
         }
         if (app.__energy_last_slot === undefined) {
           throw new Error('Last hour energy usage is undefined');
@@ -1193,9 +1219,14 @@ async function testMeterAndPower() {
         if (lastReported > centerTime) {
           hitDoubleCross++;
         }
+        noPowerTime = 0;
+        pendPowerTime = 0;
+        lastReported = lastPingTime; // Make sure we don't try to validate going from next to previous hour
+      } else if (accumData) {
+        throw new Error(`New slot ${accumData.accumEnergy} was falsly reported at ${prevQuarter} -> ${nextQuarter} : ${lastReported}`);
       }
       if (lastReported > centerTime) {
-        //console.log('future reported');
+        // console.log('future reported');
       }
 
       // Process power using meterTime... e.g. a bit delayed from power reporting
@@ -1207,9 +1238,9 @@ async function testMeterAndPower() {
     && (hitMeterEqual > 10)
     && (hitPowerPast > 10)
     && (hitPowerEqual > 10)
-    && (hitDoubleCross > 50);
+    && (hitDoubleCross > 200);
   }
-  console.log(`crossed: ${i} ${finished}: ${hitMeterPast} ${hitMeterEqual} ${hitPowerPast} ${hitPowerEqual} ${hitDoubleCross}`);
+  // console.log(`crossed: ${i} ${finished}: ${hitMeterPast} ${hitMeterEqual} ${hitPowerPast} ${hitPowerEqual} ${hitDoubleCross} Avg. error: ${Math.floor(10000 * (accErrors / numErrors)) / 100}% Max: ${Math.floor(10000 * maxError) / 100}%`);
 
   /*await app.onMeterUpdate(meterValue, meterTime);
   await app.onProcessPower(meterTime);
@@ -1281,6 +1312,6 @@ async function startAllTests() {
 }
 
 // Run all the testing
-//startAllTests();
-testMeterAndPower();
+startAllTests();
+// testMeterAndPower();
 // testState('testing/states/Anders_0.18.31_err.txt', 100);
