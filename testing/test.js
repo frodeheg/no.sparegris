@@ -507,7 +507,7 @@ async function testTicket115() {
   app.__deviceList = undefined;
   await app.onInit();
   const futurePriceOptions = app.homey.settings.get('futurePriceOptions');
-  futurePriceOptions.priceKind = c.PRICE_KIND_FIXED;
+  futurePriceOptions.priceKind = c.PRICE_KIND_FIXED; // Turn off entsoe API price fetching
   app.homey.settings.set('futurePriceOptions', futurePriceOptions);
 
   // Just load some random devices
@@ -636,8 +636,8 @@ async function testMissingPulse() {
   // Check archive
   const archive = app.homey.settings.get('archive');
   if (JSON.stringify(archive.dataOk.hourly['2022-10-01']) !== '[0.016666666666666666,0,0,0.016666666666666666]'
-    || JSON.stringify(archive.powUsage.hourly['2022-10-01']) !== '[9985,9900,10000,9992]'
-    || JSON.stringify(archive.maxPower.hourly['2022-10-01']) !== '[9985,9900,10000,9992]') {
+    || JSON.stringify(archive.powUsage.hourly['2022-10-01']) !== '[10000,10000,10000,9992]'
+    || JSON.stringify(archive.maxPower.hourly['2022-10-01']) !== '[10000,10000,10000,9992]') {
     console.error(JSON.stringify(archive.dataOk.hourly['2022-10-01']));
     console.error(JSON.stringify(archive.powUsage.hourly['2022-10-01']));
     console.error(JSON.stringify(archive.maxPower.hourly['2022-10-01']));
@@ -916,7 +916,7 @@ async function testLimiters() {
   futurePriceOptions.costSchema = 'be';
   futurePriceOptions.gridSteps = false;
   futurePriceOptions.granularity = 15;
-  futurePriceOptions.priceKind = c.PRICE_KIND_FIXED;
+  futurePriceOptions.priceKind = c.PRICE_KIND_FIXED; // Turn off entsoe API price fetching
   app.homey.settings.set('futurePriceOptions', futurePriceOptions);
 
   const limitsToTest = [300, 3000, 8000, 2000000];
@@ -993,6 +993,9 @@ async function testMeter() {
 
   await app.onInit(startTime);
   await disableTimers(app);
+  const futurePriceOptions = app.homey.settings.get('futurePriceOptions');
+  futurePriceOptions.priceKind = c.PRICE_KIND_FIXED; // Turn off entsoe API price fetching
+  app.homey.settings.set('futurePriceOptions', futurePriceOptions);
 
   const lastTime = new Date();
   let meterTime = new Date(startTime.getTime() + 1000 * 1);
@@ -1021,14 +1024,86 @@ async function testMeter() {
 
   // Check archive
   const archive = app.homey.settings.get('archive');
-  if (JSON.stringify(archive.dataOk.hourly['2022-10-01']) !== '[1,1,1,1]'
-    || JSON.stringify(archive.powUsage.hourly['2022-10-01']) !== '[9985,4000,4000,4000]'
-    || JSON.stringify(archive.maxPower.hourly['2022-10-01']) !== '[9985,4000,4000,4000]') {
+  if (JSON.stringify(archive.dataOk.hourly['2022-10-01']) !== '[0.016666666666666666,1,1,1]'
+    || JSON.stringify(archive.powUsage.hourly['2022-10-01']) !== '[9975,3989,3989,4000]'
+    || JSON.stringify(archive.maxPower.hourly['2022-10-01']) !== '[9975,3989,3989,4000]') {
     console.error(JSON.stringify(archive.dataOk.hourly['2022-10-01']));
     console.error(JSON.stringify(archive.powUsage.hourly['2022-10-01']));
     console.error(JSON.stringify(archive.maxPower.hourly['2022-10-01']));
     console.error('---');
     throw new Error('New Hour with missing Power updates does not behave correctly');
+  }
+  await app.onUninit();
+  console.log('\x1b[1A[\x1b[32mPASSED\x1b[0m]');
+}
+
+async function testMeterWithReset() {
+  console.log('[......] Test Meter Reader with reset');
+  const startTime = new Date('October 1, 2022, 00:59:50 GMT+2:00');
+  const firstHour = new Date(startTime.getTime() + 1000 * 10);
+  const app = new PiggyBank();
+  await app.disableLog();
+
+  // Load initial state from a file
+  await applyStateFromFile(app, 'testing/states/Frode_0.19.26.txt', false);
+  // Clear the archive
+  app.homey.settings.set('archive', null);
+  app.homey.settings.set('stats_daily_max', null);
+  app.homey.settings.set('stats_daily_max_ok', null);
+  app.homey.settings.set('stats_daily_max_last_update_time', firstHour);
+  app.homey.settings.unset('safeShutdown__accum_energy');
+  app.homey.settings.unset('safeShutdown__current_power');
+  app.homey.settings.unset('safeShutdown__current_power_time');
+  app.homey.settings.unset('safeShutdown__power_last_hour');
+  app.homey.settings.unset('safeShutdown__offeredEnergy');
+  app.homey.settings.set('maxPower', [Infinity, 10000, Infinity, Infinity]);
+
+  await app.onInit(startTime);
+  await disableTimers(app);
+  const futurePriceOptions = app.homey.settings.get('futurePriceOptions');
+  futurePriceOptions.priceKind = c.PRICE_KIND_FIXED; // Turn off entsoe API price fetching
+  app.homey.settings.set('futurePriceOptions', futurePriceOptions);
+
+  const lastTime = new Date();
+  let meterTime = new Date(startTime.getTime() + 1000 * 1);
+  const meterPower = 4000;
+  let meterValue = (meterPower / 1000) * ((meterTime - startTime) / 3600000);
+
+  await app.onMeterUpdate(meterValue, meterTime);
+  await app.onProcessPower(meterTime);
+  for (let i = 1; i < (60 * 6 * 3 - 15); i++) {
+    lastTime.setTime(meterTime.getTime());
+    meterTime.setTime(startTime.getTime() + 1000 * 10 * i);
+    meterValue += (meterPower / 1000) * ((meterTime - lastTime) / 3600000);
+    if (i % 20 === 0) {
+      meterValue = 0;
+    }
+    if ((i < 40) || (i > 100)) {
+      await app.onMeterUpdate(meterValue, meterTime);
+    }
+    await app.onProcessPower(new Date(meterTime.getTime()));
+  }
+  lastTime.setTime(meterTime.getTime());
+  meterTime = new Date(firstHour.getTime() + 1000 * 60 * 60 * 3 - 5000);
+  meterValue += (meterPower / 1000) * ((meterTime - lastTime) / 3600000);
+  await app.onMeterUpdate(meterValue, meterTime);
+  await app.onProcessPower(meterTime);
+  lastTime.setTime(meterTime.getTime());
+  meterTime = new Date(firstHour.getTime() + 1000 * 60 * 60 * 4);
+  meterValue += (meterPower / 1000) * ((meterTime - lastTime) / 3600000);
+  await app.onMeterUpdate(meterValue, meterTime);
+  await app.onProcessPower(meterTime);
+
+  // Check archive
+  const archive = app.homey.settings.get('archive');
+  if (JSON.stringify(archive.dataOk.hourly['2022-10-01']) !== '[0.016666666666666666,0.8333333333333334,1,1]'
+    || JSON.stringify(archive.powUsage.hourly['2022-10-01']) !== '[9975,5256,4289,4283]'
+    || JSON.stringify(archive.maxPower.hourly['2022-10-01']) !== '[9975,5256,4289,4283]') {
+    console.error(JSON.stringify(archive.dataOk.hourly['2022-10-01']));
+    console.error(JSON.stringify(archive.powUsage.hourly['2022-10-01']));
+    console.error(JSON.stringify(archive.maxPower.hourly['2022-10-01']));
+    console.error('---');
+    throw new Error('New Hour with resetting meter values does not behave correctly');
   }
   await app.onUninit();
   console.log('\x1b[1A[\x1b[32mPASSED\x1b[0m]');
@@ -1054,7 +1129,7 @@ async function testMeterAndPower() {
   app.homey.settings.unset('safeShutdown__current_power_time');
   app.homey.settings.unset('safeShutdown__power_last_hour');
   app.homey.settings.unset('safeShutdown__offeredEnergy');
-  app.homey.settings.set('maxPower', [Infinity, 10000, Infinity, Infinity]);
+  app.homey.settings.set('maxPower', [500, 10000, Infinity, Infinity]);
 
   await app.onInit(startTime);
   await disableTimers(app);
@@ -1065,6 +1140,7 @@ async function testMeterAndPower() {
   futurePriceOptions.costSchema = 'be';
   futurePriceOptions.gridSteps = false;
   futurePriceOptions.granularity = 15;
+  futurePriceOptions.priceKind = c.PRICE_KIND_FIXED; // Turn off entsoe API price fetching
   app.homey.settings.set('futurePriceOptions', futurePriceOptions);
 
   clearArchive(app.homey);
@@ -1188,14 +1264,11 @@ async function testMeterAndPower() {
         const lastOvershoot = (prevLastReportedPower * timeSinceLastSlot(lastPingTime, futurePriceOptions.granularity)) / 3600000;
         const notReported = lastReportedPower * ((lastPingTime - lastReported) / 3600000);
         const estimateMeter = lastReportedValue + notReported - prevSlotValue - lastOvershoot;
-        const noPowerError = noPowerTime / (futurePriceOptions.granularity * 60 * 1000);
-        if (noPowerError > 1) {
-          // console.log(`Nopower: ${noPowerError}`);
-        }
-        const marginLow = Math.floor(estimateMeter * 0.95 * (1 / (1 + noPowerError)));
-        let marginHigh = Math.ceil(estimateMeter * 1.05 * (1 + noPowerError));
-        if (marginHigh > app.homey.settings.get('maxPower')[TIMESPAN.QUARTER]) {
-          marginHigh = app.homey.settings.get('maxPower')[TIMESPAN.QUARTER];
+        const noPowerError = noPowerTime / (futurePriceOptions.granularity * 60 * 1000); // (noPowerTime / 3600000) * app.homey.settings.get('maxPower')[TIMESPAN.HOUR];
+        const marginLow = Math.floor(estimateMeter * 0.95 * (1 / (1 + noPowerError))); // Math.max(Math.floor(estimateMeter * 0.95 - noPowerError), 0);
+        let marginHigh = Math.ceil(estimateMeter * 1.05 * (1 + noPowerError)); // Math.ceil(estimateMeter * 1.05 + noPowerError);
+        if (marginHigh > app.homey.settings.get('maxPower')[TIMESPAN.HOUR]) {
+          marginHigh = app.homey.settings.get('maxPower')[TIMESPAN.HOUR];
         }
         prevSlotValue = lastReportedValue + notReported - lastOvershoot;
         if (!accumData) {
@@ -1211,6 +1284,8 @@ async function testMeterAndPower() {
         maxError = Math.max(maxError, err);
         if ((accumData.accumEnergy < marginLow) || (accumData.accumEnergy > marginHigh)) {
           throw new Error(`Accumulated energy not within bounds: ${accumData.accumEnergy} not in [${marginLow}, ${marginHigh}] | err: ${noPowerError}`);
+        // } else {
+        //   console.log(`OK: ${accumData.accumEnergy} in [${marginLow}, ${marginHigh}]`)
         }
         if (app.__energy_last_slot === undefined) {
           throw new Error('Last hour energy usage is undefined');
@@ -1240,39 +1315,12 @@ async function testMeterAndPower() {
     && (hitPowerEqual > 10)
     && (hitDoubleCross > 200);
   }
-  // console.log(`crossed: ${i} ${finished}: ${hitMeterPast} ${hitMeterEqual} ${hitPowerPast} ${hitPowerEqual} ${hitDoubleCross} Avg. error: ${Math.floor(10000 * (accErrors / numErrors)) / 100}% Max: ${Math.floor(10000 * maxError) / 100}%`);
+  const avgErrorPst = Math.floor(10000 * (accErrors / numErrors)) / 100;
+  const maxErrorPst = Math.floor(10000 * maxError) / 100;
+  if (avgErrorPst >  3) throw new Error(`Average error exceeded limit: ${avgErrorPst}%`);
+  if (maxErrorPst > 15) throw new Error(`Maximum error exceeded limit: ${maxErrorPst}%`);
+  // console.log(`crossed: ${i} ${finished}: ${hitMeterPast} ${hitMeterEqual} ${hitPowerPast} ${hitPowerEqual} ${hitDoubleCross} Avg. error: ${avgErrorPst}% Max: ${maxErrorPst}%`);
 
-  /*await app.onMeterUpdate(meterValue, meterTime);
-  await app.onProcessPower(meterTime);
-  for (let i = 1; i < (60 * 6 * 3 - 15); i++) {
-    lastTime.setTime(meterTime.getTime());
-    meterTime.setTime(startTime.getTime() + 1000 * 10 * i);
-    meterValue += (meterPower / 1000) * ((meterTime - lastTime) / 3600000);
-    await app.onMeterUpdate(meterValue, meterTime);
-    await app.onProcessPower(new Date(meterTime.getTime()));
-  }
-  lastTime.setTime(meterTime.getTime());
-  meterTime = new Date(firstHour.getTime() + 1000 * 60 * 60 * 3 - 5000);
-  meterValue += (meterPower / 1000) * ((meterTime - lastTime) / 3600000);
-  await app.onMeterUpdate(meterValue, meterTime);
-  await app.onProcessPower(meterTime);
-  lastTime.setTime(meterTime.getTime());
-  meterTime = new Date(firstHour.getTime() + 1000 * 60 * 60 * 4 - 5000);
-  meterValue += (meterPower / 1000) * ((meterTime - lastTime) / 3600000);
-  await app.onMeterUpdate(meterValue, meterTime);
-  await app.onProcessPower(meterTime);
-
-  // Check archive
-  const archive = app.homey.settings.get('archive');
-  if (JSON.stringify(archive.dataOk.hourly['2022-10-01']) !== '[1,1,1,1]'
-    || JSON.stringify(archive.powUsage.hourly['2022-10-01']) !== '[9985,4000,4000,4000]'
-    || JSON.stringify(archive.maxPower.hourly['2022-10-01']) !== '[9985,4000,4000,4000]') {
-    console.error(JSON.stringify(archive.dataOk.hourly['2022-10-01']));
-    console.error(JSON.stringify(archive.powUsage.hourly['2022-10-01']));
-    console.error(JSON.stringify(archive.maxPower.hourly['2022-10-01']));
-    console.error('---');
-    throw new Error('New Hour with missing Power updates does not behave correctly');
-  }*/
   await app.onUninit();
   console.log('\x1b[1A[\x1b[32mPASSED\x1b[0m]');
 }
@@ -1303,6 +1351,7 @@ async function startAllTests() {
     await testBelgiumPowerTariff(10000);
     await testLimiters();
     await testMeter();
+    await testMeterWithReset();
     await testMeterAndPower();
     await testMail();
   } catch (err) {
@@ -1313,5 +1362,4 @@ async function startAllTests() {
 
 // Run all the testing
 startAllTests();
-// testMeterAndPower();
 // testState('testing/states/Anders_0.18.31_err.txt', 100);

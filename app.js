@@ -625,6 +625,7 @@ class PiggyBank extends Homey.App {
 
     // ===== KEEPING STATE ACROSS RESTARTS =====
     this.__oldMeterValue = await this.homey.settings.get('safeShutdown__oldMeterValue') || undefined;
+    this.__oldMeterValueValid = await this.homey.settings.get('safeShutdown__oldMeterValueValid') || false;
     this.__oldMeterTime = new Date(await this.homey.settings.get('safeShutdown__oldMeterTime')); // When null then date is start of unix time
     this.__accum_energy = await this.homey.settings.get('safeShutdown__accum_energy');
     this.__accum_energyTime = new Date(await this.homey.settings.get('safeShutdown__accum_energyTime')); // When null then date is start of unix time
@@ -842,14 +843,14 @@ class PiggyBank extends Homey.App {
       if (preventZigbee) return Promise.reject(new Error(this.homey.__('warnings.homeyReboot')));
       if (!this.app_is_configured) return Promise.reject(new Error(this.homey.__('warnings.notConfigured')));
       if (+this.homey.settings.get('operatingMode') === c.MODE_DISABLED) return Promise.reject(new Error(this.homey.__('warnings.notEnabled')));
-      return this.mutexForPower.runExclusive(async () => this.onMeterUpdate(args.TotalEnergyUsage));
+      return this.mutexForPower.runExclusive(async () => this.onMeterUpdate(+args.TotalEnergyUsage));
     });
     const cardActionPowerUpdate = this.homey.flow.getActionCard('update-meter-power');
     cardActionPowerUpdate.registerRunListener(async args => {
       if (preventZigbee) return Promise.reject(new Error(this.homey.__('warnings.homeyReboot')));
       if (!this.app_is_configured) return Promise.reject(new Error(this.homey.__('warnings.notConfigured')));
       if (+this.homey.settings.get('operatingMode') === c.MODE_DISABLED) return Promise.reject(new Error(this.homey.__('warnings.notEnabled')));
-      return this.mutexForPower.runExclusive(async () => this.onPowerUpdate(args.CurrentPower));
+      return this.mutexForPower.runExclusive(async () => this.onPowerUpdate(+args.CurrentPower));
     });
     const cardActionModeUpdate = this.homey.flow.getActionCard('change-piggy-bank-mode');
     cardActionModeUpdate.registerRunListener(async args => {
@@ -1169,6 +1170,7 @@ class PiggyBank extends Homey.App {
     // We only got 1s to do this so need to save state before anything else
     // For onPowerUpdate + onNewSlot
     this.homey.settings.set('safeShutdown__oldMeterValue', this.__oldMeterValue);
+    this.homey.settings.set('safeShutdown__oldMeterValueValid', this.__oldMeterValueValid);
     this.homey.settings.set('safeShutdown__oldMeterTime', this.__oldMeterTime);
     this.homey.settings.set('safeShutdown__accum_energy', this.__accum_energy);
     this.homey.settings.set('safeShutdown__accum_energyTime', this.__accum_energyTime);
@@ -2101,7 +2103,7 @@ class PiggyBank extends Homey.App {
    */
   async onMeterUpdate(newMeter, now = new Date()) {
     // Input checking
-    if (!newMeter) return Promise.resolve();
+    if (!Number.isFinite(newMeter)) return Promise.resolve();
     if (newMeter === this.__oldMeterValue) {
       this.updateLog('onMeterUpdate was called with an invalid trigger (meter value did not change)', c.LOG_INFO);
       return Promise.resolve();
@@ -2115,70 +2117,66 @@ class PiggyBank extends Homey.App {
       this.__accum_energyTime = new Date(now.getTime());
       this.__oldMeterTime = new Date(now.getTime());
       this.__oldMeterValue = newMeter;
+      this.__oldMeterValueValid = true;
       return Promise.resolve();
     }
-    if (this.__oldMeterValue && this.__oldMeterTime < this.__accum_energyTime) {
-      throw new Error(`Invalid case ${this.__oldMeterTime} : ${this.__accum_energyTime}`);
-    } else if (this.__oldMeterTime > this.__accum_energyTime) {
-      throw new Error(`Finally, you created a test-case for this - when the meter reader is reset then it should also work`);
+    if (Number.isFinite(this.__oldMeterValue)) {
+      if (this.__oldMeterTime < this.__accum_energyTime) {
+        throw new Error(`Invalid case ${this.__oldMeterTime} : ${this.__accum_energyTime}`);
+      } else if (newMeter < this.__oldMeterValue) {
+        // Power meter was reset - treat it as value was first time reported
+        this.__oldMeterValue = NaN;
+        this.__oldMeterValueValid = false;
+      }
     }
     const errorMargin = this.homey.settings.get('errorMargin') ? (parseInt(this.homey.settings.get('errorMargin'), 10) / 100) : 0;
     const lowestLimit = (this.granularity === 15) ? TIMESPAN.QUARTER : TIMESPAN.HOUR;
     const limits = this.readMaxPower();
     const numLimits = Array.isArray(limits) ? limits.length : 0;
+    // First time meter reporting or meter value was reset --> Fake the old value so the regular code can be used to process power
     if (Number.isNaN(+this.__oldMeterValue)) {
-      const timeSincePower = now - this.__current_power_time;
-      const fakeEnergy = this.__current_power * (timeSincePower / 3600000);
-      this.__accum_energyTime = new Date(this.__current_power_time.getTime());
-      this.__oldMeterTime = new Date(this.__current_power_time.getTime());
-      this.__oldMeterValue = newMeter - (fakeEnergy / 1000);
-      for (let limitIdx = 0; limitIdx < numLimits; limitIdx++) {
-        this.__accum_energy[limitIdx] = this.__pendingEnergy[limitIdx];
-        this.__pendingEnergy[limitIdx] = 0;
-        this.__fakeEnergy[limitIdx] = 0;
-      }
+      const unknownPower = (limits[TIMESPAN.QUARTER] < Infinity) ? limits[TIMESPAN.QUARTER] * 4
+        : (limits[TIMESPAN.HOUR] < Infinity) ? limits[TIMESPAN.HOUR] : this.__current_power;
+      const newestTime = (this.__current_power_time > this.__accum_energyTime) ? this.__current_power_time : this.__accum_energyTime;
+      // Energy that was not reported at all
+      const fakeEnergy = unknownPower * ((now - newestTime) / 3600000);
+      // Energy reported by onPowerUpdate
+      const safeEnergy = (this.__current_power_time >= this.__accum_energyTime) ? this.__pendingEnergy[lowestLimit] : 0;
+      this.__oldMeterTime = new Date(this.__accum_energyTime.getTime());
+      this.__oldMeterValue = newMeter - ((safeEnergy + fakeEnergy) / 1000);
     }
 
-    // Ignore the meter value whenever it is reset
+    const prevSlotTime = (this.__current_power_time > this.__accum_energyTime) ? this.__current_power_time : this.__accum_energyTime;
     if (newMeter > this.__oldMeterValue) {
       const allUsedEnergy = (newMeter - this.__oldMeterValue) * 1000;
       const lapsedTimeMeter = now - this.__oldMeterTime;
       const lapsedTimePower = now - this.__current_power_time;
-      const prevSlotTime = (this.__current_power_time > this.__oldMeterTime) ? this.__current_power_time : this.__oldMeterTime;
       let newMissingPowerMinutes = this.__missing_power_this_slot;
+      let newMissingFakeMinutes = 0;
       // Update all timeslots
       for (let limitIdx = 0; limitIdx < numLimits; limitIdx++) {
         if (this.__accum_energyTime > now) {
           continue;
         }
         let removedPending = 0;
-        let accumTimeTemp = this.__accum_energyTime;
         const prevSlotStartTime = roundToStartOfLimit(prevSlotTime, limitIdx, this.homey);
-        const maxMissingTime = timeSinceLastLimiter(this.__oldMeterTime, limitIdx, this.homey); // Limit to the current timeslot
-        const timeWithPending = Math.min(Math.max(0, this.__current_power_time - this.__accum_energyTime), maxMissingTime);
-        if (this.__oldMeterTime > this.__accum_energyTime && this.__oldMeterTime > prevSlotStartTime) {
-          // The meter reader has previously been reset, so there is some time that has lapsed before the energy reading that need to be accounted for
-          const timeBeforeAccum = Math.min(this.__oldMeterTime - this.__accum_energyTime, maxMissingTime); // If cutoff here then onNewPower reported new hour
-          const pendingTimeBeforeAccum = Math.min(timeWithPending, timeBeforeAccum);
-          const remainingTimeBeforeAccum = timeBeforeAccum - pendingTimeBeforeAccum;
-          const unknownPower = (limits[lowestLimit] < Infinity) ? limits[lowestLimit] : this.__current_power;
-          const pendEnergyNotAdded = (this.__pendingEnergy[limitIdx] * (timeWithPending ? (pendingTimeBeforeAccum / timeWithPending) : 1)
-            + unknownPower * (remainingTimeBeforeAccum / 3600000)) || 0;
-          this.__accum_energy[limitIdx] += pendEnergyNotAdded;
-          accumTimeTemp = this.__oldMeterTime;
-        }
 
         // Before new slot: Add energy actually used since start of previous energy report
         const endTimeWithinLimit = timeSinceLastLimiter(now, limitIdx, this.homey);
         const prevLimitSize = limiterLength(prevSlotTime, limitIdx, this.homey);
         const actualStartTime = (this.__oldMeterTime > prevSlotStartTime) ? this.__oldMeterTime : prevSlotStartTime;
-        const endPrevSlot = (now - actualStartTime > endTimeWithinLimit) ? roundToStartOfLimit(now, limitIdx, this.homey) : now;
+        const newSlotStartTime = roundToStartOfLimit(now, limitIdx, this.homey);
+        const endPrevSlot = (now - actualStartTime > endTimeWithinLimit) ? newSlotStartTime : now;
         const timeBeforeNewSlot = Math.max(endPrevSlot - actualStartTime, 0);
-        const prevRemainingTime = (accumTimeTemp > prevSlotStartTime) ? timeToNextLimiter(accumTimeTemp, limitIdx, this.homey) : prevLimitSize;
+        const prevRemainingTime = (this.__accum_energyTime > prevSlotStartTime) ? timeToNextLimiter(this.__accum_energyTime, limitIdx, this.homey) : prevLimitSize;
         const timeToProcessMeter = Math.min(timeBeforeNewSlot, prevRemainingTime);
-        const newSlot = timeToProcessMeter < lapsedTimeMeter || endTimeWithinLimit === 0;
+        const newSlot = this.__accum_energyTime < newSlotStartTime;
         const energyUsedInTimeslot = allUsedEnergy * (lapsedTimeMeter ? (timeToProcessMeter / lapsedTimeMeter) : 1);
         this.__accum_energy[limitIdx] += energyUsedInTimeslot;
+        if (limitIdx === lowestLimit) {
+          newMissingFakeMinutes = this.__oldMeterValueValid ? 0 : Math.floor(timeToProcessMeter / 60000);
+          newMissingPowerMinutes += newMissingFakeMinutes;
+        }
 
         // Update pending energy in case the energy report was delayed compared to the power report
         removedPending = this.__pendingEnergy[limitIdx];
@@ -2192,14 +2190,14 @@ class PiggyBank extends Homey.App {
             this.__offeredEnergy += energyOffered;
           }
         } else {
-          const oldPendingTime = this.__current_power_time - accumTimeTemp;
+          const oldPendingTime = this.__current_power_time - this.__accum_energyTime;
           const newPendingTime = this.__current_power_time - now;
           this.__pendingEnergy[limitIdx] *= (newPendingTime < oldPendingTime) ? (newPendingTime / oldPendingTime) : 1; // The rest was moved to accum
           removedPending -= this.__pendingEnergy[limitIdx];
         }
 
         // if (limitIdx === lowestLimit) {
-        //   console.log(`M ${this.__accum_energy[limitIdx]} : ${this.__pendingEnergy[limitIdx]} + ${energyUsedInTimeslot}  P ${this.__missing_power_this_slot}`)
+        //   console.log(`M ${this.__accum_energy[limitIdx]} + ${this.__pendingEnergy[limitIdx]} + ${this.__fakeEnergy[limitIdx]} (+ missing: ${this.__missing_power_this_slot})`)
         // }
         if (newSlot) {
           const withinPrevSlotFactor = timeToProcessMeter / lapsedTimeMeter;
@@ -2212,10 +2210,10 @@ class PiggyBank extends Homey.App {
           // Power has error margin, but not Meter-value, which is exact
           const missingTimeMeter = Math.floor((timeToProcessMeter / 60000) * (1 - withinPrevSlotFactor));
           const missingTimePower = Math.floor((newPendingTime < 0) ? 0 : (newPendingTime / 60000));
-          const missingTimePowerClamped = Math.max(this.__missing_power_this_slot + missingTimePower, (curAccTime / 60000) * errorMargin);
+          const missingTimePowerClamped = Math.min(this.__missing_power_this_slot + missingTimePower, (curAccTime / 60000) * errorMargin);
           if (Math.floor(this.__missing_power_this_slot_accum + missingTimeMeter) < missingTimePowerClamped) {
             if (limitIdx === lowestLimit) {
-              newMissingPowerMinutes = this.__missing_power_this_slot_accum + missingTimeMeter;
+              newMissingPowerMinutes = this.__missing_power_this_slot_accum + missingTimeMeter + newMissingFakeMinutes;
             }
           } else {
             // Pending data was more accurate, add it back (e.g. replace newly Accumulated time with removed pending)
@@ -2232,7 +2230,7 @@ class PiggyBank extends Homey.App {
               }
             }
             if (limitIdx === lowestLimit) {
-              newMissingPowerMinutes = this.__missing_power_this_slot + missingTimePower;
+              newMissingPowerMinutes = this.__missing_power_this_slot + missingTimePower + newMissingFakeMinutes;
             }
           }
 
@@ -2240,7 +2238,7 @@ class PiggyBank extends Homey.App {
             if (limitIdx === lowestLimit) {
               this.__energy_last_slot = this.__accum_energy[limitIdx] + this.__pendingEnergy[limitIdx];
               if (this.__accum_energy[limitIdx] !== 0 || this.__first_time_handled) {
-                // console.log(`new (M) ${String(Math.floor(this.__energy_last_slot)).padStart(5,' ')} : ${prevSlotTime} : ${this.__accum_energy[limitIdx]}`);
+                // console.log(`new (M) ${String(Math.floor(this.__energy_last_slot)).padStart(5,' ')} : ${prevSlotTime} : ${this.__accum_energy[limitIdx]} : ${newMissingPowerMinutes}`);
                 this.__pendingOnNewSlot.push({
                   accumEnergy: Math.round(this.__energy_last_slot),
                   offeredEnergy: Math.round(this.__offeredEnergy),
@@ -2277,6 +2275,7 @@ class PiggyBank extends Homey.App {
     }
 
     this.__oldMeterValue = newMeter;
+    this.__oldMeterValueValid = true;
     this.__oldMeterTime = new Date(now.getTime());
     this.__energy_meter_detected_time = new Date(now.getTime());
     return Promise.resolve();
@@ -2302,7 +2301,8 @@ class PiggyBank extends Homey.App {
     }
 
     // Check how much time has lapsed
-    const lapsedTime = now - this.__current_power_time;
+    const prevSlotTime = (this.__current_power_time > this.__accum_energyTime) ? this.__current_power_time : this.__accum_energyTime;
+    const lapsedTime = now - prevSlotTime;
     if (fakePower && lapsedTime < (1000 * 60)) {
       // ignore fakePower if we got real power within the last minute
       return Promise.resolve();
@@ -2332,19 +2332,22 @@ class PiggyBank extends Homey.App {
     const limits = this.readMaxPower();
     const lowestLimit = (this.granularity === 15) ? TIMESPAN.QUARTER : TIMESPAN.HOUR;
     const numLimits = Array.isArray(limits) ? limits.length : 0;
+    const unknownPower = (limits[TIMESPAN.QUARTER] < Infinity) ? limits[TIMESPAN.QUARTER] * 4
+      : (limits[TIMESPAN.HOUR] < Infinity) ? limits[TIMESPAN.HOUR] : this.__current_power;
+    const safePower = fakePower ? unknownPower : this.__current_power;
     let newBaseSlot = false;
     for (let limitIdx = 0; limitIdx < numLimits; limitIdx++) {
       // Accumulate the power for the rest of the slot only
-      const timeLeftInSlot = timeToNextLimiter(this.__current_power_time, limitIdx, this.homey);
+      const timeLeftInSlot = timeToNextLimiter(prevSlotTime, limitIdx, this.homey);
       let timeToProcess = lapsedTime;
       if (lapsedTime > timeLeftInSlot) {
         timeToProcess = timeLeftInSlot;
       }
       const newMissingMinutes = Math.floor(timeToProcess / (1000 * 60));
-      const energyUsed = ((this.__current_power * timeToProcess) / (1000 * 60 * 60)) || 0;
+      const energyUsed = ((safePower * timeToProcess) / (1000 * 60 * 60)) || 0;
       const energyOffered = (this.__charge_power_active * timeToProcess) / (1000 * 60 * 60);
       // if (limitIdx === lowestLimit) {
-      //   console.log(`P ${this.__accum_energy[limitIdx]} + ${this.__pendingEnergy[limitIdx]} + ${this.__fakeEnergy[limitIdx]} (+ ${fakePower} ? ${energyUsed} | missing: ${this.__missing_power_this_slot} ${newMissingMinutes})`)
+      //   console.log(`P ${this.__accum_energy[limitIdx]} + ${this.__pendingEnergy[limitIdx]} + ${this.__fakeEnergy[limitIdx]} (+ ${fakePower} ? ${energyUsed} | missing: ${this.__missing_power_this_slot} ${newMissingMinutes})   | ${safePower}`)
       // }
       this.__fakeEnergy[limitIdx] = fakePower ? energyUsed : 0;
       this.__pendingEnergy[limitIdx] += fakePower ? 0 : energyUsed;
@@ -2365,7 +2368,7 @@ class PiggyBank extends Homey.App {
               accumEnergy: Math.round(this.__energy_last_slot),
               offeredEnergy: Math.round(this.__offeredEnergy + (fakePower ? energyOffered : 0)),
               missingMinutes: this.__missing_power_this_slot + (fakePower ? newMissingMinutes : 0),
-              time: this.__current_power_time.getTime()
+              time: prevSlotTime.getTime()
             });
           }
           this.__first_time_handled = true;
@@ -2376,7 +2379,7 @@ class PiggyBank extends Homey.App {
           // Cannot set this.__accum_energyTime because that would require to update accum_energy for other slots.....
         }
         // Add up initial part of next slot.
-        const energyUsedNewSlot = (this.__current_power * timeWithinLimit) / (1000 * 60 * 60);
+        const energyUsedNewSlot = (safePower * timeWithinLimit) / (1000 * 60 * 60);
         this.__fakeEnergy[limitIdx] = 0;
         this.__pendingEnergy[limitIdx] = energyUsedNewSlot;
         this.__accum_energy[limitIdx] = 0;
