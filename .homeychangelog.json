@@ -754,5 +754,8 @@
   },
   "0.20.6": {
     "en": "Improved limiters for day and months + Added limiter for missing power to improve reliability when the meter reader is not working."
+  },
+  "0.20.7": {
+    "en": "Allowed MeterReader Value as input and not only MeterReader Power as input. This significantly improves the stability of the power control"
   }
 }
