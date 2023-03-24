@@ -39,10 +39,12 @@
       "chargetargetflow": "Flow gestuurd",
       "carchargermissinghint": "Geen ondersteunde oplader gevonden. Je kunt een flowkaartje gebruiken om te gaanladen.",
       "carchargernotaddedhint": "Er is een ondersteunde oplader gevonden, maar deze is niet toegevoegd als een controleerbaar apparaat.",
-      "chargetargethint": ["Ondersteunde opladers worden automatisch door de app bestuurd, op voorwaarde dat ze worden toegevoegd als een bestuurbaar apparaat. Voor niet-ondersteunde opladers kun je flowkaarten gebruiken of een <a href=\"showlog\" onclick=\"changetab(event, 'logpage');return false;\">apparaat rapport verzenden</a>. <!--",
-        "--><p>Houd er rekening mee dat laders vermeld bij <a href=\"showdevices\" onclick=\"changetab(event, 'helpsupportedpage');return false;\">genegeerde apparaten</ a> aangestuurd moeten worden via flows.</p><!--",,
-        "--><p>Om het via flows te regelen, moet je verbinding maken met de volgende triggers in de app: 'Start opladen' en 'Stop met opladen', terwijl 'Laadvermogen wijzigen' optioneel is, maar wel wordt aanbevolen.</p> <!--",
-        "--><p>Om het laadproces te starten moet je de flowkaart actie 'Start laadcyclus' gebruiken.</p>"],
+      "chargetargethint": [
+        "Ondersteunde opladers worden automatisch door de app bestuurd, op voorwaarde dat ze worden toegevoegd als een bestuurbaar apparaat. Voor niet-ondersteunde opladers kun je flowkaarten gebruiken of een <a href=\"showlog\" onclick=\"changetab(event, 'logpage');return false;\">apparaat rapport verzenden</a>. <!--",
+        "--><p>Houd er rekening mee dat laders vermeld bij <a href=\"showdevices\" onclick=\"changetab(event, 'helpsupportedpage');return false;\">genegeerde apparaten</ a> aangestuurd moeten worden via flows.</p><!--",
+        "--><p>Om het via flows te regelen, moet je verbinding maken met de volgende triggers in de app: 'Start opladen' en 'Stop met opladen', terwijl 'Laadvermogen wijzigen' optioneel is, maar wel wordt aanbevolen.</p><!--",
+        "--><p>Om het laadproces te starten moet je de flowkaart actie 'Start laadcyclus' gebruiken.</p>"
+      ],
       "chargeminhint": "De minimale laadstroom geeft het laadvermogen aan dat uw oplader gebruikt wanneer je deze inschakelt. Als de oplader slechts één instelling heeft, voer je deze hier in. Als de oplader de stroom kan regelen, voer je het minimale vermogen in dat hij kan opnemen. Om de waarde te verhogen, moet de drempel voor het starten van het opladen mogelijk eerst worden verhoogd, omdat deze niet kan worden overschreden om de lader te beschermen.",
       "chargethresholdhint": "Een nieuwe laadcyclus begint pas wanneer het stationair vermogen de hier ingestelde drempelwaarde overschrijdt. Dit moet ietsje meer zijn dan de minimale laadstroom om te voorkomen dat de lader meteen weer uitvalt.",
       "mintoggletimehint": "Deze waarde geeft in seconden aan hoe lang het duurt tussen de signalen die naar de oplader wordt verzonden. Als de reactietijd van de lader deze waarde overschrijdt, moet deze waarde dienovereenkomstig worden verhoogd.",
@@ -121,17 +123,21 @@
       "tasknoprices": "Er zijn geen toekomstige prijzen beschikbaar. Dit forceert de prijs naar Normale Prijs, totdat de situatie is opgelost.",
       "taskyesprices": "Toekomstige prijzen zijn weer beschikbaar.",
       "taskdisablelogging": "Je hebt uitgebreide logboekregistratie ingeschakeld, waardoor de app aanzienlijk wordt vertraagd. Schakel uitgebreide logboekregistratie uit voor betere prestaties.",
-      "taskexperimental": ["Je hebt ervoor gekozen om een apparaat aan te sturen, die voor de app nog experimenteel is. Op eigen risico! <!--",
-          "-->Stuur aub <a href=\"showlog\" onclick=\"changetab(event, 'logpage');return false;\">rapporteer</a> de status <!--",
-        "-->voor dit apparaat naar de ontwikkelaar, om eventuele problemen op te lossen en dit bericht te kunnen laten verdwijnen."],
+      "taskexperimental": [
+        "Je hebt ervoor gekozen om een apparaat aan te sturen, die voor de app nog experimenteel is. Op eigen risico! <!--",
+        "-->Stuur aub <a href=\"showlog\" onclick=\"changetab(event, 'logpage');return false;\">rapporteer</a> de status <!--",
+        "-->voor dit apparaat naar de ontwikkelaar, om eventuele problemen op te lossen en dit bericht te kunnen laten verdwijnen."
+      ],
       "taskspookey": "Uw oplader is op serieus op mysterieuze wijze ${times} keer van status veranderd, sinds het begin van de laatste oplaadcyclus. Schakel aub alle andere bronnen uit die proberen de oplader te bedienen.",
       "tasknone": "Top! de app is helemaal correct ingesteld.",
       "errordevices": "De volgende apparaten zijn zeer onbetrouwbaar, volg de instructies wanneer je erop klikt om de betrouwbaarheid te verbeteren.",
       "reliability": "Betrouwbaarheid",
-      "reliabilityhelp": ["De draadloze signalen kunnen zwak zijn. Probeer alsjeblieft de zichtlijn te verbeteren naar jouw homey, <!--",
+      "reliabilityhelp": [
+        "De draadloze signalen kunnen zwak zijn. Probeer alsjeblieft de zichtlijn te verbeteren naar jouw homey, <!--",
         "-->het signaal te versterken, of ervoor te zorgen dat er voldoende repeaters in het signaalnet zitten. Dit kan de betrouwbaarheid ervan ten goede komen. <!--",
         "-->als je denkt dat het apparaat al betrouwbaar is, en dat de problemen aan deze app liggen, <!--",
-          "-->verstuur dan aub een <a href=\"showlog\" onclick=\"changetab(event, 'logpage');return false;\">apparaat rapport. Dank je wel.</a>"]
+        "-->verstuur dan aub een <a href=\"showlog\" onclick=\"changetab(event, 'logpage');return false;\">apparaat rapport. Dank je wel.</a>"
+      ]
     },
     "global": {
       "controltemp": "Temperatuurregeling toestaan",
@@ -142,7 +148,7 @@
       "errormarginhint1": "Zorg ervoor dat je altijd een beetje onder het effecttarief uitkomt.",
       "errormarginhint2": "Hint: dit geeft je ruimte voor een kleine overbelasting op een andere dag, omdat het tarief is gebaseerd op een 3-daags gemiddelde.",
       "safetypower": "Gereserveerd vermogen",
-            "safetypowerhint1": "Voorkom dat het stroom doel faalt door stroom te reserveren voor oncontroleerbare apparaten.",
+      "safetypowerhint1": "Voorkom dat het stroom doel faalt door stroom te reserveren voor oncontroleerbare apparaten.",
       "safetypowerhint2": "Tip: je kunt flowkaartjes gebruiken om het gereserveerde vermogen gedurende de dag te wijzigen. Het wordt aanbevolen om meer vermogen te reserveren voordat u gaat koken.",
       "crossslotsmooth": "Tijdvenster 'smoothing'",
       "crossslotsmoothhint": "Met deze functie kunt u aan het begin van elk tijdvenster te veel stroom gebruiken. Het hoeveelheid wordt aan het begin van elk tijdslot opgeteld bij het toegestane stroomverbruik, en aan het einde van elk tijdslot geleidelijk verlaagd tot 0.",
@@ -225,17 +231,19 @@
       "devicetypemeter": "Meter lezers",
       "ongoing": "Lopende werkzaamheden",
       "aboutinfo": "Over Piggy Bank",
-      "aboutinfohint": ["<p> Deze app is gemaakt om iedereen op een eenvoudige manier het energieverbruik te laten beheren, en tegelijkertijd zoveel mogelijk geld te besparen. </p> <!-",
+      "aboutinfohint": [
+        "<p> Deze app is gemaakt om iedereen op een eenvoudige manier het energieverbruik te laten beheren, en tegelijkertijd zoveel mogelijk geld te besparen. </p> <!-",
         "-> <p> Er is veel vrije tijd gekomen om deze app te ontwikkelen. Als je happy bent met wat je bespaard, kunt je de ontwikkeling van de app op de volgende manieren ondersteunen: (volledig optioneel)</p><!--",
-          "--><ol><!--",
-          "-->  <li><b>Voor particulieren</b><!--",
-          "-->      <p>Je kunt de ontwikkeling van deze app sponsoren, op één van de volgende manieren: (geheel optioneel) <a href='https://github.com/sponsors/frodeheg'>https://github.com/sponsors/frodeheg</a></p><!--",
-          "-->  </li><!--",
-          "-->  <li><b>Zakelijk</b><!--",
-          "-->      <p>Deze pagina heeft een paar seconden nodig om te laden, daarom is er een laadscherm toegevoegd om informatie te geven over de wachttijd. Dit kan een goede advertentieruimte zijn, aangezien er een wachttijd is die we niet kunnen vermijden.</p><!--",
-          "-->      <p>Als uw bedrijf gebruik wil maken van deze prachtige mogelijkheid, kunt u contact opnemen met de ontwikkelaar van de app.</p><!--",
-          "-->  </li><!--",
-          "--></ol>"]
+        "--><ol><!--",
+        "-->  <li><b>Voor particulieren</b><!--",
+        "-->      <p>Je kunt de ontwikkeling van deze app sponsoren, op één van de volgende manieren: (geheel optioneel) <a href='https://github.com/sponsors/frodeheg'>https://github.com/sponsors/frodeheg</a></p><!--",
+        "-->  </li><!--",
+        "-->  <li><b>Zakelijk</b><!--",
+        "-->      <p>Deze pagina heeft een paar seconden nodig om te laden, daarom is er een laadscherm toegevoegd om informatie te geven over de wachttijd. Dit kan een goede advertentieruimte zijn, aangezien er een wachttijd is die we niet kunnen vermijden.</p><!--",
+        "-->      <p>Als uw bedrijf gebruik wil maken van deze prachtige mogelijkheid, kunt u contact opnemen met de ontwikkelaar van de app.</p><!--",
+        "-->  </li><!--",
+        "--></ol>"
+      ]
     },
     "wizzard": {
       "welcome": "Welkom",
@@ -275,9 +283,11 @@
       "actionhigh": "Acties wanneer de energie duur is",
       "actionextreme": "Acties wanneer de energie extreem duur is",
       "actionnormal": "Acties wanneer de prijs normaal is",
-      "pricehint1": ["<p> Met de modus kun je kiezen of je de app wilt voeden met handmatig vervaardigde prijspunten of dat de prijspunten automatisch moeten worden ingesteld. Als geen van beide wordt gebruikt (gedeactiveerd), regelt de app alleen max. power. </p> <!-",
+      "pricehint1": [
+        "<p> Met de modus kun je kiezen of je de app wilt voeden met handmatig vervaardigde prijspunten of dat de prijspunten automatisch moeten worden ingesteld. Als geen van beide wordt gebruikt (gedeactiveerd), regelt de app alleen max. power. </p> <!-",
         "-> <p> Handmatige besturing via flowkaartjes geeft je de grootste flexibiliteit, maar laat alle verantwoordelijkheid aan jou om de elektriciteitsprijs te interpreteren. </p> <!-",
-        "-> <p>  Interpreteert de prijzen automatisch volgens de voorkeuren die in de app zijn ingesteld. </p>"],
+        "-> <p>  Interpreteert de prijzen automatisch volgens de voorkeuren die in de app zijn ingesteld. </p>"
+      ],
       "priceerr1": "NB! Je dient de app 'Norwegian Electricity Bill' en bijbehorend apparaat te  installeren om externe prijzen op te halen. De prijzen worden continu opgehaald, flowkaartjes zijn niet nodig.",
       "pricepointadvanced": "Prijspunt magie",
       "pricepoint": "Prijspunt",
@@ -405,7 +415,7 @@
     "notenabled": "De app is nog niet geactiveerd. Ga naar de app instellingen/configuratie om de app te activeren.",
     "nodevices": "Selecteer ten minste één apparaat dat moet worden bestuurd",
     "savingwait": "Opslaan, even geduld...",
-    "savingfailed": "Opslaan mislukt -> dit zou niet moeten gebeuren, meld het bij de ontwikkelaar zodat dit kan worden opgelost",;
+    "savingfailed": "Opslaan mislukt -> dit zou niet moeten gebeuren, meld het bij de ontwikkelaar zodat dit kan worden opgelost",
     "nopriceapi": "Je moet de app 'no.almli.utilitycost' installeren om de elektriciteitsprijzen te laten werken. Als alternatief stel je de prijs via flows in.",
     "nopriceapidevice": "je dient het bijnbehorende apparaat te installeren op de app 'no.almli.utilitycost' om de elekticiteititsprijzen uit de app te krijgen. Je kunt ook het prijsnivo instellen op basis van flows.",
     "nopriceapidata": "de utilitycost app is ingesteld om de prijs uit flows te gebruiken. het zal dus de kosten niet doorsturen. probeer in plaats daarvan de prijs te configureren met de ingebouwde prijsfunctie in piggy.",
