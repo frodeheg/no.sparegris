@@ -3953,6 +3953,10 @@ class PiggyBank extends Homey.App {
    *  Price Handling
    ** **************************************************************************************************** */
   async _checkApi() {
+    const priceMode = +await this.homey.settings.get('priceMode');
+    const futureData = await this.homey.settings.get('futurePriceOptions');
+    const priceKind = !futureData ? null : +futureData.priceKind;
+    const apiNeeded = (priceMode === c.PRICE_MODE_INTERNAL) && (priceKind === c.PRICE_KIND_EXTERNAL);
     try {
       this.elPriceApi = this.homey.api.getApiApp('no.almli.utilitycost');
       const isInstalled = await this.elPriceApi.getInstalled();
@@ -3969,8 +3973,10 @@ class PiggyBank extends Homey.App {
       }
       this.updateLog('Electricity price api not installed', c.LOG_ERROR);
     } catch (err) {
-      this.updateLog(`Failed checking electricity price API: ${err.message}`, c.LOG_ERROR);
-      this.updateLog('Please install the app "Strømregning" to fetch electricity prices', c.LOG_ERROR);
+      if (apiNeeded) {
+        this.updateLog(`Failed checking electricity price API: ${err.message}`, c.LOG_ERROR);
+        this.updateLog('Please change price source to spot price or fixed price or install the app "Strømregning" to fetch electricity prices (if applicable)', c.LOG_ERROR);
+      }
     }
     return c.PRICE_API_NO_APP;
   }
