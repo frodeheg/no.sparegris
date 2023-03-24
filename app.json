@@ -1183,6 +1183,7 @@
             "en": "No limitation",
             "no": "Ingen begrensning"
           },
+          "preventInsights": true,
           "icon": "/assets/limit.svg"
         },
         "meter_power.estimated": {
