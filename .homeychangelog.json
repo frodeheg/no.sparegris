@@ -757,5 +757,8 @@
   },
   "0.20.7": {
     "en": "Allowed MeterReader Value as input and not only MeterReader Power as input. This significantly improves the stability of the power control"
+  },
+  "0.20.8": {
+    "en": "Added basic support for Solar power (capping negative input power to 0) + added support for homewizzard:energy meter reader + removed clutter from timeline"
   }
 }
