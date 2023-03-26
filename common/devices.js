@@ -41,9 +41,10 @@
 // All input devices has the following parameters:
 //   type          - Device type
 // METERREADER : Additional parameters
-//   readPowerCap  - Capability for reading power (W)
-//   readExportCap - Capability for reading exported power (can be undefined)
-//   readMeterCap  - Capability for reading meter (kWh) (it can be reset every day/hour, this is auto-detected, the important part is to use one that updates often)
+//   readPowerCap       - Capability for reading imported power (W)
+//   readPowerExportCap - Capability for reading exported power (W) (Defaults to negative portion of readPowerCap when undefined)
+//   readMeterCap       - Capability for reading imported energy (kWh) (it can be reset every day/hour, this is auto-detected, the important part is to use one that updates often)
+//   readMeterExportCap - Capability for reading exported energy (kWh) (can be undefined)
 
 // Device types
 // Note for CHARGER:
@@ -227,6 +228,13 @@ const DEVICE_CMD = {
     default: false
   },
   'com.home-connect:dryer': DEFAULT_IGNORED,
+  'com.homewizard:energy': {
+    ...DEFAULT_METER,
+    readPowerCap: 'measure_power', // Combination of import and export, negative when export
+    readMeterCap: 'meter_power.consumed',
+    readMeterExportCap: 'meter_power.returned',
+    default: false
+  },
   'com.ikea.tradfri:control_outlet': DEFAULT_SWITCH, // Not confirmed
   'com.mecloud:melcloud': {
     ...DEFAULT_AC,
@@ -440,7 +448,8 @@ const DEVICE_CMD = {
   },
   'no.easee:equalizer': {
     ...DEFAULT_METER,
-    readExportCap: 'measure_power.surplus',
+    readPowerExportCap: 'measure_power.surplus',
+    readMeterExportCap: 'meter_power.surplus',
     default: false
   },
   'no.hoiax:hiax-connected-200': {
