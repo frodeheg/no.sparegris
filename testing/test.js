@@ -7,13 +7,14 @@
 
 // eslint-disable-next-line import/no-extraneous-dependencies
 const seedrandom = require('seedrandom');
+const fs = require('fs');
 const c = require('../common/constants');
 const prices = require('../common/prices');
 const { addToArchive, cleanArchive, getArchive, changeArchiveMode, clearArchive } = require('../common/archive');
 const Homey = require('./homey');
 const PiggyBank = require('../app');
 const { TIMESPAN, roundToStartOfDay, timeToNextHour, toLocalTime, fromLocalTime, timeToNextSlot, timeSinceLastSlot, timeSinceLastLimiter, hoursInDay } = require('../common/homeytime');
-const { disableTimers, applyBasicConfig, applyStateFromFile, getAllDeviceId, writePowerStatus, setAllDeviceState, validateModeList } = require('./test-helpers');
+const { disableTimers, applyBasicConfig, applyStateFromFile, getAllDeviceId, writePowerStatus, setAllDeviceState, validateModeList, compareJSON, checkForTranslations } = require('./test-helpers');
 
 // Test Currency Converter
 // * Test that the date for the last currency fetched is recent... otherwise the API could have changed
@@ -1392,9 +1393,44 @@ async function testMeterAndPower() {
   console.log('\x1b[1A[\x1b[32mPASSED\x1b[0m]');
 }
 
+async function testLanguages() {
+  const languages = ['en', 'no', 'fr', 'be'];
+  for (let langIdx = 0; langIdx < languages.length; langIdx++) {
+    console.log(`[......] Test Translations for locales/${languages[langIdx]}.json && README.${languages[langIdx]}.txt`);
+
+    // Check if all files are present:
+    const fileReadme = `README.${languages[langIdx]}.txt`;
+    const fileLocale = `locales/${languages[langIdx]}.json`;
+    if (!fs.existsSync(fileReadme)) throw new Error(`Could not find file ${fileReadme}`);
+    if (!fs.existsSync(fileLocale)) throw new Error(`Could not find file ${fileLocale}`);
+
+    // Check if the locale file is out of sync with english
+    const localeDataEn = JSON.parse(fs.readFileSync('locales/en.json', { encoding: 'utf8', flag: 'r' }));
+    const localeData = JSON.parse(fs.readFileSync(fileLocale, { encoding: 'utf8', flag: 'r' }));
+    compareJSON(localeDataEn, localeData);
+
+    console.log('\x1b[1A[\x1b[32mPASSED\x1b[0m]');
+  }
+
+  // Test capabilities
+  const dirs = ['capabilities', 'flow/actions', 'flow/conditions', 'flow/triggers']
+  for (let i = 0; i < dirs.length; i++) {
+    const dir = dirs[i];
+    const files = fs.readdirSync(`.homeycompose/${dir}`);
+    for (let fileIdx = 0; fileIdx < files.length; fileIdx++) {
+      const fileName = `.homeycompose/${dir}/${files[fileIdx]}`;
+      console.log(`[......] Test Translations for ${fileName}`);
+      const obj = JSON.parse(fs.readFileSync(fileName, { encoding: 'utf8', flag: 'r' }));
+      checkForTranslations(obj, languages);
+      console.log('\x1b[1A[\x1b[32mPASSED\x1b[0m]');
+    }
+  }
+}
+
 // Start all tests
 async function startAllTests() {
   try {
+    await testLanguages();
     await testCurrencyConverter();
     await testApp();
     await testEntsoe();
