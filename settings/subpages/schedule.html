@@ -173,20 +173,29 @@
                 <option value="2" data-i18n="settings.schedule.pricetemp">Price controlled</option>
             </select><br>
             <div id="scTemp">
+            <label for="timerACMode" data-i18n="settings.ACMode.header">ACMode.header</label>:<br>
+            <select id="timerACMode" onchange="changeACMode(this.value);displaySaveHint();">
+              <option value="0" data-i18n="settings.ACMode.fromAC">Unchanged</option>
+              <option value="1" data-i18n="settings.ACMode.auto">Auto</option>
+              <option value="2" data-i18n="settings.ACMode.heat">Heating</option>
+              <option value="3" data-i18n="settings.ACMode.cool">Cooling</option>
+              <option value="4" data-i18n="settings.ACMode.dry">Dry</option>
+              <option value="5" data-i18n="settings.ACMode.fan">Fan</option>
+            </select><br>
             <label for="timerBaseTemp" data-i18n="settings.schedule.basetemp">Base temperature</label>:<br>
-            <input id="timerBaseTemp" class="inputElem" type="number" min="-30" max="90" step="0.5" onchange="displaySaveHint()">°C<br>
+            <input id="timerBaseTemp" class="inputElem" type="number" min="-30" max="90" step="0.5" onchange="changeBaseTemp(this.value);displaySaveHint()">°C<br>
             </div>
           </fieldset>
           <fieldset id='scPP'>
             <legend data-i18n="settings.menu.devices.prices">Price adjust</legend>
             <label for="tempDirtCheap" data-i18n="settings.pricetab.dirtcheap">Dirt Cheap</label>:<br>
-            <input id="tempDirtCheap" class="inputElem" type="number" min="-30" max="90" step="0.5" onchange="schedules[scheduleSelected].deltas[0]=value;displaySaveHint()">°C<br>
+            <input id="tempDirtCheap" class="inputElem" type="number" min="-30" max="90" step="0.5" onchange="changeDeltaTemp(0, this.value);displaySaveHint()">°C<br>
             <label for="tempCheap" data-i18n="settings.pricetab.cheap">Cheap</label>:<br>
-            <input id="tempCheap" class="inputElem" type="number" min="-30" max="90" step="0.5" onchange="schedules[scheduleSelected].deltas[1]=value;displaySaveHint()">°C<br>
+            <input id="tempCheap" class="inputElem" type="number" min="-30" max="90" step="0.5" onchange="changeDeltaTemp(1, this.value);displaySaveHint()">°C<br>
             <label for="tempExpensive" data-i18n="settings.pricetab.expensive">Expensive</label>:<br>
-            <input id="tempExpensive" class="inputElem" type="number" min="-30" max="90" step="0.5" onchange="schedules[scheduleSelected].deltas[3]=value;displaySaveHint()">°C<br>
+            <input id="tempExpensive" class="inputElem" type="number" min="-30" max="90" step="0.5" onchange="changeDeltaTemp(3, this.value);displaySaveHint()">°C<br>
             <label for="tempExtreme" data-i18n="settings.pricetab.extreme">Extreme</label>:<br>
-            <input id="tempExtreme" class="inputElem" type="number" min="-30" max="90" step="0.5" onchange="schedules[scheduleSelected].deltas[4]=value;displaySaveHint()">°C<br>
+            <input id="tempExtreme" class="inputElem" type="number" min="-30" max="90" step="0.5" onchange="changeDeltaTemp(4, this.value);displaySaveHint()">°C<br>
           </fieldset>
         </td>
       </tr>
@@ -208,6 +217,7 @@
           operation: parent.DEVICE_OP.CONTROLLED_ON,
           tempOp: parent.TEMP_OP.PRICE,
           temp: 15,
+          ACMode: 0,
           deltas: [3, 2, 0, -2, -3]
         },
         {
@@ -215,6 +225,7 @@
           operation: parent.DEVICE_OP.CONTROLLED_ON,
           tempOp: parent.TEMP_OP.PRICE,
           temp: 24,
+          ACMode: 0,
           deltas: [3, 2, 0, -2, -3]
         },
         {
@@ -222,6 +233,7 @@
           operation: parent.DEVICE_OP.CONTROLLED_ON,
           tempOp: parent.TEMP_OP.PRICE,
           temp: 20,
+          ACMode: 0,
           deltas: [3, 2, 0, -2, -3]
         },
         {
@@ -229,6 +241,7 @@
           operation: parent.DEVICE_OP.CONTROLLED_ON,
           tempOp: parent.TEMP_OP.PRICE,
           temp: 24,
+          ACMode: 0,
           deltas: [3, 2, 0, -2, -3]
         },
         {
@@ -236,6 +249,7 @@
           operation: parent.DEVICE_OP.CONTROLLED_ON,
           tempOp: parent.TEMP_OP.PRICE,
           temp: 15,
+          ACMode: 0,
           deltas: [3, 2, 0, -2, -3]
         }]
     }];
@@ -253,8 +267,22 @@
       }
       const curSchedule = schedules[scheduleSelected];
       const items = curSchedule.items;
-      items[timerSelected].tempOp = newTempOp;
+      items[timerSelected].tempOp = +newTempOp;
       refreshTempOp();
+      refreshTimeTable();
+    }
+
+    function changeACMode(newMode) {
+      schedules[scheduleSelected].items[timerSelected].ACMode = +newMode;
+    }
+
+    function changeBaseTemp(newTemp) {
+      schedules[scheduleSelected].items[timerSelected].temp = +newTemp;
+      refreshTimeTable();
+    }
+
+    function changeDeltaTemp(pp, deltaTemp) {
+      schedules[scheduleSelected].items[timerSelected].deltas[pp] = +deltaTemp;
       refreshTimeTable();
     }
 
@@ -453,6 +481,7 @@
       const sourceElement = document.getElementById(`si${sourceId}`);
       const onoffElement = document.getElementById('timerOpOnOff');
       const tempElement = document.getElementById('timerBaseTemp');
+      const ACModeElement = document.getElementById('timerACMode');
       const timeElements = document.getElementById('scTime');
       const ppElements = document.getElementById('scPP');
       const ppDirtElement = document.getElementById('tempDirtCheap');
@@ -476,6 +505,7 @@
 
       let newOnOffOp = '';
       let newTemp = '';
+      let ACMode = 0;
       if (timerSelected === sourceId) {
         timerSelected = undefined;
       } else {
@@ -486,6 +516,7 @@
         const currentSchedule = schedules[scheduleSelected];
         newOnOffOp = currentSchedule.items[timerSelected].operation;
         newTemp = currentSchedule.items[timerSelected].temp;
+        ACMode = currentSchedule.items[timerSelected].ACMode;
         ppElements.disabled = false;
         ppDirtElement.value = currentSchedule.items[timerSelected].deltas[0];
         ppCheapElement.value = currentSchedule.items[timerSelected].deltas[1];
@@ -496,6 +527,7 @@
       changeDeviceAction(onoffElement, newOnOffOp, parent.KEEP);
       refreshTempOp();
       tempElement.value = newTemp;
+      ACModeElement.value = ACMode;
     }
 
     function dragStart(e, source) {

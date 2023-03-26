@@ -392,6 +392,16 @@
       "header": "Sikkerhetskopiering",
       "text": "Sikkerhetskopieringen er ikke ferdigstilt. Du kan hente ut intern tilstand men foreløbig ikke sette den.",
       "getState": "Hent tilstand"
+    },
+    "ACMode": {
+      "header": "AC Modus",
+      "fromAC": "Uendret",
+      "auto": "Auto",
+      "heat": "Varming",
+      "cool": "Kjøling",
+      "dry": "Tørking",
+      "fan": "Vifte",
+      "hint": "Disse alternativene sikrer at prispunkter blir korrekt håndtert når du bytter mellom oppvarming og kjøling. Deltatemperaturer må ha forskjellige fortegn for kjøling og oppvarming. Hvis ACMode='Uendret', så leses AC-modusen fra AC-enheten og fortegnene inverteres basert på den faktiske AC-modusen. Alle andre valg vil stille inn AC-modus og beholde temperaturdeltaene som de er."
     }
   },
   "newdevice" : {
