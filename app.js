@@ -2300,6 +2300,11 @@ class PiggyBank extends Homey.App {
       this.updateLog(`Power reported from power meter: ${newPower}`, c.LOG_DEBUG);
     }
 
+    // Solar production might cause negative Power
+    if (+newPower < 0) {
+      newPower = 0;
+    }
+
     // Check how much time has lapsed
     const prevSlotTime = (this.__current_power_time > this.__accum_energyTime) ? this.__current_power_time : this.__accum_energyTime;
     const lapsedTime = now - prevSlotTime;
