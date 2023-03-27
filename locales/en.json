@@ -321,7 +321,7 @@
       "zonesOff": "The following zones has been forced off",
       "zonesClear": "Clear all zones",
       "zoneName": "Sone",
-      "zoneNum": "Antall enheter påvirket"
+      "zoneNum": "Number of affected devices"
     },
     "override": {
       "header": "Overriden devices",
