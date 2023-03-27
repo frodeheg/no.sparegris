@@ -1728,11 +1728,26 @@
                 <option value="3" data-i18n="settings.opMode.holiday">Holiday</option>
                 <option value="4" data-i18n="settings.opMode.custom">Custom</option>
               </select>
-              <div class="hintButton" onclick="toggle(this,'operatingModeHint');return false;">i</div>
+              <div class="hintButton" onclick="toggle(this,'operatingModeHint', 'table-row');return false;">i</div>
             </td>
           </tr>
+          <tr id="operatingModeHint" colspan="2"><td><p class="hint" data-i18n="settings.mode.operatingModeHint">mode.operatingModeHint</p></td></tr>
+          <tr>
+            <td class="settings_row_name"><label for="ACMode" data-i18n="settings.ACMode.header">ACMode.header</label>:</td>
+            <td class="settings_row_input">
+              <select id="ACMode" onchange="displaySaveHint()">
+                <option value="0" data-i18n="settings.ACMode.fromAC">Unchanged</option>
+                <option value="1" data-i18n="settings.ACMode.auto">Auto</option>
+                <option value="2" data-i18n="settings.ACMode.heat">Heating</option>
+                <option value="3" data-i18n="settings.ACMode.cool">Cooling</option>
+                <option value="4" data-i18n="settings.ACMode.dry">Dry</option>
+                <option value="5" data-i18n="settings.ACMode.fan">Fan</option>
+              </select>
+              <div class="hintButton" onclick="toggle(this,'ACModeHint', 'table-row');return false;">i</div>
+            </td>
+          </tr>
+          <tr id="ACModeHint" colspan="2"><td><p class="hint" data-i18n="settings.ACMode.hint">ACMode.hint</p></td></tr>
         </table>
-        <p id="operatingModeHint" class="hint" data-i18n="settings.mode.operatingModeHint">mode.operatingModeHint</p>
       </fieldset>
 
       <table width="100%" id="modeSelector" class="tab">

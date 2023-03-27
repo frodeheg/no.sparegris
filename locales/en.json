@@ -392,6 +392,16 @@
       "header": "Backup",
       "text": "The backup functionality is not completed. You can retrieve the state but not set it yet.",
       "getState": "Retrieve state"
+    },
+    "ACMode": {
+      "header": "AC Mode",
+      "fromAC": "Unchanged",
+      "auto": "Auto",
+      "heat": "Heat",
+      "cool": "Cool",
+      "dry": "Dry",
+      "fan": "Fan",
+      "hint": "These options ensure that price points are correctly handled when switching between heating and cooling. Delta temperatures must have different signs for cooling and heating. If ACMode='Unchanged', then the AC mode is read from the AC device and the signs are inverted based on the actual AC mode. All other selections will set AC mode and keep the temperature deltas as they are."
     }
   },
   "newdevice" : {

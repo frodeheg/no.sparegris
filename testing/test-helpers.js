@@ -359,6 +359,60 @@ async function applyUnInit(app) {
   }
 }
 
+/**
+ * Checks if a JSON object has the same properties as a reference (and if it has more)
+ * @param {*} ref Reference object
+ * @param {*} obj Object to compare
+ * @return true if they are equal
+ */
+function compareJSON(ref, obj, base = '') {
+  // Check if all keys from ref is present
+  for (const key in ref) {
+    if (!(key in obj)) {
+      throw new Error(`Could not find key ${base}.${key} in object`);
+    }
+    if (typeof ref[key] !== typeof obj[key]) {
+      throw new Error(`Object type of key ${base}.${key} is invalid`);
+    }
+    if (typeof ref[key] === 'object' && typeof obj[key] === 'object') {
+      compareJSON(ref[key], obj[key], `${base}.${key}`);
+    }
+  }
+  // Check obj has too many keys
+  for (const key in obj) {
+    if (!(key in ref)) {
+      throw new Error(`Could not find key ${base}.${key} in reference`);
+    }
+  }
+  return true;
+}
+
+function checkForTranslations(obj, languages, base = '') {
+  let isTranslationString = false;
+  const foundLanguages = [];
+  for (const key in obj) {
+    if (typeof obj[key] === 'object') {
+      checkForTranslations(obj[key], languages, `${base}.${key}`)
+    } else if (languages.includes(key)) {
+      isTranslationString = true;
+      foundLanguages.push(key);
+    }
+  }
+  if (isTranslationString) {
+    const missingTransOk = (Object.keys(obj).length === 1) && (obj['en'] === '%' || obj['en'] === '');
+    if (!missingTransOk) {
+      // Check for missing languages:
+      if (foundLanguages.length !== languages.length) {
+        throw new Error(`Translation string ${base} should include [${languages}], but could only find [${foundLanguages}]`);
+      }
+      // Check for too many languages
+      if (Object.keys(obj).length !== languages.length) {
+        throw new Error(`Translation string ${base} should include [${languages}], but found too many [${Object.keys(obj)}]`);
+      }
+    }
+  }
+}
+
 module.exports = {
   disableTimers,
   applyBasicConfig,
@@ -369,4 +423,6 @@ module.exports = {
   setAllDeviceState,
   validateModeList,
   applyUnInit,
+  compareJSON,
+  checkForTranslations,
 };
