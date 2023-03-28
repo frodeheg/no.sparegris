@@ -2598,13 +2598,16 @@
               || (document.getElementById("enLimitMonth").checked && +document.getElementById("maxPowerMonth").value > (+loadedMaxPower[TIMESPAN.MONTH]/1000)))) {
             try {
               const before = new Date();
-              Homey.confirm(Homey.__('settings.alert.maxPowerChanged'), function (err, res) {
-                const called = new Date();
-                const diff = called - before;
-                // NB! Popup blockers will not give an error on the confirm dialogue
-                // If the diff < 0.1 sec then the confirm was likely aborted by a popup blocker
-                if (err || res || (diff < 100)) saveFunc();
-              });
+              Homey.confirm(Homey.__('settings.alert.maxPowerChanged'))
+                .then((res) => {
+                  const called = new Date();
+                  const diff = called - before;
+                  // NB! Popup blockers will not give an error on the confirm dialogue
+                  // If the diff < 0.1 sec then the confirm was likely aborted by a popup blocker
+                  if (res || diff < 100) {
+                    saveFunc();
+                  }
+                });
             } catch (err) {
               saveFunc(); // In case of errors, save anyway
             }

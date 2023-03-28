@@ -184,13 +184,8 @@ class FakeHomey {
     window.alert(err);
   }
 
-  confirm(message, callback) {
-    try {
-      const result = window.confirm("message");
-      callback(null, result);
-    } catch (err) {
-      callback(err, false);
-    }
+  async confirm(message) {
+    return window.confirm(message);
   }
 
 }
