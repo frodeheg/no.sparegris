@@ -434,7 +434,7 @@
               '</tr>';
           for (var deviceId in priceActionList[tabPage]) {
             var device = deviceList[deviceId]; // refreshPriceActionList already called so indexing by deviceId should be safe
-            let stepValue = DEVICE_CMD[device.driverId].tempStep;
+            let stepValue = (device.driverId in DEVICE_CMD) ? DEVICE_CMD[device.driverId].tempStep : 1;
             var price_temp_input = device.thermostat_cap ? `<input type="number" id="deltaTemp${String(deviceId)}" min=${minClamp} max=${maxClamp} size="4" step="${stepValue}" onchange="setDeltaTemp(this, ${String(tabPage)}, '${String(deviceId)}');displaySaveHint()" value="${String(priceActionList[tabPage][deviceId].delta)}">°C` : '-';
             priceTabText +=
               '<tr>' +
