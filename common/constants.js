@@ -9,6 +9,16 @@ const ALARMS = {
   NO_POWER: 4,
 };
 
+// AC Modes
+const ACMODE = {
+  UNCHANGED: 0,
+  AUTO: 1,
+  HEAT: 2,
+  COOL: 3,
+  DRY: 4,
+  FAǸ: 5,
+};
+
 // Granularity for archive
 const GRANULARITY = {
   YEAR: 0,
@@ -169,6 +179,7 @@ const ENTSOE_BIDDING_ZONES = {
 
 module.exports = {
   ALARMS,
+  ACMODE,
   GRANULARITY,
   OVERRIDE,
   MODE_DISABLED,

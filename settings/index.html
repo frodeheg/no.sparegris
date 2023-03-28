@@ -403,12 +403,14 @@
         setTimeout(function () {
           // Generate page
           var legendText = "";
+          var minClamp = -40;
+          var maxClamp = 40;
           switch (tabPage) {
-            case PP_LOW: legendText = priceLowText; break;
+            case PP_LOW: minClamp = 0; legendText = priceLowText; break;
             case PP_NORM: legendText = priceNormalText; break;
-            case PP_HIGH: legendText = priceHighText; break;
-            case PP_EXTREME: legendText = priceExtremeText; break;
-            case PP_DIRTCHEAP: legendText = priceDirtCheapText; break;
+            case PP_HIGH: maxClamp = 0; legendText = priceHighText; break;
+            case PP_EXTREME: maxClamp = 0; legendText = priceExtremeText; break;
+            case PP_DIRTCHEAP: minClamp = 0; legendText = priceDirtCheapText; break;
           }
           var displayTemp = document.getElementById("controlTemp").value == 1;
           var priceTabText =
@@ -432,7 +434,7 @@
               '</tr>';
           for (var deviceId in priceActionList[tabPage]) {
             var device = deviceList[deviceId]; // refreshPriceActionList already called so indexing by deviceId should be safe
-            var price_temp_input = device.thermostat_cap ? '<input type="number" id="deltaTemp' + String(deviceId) + '" min=-30 max=30 size="4" step="0.5" onchange="setDeltaTemp(this, ' + String(tabPage) + ', \'' + String(deviceId) + '\');displaySaveHint()" value="' + String(priceActionList[tabPage][deviceId].delta) + '">°C' : '-';
+            var price_temp_input = device.thermostat_cap ? `<input type="number" id="deltaTemp${String(deviceId)}" min=${minClamp} max=${maxClamp} size="4" step="0.5" onchange="setDeltaTemp(this, ${String(tabPage)}, '${String(deviceId)}');displaySaveHint()" value="${String(priceActionList[tabPage][deviceId].delta)}">°C` : '-';
             priceTabText +=
               '<tr>' +
                 '<td><img src="' + device.image + '" alt="icon" width="auto" height="50"></td>' +
@@ -1478,6 +1480,21 @@
               </select>
             </td>
           </tr>
+          <tr>
+            <td class="settings_row_name"><label for="ACMode" data-i18n="settings.ACMode.header">ACMode.header</label>:</td>
+            <td class="settings_row_input">
+              <select id="ACMode" onchange="displaySaveHint()">
+                <option value="0" data-i18n="settings.ACMode.fromAC">Unchanged</option>
+                <option value="1" data-i18n="settings.ACMode.auto">Auto</option>
+                <option value="2" data-i18n="settings.ACMode.heat">Heating</option>
+                <option value="3" data-i18n="settings.ACMode.cool">Cooling</option>
+                <option value="4" data-i18n="settings.ACMode.dry">Dry</option>
+                <option value="5" data-i18n="settings.ACMode.fan">Fan</option>
+              </select>
+              <div class="hintButton" onclick="toggle(this,'ACModeHint', 'table-row');return false;">i</div>
+            </td>
+          </tr>
+          <tr id="ACModeHint" class="hint"><td colspan="2"><p data-i18n="settings.ACMode.hint">ACMode.hint</p></td></tr>
         </table>
 
         <span id="highPriDevices">High Priority devices should be listed here, if not it is a bug</span>
@@ -1731,22 +1748,7 @@
               <div class="hintButton" onclick="toggle(this,'operatingModeHint', 'table-row');return false;">i</div>
             </td>
           </tr>
-          <tr id="operatingModeHint" colspan="2"><td><p class="hint" data-i18n="settings.mode.operatingModeHint">mode.operatingModeHint</p></td></tr>
-          <tr>
-            <td class="settings_row_name"><label for="ACMode" data-i18n="settings.ACMode.header">ACMode.header</label>:</td>
-            <td class="settings_row_input">
-              <select id="ACMode" onchange="displaySaveHint()">
-                <option value="0" data-i18n="settings.ACMode.fromAC">Unchanged</option>
-                <option value="1" data-i18n="settings.ACMode.auto">Auto</option>
-                <option value="2" data-i18n="settings.ACMode.heat">Heating</option>
-                <option value="3" data-i18n="settings.ACMode.cool">Cooling</option>
-                <option value="4" data-i18n="settings.ACMode.dry">Dry</option>
-                <option value="5" data-i18n="settings.ACMode.fan">Fan</option>
-              </select>
-              <div class="hintButton" onclick="toggle(this,'ACModeHint', 'table-row');return false;">i</div>
-            </td>
-          </tr>
-          <tr id="ACModeHint" colspan="2"><td><p class="hint" data-i18n="settings.ACMode.hint">ACMode.hint</p></td></tr>
+          <tr id="operatingModeHint" class="hint"><td colspan="2"><p data-i18n="settings.mode.operatingModeHint">mode.operatingModeHint</p></td></tr>
         </table>
       </fieldset>
 
@@ -1803,6 +1805,7 @@
 
       // Load control
       var operatingModeLoaded = false;
+      var ACModeLoaded = false;
       var errorMarginLoaded = false;
       var controlTempLoaded = false;
       var freeThresholdLoaded = false;
@@ -1925,6 +1928,7 @@
           `modeListLoaded: ${modeListLoaded}<br>` +
           `modeNamesLoaded: ${modeNamesLoaded}<br>` +
           `operatingModeLoaded: ${operatingModeLoaded}<br>` +
+          `ACModeLoaded: ${ACModeLoaded}<br>` +
           `errorMarginLoaded: ${errorMarginLoaded}<br>` +
           `controlTempLoaded: ${controlTempLoaded}<br>` +
           `freeThresholdLoaded: ${freeThresholdLoaded}<br>` +
@@ -1954,6 +1958,7 @@
           && modeListLoaded
           && modeNamesLoaded
           && operatingModeLoaded
+          && ACModeLoaded
           && errorMarginLoaded
           && controlTempLoaded
           && freeThresholdLoaded
@@ -2348,6 +2353,16 @@
           operatingModeLoaded = true;
           checkLoadingDone();
         });
+        Homey.get("ACMode", function (err, ACMode) {
+          if (err) return Homey.alert(err);
+          if (ACMode !== null) {
+            document.getElementById("ACMode").value = +ACMode
+          } else {
+            document.getElementById("ACMode").value = 0;
+          }
+          ACModeLoaded = true;
+          checkLoadingDone();
+        });
         Homey.get("priceMode", function (err, priceMode) {
           if (err) return Homey.alert(err);
           if (priceMode !== null) {
@@ -2549,6 +2564,7 @@
               Homey.set("zones", zoneList, errFunc);
               Homey.set("maxPower", loadedMaxPower, errFunc);
               Homey.set("operatingMode", opModeValue, errFunc);
+              Homey.set("ACMode", document.getElementById("ACMode").value, errFunc);
               Homey.set("priceMode", priceModeElement.value, errFunc);
               Homey.set("pricePoint", pricePointElement.value, errFunc);
               Homey.set("priceActionList", priceActionList, errFunc);

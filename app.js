@@ -617,6 +617,44 @@ class PiggyBank extends Homey.App {
       this.homey.settings.set('settingsVersion', 10);
     }
 
+    // Version 0.20.9 - Added AC control mode
+    if (+settingsVersion < 11) {
+      if (!firstInstall) {
+        // Go through all AC devices. If they are in cooling mode, then make sure that the temp deltas make sense
+        let ACOk = true;
+        const deviceList = this.homey.settings.get('deviceList') || {};
+        for (const deviceId in deviceList) {
+          const { driverId } = deviceList[deviceId];
+          if (!deviceList[deviceId].use) continue;
+          if ((driverId in d.DEVICE_CMD) && (d.DEVICE_CMD[driverId].type === d.DEVICE_TYPE.AC)) {
+            // Temp deltas ok?
+            const actionLists = this.homey.settings.get('priceActionList');
+            for (const pp in actionLists) {
+              const { operation, delta } = actionLists[pp][deviceId];
+              if (+operation === TARGET_OP.DELTA_TEMP && (+pp === c.PP.LOW || +pp === c.PP.DIRTCHEAP)) ACOk &= +delta >= 0;
+              if (+operation === TARGET_OP.DELTA_TEMP && (+pp === c.PP.HIGH || +pp === c.PP.EXTREME)) ACOk &= +delta <= 0;
+            }
+          }
+        }
+
+        if (!ACOk) {
+          const alertText = '**Piggy Bank** - While upgrading the app an unusual settings was found for your AC device. '
+            + 'One or more delta temperatures for different price points have the opposite sign of what is expected. '
+            + 'These should be fixed to avoid that you lose money (positive for low price, negative for high). Please '
+            + 'revisit the settings to make sure it behaves according to your preferences. The reason for this alert is '
+            + 'because AC-modes for cooling will now be auto detected and as such the sign of temperature deltas will be '
+            + 'flipped automatically so you can switch between cooling and heating seamlessly without affecting this apps '
+            + 'ability to save money. '
+            + '(Special case for some devices: Virtual switches and Daikin airairhp will have to set the AC mode in '
+            + 'this app settings as a temporary workaround to support cooling until the heat handling has been rewritten)';
+          this.log(alertText);
+          this.homey.notifications.createNotification({ excerpt: alertText });
+        }
+        this.homey.settings.set('ACMode', c.ACMODE.UNCHANGED);
+      }
+      this.homey.settings.set('settingsVersion', 11);
+    }
+
     // Internal state that preferably should be removed as it is in the archive
     // this.homey.settings.unset('stats_savings_all_time_use');
     // this.homey.settings.unset('stats_savings_all_time_power_part');
@@ -668,6 +706,9 @@ class PiggyBank extends Homey.App {
     }
     if (this.homey.settings.get('maxAlarmRate') === null) {
       this.homey.settings.set('maxAlarmRate', 50);
+    }
+    if (this.homey.settings.get('ACMode') === null) {
+      this.homey.settings.set('ACMode', c.ACMODE.UNCHANGED);
     }
     let futurePriceOptions = this.homey.settings.get('futurePriceOptions');
     if (!futurePriceOptions
@@ -2989,6 +3030,9 @@ class PiggyBank extends Homey.App {
           if (this.logUnit === deviceId) this.updateLog(`aborted refreshTemp() for ${device.name} - Device is off`, c.LOG_ALL);
           return Promise.resolve([true, true]);
         }
+        // In case AC Mode is cool, invert the temperature deltas
+        const currentACMode = this.getACMode(device);
+        const invertDelta = currentACMode === c.ACMODE.COOL;
         const tempSetCap = this.getTempSetCap(deviceId);
         const tempGetCap = this.getTempGetCap(deviceId);
         const hasTargetTemp = device.capabilities.includes(tempSetCap);
@@ -2998,7 +3042,9 @@ class PiggyBank extends Homey.App {
           return Promise.resolve([true, true]);
         }
         const frostGuardActive = this.isFrostGuardActive(device, deviceId);
-        let newTemp = frostGuardActive ? +frostList[deviceId].minTemp : (modeTemp + deltaTemp);
+        let newTemp = frostGuardActive ? +frostList[deviceId].minTemp
+          : invertDelta ? (modeTemp - deltaTemp)
+            : (modeTemp + deltaTemp);
         const minTemp = this.getTempCapMin(device, deviceId);
         const maxTemp = this.getTempCapMax(device, deviceId);
         if (newTemp < minTemp) newTemp = minTemp;
@@ -3025,7 +3071,8 @@ class PiggyBank extends Homey.App {
         this.__current_state[deviceId].ongoing = false;
         if (this.logUnit === deviceId) this.updateLog(`finished refreshTemp() for '${deviceId} - Success`, c.LOG_ALL);
         return Promise.resolve([success, noChange]);
-      }).catch(error => {
+      })
+      .catch(error => {
         this.statsCountFailedTempChange();
         this.updateReliability(deviceId, 0);
         this.__current_state[deviceId].nComError += 1;
@@ -3086,6 +3133,34 @@ class PiggyBank extends Homey.App {
    * Device handling
    ** ****************************************************************************************************
    */
+  getACMode(device) {
+    const driverId = d.generateDriverId(device);
+    const deviceDef = d.DEVICE_CMD[driverId];
+    if (deviceDef.type !== d.DEVICE_TYPE.AC) return undefined;
+    const { setModeCap } = deviceDef;
+    const ACModeValue = device.capabilitiesObj[setModeCap].value;
+    if (ACModeValue === deviceDef.setModeHeatValue) return c.ACMODE.HEAT;
+    if (ACModeValue === deviceDef.setModeCoolValue) return c.ACMODE.COOL;
+    if (ACModeValue === deviceDef.setModeAutoValue) return c.ACMODE.AUTO;
+    if (ACModeValue === deviceDef.setModeDryValue) return c.ACMODE.DRY;
+    if (ACModeValue === deviceDef.setModeFanValue) return c.ACMODE.FAǸ;
+    return undefined;
+  }
+
+  async setACMode(device, mode) {
+    const driverId = d.generateDriverId(device);
+    const deviceDef = d.DEVICE_CMD[driverId];
+    if (deviceDef.type !== d.DEVICE_TYPE.AC) return Promise.resolve(false);
+    const { setModeCap } = deviceDef;
+    const modeValue = (mode === c.ACMODE.AUTO) ? deviceDef.setModeAutoValue
+      : (mode === c.ACMODE.HEAT) ? deviceDef.setModeHeatValue
+        : (mode === c.ACMODE.COOL) ? deviceDef.setModeCoolValue
+          : (mode === c.ACMODE.DRY) ? deviceDef.setModeDryValue
+            : (mode === c.ACMODE.FAN) ? deviceDef.setModeFanValue : undefined;
+    if (modeValue === undefined) return Promise.resolve(false);
+    return device.setCapabilityValue({ capabilityId: setModeCap, value: modeValue });
+  }
+
   getTempSetCap(deviceId) {
     try {
       return d.DEVICE_CMD[this.__deviceList[deviceId].driverId].setTempCap;
@@ -3196,7 +3271,19 @@ class PiggyBank extends Homey.App {
         : (d.DEVICE_CMD[this.__deviceList[deviceId].driverId].tempMin - 1);
     }
     if (this.logUnit === deviceId) this.updateLog(`Setting Device ${device.name}.${onOffCap} = ${onOffValue} | Origin setOnOff(${onOff})`, c.LOG_ALL);
-    return device.setCapabilityValue({ capabilityId: onOffCap, value: onOffValue });
+    return device.setCapabilityValue({ capabilityId: onOffCap, value: onOffValue })
+      .then(() => {
+        if (!onOff) return Promise.resolve();
+        // In case the device is turned on, make sure the AC state is right
+        const currentACMode = this.getACMode(device);
+        const wantedACMode = this.homey.settings.get('ACMode');
+        if ((wantedACMode === c.ACMODE.UNCHANGED)
+          || (wantedACMode === currentACMode)
+          || (wantedACMode === undefined)) {
+          return Promise.resolve();
+        }
+        return this.setACMode(device, wantedACMode);
+      });
   }
 
   /** ****************************************************************************************************

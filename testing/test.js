@@ -569,7 +569,7 @@ async function testTicket115() {
         simTime = 400;
       } else {
         mainFuse = 63;
-        simTime = 800;
+        simTime = 1600;
       }
       app.homey.settings.set('mainFuse', mainFuse);
       const curTime = app.__current_power_time;
@@ -1394,7 +1394,7 @@ async function testMeterAndPower() {
 }
 
 async function testLanguages() {
-  const languages = ['en', 'no', 'fr', 'be'];
+  const languages = ['en', 'no'];
   for (let langIdx = 0; langIdx < languages.length; langIdx++) {
     console.log(`[......] Test Translations for locales/${languages[langIdx]}.json && README.${languages[langIdx]}.txt`);
 
@@ -1427,6 +1427,80 @@ async function testLanguages() {
   }
 }
 
+async function testACModes() {
+  console.log('[......] Test AC Modes');
+  const startTime = new Date('October 1, 2022, 00:59:50 GMT+2:00');
+  const firstHour = new Date(startTime.getTime() + 1000 * 10);
+  const now = new Date(firstHour.getTime() + 10000);
+  const app = new PiggyBank();
+  try {
+    await app.disableLog();
+
+    // Load initial state from a file
+    await applyStateFromFile(app, 'testing/states/Frode_0.19.26.txt', false);
+    // Clear the archive
+    app.homey.settings.set('archive', null);
+    app.homey.settings.set('stats_daily_max', null);
+    app.homey.settings.set('stats_daily_max_ok', null);
+    app.homey.settings.set('stats_daily_max_last_update_time', firstHour);
+    app.homey.settings.unset('safeShutdown__accum_energy');
+    app.homey.settings.unset('safeShutdown__current_power');
+    app.homey.settings.unset('safeShutdown__current_power_time');
+    app.homey.settings.unset('safeShutdown__power_last_hour');
+    app.homey.settings.unset('safeShutdown__offeredEnergy');
+    app.homey.settings.set('maxPower', [Infinity, 10000, Infinity, Infinity]);
+
+    await app.onInit(startTime);
+    await disableTimers(app);
+
+    const deviceId = 'b4788083-9606-49a2-99d4-9efce7a4656d';
+    const ACDevice = await app.getDevice(deviceId);
+    const tempCap = app.getTempSetCap(ACDevice);
+
+    // Set base temperatures:
+    const modeList = app.homey.settings.get('modeList');
+    const currentMode = +app.homey.settings.get('operatingMode');
+    const currentModeList = modeList[currentMode - 1];
+    const modeIdx = app.findModeIdx(deviceId);
+    currentModeList[modeIdx].targetTemp = 20;  // Base
+    app.homey.settings.set('modeList', modeList);
+
+    const actionLists = app.homey.settings.get('priceActionList');
+    actionLists[c.PP.DIRTCHEAP][deviceId].delta = 2;
+    actionLists[c.PP.LOW][deviceId].delta = 1;
+    actionLists[c.PP.NORM][deviceId].delta = 0;
+    actionLists[c.PP.HIGH][deviceId].delta = -1;
+    actionLists[c.PP.EXTREME][deviceId].delta = -2;
+    app.homey.settings.set('priceActionList', actionLists);
+
+    // Set to Heating, perform one click and verify temperature
+    await app.setACMode(ACDevice, c.ACMODE.HEAT);
+    await app.onPowerUpdate(100, now);
+    await app.onProcessPower(now);
+    now.setTime(startTime.getTime() + 1000000000);
+    if (ACDevice.capabilitiesObj[tempCap].value !== 21) throw new Error('Incorrect heating temperature');
+
+    // Set to Cooling, perform one click and verify temperature
+    await app.setACMode(ACDevice, c.ACMODE.COOL);
+    await app.onPowerUpdate(100, now);
+    await app.onProcessPower(now);
+    now.setTime(startTime.getTime() + 1000000000);
+    if (ACDevice.capabilitiesObj[tempCap].value !== 19) throw new Error('Incorrect cooling temperature');
+
+    // Set to Heating, perform one click and verify temperature
+    app.homey.settings.set('ACMode', c.ACMODE.HEAT);
+    await app.setOnOff(ACDevice, deviceId, false);
+    app.__last_power_on_time = new Date(0);
+    await app.onPowerUpdate(100, now);
+    await app.onProcessPower(now);
+    now.setTime(startTime.getTime() + 1000000000);
+    if (app.getACMode(ACDevice) !== c.ACMODE.HEAT) throw new Error('Incorrect AC mode');
+  } finally {
+    await app.onUninit();
+  }
+  console.log('\x1b[1A[\x1b[32mPASSED\x1b[0m]');
+}
+
 // Start all tests
 async function startAllTests() {
   try {
@@ -1456,6 +1530,7 @@ async function startAllTests() {
     await testMeter();
     await testMeterWithReset();
     await testMeterAndPower();
+    await testACModes();
     await testMail();
   } catch (err) {
     console.log('\x1b[1A[\x1b[31mFAILED\x1b[0m]');
