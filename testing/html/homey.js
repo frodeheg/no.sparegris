@@ -68,6 +68,8 @@ class FakeHomey {
       mainFuse: null,
       maxAlarmRate: 60,
     };
+    this.languageTable = {};
+    this.translationTable = {};
   }
 
   ready() {
@@ -75,7 +77,49 @@ class FakeHomey {
   }
 
   __(string) {
-    return string;
+    let parts;
+    try {
+      parts = string.split('.');
+    } catch (err) {
+      if (string in this.translationTable) {
+        return this.__(this.translationTable[string]);
+      }
+      return `Missing: ${string}`;
+    }
+    let ptr = this.languageTable;
+    for (let i = 0; i < parts.length; i++) {
+      if (parts[i] in ptr) {
+        ptr = ptr[parts[i]];
+      } else if (string in this.translationTable) {
+        // This is a hack to reverse engineer previously loaded strings that has been overwritten by a translation string
+        // This is only applicable when debugging and changing language
+        return this.__(this.translationTable[string]);
+      } else {
+        console.log(`requested ${string} not found`);
+        return `Missing: ${string}`;
+      }
+    }
+    // console.log(`requested ${string} ==> ${ptr}`);
+    this.translationTable[ptr] = string;
+    return ptr;
+  }
+
+  async loadLanguage(langId) {
+    const fileName = `../locales/${langId}.json`;
+    return fetch(fileName)
+      .then((response) => response.json())
+      .then((json) => {
+        console.log(`Loaded json: ${JSON.stringify(json)}`);
+        this.languageTable = json;
+        this.currentLang = langId;
+      })
+      .then(() => {
+        // Refresh all html code
+        const objToTranslate = document.querySelectorAll('[data-i18n]');
+        for (let i = 0; i < objToTranslate.length; i++) {
+          objToTranslate[i].innerHTML = this.__(objToTranslate[i].attributes.getNamedItem('data-i18n').value);
+        }
+      });
   }
 
   api(type, command, justNull, callback) {
@@ -191,14 +235,16 @@ class FakeHomey {
 
 }
 
-const Homey = new FakeHomey();
-
 function activate() {
   onHomeyReady(Homey);
 }
 
-// Using timeout to activate because onHomeyReady is not defined yet at this point
-setTimeout(activate, 100);
+const Homey = new FakeHomey();
+Homey.loadLanguage('en')
+  .then(() => {
+    // Using timeout to activate because onHomeyReady is not defined yet at this point
+    setTimeout(activate, 100);
+  });
 
 /** **********************************************************************************
  *                           DEBUG FUNCTIONALITY                                     *
@@ -228,6 +274,15 @@ document.write(`
   <div id="mydivheader">Debug Window</div>
   <p><button onClick="reloadPage();">Reload page</button></p>
   <p><button onClick="showSettings();">Show settings</button></p>
+  <p>
+    Language:
+    <select onClick="selectLanguage(this.value);">
+      <option value="fr">French</option>
+      <option value="nl">Dutch</option>
+      <option value="en" selected>English</option>
+      <option value="no">Norwegian</option>
+    </select>
+  </p>
 </div>`);
 
 dragElement(document.getElementById("mydiv"));
@@ -325,4 +380,16 @@ function reloadPage() {
 
 function showSettings() {
   console.log(Homey.settings);
+}
+
+function selectLanguage(langId) {
+  if (langId === Homey.currentLang) return;
+  console.log(`Changing language to: ${langId}`);
+
+  // Open language file
+  Homey.loadLanguage(langId)
+    .then(() => {
+      needModeRefresh = true; // Global variable in index.html
+      reloadPage();
+    });
 }
