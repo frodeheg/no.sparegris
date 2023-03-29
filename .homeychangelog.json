@@ -760,5 +760,11 @@
   },
   "0.20.8": {
     "en": "Added basic support for Solar power (capping negative input power to 0) + added support for homewizzard:energy meter reader + removed clutter from timeline"
+  },
+  "0.20.9": {
+    "en": "Added handling of other AC modes than heating + Fix to prevent setting temperatures with smaller granularity than what is allowed. Fixed bug that prevented you from increasing power tariff."
+  },
+  "0.20.10": {
+    "en": "Fixed a crash bug in the App settings menu when setting delta-temperatures for unsupported AC devices."
   }
 }

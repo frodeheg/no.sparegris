@@ -403,12 +403,14 @@
         setTimeout(function () {
           // Generate page
           var legendText = "";
+          var minClamp = -40;
+          var maxClamp = 40;
           switch (tabPage) {
-            case PP_LOW: legendText = priceLowText; break;
+            case PP_LOW: minClamp = 0; legendText = priceLowText; break;
             case PP_NORM: legendText = priceNormalText; break;
-            case PP_HIGH: legendText = priceHighText; break;
-            case PP_EXTREME: legendText = priceExtremeText; break;
-            case PP_DIRTCHEAP: legendText = priceDirtCheapText; break;
+            case PP_HIGH: maxClamp = 0; legendText = priceHighText; break;
+            case PP_EXTREME: maxClamp = 0; legendText = priceExtremeText; break;
+            case PP_DIRTCHEAP: minClamp = 0; legendText = priceDirtCheapText; break;
           }
           var displayTemp = document.getElementById("controlTemp").value == 1;
           var priceTabText =
@@ -432,7 +434,8 @@
               '</tr>';
           for (var deviceId in priceActionList[tabPage]) {
             var device = deviceList[deviceId]; // refreshPriceActionList already called so indexing by deviceId should be safe
-            var price_temp_input = device.thermostat_cap ? '<input type="number" id="deltaTemp' + String(deviceId) + '" min=-30 max=30 size="4" step="0.5" onchange="setDeltaTemp(this, ' + String(tabPage) + ', \'' + String(deviceId) + '\');displaySaveHint()" value="' + String(priceActionList[tabPage][deviceId].delta) + '">°C' : '-';
+            let stepValue = (device.driverId in DEVICE_CMD) ? DEVICE_CMD[device.driverId].tempStep : 1;
+            var price_temp_input = device.thermostat_cap ? `<input type="number" id="deltaTemp${String(deviceId)}" min=${minClamp} max=${maxClamp} size="4" step="${stepValue}" onchange="setDeltaTemp(this, ${String(tabPage)}, '${String(deviceId)}');displaySaveHint()" value="${String(priceActionList[tabPage][deviceId].delta)}">°C` : '-';
             priceTabText +=
               '<tr>' +
                 '<td><img src="' + device.image + '" alt="icon" width="auto" height="50"></td>' +
@@ -1157,7 +1160,7 @@
           <span id="priceFixedPart" style="display: none">
             <table class="settings_table">
               <tr>
-                <td class="settings_row_name"><label for="priceFixed" data-i18n="settings.price.priceFixed">price.fixed</label>:</td>
+                <td class="settings_row_name"><label for="priceFixed" data-i18n="settings.price.fixed">price.fixed</label>:</td>
                 <td class="settings_row_input"><input id="priceFixed" class="inputElem" type="number" size="10" min="0" step="0.01" value="0.50" onchange="displaySaveHint()">/kWh</td>
               </tr>
             </table>
@@ -1478,10 +1481,25 @@
               </select>
             </td>
           </tr>
+          <tr>
+            <td class="settings_row_name"><label for="ACMode" data-i18n="settings.ACMode.header">ACMode.header</label>:</td>
+            <td class="settings_row_input">
+              <select id="ACMode" onchange="displaySaveHint()">
+                <option value="0" data-i18n="settings.ACMode.fromAC">Unchanged</option>
+                <option value="1" data-i18n="settings.ACMode.auto">Auto</option>
+                <option value="2" data-i18n="settings.ACMode.heat">Heating</option>
+                <option value="3" data-i18n="settings.ACMode.cool">Cooling</option>
+                <option value="4" data-i18n="settings.ACMode.dry">Dry</option>
+                <option value="5" data-i18n="settings.ACMode.fan">Fan</option>
+              </select>
+              <div class="hintButton" onclick="toggle(this,'ACModeHint', 'table-row');return false;">i</div>
+            </td>
+          </tr>
+          <tr id="ACModeHint" class="hint"><td colspan="2"><p data-i18n="settings.ACMode.hint">ACMode.hint</p></td></tr>
         </table>
 
         <span id="highPriDevices">High Priority devices should be listed here, if not it is a bug</span>
-        <legend for="lowPriDevices" data-i18n="settings.lowPriDevices"><hr></legend>
+        <legend for="lowPriDevices"><hr></legend>
         <span id="lowPriDevices">Low Priority devices should be listed here, if not it is a bug</span>
 
         <table class="settings_table">
@@ -1595,7 +1613,7 @@
                 <tr>
                   <td class="settings_row_name"><label for="dirtCheapPriceModifier" data-i18n="settings.price.internal.dirtCheapPriceModifier">price.internal.dirtCheapPriceModifier</label>:</td>
                   <td class="settings_row_input">
-                    <input id="dirtCheapPriceModifier" class="inputElem" data-i18n="settings.price.internal.hour1" type="number" size="10" min="-100" max="-50" value="-50" onchange="limitElement(this);displaySaveHint()">%
+                    <input id="dirtCheapPriceModifier" class="inputElem" type="number" size="10" min="-100" max="-50" value="-50" onchange="limitElement(this);displaySaveHint()">%
                     <div class="hintButton" onclick="toggle(this,'dirtCheapPriceModifierHint');return false;">i</div>
                   </td>
                 </tr>
@@ -1606,7 +1624,7 @@
                 <tr>
                   <td class="settings_row_name"><label for="lowPriceModifier" data-i18n="settings.price.internal.lowPriceModifier">price.internal.lowPriceModifier</label>:</td>
                   <td class="settings_row_input">
-                    <input id="lowPriceModifier" class="inputElem" data-i18n="settings.price.internal.hour1" type="number" size="10" min="-50" max="-10" value="-10" onchange="limitElement(this);displaySaveHint()">%
+                    <input id="lowPriceModifier" class="inputElem" type="number" size="10" min="-50" max="-10" value="-10" onchange="limitElement(this);displaySaveHint()">%
                     <div class="hintButton" onclick="toggle(this,'lowPriceModifierHint');return false;">i</div>
                   </td>
                 </tr>
@@ -1617,7 +1635,7 @@
                 <tr>
                   <td class="settings_row_name"><label for="highPriceModifier" data-i18n="settings.price.internal.highPriceModifier">price.internal.highPriceModifier</label>:</td>
                   <td class="settings_row_input">
-                    <input id="highPriceModifier" class="inputElem" data-i18n="settings.price.internal.hour1" type="number" size="10" min="1" max="100" value="10" onchange="limitElement(this);displaySaveHint()">%
+                    <input id="highPriceModifier" class="inputElem" type="number" size="10" min="1" max="100" value="10" onchange="limitElement(this);displaySaveHint()">%
                     <div class="hintButton" onclick="toggle(this,'highPriceModifierHint');return false;">i</div>
                   </td>
                 </tr>
@@ -1628,7 +1646,7 @@
                 <tr>
                   <td class="settings_row_name"><label for="extremePriceModifier" data-i18n="settings.price.internal.extremePriceModifier">price.internal.extremePriceModifier</label>:</td>
                   <td class="settings_row_input">
-                    <input id="extremePriceModifier" class="inputElem" data-i18n="settings.price.internal.hour1" type="number" size="10" min="100" max="1000" value="10" onchange="limitElement(this);displaySaveHint()">%
+                    <input id="extremePriceModifier" class="inputElem" type="number" size="10" min="100" max="1000" value="10" onchange="limitElement(this);displaySaveHint()">%
                     <div class="hintButton" onclick="toggle(this,'extremePriceModifierHint');return false;">i</div>
                   </td>
                 </tr>
@@ -1731,38 +1749,23 @@
               <div class="hintButton" onclick="toggle(this,'operatingModeHint', 'table-row');return false;">i</div>
             </td>
           </tr>
-          <tr id="operatingModeHint" colspan="2"><td><p class="hint" data-i18n="settings.mode.operatingModeHint">mode.operatingModeHint</p></td></tr>
-          <tr>
-            <td class="settings_row_name"><label for="ACMode" data-i18n="settings.ACMode.header">ACMode.header</label>:</td>
-            <td class="settings_row_input">
-              <select id="ACMode" onchange="displaySaveHint()">
-                <option value="0" data-i18n="settings.ACMode.fromAC">Unchanged</option>
-                <option value="1" data-i18n="settings.ACMode.auto">Auto</option>
-                <option value="2" data-i18n="settings.ACMode.heat">Heating</option>
-                <option value="3" data-i18n="settings.ACMode.cool">Cooling</option>
-                <option value="4" data-i18n="settings.ACMode.dry">Dry</option>
-                <option value="5" data-i18n="settings.ACMode.fan">Fan</option>
-              </select>
-              <div class="hintButton" onclick="toggle(this,'ACModeHint', 'table-row');return false;">i</div>
-            </td>
-          </tr>
-          <tr id="ACModeHint" colspan="2"><td><p class="hint" data-i18n="settings.ACMode.hint">ACMode.hint</p></td></tr>
+          <tr id="operatingModeHint" class="hint"><td colspan="2"><p data-i18n="settings.mode.operatingModeHint">mode.operatingModeHint</p></td></tr>
         </table>
       </fieldset>
 
       <table width="100%" id="modeSelector" class="tab">
         <tr>
           <td id="tablink0" class="tablinks" onclick="changeTab(event, 'priorityPage', 0);displaySaveHint();" id="normalTab">
-            <span data-i18n="settings.tab.normal">tab.normal</span>
+            <span data-i18n="settings.opMode.normal">tab.normal</span>
           </td>
           <td id="tablink1" class="tablinks" onclick="changeTab(event, 'priorityPage', 1);displaySaveHint();" id="nightTab">
-            <span data-i18n="settings.tab.night">tab.night</span>
+            <span data-i18n="settings.opMode.night">tab.night</span>
           </td>
           <td id="tablink2" class="tablinks" onclick="changeTab(event, 'priorityPage', 2);displaySaveHint();" id="holidayTab">
-            <span data-i18n="settings.tab.holiday">tab.holiday</span>
+            <span data-i18n="settings.opMode.holiday">tab.holiday</span>
           </td>
           <td id="tablink3" class="tablinks" onclick="changeTab(event, 'priorityPage', 3);displaySaveHint();" id="customTab">
-            <span data-i18n="settings.tab.custom">tab.custom</span>
+            <span data-i18n="settings.opMode.custom">tab.custom</span>
           </td>
         </tr>
       </table>
@@ -1803,6 +1806,7 @@
 
       // Load control
       var operatingModeLoaded = false;
+      var ACModeLoaded = false;
       var errorMarginLoaded = false;
       var controlTempLoaded = false;
       var freeThresholdLoaded = false;
@@ -1925,6 +1929,7 @@
           `modeListLoaded: ${modeListLoaded}<br>` +
           `modeNamesLoaded: ${modeNamesLoaded}<br>` +
           `operatingModeLoaded: ${operatingModeLoaded}<br>` +
+          `ACModeLoaded: ${ACModeLoaded}<br>` +
           `errorMarginLoaded: ${errorMarginLoaded}<br>` +
           `controlTempLoaded: ${controlTempLoaded}<br>` +
           `freeThresholdLoaded: ${freeThresholdLoaded}<br>` +
@@ -1954,6 +1959,7 @@
           && modeListLoaded
           && modeNamesLoaded
           && operatingModeLoaded
+          && ACModeLoaded
           && errorMarginLoaded
           && controlTempLoaded
           && freeThresholdLoaded
@@ -2348,6 +2354,16 @@
           operatingModeLoaded = true;
           checkLoadingDone();
         });
+        Homey.get("ACMode", function (err, ACMode) {
+          if (err) return Homey.alert(err);
+          if (ACMode !== null) {
+            document.getElementById("ACMode").value = +ACMode
+          } else {
+            document.getElementById("ACMode").value = 0;
+          }
+          ACModeLoaded = true;
+          checkLoadingDone();
+        });
         Homey.get("priceMode", function (err, priceMode) {
           if (err) return Homey.alert(err);
           if (priceMode !== null) {
@@ -2549,6 +2565,7 @@
               Homey.set("zones", zoneList, errFunc);
               Homey.set("maxPower", loadedMaxPower, errFunc);
               Homey.set("operatingMode", opModeValue, errFunc);
+              Homey.set("ACMode", document.getElementById("ACMode").value, errFunc);
               Homey.set("priceMode", priceModeElement.value, errFunc);
               Homey.set("pricePoint", pricePointElement.value, errFunc);
               Homey.set("priceActionList", priceActionList, errFunc);
@@ -2581,13 +2598,16 @@
               || (document.getElementById("enLimitMonth").checked && +document.getElementById("maxPowerMonth").value > (+loadedMaxPower[TIMESPAN.MONTH]/1000)))) {
             try {
               const before = new Date();
-              Homey.confirm(Homey.__('settings.alert.maxPowerChanged'), function (err, res) {
-                const called = new Date();
-                const diff = called - before;
-                // NB! Popup blockers will not give an error on the confirm dialogue
-                // If the diff < 0.1 sec then the confirm was likely aborted by a popup blocker
-                if (err || res || (diff < 100)) saveFunc();
-              });
+              Homey.confirm(Homey.__('settings.alert.maxPowerChanged'))
+                .then((res) => {
+                  const called = new Date();
+                  const diff = called - before;
+                  // NB! Popup blockers will not give an error on the confirm dialogue
+                  // If the diff < 0.1 sec then the confirm was likely aborted by a popup blocker
+                  if (res || diff < 100) {
+                    saveFunc();
+                  }
+                });
             } catch (err) {
               saveFunc(); // In case of errors, save anyway
             }

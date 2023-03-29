@@ -401,7 +401,7 @@
       "cool": "Kjøling",
       "dry": "Tørking",
       "fan": "Vifte",
-      "hint": "Disse alternativene sikrer at prispunkter blir korrekt håndtert når du bytter mellom oppvarming og kjøling. Deltatemperaturer må ha forskjellige fortegn for kjøling og oppvarming. Hvis ACMode='Uendret', så leses AC-modusen fra AC-enheten og fortegnene inverteres basert på den faktiske AC-modusen. Alle andre valg vil stille inn AC-modus og beholde temperaturdeltaene som de er."
+      "hint": "AC Modus påvirker alle AC-enheter (men vil komme per enhet ved en senere oppdatering). Om ACMode='Uendret' vil appen ikke sette AC modus. Alle andre valg vil sette AC-modus. NB: Dersom AC-modus er satt til kjøling så vil delta-temperaturer for prispunkt bli invertert slik at du sømløst kan bytte mellom oppvarming og kjøling uten at det vil påvirke appens evne til å spare penger."
     }
   },
   "newdevice" : {

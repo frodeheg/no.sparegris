@@ -764,11 +764,9 @@ function InitGraph(Homey, stats, granularity) {
       data: generateHourlyMaxData(stats),
       options: generateHourlyMaxOptions(stats, 'N/A'),
     });
-    updateGraph(Homey);
-    document.getElementById('tariffGuideChart').style.display = 'block';
-  } else {
-    chartId.options.plugins.title.text = 'new title';
   }
+  updateGraph(Homey);
+  document.getElementById('tariffGuideChart').style.display = 'block';
 }
 
 module.exports = {

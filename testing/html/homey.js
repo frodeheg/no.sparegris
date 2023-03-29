@@ -68,6 +68,8 @@ class FakeHomey {
       mainFuse: null,
       maxAlarmRate: 60,
     };
+    this.languageTable = {};
+    this.translationTable = {};
   }
 
   ready() {
@@ -75,7 +77,49 @@ class FakeHomey {
   }
 
   __(string) {
-    return string;
+    let parts;
+    try {
+      parts = string.split('.');
+    } catch (err) {
+      if (string in this.translationTable) {
+        return this.__(this.translationTable[string]);
+      }
+      return `Missing: ${string}`;
+    }
+    let ptr = this.languageTable;
+    for (let i = 0; i < parts.length; i++) {
+      if (parts[i] in ptr) {
+        ptr = ptr[parts[i]];
+      } else if (string in this.translationTable) {
+        // This is a hack to reverse engineer previously loaded strings that has been overwritten by a translation string
+        // This is only applicable when debugging and changing language
+        return this.__(this.translationTable[string]);
+      } else {
+        console.log(`requested ${string} not found`);
+        return `Missing: ${string}`;
+      }
+    }
+    // console.log(`requested ${string} ==> ${ptr}`);
+    this.translationTable[ptr] = string;
+    return ptr;
+  }
+
+  async loadLanguage(langId) {
+    const fileName = `../locales/${langId}.json`;
+    return fetch(fileName)
+      .then((response) => response.json())
+      .then((json) => {
+        console.log(`Loaded json: ${JSON.stringify(json)}`);
+        this.languageTable = json;
+        this.currentLang = langId;
+      })
+      .then(() => {
+        // Refresh all html code
+        const objToTranslate = document.querySelectorAll('[data-i18n]');
+        for (let i = 0; i < objToTranslate.length; i++) {
+          objToTranslate[i].innerHTML = this.__(objToTranslate[i].attributes.getNamedItem('data-i18n').value);
+        }
+      });
   }
 
   api(type, command, justNull, callback) {
@@ -124,7 +168,8 @@ class FakeHomey {
     } else if (command.includes('/apiCommand?cmd=createDeviceList')) {
       response = {
         id_a: { name:"DeviceNamenamenamenamename 1", room: "Stue",    image: "https://as2.ftcdn.net/v2/jpg/02/49/76/93/1000_F_249769389_7su5tYXOvcjcehNCcWTwcjnHvSMkLocJ.jpg", use: true, priority: 0, thermostat_cap: true, driverId: 'no.thermofloor:TF_Thermostat' },
-        id_b: { name:"DeviceName 2", room: "Kjøkken", image: "https://as2.ftcdn.net/v2/jpg/02/49/76/93/1000_F_249769389_7su5tYXOvcjcehNCcWTwcjnHvSMkLocJ.jpg", use: true, priority: 1, thermostat_cap: true, reliability: 0.5, driverId: 'no.thermofloor:Z-TRM2fx' },
+        id_b: { name:"DeviceName 2", room: "Kjøkken", image: "https://as2.ftcdn.net/v2/jpg/02/49/76/93/1000_F_249769389_7su5tYXOvcjcehNCcWTwcjnHvSMkLocJ.jpg", use: true, priority: 1, thermostat_cap: true, reliability: 0.5, driverId: 'no.adax.smart-heater.homey-app:heater-wt' },
+        id_b: { name:"Unsupported AC", room: "Kjøkken", image: "https://as2.ftcdn.net/v2/jpg/02/49/76/93/1000_F_249769389_7su5tYXOvcjcehNCcWTwcjnHvSMkLocJ.jpg", use: true, priority: 1, thermostat_cap: true, reliability: 0.5, driverId: 'blabedi:boo' },
         id_c: { name:"DeviceName 3", room: "Bad",     image: "https://as2.ftcdn.net/v2/jpg/02/49/76/93/1000_F_249769389_7su5tYXOvcjcehNCcWTwcjnHvSMkLocJ.jpg", use: true, priority: 0, thermostat_cap: false, reliability: 0.6, driverId: 'no.thermofloor:Z-TRM3' },
         id_d: { name:"DeviceName 4", room: "Bad",     image: "https://as2.ftcdn.net/v2/jpg/02/49/76/93/1000_F_249769389_7su5tYXOvcjcehNCcWTwcjnHvSMkLocJ.jpg", use: false, priority: 1, thermostat_cap: true, reliability: 0.7, driverId: 'se.husdata:H60' },
         id_e: { name:"DeviceName 3", room: "Bad",     image: "https://as2.ftcdn.net/v2/jpg/02/49/76/93/1000_F_249769389_7su5tYXOvcjcehNCcWTwcjnHvSMkLocJ.jpg", use: true, priority: 0, thermostat_cap: false, reliability: 0.6, driverId: 'com.everspring:AN179' },
@@ -184,25 +229,22 @@ class FakeHomey {
     window.alert(err);
   }
 
-  confirm(message, callback) {
-    try {
-      const result = window.confirm("message");
-      callback(null, result);
-    } catch (err) {
-      callback(err, false);
-    }
+  async confirm(message) {
+    return window.confirm(message);
   }
 
 }
-
-const Homey = new FakeHomey();
 
 function activate() {
   onHomeyReady(Homey);
 }
 
-// Using timeout to activate because onHomeyReady is not defined yet at this point
-setTimeout(activate, 100);
+const Homey = new FakeHomey();
+Homey.loadLanguage('en')
+  .then(() => {
+    // Using timeout to activate because onHomeyReady is not defined yet at this point
+    setTimeout(activate, 100);
+  });
 
 /** **********************************************************************************
  *                           DEBUG FUNCTIONALITY                                     *
@@ -232,6 +274,15 @@ document.write(`
   <div id="mydivheader">Debug Window</div>
   <p><button onClick="reloadPage();">Reload page</button></p>
   <p><button onClick="showSettings();">Show settings</button></p>
+  <p>
+    Language:
+    <select onChange="selectLanguage(this.value);">
+      <option value="fr">French</option>
+      <option value="nl">Dutch</option>
+      <option value="en" selected>English</option>
+      <option value="no">Norwegian</option>
+    </select>
+  </p>
 </div>`);
 
 dragElement(document.getElementById("mydiv"));
@@ -329,4 +380,19 @@ function reloadPage() {
 
 function showSettings() {
   console.log(Homey.settings);
+}
+
+function selectLanguage(langId) {
+  if (langId === Homey.currentLang) return;
+  console.log(`Changing language to: ${langId}`);
+
+  // Open language file
+  Homey.loadLanguage(langId)
+    .then(() => {
+      needModeRefresh = true; // Global variable in index.html
+      reloadPage();
+    })
+    .catch((err) => {
+      Homey.alert(`Language ${langId} could not be found.`);
+    });
 }

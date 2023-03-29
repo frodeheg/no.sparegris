@@ -321,7 +321,7 @@
       "zonesOff": "The following zones has been forced off",
       "zonesClear": "Clear all zones",
       "zoneName": "Sone",
-      "zoneNum": "Antall enheter påvirket"
+      "zoneNum": "Number of affected devices"
     },
     "override": {
       "header": "Overriden devices",
@@ -401,7 +401,7 @@
       "cool": "Cool",
       "dry": "Dry",
       "fan": "Fan",
-      "hint": "These options ensure that price points are correctly handled when switching between heating and cooling. Delta temperatures must have different signs for cooling and heating. If ACMode='Unchanged', then the AC mode is read from the AC device and the signs are inverted based on the actual AC mode. All other selections will set AC mode and keep the temperature deltas as they are."
+      "hint": "AC Mode affects all AC units (but will come per unit in a later update). If ACMode='Unchanged', the app will not set the AC mode. All other selections will set the AC mode. NB: If the AC mode is set to cooling, the delta temperatures for the price point will be inverted so that you can seamlessly switch between heating and cooling without affecting the app's ability to save money."
     }
   },
   "newdevice" : {
