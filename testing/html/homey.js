@@ -276,7 +276,7 @@ document.write(`
   <p><button onClick="showSettings();">Show settings</button></p>
   <p>
     Language:
-    <select onClick="selectLanguage(this.value);">
+    <select onChange="selectLanguage(this.value);">
       <option value="fr">French</option>
       <option value="nl">Dutch</option>
       <option value="en" selected>English</option>
@@ -391,5 +391,8 @@ function selectLanguage(langId) {
     .then(() => {
       needModeRefresh = true; // Global variable in index.html
       reloadPage();
+    })
+    .catch((err) => {
+      Homey.alert(`Language ${langId} could not be found.`);
     });
 }
