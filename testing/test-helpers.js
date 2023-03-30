@@ -77,6 +77,12 @@ async function applyBasicConfig(app) {
   const futureData = app.homey.settings.get('futurePriceOptions');
   futureData.priceKind = c.PRICE_KIND_SPOT;
   futureData.averageTime = 2;
+  futureData.averageTimeFuture = 12;
+  futureData.averageTimePast = 24;
+  futureData.dirtCheapPriceModifier = -50;
+  futureData.lowPriceModifier = -10;
+  futureData.highPriceModifier = 10;
+  futureData.extremePriceModifier = 100;
   app.homey.settings.set('futurePriceOptions', futureData);
   const fakeDevices = [
     'com.mill:mill.txt',
