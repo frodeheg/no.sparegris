@@ -769,5 +769,8 @@
   },
   "0.20.11": {
     "en": "Added French and Dutch translations (thanks Peter Dwarswaard)"
+  },
+  "0.20.12": {
+    "en": "Fixed issue where the app was unable to set the temperature on experimental devices."
   }
 }
