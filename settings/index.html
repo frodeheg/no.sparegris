@@ -742,13 +742,13 @@
       }
 
       function limitElement(object) {
-        if(object.value != "") {
-          if(parseInt(object.value) < parseInt(object.min)){
-            object.value = object.min;
-          }
-          if(parseInt(object.value) > parseInt(object.max)){
-            object.value = object.max;
-          }
+        if ((object.value === "") || (Number.isNaN(+object.value))) {
+          object.value = 0;
+        }
+        if(+object.value < parseInt(object.min)){
+          object.value = +object.min;
+        } else if(+object.value > parseInt(object.max)){
+          object.value = +object.max;
         }
       }
 
@@ -1613,7 +1613,7 @@
                 <tr>
                   <td class="settings_row_name"><label for="dirtCheapPriceModifier" data-i18n="settings.price.internal.dirtCheapPriceModifier">price.internal.dirtCheapPriceModifier</label>:</td>
                   <td class="settings_row_input">
-                    <input id="dirtCheapPriceModifier" class="inputElem" type="number" size="10" min="-100" max="-50" value="-50" onchange="limitElement(this);displaySaveHint()">%
+                    <input id="dirtCheapPriceModifier" class="inputElem" type="number" size="10" min="-100" max="0" value="-40" onchange="this.max=document.getElementById('lowPriceModifier').value;limitElement(this);displaySaveHint()">%
                     <div class="hintButton" onclick="toggle(this,'dirtCheapPriceModifierHint');return false;">i</div>
                   </td>
                 </tr>
@@ -1624,7 +1624,7 @@
                 <tr>
                   <td class="settings_row_name"><label for="lowPriceModifier" data-i18n="settings.price.internal.lowPriceModifier">price.internal.lowPriceModifier</label>:</td>
                   <td class="settings_row_input">
-                    <input id="lowPriceModifier" class="inputElem" type="number" size="10" min="-50" max="-10" value="-10" onchange="limitElement(this);displaySaveHint()">%
+                    <input id="lowPriceModifier" class="inputElem" type="number" size="10" min="-50" max="0" value="-15" onchange="this.min=document.getElementById('dirtCheapPriceModifier').value;limitElement(this);displaySaveHint()">%
                     <div class="hintButton" onclick="toggle(this,'lowPriceModifierHint');return false;">i</div>
                   </td>
                 </tr>
@@ -1635,7 +1635,7 @@
                 <tr>
                   <td class="settings_row_name"><label for="highPriceModifier" data-i18n="settings.price.internal.highPriceModifier">price.internal.highPriceModifier</label>:</td>
                   <td class="settings_row_input">
-                    <input id="highPriceModifier" class="inputElem" type="number" size="10" min="1" max="100" value="10" onchange="limitElement(this);displaySaveHint()">%
+                    <input id="highPriceModifier" class="inputElem" type="number" size="10" min="0" max="100" value="25" onchange="this.max=document.getElementById('extremePriceModifier').value;limitElement(this);displaySaveHint()">%
                     <div class="hintButton" onclick="toggle(this,'highPriceModifierHint');return false;">i</div>
                   </td>
                 </tr>
@@ -1646,7 +1646,7 @@
                 <tr>
                   <td class="settings_row_name"><label for="extremePriceModifier" data-i18n="settings.price.internal.extremePriceModifier">price.internal.extremePriceModifier</label>:</td>
                   <td class="settings_row_input">
-                    <input id="extremePriceModifier" class="inputElem" type="number" size="10" min="100" max="1000" value="10" onchange="limitElement(this);displaySaveHint()">%
+                    <input id="extremePriceModifier" class="inputElem" type="number" size="10" min="0" max="1000" value="70" onchange="this.min=document.getElementById('highPriceModifier').value;limitElement(this);displaySaveHint()">%
                     <div class="hintButton" onclick="toggle(this,'extremePriceModifierHint');return false;">i</div>
                   </td>
                 </tr>
