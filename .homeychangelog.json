@@ -766,5 +766,8 @@
   },
   "0.20.10": {
     "en": "Fixed a crash bug in the App settings menu when setting delta-temperatures for unsupported AC devices."
+  },
+  "0.20.11": {
+    "en": "Added French and Dutch translations (thanks Peter Dwarswaard)"
   }
 }
