@@ -3136,7 +3136,7 @@ class PiggyBank extends Homey.App {
   getACMode(device) {
     const driverId = d.generateDriverId(device);
     const deviceDef = d.DEVICE_CMD[driverId];
-    if (deviceDef.type !== d.DEVICE_TYPE.AC) return undefined;
+    if (!deviceDef || (deviceDef.type !== d.DEVICE_TYPE.AC)) return undefined;
     const { setModeCap } = deviceDef;
     const ACModeValue = device.capabilitiesObj[setModeCap].value;
     if (ACModeValue === deviceDef.setModeHeatValue) return c.ACMODE.HEAT;
@@ -3150,7 +3150,7 @@ class PiggyBank extends Homey.App {
   async setACMode(device, mode) {
     const driverId = d.generateDriverId(device);
     const deviceDef = d.DEVICE_CMD[driverId];
-    if (deviceDef.type !== d.DEVICE_TYPE.AC) return Promise.resolve(false);
+    if (!deviceDef || (deviceDef.type !== d.DEVICE_TYPE.AC)) return Promise.resolve(false);
     const { setModeCap } = deviceDef;
     const modeValue = (mode === c.ACMODE.AUTO) ? deviceDef.setModeAutoValue
       : (mode === c.ACMODE.HEAT) ? deviceDef.setModeHeatValue
