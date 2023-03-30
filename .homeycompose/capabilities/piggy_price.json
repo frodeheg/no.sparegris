@@ -1,49 +1,61 @@
 {
-    "type": "enum",
-    "title": {
-        "en": "Price point",
-        "no": "Prispunkt"
-    },
-    "getable": true,
-    "setable": false,
-    "values": [
-      {
-        "id": "4",
-        "title": {
-          "en": "Dirt cheap",
-          "no": "Grisebillig"
-        }
-      },
-      {
-        "id": "0",
-        "title": {
-          "en": "Cheap",
-          "no": "Billig"
-        }
-      },
-      {
-        "id": "1",
-        "title": {
-          "en": "Normal",
-          "no": "Normal"
-        }
-      },
-      {
-        "id": "2",
-        "title": {
-          "en": "Expensive",
-          "no": "Dyrt"
-        }
-      },
-      {
-        "id": "3",
-        "title": {
-          "en": "Extremely expensive",
-          "no": "Ekstremt dyrt"
-        }
+  "type": "enum",
+  "title": {
+    "en": "Price level",
+    "no": "Prisnivå",
+    "nl": "Prijsniveau",
+    "fr": "Niveau de prix"
+  },
+  "getable": true,
+  "setable": false,
+  "values": [
+    {
+      "id": "4",
+      "title": {
+        "en": "Dirt cheap",
+        "no": "Grisebillig",
+        "nl": "Spotgoedkoop",
+        "fr": "Très bon marché"
       }
-    ],
-    "icon": "/assets/price.svg",
-    "uiComponent": "sensor",
-    "uiQuickAction": false
-  }
+    },
+    {
+      "id": "0",
+      "title": {
+        "en": "Cheap",
+        "no": "Billig",
+        "nl": "Goedkoop",
+        "fr": "Pas cher"
+      }
+    },
+    {
+      "id": "1",
+      "title": {
+        "en": "Normal",
+        "no": "Normal",
+        "nl": "Normaal",
+        "fr": "Normal"
+      }
+    },
+    {
+      "id": "2",
+      "title": {
+        "en": "Expensive",
+        "no": "Dyrt",
+        "nl": "Duur",
+        "fr": "Cher"
+      }
+    },
+    {
+      "id": "3",
+      "title": {
+        "en": "Extremely expensive",
+        "no": "Ekstremt dyrt",
+        "nl": "Extreem duur",
+        "fr": "Extrêmement cher"
+      }
+    }
+  ],
+  "icon": "/assets/price.svg",
+  "uiComponent": "sensor",
+  "uiQuickAction": false
+}

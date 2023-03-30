@@ -1,15 +1,21 @@
 {
   "title": {
     "en": "Change the charging power",
-    "no": "Endre ladestyrken"
+    "no": "Endre ladestyrken",
+    "nl": "Wijzig het laadvermogen",
+    "fr": "Modifier la puissance de charge"
   },
   "titleFormatted": {
     "en": "Change the charging power to [[offeredPower]] W",
-    "no": "Endre ladestyrken til [[offeredPower]] W"
+    "no": "Endre ladestyrken til [[offeredPower]] W",
+    "nl": "Wijzig het laadvermogen naar [[offeredPower]] W",
+    "fr": "Changez la puissance de charge en [[offeredPower]] W"
   },
   "hint": {
-    "en": "This Trigger should be used to change the charging power. It will be called on the best schedule after the action 'Start Charging Cycle' has been initiated.",
-    "no": "Denne triggeren skal brukes for å endre ladestyrken. Den blir trigget på optimale tidspunkt etter at handlingen 'Start ladesyklus' har blitt utført."
+    "en": "This trigger should be used to change the charging power. It will be called on the best schedule after the action 'Start Charging Cycle' has been initiated.",
+    "no": "Denne triggeren skal brukes for å endre ladestyrken. Den blir trigget på optimale tidspunkt etter at handlingen 'Start ladesyklus' har blitt utført.",
+    "nl": "Deze trigger moet worden gebruikt om het laadvermogen te wijzigen. Het zal volgens het beste schema worden aangeroepen, nadat de actie 'Start oplaadcyclus' is gestart.",
+    "fr": "Ce déclencheur doit être utilisé pour modifier la puissance de charge. Il sera appelé au meilleur moment après le lancement de l'action 'Démarrer le cycle de charge'."
   },
   "tokens": [
     {
@@ -17,11 +23,15 @@
       "name": "offeredPower",
       "title": {
         "en": "Offered Power",
-        "no": "Tilbydt Effekt"
+        "no": "Tilbydt Effekt",
+        "nl": "Aangeboden vermogen",
+        "fr": "Puissance offerte"
       },
       "example": {
         "en": "Number of Watts to set the charging power to.",
-        "no": "Antall Watt å sette ladestyrken til."
+        "no": "Antall Watt å sette ladestyrken til.",
+        "nl": "Aantal Watt waarop het laadvermogen moet worden ingesteld",
+        "fr": "Nombre de Watts pour régler la puissance de charge."
       }
     }
   ]

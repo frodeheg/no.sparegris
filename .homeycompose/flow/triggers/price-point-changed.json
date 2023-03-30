@@ -1,28 +1,38 @@
 {
   "deprecated": true,
   "title": {
-    "en": "Price point changed",
-    "no": "Prispunkt endret seg"
+    "en": "Price level changed",
+    "no": "Prispunkt endret seg",
+    "nl": "Prijsniveau gewijzigd",
+    "fr": "Le niveau de prix a changé"
   },
   "titleFormatted": {
-    "en": "The price point changed.",
-    "no": "Prispunkt endret seg."
+    "en": "The price level changed.",
+    "no": "Prispunkt endret seg.",
+    "nl": "Prijsniveau gewijzigd",
+    "fr": "Le niveau de prix a changé"
   },
   "hint": {
     "en": "This trigger card has been deprecated. Please replace it with the new one to ensure future correctness.",
-    "no": "Dette flytkortet er utdatert. Vennligst bytt det ut for å forsikre at det virker i fremtiden."
+    "no": "Dette flytkortet er utdatert. Vennligst bytt det ut for å forsikre at det virker i fremtiden.",
+    "nl": "Deze triggerkaart is verouderd. Vervang deze door de nieuwe om ervoor te zorgen dat deze in de toekomst correct is.",
+    "fr": "Cette carte de flux est obsolète. Veuillez la remplacer pour vous assurer qu'elle fonctionnera à l'avenir."
   },
   "tokens": [
     {
       "type": "string",
       "name": "pricePoint",
       "title": {
-        "en": "Price point",
-        "no": "Prispunkt"
+        "en": "Price level",
+        "no": "Prispunkt",
+        "nl": "Prijsniveau",
+        "fr": "Niveau de prix"
       },
       "example": {
         "en": "Can be 'Dirt cheap', 'Low', 'Normal', 'High' or 'Extremely high'",
-        "no": "Kan være 'Grisebillig', 'Lav', 'Normal', 'Høy' eller 'Ekstremt høy'"
+        "no": "Kan være 'Grisebillig', 'Lav', 'Normal', 'Høy' eller 'Ekstremt høy'",
+        "nl": "Kan 'Spotgoedkoop', 'Laag', 'Normaal', 'Hoog' of 'Extreem hoog' zijn",
+        "fr": "Peut être 'Très bon marché', 'Faible', 'Normal', 'Élevé' ou 'Extrêmement élevé"
       }
     }
   ]

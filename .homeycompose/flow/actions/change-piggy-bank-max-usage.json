@@ -1,15 +1,21 @@
 {
   "title": {
     "en": "Change max usage per hour",
-    "no": "Endre maks forbruk per time"
+    "no": "Endre maks forbruk per time",
+    "nl": "Max. gebruik per uur wijzigen",
+    "fr": "Modifier la consommation max par heure"
   },
   "titleFormatted": {
     "en": "Set the max hourly usage to [[maxPow]]",
-    "no": "Sett maks forbruk per time til [[maxPow]]"
+    "no": "Sett maks forbruk per time til [[maxPow]]",
+    "nl": "Max. verbruik per uur instellen op [[maxPow]]",
+    "fr": "Définir la consommation maximale par heure sur [[maxPow]]"
   },
   "hint": {
     "en": "Allows you to dynamically change the maximum hourly usage. This could be useful when changing between summer time, winter time and long holidays",
-    "no": "Tillater deg å dynamisk endre det maksimale forbruket per time. Dette kan være nyttig for å bytte mellom sommer, vinter og lange ferier"
+    "no": "Tillater deg å dynamisk endre det maksimale forbruket per time. Dette kan være nyttig for å bytte mellom sommer, vinter og lange ferier",
+    "nl": "Hiermee kunt u het maximale verbruik per uur dynamisch wijzigen. Dit kan handig zijn bij het schakelen tussen zomer/winter en vakanties",
+    "fr": "Permet de modifier dynamiquement la consommation maximale par heure. Cela peut être utile pour basculer entre l'été, l'hiver et les longues vacances"
   },
   "args": [
     {
@@ -18,11 +24,15 @@
       "max": 100000,
       "placeholder": {
         "en": "Number of Wh",
-        "no": "Antall Wh"
+        "no": "Antall Wh",
+        "nl": "Aantal Wh",
+        "fr": "Nombre de Wh"
       },
       "title": {
         "en": "Max usage per hour",
-        "no": "Maksimalt forbruk per time"
+        "no": "Maksimalt forbruk per time",
+        "nl": "Max. verbruik per uur",
+        "fr": "Utilisation max par heure"
       },
       "name": "maxPow"
     }

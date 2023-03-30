@@ -1,14 +1,20 @@
 {
   "title": {
     "en": "Stop Charging",
-    "no": "Stopp lading"
+    "no": "Stopp lading",
+    "nl": "Stoppen met opladen",
+    "fr": "Arrêter la charge"
   },
   "titleFormatted": {
     "en": "Turn off the charger.",
-    "no": "Slå av laderen."
+    "no": "Slå av laderen.",
+    "nl": "Schakel de oplader uit.",
+    "fr": "Éteignez le chargeur."
   },
   "hint": {
     "en": "This Trigger should be used to stop the charger. It will be called on the best schedule after the action 'Start Charging Cycle' has been initiated.",
-    "no": "Denne triggeren skal brukes for å stoppe ladingen. Den blir trigget på optimale tidspunkt etter at handlingen 'Start ladesyklus' har blitt utført."
+    "no": "Denne triggeren skal brukes for å stoppe ladingen. Den blir trigget på optimale tidspunkt etter at handlingen 'Start ladesyklus' har blitt utført.",
+    "nl": "Deze trigger moet worden gebruikt om het opladen te stoppen. Hij wordt geactiveerd op het optimale moment nadat de actie 'Start laadcyclus' is uitgevoerd.",
+    "fr": "Ce déclencheur doit être utilisé pour arrêter la charge. Il est déclenché au moment optimal après l'exécution de l'action 'Démarrer le cycle de charge'."
   }
 }

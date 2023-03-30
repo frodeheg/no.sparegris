@@ -1,76 +1,98 @@
 {
-    "title": {
-      "en": "Override device",
-      "no": "Overstyr enhet"
-    },
-    "titleFormatted": {
-      "en": "Override Device [[device]] operation with [[mode]]",
-      "no": "Overstyr Enhet [[device]] til [[mode]]"
-    },
-    "hint": {
-      "en": "Allows you to override how Piggy Bank operates a specific device.",
-      "no": "Lar deg overstyre hvordan Sparegris opererer spesifikke enheter."
-    },
-    "args": [
-      {
-        "type": "autocomplete",
-        "name": "device",
-        "title": {
-          "en": "Device",
-          "no": "Enhet"
-        },
-        "placeholder": {
-          "en": "Selected device",
-          "no": "Valgt enhet"
-        }
+  "title": {
+    "en": "Override device",
+    "no": "Overstyr enhet",
+    "nl": "Apparaat negeren",
+    "fr": "Remplacer l'appareil"
+  },
+  "titleFormatted": {
+    "en": "Override Device [[device]] operation with [[mode]]",
+    "no": "Overstyr Enhet [[device]] til [[mode]]",
+    "nl": "Overschrijf de werking van apparaat [[device]] met [[mode]]",
+    "fr": "Remplacer le fonctionnement de l'appareil [[device]] avec [[mode]]"
+  },
+  "hint": {
+    "en": "Allows you to override how Piggy Bank operates a specific device.",
+    "no": "Lar deg overstyre hvordan Sparegris opererer spesifikke enheter.",
+    "nl": "Hiermee kunt je wijzigen hoe Piggy Bank een specifiek apparaat bedient.",
+    "fr": "Vous permet de remplacer la façon dont Piggy Bank utilise des appareils spécifiques."
+  },
+  "args": [
+    {
+      "type": "autocomplete",
+      "name": "device",
+      "title": {
+        "en": "Device",
+        "no": "Enhet",
+        "nl": "Apparaat",
+        "fr": "Appareil"
       },
-      {
-        "type": "dropdown",
-        "name": "mode",
-        "values": [
-          {
-            "id": "0",
-            "label": {
-              "en": "Disable override",
-              "no": "Deaktiver overstyring"
-            }
-          },
-          {
-            "id": "1",
-            "label": {
-              "en": "Forced on",
-              "no": "Tvunget på"
-            }
-          },
-          {
-            "id": "2",
-            "label": {
-              "en": "Forced off",
-              "no": "Tvunget av"
-            }
-          },
-          {
-            "id": "6",
-            "label": {
-              "en": "Controlled",
-              "no": "Styrt"
-            }
-          },
-          {
-            "id": "3",
-            "label": {
-              "en": "Maintenance (off) until manually turned on",
-              "no": "Vedlikehold (av) frem til manuelt påslått"
-            }
-          },
-          {
-            "id": "4",
-            "label": {
-              "en": "Manual temperature",
-              "no": "Manuell temperatur"
-            }
-          }
-        ]
+      "placeholder": {
+        "en": "Selected device",
+        "no": "Valgt enhet",
+        "nl": "Geselecteerd apparaat",
+        "fr": "Appareil sélectionné"
       }
-    ]
-  }
+    },
+    {
+      "type": "dropdown",
+      "name": "mode",
+      "values": [
+        {
+          "id": "0",
+          "label": {
+            "en": "Disable override",
+            "no": "Deaktiver overstyring",
+            "nl": "Schakel negeren uit",
+            "fr": "Désactiver le remplacement"
+          }
+        },
+        {
+          "id": "1",
+          "label": {
+            "en": "Forced on",
+            "no": "Tvunget på",
+            "nl": "Geforceerd aan",
+            "fr": "forcer l'allumage de l'appareil"
+          }
+        },
+        {
+          "id": "2",
+          "label": {
+            "en": "Forced off",
+            "no": "Tvunget av",
+            "nl": "Geforceerd uit",
+            "fr": "forcer l'arrêt de l'appareil"
+          }
+        },
+        {
+          "id": "6",
+          "label": {
+            "en": "Controlled",
+            "no": "Styrt",
+            "nl": "Gecontroleerd",
+            "fr": "Contrôlé"
+          }
+        },
+        {
+          "id": "3",
+          "label": {
+            "en": "Maintenance (off) until manually turned on",
+            "no": "Vedlikehold (av) frem til manuelt påslått",
+            "nl": "Onderhoud (uit) totdat handmatig ingeschakeld",
+            "fr": "Maintenance (off) jusqu'à activation manuelle"
+          }
+        },
+        {
+          "id": "4",
+          "label": {
+            "en": "Manual temperature",
+            "no": "Manuell temperatur",
+            "nl": "Handmatige temperatuur",
+            "fr": "Température manuelle"
+          }
+        }
+      ]
+    }
+  ]
+}

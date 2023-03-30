@@ -1,27 +1,35 @@
 {
-    "title": {
-      "en": "Future electricity prices are !{{unavailable|available}}",
-      "no": "Fremtidige strømpriser er !{{utilgjengelig|tilgjengelig}}"
-    },
-    "titleFormatted": {
-      "en": "The future price in [[hours]] hours is !{{unavailable|available}}.",
-      "no": "Den fremtidige prisen om [[hours]] timer er !{{utilgjengelig|tilgjengelig}}."
-    },
-    "hint": {
-      "en": "Use this condition to handle situations when the future prices in a given number of hours for some reason is not available.",
-      "no": "Bruk denne sjekken for å håndtere situasjoner hvor den fremtidige prisen om et gitt antall timer av en eller annen grunn ikke er tilgjengelig."
-    },
-    "args": [
-      {
-        "type": "number",
-        "name": "hours",
-        "placeholder": {
-          "en": "Number of hours",
-          "no": "Antall timer"
-        },
-        "min": 0,
-        "max": 24,
-        "step": 1
-      }
-    ]
-  }
+  "title": {
+    "en": "Future electricity prices are !{{unavailable|available}}",
+    "no": "Fremtidige strømpriser er !{{utilgjengelig|tilgjengelig}}",
+    "nl": "Toekomstige elektriciteitsprijzen zijn !{{niet beschikbaar|beschikbaar}}",
+    "fr": "Les futurs prix de l'électricité sont !{{indisponible|disponible}}"
+  },
+  "titleFormatted": {
+    "en": "The future price in [[hours]] hours is !{{unavailable|available}}",
+    "no": "Den fremtidige prisen om [[hours]] timer er !{{utilgjengelig|tilgjengelig}}",
+    "nl": "De toekomstige prijs in [[hours]] uur is !{{niet beschikbaar|beschikbaar}}",
+    "fr": "Le prix futur en [[hours]] heures est !{{indisponible|disponible}}"
+  },
+  "hint": {
+    "en": "Use this condition to handle situations when the future prices in a given number of hours for some reason is not available.",
+    "no": "Bruk denne sjekken for å håndtere situasjoner hvor den fremtidige prisen om et gitt antall timer av en eller annen grunn ikke er tilgjengelig.",
+    "nl": "Gebruik deze controle om situaties af te handelen waarin de toekomstige prijs voor een bepaald aantal uren om de een of andere reden niet beschikbaar is.",
+    "fr": "Utilisez cette vérification pour gérer les situations où le prix futur pour un nombre d'heures donné n'est pas disponible pour une raison quelconque."
+  },
+  "args": [
+    {
+      "type": "number",
+      "name": "hours",
+      "placeholder": {
+        "en": "Number of hours",
+        "no": "Antall timer",
+        "nl": "Aantal uren",
+        "fr": "Nombre d'heures"
+      },
+      "min": 0,
+      "max": 24,
+      "step": 1
+    }
+  ]
+}

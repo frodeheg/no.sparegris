@@ -1,15 +1,21 @@
 {
   "title": {
     "en": "A zone !{{is|isn't}} enabled",
-    "no": "En Sone !{{er|er ikke}} aktiv"
+    "no": "En Sone !{{er|er ikke}} aktiv",
+    "nl": "Een zone [[zone]] !{{is|is niet}} actief",
+    "fr": "Une Zone !{{est|n'est pas}} active"
   },
   "titleFormatted": {
     "en": "The zone [[zone]] !{{is|isn't}} enabled",
-    "no": "Sonen [[zone]] !{{er|er ikke}} aktiv"
+    "no": "Sonen [[zone]] !{{er|er ikke}} aktiv",
+    "nl": "De zone [[zone]] !{{is|is niet}} actief",
+    "fr": "La zone [[zone]] !{{est|n'est pas}} active"
   },
   "hint": {
     "en": "Use this flow card to check if a zone is enabled for app control. You may have to restart Piggy if you changed name of a zone.",
-    "no": "Bruk dette flytkortet til å sjekke om en sone er aktivert for app styring. Du må kanskje starte Sparegris på nytt dersom du har endret navn på en sone."
+    "no": "Bruk dette flytkortet til å sjekke om en sone er aktivert for app styring. Du må kanskje starte Sparegris på nytt dersom du har endret navn på en sone.",
+    "nl": "Gebruik deze flowkaart om te controleren of een zone is ingeschakeld voor app-besturing. Mogelijk moet je Piggy opnieuw opstarten als je de naam van een zone hebt gewijzigd.",
+    "fr": "Utilisez cette carte de flux pour vérifier si une zone est activée pour le contrôle de l'application. Vous devrez peut-être redémarrer Sparegris si vous avez changé le nom d'une zone."
   },
   "args": [
     {
@@ -17,11 +23,15 @@
       "name": "zone",
       "title": {
         "en": "Zone name",
-        "no": "Sone navn"
+        "no": "Sone navn",
+        "nl": "Zonenaam",
+        "fr": "Nom de zone"
       },
       "placeholder": {
         "en": "Name of the zone as defined in Homey",
-        "no": "Navn på sone som definert i Homey"
+        "no": "Navn på sone som definert i Homey",
+        "nl": "Naam van de zone zoals gedefinieerd in Homey",
+        "fr": "Nom de la zone tel que défini dans Homey"
       }
     }
   ]

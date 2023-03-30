@@ -2,7 +2,9 @@
   "type": "number",
   "title": {
     "en": "Number of signal failures",
-    "no": "Antall signalfeil"
+    "no": "Antall signalfeil",
+    "nl": "Aantal signaalstoringen",
+    "fr": "Nombre d'échecs de signal"
   },
   "units": {
     "en": ""
@@ -10,7 +12,9 @@
   "insights": true,
   "desc": {
     "en": "Number of attempts to turn devices on/off or change temperature that failed",
-    "no": "Antall forsøk på å slå enheter av/på eller endre temperaturen som feilet"
+    "no": "Antall forsøk på å slå enheter av/på eller endre temperaturen som feilet",
+    "nl": "Aantal mislukte pogingen om apparaten aan/uit te zetten of de temperatuur te wijzigen",
+    "fr": "Nombre de tentatives d'allumage/extinction d'appareils ou de changement de température qui ont échoué"
   },
   "chartType": "spline",
   "decimals": 0,

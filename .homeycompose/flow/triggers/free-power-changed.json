@@ -1,23 +1,31 @@
 {
     "title": {
       "en": "Available power changed",
-      "no": "Ledig effekt endret seg"
+      "no": "Ledig effekt endret seg",
+      "nl": "Beschikbaar vermogen gewijzigd",
+      "fr": "La puissance disponible a changé"
     },
     "titleFormatted": {
-      "en": "It is more than [[freePower]] Watts available for other devices for the rest of the hour.",
-      "no": "Det er mer enn [[freePower]] Watt ledig for andre enheter for resten av timen."
+      "en": "There is more than [[freePower]] Watts available for other devices for the rest of the hour.",
+      "no": "Det er mer enn [[freePower]] Watt ledig for andre enheter for resten av timen.",
+      "nl": "Er is meer dan [[freePower]] Watt beschikbaar voor andere apparaten voor de rest van het uur.",
+      "fr": "Il y a plus de [[freePower]] Watts disponibles pour d'autres appareils pour le reste de l'heure."
     },
     "hint": {
       "en": "Use this trigger if you want to control the power of for example an electric car charger.",
-      "no": "Bruk denne triggeren til å endre effekten på for eksempel en lader for en elbil."
+      "no": "Bruk denne triggeren til å endre effekten på for eksempel en lader for en elbil.",
+      "nl": "Gebruik deze trigger als je het vermogen van bijvoorbeeld een oplader voor een elektrische auto wilt regelen.",
+      "fr": "Utilisez ce déclencheur si vous souhaitez contrôler la puissance d'un chargeur de voiture électrique, par exemple."
     },
     "args": [
       {
         "type": "number",
         "name": "freePower",
         "placeholder": {
-          "en": "Free Power",
-          "no": "Ledig effekt"
+          "en": "Available Power",
+          "no": "Ledig effekt",
+          "nl": "Beschikbaar vermogen",
+          "fr": "Puissance disponible"
         },
         "min": 1,
         "max": 100000,
@@ -29,12 +37,16 @@
         "type": "number",
         "name": "freePower",
         "title": {
-          "en": "Free Power",
-          "no": "Ledig effekt"
+          "en": "Available Power",
+          "no": "Ledig effekt",
+          "nl": "Beschikbaar vermogen",
+          "fr": "Puissance disponible"
         },
         "example": {
           "en": "Number of additional Watts that can be used for the rest of the hour before the power tariff is exceeded",
-          "no": "Antall Watt som kan brukes ekstra resten av timen før effekttariffen blir brutt"
+          "no": "Antall Watt som kan brukes ekstra resten av timen før effekttariffen blir brutt",
+          "nl": "Aantal extra Watts dat kan worden gebruikt voor de rest van het uur voordat het stroomtarief wordt overschreden",
+          "fr": "Nombre de Watts supplémentaires pouvant être utilisés pour le reste de l'heure avant le dépassement du tarif de puissance"
         }
       }
     ]

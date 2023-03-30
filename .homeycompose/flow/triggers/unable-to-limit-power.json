@@ -1,15 +1,21 @@
 {
   "title": {
     "en": "Unable to limit power",
-    "no": "Klarer ikke å begrense strømforbruket"
+    "no": "Klarer ikke å begrense strømforbruket",
+    "nl": "Kan stroomverbruik niet beperken",
+    "fr": "Impossible de limiter la consommation d'énergie"
   },
   "titleFormatted": {
-    "en": "Could not reduce power usage. Turn off attached power immediately or the power-tariff for next month will be increased.",
-    "no": "Klarer ikke å begrense strømforbruket. Slå av vedlagt effekt umiddelbart ellers vil effekt-tariffen for neste måned øke."
+    "en": "Could not reduce power usage. Turn off attached power immediately or the power-tariff for next month will be increased!",
+    "no": "Klarer ikke å begrense strømforbruket. Slå av vedlagt effekt umiddelbart ellers vil effekt-tariffen for neste måned øke!",
+    "nl": "Kon stroomverbruik niet verminderen. Schakel de aangesloten stroom onmiddellijk uit, anders wordt het stroomtarief voor volgende maand verhoogd!",
+    "fr": "Impossible de réduire la consommation d'énergie. Coupez immédiatement l'alimentation connectée ou le tarif de l'électricité pour le mois prochain sera augmenté."
   },
   "hint": {
     "en": "Use this condition as a last resort to limit energy. If the app turned off every controllable device the user can be alerted to do a manual powerdown if this was not enough.",
-    "no": "Brukes som en siste utvei for å begrense energiforbruk. Dersom appen har slått av alt kan en melding sendes ut om å redusere forbruket manuelt dersom dette ikke var tilstrekkelig."
+    "no": "Brukes som en siste utvei for å begrense energiforbruk. Dersom appen har slått av alt kan en melding sendes ut om å redusere forbruket manuelt dersom dette ikke var tilstrekkelig.",
+    "nl": "Gebruikt als laatste redmiddel om het energieverbruik te beperken. Als de app alles heeft uitgeschakeld, kan er een bericht worden gestuurd om het verbruik handmatig te verminderen als dit niet voldoende is.",
+    "fr": "Utilisé en dernier recours pour limiter la consommation d'énergie. Si l'application a tout éteint, un message peut être envoyé pour réduire la consommation manuellement si cela n'était pas suffisant."
   },
   "highlight": true,
   "tokens": [
@@ -18,11 +24,15 @@
       "name": "excessPower",
       "title": {
         "en": "Excess Power",
-        "no": "Overskytende effekt"
+        "no": "Overskytende effekt",
+        "nl": "Overtollig vermogen",
+        "fr": "Excès de puissance"
       },
       "example": {
         "en": "The amount of Watt that exceeds the power threshold",
-        "no": "Antall Watt som overskyter effekttaket"
+        "no": "Antall Watt som overskyter effekttaket",
+        "nl": "Aantal Watts dat het vermogensplafond overschrijdt",
+        "fr": "Nombre de Watts dépassant le plafond de puissance"
       }
     }
   ]

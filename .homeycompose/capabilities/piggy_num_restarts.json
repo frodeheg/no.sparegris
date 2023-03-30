@@ -2,7 +2,9 @@
   "type": "number",
   "title": {
     "en": "Number restarts this month",
-    "no": "Antall omstarter denne måneden"
+    "no": "Antall omstarter denne måneden",
+    "nl": "Nummer start deze maand opnieuw op",
+    "fr": "Le numéro redémarre ce mois-ci"
   },
   "units": {
     "en": ""
@@ -10,7 +12,9 @@
   "insights": true,
   "desc": {
     "en": "Number of times the app was restarted due to power loss, new updates or other reasons. This reduces the power target reliability",
-    "no": "Antall ganger appen ble restartet på grunn av strømbrudd, nye oppdateringer eller andre grunner. Dette reduserer påliteligheten til å nå tariffmålet"
+    "no": "Antall ganger appen ble restartet på grunn av strømbrudd, nye oppdateringer eller andre grunner. Dette reduserer påliteligheten til å nå tariffmålet",
+    "nl": "Aantal keren dat de app opnieuw is opgestart vanwege stroomuitval, nieuwe updates of andere redenen. Dit vermindert de betrouwbaarheid van het stroomdoel",
+    "fr": "Nombre de fois où l'application a été redémarrée en raison d'une coupure de courant, de nouvelles mises à jour ou d'autres raisons. Cela réduit la fiabilité de la cible d'alimentation"
   },
   "chartType": "spline",
   "decimals": 0,

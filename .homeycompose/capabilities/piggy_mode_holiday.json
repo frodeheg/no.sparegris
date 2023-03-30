@@ -1,20 +1,26 @@
 {
-    "type": "boolean",
-    "title": {
-        "en": "Mode",
-        "no": "Driftsmodus"
-    },
-    "getable": true,
-    "setable": false,
-    "uiComponent": null,
-    "uiQuickAction": false,
-    "insightsTitleTrue": {
-      "en": "Changed to Vacation mode",
-      "no": "Endret til Feriemodus"
-    },
-    "insights": true,
-    "insightsTitleFalse": {
-      "en": "Changed to Vacation mode",
-      "no": "Endret til Feriemodus"
-    }
+  "type": "boolean",
+  "title": {
+    "en": "Mode",
+    "no": "Driftsmodus",
+    "nl": "Bedrijfsmodus",
+    "fr": "Mode de fonctionnement"
+  },
+  "getable": true,
+  "setable": false,
+  "uiComponent": null,
+  "uiQuickAction": false,
+  "insightsTitleTrue": {
+    "en": "Changed to Vacation mode",
+    "no": "Endret til Feriemodus",
+    "nl": "Gewijzigd naar Vakantiemodus",
+    "fr": "Changement en mode Vacances"
+  },
+  "insights": true,
+  "insightsTitleFalse": {
+    "en": "Changed to Vacation mode",
+    "no": "Endret til Feriemodus",
+    "nl": "Gewijzigd naar Vakantiemodus",
+    "fr": "Changement en mode Vacances"
+  }
 }

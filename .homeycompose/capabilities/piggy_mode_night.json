@@ -1,20 +1,26 @@
 {
-    "type": "boolean",
-    "title": {
-        "en": "Mode",
-        "no": "Driftsmodus"
-    },
-    "getable": true,
-    "setable": false,
-    "uiComponent": null,
-    "uiQuickAction": false,
-    "insightsTitleTrue": {
-      "en": "Changed to Night mode",
-      "no": "Endret til Nattmodus"
-    },
-    "insights": true,
-    "insightsTitleFalse": {
-      "en": "Changed to Night mode",
-      "no": "Endret til Nattmodus"
-    }
+  "type": "boolean",
+  "title": {
+    "en": "Mode",
+    "no": "Driftsmodus",
+    "nl": "Bedrijfsmodus",
+    "fr": "Mode de fonctionnement"
+  },
+  "getable": true,
+  "setable": false,
+  "uiComponent": null,
+  "uiQuickAction": false,
+  "insightsTitleTrue": {
+    "en": "Changed to Night mode",
+    "no": "Endret til Nattmodus",
+    "nl": "Gewijzigd naar Nachtmodus",
+    "fr": "Modifié en mode Nuit"
+  },
+  "insights": true,
+  "insightsTitleFalse": {
+    "en": "Changed to Night mode",
+    "no": "Endret til Nattmodus",
+    "nl": "Gewijzigd naar Nachtmodus",
+    "fr": "Modifié en mode Nuit"
+  }
 }

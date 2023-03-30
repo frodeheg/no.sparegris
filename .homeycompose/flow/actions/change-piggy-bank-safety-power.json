@@ -1,15 +1,21 @@
 {
   "title": {
     "en": "Change Reserved Power",
-    "no": "Endre reservert effekt"
+    "no": "Endre reservert effekt",
+    "nl": "Gereserveerd vermogen wijzigen",
+    "fr": "Modifier la puissance réservée"
   },
   "titleFormatted": {
     "en": "Set the reserved power to [[reserved]]",
-    "no": "Sett reservert effekt til [[reserved]]"
+    "no": "Sett reservert effekt til [[reserved]]",
+    "nl": "Stel het gereserveerde vermogen in op [[reserved]]",
+    "fr": "Définissez la puissance réservée sur [[reserved]]"
   },
   "hint": {
     "en": "Allows you to reserve power for uncontrollable devices, such as when making dinner",
-    "no": "Tillater deg å reservere effekt for ukontrollerbare enheter, for eksempel til middagslaging"
+    "no": "Tillater deg å reservere effekt for ukontrollerbare enheter, for eksempel til middagslaging",
+    "nl": "Hiermee kunt u stroom reserveren voor oncontroleerbare apparaten, zoals bij het maken van een diner",
+    "fr": "Vous permet de réserver de l'énergie pour des appareils incontrôlables, comme lors de la préparation du dîner"
   },
   "args": [
     {
@@ -18,11 +24,15 @@
       "max": 100000,
       "placeholder": {
         "en": "Number of Watts",
-        "no": "Antall Watt"
+        "no": "Antall Watt",
+        "nl": "Aantal watt",
+        "fr": "Nombre de Watts"
       },
       "title": {
         "en": "Reserved power",
-        "no": "Reservert effekt"
+        "no": "Reservert effekt",
+        "nl": "Gereserveerd vermogen",
+        "fr": "Puissance réservée"
       },
       "name": "reserved"
     }

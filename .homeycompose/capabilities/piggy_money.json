@@ -1,19 +1,22 @@
-  {
-    "type": "number",
-    "title": {
-        "en": "Money",
-        "no": "Penger"
-    },
-    "units": {
-      "en": "NOK",
-      "no": "kr"
-    },
-    "insights": true,
-    "chartType": "spline",
-    "decimals": 2,
-    "getable": true,
-    "setable": false,
-    "uiComponent": "sensor",
-
-    "icon": "/assets/money.svg"
-  }
+{
+  "type": "number",
+  "title": {
+    "en": "Money",
+    "no": "Penger",
+    "nl": "Geld",
+    "fr": "argent"
+  },
+  "units": {
+    "en": "GBP",
+    "no": "kr",
+    "nl": "EUR",
+    "fr": "EUR"
+  },
+  "insights": true,
+  "chartType": "spline",
+  "decimals": 2,
+  "getable": true,
+  "setable": false,
+  "uiComponent": "sensor",
+  "icon": "/assets/money.svg"
+}

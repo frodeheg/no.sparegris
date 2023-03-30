@@ -1,15 +1,21 @@
 {
   "title": {
     "en": "Send active power to PiggyBank",
-    "no": "Send aktiv effekt til Sparegris"
+    "no": "Send aktiv effekt til Sparegris",
+    "nl": "Stuur actief vermogen naar PiggyBank",
+    "fr": "Envoyer la puissance active à PiggyBank"
   },
   "titleFormatted": {
     "en": "Set the power to [[CurrentPower]] W",
-    "no": "Endre effektbruk til [[CurrentPower]] W"
+    "no": "Endre effektbruk til [[CurrentPower]] W",
+    "nl": "Stel het vermogen in op [[CurrentPower]] W",
+    "fr": "Réglez l'alimentation sur [[CurrentPower]] W"
   },
   "hint": {
     "en": "Attach the current power usage output of your energy meter to this action card in order to enable the app",
-    "no": "Denne appen vil ikke virke med mindre du sender strømmålerens avlesning av nåværende effektbruk til denne appen"
+    "no": "Denne appen vil ikke virke med mindre du sender strømmålerens avlesning av nåværende effektbruk til denne appen",
+    "nl": "Stuur het huidige energieverbruik van uw energiemeter naar deze actiekaart om de app in te schakelen",
+    "fr": "Attachez la sortie de consommation électrique actuelle de votre compteur d'énergie à cette carte d'action afin d'activer l'application"
   },
   "highlight": true,
   "args": [
@@ -18,7 +24,9 @@
       "name": "CurrentPower",
       "placeholder": {
         "en": "Current Power usage from the power meter",
-        "no": "Nåværende effektbruk fra strømmåleren"
+        "no": "Nåværende effektbruk fra strømmåleren",
+        "nl": "Huidig stroomverbruik van de electriciteitsmeter",
+        "fr": "Consommation électrique actuelle compteur d'électricité"
       },
       "min": 0,
       "max": 100000,

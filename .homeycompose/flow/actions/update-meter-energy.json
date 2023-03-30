@@ -1,15 +1,21 @@
 {
   "title": {
     "en": "Update PiggyBank with the energy used",
-    "no": "Oppdater Sparegris med energiforbruk"
+    "no": "Oppdater Sparegris med energiforbruk",
+    "nl": "PiggyBank bijwerken met energieverbruik",
+    "fr": "Mettre à jour PiggyBank avec l'énergie utilisée"
   },
   "titleFormatted": {
     "en": "Set the energy used to [[TotalEnergyUsage]] kWh",
-    "no": "Sett energiforbruk til [[TotalEnergyUsage]] kWh"
+    "no": "Sett energiforbruk til [[TotalEnergyUsage]] kWh",
+    "nl": "Stel de gebruikte energie in op [[TotalEnergyUsage]] kWh",
+    "fr": "Régler la consommation d'énergie sur [[TotalEnergyUsage]] kWh"
   },
   "hint": {
     "en": "Attach the energy usage (per day/hour/total etc.) output of your meter reader to this action card in order to enable the app. In case you have several readings for different intervals (day/hour etc.) then only send one of them to this app and make sure it's the one that updates most often.",
-    "no": "Koble energiforbruket (per dag/time/total etc.) fra strømmåleren din til dette kortet for å få appen til å virke. Hvis du har flere målinger for forskjellige intervaller (dag/time osv.), så send bare en av dem til denne appen og sørg for at det er den som oppdateres oftest."
+    "no": "Koble energiforbruket (per dag/time/total etc.) fra strømmåleren din til dette kortet for å få appen til å virke. Hvis du har flere målinger for forskjellige intervaller (dag/time osv.), så send bare en av dem til denne appen og sørg for at det er den som oppdateres oftest.",
+    "nl": "Koppel het energieverbruik (per dag/uur/totaal etc.) van je energiemeter aan deze kaart om de app te laten werken. Als je meerdere metingen hebt voor verschillende intervallen (dag/uur etc.), dan stuur een van hen naar deze app en zorg ervoor dat dit degene is die het vaakst wordt bijgewerkt.",
+    "fr": "Connectez la consommation d'énergie (par jour/heure/totale, etc.) de votre wattmètre à cette carte pour faire fonctionner l'application. Si vous avez plusieurs lectures pour différents intervalles (jour/heure, etc.), alors il suffit envoyez-en une à cette application et assurez-vous que c'est celle qui se met à jour le plus souvent."
   },
   "highlight": true,
   "args": [
@@ -18,7 +24,9 @@
       "name": "TotalEnergyUsage",
       "placeholder": {
         "en": "Connect to the power meter's consumption reading",
-        "no": "Koble til strømmålerens forbruksavlesning"
+        "no": "Koble til strømmålerens forbruksavlesning",
+        "nl": "Koppel de huidige verbruikswaarde (vermogen) van de electriciteitsmeter",
+        "fr": "Connecter la lecture de consommation du compteur d'électricité"
       },
       "min": 0,
       "step": 0.01

@@ -1,15 +1,21 @@
 {
   "title": {
     "en": "Start Charging",
-    "no": "Start lading"
+    "no": "Start lading",
+    "nl": "Begin met opladen",
+    "fr": "Démarrer la charge"
   },
   "titleFormatted": {
     "en": "Turn on the charger, using lowest Power.",
-    "no": "Slå på laderen og bruk laveste ladestyrke."
+    "no": "Slå på laderen og bruk laveste ladestyrke.",
+    "nl": "Zet de oplader aan en gebruik het laagste laadvermogen.",
+    "fr": "Allumez le chargeur et utilisez la puissance de charge la plus faible."
   },
   "hint": {
     "en": "This Trigger should be used to start the charger. It will be called on the best schedule after the action 'Start Charging Cycle' has been initiated.",
-    "no": "Denne triggeren skal brukes for å starte ladingen. Den blir trigget på optimale tidspunkt etter at handlingen 'Start ladesyklus' har blitt utført."
+    "no": "Denne triggeren skal brukes for å starte ladingen. Den blir trigget på optimale tidspunkt etter at handlingen 'Start ladesyklus' har blitt utført.",
+    "nl": "Deze trigger moet worden gebruikt om het opladen te starten. Het wordt geactiveerd op het optimale moment nadat de actie 'Start oplaadcyclus' is uitgevoerd.",
+    "fr": "Ce déclencheur doit être utilisé pour démarrer le chargeur. Il sera appelé au meilleur horaire après le lancement de l'action 'Démarrer le cycle de charge'."
   },
   "tokens": [
     {
@@ -17,11 +23,15 @@
       "name": "offeredPower",
       "title": {
         "en": "Offered Power",
-        "no": "Tilbydt Effekt"
+        "no": "Tilbydt Effekt",
+        "nl": "Aangeboden vermogen",
+        "fr": "Puissance offerte"
       },
       "example": {
         "en": "Number of Watts to set the initial charging power to (as configured in the app).",
-        "no": "Antall Watt å sette initsiell ladestyrke til (som konfigurert i appen)."
+        "no": "Antall Watt å sette initsiell ladestyrke til (som konfigurert i appen).",
+        "nl": "Aantal Watts waarop het initiële laadvermogen moet worden ingesteld (zoals geconfigureerd in de app).",
+        "fr": "Nombre de Watts pour régler la puissance de charge initiale (comme configuré dans l'application)."
       }
     }
   ]

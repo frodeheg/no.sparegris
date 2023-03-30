@@ -1,20 +1,26 @@
 {
-    "type": "boolean",
-    "title": {
-        "en": "Mode",
-        "no": "Driftsmodus"
-    },
-    "getable": true,
-    "setable": false,
-    "uiComponent": null,
-    "uiQuickAction": false,
-    "insightsTitleTrue": {
-      "en": "Piggy Bank was disabled",
-      "no": "Sparegris ble deaktivert"
-    },
-    "insights": true,
-    "insightsTitleFalse": {
-      "en": "Piggy Bank was disabled",
-      "no": "Sparegris ble deaktivert"
-    }
+  "type": "boolean",
+  "title": {
+    "en": "Mode",
+    "no": "Driftsmodus",
+    "nl": "Bedrijfsmodus",
+    "fr": "Mode de fonctionnement"
+  },
+  "getable": true,
+  "setable": false,
+  "uiComponent": null,
+  "uiQuickAction": false,
+  "insightsTitleTrue": {
+    "en": "Piggy Bank was disabled",
+    "no": "Sparegris ble deaktivert",
+    "nl": "Piggy Bank was uitgeschakeld",
+    "fr": "Piggy Bank a été désactivée"
+  },
+  "insights": true,
+  "insightsTitleFalse": {
+    "en": "Piggy Bank was disabled",
+    "no": "Sparegris ble deaktivert",
+    "nl": "Piggy Bank was uitgeschakeld",
+    "fr": "Piggy Bank a été désactivée"
+  }
 }

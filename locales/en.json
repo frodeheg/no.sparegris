@@ -320,7 +320,7 @@
       "zoneHint2": "You have to use flows to turn zones off and on again.",
       "zonesOff": "The following zones has been forced off",
       "zonesClear": "Clear all zones",
-      "zoneName": "Sone",
+      "zoneName": "Zone",
       "zoneNum": "Number of affected devices"
     },
     "override": {

@@ -1,14 +1,20 @@
 {
   "title": {
     "en": "Stop charging cycle ahead of time",
-    "no": "Stopp ladesyklus før tiden"
+    "no": "Stopp ladesyklus før tiden",
+    "nl": "Stop de oplaadcyclus voortijdig",
+    "fr": "Arrêtez le cycle de charge à l'avance"
   },
   "titleFormatted": {
     "en": "Stop the charging cycle ahead of time",
-    "no": "Stopp ladesyklus før tiden"
+    "no": "Stopp ladesyklus før tiden",
+    "nl": "Stop de laadcyclus voortijdig",
+    "fr": "Arrêtez le cycle de charge à l'avance"
   },
   "hint": {
     "en": "In case you need to stop the charging cycle ahead of time you can call this flow card in order to prevent the app from offering more energy.",
-    "no": "Dersom du ønsker å avbryte ladesyklusen før tiden kan du kalle dette flytkortet for å hindre appen i å tilby mer energi."
+    "no": "Dersom du ønsker å avbryte ladesyklusen før tiden kan du kalle dette flytkortet for å hindre appen i å tilby mer energi.",
+    "nl": "Als je de laadcyclus voortijdig wilt onderbreken, kun je deze flowkaart aanroepen om te voorkomen dat de app meer energie aanbiedt.",
+    "fr": "Si vous souhaitez interrompre le cycle de charge avant l'heure, vous pouvez appeler cette carte de débit pour empêcher l'application d'offrir plus d'énergie."
   }
 }

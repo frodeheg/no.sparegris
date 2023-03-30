@@ -1,15 +1,21 @@
 {
   "title": {
-    "en": "The price point !{{is|isn't}}",
-    "no": "Prispunkt !{{er|er ikke}}"
+    "en": "The price level !{{is|isn't}}",
+    "no": "Prisnivået !{{er|er ikke}}",
+    "nl": "Het prijsniveau !{{is|is niet}}",
+    "fr": "Le niveau de prix !{{est|n'est pas}}"
   },
   "titleFormatted": {
-    "en": "The price point !{{is|isn't}} equal to [[mode]]",
-    "no": "Prispunktet !{{er|er ikke}} lik [[mode]]"
+    "en": "The price level !{{is|isn't}} equal to [[mode]]",
+    "no": "Prisnivået !{{er|er ikke}} lik [[mode]]",
+    "nl": "Het prijsniveau !{{is|is niet}} gelijk aan [[mode]]",
+    "fr": "Le niveau de prix !{{est|n'est pas}} égal à [[mode]]"
   },
   "hint": {
     "en": "Use this flow card to check if the price point is a certain value.",
-    "no": "Bruk dette flytkortet til å sjekke om prispunktet er en bestemt verdi."
+    "no": "Bruk dette flytkortet til å sjekke om prisnivået er en bestemt verdi.",
+    "nl": "Gebruik deze flowkaart om te controleren of het prijspunt een specifieke waarde is.",
+    "fr": "Utilisez cette carte de flux pour vérifier si le niveau de prix est une valeur spécifique."
   },
   "args": [
     {
@@ -20,35 +26,45 @@
           "id": "4",
           "label": {
             "en": "Dirt cheap",
-            "no": "Grisebillig"
+            "no": "Grisebillig",
+            "nl": "Spotgoedkoop",
+            "fr": "Très bon marché"
           }
         },
         {
           "id": "0",
           "label": {
             "en": "Cheap",
-            "no": "Billig"
+            "no": "Billig",
+            "nl": "Goedkoop",
+            "fr": "Pas cher"
           }
         },
         {
           "id": "1",
           "label": {
             "en": "Normal",
-            "no": "Normal"
+            "no": "Normal",
+            "nl": "Normaal",
+            "fr": "Normal"
           }
         },
         {
           "id": "2",
           "label": {
             "en": "Expensive",
-            "no": "Dyrt"
+            "no": "Dyrt",
+            "nl": "Duur",
+            "fr": "Cher"
           }
         },
         {
           "id": "3",
           "label": {
             "en": "Extremely expensive",
-            "no": "Ekstremt dyrt"
+            "no": "Ekstremt dyrt",
+            "nl": "Extreem duur",
+            "fr": "Extrêmement cher"
           }
         }
       ]

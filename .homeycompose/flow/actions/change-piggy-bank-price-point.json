@@ -1,15 +1,21 @@
 {
   "title": {
-    "en": "Change Piggy Bank Price Point",
-    "no": "Endre Sparegris Prispunkt"
+    "en": "Change Piggy Bank Price level",
+    "no": "Endre Sparegris prisnivå",
+    "nl": "Wijzig het prijsniveau van Piggy Bank",
+    "fr": "Modifier le niveau de prix de la Piggy Bank"
   },
   "titleFormatted": {
     "en": "Set the Piggy Bank price point to [[mode]]",
-    "no": "Sett Sparegris prispunkt til [[mode]]"
+    "no": "Sett Sparegris prisnivå til [[mode]]",
+    "nl": "Stel de prijs van Piggy Bank in op [[mode]]",
+    "fr": "Définissez le prix de Piggy Bank sur [[mode]]"
   },
   "hint": {
     "en": "Inform Piggy Bank whether the energy is expensive or cheap",
-    "no": "Informerer Sparegris om strømmen er dyr eller billig"
+    "no": "Informerer Sparegris om strømmen er dyr eller billig",
+    "nl": "Informeert Piggy Bank of de elektriciteit duur of goedkoop is",
+    "fr": "Informer Piggy Bank si l'énergie est chère ou bon marché"
   },
   "highlight": true,
   "args": [
@@ -21,35 +27,45 @@
           "id": "4",
           "label": {
             "en": "Dirt cheap",
-            "no": "Grisebillig"
+            "no": "Grisebillig",
+            "nl": "Spotgoedkoop",
+            "fr": "Très bon marché"
           }
         },
         {
           "id": "0",
           "label": {
             "en": "Cheap",
-            "no": "Billig"
+            "no": "Billig",
+            "nl": "Goedkoop",
+            "fr": "Pas cher"
           }
         },
         {
           "id": "1",
           "label": {
             "en": "Normal",
-            "no": "Normal"
+            "no": "Normal",
+            "nl": "Normaal",
+            "fr": "Normal"
           }
         },
         {
           "id": "2",
           "label": {
             "en": "Expensive",
-            "no": "Dyrt"
+            "no": "Dyrt",
+            "nl": "Duur",
+            "fr": "Cher"
           }
         },
         {
           "id": "3",
           "label": {
             "en": "Extremely expensive",
-            "no": "Ekstremt dyrt"
+            "no": "Ekstremt dyrt",
+            "nl": "Extreem duur",
+            "fr": "Extrêmement cher"
           }
         }
       ]

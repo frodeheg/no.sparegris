@@ -1,15 +1,21 @@
 {
   "title": {
     "en": "The mode !{{is|isn't}}",
-    "no": "Driftsmodus !{{er|er ikke}}"
+    "no": "Driftsmodus !{{er|er ikke}}",
+    "nl": "Bedrijfsmodus !{{is|is niet}}",
+    "fr": "Le mode de fonctionnement !{{est|n'est pas}}"
   },
   "titleFormatted": {
     "en": "The mode !{{is|isn't}} equal to [[mode]]",
-    "no": "Driftsmodus !{{er|er ikke}} lik [[mode]]"
+    "no": "Driftsmodus !{{er|er ikke}} lik [[mode]]",
+    "nl": "Bedrijfsmodus !{{is|is niet}} gelijk aan [[mode]]",
+    "fr": "Le mode de fonctionnement !{{est|n'est pas}} égal à [[mode]]"
   },
   "hint": {
-    "en": "Use this card to check when the app operation mode is equal to a certain value.",
-    "no": "Bruk dette flytkortet til å sjekke om appens driftsmodus er lik en bestemt verdi."
+    "en": "Use this flowcard to check when the app operation mode is equal to a certain value.",
+    "no": "Bruk dette flytkortet til å sjekke om appens driftsmodus er lik en bestemt verdi.",
+    "nl": "Gebruik deze flowkaart om te controleren of de bedrijfsmodus van de app gelijk is aan een specifieke waarde.",
+    "fr": "Utilisez cet carte de flux pour vérifier si le mode de fonctionnement de l'application est égal à une valeur spécifique."
   },
   "args": [
     {
@@ -17,11 +23,15 @@
       "name": "mode",
       "title": {
         "en": "Mode",
-        "no": "Modus"
+        "no": "Modus",
+        "nl": "Modus",
+        "fr": "Mode"
       },
       "placeholder": {
         "en": "Operation mode",
-        "no": "Driftsmodus"
+        "no": "Driftsmodus",
+        "nl": "Bedrijfsmodus",
+        "fr": "Mode de fonctionnement"
       }
     }
   ]

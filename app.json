@@ -118,6 +118,9 @@
     "translators": [
       {
         "name": "Frode Heggelund"
+      },
+      {
+        "name": "🇳🇱 🇨🇵 Peter Dwarswaard"
       }
     ]
   },
@@ -148,15 +151,21 @@
       {
         "title": {
           "en": "Change the charging power",
-          "no": "Endre ladestyrken"
+          "no": "Endre ladestyrken",
+          "nl": "Wijzig het laadvermogen",
+          "fr": "Modifier la puissance de charge"
         },
         "titleFormatted": {
           "en": "Change the charging power to [[offeredPower]] W",
-          "no": "Endre ladestyrken til [[offeredPower]] W"
+          "no": "Endre ladestyrken til [[offeredPower]] W",
+          "nl": "Wijzig het laadvermogen naar [[offeredPower]] W",
+          "fr": "Changez la puissance de charge en [[offeredPower]] W"
         },
         "hint": {
-          "en": "This Trigger should be used to change the charging power. It will be called on the best schedule after the action 'Start Charging Cycle' has been initiated.",
-          "no": "Denne triggeren skal brukes for å endre ladestyrken. Den blir trigget på optimale tidspunkt etter at handlingen 'Start ladesyklus' har blitt utført."
+          "en": "This trigger should be used to change the charging power. It will be called on the best schedule after the action 'Start Charging Cycle' has been initiated.",
+          "no": "Denne triggeren skal brukes for å endre ladestyrken. Den blir trigget på optimale tidspunkt etter at handlingen 'Start ladesyklus' har blitt utført.",
+          "nl": "Deze trigger moet worden gebruikt om het laadvermogen te wijzigen. Het zal volgens het beste schema worden aangeroepen, nadat de actie 'Start oplaadcyclus' is gestart.",
+          "fr": "Ce déclencheur doit être utilisé pour modifier la puissance de charge. Il sera appelé au meilleur moment après le lancement de l'action 'Démarrer le cycle de charge'."
         },
         "tokens": [
           {
@@ -164,11 +173,15 @@
             "name": "offeredPower",
             "title": {
               "en": "Offered Power",
-              "no": "Tilbydt Effekt"
+              "no": "Tilbydt Effekt",
+              "nl": "Aangeboden vermogen",
+              "fr": "Puissance offerte"
             },
             "example": {
               "en": "Number of Watts to set the charging power to.",
-              "no": "Antall Watt å sette ladestyrken til."
+              "no": "Antall Watt å sette ladestyrken til.",
+              "nl": "Aantal Watt waarop het laadvermogen moet worden ingesteld",
+              "fr": "Nombre de Watts pour régler la puissance de charge."
             }
           }
         ],
@@ -177,23 +190,31 @@
       {
         "title": {
           "en": "Available power changed",
-          "no": "Ledig effekt endret seg"
+          "no": "Ledig effekt endret seg",
+          "nl": "Beschikbaar vermogen gewijzigd",
+          "fr": "La puissance disponible a changé"
         },
         "titleFormatted": {
-          "en": "It is more than [[freePower]] Watts available for other devices for the rest of the hour.",
-          "no": "Det er mer enn [[freePower]] Watt ledig for andre enheter for resten av timen."
+          "en": "There is more than [[freePower]] Watts available for other devices for the rest of the hour.",
+          "no": "Det er mer enn [[freePower]] Watt ledig for andre enheter for resten av timen.",
+          "nl": "Er is meer dan [[freePower]] Watt beschikbaar voor andere apparaten voor de rest van het uur.",
+          "fr": "Il y a plus de [[freePower]] Watts disponibles pour d'autres appareils pour le reste de l'heure."
         },
         "hint": {
           "en": "Use this trigger if you want to control the power of for example an electric car charger.",
-          "no": "Bruk denne triggeren til å endre effekten på for eksempel en lader for en elbil."
+          "no": "Bruk denne triggeren til å endre effekten på for eksempel en lader for en elbil.",
+          "nl": "Gebruik deze trigger als je het vermogen van bijvoorbeeld een oplader voor een elektrische auto wilt regelen.",
+          "fr": "Utilisez ce déclencheur si vous souhaitez contrôler la puissance d'un chargeur de voiture électrique, par exemple."
         },
         "args": [
           {
             "type": "number",
             "name": "freePower",
             "placeholder": {
-              "en": "Free Power",
-              "no": "Ledig effekt"
+              "en": "Available Power",
+              "no": "Ledig effekt",
+              "nl": "Beschikbaar vermogen",
+              "fr": "Puissance disponible"
             },
             "min": 1,
             "max": 100000,
@@ -205,12 +226,16 @@
             "type": "number",
             "name": "freePower",
             "title": {
-              "en": "Free Power",
-              "no": "Ledig effekt"
+              "en": "Available Power",
+              "no": "Ledig effekt",
+              "nl": "Beschikbaar vermogen",
+              "fr": "Puissance disponible"
             },
             "example": {
               "en": "Number of additional Watts that can be used for the rest of the hour before the power tariff is exceeded",
-              "no": "Antall Watt som kan brukes ekstra resten av timen før effekttariffen blir brutt"
+              "no": "Antall Watt som kan brukes ekstra resten av timen før effekttariffen blir brutt",
+              "nl": "Aantal extra Watts dat kan worden gebruikt voor de rest van het uur voordat het stroomtarief wordt overschreden",
+              "fr": "Nombre de Watts supplémentaires pouvant être utilisés pour le reste de l'heure avant le dépassement du tarif de puissance"
             }
           }
         ],
@@ -219,28 +244,38 @@
       {
         "deprecated": true,
         "title": {
-          "en": "Price point changed",
-          "no": "Prispunkt endret seg"
+          "en": "Price level changed",
+          "no": "Prispunkt endret seg",
+          "nl": "Prijsniveau gewijzigd",
+          "fr": "Le niveau de prix a changé"
         },
         "titleFormatted": {
-          "en": "The price point changed.",
-          "no": "Prispunkt endret seg."
+          "en": "The price level changed.",
+          "no": "Prispunkt endret seg.",
+          "nl": "Prijsniveau gewijzigd",
+          "fr": "Le niveau de prix a changé"
         },
         "hint": {
           "en": "This trigger card has been deprecated. Please replace it with the new one to ensure future correctness.",
-          "no": "Dette flytkortet er utdatert. Vennligst bytt det ut for å forsikre at det virker i fremtiden."
+          "no": "Dette flytkortet er utdatert. Vennligst bytt det ut for å forsikre at det virker i fremtiden.",
+          "nl": "Deze triggerkaart is verouderd. Vervang deze door de nieuwe om ervoor te zorgen dat deze in de toekomst correct is.",
+          "fr": "Cette carte de flux est obsolète. Veuillez la remplacer pour vous assurer qu'elle fonctionnera à l'avenir."
         },
         "tokens": [
           {
             "type": "string",
             "name": "pricePoint",
             "title": {
-              "en": "Price point",
-              "no": "Prispunkt"
+              "en": "Price level",
+              "no": "Prispunkt",
+              "nl": "Prijsniveau",
+              "fr": "Niveau de prix"
             },
             "example": {
               "en": "Can be 'Dirt cheap', 'Low', 'Normal', 'High' or 'Extremely high'",
-              "no": "Kan være 'Grisebillig', 'Lav', 'Normal', 'Høy' eller 'Ekstremt høy'"
+              "no": "Kan være 'Grisebillig', 'Lav', 'Normal', 'Høy' eller 'Ekstremt høy'",
+              "nl": "Kan 'Spotgoedkoop', 'Laag', 'Normaal', 'Hoog' of 'Extreem hoog' zijn",
+              "fr": "Peut être 'Très bon marché', 'Faible', 'Normal', 'Élevé' ou 'Extrêmement élevé"
             }
           }
         ],
@@ -248,28 +283,38 @@
       },
       {
         "title": {
-          "en": "Price point changed",
-          "no": "Prispunkt endret seg"
+          "en": "Price level changed",
+          "no": "Prispunkt endret seg",
+          "nl": "Prijsniveau gewijzigd",
+          "fr": "Le niveau de prix a changé"
         },
         "titleFormatted": {
-          "en": "The price point changed.",
-          "no": "Prispunkt endret seg."
+          "en": "The price level changed.",
+          "no": "Prispunkt endret seg.",
+          "nl": "Prijsniveau gewijzigd",
+          "fr": "Le niveau de prix a changé"
         },
         "hint": {
           "en": "Use this trigger if you want the internal price control of PiggyBank to control external events.",
-          "no": "Bruk denne triggeren dersom du ønsker at den interne prisstyringen i Sparegris skal styre eksterne hendelser."
+          "no": "Bruk denne triggeren dersom du ønsker at den interne prisstyringen i Sparegris skal styre eksterne hendelser.",
+          "nl": "Gebruik deze trigger als u wilt dat het interne prijsbeheer in PiggyBank externe gebeurtenissen regelt.",
+          "fr": "Utilisez ce déclencheur si vous souhaitez que la gestion interne des prix dans PiggyBank contrôle les événements externes."
         },
         "tokens": [
           {
             "type": "string",
             "name": "pricePoint",
             "title": {
-              "en": "Price point",
-              "no": "Prispunkt"
+              "en": "Price level",
+              "no": "Prispunkt",
+              "nl": "Prijsniveau",
+              "fr": "Niveau de prix"
             },
             "example": {
               "en": "Can be 'Dirt cheap', 'Cheap', 'Normal', 'Expensive' or 'Extremely expensive'",
-              "no": "Kan være 'Grisebillig', 'Billig', 'Normal', 'Dyrt' eller 'Ekstremt dyrt'"
+              "no": "Kan være 'Grisebillig', 'Billig', 'Normal', 'Dyrt' eller 'Ekstremt dyrt'",
+              "nl": "Kan 'Spotgoedkoop', 'Laag', 'Normaal', 'Hoog' of 'Extreem hoog' zijn",
+              "fr": "Peut être 'Très bon marché', 'Faible', 'Normal', 'Élevé' ou 'Extrêmement élevé"
             }
           }
         ],
@@ -278,15 +323,21 @@
       {
         "title": {
           "en": "Start Charging",
-          "no": "Start lading"
+          "no": "Start lading",
+          "nl": "Begin met opladen",
+          "fr": "Démarrer la charge"
         },
         "titleFormatted": {
           "en": "Turn on the charger, using lowest Power.",
-          "no": "Slå på laderen og bruk laveste ladestyrke."
+          "no": "Slå på laderen og bruk laveste ladestyrke.",
+          "nl": "Zet de oplader aan en gebruik het laagste laadvermogen.",
+          "fr": "Allumez le chargeur et utilisez la puissance de charge la plus faible."
         },
         "hint": {
           "en": "This Trigger should be used to start the charger. It will be called on the best schedule after the action 'Start Charging Cycle' has been initiated.",
-          "no": "Denne triggeren skal brukes for å starte ladingen. Den blir trigget på optimale tidspunkt etter at handlingen 'Start ladesyklus' har blitt utført."
+          "no": "Denne triggeren skal brukes for å starte ladingen. Den blir trigget på optimale tidspunkt etter at handlingen 'Start ladesyklus' har blitt utført.",
+          "nl": "Deze trigger moet worden gebruikt om het opladen te starten. Het wordt geactiveerd op het optimale moment nadat de actie 'Start oplaadcyclus' is uitgevoerd.",
+          "fr": "Ce déclencheur doit être utilisé pour démarrer le chargeur. Il sera appelé au meilleur horaire après le lancement de l'action 'Démarrer le cycle de charge'."
         },
         "tokens": [
           {
@@ -294,11 +345,15 @@
             "name": "offeredPower",
             "title": {
               "en": "Offered Power",
-              "no": "Tilbydt Effekt"
+              "no": "Tilbydt Effekt",
+              "nl": "Aangeboden vermogen",
+              "fr": "Puissance offerte"
             },
             "example": {
               "en": "Number of Watts to set the initial charging power to (as configured in the app).",
-              "no": "Antall Watt å sette initsiell ladestyrke til (som konfigurert i appen)."
+              "no": "Antall Watt å sette initsiell ladestyrke til (som konfigurert i appen).",
+              "nl": "Aantal Watts waarop het initiële laadvermogen moet worden ingesteld (zoals geconfigureerd in de app).",
+              "fr": "Nombre de Watts pour régler la puissance de charge initiale (comme configuré dans l'application)."
             }
           }
         ],
@@ -307,30 +362,42 @@
       {
         "title": {
           "en": "Stop Charging",
-          "no": "Stopp lading"
+          "no": "Stopp lading",
+          "nl": "Stoppen met opladen",
+          "fr": "Arrêter la charge"
         },
         "titleFormatted": {
           "en": "Turn off the charger.",
-          "no": "Slå av laderen."
+          "no": "Slå av laderen.",
+          "nl": "Schakel de oplader uit.",
+          "fr": "Éteignez le chargeur."
         },
         "hint": {
           "en": "This Trigger should be used to stop the charger. It will be called on the best schedule after the action 'Start Charging Cycle' has been initiated.",
-          "no": "Denne triggeren skal brukes for å stoppe ladingen. Den blir trigget på optimale tidspunkt etter at handlingen 'Start ladesyklus' har blitt utført."
+          "no": "Denne triggeren skal brukes for å stoppe ladingen. Den blir trigget på optimale tidspunkt etter at handlingen 'Start ladesyklus' har blitt utført.",
+          "nl": "Deze trigger moet worden gebruikt om het opladen te stoppen. Hij wordt geactiveerd op het optimale moment nadat de actie 'Start laadcyclus' is uitgevoerd.",
+          "fr": "Ce déclencheur doit être utilisé pour arrêter la charge. Il est déclenché au moment optimal après l'exécution de l'action 'Démarrer le cycle de charge'."
         },
         "id": "stop-charging"
       },
       {
         "title": {
           "en": "Unable to limit power",
-          "no": "Klarer ikke å begrense strømforbruket"
+          "no": "Klarer ikke å begrense strømforbruket",
+          "nl": "Kan stroomverbruik niet beperken",
+          "fr": "Impossible de limiter la consommation d'énergie"
         },
         "titleFormatted": {
-          "en": "Could not reduce power usage. Turn off attached power immediately or the power-tariff for next month will be increased.",
-          "no": "Klarer ikke å begrense strømforbruket. Slå av vedlagt effekt umiddelbart ellers vil effekt-tariffen for neste måned øke."
+          "en": "Could not reduce power usage. Turn off attached power immediately or the power-tariff for next month will be increased!",
+          "no": "Klarer ikke å begrense strømforbruket. Slå av vedlagt effekt umiddelbart ellers vil effekt-tariffen for neste måned øke!",
+          "nl": "Kon stroomverbruik niet verminderen. Schakel de aangesloten stroom onmiddellijk uit, anders wordt het stroomtarief voor volgende maand verhoogd!",
+          "fr": "Impossible de réduire la consommation d'énergie. Coupez immédiatement l'alimentation connectée ou le tarif de l'électricité pour le mois prochain sera augmenté."
         },
         "hint": {
           "en": "Use this condition as a last resort to limit energy. If the app turned off every controllable device the user can be alerted to do a manual powerdown if this was not enough.",
-          "no": "Brukes som en siste utvei for å begrense energiforbruk. Dersom appen har slått av alt kan en melding sendes ut om å redusere forbruket manuelt dersom dette ikke var tilstrekkelig."
+          "no": "Brukes som en siste utvei for å begrense energiforbruk. Dersom appen har slått av alt kan en melding sendes ut om å redusere forbruket manuelt dersom dette ikke var tilstrekkelig.",
+          "nl": "Gebruikt als laatste redmiddel om het energieverbruik te beperken. Als de app alles heeft uitgeschakeld, kan er een bericht worden gestuurd om het verbruik handmatig te verminderen als dit niet voldoende is.",
+          "fr": "Utilisé en dernier recours pour limiter la consommation d'énergie. Si l'application a tout éteint, un message peut être envoyé pour réduire la consommation manuellement si cela n'était pas suffisant."
         },
         "highlight": true,
         "tokens": [
@@ -339,11 +406,15 @@
             "name": "excessPower",
             "title": {
               "en": "Excess Power",
-              "no": "Overskytende effekt"
+              "no": "Overskytende effekt",
+              "nl": "Overtollig vermogen",
+              "fr": "Excès de puissance"
             },
             "example": {
               "en": "The amount of Watt that exceeds the power threshold",
-              "no": "Antall Watt som overskyter effekttaket"
+              "no": "Antall Watt som overskyter effekttaket",
+              "nl": "Aantal Watts dat het vermogensplafond overschrijdt",
+              "fr": "Nombre de Watts dépassant le plafond de puissance"
             }
           }
         ],
@@ -354,15 +425,21 @@
       {
         "title": {
           "en": "Future electricity prices are !{{unavailable|available}}",
-          "no": "Fremtidige strømpriser er !{{utilgjengelig|tilgjengelig}}"
+          "no": "Fremtidige strømpriser er !{{utilgjengelig|tilgjengelig}}",
+          "nl": "Toekomstige elektriciteitsprijzen zijn !{{niet beschikbaar|beschikbaar}}",
+          "fr": "Les futurs prix de l'électricité sont !{{indisponible|disponible}}"
         },
         "titleFormatted": {
-          "en": "The future price in [[hours]] hours is !{{unavailable|available}}.",
-          "no": "Den fremtidige prisen om [[hours]] timer er !{{utilgjengelig|tilgjengelig}}."
+          "en": "The future price in [[hours]] hours is !{{unavailable|available}}",
+          "no": "Den fremtidige prisen om [[hours]] timer er !{{utilgjengelig|tilgjengelig}}",
+          "nl": "De toekomstige prijs in [[hours]] uur is !{{niet beschikbaar|beschikbaar}}",
+          "fr": "Le prix futur en [[hours]] heures est !{{indisponible|disponible}}"
         },
         "hint": {
           "en": "Use this condition to handle situations when the future prices in a given number of hours for some reason is not available.",
-          "no": "Bruk denne sjekken for å håndtere situasjoner hvor den fremtidige prisen om et gitt antall timer av en eller annen grunn ikke er tilgjengelig."
+          "no": "Bruk denne sjekken for å håndtere situasjoner hvor den fremtidige prisen om et gitt antall timer av en eller annen grunn ikke er tilgjengelig.",
+          "nl": "Gebruik deze controle om situaties af te handelen waarin de toekomstige prijs voor een bepaald aantal uren om de een of andere reden niet beschikbaar is.",
+          "fr": "Utilisez cette vérification pour gérer les situations où le prix futur pour un nombre d'heures donné n'est pas disponible pour une raison quelconque."
         },
         "args": [
           {
@@ -370,7 +447,9 @@
             "name": "hours",
             "placeholder": {
               "en": "Number of hours",
-              "no": "Antall timer"
+              "no": "Antall timer",
+              "nl": "Aantal uren",
+              "fr": "Nombre d'heures"
             },
             "min": 0,
             "max": 24,
@@ -382,15 +461,21 @@
       {
         "title": {
           "en": "A zone !{{is|isn't}} enabled",
-          "no": "En Sone !{{er|er ikke}} aktiv"
+          "no": "En Sone !{{er|er ikke}} aktiv",
+          "nl": "Een zone [[zone]] !{{is|is niet}} actief",
+          "fr": "Une Zone !{{est|n'est pas}} active"
         },
         "titleFormatted": {
           "en": "The zone [[zone]] !{{is|isn't}} enabled",
-          "no": "Sonen [[zone]] !{{er|er ikke}} aktiv"
+          "no": "Sonen [[zone]] !{{er|er ikke}} aktiv",
+          "nl": "De zone [[zone]] !{{is|is niet}} actief",
+          "fr": "La zone [[zone]] !{{est|n'est pas}} active"
         },
         "hint": {
           "en": "Use this flow card to check if a zone is enabled for app control. You may have to restart Piggy if you changed name of a zone.",
-          "no": "Bruk dette flytkortet til å sjekke om en sone er aktivert for app styring. Du må kanskje starte Sparegris på nytt dersom du har endret navn på en sone."
+          "no": "Bruk dette flytkortet til å sjekke om en sone er aktivert for app styring. Du må kanskje starte Sparegris på nytt dersom du har endret navn på en sone.",
+          "nl": "Gebruik deze flowkaart om te controleren of een zone is ingeschakeld voor app-besturing. Mogelijk moet je Piggy opnieuw opstarten als je de naam van een zone hebt gewijzigd.",
+          "fr": "Utilisez cette carte de flux pour vérifier si une zone est activée pour le contrôle de l'application. Vous devrez peut-être redémarrer Sparegris si vous avez changé le nom d'une zone."
         },
         "args": [
           {
@@ -398,11 +483,15 @@
             "name": "zone",
             "title": {
               "en": "Zone name",
-              "no": "Sone navn"
+              "no": "Sone navn",
+              "nl": "Zonenaam",
+              "fr": "Nom de zone"
             },
             "placeholder": {
               "en": "Name of the zone as defined in Homey",
-              "no": "Navn på sone som definert i Homey"
+              "no": "Navn på sone som definert i Homey",
+              "nl": "Naam van de zone zoals gedefinieerd in Homey",
+              "fr": "Nom de la zone tel que défini dans Homey"
             }
           }
         ],
@@ -411,15 +500,21 @@
       {
         "title": {
           "en": "The mode !{{is|isn't}}",
-          "no": "Driftsmodus !{{er|er ikke}}"
+          "no": "Driftsmodus !{{er|er ikke}}",
+          "nl": "Bedrijfsmodus !{{is|is niet}}",
+          "fr": "Le mode de fonctionnement !{{est|n'est pas}}"
         },
         "titleFormatted": {
           "en": "The mode !{{is|isn't}} equal to [[mode]]",
-          "no": "Driftsmodus !{{er|er ikke}} lik [[mode]]"
+          "no": "Driftsmodus !{{er|er ikke}} lik [[mode]]",
+          "nl": "Bedrijfsmodus !{{is|is niet}} gelijk aan [[mode]]",
+          "fr": "Le mode de fonctionnement !{{est|n'est pas}} égal à [[mode]]"
         },
         "hint": {
-          "en": "Use this card to check when the app operation mode is equal to a certain value.",
-          "no": "Bruk dette flytkortet til å sjekke om appens driftsmodus er lik en bestemt verdi."
+          "en": "Use this flowcard to check when the app operation mode is equal to a certain value.",
+          "no": "Bruk dette flytkortet til å sjekke om appens driftsmodus er lik en bestemt verdi.",
+          "nl": "Gebruik deze flowkaart om te controleren of de bedrijfsmodus van de app gelijk is aan een specifieke waarde.",
+          "fr": "Utilisez cet carte de flux pour vérifier si le mode de fonctionnement de l'application est égal à une valeur spécifique."
         },
         "args": [
           {
@@ -427,11 +522,15 @@
             "name": "mode",
             "title": {
               "en": "Mode",
-              "no": "Modus"
+              "no": "Modus",
+              "nl": "Modus",
+              "fr": "Mode"
             },
             "placeholder": {
               "en": "Operation mode",
-              "no": "Driftsmodus"
+              "no": "Driftsmodus",
+              "nl": "Bedrijfsmodus",
+              "fr": "Mode de fonctionnement"
             }
           }
         ],
@@ -439,16 +538,22 @@
       },
       {
         "title": {
-          "en": "The price point !{{is|isn't}}",
-          "no": "Prispunkt !{{er|er ikke}}"
+          "en": "The price level !{{is|isn't}}",
+          "no": "Prisnivået !{{er|er ikke}}",
+          "nl": "Het prijsniveau !{{is|is niet}}",
+          "fr": "Le niveau de prix !{{est|n'est pas}}"
         },
         "titleFormatted": {
-          "en": "The price point !{{is|isn't}} equal to [[mode]]",
-          "no": "Prispunktet !{{er|er ikke}} lik [[mode]]"
+          "en": "The price level !{{is|isn't}} equal to [[mode]]",
+          "no": "Prisnivået !{{er|er ikke}} lik [[mode]]",
+          "nl": "Het prijsniveau !{{is|is niet}} gelijk aan [[mode]]",
+          "fr": "Le niveau de prix !{{est|n'est pas}} égal à [[mode]]"
         },
         "hint": {
           "en": "Use this flow card to check if the price point is a certain value.",
-          "no": "Bruk dette flytkortet til å sjekke om prispunktet er en bestemt verdi."
+          "no": "Bruk dette flytkortet til å sjekke om prisnivået er en bestemt verdi.",
+          "nl": "Gebruik deze flowkaart om te controleren of het prijspunt een specifieke waarde is.",
+          "fr": "Utilisez cette carte de flux pour vérifier si le niveau de prix est une valeur spécifique."
         },
         "args": [
           {
@@ -459,35 +564,45 @@
                 "id": "4",
                 "label": {
                   "en": "Dirt cheap",
-                  "no": "Grisebillig"
+                  "no": "Grisebillig",
+                  "nl": "Spotgoedkoop",
+                  "fr": "Très bon marché"
                 }
               },
               {
                 "id": "0",
                 "label": {
                   "en": "Cheap",
-                  "no": "Billig"
+                  "no": "Billig",
+                  "nl": "Goedkoop",
+                  "fr": "Pas cher"
                 }
               },
               {
                 "id": "1",
                 "label": {
                   "en": "Normal",
-                  "no": "Normal"
+                  "no": "Normal",
+                  "nl": "Normaal",
+                  "fr": "Normal"
                 }
               },
               {
                 "id": "2",
                 "label": {
                   "en": "Expensive",
-                  "no": "Dyrt"
+                  "no": "Dyrt",
+                  "nl": "Duur",
+                  "fr": "Cher"
                 }
               },
               {
                 "id": "3",
                 "label": {
                   "en": "Extremely expensive",
-                  "no": "Ekstremt dyrt"
+                  "no": "Ekstremt dyrt",
+                  "nl": "Extreem duur",
+                  "fr": "Extrêmement cher"
                 }
               }
             ]
@@ -500,15 +615,21 @@
       {
         "title": {
           "en": "Change max usage per hour",
-          "no": "Endre maks forbruk per time"
+          "no": "Endre maks forbruk per time",
+          "nl": "Max. gebruik per uur wijzigen",
+          "fr": "Modifier la consommation max par heure"
         },
         "titleFormatted": {
           "en": "Set the max hourly usage to [[maxPow]]",
-          "no": "Sett maks forbruk per time til [[maxPow]]"
+          "no": "Sett maks forbruk per time til [[maxPow]]",
+          "nl": "Max. verbruik per uur instellen op [[maxPow]]",
+          "fr": "Définir la consommation maximale par heure sur [[maxPow]]"
         },
         "hint": {
           "en": "Allows you to dynamically change the maximum hourly usage. This could be useful when changing between summer time, winter time and long holidays",
-          "no": "Tillater deg å dynamisk endre det maksimale forbruket per time. Dette kan være nyttig for å bytte mellom sommer, vinter og lange ferier"
+          "no": "Tillater deg å dynamisk endre det maksimale forbruket per time. Dette kan være nyttig for å bytte mellom sommer, vinter og lange ferier",
+          "nl": "Hiermee kunt u het maximale verbruik per uur dynamisch wijzigen. Dit kan handig zijn bij het schakelen tussen zomer/winter en vakanties",
+          "fr": "Permet de modifier dynamiquement la consommation maximale par heure. Cela peut être utile pour basculer entre l'été, l'hiver et les longues vacances"
         },
         "args": [
           {
@@ -517,11 +638,15 @@
             "max": 100000,
             "placeholder": {
               "en": "Number of Wh",
-              "no": "Antall Wh"
+              "no": "Antall Wh",
+              "nl": "Aantal Wh",
+              "fr": "Nombre de Wh"
             },
             "title": {
               "en": "Max usage per hour",
-              "no": "Maksimalt forbruk per time"
+              "no": "Maksimalt forbruk per time",
+              "nl": "Max. verbruik per uur",
+              "fr": "Utilisation max par heure"
             },
             "name": "maxPow"
           }
@@ -532,15 +657,21 @@
         "deprecated": true,
         "title": {
           "en": "Change Piggy Bank mode",
-          "no": "Endre Sparegris modus"
+          "no": "Endre Sparegris modus",
+          "nl": "Wijzig Piggy Bank modus",
+          "fr": "Changer le mode de Piggy Bank"
         },
         "titleFormatted": {
           "en": "Set the Piggy Bank operation mode to [[mode]]",
-          "no": "Sett Sparegris driftsmodus til [[mode]]"
+          "no": "Sett Sparegris driftsmodus til [[mode]]",
+          "nl": "Stel de bedrijfsmodus Piggy Bank in op [[mode]]",
+          "fr": "Règle le mode de fonctionnement Piggy Bank sur [[mode]]"
         },
         "hint": {
           "en": "This action card has been deprecated, please replace it to get custom modes with custom names",
-          "no": "Dette kortet er utdatert, vennligst bytt det ut for å få egendefinerte navn på moduser"
+          "no": "Dette kortet er utdatert, vennligst bytt det ut for å få egendefinerte navn på moduser",
+          "nl": "Deze kaart is verouderd, vervang deze om aangepaste modusnamen te krijgen",
+          "fr": "Cette carte est obsolète, veuillez la remplacer pour obtenir des noms de mode personnalisés"
         },
         "args": [
           {
@@ -551,63 +682,81 @@
                 "id": "0",
                 "label": {
                   "en": "App Disabled",
-                  "no": "App Inaktiv"
+                  "no": "App Inaktiv",
+                  "nl": "App inactief",
+                  "fr": "Application inactive"
                 }
               },
               {
                 "id": "1",
                 "label": {
                   "en": "Day",
-                  "no": "Dag"
+                  "no": "Dag",
+                  "nl": "Dag",
+                  "fr": "Jour"
                 }
               },
               {
                 "id": "2",
                 "label": {
                   "en": "Night",
-                  "no": "Natt"
+                  "no": "Natt",
+                  "nl": "Nacht",
+                  "fr": "Nuit"
                 }
               },
               {
                 "id": "3",
                 "label": {
                   "en": "Vacation",
-                  "no": "Ferie"
+                  "no": "Ferie",
+                  "nl": "Vakantie",
+                  "fr": "Vacances"
                 }
               },
               {
                 "id": "4",
                 "label": {
                   "en": "Custom 1",
-                  "no": "Egendefinert 1"
+                  "no": "Egendefinert 1",
+                  "nl": "Aangepast 1",
+                  "fr": "Personnalisé 1"
                 }
               },
               {
                 "id": "5",
                 "label": {
                   "en": "Custom 2",
-                  "no": "Egendefinert 2"
+                  "no": "Egendefinert 2",
+                  "nl": "Aangepast 2",
+                  "fr": "Personnalisé 2"
                 }
               },
               {
                 "id": "6",
                 "label": {
                   "en": "Custom 3",
-                  "no": "Egendefinert 3"
+                  "no": "Egendefinert 3",
+                  "nl": "Aangepast 3",
+                  "fr": "Personnalisé 3"
                 }
               },
               {
                 "id": "7",
                 "label": {
                   "en": "Custom 4",
-                  "no": "Egendefinert 4"
+                  "no": "Egendefinert 4",
+                  "nl": "Aangepast 4",
+                  "fr": "Personnalisé 4"
                 }
               },
               {
                 "id": "8",
                 "label": {
                   "en": "Custom 5",
-                  "no": "Egendefinert 5"
+                  "no": "Egendefinert 5",
+                  "nl": "Aangepast 5",
+                  "fr": "Personnalisé 5"
                 }
               }
             ]
@@ -618,15 +767,21 @@
       {
         "title": {
           "en": "Change Piggy Bank mode",
-          "no": "Endre Sparegris modus"
+          "no": "Endre Sparegris modus",
+          "nl": "Piggy Bank modus wijzigen",
+          "fr": "Changer le mode du Piggy Bank"
         },
         "titleFormatted": {
           "en": "Set the Piggy Bank operation mode to [[mode]]",
-          "no": "Sett Sparegris driftsmodus til [[mode]]"
+          "no": "Sett Sparegris driftsmodus til [[mode]]",
+          "nl": "Stel de bedrijfsmodus van Piggy Bank in op [[mode]]",
+          "fr": "Règle le mode de fonctionnement de Piggy Bank sur [[mode]]"
         },
         "hint": {
           "en": "Allows you to switch between day, night and other operation modes",
-          "no": "Lar deg bytte mellom dag, natt og andre driftsmoduser"
+          "no": "Lar deg bytte mellom dag, natt og andre driftsmoduser",
+          "nl": "Hiermee kunt u schakelen tussen dag, nacht en andere bedrijfsmodi",
+          "fr": "Vous permet de basculer entre le jour, la nuit et d'autres modes de fonctionnement"
         },
         "highlight": true,
         "args": [
@@ -635,11 +790,15 @@
             "name": "mode",
             "title": {
               "en": "Mode",
-              "no": "Modus"
+              "no": "Modus",
+              "nl": "Modus",
+              "fr": "Mode"
             },
             "placeholder": {
               "en": "Operation mode",
-              "no": "Driftsmodus"
+              "no": "Driftsmodus",
+              "nl": "Bedrijfsmodus",
+              "fr": "Mode de fonctionnement"
             }
           }
         ],
@@ -647,16 +806,22 @@
       },
       {
         "title": {
-          "en": "Change Piggy Bank Price Point",
-          "no": "Endre Sparegris Prispunkt"
+          "en": "Change Piggy Bank Price level",
+          "no": "Endre Sparegris prisnivå",
+          "nl": "Wijzig het prijsniveau van Piggy Bank",
+          "fr": "Modifier le niveau de prix de la Piggy Bank"
         },
         "titleFormatted": {
           "en": "Set the Piggy Bank price point to [[mode]]",
-          "no": "Sett Sparegris prispunkt til [[mode]]"
+          "no": "Sett Sparegris prisnivå til [[mode]]",
+          "nl": "Stel de prijs van Piggy Bank in op [[mode]]",
+          "fr": "Définissez le prix de Piggy Bank sur [[mode]]"
         },
         "hint": {
           "en": "Inform Piggy Bank whether the energy is expensive or cheap",
-          "no": "Informerer Sparegris om strømmen er dyr eller billig"
+          "no": "Informerer Sparegris om strømmen er dyr eller billig",
+          "nl": "Informeert Piggy Bank of de elektriciteit duur of goedkoop is",
+          "fr": "Informer Piggy Bank si l'énergie est chère ou bon marché"
         },
         "highlight": true,
         "args": [
@@ -668,35 +833,45 @@
                 "id": "4",
                 "label": {
                   "en": "Dirt cheap",
-                  "no": "Grisebillig"
+                  "no": "Grisebillig",
+                  "nl": "Spotgoedkoop",
+                  "fr": "Très bon marché"
                 }
               },
               {
                 "id": "0",
                 "label": {
                   "en": "Cheap",
-                  "no": "Billig"
+                  "no": "Billig",
+                  "nl": "Goedkoop",
+                  "fr": "Pas cher"
                 }
               },
               {
                 "id": "1",
                 "label": {
                   "en": "Normal",
-                  "no": "Normal"
+                  "no": "Normal",
+                  "nl": "Normaal",
+                  "fr": "Normal"
                 }
               },
               {
                 "id": "2",
                 "label": {
                   "en": "Expensive",
-                  "no": "Dyrt"
+                  "no": "Dyrt",
+                  "nl": "Duur",
+                  "fr": "Cher"
                 }
               },
               {
                 "id": "3",
                 "label": {
                   "en": "Extremely expensive",
-                  "no": "Ekstremt dyrt"
+                  "no": "Ekstremt dyrt",
+                  "nl": "Extreem duur",
+                  "fr": "Extrêmement cher"
                 }
               }
             ]
@@ -707,15 +882,21 @@
       {
         "title": {
           "en": "Change Reserved Power",
-          "no": "Endre reservert effekt"
+          "no": "Endre reservert effekt",
+          "nl": "Gereserveerd vermogen wijzigen",
+          "fr": "Modifier la puissance réservée"
         },
         "titleFormatted": {
           "en": "Set the reserved power to [[reserved]]",
-          "no": "Sett reservert effekt til [[reserved]]"
+          "no": "Sett reservert effekt til [[reserved]]",
+          "nl": "Stel het gereserveerde vermogen in op [[reserved]]",
+          "fr": "Définissez la puissance réservée sur [[reserved]]"
         },
         "hint": {
           "en": "Allows you to reserve power for uncontrollable devices, such as when making dinner",
-          "no": "Tillater deg å reservere effekt for ukontrollerbare enheter, for eksempel til middagslaging"
+          "no": "Tillater deg å reservere effekt for ukontrollerbare enheter, for eksempel til middagslaging",
+          "nl": "Hiermee kunt u stroom reserveren voor oncontroleerbare apparaten, zoals bij het maken van een diner",
+          "fr": "Vous permet de réserver de l'énergie pour des appareils incontrôlables, comme lors de la préparation du dîner"
         },
         "args": [
           {
@@ -724,11 +905,15 @@
             "max": 100000,
             "placeholder": {
               "en": "Number of Watts",
-              "no": "Antall Watt"
+              "no": "Antall Watt",
+              "nl": "Aantal watt",
+              "fr": "Nombre de Watts"
             },
             "title": {
               "en": "Reserved power",
-              "no": "Reservert effekt"
+              "no": "Reservert effekt",
+              "nl": "Gereserveerd vermogen",
+              "fr": "Puissance réservée"
             },
             "name": "reserved"
           }
@@ -738,15 +923,21 @@
       {
         "title": {
           "en": "Enable/disable zones",
-          "no": "Slå av/på sone"
+          "no": "Slå av/på sone",
+          "nl": "Zones in-/uitschakelen",
+          "fr": "Activer/désactiver la zone"
         },
         "titleFormatted": {
           "en": "Change zone enabled for [[zone]] to [[enabled]]",
-          "no": "Endre sone [[zone]] aktiv til [[enabled]]"
+          "no": "Endre sone [[zone]] aktiv til [[enabled]]",
+          "nl": "Verander zone [[zone]] actief naar [[enabled]]",
+          "fr": "Modifier la zone [[zone]] active à [[enabled]]"
         },
         "hint": {
-          "en": "Allows you to turn on/off devices in zones e.g. in connection with ventilation. You may have to restart Piggy if you changed name of a zone. If the app is disabled the zone list may be empty.",
-          "no": "Tillater deg å slå av/på enheter i soner f.eks. i forbindelse med lufting. Du må kanskje starte Sparegris på nytt dersom du har endret navn på en sone. Dersom appen er deaktivert kan sone-listen være tom."
+          "en": "Allows you to turn on/off devices in zones e.g. in connection with ventilation. You may have to restart Piggy Bank if you changed name of a zone. If the app is disabled the zone list may be empty.",
+          "no": "Tillater deg å slå av/på enheter i soner f.eks. i forbindelse med lufting. Du må kanskje starte Sparegris på nytt dersom du har endret navn på en sone. Dersom appen er deaktivert kan sone-listen være tom.",
+          "nl": "Hiermee kun je apparaten in zones in-/uitschakelen, bijvoorbeeld in verband met ventilatie. Het kan zijn dat je Piggy Bank opnieuw moet opstarten als je de naam van een zone hebt gewijzigd. Als de app is uitgeschakeld, kan de zonelijst leeg zijn.",
+          "fr": "Vous permet d'activer/désactiver des appareils dans des zones, par exemple dans le cadre de la diffusion. Vous devrez peut-être redémarrer Sparegris si vous avez modifié le nom d'une zone. Si l'application est désactivée, la liste des zones peut être vide .Modifier la zone [[zone]] active à [[enabled]]"
         },
         "args": [
           {
@@ -754,11 +945,15 @@
             "name": "zone",
             "title": {
               "en": "Zone name",
-              "no": "Sone navn"
+              "no": "Sone navn",
+              "nl": "Zonenaam",
+              "fr": "Nom de la zone"
             },
             "placeholder": {
               "en": "Name of the zone as defined in Homey",
-              "no": "Navn på sone som definert i Homey"
+              "no": "Navn på sone som definert i Homey",
+              "nl": "Naam van de zone zoals gedefinieerd in Homey",
+              "fr": "Nom de la zone tel que défini dans Homey"
             }
           },
           {
@@ -766,7 +961,9 @@
             "name": "enabled",
             "title": {
               "en": "Enabled",
-              "no": "Påslått"
+              "no": "Påslått",
+              "nl": "Ingeschakeld",
+              "fr": "Activé"
             }
           }
         ],
@@ -775,15 +972,21 @@
       {
         "title": {
           "en": "Override device",
-          "no": "Overstyr enhet"
+          "no": "Overstyr enhet",
+          "nl": "Apparaat negeren",
+          "fr": "Remplacer l'appareil"
         },
         "titleFormatted": {
           "en": "Override Device [[device]] operation with [[mode]]",
-          "no": "Overstyr Enhet [[device]] til [[mode]]"
+          "no": "Overstyr Enhet [[device]] til [[mode]]",
+          "nl": "Overschrijf de werking van apparaat [[device]] met [[mode]]",
+          "fr": "Remplacer le fonctionnement de l'appareil [[device]] avec [[mode]]"
         },
         "hint": {
           "en": "Allows you to override how Piggy Bank operates a specific device.",
-          "no": "Lar deg overstyre hvordan Sparegris opererer spesifikke enheter."
+          "no": "Lar deg overstyre hvordan Sparegris opererer spesifikke enheter.",
+          "nl": "Hiermee kunt je wijzigen hoe Piggy Bank een specifiek apparaat bedient.",
+          "fr": "Vous permet de remplacer la façon dont Piggy Bank utilise des appareils spécifiques."
         },
         "args": [
           {
@@ -791,11 +994,15 @@
             "name": "device",
             "title": {
               "en": "Device",
-              "no": "Enhet"
+              "no": "Enhet",
+              "nl": "Apparaat",
+              "fr": "Appareil"
             },
             "placeholder": {
               "en": "Selected device",
-              "no": "Valgt enhet"
+              "no": "Valgt enhet",
+              "nl": "Geselecteerd apparaat",
+              "fr": "Appareil sélectionné"
             }
           },
           {
@@ -806,42 +1013,54 @@
                 "id": "0",
                 "label": {
                   "en": "Disable override",
-                  "no": "Deaktiver overstyring"
+                  "no": "Deaktiver overstyring",
+                  "nl": "Schakel negeren uit",
+                  "fr": "Désactiver le remplacement"
                 }
               },
               {
                 "id": "1",
                 "label": {
                   "en": "Forced on",
-                  "no": "Tvunget på"
+                  "no": "Tvunget på",
+                  "nl": "Geforceerd aan",
+                  "fr": "forcer l'allumage de l'appareil"
                 }
               },
               {
                 "id": "2",
                 "label": {
                   "en": "Forced off",
-                  "no": "Tvunget av"
+                  "no": "Tvunget av",
+                  "nl": "Geforceerd uit",
+                  "fr": "forcer l'arrêt de l'appareil"
                 }
               },
               {
                 "id": "6",
                 "label": {
                   "en": "Controlled",
-                  "no": "Styrt"
+                  "no": "Styrt",
+                  "nl": "Gecontroleerd",
+                  "fr": "Contrôlé"
                 }
               },
               {
                 "id": "3",
                 "label": {
                   "en": "Maintenance (off) until manually turned on",
-                  "no": "Vedlikehold (av) frem til manuelt påslått"
+                  "no": "Vedlikehold (av) frem til manuelt påslått",
+                  "nl": "Onderhoud (uit) totdat handmatig ingeschakeld",
+                  "fr": "Maintenance (off) jusqu'à activation manuelle"
                 }
               },
               {
                 "id": "4",
                 "label": {
                   "en": "Manual temperature",
-                  "no": "Manuell temperatur"
+                  "no": "Manuell temperatur",
+                  "nl": "Handmatige temperatuur",
+                  "fr": "Température manuelle"
                 }
               }
             ]
@@ -852,15 +1071,21 @@
       {
         "title": {
           "en": "Start charging cycle (kWh)",
-          "no": "Start ladesyklus (kWh)"
+          "no": "Start ladesyklus (kWh)",
+          "nl": "Start laadcyclus (kWh)",
+          "fr": "Démarrer le cycle de charge (kWh)"
         },
         "titleFormatted": {
           "en": "Start charging cheapest [[offerEnergy]] kWh before [[endTime]]",
-          "no": "Start lading av billigste [[offerEnergy]] kWh før kl. [[endTime]]"
+          "no": "Start lading av billigste [[offerEnergy]] kWh før kl. [[endTime]]",
+          "nl": "Begin met het opladen met de goedkoopste [[offerEnergy]] kWh vóór [[endTime]]",
+          "fr": "Commencez à charger le [[offerEnergy]] kWh le moins cher avant le [[endTime]]"
         },
         "hint": {
-          "en": "Tell Piggy bank to start a charging cycle. The offered energy (kWh) will be distributed on the cheapest hours before the time runs out. When the given amount of energy has been offered to the car the charging cycle will stop.\n\nNote that for supported car chargers the offered energy and used energy will be the same. For unsupported car chargers this may not be the case.",
-          "no": "Be Sparegris om å starte en ladesyklus. Den tilbydde energien (kWh) vil bli distribuert på de billigste timene før tiden går ut. Når den gitte mengden energi har blitt tilbydd bilen, vil ladesyklusen stoppe. Det samme skjer når tiden går ut\n\nMerk at for støttede billadere vil tilbudt energi og brukt energi være den samme. For billadere som ikke støttes, er dette kanskje ikke tilfelle."
+          "en": "Tell PiggyBank to start a charging cycle. The offered energy (kWh) will be distributed on the cheapest hours before the time runs out. When the given amount of energy has been offered to the car the charging cycle will stop.\n\nNote that for supported car chargers the offered energy and used energy will be the same. For unsupported car chargers this may not be the case.",
+          "no": "Be Sparegris om å starte en ladesyklus. Den tilbydde energien (kWh) vil bli distribuert på de billigste timene før tiden går ut. Når den gitte mengden energi har blitt tilbydd bilen, vil ladesyklusen stoppe. Det samme skjer når tiden går ut\n\nMerk at for støttede billadere vil tilbudt energi og brukt energi være den samme. For billadere som ikke støttes, er dette kanskje ikke tilfelle.",
+          "nl": "Vraag PiggyBank om een laadcyclus te starten. De aangeboden energie (kWh) wordt verdeeld in de goedkoopste uren voordat de tijd om is. Wanneer de opgegeven hoeveelheid energie aan de auto is aangeboden, stopt de laadcyclus . Hetzelfde gebeurt wanneer de tijd verstrijkt\n\nLet op: voor ondersteunde autoladers is de aangeboden energie en gebruikte energie hetzelfde. Voor niet-ondersteunde autoladers is dit mogelijk niet het geval.",
+          "fr": "Demandez à PiggyBank de démarrer un cycle de charge. L'énergie offerte (kWh) sera distribuée dans les heures les moins chères avant la fin du temps imparti. Lorsque la quantité d'énergie donnée a été offerte à la voiture, le cycle de charge s'arrêtera . La même chose se produit lorsque le délai expire\n\nNotez que pour les chargeurs de voiture pris en charge, l'énergie offerte et l'énergie utilisée seront les mêmes. Pour les chargeurs de voiture non pris en charge, cela peut ne pas être le cas."
         },
         "args": [
           {
@@ -869,11 +1094,15 @@
             "max": 100,
             "placeholder": {
               "en": "energy to offer",
-              "no": "energi å tilby"
+              "no": "energi å tilby",
+              "nl": "Energie om aan te bieden",
+              "fr": "énergie à offrir"
             },
             "title": {
-              "en": "Offered energy (kWh) ",
-              "no": "Tilbydd energi (kWh) "
+              "en": "Offered energy (kWh)",
+              "no": "Tilbydd energi (kWh)",
+              "nl": "Aangeboden energie (kWh)",
+              "fr": "Énergie offerte (kWh)"
             },
             "name": "offerEnergy"
           },
@@ -881,11 +1110,15 @@
             "type": "text",
             "placeholder": {
               "en": "end time (HH:MM)",
-              "no": "sluttid (TT:MM)"
+              "no": "sluttid (TT:MM)",
+              "nl": "Eindtijd (UU:MM)",
+              "fr": "Heure de fin (HH:MM)"
             },
             "title": {
               "en": "End time",
-              "no": "Sluttid"
+              "no": "Sluttid",
+              "nl": "Eindtijd",
+              "fr": "Heure de fin"
             },
             "name": "endTime"
           }
@@ -895,15 +1128,21 @@
       {
         "title": {
           "en": "Start charging cycle (hours)",
-          "no": "Start ladesyklus (timer)"
+          "no": "Start ladesyklus (timer)",
+          "nl": "Start laadcyclus (uren)",
+          "fr": "Démarrer le cycle de charge (heures)"
         },
         "titleFormatted": {
           "en": "Start charging [[offerHours]] cheapest hours before [[endTime]]",
-          "no": "Start lading [[offerHours]] billigste timer før kl. [[endTime]]"
+          "no": "Start lading [[offerHours]] billigste timer før kl. [[endTime]]",
+          "nl": "Begin met opladen met de [[offerHours]] goedkoopste uren vóór [[endTime]]",
+          "fr": "Commencez à facturer [[offerHours]] les heures les moins chères avant [[endTime]]"
         },
         "hint": {
           "en": "Tell Piggy bank to start a charging cycle. It will only charge in the X cheapest hours before the time runs out. (Note that if the current hour is one of them then the charging time will be shorter)\n\nFor unsupported car chargers this may be the most deterministic starting function as they do not report used energy.",
-          "no": "Be Sparegris om å starte en ladesyklus. Ladingen vil kun bli tilbydt i de X billigste timene før tiden går ut. (NB! Dersom inneværende time er blant de billigste så vil ladetiden være kortere)\n\nDette er den mest deterministiske startfunsjonen for billadere som ikke støttes, ettersom appen ikke får rapportert energiforbruk."
+          "no": "Be Sparegris om å starte en ladesyklus. Ladingen vil kun bli tilbydt i de X billigste timene før tiden går ut. (NB! Dersom inneværende time er blant de billigste så vil ladetiden være kortere)\n\nDette er den mest deterministiske startfunsjonen for billadere som ikke støttes, ettersom appen ikke får rapportert energiforbruk.",
+          "nl": "Vraag PiggyBank om een laadcyclus te starten. Laden wordt alleen aangeboden in de X goedkoopste uren voordat de tijd om is. (NB! Als het huidige uur tot de goedkoopste behoort, zal de laadtijd korter zijn)\n \nDit is de meest effectieve startfunctie voor niet-ondersteunde autoladers, aangezien de app geen gerapporteerd energieverbruik krijgt.",
+          "fr": "Demandez à PiggyBank de démarrer un cycle de charge. La charge ne sera proposée que dans les X heures les moins chères avant la fin du délai. (NB! Si l'heure actuelle est parmi les moins chères, le temps de charge sera plus court)\n \nIl s'agit de la fonction de démarrage la plus déterministe pour les chargeurs de voiture non pris en charge, car l'application n'obtient pas de consommation d'énergie signalée."
         },
         "args": [
           {
@@ -912,23 +1151,31 @@
             "max": 24,
             "placeholder": {
               "en": "number of hours",
-              "no": "antall timer"
+              "no": "antall timer",
+              "nl": "antal uren",
+              "fr": "nombre d'heures"
             },
             "title": {
               "en": "Number of hours to offer energy",
-              "no": "Antall timer å tilby energi"
+              "no": "Antall timer å tilby energi",
+              "nl": "Aantal uren om energie aan te bieden",
+              "fr": "Nombre d'heures pour offrir de l'énergie"
             },
             "name": "offerHours"
           },
           {
             "type": "text",
             "placeholder": {
-              "en": "end time (HH:MM)",
-              "no": "sluttid (TT:MM)"
+              "en": "End time (HH:MM)",
+              "no": "Sluttid (TT:MM)",
+              "nl": "Eindtijd (UU:MM)",
+              "fr": "Heure de fin (HH:MM)"
             },
             "title": {
               "en": "End time",
-              "no": "Sluttid"
+              "no": "Sluttid",
+              "nl": "Eindtijd",
+              "fr": "Heure de fin"
             },
             "name": "endTime"
           }
@@ -938,30 +1185,42 @@
       {
         "title": {
           "en": "Stop charging cycle ahead of time",
-          "no": "Stopp ladesyklus før tiden"
+          "no": "Stopp ladesyklus før tiden",
+          "nl": "Stop de oplaadcyclus voortijdig",
+          "fr": "Arrêtez le cycle de charge à l'avance"
         },
         "titleFormatted": {
           "en": "Stop the charging cycle ahead of time",
-          "no": "Stopp ladesyklus før tiden"
+          "no": "Stopp ladesyklus før tiden",
+          "nl": "Stop de laadcyclus voortijdig",
+          "fr": "Arrêtez le cycle de charge à l'avance"
         },
         "hint": {
           "en": "In case you need to stop the charging cycle ahead of time you can call this flow card in order to prevent the app from offering more energy.",
-          "no": "Dersom du ønsker å avbryte ladesyklusen før tiden kan du kalle dette flytkortet for å hindre appen i å tilby mer energi."
+          "no": "Dersom du ønsker å avbryte ladesyklusen før tiden kan du kalle dette flytkortet for å hindre appen i å tilby mer energi.",
+          "nl": "Als je de laadcyclus voortijdig wilt onderbreken, kun je deze flowkaart aanroepen om te voorkomen dat de app meer energie aanbiedt.",
+          "fr": "Si vous souhaitez interrompre le cycle de charge avant l'heure, vous pouvez appeler cette carte de débit pour empêcher l'application d'offrir plus d'énergie."
         },
         "id": "stop-charging-cycle"
       },
       {
         "title": {
           "en": "Update PiggyBank with the energy used",
-          "no": "Oppdater Sparegris med energiforbruk"
+          "no": "Oppdater Sparegris med energiforbruk",
+          "nl": "PiggyBank bijwerken met energieverbruik",
+          "fr": "Mettre à jour PiggyBank avec l'énergie utilisée"
         },
         "titleFormatted": {
           "en": "Set the energy used to [[TotalEnergyUsage]] kWh",
-          "no": "Sett energiforbruk til [[TotalEnergyUsage]] kWh"
+          "no": "Sett energiforbruk til [[TotalEnergyUsage]] kWh",
+          "nl": "Stel de gebruikte energie in op [[TotalEnergyUsage]] kWh",
+          "fr": "Régler la consommation d'énergie sur [[TotalEnergyUsage]] kWh"
         },
         "hint": {
           "en": "Attach the energy usage (per day/hour/total etc.) output of your meter reader to this action card in order to enable the app. In case you have several readings for different intervals (day/hour etc.) then only send one of them to this app and make sure it's the one that updates most often.",
-          "no": "Koble energiforbruket (per dag/time/total etc.) fra strømmåleren din til dette kortet for å få appen til å virke. Hvis du har flere målinger for forskjellige intervaller (dag/time osv.), så send bare en av dem til denne appen og sørg for at det er den som oppdateres oftest."
+          "no": "Koble energiforbruket (per dag/time/total etc.) fra strømmåleren din til dette kortet for å få appen til å virke. Hvis du har flere målinger for forskjellige intervaller (dag/time osv.), så send bare en av dem til denne appen og sørg for at det er den som oppdateres oftest.",
+          "nl": "Koppel het energieverbruik (per dag/uur/totaal etc.) van je energiemeter aan deze kaart om de app te laten werken. Als je meerdere metingen hebt voor verschillende intervallen (dag/uur etc.), dan stuur een van hen naar deze app en zorg ervoor dat dit degene is die het vaakst wordt bijgewerkt.",
+          "fr": "Connectez la consommation d'énergie (par jour/heure/totale, etc.) de votre wattmètre à cette carte pour faire fonctionner l'application. Si vous avez plusieurs lectures pour différents intervalles (jour/heure, etc.), alors il suffit envoyez-en une à cette application et assurez-vous que c'est celle qui se met à jour le plus souvent."
         },
         "highlight": true,
         "args": [
@@ -970,7 +1229,9 @@
             "name": "TotalEnergyUsage",
             "placeholder": {
               "en": "Connect to the power meter's consumption reading",
-              "no": "Koble til strømmålerens forbruksavlesning"
+              "no": "Koble til strømmålerens forbruksavlesning",
+              "nl": "Koppel de huidige verbruikswaarde (vermogen) van de electriciteitsmeter",
+              "fr": "Connecter la lecture de consommation du compteur d'électricité"
             },
             "min": 0,
             "step": 0.01
@@ -981,15 +1242,21 @@
       {
         "title": {
           "en": "Send active power to PiggyBank",
-          "no": "Send aktiv effekt til Sparegris"
+          "no": "Send aktiv effekt til Sparegris",
+          "nl": "Stuur actief vermogen naar PiggyBank",
+          "fr": "Envoyer la puissance active à PiggyBank"
         },
         "titleFormatted": {
           "en": "Set the power to [[CurrentPower]] W",
-          "no": "Endre effektbruk til [[CurrentPower]] W"
+          "no": "Endre effektbruk til [[CurrentPower]] W",
+          "nl": "Stel het vermogen in op [[CurrentPower]] W",
+          "fr": "Réglez l'alimentation sur [[CurrentPower]] W"
         },
         "hint": {
           "en": "Attach the current power usage output of your energy meter to this action card in order to enable the app",
-          "no": "Denne appen vil ikke virke med mindre du sender strømmålerens avlesning av nåværende effektbruk til denne appen"
+          "no": "Denne appen vil ikke virke med mindre du sender strømmålerens avlesning av nåværende effektbruk til denne appen",
+          "nl": "Stuur het huidige energieverbruik van uw energiemeter naar deze actiekaart om de app in te schakelen",
+          "fr": "Attachez la sortie de consommation électrique actuelle de votre compteur d'énergie à cette carte d'action afin d'activer l'application"
         },
         "highlight": true,
         "args": [
@@ -998,7 +1265,9 @@
             "name": "CurrentPower",
             "placeholder": {
               "en": "Current Power usage from the power meter",
-              "no": "Nåværende effektbruk fra strømmåleren"
+              "no": "Nåværende effektbruk fra strømmåleren",
+              "nl": "Huidig stroomverbruik van de electriciteitsmeter",
+              "fr": "Consommation électrique actuelle compteur d'électricité"
             },
             "min": 0,
             "max": 100000,
@@ -1412,7 +1681,9 @@
       "type": "enum",
       "title": {
         "en": "Active Limit",
-        "no": "Aktiv Begrensning"
+        "no": "Aktiv Begrensning",
+        "nl": "Actieve limiet",
+        "fr": "Limite active"
       },
       "getable": true,
       "setable": false,
@@ -1421,42 +1692,54 @@
           "id": "-1",
           "title": {
             "en": "None",
-            "no": "Ingen"
+            "no": "Ingen",
+            "nl": "Geen",
+            "fr": "Aucun"
           }
         },
         {
           "id": "0",
           "title": {
             "en": "15 min. limit",
-            "no": "15 min. grense"
+            "no": "15 min. grense",
+            "nl": "15 min. limiet",
+            "fr": "15 min. limite"
           }
         },
         {
           "id": "1",
           "title": {
             "en": "Hourly limit",
-            "no": "Timesgrense"
+            "no": "Timesgrense",
+            "nl": "Uurlimiet",
+            "fr": "Limite horaire"
           }
         },
         {
           "id": "2",
           "title": {
             "en": "Day limit",
-            "no": "Dagsgrense"
+            "no": "Dagsgrense",
+            "nl": "Daglimiet",
+            "fr": "Limite journalière"
           }
         },
         {
           "id": "3",
           "title": {
             "en": "Month limit",
-            "no": "Månedsgrense"
+            "no": "Månedsgrense",
+            "nl": "Maandlimiet",
+            "fr": "Limite mensuelle"
           }
         },
         {
           "id": "4",
           "title": {
             "en": "Unknown power",
-            "no": "Ukjent effekt"
+            "no": "Ukjent effekt",
+            "nl": "Onbekende kracht",
+            "fr": "Puissance inconnue"
           }
         }
       ],
@@ -1468,7 +1751,9 @@
       "type": "number",
       "title": {
         "en": "Power State",
-        "no": "Forbrukstilstand"
+        "no": "Forbrukstilstand",
+        "nl": "Energiestatus",
+        "fr": "État de l'alimentation"
       },
       "units": {
         "en": "%"
@@ -1476,7 +1761,9 @@
       "insights": true,
       "desc": {
         "en": "Number of controllable enabled devices in percent (%)",
-        "no": "Antall kontrollerbare påslåtte enheter i (%)"
+        "no": "Antall kontrollerbare påslåtte enheter i (%)",
+        "nl": "Aantal bestuurbare ingeschakelde apparaten in procent (%)",
+        "fr": "Nombre d'appareils activés contrôlables en pourcentage (%)"
       },
       "chartType": "spline",
       "decimals": 0,
@@ -1489,7 +1776,9 @@
       "type": "enum",
       "title": {
         "en": "Mode",
-        "no": "Driftsmodus"
+        "no": "Driftsmodus",
+        "nl": "Bedrijfsmodus",
+        "fr": "Mode de fonctionnement"
       },
       "getable": true,
       "setable": false,
@@ -1498,63 +1787,81 @@
           "id": "0",
           "title": {
             "en": "Disabled",
-            "no": "Deaktivert"
+            "no": "Deaktivert",
+            "nl": "Uitgeschakeld",
+            "fr": "Désactivé"
           }
         },
         {
           "id": "1",
           "title": {
             "en": "Day",
-            "no": "Dag"
+            "no": "Dag",
+            "nl": "Dag",
+            "fr": "Jour"
           }
         },
         {
           "id": "2",
           "title": {
             "en": "Night",
-            "no": "Natt"
+            "no": "Natt",
+            "nl": "Nacht",
+            "fr": "Nuit"
           }
         },
         {
           "id": "3",
           "title": {
             "en": "Vacation",
-            "no": "Ferie"
+            "no": "Ferie",
+            "nl": "Vakantie",
+            "fr": "Vacances"
           }
         },
         {
           "id": "4",
           "title": {
             "en": "Custom 1",
-            "no": "Egendefinert 1"
+            "no": "Egendefinert 1",
+            "nl": "Aangepast 1",
+            "fr": "Personnalisé 1"
           }
         },
         {
           "id": "5",
           "title": {
             "en": "Custom 2",
-            "no": "Egendefinert 2"
+            "no": "Egendefinert 2",
+            "nl": "Aangepast 2",
+            "fr": "Personnalisé 2"
           }
         },
         {
           "id": "6",
           "title": {
             "en": "Custom 3",
-            "no": "Egendefinert 3"
+            "no": "Egendefinert 3",
+            "nl": "Aangepast 3",
+            "fr": "Personnalisé 3"
           }
         },
         {
           "id": "7",
           "title": {
             "en": "Custom 4",
-            "no": "Egendefinert 4"
+            "no": "Egendefinert 4",
+            "nl": "Aangepast 4",
+            "fr": "Personnalisé 4"
           }
         },
         {
           "id": "8",
           "title": {
             "en": "Custom 5",
-            "no": "Egendefinert 5"
+            "no": "Egendefinert 5",
+            "nl": "Aangepast 5",
+            "fr": "Personnalisé 5"
           }
         }
       ],
@@ -1566,7 +1873,9 @@
       "type": "boolean",
       "title": {
         "en": "Mode",
-        "no": "Driftsmodus"
+        "no": "Driftsmodus",
+        "nl": "Bedrijfsmodus",
+        "fr": "Mode de fonctionnement"
       },
       "getable": true,
       "setable": false,
@@ -1574,19 +1883,25 @@
       "uiQuickAction": false,
       "insightsTitleTrue": {
         "en": "Changed to Custom mode 1",
-        "no": "Endret til Egendefinert modus 1"
+        "no": "Endret til Egendefinert modus 1",
+        "nl": "Gewijzigd in aangepaste modus 1",
+        "fr": "Changé en mode personnalisé 1"
       },
       "insights": true,
       "insightsTitleFalse": {
         "en": "Changed to Custom mode 1",
-        "no": "Endret til Egendefinert modus 1"
+        "no": "Endret til Egendefinert modus 1",
+        "nl": "Gewijzigd in aangepaste modus 1",
+        "fr": "Changé en mode personnalisé 1"
       }
     },
     "piggy_mode_custom2": {
       "type": "boolean",
       "title": {
         "en": "Mode",
-        "no": "Driftsmodus"
+        "no": "Driftsmodus",
+        "nl": "Bedrijfsmodus",
+        "fr": "Mode de fonctionnement"
       },
       "getable": true,
       "setable": false,
@@ -1594,19 +1909,25 @@
       "uiQuickAction": false,
       "insightsTitleTrue": {
         "en": "Changed to Custom mode 2",
-        "no": "Endret til Egendefinert modus 2"
+        "no": "Endret til Egendefinert modus 2",
+        "nl": "Gewijzigd in aangepaste modus 2",
+        "fr": "Changé en mode personnalisé 2"
       },
       "insights": true,
       "insightsTitleFalse": {
         "en": "Changed to Custom mode 2",
-        "no": "Endret til Egendefinert modus 2"
+        "no": "Endret til Egendefinert modus 2",
+        "nl": "Gewijzigd in aangepaste modus 2",
+        "fr": "Changé en mode personnalisé 2"
       }
     },
     "piggy_mode_custom3": {
       "type": "boolean",
       "title": {
         "en": "Mode",
-        "no": "Driftsmodus"
+        "no": "Driftsmodus",
+        "nl": "Bedrijfsmodus",
+        "fr": "Mode de fonctionnement"
       },
       "getable": true,
       "setable": false,
@@ -1614,19 +1935,25 @@
       "uiQuickAction": false,
       "insightsTitleTrue": {
         "en": "Changed to Custom mode 3",
-        "no": "Endret til Egendefinert modus 3"
+        "no": "Endret til Egendefinert modus 3",
+        "nl": "Gewijzigd in aangepaste modus 3",
+        "fr": "Changé en mode personnalisé 3"
       },
       "insights": true,
       "insightsTitleFalse": {
         "en": "Changed to Custom mode 3",
-        "no": "Endret til Egendefinert modus 3"
+        "no": "Endret til Egendefinert modus 3",
+        "nl": "Gewijzigd in aangepaste modus 3",
+        "fr": "Changé en mode personnalisé 3"
       }
     },
     "piggy_mode_custom4": {
       "type": "boolean",
       "title": {
         "en": "Mode",
-        "no": "Driftsmodus"
+        "no": "Driftsmodus",
+        "nl": "Bedrijfsmodus",
+        "fr": "Mode de fonctionnement"
       },
       "getable": true,
       "setable": false,
@@ -1634,19 +1961,25 @@
       "uiQuickAction": false,
       "insightsTitleTrue": {
         "en": "Changed to Custom mode 4",
-        "no": "Endret til Egendefinert modus 4"
+        "no": "Endret til Egendefinert modus 4",
+        "nl": "Gewijzigd in aangepaste modus 4",
+        "fr": "Changé en mode personnalisé 4"
       },
       "insights": true,
       "insightsTitleFalse": {
         "en": "Changed to Custom mode 4",
-        "no": "Endret til Egendefinert modus 4"
+        "no": "Endret til Egendefinert modus 4",
+        "nl": "Gewijzigd in aangepaste modus 4",
+        "fr": "Changé en mode personnalisé 4"
       }
     },
     "piggy_mode_custom5": {
       "type": "boolean",
       "title": {
         "en": "Mode",
-        "no": "Driftsmodus"
+        "no": "Driftsmodus",
+        "nl": "Bedrijfsmodus",
+        "fr": "Mode de fonctionnement"
       },
       "getable": true,
       "setable": false,
@@ -1654,19 +1987,25 @@
       "uiQuickAction": false,
       "insightsTitleTrue": {
         "en": "Changed to Custom mode 5",
-        "no": "Endret til Egendefinert modus 5"
+        "no": "Endret til Egendefinert modus 5",
+        "nl": "Gewijzigd in aangepaste modus 5",
+        "fr": "Changé en mode personnalisé 5"
       },
       "insights": true,
       "insightsTitleFalse": {
         "en": "Changed to Custom mode 5",
-        "no": "Endret til Egendefinert modus 5"
+        "no": "Endret til Egendefinert modus 5",
+        "nl": "Gewijzigd in aangepaste modus 5",
+        "fr": "Changé en mode personnalisé 5"
       }
     },
     "piggy_mode_disabled": {
       "type": "boolean",
       "title": {
         "en": "Mode",
-        "no": "Driftsmodus"
+        "no": "Driftsmodus",
+        "nl": "Bedrijfsmodus",
+        "fr": "Mode de fonctionnement"
       },
       "getable": true,
       "setable": false,
@@ -1674,19 +2013,25 @@
       "uiQuickAction": false,
       "insightsTitleTrue": {
         "en": "Piggy Bank was disabled",
-        "no": "Sparegris ble deaktivert"
+        "no": "Sparegris ble deaktivert",
+        "nl": "Piggy Bank was uitgeschakeld",
+        "fr": "Piggy Bank a été désactivée"
       },
       "insights": true,
       "insightsTitleFalse": {
         "en": "Piggy Bank was disabled",
-        "no": "Sparegris ble deaktivert"
+        "no": "Sparegris ble deaktivert",
+        "nl": "Piggy Bank was uitgeschakeld",
+        "fr": "Piggy Bank a été désactivée"
       }
     },
     "piggy_mode_holiday": {
       "type": "boolean",
       "title": {
         "en": "Mode",
-        "no": "Driftsmodus"
+        "no": "Driftsmodus",
+        "nl": "Bedrijfsmodus",
+        "fr": "Mode de fonctionnement"
       },
       "getable": true,
       "setable": false,
@@ -1694,19 +2039,25 @@
       "uiQuickAction": false,
       "insightsTitleTrue": {
         "en": "Changed to Vacation mode",
-        "no": "Endret til Feriemodus"
+        "no": "Endret til Feriemodus",
+        "nl": "Gewijzigd naar Vakantiemodus",
+        "fr": "Changement en mode Vacances"
       },
       "insights": true,
       "insightsTitleFalse": {
         "en": "Changed to Vacation mode",
-        "no": "Endret til Feriemodus"
+        "no": "Endret til Feriemodus",
+        "nl": "Gewijzigd naar Vakantiemodus",
+        "fr": "Changement en mode Vacances"
       }
     },
     "piggy_mode_night": {
       "type": "boolean",
       "title": {
         "en": "Mode",
-        "no": "Driftsmodus"
+        "no": "Driftsmodus",
+        "nl": "Bedrijfsmodus",
+        "fr": "Mode de fonctionnement"
       },
       "getable": true,
       "setable": false,
@@ -1714,19 +2065,25 @@
       "uiQuickAction": false,
       "insightsTitleTrue": {
         "en": "Changed to Night mode",
-        "no": "Endret til Nattmodus"
+        "no": "Endret til Nattmodus",
+        "nl": "Gewijzigd naar Nachtmodus",
+        "fr": "Modifié en mode Nuit"
       },
       "insights": true,
       "insightsTitleFalse": {
         "en": "Changed to Night mode",
-        "no": "Endret til Nattmodus"
+        "no": "Endret til Nattmodus",
+        "nl": "Gewijzigd naar Nachtmodus",
+        "fr": "Modifié en mode Nuit"
       }
     },
     "piggy_mode_normal": {
       "type": "boolean",
       "title": {
         "en": "Mode",
-        "no": "Driftsmodus"
+        "no": "Driftsmodus",
+        "nl": "Bedrijfsmodus",
+        "fr": "Mode de fonctionnement"
       },
       "getable": true,
       "setable": false,
@@ -1734,23 +2091,31 @@
       "uiQuickAction": false,
       "insightsTitleTrue": {
         "en": "Changed to Day mode",
-        "no": "Endret til Dagsmodus"
+        "no": "Endret til Dagsmodus",
+        "nl": "Gewijzigd naar dagmodus",
+        "fr": "Modifié en mode Jour"
       },
       "insights": true,
       "insightsTitleFalse": {
         "en": "Changed to Day mode",
-        "no": "Endret til Dagsmodus"
+        "no": "Endret til Dagsmodus",
+        "nl": "Gewijzigd naar dagmodus",
+        "fr": "Modifié en mode Jour"
       }
     },
     "piggy_money": {
       "type": "number",
       "title": {
         "en": "Money",
-        "no": "Penger"
+        "no": "Penger",
+        "nl": "Geld",
+        "fr": "argent"
       },
       "units": {
-        "en": "NOK",
-        "no": "kr"
+        "en": "GBP",
+        "no": "kr",
+        "nl": "EUR",
+        "fr": "EUR"
       },
       "insights": true,
       "chartType": "spline",
@@ -1764,7 +2129,9 @@
       "type": "number",
       "title": {
         "en": "Number of signal failures",
-        "no": "Antall signalfeil"
+        "no": "Antall signalfeil",
+        "nl": "Aantal signaalstoringen",
+        "fr": "Nombre d'échecs de signal"
       },
       "units": {
         "en": ""
@@ -1772,7 +2139,9 @@
       "insights": true,
       "desc": {
         "en": "Number of attempts to turn devices on/off or change temperature that failed",
-        "no": "Antall forsøk på å slå enheter av/på eller endre temperaturen som feilet"
+        "no": "Antall forsøk på å slå enheter av/på eller endre temperaturen som feilet",
+        "nl": "Aantal mislukte pogingen om apparaten aan/uit te zetten of de temperatuur te wijzigen",
+        "fr": "Nombre de tentatives d'allumage/extinction d'appareils ou de changement de température qui ont échoué"
       },
       "chartType": "spline",
       "decimals": 0,
@@ -1785,7 +2154,9 @@
       "type": "number",
       "title": {
         "en": "Number restarts this month",
-        "no": "Antall omstarter denne måneden"
+        "no": "Antall omstarter denne måneden",
+        "nl": "Nummer start deze maand opnieuw op",
+        "fr": "Le numéro redémarre ce mois-ci"
       },
       "units": {
         "en": ""
@@ -1793,7 +2164,9 @@
       "insights": true,
       "desc": {
         "en": "Number of times the app was restarted due to power loss, new updates or other reasons. This reduces the power target reliability",
-        "no": "Antall ganger appen ble restartet på grunn av strømbrudd, nye oppdateringer eller andre grunner. Dette reduserer påliteligheten til å nå tariffmålet"
+        "no": "Antall ganger appen ble restartet på grunn av strømbrudd, nye oppdateringer eller andre grunner. Dette reduserer påliteligheten til å nå tariffmålet",
+        "nl": "Aantal keren dat de app opnieuw is opgestart vanwege stroomuitval, nieuwe updates of andere redenen. Dit vermindert de betrouwbaarheid van het stroomdoel",
+        "fr": "Nombre de fois où l'application a été redémarrée en raison d'une coupure de courant, de nouvelles mises à jour ou d'autres raisons. Cela réduit la fiabilité de la cible d'alimentation"
       },
       "chartType": "spline",
       "decimals": 0,
@@ -1805,8 +2178,10 @@
     "piggy_price": {
       "type": "enum",
       "title": {
-        "en": "Price point",
-        "no": "Prispunkt"
+        "en": "Price level",
+        "no": "Prisnivå",
+        "nl": "Prijsniveau",
+        "fr": "Niveau de prix"
       },
       "getable": true,
       "setable": false,
@@ -1815,35 +2190,45 @@
           "id": "4",
           "title": {
             "en": "Dirt cheap",
-            "no": "Grisebillig"
+            "no": "Grisebillig",
+            "nl": "Spotgoedkoop",
+            "fr": "Très bon marché"
           }
         },
         {
           "id": "0",
           "title": {
             "en": "Cheap",
-            "no": "Billig"
+            "no": "Billig",
+            "nl": "Goedkoop",
+            "fr": "Pas cher"
           }
         },
         {
           "id": "1",
           "title": {
             "en": "Normal",
-            "no": "Normal"
+            "no": "Normal",
+            "nl": "Normaal",
+            "fr": "Normal"
           }
         },
         {
           "id": "2",
           "title": {
             "en": "Expensive",
-            "no": "Dyrt"
+            "no": "Dyrt",
+            "nl": "Duur",
+            "fr": "Cher"
           }
         },
         {
           "id": "3",
           "title": {
             "en": "Extremely expensive",
-            "no": "Ekstremt dyrt"
+            "no": "Ekstremt dyrt",
+            "nl": "Extreem duur",
+            "fr": "Extrêmement cher"
           }
         }
       ],
@@ -1854,8 +2239,10 @@
     "piggy_price_dirt_cheap": {
       "type": "boolean",
       "title": {
-        "en": "Price Point",
-        "no": "Prispunkt"
+        "en": "Price level",
+        "no": "Prisnivå",
+        "nl": "Prijs niveau",
+        "fr": "Niveau de prix"
       },
       "getable": true,
       "setable": false,
@@ -1863,92 +2250,120 @@
       "uiQuickAction": false,
       "insightsTitleTrue": {
         "en": "Price Point changed to dirt cheap",
-        "no": "Prispunkt endret til grisebillig"
+        "no": "Prisnivå endret til grisebillig",
+        "nl": "Prijsniveau veranderd naar spotgoedkoop",
+        "fr": "Le niveau de prix est devenu très bon marché"
       },
       "insights": true,
       "insightsTitleFalse": {
         "en": "Price Point changed to dirt cheap",
-        "no": "Prispunkt endret til grisebillig"
+        "no": "Prisnivå endret til grisebillig",
+        "nl": "Prijsniveau veranderd naar spotgoedkoop",
+        "fr": "Le niveau de prix est devenu très bon marché"
       }
     },
     "piggy_price_expensive": {
       "type": "boolean",
       "title": {
-        "en": "Price Point",
-        "no": "Prispunkt"
+        "en": "Price level",
+        "no": "Prisnivå",
+        "nl": "Prijs niveau",
+        "fr": "Niveau de prix"
       },
       "getable": true,
       "setable": false,
       "uiComponent": null,
       "uiQuickAction": false,
       "insightsTitleTrue": {
-        "en": "Price Point changed to expensive",
-        "no": "Prispunkt endret til dyrt"
+        "en": "Price level changed to expensive",
+        "no": "Prisnivå endret til dyrt",
+        "nl": "Prijsniveau veranderd naar duur",
+        "fr": "Le niveau de prix est devenu cher"
       },
       "insights": true,
       "insightsTitleFalse": {
-        "en": "Price Point changed to expensive",
-        "no": "Prispunkt endret til dyrt"
+        "en": "Price level changed to expensive",
+        "no": "Prisnivå endret til dyrt",
+        "nl": "Prijsniveau veranderd naar duur",
+        "fr": "Le niveau de prix est devenu cher"
       }
     },
     "piggy_price_extreme": {
       "type": "boolean",
       "title": {
-        "en": "Price Point",
-        "no": "Prispunkt"
+        "en": "Price level",
+        "no": "Prisnivå",
+        "nl": "Prijs niveau",
+        "fr": "Niveau de prix"
       },
       "getable": true,
       "setable": false,
       "uiComponent": null,
       "uiQuickAction": false,
       "insightsTitleTrue": {
-        "en": "Price Point changed to extremely expensive",
-        "no": "Prispunkt endret til ekstremt dyrt"
+        "en": "Price level changed to extremely expensive",
+        "no": "Prisnivå endret til ekstremt dyrt",
+        "nl": "Prijsniveau veranderd naar extreem duur",
+        "fr": "Le niveau de prix est devenu extrêmement cher"
       },
       "insights": true,
       "insightsTitleFalse": {
-        "en": "Price Point changed to extremely expensive",
-        "no": "Prispunkt endret til ekstremt dyrt"
+        "en": "Price level changed to extremely expensive",
+        "no": "Prisnivå endret til ekstremt dyrt",
+        "nl": "Prijsniveau veranderd naar extreem duur",
+        "fr": "Le niveau de prix est devenu extrêmement cher"
       }
     },
     "piggy_price_low": {
       "type": "boolean",
       "title": {
-        "en": "Price Point",
-        "no": "Prispunkt"
+        "en": "Price level",
+        "no": "Prisnivå",
+        "nl": "Prijsniveau",
+        "fr": "Niveau de prix"
       },
       "getable": true,
       "setable": false,
       "uiComponent": null,
       "uiQuickAction": false,
       "insightsTitleTrue": {
-        "en": "Price Point changed to cheap",
-        "no": "Prispunkt endret til billig"
+        "en": "Price level changed to cheap",
+        "no": "Prisnivå endret til billig",
+        "nl": "Prijsniveau is veranderd naar goedkoop",
+        "fr": "Niveau de prix changé à bon marché"
       },
       "insights": true,
       "insightsTitleFalse": {
-        "en": "Price Point changed to cheap",
-        "no": "Prispunkt endret til billig"
+        "en": "Price level changed to expensive",
+        "no": "Prisnivå endret til dyrt",
+        "nl": "Prijsniveau veranderd naar duur",
+        "fr": "Niveau de prix changé à cher"
       }
     },
     "piggy_price_normal": {
       "type": "boolean",
       "title": {
-        "en": "Price Point",
-        "no": "Prispunkt"
+        "en": "Price level",
+        "no": "Prisnivå",
+        "nl": "Prijsniveau",
+        "fr": "Niveau de prix"
       },
       "getable": true,
       "setable": false,
       "uiComponent": null,
       "uiQuickAction": false,
       "insightsTitleTrue": {
-        "en": "Price Point changed to normal",
-        "no": "Prispunkt endret til normalpris"
+        "en": "Price level changed to normal",
+        "no": "Prisnivå endret til normalpris",
+        "nl": "Prijsniveau is veranderd naar normaal",
+        "fr": "Niveau de prix changé en normal"
       },
       "insights": true,
       "insightsTitleFalse": {
-        "en": "Price Point changed to normal",
-        "no": "Prispunkt endret til normalpris"
+        "en": "Price level changed to normal",
+        "no": "Prisnivå endret til normalpris",
+        "nl": "Prijsniveau is veranderd naar normaal",
+        "fr": "Niveau de prix changé en normal"
       }
     }
   }

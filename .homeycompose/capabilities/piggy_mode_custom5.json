@@ -1,20 +1,26 @@
 {
-    "type": "boolean",
-    "title": {
-        "en": "Mode",
-        "no": "Driftsmodus"
-    },
-    "getable": true,
-    "setable": false,
-    "uiComponent": null,
-    "uiQuickAction": false,
-    "insightsTitleTrue": {
-      "en": "Changed to Custom mode 5",
-      "no": "Endret til Egendefinert modus 5"
-    },
-    "insights": true,
-    "insightsTitleFalse": {
-      "en": "Changed to Custom mode 5",
-      "no": "Endret til Egendefinert modus 5"
-    }
+  "type": "boolean",
+  "title": {
+    "en": "Mode",
+    "no": "Driftsmodus",
+    "nl": "Bedrijfsmodus",
+    "fr": "Mode de fonctionnement"
+  },
+  "getable": true,
+  "setable": false,
+  "uiComponent": null,
+  "uiQuickAction": false,
+  "insightsTitleTrue": {
+    "en": "Changed to Custom mode 5",
+    "no": "Endret til Egendefinert modus 5",
+    "nl": "Gewijzigd in aangepaste modus 5",
+    "fr": "Changé en mode personnalisé 5"
+  },
+  "insights": true,
+  "insightsTitleFalse": {
+    "en": "Changed to Custom mode 5",
+    "no": "Endret til Egendefinert modus 5",
+    "nl": "Gewijzigd in aangepaste modus 5",
+    "fr": "Changé en mode personnalisé 5"
+  }
 }

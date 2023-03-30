@@ -1,56 +1,70 @@
 {
-    "type": "enum",
-    "title": {
-        "en": "Active Limit",
-        "no": "Aktiv Begrensning"
-    },
-    "getable": true,
-    "setable": false,
-    "values": [
-      {
-        "id": "-1",
-        "title": {
-          "en": "None",
-          "no": "Ingen"
-        }
-      },
-      {
-        "id": "0",
-        "title": {
-          "en": "15 min. limit",
-          "no": "15 min. grense"
-        }
-      },
-      {
-        "id": "1",
-        "title": {
-          "en": "Hourly limit",
-          "no": "Timesgrense"
-        }
-      },
-      {
-        "id": "2",
-        "title": {
-          "en": "Day limit",
-          "no": "Dagsgrense"
-        }
-      },
-      {
-        "id": "3",
-        "title": {
-          "en": "Month limit",
-          "no": "Månedsgrense"
-        }
-      },
-      {
-        "id": "4",
-        "title": {
-          "en": "Unknown power",
-          "no": "Ukjent effekt"
-        }
+  "type": "enum",
+  "title": {
+    "en": "Active Limit",
+    "no": "Aktiv Begrensning",
+    "nl": "Actieve limiet",
+    "fr": "Limite active"
+  },
+  "getable": true,
+  "setable": false,
+  "values": [
+    {
+      "id": "-1",
+      "title": {
+        "en": "None",
+        "no": "Ingen",
+        "nl": "Geen",
+        "fr": "Aucun"
       }
-    ],
-    "icon": "/assets/limit.svg",
-    "uiComponent": "sensor",
-    "uiQuickAction": false
-  }
+    },
+    {
+      "id": "0",
+      "title": {
+        "en": "15 min. limit",
+        "no": "15 min. grense",
+        "nl": "15 min. limiet",
+        "fr": "15 min. limite"
+      }
+    },
+    {
+      "id": "1",
+      "title": {
+        "en": "Hourly limit",
+        "no": "Timesgrense",
+        "nl": "Uurlimiet",
+        "fr": "Limite horaire"
+      }
+    },
+    {
+      "id": "2",
+      "title": {
+        "en": "Day limit",
+        "no": "Dagsgrense",
+        "nl": "Daglimiet",
+        "fr": "Limite journalière"
+      }
+    },
+    {
+      "id": "3",
+      "title": {
+        "en": "Month limit",
+        "no": "Månedsgrense",
+        "nl": "Maandlimiet",
+        "fr": "Limite mensuelle"
+      }
+    },
+    {
+      "id": "4",
+      "title": {
+        "en": "Unknown power",
+        "no": "Ukjent effekt",
+        "nl": "Onbekende kracht",
+        "fr": "Puissance inconnue"
+      }
+    }
+  ],
+  "icon": "/assets/limit.svg",
+  "uiComponent": "sensor",
+  "uiQuickAction": false
+}

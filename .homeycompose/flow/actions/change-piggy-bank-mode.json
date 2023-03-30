@@ -2,15 +2,21 @@
   "deprecated": true,
   "title": {
     "en": "Change Piggy Bank mode",
-    "no": "Endre Sparegris modus"
+    "no": "Endre Sparegris modus",
+    "nl": "Wijzig Piggy Bank modus",
+    "fr": "Changer le mode de Piggy Bank"
   },
   "titleFormatted": {
     "en": "Set the Piggy Bank operation mode to [[mode]]",
-    "no": "Sett Sparegris driftsmodus til [[mode]]"
+    "no": "Sett Sparegris driftsmodus til [[mode]]",
+    "nl": "Stel de bedrijfsmodus Piggy Bank in op [[mode]]",
+    "fr": "Règle le mode de fonctionnement Piggy Bank sur [[mode]]"
   },
   "hint": {
     "en": "This action card has been deprecated, please replace it to get custom modes with custom names",
-    "no": "Dette kortet er utdatert, vennligst bytt det ut for å få egendefinerte navn på moduser"
+    "no": "Dette kortet er utdatert, vennligst bytt det ut for å få egendefinerte navn på moduser",
+    "nl": "Deze kaart is verouderd, vervang deze om aangepaste modusnamen te krijgen",
+    "fr": "Cette carte est obsolète, veuillez la remplacer pour obtenir des noms de mode personnalisés"
   },
   "args": [
     {
@@ -21,63 +27,81 @@
           "id": "0",
           "label": {
             "en": "App Disabled",
-            "no": "App Inaktiv"
+            "no": "App Inaktiv",
+            "nl": "App inactief",
+            "fr": "Application inactive"
           }
         },
         {
           "id": "1",
           "label": {
             "en": "Day",
-            "no": "Dag"
+            "no": "Dag",
+            "nl": "Dag",
+            "fr": "Jour"
           }
         },
         {
           "id": "2",
           "label": {
             "en": "Night",
-            "no": "Natt"
+            "no": "Natt",
+            "nl": "Nacht",
+            "fr": "Nuit"
           }
         },
         {
           "id": "3",
           "label": {
             "en": "Vacation",
-            "no": "Ferie"
+            "no": "Ferie",
+            "nl": "Vakantie",
+            "fr": "Vacances"
           }
         },
         {
           "id": "4",
           "label": {
             "en": "Custom 1",
-            "no": "Egendefinert 1"
+            "no": "Egendefinert 1",
+            "nl": "Aangepast 1",
+            "fr": "Personnalisé 1"
           }
         },
         {
           "id": "5",
           "label": {
             "en": "Custom 2",
-            "no": "Egendefinert 2"
+            "no": "Egendefinert 2",
+            "nl": "Aangepast 2",
+            "fr": "Personnalisé 2"
           }
         },
         {
           "id": "6",
           "label": {
             "en": "Custom 3",
-            "no": "Egendefinert 3"
+            "no": "Egendefinert 3",
+            "nl": "Aangepast 3",
+            "fr": "Personnalisé 3"
           }
         },
         {
           "id": "7",
           "label": {
             "en": "Custom 4",
-            "no": "Egendefinert 4"
+            "no": "Egendefinert 4",
+            "nl": "Aangepast 4",
+            "fr": "Personnalisé 4"
           }
         },
         {
           "id": "8",
           "label": {
             "en": "Custom 5",
-            "no": "Egendefinert 5"
+            "no": "Egendefinert 5",
+            "nl": "Aangepast 5",
+            "fr": "Personnalisé 5"
           }
         }
       ]

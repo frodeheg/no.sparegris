@@ -1394,7 +1394,7 @@ async function testMeterAndPower() {
 }
 
 async function testLanguages() {
-  const languages = ['en', 'no'];
+  const languages = ['en', 'no', 'fr', 'nl'];
   for (let langIdx = 0; langIdx < languages.length; langIdx++) {
     console.log(`[......] Test Translations for locales/${languages[langIdx]}.json && README.${languages[langIdx]}.txt`);
 

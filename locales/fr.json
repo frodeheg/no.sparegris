@@ -1,19 +1,19 @@
 {
   "settings": {
-    "title": "Réglages PiggyBank",
+    "title": "Réglages Piggy Bank",
     "subtitle": "Réglages de puissance",
     "loadingText": "Veuillez patienter quelques secondes pendant que les appareils sont chargés.",
     "sponsoredBy": "Cette application est parrainée par:",
-    "sponsorText": "Votre logo ici? CecibrrayContactez le développeur.",
+    "sponsorText": "Votre logo ici? Contactez le développeur.",
     "app": {
-      "activeted": "L'application est",
-      "enabled": "App enabled",
-      "disabled": "App handicapés",
+      "activeted": "L'appli est",
+      "enabled": "Appli activé",
+      "disabled": "Appli inactif",
       "activationHint1": "Avant d'activer l'application, veuillez compléter toutes les actions dans la liste de todo ci-dessous.",
       "activationHint2": "Remarque : Pour éviter les situations conflictuelles, vous devez s'assurer qu'aucun flux externe ne fonctionne contre cette application avant de l'activer.",
-      "maxPowHint": "La puissance maximale peut également être changée avec des débits par exemple lorsque différents maximums sont recherchés pendant l'hiver et l'été.",
+      "maxPowHint": "La puissance maximale peut également être changée avec des flux par exemple lorsque différents maximums sont recherchés pendant l'hiver et l'été.",
       "maxAlarmRateHint": "La pénurie de puissance maximale est une assurance de qualité pour vous assurer que vous ne traversez pas le plafond de puissance lorsque le compteur de puissance est défectueux. Il n'est pas recommandé de l'éteindre à moins que vous ne vous souciiez pas de la puissance maximale. Tant que le compteur de puissance fonctionne, ce réglage n'aura pas d'effet, mais si l'application ne reçoit pas de rapport de puissance du compteur de puissance, il entrera dans un état limite après 1 minute. Dans cet état, il va éteindre les dispositifs. Lorsque le temps sans effet déclaré dépasse le pourcentage spécifié de l'intervalle tarifaire, la restriction cessera et tout sera de nouveau activé. Commencez de préférence avec 50% et augmentez-le si vous voyez que le plafond de puissance est franchi parce que votre compteur de puissance est peu fiable.",
-      "myTasks": "The App State"
+      "myTasks": "l'État de l'appli"
     },
     "schedule": {
       "name": "Nom",
@@ -25,7 +25,7 @@
       "basetemp": "Basistemp",
       "schedule": "Calendrier actuel",
       "schedules": "Calendriers",
-      "controlledOn": "Controlled On"
+      "controlledOn": "Contrôlé sur"
     },
     "charge": {
       "header": "Chargeurs de voiture",
@@ -36,30 +36,28 @@
       "chargeRemaining": "Énergie restante",
       "chargeEnd": "Temps de fin du cycle de charge",
       "chargeTargetAuto": "entièrement automatisé",
-      "chargeTargetFlow": "Flow controlled",
-      "carChargerMissingHint": "Pas de chargeur pris en charge trouvé. Vous devez utiliser une carte de débit pour recharger.",
+      "chargeTargetFlow": "Flux contrôlé",
+      "carChargerMissingHint": "Pas de chargeur pris en charge trouvé. Vous devez utiliser une carte de flux pour recharger.",
       "carChargerNotAddedHint": "Un chargeur supporté a été trouvé, mais il n'a pas été ajouté comme un appareil contrôlable.",
-      "chargeTargetHint": [
-        "Les chargeurs pris en charge sont contrôlés par l'application automatiquement à condition qu'ils soient ajoutés en tant que dispositif contrôlable. Pour les chargeurs non supportés, vous pouvez soit utiliser des cartes de débit ou envoyer un « ShowLog onclick= »changeTab(event, logPage');return false; » fit rapport de l'appareil statistiquement/a. Cela signifie que...",
-        "- . Veuillez noter que les chargeurs listés sous le nom de « ShowDevices onclick=»changeTab(event, helpSupportedPage');retour false;«ACIAignored devices/engager un virus doit être géré par des flux.",
-        "- . Pour contrôler les débits, vous devez vous connecter aux déclencheurs suivants de l'application: 'Démarrer le chargement' et 'Arrêter le chargement', tandis que 'Change charge power' est optionnel mais reccomended.",
-        "- . Pour commencer le processus de chargement, vous devez appeler l'action de la carte de débit 'Start load cycle'."
-      ],
+      "chargeTargetHint": ["Les chargeurs de voiture pris en charge sont contrôlés par l'application automatiquement à condition qu'ils soient ajoutés en tant que dispositif contrôlable. Pour les chargeurs non supportés, vous pouvez soit utiliser des cartes de flux ou envoyer un <a href=\"ShowLog\" onclick=\"changeTab(event, 'logPage');return false;\">signaler un appareil</a>. <!--",
+      "--><p>Veuillez noter que les chargeurs répertoriés sur <a href=\"ShowDevices\" onclick=\"changeTab(event, 'helpsupportedpage');return false;\">périphériques ignorés</a> doivent être contrôlés à travers les flux.</p><!--",
+        "--><p>Pour contrôler les fluxs, vous devez vous connecter aux déclencheurs suivants de l'application: 'Démarrer le chargement' et 'Arrêter le chargement', tandis que 'Change charge power' est optionnel mais reccomended.</p> <!--",
+        "--><p>Pour commencer le processus de chargement, vous devez appeler l'action de la carte de flux 'Démarrer le cycle de charge'.</p>"],
       "chargeMinHint": "Le courant de charge minimal indique la puissance de charge que votre chargeur utilise lorsque vous l'activez. Si le chargeur n'a qu'un seul réglage, entrez-le ici. Si le chargeur peut contrôler le courant, saisissez la puissance minimale qu'il peut dessiner. Pour augmenter la valeur, le seuil pour le démarrage de la charge doit éventuellement être augmenté d'abord, car cela ne peut pas être dépassé pour protéger le chargeur.",
       "chargeThresholdHint": "Un nouveau cycle de charge ne démarre que lorsque la puissance de ralenti dépasse la valeur seuil fixée ici. Cela doit être légèrement plus que le courant de charge minimal pour éviter que le chargeur ne s'arrête de nouveau tout de suite.",
       "minToggleTimeHint": "Cette valeur indique en quelques secondes combien de temps il est entre chaque fois qu'un signal est envoyé au chargeur. Si le temps de réponse du chargeur dépasse cette valeur, cette valeur devrait être augmentée en conséquence.",
-      "chargeRemainingHint": "Cette valeur montre combien de puissance sera offerte au chargeur avant que l'application ne cesse de recharger. Cette énergie sera distribuée sur tout le temps restant jusqu'à la fin du cycle de charge. Vous ne pouvez pas définir cette valeur ici, elle doit être définie dans le diagramme de flux « Start charge cycle ».",
-      "chargeEndHint": "Ce champ montre quand le cycle de charge actuel se terminera. Vous ne pouvez pas définir cette valeur ici, elle doit être définie dans le diagramme de flux « Start charge cycle ».",
-      "override": "Override",
+      "chargeRemainingHint": "Cette valeur montre combien de puissance sera offerte au chargeur avant que l'application ne cesse de recharger. Cette énergie sera distribuée sur tout le temps restant jusqu'à la fin du cycle de charge. Vous ne pouvez pas définir cette valeur ici, elle doit être définie dans le diagramme de flux 'Start charge cycle'.",
+      "chargeEndHint": "Ce champ montre quand le cycle de charge actuel se terminera. Vous ne pouvez pas définir cette valeur ici, elle doit être définie dans le diagramme de flux 'Start charge cycle'.",
+      "override": "Passer outre",
       "overrideHint": "Initialement, la charge devrait fonctionner sans surcharge. Dans certaines situations, il peut encore être souhaitable de changer cela.",
       "overrideHintStart": "Le courant de départ est le courant offert lorsque le chargeur a utilisé 0W avant et est dans un cycle de charge. (Pour obtenir une charge de 3 phases, le courant de départ minimum doit être de 11A)",
-      "overrideHintStop": "Le courant d'arrêt est le courant offert lorsqu'il n'y a pas de cycle de charge. (NB! Ce ne sera pas une tentative d &apos; ajustement)",
+      "overrideHintStop": "Le courant d'arrêt est le courant offert lorsqu'il n'y a pas de cycle de charge. (NB! Ce ne sera pas une tentative d'ajustement)",
       "overrideHintPause": "Le courant de pause est le courant offert quand il ya un cycle de charge et le prix est trop cher.",
       "overrideHintMin": "Le courant de charge minimum garantit que vous ne chargez jamais avec moins de courant que cela. (Varies de voiture à voiture. Peut être moins de 11A pour la charge en 3 phases)",
       "overrideHintMax": "Le courant de charge maximal garantit que vous ne chargez jamais avec plus de courant que cela. (Une sauvegarde supplémentaire contre la surconsommation lorsque le Homey ou Easee api se comporte mal)",
-      "overrideEnable": "Override",
-      "overrideEnableNo": "Handicapés",
-      "overrideEnableYes": "Enabled",
+      "overrideEnable": "Passer outre",
+      "overrideEnableNo": "Inactif",
+      "overrideEnableYes": "Activé",
       "overrideStart": "Démarrage courant",
       "overrideStop": "Stop !",
       "overridePause": "Actif de la douleur",
@@ -68,11 +66,11 @@
     },
     "menu": {
       "home": {
-        "title": "Home"
+        "title": "Maison"
       },
       "devices": {
         "title": "Appareils",
-        "meterReader": "Meter Reader",
+        "meterReader": "Releveur de compteur",
         "controllable": "Dispositifs de contrôle",
         "modes": "Modes et priorités",
         "prices": "Gestion des prix"
@@ -82,25 +80,25 @@
         "cost": "Paramètres de coûts",
         "settings": "Paramètres avancés",
         "charger": "Chargeurs de voiture",
-        "frost": "Frost guard",
-        "override": "Override",
+        "frost": "Protection contre le gel",
+        "override": "Passer outre",
         "backup": "Sauvegarde",
         "timetable": "Horaire"
       },
       "help": {
         "title": "Aide",
-        "wiz": "Première fois Wizzard",
+        "wiz": "Première fois questionnaire",
         "notfound": "L'application ne trouve pas mon appareil.",
-        "debug": "Debug",
+        "debug": "Déboguer",
         "supported": "Appareils pris en charge",
         "about": "À propos"
       }
     },
     "pricetab": {
-      "dirtcheap": "Dirt cheap",
-      "cheap": "Pas cher.",
+      "dirtcheap": "Très bon marché",
+      "cheap": "Pas cher",
       "normal": "Normal",
-      "expensive": "Expensive",
+      "expensive": "Coûteux",
       "extreme": "Extrême"
     },
     "opMode": {
@@ -112,44 +110,40 @@
     "welcome": {
       "remaining": "Fonctions restantes",
       "taskEnableApp": "L'application doit être activée pour économiser de l'argent.",
-      "taskCreateEnergyFlow": "S'il vous plaît connecter la sortie du compteur d'énergie de la maison à l'entrée d'énergie de cette application. ‡a href=\"meterPage onclick=\"changeTab(event, meterPage');return false;\"^Voir ici pour plus de détails).",
-      "taskEnergyFlowRate": "Le débit de l'énergie est très faible (le dernier signal reçu il y a ${interval} minutes). Veuillez augmenter le taux si possible.",
-      "taskChargerNotEnabled": "Vous avez commencé un cycle de charge sans un jeu de charge supporté pour contrôler dans l'application. Vous devez soit sélectionner le chargeur comme contrôlable soit vous devez configurer le contrôle de charge pour les cartes de débit.",
+      "taskCreateEnergyFlow": "S'il vous plaît connecter la sortie du compteur d'énergie de la maison à l'entrée d'énergie de cette application. <a href=\"meterPage onclick=\"changeTab(event, meterPage');return false;\"^Voir ici pour plus de détails</a>.",
+      "taskEnergyFlowRate": "Le flux de l'énergie est très faible (le dernier signal reçu il y a ${interval} minutes). Veuillez augmenter le taux si possible.",
+      "taskChargerNotEnabled": "Vous avez commencé un cycle de charge sans un jeu de charge supporté pour contrôler dans l'application. Vous devez soit sélectionner le chargeur comme contrôlable soit vous devez configurer le contrôle de charge pour les cartes de flux.",
       "taskNoPriceFlow": "Votre réglage indique que les prix devraient provenir d'un flux, mais aucun tel flux ne semble être actif",
-      "taskNoPriceAPI": "Vous avez choisi d'obtenir les prix d'une application externe, qui exige que l'application « Norwegian Electricity Bill » soit installée, mais elle ne peut pas être trouvée ou la version est trop ancienne. Peut-être que vous devriez utiliser le prix de base.",
-      "taskNoPriceAPIDevice": "Votre choix pour récupérer les prix d'une application externe nécessite l'installation de l'application « Norwegian Electricity Bill ». L'application est trouvée, mais les prix ne peuvent être récupérés que lorsque l'appareil correspondant a été installé.",
-      "taskNoPriceAPIData": "Vous avez choisi de récupérer les prix d'une application externe, mais l'application « Norwegian Electricity Bill » a été configurée pour les prix à partir des flux, et par conséquent, elle ne transmettra pas les prix à cette application.",
+      "taskNoPriceAPI": "Vous avez choisi d'obtenir les prix d'une application externe, qui exige que l'application 'Norwegian Electricity Bill' soit installée, mais elle ne peut pas être trouvée ou la version est trop ancienne. Peut-être que vous devriez utiliser le prix de base.",
+      "taskNoPriceAPIDevice": "Votre choix pour récupérer les prix d'une application externe nécessite l'installation de l'application 'Norwegian Electricity Bill'. L'application est trouvée, mais les prix ne peuvent être récupérés que lorsque l'appareil correspondant a été installé.",
+      "taskNoPriceAPIData": "Vous avez choisi de récupérer les prix d'une application externe, mais l'application 'Norwegian Electricity Bill' a été configurée pour les prix à partir des flux, et par conséquent, elle ne transmettra pas les prix à cette application.",
       "taskNoPriceEnabled": "Vous n'avez pas encore activé la gestion des prix. Cela pourrait vous sauver un peu plus d'argent.",
       "taskNoPrices": "Aucun prix futur n'est disponible. Forces point de prix vers le prix normal jusqu'à ce que la situation soit réglée.",
       "taskYesPrices": "Les prix futurs sont à nouveau disponibles.",
       "taskDisableLogging": "Vous avez permis de prolonger la connexion, ce qui ralentit considérablement l'application. S'il vous plaît désactiver la connexion prolongée pour une meilleure performance.",
-      "taskExperimental": [
-        "Vous avez choisi de contrôler une unité que l'application n'a pas été vérifiée pour gérer. - Non.",
-        "- Répondre à un problème : \"ShowLog onclick=\"changeTab(event, logPage');return false;\" déclarent avoir un rapport sur le sujet. le statut...",
-        "-raypour cet appareil au développeur afin d'obtenir tous les problèmes corrigés et ce message supprimé."
-      ],
+      "taskExperimental": ["Vous avez choisi de contrôler une unité que l'application n'a pas été vérifiée pour gérer. <!--",
+          "-->Répondre à un problème et <a href=\"ShowLog\" onclick=\"changeTab(event, 'logPage');return false;\">envoyer un rapport le statut</a> sur le sujet <!--",
+        "-->pour cet appareil au développeur, afin d'obtenir les problèmes corrigés et ce message supprimé."],
       "taskSpookey": "Votre chargeur a mystérieusement changé de statut ${times} fois depuis le début du dernier cycle de charge. Veuillez désactiver toutes les autres sources qui tentent de contrôler le chargeur.",
       "taskNone": "Bien fait, l'application est correctement configurée.",
       "errorDevices": "Les appareils suivants sont très peu fiables, veuillez suivre les instructions en cliquant sur eux pour améliorer la fiabilité.",
       "reliability": "Fiabilité",
-      "reliabilityHelp": [
-        "Les signaux sans fil peuvent être faibles. S'il vous plaît essayez d'améliorer la ligne de vue pour homey, --",
-        "-rayer le signal ou s'assurer qu'il y a suffisamment de répéteurs dans la grille de signal. Cela pourrait améliorer sa fiabilité. - Non.",
-        "- Physique Si vous croyez que l'appareil est déjà fiable et que les problèmes se trouvent dans cette application --",
-        "-rayapase soumettre un équia href=\"ShowConnexion onclick=\"changeTab(event, logPage');retour false;\" rapport de l'appareil."
-      ]
+      "reliabilityHelp": ["Les signaux sans fil peuvent être faibles. S'il vous plaît essayez d'améliorer la ligne de vue pour homey, <!--",
+        "-->rayer le signal ou s'assurer qu'il y a suffisamment de répéteurs dans la grille de signal. Cela pourrait améliorer sa fiabilité. <!--",
+        "-->Physique Si vous croyez que l'appareil est déjà fiable et que les problèmes se trouvent dans cette application <!--",
+        "-->rayapase soumettre un équia <a href=\"ShowLog\" onclick=\"changeTab(event, 'logPage');return false;\">rapport de l'appareil. Merci bien.</a>"]
     },
     "global": {
       "controlTemp": "Réglage de la température",
       "controlTempYes": "Oui",
-      "controlTempNo": "Non.",
+      "controlTempNo": "Non",
       "settings": "Paramètres mondiaux",
       "errorMargin": "Erreur Margin",
       "errorMarginHint1": "Assurez-vous de toujours finir un peu en dessous du tarif d'effet.",
       "errorMarginHint2": "Salut. Cela vous donne la possibilité d'une surutilisation mineure un autre jour puisque le tarif est basé sur une moyenne de 3 jours.",
       "safetyPower": "Puissance réservée",
       "safetyPowerHint1": "Éviter de manquer la cible de puissance en réservant la puissance aux dispositifs incontrôlables.",
-      "safetyPowerHint2": "Conseil : Vous pouvez utiliser des cartes de débit pour changer la puissance réservée pendant la journée. Il est recommandé de réserver plus de puissance avant de faire le dîner.",
+      "safetyPowerHint2": "Conseil : Vous pouvez utiliser des cartes de flux pour changer la puissance réservée pendant la journée. Il est recommandé de réserver plus de puissance avant de faire le dîner.",
       "crossSlotSmooth": "Fenêtre de l'heure",
       "crossSlotSmoothHint": "Cette fonctionnalité vous permet de sur-utiliser la puissance au début de chaque fenêtre. Le montant donné sera ajouté à l'utilisation de puissance autorisée au début de chaque emplacement de temps et progressivement réduit à 0 à la fin de chaque fente.",
       "mainFuse": "Fusil principal",
@@ -162,17 +156,17 @@
       "missing": "Dispositif manquant ou cassé ?",
       "problemsolver": "Dépannage",
       "toggleTime": "Temps de jonglage:",
-      "toggleTimeHint": "Après avoir changé d'état de l'appareil, l'application attendra de changer d'autres appareils jusqu'à : ‹ ‹ style='font-size:1em'<έli vaccin Le changement a été enregistré ou enregistré ou Le temps de lutte a expiré; Si vous avez des appareils avec des temps de réponse lents comme des appareils cloud, alors il est recommandé d'utiliser un temps de navigation plus long pour éviter d'empiler trop de dispositifs.",
-      "countryHint": "La Norvège et la Belgique ont construit leur soutien. D &apos; autres pays peuvent ou non travailler. Contactez le développeur si des changements supplémentaires sont nécessaires Notez que toutes les statistiques et graphiques sont effacées si vous changez le pays."
+      "toggleTimeHint": "Après avoir changé d'état de l'appareil, l'application attendra de changer d'autres appareils jusqu'à:<ul style='font-size:1em'><li>Le changement a été enregistré ou</li><li>Enregistré ou Le temps de lutte a expiré</li><li>Si vous avez des appareils avec des temps de réponse lents comme des appareils cloud, alors il est recommandé d'utiliser un temps de navigation plus long pour éviter d'empiler trop de dispositifs.",
+      "countryHint": "<p>La Norvège et la Belgique ont construit leur soutien. D'autres pays peuvent ou non travailler. Contactez le développeur si des changements supplémentaires sont nécessaires Notez que toutes les statistiques et graphiques sont effacées si vous changez le pays.</p>"
     },
     "cost": {
       "schema": "Schema",
       "header": "Paramètres de coûts",
-      "surcharge": "Surcharge de l &apos; électricité",
+      "surcharge": "Surcharge de l'électricité",
       "currency": "Monnaie",
-      "VAT": "TVA",
-      "gridTaxDay": "Frais de dossier 06-22",
-      "gridTaxNight": "Grid charge 22-06",
+      "VAT": "T.V.A.",
+      "gridTaxDay": "charge réseau jour 06-22",
+      "gridTaxNight": "Charge réseau nuit 22-06",
       "gridLimit": "Activité de capacité (Wh)",
       "gridCost": "Coût mensuel",
       "gridLimitHint": "Si vous configurez le coût par étape de capacité selon votre fournisseur de réseau, vos économies en monts seront calculées correctement.",
@@ -204,46 +198,44 @@
       "unlistedDevice": "L'appareil n'est pas répertorié / manquant",
       "selector": "Dispositif",
       "getinfo": "Infos",
-      "analyze": "Generate Report",
+      "analyze": "Générer un rapport",
       "noDeviceSelected": "Veuillez sélectionner l'appareil",
-      "unreliableDevice": "L'appareil sélectionné n'est fiable que de ${0%}. Ça peut expliquer les problèmes que tu as ? Si ce n'est pas le cas, veuillez inclure votre courriel dans le rapport afin que nous puissions le résoudre ensemble."
+      "unreliableDevice": "L'appareil sélectionné n'est fiable que de ${reliability}%. Ça peut expliquer les problèmes que tu as ? Si ce n'est pas le cas, veuillez inclure votre courriel dans le rapport afin que nous puissions le résoudre ensemble."
     },
     "meter": {
-      "title": "Lectures d &apos; énergie",
-      "meterReader": "Meter reader",
-      "meterReaderNotFound": "Aucun lecteur de compteur n'a été trouvé, vous devez utiliser une carte de débit pour envoyer la consommation d'énergie à l'application. Si vous voulez ajouter du support pour votre compteur d'électricité, vous pouvez aller à  href=\"ShowLog onclick=\"changeTab(event, logPage');return false;\"La déclaration de culpabilité/a, générer un rapport de l'appareil manquant et envoyer le journal au développeur.",
+      "title": "Lectures d'énergie",
+      "meterReader": "Releveur de compteur",
+      "meterReaderNotFound": "Aucun releveur de compteur n'a été trouvé, vous devez utiliser un organigramme pour envoyer la consommation d'énergie à l'application. Pour ajouter la prise en charge de votre compteur d'électricité, vous pouvez accéder à <a href=\"ShowLog\" onclick=\" changeTab(event, 'logPage');return false;\">Rapport sur le logpage</a>, génère un rapport sur l'appareil manquant et envoie le rapport au développeur.",
       "meterReaderHint": "Si l'application a support pour votre lecteur de compteurs il apparaîtra ici, sinon vous devez entrer les lectures de puissance en utilisant un flux",
-      "useFlow": "None - Utilisation Flow",
+      "useFlow": "Rien - Utilisation flux",
       "frequency": "Fréquence",
       "frequencyHint": "Spécifie combien de fois la lecture du compteur doit être vérifiée. La valeur ajoutée est de 10 secondes."
     },
     "help": {
       "notFound": "Instructions pour les dispositifs non supportés",
-      "notFoundHint": "Il y a des dispositifs qui n'utilisent pas les mécanismes standard à contrôler. Ils ne seront donc pas détectés comme contrôlables par cette application. Luckilly cela peut être supporté par easilly, il suffit de cliquer sur le lien ci-dessous, de générer un rapport et envoyer le journal au développeur.",
+      "notFoundHint": "<p>Il y a des dispositifs qui n'utilisent pas les mécanismes standard à contrôler. Ils ne seront donc pas détectés comme contrôlables par cette application. Heureusement cela peut être supporté par sans difficulté, il suffit de cliquer sur le lien ci-dessous, de générer un rapport et envoyer le journal au développeur.</p>",
       "supportedDevices": "Appareils confirmés pris en charge",
       "supportedDevicesHint": "Si votre appareil n'est pas répertorié, veuillez suivre les instructions ci-dessous:",
-      "deviceTypeSwitch": "Relays",
-      "deviceTypeHeater": "Heaters",
-      "deviceTypeWaterHeater": "Water Heaters",
-      "deviceTypeAC": "Conditions atmosphériques",
+      "deviceTypeSwitch": "Relais",
+      "deviceTypeHeater": "appareil de chauffage",
+      "deviceTypeWaterHeater": "Chauffe-eau",
+      "deviceTypeAC": "Climatiseur",
       "deviceTypeCharger": "Chargeurs",
       "deviceTypeIgnore": "Dispositifs non alignés",
       "deviceTypeMeter": "Les lecteurs de compteurs",
       "ongoing": "Travaux en cours",
       "aboutInfo": "À propos de Piggy Bank",
-      "aboutInfoHint": [
-        "̄ Cette application a été faite pour que chacun contrôle son utilisation d'énergie de manière simple et en même temps économiser autant d'argent que possible sur elle.",
-        "- . Beaucoup de temps libre est allé à développer cette application. Si vous êtes heureux avec ce que vous économisez alors s'il vous plaît se sentir libre de soutenir le développement de l'application de la manière suivante: (complètement optionnel)",
-        "ol!",
-        "-- réadaptation li reçueb afin que les personnes privées soient prises/b-!",
-        "Vous pouvez parrainer le développement de l'application en donnant de l'argent à Őa href='https://github.com/sponsors/frodeheg'юhttps://github.com/sponsors/frodeheg{1}{/a profane/p-!",
-        "-- /li-!",
-        "-- Evans li Canadiens et sociétés canadiennes",
-        "Cette page prend quelques secondes pour charger, donc un écran de chargement a été ajouté pour en savoir plus sur le temps d'attente. Cela peut être un bon espace publicitaire, car il ya une période d'attente que vous ne pouvez pas éviter.",
-        "Si votre entreprise veut profiter de cette grande opportunité, vous pouvez contacter le développeur de l'application.",
-        "-- /li-!",
-        "/-"
-      ]
+      "aboutInfoHint": ["<p>Cette application a été créée pour permettre à chacun de gérer facilement sa consommation d'énergie, tout en économisant le plus d'argent possible.</p><!--",
+          "--><p>Beaucoup de temps libre a été consacré au développement de cette application. Si vous êtes satisfait de ce que vous économisez, vous pouvez soutenir le développement de l'application des manières suivantes (complètement facultatif):</p><!--",
+          "--><ol><!--",
+          "-->  <li><b>Pour les particuliers</b><!--",
+          "-->      <p>Vous pouvez parrainer le développement de cette application de l'une des manières suivantes: (entièrement facultatif) <a href='https://github.com/sponsors/frodeheg'>https://github.com/sponsors/frodeheg</a></p><!--",
+          "-->  </li><!--",
+          "-->  <li><b>Commercial</b><!--",
+          "-->      <p>Cette page prend quelques secondes à charger, donc un écran de chargement a été ajouté pour fournir des informations sur le temps d'attente. Cela pourrait être un bon espace publicitaire, car il y a un temps d'attente que nous ne pouvons pas éviter. </p><!--",
+          "-->      <p>Si votre entreprise souhaite profiter de cette merveilleuse opportunité, veuillez contacter le développeur de l'application.</p><!--",
+          "-->  </li><!--",
+          "--></ol>"]
     },
     "wizzard": {
       "welcome": "Bienvenue.",
@@ -251,20 +243,20 @@
     },
     "price": {
       "header": "Gestion des prix",
-      "usagePart": "Coûts d &apos; utilisation",
+      "usagePart": "Coûts d'utilisation",
       "powerPart": "Coûts de la capacité du réseau",
       "limitPart": "Partie limite",
       "priceMode": "Mode",
       "mode": {
         "flow": "Manuellement à partir des flux",
         "internal": "Automatique",
-        "disabled": "Handicapés"
+        "disabled": "Inactif"
       },
-      "priceKind": "Price kind",
+      "priceKind": "Type de prix",
       "priceKindUtil": "Externe",
       "priceKindSpot": "Prix indicatif",
       "priceKindFixed": "Prix fixe",
-      "priceKindHint": "̄ L'option Externe récupère le prix de l'application « Norwegian Electricity Bill » si elle est installée. combat/p Ceci signifier le prix du spot » est récupéré de l'échange électrique européen. Ceci permet d'entrer un prix fixe par kWh. Le prix total varie encore le jour en raison du coût du réseau. Ceci / p",
+      "priceKindHint": "<p> L'option 'Externe' récupère le prix de l'application 'Norwegian Electricity Bill' lorsqu'elle est installée.</p><p> Le 'Prix horaire' est récupéré de la bourse européenne de l'électricité. </ p> <p> Avec 'Prix fixe', vous pouvez entrer un prix fixe par kWh. Le prix total variera encore au cours de la journée en raison des coûts de gestion du réseau.</p>",
       "fixed": "Prix fixe",
       "spotPrice": {
         "country": "Pays",
@@ -283,12 +275,10 @@
       "actionHigh": "Actions lorsque l'énergie est chère",
       "actionExtreme": "Actions lorsque l'énergie est extrêmement chère",
       "actionNormal": "Actions lorsque le prix est normal",
-      "priceHint1": [
-        "̄ Le Mode vous permet de choisir si vous souhaitez alimenter l'application avec des points de prix manuellement ou si les points de prix doivent être réglés automatiquement. Si aucun n'est utilisé (désactivé) alors l'application ne contrôlera que max power.",
-        "Le contrôle manuel des cartes de débit vous donne la plus grande flexibilité, mais laissez toute la responsabilité d'interpréter le prix de l'électricité à vous.",
-        "- explicatifAutomatic interprète les prix selon les préférences définies dans l'application."
-      ],
-      "priceErr1": "Note ! Vous devez installer l'application « Norwegian Electricity Bill » et un dispositif d'accompagnement pour les prix externes à frayer. Les prix sont inébranlables, les cartes de débit ne sont pas nécessaires.",
+      "priceHint1": ["<p> Le Mode vous permet de choisir si vous souhaitez alimenter l'application avec des points de prix manuellement ou si les points de prix doivent être réglés automatiquement. Si aucun n'est utilisé (désactivé) alors l'application ne contrôlera que max power.</p> <!-",
+        "-> <p> Le contrôle manuel des cartes de flux vous donne la plus grande flexibilité, mais laissez toute la responsabilité d'interpréter le prix de l'électricité à vous. </p> <!-",
+        "-> <p> Automatic interprète les prix selon les préférences définies dans l'application. </p>"],
+      "priceErr1": "Note ! Vous devez installer l'application 'Norwegian Electricity Bill' et un dispositif d'accompagnement pour les prix externes à frayer. Les prix sont inébranlables, les cartes de flux ne sont pas nécessaires.",
       "pricePointAdvanced": "Point de prix magique",
       "pricePoint": "Point de prix",
       "pricePointHint": "Le comportement de chaque point de prix est défini ci-dessous. Les points de prix peuvent être changés en utilisant les flux.",
@@ -300,27 +290,27 @@
       "emergencyOff": "Si nécessaire",
       "ignore": "Ignore",
       "internal": {
-        "minCheapTime": "Montant minimum d &apos; heures",
+        "minCheapTime": "Montant minimum d'heures",
         "minCheapTimeHint": "Quel que soit le prix réel, vous pouvez exiger que les heures les plus économiques de la journée fixent toujours le point de prix à bas prix.",
         "minExpensiveTime": "Montant minimum des heures coûteuses",
         "minExpensiveTimeHint": "Quel que soit le prix réel, vous pouvez demander que les heures les plus chères de la journée devraient toujours définir le point de prix à cher.",
         "dirtCheapPriceModifier": "Limite pour la saleté prix bon marché",
-        "dirtCheapPriceModifierHint": "Si le prix horaire actuel tombe x% en dessous de la base de comparaison de prix, le point de prix est toujours fixé à Dirt cheap",
+        "dirtCheapPriceModifierHint": "Si le prix horaire actuel tombe x% en dessous de la base de comparaison de prix, le point de prix est toujours fixé à Très bon marché",
         "lowPriceModifier": "Limite du prix bon marché",
         "lowPriceModifierHint": "Si le prix horaire actuel tombe x% en dessous de la base pour la comparaison de prix, le point de prix est toujours fixé à bon marché",
         "highPriceModifier": "Limite du prix cher",
-        "highPriceModifierHint": "Si le prix horaire actuel est x% au-dessus de la base de comparaison de prix, le point de prix est toujours fixé à Expensive",
+        "highPriceModifierHint": "Si le prix horaire actuel est x% au-dessus de la base de comparaison de prix, le point de prix est toujours fixé à Coûteux",
         "extremePriceModifier": "Limite des prix extrêmes",
-        "extremePriceModifierHint": "Si le prix horaire actuel est x% au-dessus de la base de comparaison de prix, le point de prix est toujours fixé à Extrêmement Expensive",
+        "extremePriceModifierHint": "Si le prix horaire actuel est x% au-dessus de la base de comparaison de prix, le point de prix est toujours fixé à Extrêmement Coûteux",
         "averageTime": "Base de comparaison des prix",
-        "averageTimeHint": "Si un prix est cher ou bon marché est déterminé en voyant s'il est x% au-dessus/au-dessous du prix moyen dans les heures X précédentes et Y suivantes. Si X+Y1 le prix moyen aujourd'hui est utilisé.",
+        "averageTimeHint": "Si un prix est cher ou bon marché est déterminé en voyant s'il est x% au-dessus/au-dessous du prix moyen dans les heures X précédentes et Y suivantes. Si X+Y<1 le prix moyen aujourd'hui est utilisé.",
         "prev": "Prev",
         "next": "Suivant",
-        "hours": "timer"
+        "hours": "Heures"
       }
     },
     "frost": {
-      "header": "Frost Control",
+      "header": "Protection contre le gel",
       "minTemp": "Température minimale par appareil",
       "frostHint": "Si la température d'une unité tombe en dessous de la température minimale autorisée, l'appareil sera allumé indépendant de tout autre contrôle de puissance."
     },
@@ -330,27 +320,27 @@
       "zoneHint2": "Vous devez utiliser les flux pour éteindre les zones et à nouveau.",
       "zonesOff": "Les zones suivantes ont été arrêtées",
       "zonesClear": "Supprimer toutes les zones",
-      "zoneName": "Sone",
-      "zoneNum": "Antall enheter påvirket"
+      "zoneName": "Zone",
+      "zoneNum": "Nombre d'unités affectées"
     },
     "override": {
       "header": "Dispositifs de remplacement",
       "overrideHint": "Les appareils peuvent être remplacés de plusieurs façons : prévenir les attaques répétées Par le contrôle de la zone (cartes de flux) Par la garde du gel (automatique) Par des actions d'entretien (dans les perspicacités de la banque) À travers par les cartes de sortie (cartes de flux)",
       "overridden": "Les dispositifs suivants ont été surchargés",
       "device": "Dispositif",
-      "status": "Overridden by",
-      "on": "Forced On",
-      "off": "Forced Off",
+      "status": "Remplacé par",
+      "on": "Activé Forcée",
+      "off": "Désactivé forcée",
       "offUntilOn": "Maintenance (finies lorsqu'elles sont tournées manuellement)",
       "temp": "Température manuelle",
-      "frost": "Frost guard active",
+      "frost": "Protection contre le gel active",
       "controlled": "Régulé",
       "zone": "Zone ${zone} désactivée"
     },
     "mode": {
       "activeMode": "Mode actif",
       "operatingMode": "Mode opératoire",
-      "operatingModeHint": "Conseil : Vous pouvez utiliser des cartes de débit pour modifier le mode d'exploitation.",
+      "operatingModeHint": "Conseil : Vous pouvez utiliser des cartes de flux pour modifier le mode d'exploitation.",
       "powerSettings": "Réglages de puissance",
       "powerStep": "Étape",
       "limits": "Limitations",
@@ -373,7 +363,7 @@
       "targetTemp": "Cible",
       "modeName": "Nom du mode"
     },
-    "saveButton": "Save changes",
+    "saveButton": "Sauvegarder les modifications",
     "alert": {
       "settingssaved": "Vos changements ont été enregistrés.",
       "maxPowerChanged": "Vous avez augmenté le tarif de puissance. Cela peut entraîner des coûts supplémentaires. Tu veux continuer ?",
@@ -384,7 +374,7 @@
       "header": "Log",
       "exit": "Journal de sortie",
       "unit": "Unité pour le journal complet",
-      "unitNone": "Pas d &apos; unité",
+      "unitNone": "Pas d'unité",
       "level": "Autres manifestations",
       "error": "Erreurs seulement",
       "basic": "Informations de base",
@@ -394,7 +384,7 @@
       "sendConfirm": "Envoyer le contenu du journal au développeur ?",
       "thankYou": "Merci ! (Veuillez noter que le service de messagerie est un peu fiable. Si vous n'obtenez aucune réponse, veuillez essayer de nouveau plus tard ou utiliser le forum)",
       "sendError": "Failed envoyant le journal, veuillez réessayer plus tard ou attendre la mise à jour de l'application.",
-      "email": "Email",
+      "email": "E-mail",
       "comment": "Commentaire",
       "required": "Vous n'avez pas produit de rapport ou décrit le problème. Veuillez générer un rapport ou décrire le problème + votre adresse email avant de soumettre le journal."
     },
@@ -402,6 +392,16 @@
       "header": "Sauvegarde",
       "text": "La fonctionnalité de sauvegarde n'est pas terminée. Vous pouvez récupérer l'état mais pas encore le définir.",
       "getState": "État de récupération"
+    },
+    "ACMode": {
+      "header": "Mode CA",
+      "fromAC": "Inchangé",
+      "auto": "Auto",
+      "heat": "Chaleur",
+      "cool": "Refroidissement",
+      "dry": "Sécher",
+      "fan": "Ventilateur",
+      "hint": "Le mode AC affecte toutes les unités AC (mais viendra par unité dans une mise à jour ultérieure). Si ACMode='Unchanged', l'application ne définira pas le mode AC. Toutes les autres sélections définiront le mode AC. NB : Si le mode AC est réglé sur refroidissement, les températures delta pour le prix seront inversées afin que vous puissiez basculer de manière transparente entre le chauffage et le refroidissement sans affecter la capacité de l'application à économiser de l'argent."
     }
   },
   "newdevice": {
@@ -421,33 +421,33 @@
     "noPriceApiData": "L'application Utilitycost est définie pour utiliser le prix à partir des flux. Ainsi, il ne transmettra pas le coût. Essayez de configurer le prix avec la fonction de prix intégrée dans piggy à la place.",
     "notPMfromFlow": "Afin de définir des points de prix avec des flux, vous devez d'abord activer la gestion des prix en utilisant des flux dans l'application de configuration",
     "rememberToSave": "Souviens-toi de sauver !",
-    "appDisabled": "Le mode de fonctionnement de l'application est désactivé. S'il vous plaît, activez-le dans les paramètres de l'application ou avec un débit.",
+    "appDisabled": "Le mode de fonctionnement de l'application est désactivé. S'il vous plaît, activez-le dans les paramètres de l'application ou avec un flux.",
     "timeout": "Temps mort ! Homey est occupé. Veuillez patienter plus, retry plus tard ou contacter le développeur App si le problème persiste. Si vous êtes à l'origine d'un navigateur, il aide généralement à rafraîchir la page.",
     "notValidTime": "Le temps de fin n'est pas valide. Veuillez utiliser le format 24 heures HH:MM (pas de AM/PM)"
   },
   "breaking": {
-    "maxPower": "Changement important pour *Piggy Bank:* Max Power est maintenant un cadre global unique au lieu de par mode. Veuillez vérifier que le nouveau réglage est correct. Le nouveau réglage est",
-    "fixGraph": "*Piggy Bank* update: Malheureusement, en raison d'une erreur, certains d'entre vous peuvent voir une consommation horaire beaucoup plus élevée que ce n'était en fait le cas dans certains jours au cours des deux dernières semaines. Les jours qui ont été touchés ont été retirés du graphique et n'affecteront donc plus le tarif mensuel estimé. Pour connaître votre tarif correct pour ce mois particulier, il est recommandé de vérifier chez elhub. Non, désolé pour l'inconvénient.",
-    "maxAlarm": "*Piggy Bank* - Changement important : Afin de s'assurer que la consommation de puissance n'enfreint pas le tarif de puissance lorsque le lecteur de compteur n'est pas fiable, une restriction a été ajoutée qui désactive les appareils lorsque la puissance n'est pas signalée. Vous pouvez avoir besoin de changer ce réglage si votre lecteur de compteur est peu fiable. On peut le trouver sous Advanced-ACIACost-phylLimits."
+    "maxPower": "Changement important pour **Piggy Bank:** Max Power est maintenant un cadre global unique au lieu de par mode. Veuillez vérifier que le nouveau réglage est correct. Le nouveau réglage est",
+    "fixGraph": "**Piggy Bank** update: Malheureusement, en raison d'une erreur, certains d'entre vous peuvent voir une consommation horaire beaucoup plus élevée que ce n'était en fait le cas dans certains jours au cours des deux dernières semaines. Les jours qui ont été touchés ont été retirés du graphique et n'affecteront donc plus le tarif mensuel estimé. Pour connaître votre tarif correct pour ce mois particulier, il est recommandé de vérifier chez elhub. Non, désolé pour l'inconvénient.",
+    "maxAlarm": "**Piggy Bank** - Changement important : Afin de s'assurer que la consommation de puissance n'enfreint pas le tarif de puissance lorsque le lecteur de compteur n'est pas fiable, une restriction a été ajoutée qui désactive les appareils lorsque la puissance n'est pas signalée. Vous pouvez avoir besoin de changer ce réglage si votre lecteur de compteur est peu fiable. On peut le trouver sous Advanced-ACIACost-phylLimits."
   },
   "maxUsageGraph": {
     "title": "Utilisation de Max Hourly",
     "titleQ": "Utilisation maximale par 15 min.",
-    "yaxis": "k Wh",
+    "yaxis": "kWh",
     "xaxis": "Jour",
     "tariff": "Tarif de puissance estimatif",
     "highest": "Utilisation la plus élevée à l'heure",
     "highestQ": "Utilisation la plus élevée par 15 min.",
     "missing": "Des données manquantes.",
-    "inaccurate": "Données inexactes.\n(temps sans puissance: ${0%})",
+    "inaccurate": "Données inexactes.\n(temps sans puissance: ${percent}%)",
     "incomplete": "Données incomplètes, période non terminée."
   },
   "chargePlanGraph": {
     "title": "Plan du cycle de charge",
     "yaxis": "Prix par kWh",
     "price": "Prix",
-    "charging": "Charging enabled",
-    "nocharge": "Chargement handicapés",
+    "charging": "Chargement activé",
+    "nocharge": "Chargement inactif",
     "noPrice": "Pas de données de prix encore"
   },
   "month": {
