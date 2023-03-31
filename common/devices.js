@@ -526,6 +526,7 @@ const DEVICE_CMD = {
     beta: true
   },
   'se.nexa:EYCR-2300': DEFAULT_SWITCH,
+  'se.nexa:MYC-2300S': DEFAULT_SWITCH,
   'vdevice:homey': DEFAULT_IGNORED, // Under homey:manager, not homey:app:
   'vdevice:virtual_socket': DEFAULT_SWITCH, // Under homey:manager, not homey:app:
   'vdevice:zwavebasic': DEFAULT_SWITCH, // Under homey:manager, not homey:app:

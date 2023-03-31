@@ -1,0 +1,11 @@
++9:40:59.999: ----- ANALYZING DEVICE -----
++9:41:0.013: Report type: Experimental device is working
++9:41:0.050: Device name: Nexan-plugg1
++9:41:0.052: Driver Uri: homey:app:se.nexa
++9:41:0.053: Driver Id: MYC-2300S
++9:41:0.055: Found onoff cap: onoff
++9:41:0.057: Found temp cap: false
++9:41:0.058: Device reliability: 1
++9:41:0.060: Capabilities: onoff
++9:41:0.062: Options for 'onoff': {"value":true,"lastUpdated":"2023-03-30T07:36:30.744Z","type":"boolean","getable":true,"setable":true,"title":"Slått på","desc":null,"units":null,"id":"onoff","options":{}}
++9:41:0.063: --- ANALYZING DEVICE DONE ---
