@@ -391,7 +391,7 @@ async function testIssue84() {
     await app.filterChangeAC();
     const override = app.homey.settings.get('override');
     if (Object.keys(override).length !== 2) {
-      throw new Error('Override AC devices did not work');
+      throw new Error(`Override AC devices did not work: ${JSON.stringify(override)}`);
     }
   } finally {
     await app.onUninit();
@@ -561,6 +561,8 @@ async function testTicket115() {
     app.homey.settings.set('maxPower', [Infinity, 10000, Infinity, Infinity]);
 
     // Simulate time going forward
+    const curTime = app.__current_power_time;
+    curTime.setUTCMinutes(2);
     for (let sim = 0; sim < 2; sim++) {
       let mainFuse;
       let simTime;
@@ -572,8 +574,6 @@ async function testTicket115() {
         simTime = 1600;
       }
       app.homey.settings.set('mainFuse', mainFuse);
-      const curTime = app.__current_power_time;
-      curTime.setUTCMinutes(2);
       const startTime = new Date(curTime.getTime());
       while ((curTime.getTime() - startTime.getTime()) / 1000 < simTime) {
         curTime.setTime(curTime.getTime() + Math.round(10000 + myrng() * 5000 - 2500));
@@ -581,6 +581,7 @@ async function testTicket115() {
         await app.onPowerUpdate(curPower, curTime);
         await app.onProcessPower(curTime);
         // await writePowerStatus(app, devices);
+        // console.log(`curTime : ${sim} : ${curTime}`);
       }
       // Count devices on
       let numDev = 0;

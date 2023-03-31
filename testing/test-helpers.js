@@ -6,7 +6,7 @@
 const fs = require('fs');
 const d = require('../common/devices');
 const c = require('../common/constants');
-const { HomeyAPIApp } = require('./homey-api');
+const { HomeyAPI } = require('./homey-api');
 
 const { MAIN_OP, TARGET_OP } = c;
 
@@ -139,6 +139,9 @@ async function applyBasicConfig(app) {
  * @param {*} poweredOn if true then the state is loaded as if the app is in active mode, false when offline
  */
 async function applyStateFromFile(app, file, poweredOn = true) {
+  // NB! A new instance of HomeyAPIApp here will not create a duplicate version
+  //     of the zone and device list because it's unique and global to all instances
+  const homeyApi = await HomeyAPI.createAppAPI({ homey: app.homey });
   return new Promise((resolve, reject) => {
     fs.readFile(file, (err, data) => {
       if (err) {
@@ -176,9 +179,6 @@ async function applyStateFromFile(app, file, poweredOn = true) {
     for (const deviceId in devInput) {
       const devInfo = devInput[deviceId];
       const fileName = `${devInfo.driverId}.txt`;
-      // NB! A new instance of HomeyAPIApp here will not create a duplicate version
-      //     of the zone and device list because it's unique and global to all instances
-      const homeyApi = new HomeyAPIApp({ homey: app.homey });
       const zones = homeyApi.zones.getZones();
       if (!('memberOf' in devInfo)) devInfo.memberOf = ['none'];
       if (!('roomId' in devInfo)) devInfo.roomId = 'none';

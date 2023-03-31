@@ -23,7 +23,7 @@ const nodemailer = require('nodemailer');
 const os = require('node:os');
 const { Log } = require('homey-log');
 const { Mutex } = require('async-mutex');
-const { HomeyAPIApp } = require('homey-api');
+const { HomeyAPI } = require('homey-api');
 const { resolve } = require('path');
 const c = require('./common/constants');
 const d = require('./common/devices');
@@ -828,7 +828,7 @@ class PiggyBank extends Homey.App {
     this.__current_prices = [];
     this.__current_price_index = undefined;
     this.mutexForPower = new Mutex();
-    this.homeyApi = new HomeyAPIApp({ homey: this.homey });
+    this.homeyApi = await HomeyAPI.createAppAPI({ homey: this.homey });
     this.__last_power_off_time = new Date(now.getTime());
     this.__last_power_on_time = new Date(now.getTime());
     this.__last_power_off_time.setUTCMinutes(this.__last_power_off_time.getUTCMinutes() - 5); // Time in the past to allow turning on devices at app start
@@ -1336,7 +1336,7 @@ class PiggyBank extends Homey.App {
       const relevantDevice = {
         priority: (priority > 0) ? 1 : 0,
         name: device.name,
-        room: device.zoneName,
+        room: zones[device.zone].name,
         roomId: device.zone,
         memberOf: memberOfZones,
         image: device.iconObj == null ? null : device.iconObj.url,
@@ -3581,7 +3581,6 @@ class PiggyBank extends Homey.App {
       }
     }
     this.homey.settings.set('override', override);
-    this.log('Turn off AC devices');
   }
 
   /**
@@ -3873,13 +3872,11 @@ class PiggyBank extends Homey.App {
     ];
     this.updateLog('----- ANALYZING DEVICE -----', c.LOG_ALL);
     this.updateLog(`Report type: ${(+filter >= 0 && +filter <= 4) ? problems[filter] : 'Invalid'}`, c.LOG_ALL);
-    this.updateLog(`Device ID:   ${deviceId}`, c.LOG_ALL);
     // const flows = await this.homeyApi.flow.getFlowCardActions(); // TBD: Remove???
     await this.getDevice(deviceId)
       .then(device => {
         this.updateLog(`Device name: ${device.name}`, c.LOG_ALL);
         try {
-          this.updateLog(`Driver Uri: ${device.driverUri}`, c.LOG_ALL);
           this.updateLog(`Driver Id: ${device.driverId}`, c.LOG_ALL);
           this.updateLog(`Found onoff cap: ${this.__deviceList[deviceId].onoff_cap}`, c.LOG_ALL);
           this.updateLog(`Found temp cap: ${this.__deviceList[deviceId].thermostat_cap}`, c.LOG_ALL);

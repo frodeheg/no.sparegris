@@ -26,9 +26,12 @@ class FakeDeviceClass {
     this.reliability = 1;
     if (typeof (definition) === 'string') {
       // File name
+      const numDevices = Object.keys(this.homey.devices.fakeDevices).length;
       const data = fs.readFileSync(`./doc/devices/${definition}`, 'utf8');
       const lines = data.split('\n');
       let startFound = false;
+      let driverUri;
+      let driverId;
       for (let i = 0; i < lines.length; i++) {
         const line = lines[i].slice(lines[i].indexOf(': ') + 2);
         if (!startFound) {
@@ -40,18 +43,19 @@ class FakeDeviceClass {
         parsed = parsed.replace(/^\s+/, '');
         let capName = line.slice(line.indexOf('\'') + 1);
         capName = capName.slice(0, capName.indexOf('\''));
-        const numDevices = Object.keys(this.homey.devices.fakeDevices).length;
         if (line.includes('Device ID:')) this.id = `${parsed}-${numDevices}`;
         else if (line.includes('Device Name:')) this.name = `${parsed} ${numDevices}`;
-        else if (line.includes('Driver Uri:')) this.driverUri = parsed;
-        else if (line.includes('Driver Id:')) this.driverId = parsed;
+        else if (line.includes('Driver Uri:')) driverUri = parsed;
+        else if (line.includes('Driver Id:')) driverId = parsed;
         else if (line.includes('Options for')) this.capabilitiesObj[capName] = JSON.parse(parsed);
         else if (line.includes('Capabilities:')) this.capabilities = parsed.split(',');
       }
+      this.driverId = driverUri ? `${driverUri}:${driverId}` : driverId;
+      if (!this.id) this.id = `DeviceId-${numDevices}`;
     } else {
       this.manifest = definition;
-      this.driverUri = 'homey:app:unknown';
-      this.driverId = 'unknown';
+      // this.driverUri = 'homey:app:unknown';
+      this.driverId = 'homey:app:unknown:unknown';
       this.id = definition.id;
       this.capabilitiesObj = definition.capabilitiesObj;
       this.capabilities = Object.keys(this.capabilitiesObj);
@@ -172,7 +176,7 @@ class FakeZonesClass {
  */
 class HomeyAPIApp {
 
-  constructor() {
+  constructor({ homey }) {
     if (devices === undefined) devices = new FakeDevicesClass(this);
     if (zones === undefined) zones = new FakeZonesClass(this);
     this.devices = devices;
@@ -181,6 +185,12 @@ class HomeyAPIApp {
 
 }
 
+const HomeyAPI = {
+  async createAppAPI({ homey }) {
+    return new HomeyAPIApp(homey);
+  }
+}
+
 module.exports = {
-  HomeyAPIApp,
+  HomeyAPI
 };

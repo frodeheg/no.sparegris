@@ -538,7 +538,7 @@ const DEVICE_CMD = {
  * Generate a driverId to be used for lookups in the table above
  */
 function generateDriverId(device) {
-  let driverId = `${device.driverUri.split(':').at(-1)}:${device.driverId}`;
+  let driverId = device.driverId.split(':').slice(2).join(':');
   if (!(driverId in DEVICE_CMD)) {
     let idx = 0;
     let checkForOddDriver = !(driverId in DEVICE_CMD);
