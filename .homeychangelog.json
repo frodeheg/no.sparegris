@@ -775,5 +775,8 @@
   },
   "0.20.13": {
     "en": "Added support for HP2023 + Made power and meter readings from flowcard invalid when a power meter has been selected. + more translations."
+  },
+  "0.20.14": {
+    "en": "Due to reported problems, the two newest features that are supposed to improve the reliability of the app will be disabled until the problem has been understood. + Added support for device se.nexa:MYC-2300S"
   }
 }
