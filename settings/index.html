@@ -2445,6 +2445,7 @@
         Homey.get("maxAlarmRate", function (err, maxAlarmRate) {
           if (err) return Homey.alert(err);
           document.getElementById("maxAlarmRate").value = maxAlarmRate;
+          document.getElementById('enLimitMissing').checked = +maxAlarmRate !== 0;
           maxAlarmRateLoaded = true;
           checkLoadingDone();
         });

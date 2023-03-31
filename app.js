@@ -655,6 +655,23 @@ class PiggyBank extends Homey.App {
       this.homey.settings.set('settingsVersion', 11);
     }
 
+    // Version 0.20.14 - Disable the two new features
+    // - limit power in case of bad meter readers
+    // - using energy readings as additional inputs
+    if (+settingsVersion < 12) {
+      if (!firstInstall) {
+        const alertText = '**Piggy Bank** - Important notice! The recently added feature that will save your power '
+          + 'budget when the meter reader has a bad connection with Homey, will be disabled as some users are '
+          + 'experiencing problems. If you were not experiencing problems then it is strongly reccomended that you enable '
+          + 'this feature manually as it will save your power budget at times with missing power-input. If you did '
+          + 'experience problems please contact the developer so appropriate actions can be taken to improve this feature.';
+        this.log(alertText);
+        this.homey.notifications.createNotification({ excerpt: alertText });
+        this.homey.settings.set('maxAlarmRate', 0);
+      }
+      this.homey.settings.set('settingsVersion', 12);
+    }
+
     // Internal state that preferably should be removed as it is in the archive
     // this.homey.settings.unset('stats_savings_all_time_use');
     // this.homey.settings.unset('stats_savings_all_time_power_part');
@@ -705,7 +722,7 @@ class PiggyBank extends Homey.App {
       this.homey.settings.set('crossSlotSmooth', 20);
     }
     if (this.homey.settings.get('maxAlarmRate') === null) {
-      this.homey.settings.set('maxAlarmRate', 50);
+      this.homey.settings.set('maxAlarmRate', 0);
     }
     if (this.homey.settings.get('ACMode') === null) {
       this.homey.settings.set('ACMode', c.ACMODE.UNCHANGED);
@@ -2123,8 +2140,8 @@ class PiggyBank extends Homey.App {
         if (+this.homey.settings.get('operatingMode') === c.MODE_DISABLED) {
           return Promise.resolve();
         }
-        return this.mutexForPower.runExclusive(async () => this.onMeterUpdate(meter, meterTime)
-          .then(() => this.onPowerUpdate(power, time)));
+        return this.mutexForPower.runExclusive(async () => /* this.onMeterUpdate(meter, meterTime)
+          .then(() => */ this.onPowerUpdate(power, time));
       })
       .finally(() => {
         // Schedule next pulse event
