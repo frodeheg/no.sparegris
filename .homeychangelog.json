@@ -772,5 +772,8 @@
   },
   "0.20.12": {
     "en": "Fixed issue where the app was unable to set the temperature on experimental devices."
+  },
+  "0.20.13": {
+    "en": "Added support for HP2023 + Made power and meter readings from flowcard invalid when a power meter has been selected. + more translations."
   }
 }
