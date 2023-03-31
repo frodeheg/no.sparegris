@@ -884,6 +884,7 @@ class PiggyBank extends Homey.App {
       if (preventZigbee) return Promise.reject(new Error(this.homey.__('warnings.homeyReboot')));
       if (!this.app_is_configured) return Promise.reject(new Error(this.homey.__('warnings.notConfigured')));
       if (+this.homey.settings.get('operatingMode') === c.MODE_DISABLED) return Promise.reject(new Error(this.homey.__('warnings.notEnabled')));
+      if (this.homey.settings.get('meterReader') in  this.__meterReaders) return Promise.reject(new Error(this.homey.__('warnings.meterIsAuto')));
       return this.mutexForPower.runExclusive(async () => this.onMeterUpdate(+args.TotalEnergyUsage));
     });
     const cardActionPowerUpdate = this.homey.flow.getActionCard('update-meter-power');
@@ -891,6 +892,7 @@ class PiggyBank extends Homey.App {
       if (preventZigbee) return Promise.reject(new Error(this.homey.__('warnings.homeyReboot')));
       if (!this.app_is_configured) return Promise.reject(new Error(this.homey.__('warnings.notConfigured')));
       if (+this.homey.settings.get('operatingMode') === c.MODE_DISABLED) return Promise.reject(new Error(this.homey.__('warnings.notEnabled')));
+      if (this.homey.settings.get('meterReader') in  this.__meterReaders) return Promise.reject(new Error(this.homey.__('warnings.meterIsAuto')));
       return this.mutexForPower.runExclusive(async () => this.onPowerUpdate(+args.CurrentPower));
     });
     const cardActionModeUpdate = this.homey.flow.getActionCard('change-piggy-bank-mode');

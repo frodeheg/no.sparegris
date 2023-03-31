@@ -1,6 +1,6 @@
 {
   "settings": {
-    "title": "Piggy Bank instellingen",
+    "title": "Spaarpot instellingen",
     "subtitle": "Energie instellingen",
     "loadingText": "Wacht even terwijl apparaten worden geladen...",
     "sponsoredBy": "Deze app wordt gesponsord door:",
@@ -10,9 +10,9 @@
       "enabled": "App ingeschakeld",
       "disabled": "App uitgeschakeld",
       "activationHint1": "Voordat je de app activeert, moet je alle acties in de onderstaande actielijst voltooien.",
-      "activationHint2": "Opmerking: om conflicterende instellingen te voorkomen, moet je er heel precies voor zorgen dat er geen flows tegen deze app in werken voordat je deze activeert.",
+      "activationHint2": "Opmerking: om conflicterende instellingen te voorkomen, moet je er zorgvuldig voor zorgen dat er geen flows tegen deze app in werken voordat je deze activeert.",
       "maxPowHint": "Het maximale vermogen kan ook worden gewijzigd met flows, bijvoorbeeld wanneer verschillende maxima gewenst zijn in de winter en de zomer.",
-      "maxAlarmRateHint": "Maximaal stroomtekort is een kwaliteitsborging om ervoor te zorgen dat je het stroomplafond niet overschrijdt wanneer de energiemeter defect is. Het wordt niet aanbevolen om dit uit te schakelen, tenzij je niet om het maximale vermogen geeft. Zolang de energiemeter werkt, heeft deze instelling geen effect, maar als de app geen vermogensrapport van de energiemeter ontvangt, wordt deze na 1 minuut in een beperkende status weergegeven. In deze staat worden apparaten uitgeschakeld. Wanneer de tijd zonder gerapporteerd effect het opgegeven % van het tariefinterval overschrijdt, wordt de beperking beëindigd en wordt alles opnieuw ingeschakeld. Begin bij voorkeur met 50% en verhoog deze als je ziet dat het energieplafond wordt overschreden, omdat je energiemeter niet goed werkt.",
+      "maxAlarmRateHint": "Maximaal stroombegrenzing is een kwaliteitsborging om ervoor te zorgen dat je het stroomplafond niet overschrijdt wanneer de energiemeter defect is. Het wordt niet aanbevolen om dit uit te schakelen, tenzij je niet om het maximale vermogen geeft. Zolang de energiemeter werkt, heeft deze instelling geen effect, maar als de app geen vermogensrapport van de energiemeter ontvangt, wordt deze na 1 minuut in een beperkende status weergegeven. In deze staat worden apparaten uitgeschakeld. Wanneer de tijd zonder gerapporteerd effect het opgegeven % van het tariefinterval overschrijdt, wordt de beperking beëindigd en wordt alles opnieuw ingeschakeld. Begin bij voorkeur met 50% en verhoog deze als je ziet dat het energieplafond wordt overschreden, omdat je energiemeter niet goed werkt.",
       "myTasks": "De app status"
     },
     "schedule": {
@@ -73,7 +73,7 @@
         "meterReader": "Meter uitlezer",
         "controllable": "Bestuurbare apparaten",
         "modes": "Modi en prioriteit",
-        "prices": "Prijs beheer"
+        "prices": "Prijsbeheer"
       },
       "advanced": {
         "title": "Geavanceerd",
@@ -99,7 +99,7 @@
       "cheap": "Goedkoop",
       "normal": "Normaal",
       "expensive": "Duur",
-      "extreme": "Extreem kostbaar"
+      "extreme": "Erg duur"
     },
     "opMode": {
       "normal": "Dag",
@@ -143,9 +143,9 @@
       "errorMarginHint2": "Hint: dit geeft je ruimte voor een kleine overbelasting op een andere dag, omdat het tarief is gebaseerd op een 3-daags gemiddelde.",
       "safetyPower": "Gereserveerd vermogen",
       "safetyPowerHint1": "Voorkom dat het stroom doel faalt door stroom te reserveren voor oncontroleerbare apparaten.",
-      "safetyPowerHint2": "Tip: je kunt flowkaartjes gebruiken om het gereserveerde vermogen gedurende de dag te wijzigen. Het wordt aanbevolen om meer vermogen te reserveren voordat u bijv. gaat koken.",
+      "safetyPowerHint2": "Tip: je kunt flowkaartjes gebruiken om het gereserveerde vermogen gedurende de dag te wijzigen. Het wordt aanbevolen om meer vermogen te reserveren voordat je bijv. gaat koken.",
       "crossSlotSmooth": "Tijdvenster 'smoothing'",
-      "crossSlotSmoothHint": "Met deze functie kunt u aan het begin van elk tijdvenster te veel stroom gebruiken. Het hoeveelheid wordt aan het begin van elk tijdslot opgeteld bij het toegestane stroomverbruik, en aan het einde van elk tijdslot geleidelijk verlaagd tot 0.",
+      "crossSlotSmoothHint": "Met deze functie kun je aan het begin van elk tijdvenster te veel stroom gebruiken. Het hoeveelheid wordt aan het begin van elk tijdslot opgeteld bij het toegestane stroomverbruik, en aan het einde van elk tijdslot geleidelijk verlaagd tot 0.",
       "mainFuse": "Hoofdzekering",
       "mainFuseHint": "De hoofdzekering is belangrijk voor wat wordt berekend als het maximaal beschikbare vermogen. De app laat je installatie niet meer stroom verbruiken dan de hoofdzekering toestaat.",
       "freeThreshold": "Vrije capaciteitsdrempel",
@@ -169,7 +169,7 @@
       "gridTaxNight": "Net kosten (belasting) 22-06",
       "gridLimit": "Capaciteitsstap (wh)",
       "gridCost": "Maandelijkse kosten",
-      "gridLimitHint": "Als je de kosten per capaciteitsstap configureert volgens uw energie leverancier, worden uw maandelijkse besparingen correct berekend.",
+      "gridLimitHint": "Als je de kosten per capaciteitsstap configureert volgens je energie leverancier, worden uw maandelijkse besparingen correct berekend.",
       "enabled": "Actief",
       "limit": "Begrenzing",
       "peakStart": "Piek start",
@@ -203,10 +203,10 @@
       "unreliableDevice": "Het geselecteerde apparaat is slechts ${reliability}% betrouwbaar. Kan dit de probleemen verklaren die je hebt? Zo niet, voeg dan je e-mail adres toe in het rapport, zodat we dit samen kunnen oplossen."
     },
     "meter": {
-      "title": "Energiezingen",
+      "title": "Energie uitlezing",
       "meterReader": "Meter uitlezer",
       "meterReaderNotFound": "Er is geen dongle gevonden, je moet een flowkaart gebruiken om het stroomverbruik naar de app te verzenden. Als je ondersteuning wilt toevoegen voor uw elektriciteitsmeter, kun je naar <a href=\"ShowLog\" onclick=\"changeTab(event, 'logPage');return false;\">meter uitlezer rapportage</a> gaan, genereer een rapport van het ontbrekende apparaat en stuur het rapport naar de ontwikkelaar.",
-      "meterReaderHint": "Als de app onderstuning heeft voor uw meter uitlezer, wordt deze hier weergegeven, anders moet je de meterstanden invoeren met behulp van een flow",
+      "meterReaderHint": "Als de app ondersteuning heeft voor uw meter uitlezer, wordt deze hier weergegeven, anders moet je de meterstanden invoeren met behulp van een flow",
       "useFlow": "Geen - Gebruik flow",
       "frequency": "Frequentie",
       "frequencyHint": "Geeft aan hoe vaak de meteruitlezing moet worden gecontroleerd. De geadviseerde waarde is 10 seconden."
@@ -224,7 +224,7 @@
       "deviceTypeIgnore": "Genegeerde apparaten",
       "deviceTypeMeter": "Meter lezers",
       "ongoing": "In ontwikkeling",
-      "aboutInfo": "Over Piggy Bank",
+      "aboutInfo": "Over Spaarpot",
       "aboutInfoHint": ["<p> Deze app is gemaakt om iedereen op een eenvoudige manier het energieverbruik te laten beheren, en tegelijkertijd zoveel mogelijk geld te besparen. </p> <!-",
         "-> <p> Er is veel vrije tijd in gestoken om deze app te ontwikkelen. Als je happy bent met wat je bespaart, kunt je de ontwikkeling van de app op de volgende manieren ondersteunen (volledig optioneel):</p><!--",
           "--><ol><!--",
@@ -239,11 +239,11 @@
     },
     "wizzard": {
       "welcome": "Welkom",
-      "guide": "Een rondleiding die je zal laten zien hoe de app werkt, binnenkort beschhikbaar."
+      "guide": "Een rondleiding die laat zien hoe de app werkt, binnenkort beschhikbaar."
     },
     "price": {
       "header": "Prijsbeheer",
-      "usagePart": "Kosten van nutsmoorzieneningen",
+      "usagePart": "Kosten van nutsvoorzieneningen",
       "powerPart": "Netcapaciteitskosten",
       "limitPart": "Begrenzer deel",
       "priceMode": "Modus",
@@ -273,8 +273,8 @@
       "actionDirtCheap": "Acties als de energie spotgoedkoop is",
       "actionLow": "Acties als de energie goedkoop is",
       "actionHigh": "Acties wanneer de energie duur is",
-      "actionExtreme": "Acties wanneer de energie extreem duur is",
-      "actionNormal": "Acties wanneer de prijs normaal is",
+      "actionExtreme": "Acties wanneer de energie erg duur is",
+      "actionNormal": "Acties wanneer de energieprijs normaal is",
       "priceHint1": ["<p> Met de modus kun je kiezen of je de app wilt voeden met handmatig vervaardigde prijspunten of dat de prijspunten automatisch moeten worden ingesteld. Als geen van beide wordt gebruikt (gedeactiveerd), regelt de app alleen max. power. </p> <!-",
         "-> <p> Handmatige besturing via flowkaartjes geeft je de grootste flexibiliteit, maar laat alle verantwoordelijkheid aan jou om de elektriciteitsprijs te interpreteren. </p> <!-",
         "-> <p>  Interpreteert de prijzen automatisch volgens de voorkeuren die in de app zijn ingesteld. </p>"],
@@ -294,14 +294,14 @@
         "minCheapTimeHint": "Ongeacht de werkelijke prijs, kun je afdwingen dat de x goedkoopste uren van de dag altijd de prijspunt op Goedkoop instelt.",
         "minExpensiveTime": "Minimale hoeveelheid dure uren",
         "minExpensiveTimeHint": "Ongeacht de werkelijke prijs, je kunt afdwingen dat de x duurste uren van de dag altijd de prijspunt op Duur instelt.",
-        "dirtCheapPriceModifier": "Limiet voor superlage prijs",
+        "dirtCheapPriceModifier": "Limiet voor de spotgoedkope prijs",
         "dirtCheapPriceModifierHint": "Als de huidige uurprijs x% onder de basis voor prijsvergelijking daalt, word het prijspunt altijd ingesteld op Spotgoedkoop",
         "lowPriceModifier": "Limiet voor lage prijs",
         "lowPriceModifierHint": "Als de huidige prijs per uur x% onder de basis voor prijsvergelijking daalt, is de prijs altijd ingesteld op Goedkoop",
         "highPriceModifier": "Limiet voor hoge prijs",
         "highPriceModifierHint": "Als de huidige prijs per uur x% boven de basis is voor prijsvergelijking, is de prijs altijd ingesteld op Duur",
-        "extremePriceModifier": "Limiet voor extreme prijzen",
-        "extremePriceModifierHint": "Als de huidige prijs per uur x% boven de basis is voor prijsvergelijking, is de prijs altijd ingesteld op extreem duur",
+        "extremePriceModifier": "Limiet voor erg hoge prijzen",
+        "extremePriceModifierHint": "Als de huidige prijs per uur x% boven de basis is voor prijsvergelijking, is de prijs altijd ingesteld op Erg duur",
         "averageTime": "Basis voor prijsvergelijking",
         "averageTimeHint": "Of een kostprijs duur of goedkoop is wordt bepaald door te zien of deze x% boven/onder de gemiddelde prijs is in de vorige X en de volgende Y uren. Als X+Y<1 wordt, dan wordt de gemiddelde prijs van vandaag gebruikt.",
         "prev": "Vorige",
@@ -325,7 +325,7 @@
     },
     "override": {
       "header": "Overschreven apparaten",
-      "overrideHint": "Apparaten kunnen op verschillende manieren worden overschreven: <ul> <li> via Zone-besturing (flowkaartjes) </li> <li> via Vorstbescherming (automatisch) </li> <li> door onderhoudsacties (in Piggy Bank insights) </li> <li> door per apparaat te overschrijven (flowkaartjes) </li> </ul>",
+      "overrideHint": "Apparaten kunnen op verschillende manieren worden overschreven: <ul> <li> via Zone-besturing (flowkaartjes) </li> <li> via Vorstbescherming (automatisch) </li> <li> door onderhoudsacties (in Spaarpot insights) </li> <li> door per apparaat te overschrijven (flowkaartjes) </li> </ul>",
       "overridden": "De volgende apparaten zijn opgeheven",
       "device": "Apparaat",
       "status": "Opgeheven door",
@@ -341,14 +341,14 @@
       "activeMode": "Actieve modus",
       "operatingMode": "Werkmodus",
       "operatingModeHint": "Hint: je kunt flowkaarten gebruiken om de bedrijfsmodus te wijzigen.",
-      "powerSettings": "Power instellingen",
+      "powerSettings": "Instellingen voor het vermogen",
       "powerStep": "Stap",
       "limits": "Beperkingen",
       "maxPower15min": "Max. verbruik per 15 minuten.",
       "maxPowerHour": "Max. per uur verbruik",
       "maxPowerDay": "Max. daily verbruik",
       "maxPowerMonth": "Max. maandelijkse verbruik",
-      "maxAlarmRate": "Maximale stroomtekort",
+      "maxAlarmRate": "Maximale stroombegrenzing",
       "priorities": "Prioriteiten",
       "priorityHint1": "In het geval van overmatig stroomverbruik, begint de app apparaten aan de onderkant van de lijst uit te schakelen. Apparaten bovenaan de lijst zijn de laatste die worden uitgeschakeld.",
       "priorityHint2": "Wanneer het gewenste piektarief binnen handbereik is, begint de app apparaten weer in te schakelen.",
@@ -366,7 +366,7 @@
     "saveButton": "Wijzigingen opslaan",
     "alert": {
       "settingssaved": "Je wijzingen zijn bewaard!",
-      "maxPowerChanged": "Je hebt het piektarief verhoogd. Dit kan leiden tot extra kosten. Wil je toch doorgaan?",
+      "maxPowerChanged": "Je hebt het piekvermogen verhoogd. Dit kan leiden tot extra kosten. Wil je toch doorgaan?",
       "leavepage": "Pagina verlaten?"
     },
     "log": {
@@ -394,14 +394,14 @@
       "getState": "Ophalen"
     },
     "ACMode": {
-      "header": "A/C Mode",
+      "header": "A/C Modus",
       "fromAC": "Ongewijzigd",
       "auto": "Auto",
       "heat": "Verwarmen",
       "cool": "Koelen",
       "dry": "Drogen",
       "fan": "Fan",
-      "hint": "AC-modus is van invloed op alle AC-units (maar komt per unit in een latere update). Als ACMode='Ongewijzigd', zal de app de AC-modus niet instellen. Alle andere selecties stellen de AC-modus in. NB: Als de AC-modus is ingesteld op koelen, worden de deltatemperaturen voor het prijspunt omgekeerd, zodat u naadloos kunt schakelen tussen verwarmen en koelen zonder dat dit invloed heeft op het vermogen van de app om geld te besparen."
+      "hint": "A/C Modus is van invloed op alle A/C units (maar dit wordt per unit in een latere update). Als A/C Modus = 'Ongewijzigd', dan zal de app de A/C Modus niet instellen. Alle andere selecties stellen de A/C Modus in. NB: Als de A/C Modus is ingesteld op koelen, worden de deltatemperaturen voor het prijspunt omgekeerd, zodat u naadloos kunt schakelen tussen verwarmen en koelen zonder dat dit invloed heeft op het vermogen van de app om geld te besparen."
     }
   },
   "newdevice": {
@@ -423,12 +423,13 @@
     "rememberToSave": "Vergeet niet om op te slaan!",
     "appDisabled": "De bedrijfsmodus is uitgeschakeld. Schakel het weer in in via de app instellingen of middels een flow.",
     "timeout": "Time-out! Homey is druk. Wacht nog iets langer, probeer het later opnieuw, of neem contact op met de app -ontwikkelaar als het probleem aanhoudt. Als je vanaf een browser werkt, helpt het meestal om de pagina te herladen.",
-    "notValidTime": "De eindtijd is niet geldig. Gebruik ajb het 24-uurs formaat HH:MM (geen AM/PM)"
+    "notValidTime": "De eindtijd is niet geldig. Gebruik ajb het 24-uurs formaat HH:MM (geen AM/PM)",
+    "meterIsAuto": "Handmatige invoer van meteropnemers is niet toegestaan wanneer er een meteropnemer is geselecteerd"
   },
   "breaking": {
-    "maxPower": "Belangrijke verandering voor **Piggy Bank**: Max. power is nu een enkele globale instelling, in plaats van per modus. Controleer of de nieuwe instelling OK is. De nieuwe instelling is ",
-    "fixGraph": "**Piggy Bank** update: helaas, vanwege een fout, zien sommigen van jullie mogelijk een veel hoger verbruik per uur, dan op bepaalde dagen in de afgelopen twee weken het geval was. Dagen die mogelijk zijn getroffen, zijn uit de grafiek verwijderd en hebben dus geen invloed op het geschatte maandelijkse tarief. Om uw juiste tarief voor deze specifieke maand te weten, wordt het aanbevolen om te controleren op elhub.no, sorry voor het ongemak.",
-    "maxAlarm": "**Piggy Bank** - belangrijke verandering: om ervoor te zorgen dat het stroomverbruik het PIEKtarief niet overtreedt wanneer de meter uitlezer onbetrouwbaar is, is er een beperking toegevoegd die apparaten uitschakelt, wanneer de stroom niet wordt gerapporteerd. Mogelijk moet je deze instelling wijzigen als je meter uitlezer onbetrouwbaar is. Het is te vinden onder: geavanceerd -> kosten -> limieten."
+    "maxPower": "Belangrijke verandering voor **Spaarpot**: Max. power (vermogen) is nu een enkele globale instelling, in plaats van per modus. Controleer of de nieuwe instelling OK is. De nieuwe instelling is ",
+    "fixGraph": "**Spaarpot** update: helaas, vanwege een fout, zien sommigen van jullie mogelijk een veel hoger verbruik per uur, dan op bepaalde dagen in de afgelopen twee weken het geval was. Dagen die mogelijk zijn getroffen, zijn uit de grafiek verwijderd en hebben dus geen invloed op het geschatte maandelijkse tarief. Om uw juiste tarief voor deze specifieke maand te weten, wordt het aanbevolen om te controleren op elhub.no, sorry voor het ongemak.",
+    "maxAlarm": "**Spaarpot** - belangrijke verandering: om ervoor te zorgen dat het stroomverbruik het PIEKtarief niet overtreedt wanneer de meter uitlezer onbetrouwbaar is, is er een beperking toegevoegd die apparaten uitschakelt, wanneer de stroom niet wordt gerapporteerd. Mogelijk moet je deze instelling wijzigen als je meter uitlezer onbetrouwbaar is. Het is te vinden onder: geavanceerd -> kosten -> limieten."
   },
   "maxUsageGraph": {
     "title": "Max gebruik per uur",
@@ -439,7 +440,7 @@
     "highest": "Hoogste verbruik per uur",
     "highestQ": "Hoogste verbruik per kwartier.",
     "missing": "Ontbrekende gegevens.",
-    "inaccurate": "Onnauwkeurige gegevens. \n(time without power: ${percent}%)",
+    "inaccurate": "Onnauwkeurige gegevens. \n(tijd zonder vermogen: ${percent}%)",
     "incomplete": "Onvolledige gegevens, periode is niet voltooid."
   },
   "chargePlanGraph": {

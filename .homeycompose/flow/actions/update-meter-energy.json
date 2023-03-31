@@ -1,9 +1,9 @@
 {
   "title": {
-    "en": "Update PiggyBank with the energy used",
+    "en": "Update Piggy Bank with the energy used",
     "no": "Oppdater Sparegris med energiforbruk",
-    "nl": "PiggyBank bijwerken met energieverbruik",
-    "fr": "Mettre à jour PiggyBank avec l'énergie utilisée"
+    "nl": "Spaarpot bijwerken met energieverbruik",
+    "fr": "Mettre à jour Tirelire avec l'énergie utilisée"
   },
   "titleFormatted": {
     "en": "Set the energy used to [[TotalEnergyUsage]] kWh",

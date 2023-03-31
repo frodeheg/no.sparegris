@@ -423,7 +423,8 @@
     "rememberToSave": "Husk å lagre!",
     "appDisabled": "Appens operasjonsmodus er satt til deaktivert. Du kan aktivere appen ved å gå inn i appens innstillinger eller gjennom et flytkort.",
     "timeout": "Timeout! Homey er opptatt, vennligst vent litt til, prøv igjen senere eller kontakt appens utvikler dersom problemet vedvarer. Hvis du kjører fra en browser bruker det å hjelpe å laste inn siden på nytt.",
-    "notValidTime": "Tidspunktet for å stoppe ladingen er ikke gyldig. Vennligst bruk 24-timers format TT:MM (uten AM/PM)"
+    "notValidTime": "Tidspunktet for å stoppe ladingen er ikke gyldig. Vennligst bruk 24-timers format TT:MM (uten AM/PM)",
+    "meterIsAuto": "Manuell input fra måleravleseren er ikke tillatt når en måleravleser er valgt"
   },
   "breaking": {
     "maxPower": "Viktig endring for **Sparegris**: Maks effekt er nå en enkelt global verdi istedenfor en for hver operasjonsmodus. Vennligst sjekk at den nye innstillingen passer for deg. Den nye innstillingen er:",

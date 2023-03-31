@@ -1,6 +1,6 @@
 {
   "settings": {
-    "title": "Réglages Piggy Bank",
+    "title": "Réglages Tirelire",
     "subtitle": "Réglages de puissance",
     "loadingText": "Veuillez patienter quelques secondes pendant que les appareils sont chargés.",
     "sponsoredBy": "Cette application est parrainée par:",
@@ -224,7 +224,7 @@
       "deviceTypeIgnore": "Dispositifs non alignés",
       "deviceTypeMeter": "Les lecteurs de compteurs",
       "ongoing": "Travaux en cours",
-      "aboutInfo": "À propos de Piggy Bank",
+      "aboutInfo": "À propos de Tirelire",
       "aboutInfoHint": ["<p>Cette application a été créée pour permettre à chacun de gérer facilement sa consommation d'énergie, tout en économisant le plus d'argent possible.</p><!--",
           "--><p>Beaucoup de temps libre a été consacré au développement de cette application. Si vous êtes satisfait de ce que vous économisez, vous pouvez soutenir le développement de l'application des manières suivantes (complètement facultatif):</p><!--",
           "--><ol><!--",
@@ -423,12 +423,13 @@
     "rememberToSave": "Souviens-toi de sauver !",
     "appDisabled": "Le mode de fonctionnement de l'application est désactivé. S'il vous plaît, activez-le dans les paramètres de l'application ou avec un flux.",
     "timeout": "Temps mort ! Homey est occupé. Veuillez patienter plus, retry plus tard ou contacter le développeur App si le problème persiste. Si vous êtes à l'origine d'un navigateur, il aide généralement à rafraîchir la page.",
-    "notValidTime": "Le temps de fin n'est pas valide. Veuillez utiliser le format 24 heures HH:MM (pas de AM/PM)"
+    "notValidTime": "Le temps de fin n'est pas valide. Veuillez utiliser le format 24 heures HH:MM (pas de AM/PM)",
+    "meterIsAuto": "Les entrées manuelles des lecteurs de compteur ne sont pas autorisées lorsqu'un lecteur de compteur a été sélectionné"
   },
   "breaking": {
-    "maxPower": "Changement important pour **Piggy Bank:** Max Power est maintenant un cadre global unique au lieu de par mode. Veuillez vérifier que le nouveau réglage est correct. Le nouveau réglage est",
-    "fixGraph": "**Piggy Bank** update: Malheureusement, en raison d'une erreur, certains d'entre vous peuvent voir une consommation horaire beaucoup plus élevée que ce n'était en fait le cas dans certains jours au cours des deux dernières semaines. Les jours qui ont été touchés ont été retirés du graphique et n'affecteront donc plus le tarif mensuel estimé. Pour connaître votre tarif correct pour ce mois particulier, il est recommandé de vérifier chez elhub. Non, désolé pour l'inconvénient.",
-    "maxAlarm": "**Piggy Bank** - Changement important : Afin de s'assurer que la consommation de puissance n'enfreint pas le tarif de puissance lorsque le lecteur de compteur n'est pas fiable, une restriction a été ajoutée qui désactive les appareils lorsque la puissance n'est pas signalée. Vous pouvez avoir besoin de changer ce réglage si votre lecteur de compteur est peu fiable. On peut le trouver sous Advanced-ACIACost-phylLimits."
+    "maxPower": "Changement important pour **Tirelire:** Max Power est maintenant un cadre global unique au lieu de par mode. Veuillez vérifier que le nouveau réglage est correct. Le nouveau réglage est",
+    "fixGraph": "**Tirelire** update: Malheureusement, en raison d'une erreur, certains d'entre vous peuvent voir une consommation horaire beaucoup plus élevée que ce n'était en fait le cas dans certains jours au cours des deux dernières semaines. Les jours qui ont été touchés ont été retirés du graphique et n'affecteront donc plus le tarif mensuel estimé. Pour connaître votre tarif correct pour ce mois particulier, il est recommandé de vérifier chez elhub. Non, désolé pour l'inconvénient.",
+    "maxAlarm": "**Tirelire** - Changement important : Afin de s'assurer que la consommation de puissance n'enfreint pas le tarif de puissance lorsque le lecteur de compteur n'est pas fiable, une restriction a été ajoutée qui désactive les appareils lorsque la puissance n'est pas signalée. Vous pouvez avoir besoin de changer ce réglage si votre lecteur de compteur est peu fiable. On peut le trouver sous Advanced-ACIACost-phylLimits."
   },
   "maxUsageGraph": {
     "title": "Utilisation de Max Hourly",

@@ -1,9 +1,9 @@
 {
   "title": {
-    "en": "Send active power to PiggyBank",
+    "en": "Send active power to Piggy Bank",
     "no": "Send aktiv effekt til Sparegris",
-    "nl": "Stuur actief vermogen naar PiggyBank",
-    "fr": "Envoyer la puissance active à PiggyBank"
+    "nl": "Stuur actief vermogen naar Spaarpot",
+    "fr": "Envoyer la puissance active à Tirelire"
   },
   "titleFormatted": {
     "en": "Set the power to [[CurrentPower]] W",

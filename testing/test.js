@@ -1414,12 +1414,20 @@ async function testLanguages() {
   }
 
   // Test capabilities
-  const dirs = ['capabilities', 'flow/actions', 'flow/conditions', 'flow/triggers']
+  const dirs = [
+    'drivers/piggy-bank-insights',
+    '.homeycompose',
+    '.homeycompose/capabilities',
+    '.homeycompose/flow/actions',
+    '.homeycompose/flow/conditions',
+    '.homeycompose/flow/triggers']
   for (let i = 0; i < dirs.length; i++) {
     const dir = dirs[i];
-    const files = fs.readdirSync(`.homeycompose/${dir}`);
+    const files = fs.readdirSync(dir);
     for (let fileIdx = 0; fileIdx < files.length; fileIdx++) {
-      const fileName = `.homeycompose/${dir}/${files[fileIdx]}`;
+      const fileName = `${dir}/${files[fileIdx]}`;
+      if (!fileName.includes('.json')) continue;
+      if (fileName.includes('homeychangelog')) continue;
       console.log(`[......] Test Translations for ${fileName}`);
       const obj = JSON.parse(fs.readFileSync(fileName, { encoding: 'utf8', flag: 'r' }));
       checkForTranslations(obj, languages);
