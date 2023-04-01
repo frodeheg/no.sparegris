@@ -3,14 +3,14 @@
   "title": {
     "en": "Change Piggy Bank mode",
     "no": "Endre Sparegris modus",
-    "nl": "Wijzig Spaarpot modus",
-    "fr": "Changer le mode de Tirelire"
+    "nl": "Wijzig Piggy Bank modus",
+    "fr": "Changer le mode de Piggy Bank"
   },
   "titleFormatted": {
     "en": "Set the Piggy Bank operation mode to [[mode]]",
     "no": "Sett Sparegris driftsmodus til [[mode]]",
-    "nl": "Stel de bedrijfsmodus Spaarpot in op [[mode]]",
-    "fr": "Règle le mode de fonctionnement Tirelire sur [[mode]]"
+    "nl": "Stel de bedrijfsmodus Piggy Bank in op [[mode]]",
+    "fr": "Règle le mode de fonctionnement Piggy Bank sur [[mode]]"
   },
   "hint": {
     "en": "This action card has been deprecated, please replace it to get custom modes with custom names",

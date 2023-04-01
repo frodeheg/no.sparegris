@@ -12,10 +12,10 @@
     "fr": "Le niveau de prix a changé"
   },
   "hint": {
-    "en": "Use this trigger if you want the internal price control of Piggy Bank to control external events.",
+    "en": "Use this trigger if you want the internal price control of PiggyBank to control external events.",
     "no": "Bruk denne triggeren dersom du ønsker at den interne prisstyringen i Sparegris skal styre eksterne hendelser.",
-    "nl": "Gebruik deze trigger als u wilt dat het interne prijsbeheer in Spaarpot externe gebeurtenissen regelt.",
-    "fr": "Utilisez ce déclencheur si vous souhaitez que la gestion interne des prix dans Tirelire contrôle les événements externes."
+    "nl": "Gebruik deze trigger als u wilt dat het interne prijsbeheer in PiggyBank externe gebeurtenissen regelt.",
+    "fr": "Utilisez ce déclencheur si vous souhaitez que la gestion interne des prix dans PiggyBank contrôle les événements externes."
   },
   "tokens": [
     {

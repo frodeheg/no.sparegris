@@ -12,10 +12,10 @@
     "fr": "Commencez à facturer [[offerHours]] les heures les moins chères avant [[endTime]]"
   },
   "hint": {
-    "en": "Tell Piggy Bank to start a charging cycle. It will only charge in the X cheapest hours before the time runs out. (Note that if the current hour is one of them then the charging time will be shorter)\n\nFor unsupported car chargers this may be the most deterministic starting function as they do not report used energy.",
+    "en": "Tell Piggy bank to start a charging cycle. It will only charge in the X cheapest hours before the time runs out. (Note that if the current hour is one of them then the charging time will be shorter)\n\nFor unsupported car chargers this may be the most deterministic starting function as they do not report used energy.",
     "no": "Be Sparegris om å starte en ladesyklus. Ladingen vil kun bli tilbydt i de X billigste timene før tiden går ut. (NB! Dersom inneværende time er blant de billigste så vil ladetiden være kortere)\n\nDette er den mest deterministiske startfunsjonen for billadere som ikke støttes, ettersom appen ikke får rapportert energiforbruk.",
-    "nl": "Vraag Spaarpot om een laadcyclus te starten. Laden wordt alleen aangeboden in de X goedkoopste uren voordat de tijd om is. (NB! Als het huidige uur tot de goedkoopste behoort, zal de laadtijd korter zijn)\n \nDit is de meest effectieve startfunctie voor niet-ondersteunde autoladers, aangezien de app geen gerapporteerd energieverbruik krijgt.",
-    "fr": "Demandez à Tirelire de démarrer un cycle de charge. La charge ne sera proposée que dans les X heures les moins chères avant la fin du délai. (NB! Si l'heure actuelle est parmi les moins chères, le temps de charge sera plus court)\n \nIl s'agit de la fonction de démarrage la plus déterministe pour les chargeurs de voiture non pris en charge, car l'application n'obtient pas de consommation d'énergie signalée."
+    "nl": "Vraag PiggyBank om een laadcyclus te starten. Laden wordt alleen aangeboden in de X goedkoopste uren voordat de tijd om is. (NB! Als het huidige uur tot de goedkoopste behoort, zal de laadtijd korter zijn)\n \nDit is de meest effectieve startfunctie voor niet-ondersteunde autoladers, aangezien de app geen gerapporteerd energieverbruik krijgt.",
+    "fr": "Demandez à PiggyBank de démarrer un cycle de charge. La charge ne sera proposée que dans les X heures les moins chères avant la fin du délai. (NB! Si l'heure actuelle est parmi les moins chères, le temps de charge sera plus court)\n \nIl s'agit de la fonction de démarrage la plus déterministe pour les chargeurs de voiture non pris en charge, car l'application n'obtient pas de consommation d'énergie signalée."
   },
   "args": [
     {

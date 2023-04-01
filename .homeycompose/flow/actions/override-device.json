@@ -14,8 +14,8 @@
   "hint": {
     "en": "Allows you to override how Piggy Bank operates a specific device.",
     "no": "Lar deg overstyre hvordan Sparegris opererer spesifikke enheter.",
-    "nl": "Hiermee kunt je wijzigen hoe Spaarpot een specifiek apparaat bedient.",
-    "fr": "Vous permet de remplacer la façon dont Tirelire utilise des appareils spécifiques."
+    "nl": "Hiermee kunt je wijzigen hoe Piggy Bank een specifiek apparaat bedient.",
+    "fr": "Vous permet de remplacer la façon dont Piggy Bank utilise des appareils spécifiques."
   },
   "args": [
     {

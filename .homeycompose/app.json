@@ -15,15 +15,11 @@
   ],
   "name": {
     "en": "Piggy Bank",
-    "no": "Sparegris",
-    "nl": "Spaarpot",
-    "fr": "Tirelire"
+    "no": "Sparegris"
   },
   "description": {
     "en": "Save money by moving electricity consumption within the desired power tariff",
-    "no": "Spar penger ved å flytte strømforbruket innenfor ønsket effekttariff",
-    "nl": "Bespaar geld door elektriciteitsverbruik te verplaatsen binnen het gewenste stroomtarief",
-    "fr": "Économisez de l'argent en déplaçant la consommation d'électricité dans le tarif de puissance souhaité"
+    "no": "Spar penger ved å flytte strømforbruket innenfor ønsket effekttariff"
   },
   "category": [
     "energy",
@@ -88,64 +84,6 @@
       "namron",
       "sensibo",
       "høiax"
-    ],
-    "nl": [
-      "kracht",
-      "tarief",
-      "prijs",
-      "elektriciteit",
-      "energie",
-      "regulering",
-      "besparen",
-      "geld",
-      "laden",
-      "bewegen",
-      "verbruik",
-      "verwarming",
-      "verwarmer",
-      "warmtepomp",
-      "controller",
-      "beheer",
-      "toezicht",
-      "begeleiding",
-      "powersave",
-      "thermostaat",
-      "stap",
-      "heatit",
-      "elko",
-      "danfoss",
-      "namron",
-      "sensibo",
-      "hoiax"
-    ],
-    "fr": [
-      "puissance",
-      "tarif",
-      "prix",
-      "électricité",
-      "énergie",
-      "régulation",
-      "économiser",
-      "argent",
-      "charger",
-      "déplacer",
-      "consommation",
-      "chauffage",
-      "chauffe-eau",
-      "pompe à chaleur",
-      "contrôleur",
-      "gestion",
-      "surveillance",
-      "orientation",
-      "économie d'énergie",
-      "thermostat",
-      "étape",
-      "heatit",
-      "elko",
-      "danfoss",
-      "namron",
-      "sensibo",
-      "hoiax"
     ]
   },
   "images": {

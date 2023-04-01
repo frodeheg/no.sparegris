@@ -16,15 +16,11 @@
   ],
   "name": {
     "en": "Piggy Bank",
-    "no": "Sparegris",
-    "nl": "Spaarpot",
-    "fr": "Tirelire"
+    "no": "Sparegris"
   },
   "description": {
     "en": "Save money by moving electricity consumption within the desired power tariff",
-    "no": "Spar penger ved å flytte strømforbruket innenfor ønsket effekttariff",
-    "nl": "Bespaar geld door elektriciteitsverbruik te verplaatsen binnen het gewenste stroomtarief",
-    "fr": "Économisez de l'argent en déplaçant la consommation d'électricité dans le tarif de puissance souhaité"
+    "no": "Spar penger ved å flytte strømforbruket innenfor ønsket effekttariff"
   },
   "category": [
     "energy",
@@ -89,64 +85,6 @@
       "namron",
       "sensibo",
       "høiax"
-    ],
-    "nl": [
-      "kracht",
-      "tarief",
-      "prijs",
-      "elektriciteit",
-      "energie",
-      "regulering",
-      "besparen",
-      "geld",
-      "laden",
-      "bewegen",
-      "verbruik",
-      "verwarming",
-      "verwarmer",
-      "warmtepomp",
-      "controller",
-      "beheer",
-      "toezicht",
-      "begeleiding",
-      "powersave",
-      "thermostaat",
-      "stap",
-      "heatit",
-      "elko",
-      "danfoss",
-      "namron",
-      "sensibo",
-      "hoiax"
-    ],
-    "fr": [
-      "puissance",
-      "tarif",
-      "prix",
-      "électricité",
-      "énergie",
-      "régulation",
-      "économiser",
-      "argent",
-      "charger",
-      "déplacer",
-      "consommation",
-      "chauffage",
-      "chauffe-eau",
-      "pompe à chaleur",
-      "contrôleur",
-      "gestion",
-      "surveillance",
-      "orientation",
-      "économie d'énergie",
-      "thermostat",
-      "étape",
-      "heatit",
-      "elko",
-      "danfoss",
-      "namron",
-      "sensibo",
-      "hoiax"
     ]
   },
   "images": {
@@ -357,10 +295,10 @@
           "fr": "Le niveau de prix a changé"
         },
         "hint": {
-          "en": "Use this trigger if you want the internal price control of Piggy Bank to control external events.",
+          "en": "Use this trigger if you want the internal price control of PiggyBank to control external events.",
           "no": "Bruk denne triggeren dersom du ønsker at den interne prisstyringen i Sparegris skal styre eksterne hendelser.",
-          "nl": "Gebruik deze trigger als u wilt dat het interne prijsbeheer in Spaarpot externe gebeurtenissen regelt.",
-          "fr": "Utilisez ce déclencheur si vous souhaitez que la gestion interne des prix dans Tirelire contrôle les événements externes."
+          "nl": "Gebruik deze trigger als u wilt dat het interne prijsbeheer in PiggyBank externe gebeurtenissen regelt.",
+          "fr": "Utilisez ce déclencheur si vous souhaitez que la gestion interne des prix dans PiggyBank contrôle les événements externes."
         },
         "tokens": [
           {
@@ -534,10 +472,10 @@
           "fr": "La zone [[zone]] !{{est|n'est pas}} active"
         },
         "hint": {
-          "en": "Use this flow card to check if a zone is enabled for app control. You may have to restart Piggy Bank if you changed name of a zone.",
+          "en": "Use this flow card to check if a zone is enabled for app control. You may have to restart Piggy if you changed name of a zone.",
           "no": "Bruk dette flytkortet til å sjekke om en sone er aktivert for app styring. Du må kanskje starte Sparegris på nytt dersom du har endret navn på en sone.",
-          "nl": "Gebruik deze flowkaart om te controleren of een zone is ingeschakeld voor app-besturing. Mogelijk moet je Spaarpot opnieuw opstarten als je de naam van een zone hebt gewijzigd.",
-          "fr": "Utilisez cette carte de flux pour vérifier si une zone est activée pour le contrôle de l'application. Vous devrez peut-être redémarrer Tirelire si vous avez changé le nom d'une zone."
+          "nl": "Gebruik deze flowkaart om te controleren of een zone is ingeschakeld voor app-besturing. Mogelijk moet je Piggy opnieuw opstarten als je de naam van een zone hebt gewijzigd.",
+          "fr": "Utilisez cette carte de flux pour vérifier si une zone est activée pour le contrôle de l'application. Vous devrez peut-être redémarrer Sparegris si vous avez changé le nom d'une zone."
         },
         "args": [
           {
@@ -720,14 +658,14 @@
         "title": {
           "en": "Change Piggy Bank mode",
           "no": "Endre Sparegris modus",
-          "nl": "Wijzig Spaarpot modus",
-          "fr": "Changer le mode de Tirelire"
+          "nl": "Wijzig Piggy Bank modus",
+          "fr": "Changer le mode de Piggy Bank"
         },
         "titleFormatted": {
           "en": "Set the Piggy Bank operation mode to [[mode]]",
           "no": "Sett Sparegris driftsmodus til [[mode]]",
-          "nl": "Stel de bedrijfsmodus Spaarpot in op [[mode]]",
-          "fr": "Règle le mode de fonctionnement Tirelire sur [[mode]]"
+          "nl": "Stel de bedrijfsmodus Piggy Bank in op [[mode]]",
+          "fr": "Règle le mode de fonctionnement Piggy Bank sur [[mode]]"
         },
         "hint": {
           "en": "This action card has been deprecated, please replace it to get custom modes with custom names",
@@ -830,14 +768,14 @@
         "title": {
           "en": "Change Piggy Bank mode",
           "no": "Endre Sparegris modus",
-          "nl": "Spaarpot modus wijzigen",
-          "fr": "Changer le mode du Tirelire"
+          "nl": "Piggy Bank modus wijzigen",
+          "fr": "Changer le mode du Piggy Bank"
         },
         "titleFormatted": {
           "en": "Set the Piggy Bank operation mode to [[mode]]",
           "no": "Sett Sparegris driftsmodus til [[mode]]",
-          "nl": "Stel de bedrijfsmodus van Spaarpot in op [[mode]]",
-          "fr": "Règle le mode de fonctionnement de Tirelire sur [[mode]]"
+          "nl": "Stel de bedrijfsmodus van Piggy Bank in op [[mode]]",
+          "fr": "Règle le mode de fonctionnement de Piggy Bank sur [[mode]]"
         },
         "hint": {
           "en": "Allows you to switch between day, night and other operation modes",
@@ -870,20 +808,20 @@
         "title": {
           "en": "Change Piggy Bank Price level",
           "no": "Endre Sparegris prisnivå",
-          "nl": "Wijzig het prijsniveau van Spaarpot",
-          "fr": "Modifier le niveau de prix de la Tirelire"
+          "nl": "Wijzig het prijsniveau van Piggy Bank",
+          "fr": "Modifier le niveau de prix de la Piggy Bank"
         },
         "titleFormatted": {
           "en": "Set the Piggy Bank price point to [[mode]]",
           "no": "Sett Sparegris prisnivå til [[mode]]",
-          "nl": "Stel de prijs van Spaarpot in op [[mode]]",
-          "fr": "Définissez le prix de Tirelire sur [[mode]]"
+          "nl": "Stel de prijs van Piggy Bank in op [[mode]]",
+          "fr": "Définissez le prix de Piggy Bank sur [[mode]]"
         },
         "hint": {
           "en": "Inform Piggy Bank whether the energy is expensive or cheap",
           "no": "Informerer Sparegris om strømmen er dyr eller billig",
-          "nl": "Informeert Spaarpot of de elektriciteit duur of goedkoop is",
-          "fr": "Informer Tirelire si l'énergie est chère ou bon marché"
+          "nl": "Informeert Piggy Bank of de elektriciteit duur of goedkoop is",
+          "fr": "Informer Piggy Bank si l'énergie est chère ou bon marché"
         },
         "highlight": true,
         "args": [
@@ -998,8 +936,8 @@
         "hint": {
           "en": "Allows you to turn on/off devices in zones e.g. in connection with ventilation. You may have to restart Piggy Bank if you changed name of a zone. If the app is disabled the zone list may be empty.",
           "no": "Tillater deg å slå av/på enheter i soner f.eks. i forbindelse med lufting. Du må kanskje starte Sparegris på nytt dersom du har endret navn på en sone. Dersom appen er deaktivert kan sone-listen være tom.",
-          "nl": "Hiermee kun je apparaten in zones in-/uitschakelen, bijvoorbeeld in verband met ventilatie. Het kan zijn dat je Spaarpot opnieuw moet opstarten als je de naam van een zone hebt gewijzigd. Als de app is uitgeschakeld, kan de zonelijst leeg zijn.",
-          "fr": "Vous permet d'activer/désactiver des appareils dans des zones, par exemple dans le cadre de la diffusion. Vous devrez peut-être redémarrer Tirelire si vous avez modifié le nom d'une zone. Si l'application est désactivée, la liste des zones peut être vide .Modifier la zone [[zone]] active à [[enabled]]"
+          "nl": "Hiermee kun je apparaten in zones in-/uitschakelen, bijvoorbeeld in verband met ventilatie. Het kan zijn dat je Piggy Bank opnieuw moet opstarten als je de naam van een zone hebt gewijzigd. Als de app is uitgeschakeld, kan de zonelijst leeg zijn.",
+          "fr": "Vous permet d'activer/désactiver des appareils dans des zones, par exemple dans le cadre de la diffusion. Vous devrez peut-être redémarrer Sparegris si vous avez modifié le nom d'une zone. Si l'application est désactivée, la liste des zones peut être vide .Modifier la zone [[zone]] active à [[enabled]]"
         },
         "args": [
           {
@@ -1047,8 +985,8 @@
         "hint": {
           "en": "Allows you to override how Piggy Bank operates a specific device.",
           "no": "Lar deg overstyre hvordan Sparegris opererer spesifikke enheter.",
-          "nl": "Hiermee kunt je wijzigen hoe Spaarpot een specifiek apparaat bedient.",
-          "fr": "Vous permet de remplacer la façon dont Tirelire utilise des appareils spécifiques."
+          "nl": "Hiermee kunt je wijzigen hoe Piggy Bank een specifiek apparaat bedient.",
+          "fr": "Vous permet de remplacer la façon dont Piggy Bank utilise des appareils spécifiques."
         },
         "args": [
           {
@@ -1144,10 +1082,10 @@
           "fr": "Commencez à charger le [[offerEnergy]] kWh le moins cher avant le [[endTime]]"
         },
         "hint": {
-          "en": "Tell Piggy Bank to start a charging cycle. The offered energy (kWh) will be distributed on the cheapest hours before the time runs out. When the given amount of energy has been offered to the car the charging cycle will stop.\n\nNote that for supported car chargers the offered energy and used energy will be the same. For unsupported car chargers this may not be the case.",
+          "en": "Tell PiggyBank to start a charging cycle. The offered energy (kWh) will be distributed on the cheapest hours before the time runs out. When the given amount of energy has been offered to the car the charging cycle will stop.\n\nNote that for supported car chargers the offered energy and used energy will be the same. For unsupported car chargers this may not be the case.",
           "no": "Be Sparegris om å starte en ladesyklus. Den tilbydde energien (kWh) vil bli distribuert på de billigste timene før tiden går ut. Når den gitte mengden energi har blitt tilbydd bilen, vil ladesyklusen stoppe. Det samme skjer når tiden går ut\n\nMerk at for støttede billadere vil tilbudt energi og brukt energi være den samme. For billadere som ikke støttes, er dette kanskje ikke tilfelle.",
-          "nl": "Vraag Spaarpot om een laadcyclus te starten. De aangeboden energie (kWh) wordt verdeeld in de goedkoopste uren voordat de tijd om is. Wanneer de opgegeven hoeveelheid energie aan de auto is aangeboden, stopt de laadcyclus . Hetzelfde gebeurt wanneer de tijd verstrijkt\n\nLet op: voor ondersteunde autoladers is de aangeboden energie en gebruikte energie hetzelfde. Voor niet-ondersteunde autoladers is dit mogelijk niet het geval.",
-          "fr": "Demandez à Tirelire de démarrer un cycle de charge. L'énergie offerte (kWh) sera distribuée dans les heures les moins chères avant la fin du temps imparti. Lorsque la quantité d'énergie donnée a été offerte à la voiture, le cycle de charge s'arrêtera . La même chose se produit lorsque le délai expire\n\nNotez que pour les chargeurs de voiture pris en charge, l'énergie offerte et l'énergie utilisée seront les mêmes. Pour les chargeurs de voiture non pris en charge, cela peut ne pas être le cas."
+          "nl": "Vraag PiggyBank om een laadcyclus te starten. De aangeboden energie (kWh) wordt verdeeld in de goedkoopste uren voordat de tijd om is. Wanneer de opgegeven hoeveelheid energie aan de auto is aangeboden, stopt de laadcyclus . Hetzelfde gebeurt wanneer de tijd verstrijkt\n\nLet op: voor ondersteunde autoladers is de aangeboden energie en gebruikte energie hetzelfde. Voor niet-ondersteunde autoladers is dit mogelijk niet het geval.",
+          "fr": "Demandez à PiggyBank de démarrer un cycle de charge. L'énergie offerte (kWh) sera distribuée dans les heures les moins chères avant la fin du temps imparti. Lorsque la quantité d'énergie donnée a été offerte à la voiture, le cycle de charge s'arrêtera . La même chose se produit lorsque le délai expire\n\nNotez que pour les chargeurs de voiture pris en charge, l'énergie offerte et l'énergie utilisée seront les mêmes. Pour les chargeurs de voiture non pris en charge, cela peut ne pas être le cas."
         },
         "args": [
           {
@@ -1201,10 +1139,10 @@
           "fr": "Commencez à facturer [[offerHours]] les heures les moins chères avant [[endTime]]"
         },
         "hint": {
-          "en": "Tell Piggy Bank to start a charging cycle. It will only charge in the X cheapest hours before the time runs out. (Note that if the current hour is one of them then the charging time will be shorter)\n\nFor unsupported car chargers this may be the most deterministic starting function as they do not report used energy.",
+          "en": "Tell Piggy bank to start a charging cycle. It will only charge in the X cheapest hours before the time runs out. (Note that if the current hour is one of them then the charging time will be shorter)\n\nFor unsupported car chargers this may be the most deterministic starting function as they do not report used energy.",
           "no": "Be Sparegris om å starte en ladesyklus. Ladingen vil kun bli tilbydt i de X billigste timene før tiden går ut. (NB! Dersom inneværende time er blant de billigste så vil ladetiden være kortere)\n\nDette er den mest deterministiske startfunsjonen for billadere som ikke støttes, ettersom appen ikke får rapportert energiforbruk.",
-          "nl": "Vraag Spaarpot om een laadcyclus te starten. Laden wordt alleen aangeboden in de X goedkoopste uren voordat de tijd om is. (NB! Als het huidige uur tot de goedkoopste behoort, zal de laadtijd korter zijn)\n \nDit is de meest effectieve startfunctie voor niet-ondersteunde autoladers, aangezien de app geen gerapporteerd energieverbruik krijgt.",
-          "fr": "Demandez à Tirelire de démarrer un cycle de charge. La charge ne sera proposée que dans les X heures les moins chères avant la fin du délai. (NB! Si l'heure actuelle est parmi les moins chères, le temps de charge sera plus court)\n \nIl s'agit de la fonction de démarrage la plus déterministe pour les chargeurs de voiture non pris en charge, car l'application n'obtient pas de consommation d'énergie signalée."
+          "nl": "Vraag PiggyBank om een laadcyclus te starten. Laden wordt alleen aangeboden in de X goedkoopste uren voordat de tijd om is. (NB! Als het huidige uur tot de goedkoopste behoort, zal de laadtijd korter zijn)\n \nDit is de meest effectieve startfunctie voor niet-ondersteunde autoladers, aangezien de app geen gerapporteerd energieverbruik krijgt.",
+          "fr": "Demandez à PiggyBank de démarrer un cycle de charge. La charge ne sera proposée que dans les X heures les moins chères avant la fin du délai. (NB! Si l'heure actuelle est parmi les moins chères, le temps de charge sera plus court)\n \nIl s'agit de la fonction de démarrage la plus déterministe pour les chargeurs de voiture non pris en charge, car l'application n'obtient pas de consommation d'énergie signalée."
         },
         "args": [
           {
@@ -1267,10 +1205,10 @@
       },
       {
         "title": {
-          "en": "Update Piggy Bank with the energy used",
+          "en": "Update PiggyBank with the energy used",
           "no": "Oppdater Sparegris med energiforbruk",
-          "nl": "Spaarpot bijwerken met energieverbruik",
-          "fr": "Mettre à jour Tirelire avec l'énergie utilisée"
+          "nl": "PiggyBank bijwerken met energieverbruik",
+          "fr": "Mettre à jour PiggyBank avec l'énergie utilisée"
         },
         "titleFormatted": {
           "en": "Set the energy used to [[TotalEnergyUsage]] kWh",
@@ -1303,10 +1241,10 @@
       },
       {
         "title": {
-          "en": "Send active power to Piggy Bank",
+          "en": "Send active power to PiggyBank",
           "no": "Send aktiv effekt til Sparegris",
-          "nl": "Stuur actief vermogen naar Spaarpot",
-          "fr": "Envoyer la puissance active à Tirelire"
+          "nl": "Stuur actief vermogen naar PiggyBank",
+          "fr": "Envoyer la puissance active à PiggyBank"
         },
         "titleFormatted": {
           "en": "Set the power to [[CurrentPower]] W",
@@ -2076,15 +2014,15 @@
       "insightsTitleTrue": {
         "en": "Piggy Bank was disabled",
         "no": "Sparegris ble deaktivert",
-        "nl": "Spaarpot was uitgeschakeld",
-        "fr": "Tirelire a été désactivée"
+        "nl": "Piggy Bank was uitgeschakeld",
+        "fr": "Piggy Bank a été désactivée"
       },
       "insights": true,
       "insightsTitleFalse": {
         "en": "Piggy Bank was disabled",
         "no": "Sparegris ble deaktivert",
-        "nl": "Spaarpot was uitgeschakeld",
-        "fr": "Tirelire a été désactivée"
+        "nl": "Piggy Bank was uitgeschakeld",
+        "fr": "Piggy Bank a été désactivée"
       }
     },
     "piggy_mode_holiday": {

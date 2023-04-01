@@ -13,14 +13,14 @@
   "insightsTitleTrue": {
     "en": "Piggy Bank was disabled",
     "no": "Sparegris ble deaktivert",
-    "nl": "Spaarpot was uitgeschakeld",
-    "fr": "Tirelire a été désactivée"
+    "nl": "Piggy Bank was uitgeschakeld",
+    "fr": "Piggy Bank a été désactivée"
   },
   "insights": true,
   "insightsTitleFalse": {
     "en": "Piggy Bank was disabled",
     "no": "Sparegris ble deaktivert",
-    "nl": "Spaarpot was uitgeschakeld",
-    "fr": "Tirelire a été désactivée"
+    "nl": "Piggy Bank was uitgeschakeld",
+    "fr": "Piggy Bank a été désactivée"
   }
 }
