@@ -4,18 +4,24 @@
     "type": "number",
     "label": {
       "en": "Refresh rate",
-      "no": "Oppdateringshastighet"
+      "no": "Oppdateringshastighet",
+      "nl": "Vernieuwingsfrequentie",
+      "fr": "Fréquence de rafraîchissement"
     },
     "value": 60,
     "min": 10,
     "max": 60,
     "units": {
       "en": "seconds",
-      "no": "sekunder"
+      "no": "sekunder",
+      "nl": "seconden",
+      "fr": "secondes"
     },
     "hint": {
-      "en": "Number of seconds between every time to fetch fresh data from the app. It is not reccomended to go much below 15 as it may affect homey performance.",
-      "no": "Antall sekunder mellom hver gang det skal hentes oppdaterte tall fra appen. Det er ikke anbefalt å gå mye under 15 ettersom ytelsen til homey vil bli påvirket."
+      "en": "Number of seconds between every time to fetch fresh data from the app. It is not recommended to go much below 15 as it may affect Homey performance.",
+      "no": "Antall sekunder mellom hver gang det skal hentes oppdaterte tall fra appen. Det er ikke anbefalt å gå mye under 15 ettersom ytelsen til Homey vil bli påvirket.",
+      "nl": "Aantal seconden tussen elke keer dat er nieuwe gegevens worden opgehaald uit de app. Het wordt niet aanbevolen om veel lager dan 15 te gaan, aangezien dit de prestaties van Homey kan beïnvloeden.",
+      "fr": "Nombre de secondes entre chaque fois où les données fraîches sont récupérées à partir de l'application. Il n'est pas recommandé de descendre en dessous de 15 car cela peut affecter les performances de Homey."
     }
   },
   {
@@ -23,7 +29,9 @@
     "type": "checkbox",
     "label": {
       "en": "Show extended capabilities",
-      "no": "Vis utvidet informasjon"
+      "no": "Vis utvidet informasjon",
+      "nl": "Toon uitgebreide mogelijkheden",
+      "fr": "Afficher les capacités étendues"
     },
     "value": false
   },
@@ -32,11 +40,15 @@
     "type": "checkbox",
     "label": {
       "en": "Show experimental capabilities",
-      "no": "Vis eksperimentell informasjon"
+      "no": "Vis eksperimentell informasjon",
+      "nl": "Toon experimentele mogelijkheden",
+      "fr": "Afficher les capacités expérimentales"
     },
     "hint": {
       "en": "Experimental features are planned features that are under development and as such might show incorrect information.",
-      "no": "Eksperimentell informasjon er planlagt informasjon som ikke er ferdig utviklet enda. Tallene som vises kan være gale."
+      "no": "Eksperimentell informasjon er planlagt informasjon som ikke er ferdig utviklet enda. Tallene som vises kan være gale.",
+      "nl": "Experimentele functies zijn geplande functies die nog in ontwikkeling zijn en daarom mogelijk onjuiste informatie laten zien.",
+      "fr": "Les fonctionnalités expérimentales sont des fonctionnalités planifiées qui sont en cours de développement et peuvent donc afficher des informations incorrectes."
     },
     "value": false
   },
@@ -45,7 +57,9 @@
     "type": "checkbox",
     "label": {
       "en": "Show debug capabilities",
-      "no": "Vis debug informasjon"
+      "no": "Vis debug informasjon",
+      "nl": "Toon debug mogelijkheden",
+      "fr": "Afficher les capacités de débogage"
     },
     "value": false
   },
@@ -54,12 +68,16 @@
     "type": "label",
     "label": {
       "en": "Other settings",
-      "no": "Andre instillinger"
+      "no": "Andre instillinger",
+      "nl": "Andere instellingen",
+      "fr": "Autres paramètres"
     },
     "value": "See app settings",
     "hint": {
       "en": "This device is just a window into the app. In order to access the full control panel please use the app settings instead.",
-      "no": "Denne enheten er bare et vindu inn i appen. Vennligst bruk app-innstillinger for å få full tilgang til hele kontrollpanelet."
+      "no": "Denne enheten er bare et vindu inn i appen. Vennligst bruk app-innstillinger for å få full tilgang til hele kontrollpanelet.",
+      "nl": "Dit apparaat is slechts een venster naar de app. Gebruik in plaats daarvan de app-instellingen om toegang te krijgen tot het volledige bedieningspaneel.",
+      "fr": "Cet appareil n'est qu'une fenêtre sur l'application. Pour accéder au panneau de contrôle complet, veuillez utiliser les paramètres de l'application."
     }
   }
 ]

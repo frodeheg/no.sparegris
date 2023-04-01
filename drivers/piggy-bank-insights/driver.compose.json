@@ -1,7 +1,9 @@
 {
   "name": {
     "en": "Piggy Bank Insights",
-    "no": "Sparegris Innsikt"
+    "no": "Sparegris Innsikt",
+    "nl": "Spaarpot Inzichten",
+    "fr": "Tirelire Perspicacités"
   },
   "class": "other",
   "capabilities": [
@@ -37,139 +39,193 @@
     "button.reset_stats": {
       "maintenanceAction": true,
       "title": {
-         "en": "Reset Statistics",
-         "no": "Nullstill statistikk"
+        "en": "Reset Statistics",
+        "no": "Nullstill statistikk",
+        "nl": "Reset statistieken",
+        "fr": "Réinitialiser les statistiques"
       },
       "desc": {
-         "en": "Reset the Statistics.",
-         "no": "Nullstiller statistikken."
+        "en": "Reset the Statistics.",
+        "no": "Nullstiller statistikken.",
+        "nl": "Reset de statistieken",
+        "fr": "Réinitialiser les statistiques"
       }
     },
     "button.filterChangeAC": {
       "maintenanceAction": true,
       "title": {
-         "en": "Change AC filters",
-         "no": "Bytt AC filter"
+        "en": "Change AC filters",
+        "no": "Bytt AC filter",
+        "nl": "Wissel A/C filters",
+        "fr": "Changer les filtres AC"
       },
       "desc": {
-         "en": "Turns off all heat pumps and leaves them switched off until they are manually switched on again.",
-         "no": "Slår av alle varmepumper og lar dem være avslått inntil de manuelt blir påslått igjen."
+        "en": "Turns off all heat pumps and leaves them switched off until they are manually switched on again.",
+        "no": "Slår av alle varmepumper og lar dem være avslått inntil de manuelt blir påslått igjen.",
+        "nl": "Schakelt alle warmtepompen uit, en laat ze uitgeschakeld ,totdat ze handmatig weer worden ingeschakeld.",
+        "fr": "Éteint toutes les pompes à chaleur et les laisse éteintes jusqu'à ce qu'elles soient réactivées manuellement."
       }
     },
     "piggy_money.savings_all_time_use": {
       "title": {
         "en": "Money saved utility joint",
-        "no": "Penger spart bruksledd"
+        "no": "Penger spart bruksledd",
+        "nl": "Geld bespaard met app",
+        "fr": "Argent économisé avec l'application"
       }
     },
     "piggy_money.savings_all_time_power_part": {
       "title": {
         "en": "Money saved power joint",
-        "no": "Penger spart effektledd"
+        "no": "Penger spart effektledd",
+        "nl": "Geld bespaard nutsbedrijf",
+        "fr": "Utilitaire d'économie d'argent"
       }
     },
     "piggy_money.savings_all_time_total": {
       "title": {
         "en": "Money saved in total",
-        "no": "Penger spart totalt"
+        "no": "Penger spart totalt",
+        "nl": "Geld bespaard in totaal",
+        "fr": "Somme économisée au total"
       }
     },
     "piggy_money.average_price": {
       "title": {
-        "en": "Moving average price",
-        "no": "Glidende snittpris"
+        "en": "Average price - Progressive",
+        "no": "Glidende snittpris",
+        "nl": "Gemiddelde prijs - Voortschrijdend",
+        "fr": "prix moyen - Progressif"
       },
       "units": {
         "en": "NOK/kWh",
-        "no": "kr/kWh"
+        "no": "kr/kWh",
+        "nl": "EUR/kWh",
+        "fr": "EUR/kWh"
       }
     },
     "piggy_money.current_price": {
       "title": {
         "en": "Current price",
-        "no": "Gjeldende pris"
+        "no": "Gjeldende pris",
+        "nl": "Huidige prijs",
+        "fr": "Prix actuel"
       },
       "units": {
         "en": "NOK/kWh",
-        "no": "kr/kWh"
+        "no": "kr/kWh",
+        "nl": "EUR/kWh",
+        "fr": "EUR/kWh"
       }
     },
     "piggy_money.acceptable_price": {
       "title": {
         "en": "Acceptable price",
-        "no": "Akseptabel pris"
+        "no": "Akseptabel pris",
+        "nl": "Acceptabele prijs",
+        "fr": "Prix acceptable"
       },
       "units": {
         "en": "NOK/kWh",
-        "no": "kr/kWh"
+        "no": "kr/kWh",
+        "nl": "EUR/kWh",
+        "fr": "EUR/kWh"
       }
     },
     "piggy_money.dirt_cheap_price_limit": {
       "title": {
         "en": "Limit for dirt cheap prices",
-        "no": "Grense for grisebillig pris"
+        "no": "Grense for grisebillig pris",
+        "nl": "Limiet voor spotgoedkope prijzen",
+        "fr": "Limite pour les prix très bon marché"
       },
       "units": {
         "en": "NOK/kWh",
-        "no": "kr/kWh"
+        "no": "kr/kWh",
+        "nl": "EUR/kWh",
+        "fr": "EUR/kWh"
       }
     },
     "piggy_money.low_price_limit": {
       "title": {
         "en": "Limit for low prices",
-        "no": "Grense for lav pris"
+        "no": "Grense for lav pris",
+        "nl": "Limiet voor lage prijzen",
+        "fr": "Limite pour les prix bas"
       },
       "units": {
         "en": "NOK/kWh",
-        "no": "kr/kWh"
+        "no": "kr/kWh",
+        "nl": "EUR/kWh",
+        "fr": "EUR/kWh"
       }
     },
     "piggy_money.high_price_limit": {
       "title": {
         "en": "Limit for high prices",
-        "no": "Grense for høy pris"
+        "no": "Grense for høy pris",
+        "nl": "Limiet voor hoge prijzen",
+        "fr": "Limite pour les prix élevés"
       },
       "units": {
         "en": "NOK/kWh",
-        "no": "kr/kWh"
+        "no": "kr/kWh",
+        "nl": "EUR/kWh",
+        "fr": "EUR/kWh"
       }
     },
     "piggy_money.extreme_price_limit": {
       "title": {
         "en": "Limit for extremely high prices",
-        "no": "Grense for ekstrempriser"
+        "no": "Grense for ekstrempriser",
+        "nl": "Limiet voor erg hoge prijzen",
+        "fr": "Limite pour les prix très élevés"
       },
       "units": {
         "en": "NOK/kWh",
-        "no": "kr/kWh"
+        "no": "kr/kWh",
+        "nl": "EUR/kWh",
+        "fr": "EUR/kWh"
       }
     },
     "alarm_generic.overshoot": {
       "title": {
         "en": "Manual powerdown required!",
-        "no": "Manuell nedstegning påkrevd!"
+        "no": "Manuell nedstegning påkrevd!",
+        "nl": "",
+        "fr": ""
       },
       "insightsTitleTrue": {
         "en": "Unable to maintain power limit!",
-        "no": "Klarer ikke å garantere forbrukstaket!"
+        "no": "Klarer ikke å garantere forbrukstaket!",
+        "nl": "Handmatige uitschakeling vereist!",
+        "fr": "Mise hors tension manuelle requise!"
       },
       "insightsTitleFalse": {
         "en": "Power limit once again within reach",
-        "no": "Forbrukstaket er nå innenfor rekkevidde"
+        "no": "Forbrukstaket er nå innenfor rekkevidde",
+        "nl": "Het verbruiksplafond is nu binnen handbereik",
+        "fr": "Le plafond de consommation est désormais à portée de main"
       }
     },
     "alarm_generic.limited": {
       "title": {
         "en": "Limited Power!",
-        "no": "Begrenset strøm!"
+        "no": "Begrenset strøm!",
+        "nl": "",
+        "fr": ""
       },
       "insightsTitleTrue": {
         "en": "The power is being limited!",
-        "no": "Strømmen blir begrenset!"
+        "no": "Strømmen blir begrenset!",
+        "nl": "Vermogen wordt nu begrenst!',",
+        "fr": "Puissance limitée!"
       },
       "insightsTitleFalse": {
         "en": "No limitation",
-        "no": "Ingen begrensning"
+        "no": "Ingen begrensning",
+        "nl": "Geen limiet",
+        "fr": "Sans limites"
       },
       "preventInsights": true,
       "icon": "/assets/limit.svg"
@@ -177,124 +233,168 @@
     "meter_power.estimated": {
       "units": {
         "en": "Wh",
-        "no": "Wh"
+        "no": "Wh",
+        "nl": "Wh",
+        "fr": "Wh"
       },
       "title": {
         "en": "Estimated usage this hour",
-        "no": "Estimert timeforbruk"
+        "no": "Estimert timeforbruk",
+        "nl": "Geschat gebruik dit uur",
+        "fr": "Utilisation estimée cette heure"
       },
       "approximated": true
     },
     "measure_power.free_capacity": {
       "title": {
         "en": "Free capacity",
-        "no": "Tilgjengelig effekt"
+        "no": "Tilgjengelig effekt",
+        "nl": "Vrije capaciteit",
+        "fr": "Capacité libre"
       },
       "approximated": true
     },
     "measure_power.reserved_power": {
       "title": {
         "en": "Reserved power",
-        "no": "Reservert effekt"
+        "no": "Reservert effekt",
+        "nl": "Gereserveerd vermogen",
+        "fr": "Puissance réservée"
       },
       "approximated": false
     },
     "meter_power.last_hour": {
       "units": {
         "en": "Wh",
-        "no": "Wh"
+        "no": "Wh",
+        "nl": "Wh",
+        "fr": "Wh"
       },
       "title": {
         "en": "Last hour usage",
-        "no": "Forbruk forrige time"
+        "no": "Forbruk forrige time",
+        "nl": "Verbruik afgelopen uur",
+        "fr": "Utilisation de la dernière heure"
       },
       "approximated": true
     },
     "meter_power.last_day": {
       "units": {
         "en": "Wh",
-        "no": "Wh"
+        "no": "Wh",
+        "nl": "Wh",
+        "fr": "Wh"
       },
       "title": {
         "en": "Max hourly usage yesterday",
-        "no": "Maks timeforbruk i går"
+        "no": "Maks timeforbruk i går",
+        "nl": "Max. uurverbruik gisteren",
+        "fr": "Utilisation horaire max. hier"
       },
       "approximated": true
     },
     "meter_power.last_month": {
       "units": {
         "en": "Wh",
-        "no": "Wh"
+        "no": "Wh",
+        "nl": "Wh",
+        "fr": "Wh"
       },
       "title": {
         "en": "Last month tariff guide",
-        "no": "Forrige måneds tariffguide"
+        "no": "Forrige måneds tariffguide",
+        "nl": "Tarievengids van de afgelopen maand",
+        "fr": "Guide tarifaire du mois dernier"
       },
       "approximated": true
     },
     "meter_power.month_estimate": {
       "units": {
         "en": "Wh",
-        "no": "Wh"
+        "no": "Wh",
+        "nl": "Wh",
+        "fr": "Wh"
       },
       "title": {
         "en": "Tariff guide this month",
-        "no": "Tariffguide denne måneden"
+        "no": "Tariffguide denne måneden",
+        "nl": "Tarievengids deze maand",
+        "fr": "Guide tarifaire ce mois-ci"
       },
       "approximated": true
     },
     "meter_power.dirt_cheap_energy_avg": {
       "units": {
         "en": "Wh",
-        "no": "Wh"
+        "no": "Wh",
+        "nl": "Wh",
+        "fr": "Wh"
       },
       "title": {
         "en": "Average Power for dirt cheap hours",
-        "no": "Snitt Energibruk for grisebillige timer"
+        "no": "Snitt Energibruk for grisebillige timer",
+        "nl": "Gemiddeld vermogen voor spotgoedkope uren",
+        "fr": "Puissance moyenne pour des heures très bon marché"
       },
       "approximated": true
     },
     "meter_power.low_energy_avg": {
       "units": {
         "en": "Wh",
-        "no": "Wh"
+        "no": "Wh",
+        "nl": "Wh",
+        "fr": "Wh"
       },
       "title": {
         "en": "Average Power for cheap hours",
-        "no": "Snitt Energibruk for billige timer"
+        "no": "Snitt Energibruk for billige timer",
+        "nl": "Gemiddeld vermogen voor goedkope uren",
+        "fr": "Puissance moyenne pour des heures bon marché"
       },
       "approximated": true
     },
     "meter_power.norm_energy_avg": {
       "units": {
         "en": "Wh",
-        "no": "Wh"
+        "no": "Wh",
+        "nl": "Wh",
+        "fr": "Wh"
       },
       "title": {
-        "en": "Average Power for normal price hours",
-        "no": "Snitt Energibruk for normale timer"
+        "en": "Average Power for normal priced hours",
+        "no": "Snitt Energibruk for normale timer",
+        "nl": "Gemiddeld vermogen voor normaal geprijsde uren",
+        "fr": "Puissance moyenne pour les heures à prix normal"
       },
       "approximated": true
     },
     "meter_power.high_energy_avg": {
       "units": {
         "en": "Wh",
-        "no": "Wh"
+        "no": "Wh",
+        "nl": "Wh",
+        "fr": "Wh"
       },
       "title": {
         "en": "Average Power for expensive hours",
-        "no": "Snitt Energibruk for dyre timer"
+        "no": "Snitt Energibruk for dyre timer",
+        "nl": "Gemiddeld vermogen voor dure uren",
+        "fr": "Puissance moyenne pour des heures chères"
       },
       "approximated": true
     },
     "meter_power.extreme_energy_avg": {
       "units": {
         "en": "Wh",
-        "no": "Wh"
+        "no": "Wh",
+        "nl": "Wh",
+        "fr": "Wh"
       },
       "title": {
         "en": "Average Power for extremely expensive price hours",
-        "no": "Snitt Energibruk for ekstremt dyre timer"
+        "no": "Snitt Energibruk for ekstremt dyre timer",
+        "nl": "Gemiddeld vermogen voor zeer dure uren",
+        "fr": "Puissance moyenne pour des heures très chères"
       },
       "approximated": true
     }
