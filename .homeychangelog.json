@@ -781,5 +781,8 @@
   },
   "0.20.15": {
     "en": "Improved meter reader handling + enabled it by default again"
+  },
+  "0.20.16": {
+    "en": "Reverted translation changes such that the app can be pushed to stable without permission from Athom."
   }
 }
