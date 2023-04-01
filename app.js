@@ -2148,8 +2148,8 @@ class PiggyBank extends Homey.App {
         if (+this.homey.settings.get('operatingMode') === c.MODE_DISABLED) {
           return Promise.resolve();
         }
-        return this.mutexForPower.runExclusive(async () => /* this.onMeterUpdate(meter, meterTime)
-          .then(() => */ this.onPowerUpdate(power, time));
+        return this.mutexForPower.runExclusive(async () => this.onMeterUpdate(meter, meterTime)
+          .then(() => this.onPowerUpdate(power, time)));
       })
       .finally(() => {
         // Schedule next pulse event
