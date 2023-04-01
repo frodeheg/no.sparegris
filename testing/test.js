@@ -1342,8 +1342,8 @@ async function testMeterAndPower() {
           const notReported = lastReportedPower * ((lastPingTime - lastReported) / 3600000);
           const estimateMeter = lastReportedValue + notReported - prevSlotValue - lastOvershoot;
           const noPowerError = /* noPowerTime / (futurePriceOptions.granularity * 60 * 1000); */ (noPowerTime / 3600000) * app.homey.settings.get('maxPower')[TIMESPAN.HOUR];
-          const marginLow = /*Math.floor(estimateMeter * 0.95 * (1 / (1 + noPowerError))); */ Math.max(Math.floor(estimateMeter * 0.93 - noPowerError), 0);
-          let marginHigh = /*Math.ceil(estimateMeter * 1.05 * (1 + noPowerError)); */ Math.ceil(estimateMeter * 1.06 + noPowerError);
+          const marginLow = /*Math.floor(estimateMeter * 0.95 * (1 / (1 + noPowerError))); */ Math.max(Math.floor(estimateMeter * 0.95 - noPowerError), 0);
+          let marginHigh = /*Math.ceil(estimateMeter * 1.05 * (1 + noPowerError)); */ Math.ceil(estimateMeter * 1.05 + noPowerError);
           if (marginHigh > app.homey.settings.get('maxPower')[TIMESPAN.QUARTER]) {
             marginHigh = app.homey.settings.get('maxPower')[TIMESPAN.QUARTER];
           }
@@ -1395,8 +1395,8 @@ async function testMeterAndPower() {
     // console.log(`${hitMeterPast} : ${hitMeterEqual} : ${hitPowerPast} : ${hitPowerEqual} : ${hitDoubleCross}`)
     const avgErrorPst = Math.floor(10000 * (accErrors / numErrors)) / 100;
     const maxErrorPst = Math.floor(10000 * maxError) / 100;
-    if (avgErrorPst >  3) throw new Error(`Average error exceeded limit: ${avgErrorPst}%`);
-    if (maxErrorPst > 20) throw new Error(`Maximum error exceeded limit: ${maxErrorPst}%`);
+    if (avgErrorPst >  2) throw new Error(`Average error exceeded limit: ${avgErrorPst}%`);
+    if (maxErrorPst > 12) throw new Error(`Maximum error exceeded limit: ${maxErrorPst}%`);
     // console.log(`crossed: ${i} ${finished}: ${hitMeterPast} ${hitMeterEqual} ${hitPowerPast} ${hitPowerEqual} ${hitDoubleCross} Avg. error: ${avgErrorPst}% Max: ${maxErrorPst}%`);
   } finally {
     await app.onUninit();
