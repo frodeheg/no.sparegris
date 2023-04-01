@@ -6,6 +6,8 @@
 /* eslint-disable guard-for-in */
 /* eslint-disable no-restricted-syntax */
 /* eslint comma-dangle: ["error", "never"] */
+/* eslint arrow-parens: ["error", "as-needed"] */
+/* eslint-env es6 */
 
 'use strict';
 
@@ -35,9 +37,11 @@ const {
   daysInMonth, toLocalTime, timeDiff, timeSinceLastLimiter, timeToNextSlot,
   timeToNextLimiter, limiterLength, roundToStartOfMonth, roundToNearestHour,
   roundToStartOfSlot, roundToStartOfDay, roundToStartOfLimit, hoursInDay, fromLocalTime,
-  TIMESPAN, timeToNextHour, slotsInDay
+  TIMESPAN, timeToNextHour
 } = require('./common/homeytime');
-const { isNumber, toNumber, combine, sumArray } = require('./common/tools');
+const {
+  isNumber, toNumber, combine, sumArray
+} = require('./common/tools');
 const prices = require('./common/prices');
 const locale = require('./settings/locale');
 
@@ -909,7 +913,7 @@ class PiggyBank extends Homey.App {
       if (preventZigbee) return Promise.reject(new Error(this.homey.__('warnings.homeyReboot')));
       if (!this.app_is_configured) return Promise.reject(new Error(this.homey.__('warnings.notConfigured')));
       if (+this.homey.settings.get('operatingMode') === c.MODE_DISABLED) return Promise.reject(new Error(this.homey.__('warnings.notEnabled')));
-      if (this.homey.settings.get('meterReader') in  this.__meterReaders) return Promise.reject(new Error(this.homey.__('warnings.meterIsAuto')));
+      if (this.homey.settings.get('meterReader') in this.__meterReaders) return Promise.reject(new Error(this.homey.__('warnings.meterIsAuto')));
       return this.mutexForPower.runExclusive(async () => this.onMeterUpdate(+args.TotalEnergyUsage));
     });
     const cardActionPowerUpdate = this.homey.flow.getActionCard('update-meter-power');
@@ -917,7 +921,7 @@ class PiggyBank extends Homey.App {
       if (preventZigbee) return Promise.reject(new Error(this.homey.__('warnings.homeyReboot')));
       if (!this.app_is_configured) return Promise.reject(new Error(this.homey.__('warnings.notConfigured')));
       if (+this.homey.settings.get('operatingMode') === c.MODE_DISABLED) return Promise.reject(new Error(this.homey.__('warnings.notEnabled')));
-      if (this.homey.settings.get('meterReader') in  this.__meterReaders) return Promise.reject(new Error(this.homey.__('warnings.meterIsAuto')));
+      if (this.homey.settings.get('meterReader') in this.__meterReaders) return Promise.reject(new Error(this.homey.__('warnings.meterIsAuto')));
       return this.mutexForPower.runExclusive(async () => this.onPowerUpdate(+args.CurrentPower));
     });
     const cardActionModeUpdate = this.homey.flow.getActionCard('change-piggy-bank-mode');
@@ -2395,7 +2399,7 @@ class PiggyBank extends Homey.App {
       this.__previous_power_time = new Date(now.getTime());
       this.__current_power_time = new Date(now.getTime());
       this.__current_power = newPower;
-      if (!timingOk &&  lapsedTime < -60000) {
+      if (!timingOk && lapsedTime < -60000) {
         const message = `The reported power time was ${Math.floor(lapsedTime / -60000)} minute(s) from the past. Either your meter reader is unreliable or the clock was adjusted.`;
         this.updateLog(message, c.LOG_ERROR);
       }
@@ -2737,8 +2741,8 @@ class PiggyBank extends Homey.App {
       try {
         order = this.__current_state[a.id].nComError
         - this.__current_state[b.id].nComError;
-      } catch(err) {
-        console.log('Test environment error: Most likely you forgot to set app.__deviceList')
+      } catch (err) {
+        console.log('Test environment error: Most likely you forgot to set app.__deviceList');
         order = 0; // Should only happen when loading old states from files
       }
       return order;
