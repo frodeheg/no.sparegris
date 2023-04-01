@@ -2396,7 +2396,7 @@ class PiggyBank extends Homey.App {
       this.__current_power_time = new Date(now.getTime());
       this.__current_power = newPower;
       if (!timingOk &&  lapsedTime < -60000) {
-        const message = 'The reported power time was more than a minute from the past. Either your meter reader is unreliable or the clock was adjusted.';
+        const message = `The reported power time was ${Math.floor(lapsedTime / -60000)} minute(s) from the past. Either your meter reader is unreliable or the clock was adjusted.`;
         this.updateLog(message, c.LOG_ERROR);
       }
       return Promise.resolve(); // Meter reading is already more recent, so ignore
