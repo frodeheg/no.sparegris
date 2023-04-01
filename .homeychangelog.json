@@ -778,5 +778,8 @@
   },
   "0.20.14": {
     "en": "Due to reported problems, the two newest features that are supposed to improve the reliability of the app will be disabled until the problem has been understood. + Added support for device se.nexa:MYC-2300S"
+  },
+  "0.20.15": {
+    "en": "Improved meter reader handling + enabled it by default again"
   }
 }
