@@ -2,14 +2,14 @@
   "title": {
     "en": "Change Piggy Bank mode",
     "no": "Endre Sparegris modus",
-    "nl": "Piggy Bank modus wijzigen",
-    "fr": "Changer le mode du Piggy Bank"
+    "nl": "Spaarpot modus wijzigen",
+    "fr": "Changer le mode du Tirelire"
   },
   "titleFormatted": {
     "en": "Set the Piggy Bank operation mode to [[mode]]",
     "no": "Sett Sparegris driftsmodus til [[mode]]",
-    "nl": "Stel de bedrijfsmodus van Piggy Bank in op [[mode]]",
-    "fr": "Règle le mode de fonctionnement de Piggy Bank sur [[mode]]"
+    "nl": "Stel de bedrijfsmodus van Spaarpot in op [[mode]]",
+    "fr": "Règle le mode de fonctionnement de Tirelire sur [[mode]]"
   },
   "hint": {
     "en": "Allows you to switch between day, night and other operation modes",

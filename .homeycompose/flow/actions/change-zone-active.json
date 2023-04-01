@@ -14,8 +14,8 @@
   "hint": {
     "en": "Allows you to turn on/off devices in zones e.g. in connection with ventilation. You may have to restart Piggy Bank if you changed name of a zone. If the app is disabled the zone list may be empty.",
     "no": "Tillater deg å slå av/på enheter i soner f.eks. i forbindelse med lufting. Du må kanskje starte Sparegris på nytt dersom du har endret navn på en sone. Dersom appen er deaktivert kan sone-listen være tom.",
-    "nl": "Hiermee kun je apparaten in zones in-/uitschakelen, bijvoorbeeld in verband met ventilatie. Het kan zijn dat je Piggy Bank opnieuw moet opstarten als je de naam van een zone hebt gewijzigd. Als de app is uitgeschakeld, kan de zonelijst leeg zijn.",
-    "fr": "Vous permet d'activer/désactiver des appareils dans des zones, par exemple dans le cadre de la diffusion. Vous devrez peut-être redémarrer Sparegris si vous avez modifié le nom d'une zone. Si l'application est désactivée, la liste des zones peut être vide .Modifier la zone [[zone]] active à [[enabled]]"
+    "nl": "Hiermee kun je apparaten in zones in-/uitschakelen, bijvoorbeeld in verband met ventilatie. Het kan zijn dat je Spaarpot opnieuw moet opstarten als je de naam van een zone hebt gewijzigd. Als de app is uitgeschakeld, kan de zonelijst leeg zijn.",
+    "fr": "Vous permet d'activer/désactiver des appareils dans des zones, par exemple dans le cadre de la diffusion. Vous devrez peut-être redémarrer Tirelire si vous avez modifié le nom d'une zone. Si l'application est désactivée, la liste des zones peut être vide .Modifier la zone [[zone]] active à [[enabled]]"
   },
   "args": [
     {

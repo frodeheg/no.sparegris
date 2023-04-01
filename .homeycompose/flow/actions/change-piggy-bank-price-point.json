@@ -2,20 +2,20 @@
   "title": {
     "en": "Change Piggy Bank Price level",
     "no": "Endre Sparegris prisnivå",
-    "nl": "Wijzig het prijsniveau van Piggy Bank",
-    "fr": "Modifier le niveau de prix de la Piggy Bank"
+    "nl": "Wijzig het prijsniveau van Spaarpot",
+    "fr": "Modifier le niveau de prix de la Tirelire"
   },
   "titleFormatted": {
     "en": "Set the Piggy Bank price point to [[mode]]",
     "no": "Sett Sparegris prisnivå til [[mode]]",
-    "nl": "Stel de prijs van Piggy Bank in op [[mode]]",
-    "fr": "Définissez le prix de Piggy Bank sur [[mode]]"
+    "nl": "Stel de prijs van Spaarpot in op [[mode]]",
+    "fr": "Définissez le prix de Tirelire sur [[mode]]"
   },
   "hint": {
     "en": "Inform Piggy Bank whether the energy is expensive or cheap",
     "no": "Informerer Sparegris om strømmen er dyr eller billig",
-    "nl": "Informeert Piggy Bank of de elektriciteit duur of goedkoop is",
-    "fr": "Informer Piggy Bank si l'énergie est chère ou bon marché"
+    "nl": "Informeert Spaarpot of de elektriciteit duur of goedkoop is",
+    "fr": "Informer Tirelire si l'énergie est chère ou bon marché"
   },
   "highlight": true,
   "args": [

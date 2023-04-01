@@ -12,10 +12,10 @@
     "fr": "La zone [[zone]] !{{est|n'est pas}} active"
   },
   "hint": {
-    "en": "Use this flow card to check if a zone is enabled for app control. You may have to restart Piggy if you changed name of a zone.",
+    "en": "Use this flow card to check if a zone is enabled for app control. You may have to restart Piggy Bank if you changed name of a zone.",
     "no": "Bruk dette flytkortet til å sjekke om en sone er aktivert for app styring. Du må kanskje starte Sparegris på nytt dersom du har endret navn på en sone.",
-    "nl": "Gebruik deze flowkaart om te controleren of een zone is ingeschakeld voor app-besturing. Mogelijk moet je Piggy opnieuw opstarten als je de naam van een zone hebt gewijzigd.",
-    "fr": "Utilisez cette carte de flux pour vérifier si une zone est activée pour le contrôle de l'application. Vous devrez peut-être redémarrer Sparegris si vous avez changé le nom d'une zone."
+    "nl": "Gebruik deze flowkaart om te controleren of een zone is ingeschakeld voor app-besturing. Mogelijk moet je Spaarpot opnieuw opstarten als je de naam van een zone hebt gewijzigd.",
+    "fr": "Utilisez cette carte de flux pour vérifier si une zone est activée pour le contrôle de l'application. Vous devrez peut-être redémarrer Tirelire si vous avez changé le nom d'une zone."
   },
   "args": [
     {
