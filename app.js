@@ -697,9 +697,17 @@ class PiggyBank extends Homey.App {
       this.__accum_energy = [0, 0, 0, 0];
       this.__current_power_time = roundToStartOfMonth(new Date(now.getTime()), this.homey); // Create fake power since start of month
       this.__accum_energyTime = new Date(this.__current_power_time.getTime());
-      this.updateLog('No state from previous shutdown? Powerloss, deactivated or forced restart.', c.LOG_ALL);
+      this.updateLog('No state from previous shutdown. First time app was started.', c.LOG_ALL);
     } else {
-      // We got safe shutdown data, remove the old data
+      // We got some safe shutdown data - but in some cases it may be invalid
+      // If accumulated time is newer than the old power time, then pending energy is invalid
+      // This could happen when the onUninit did not complete before it was killed.
+      if (this.__accum_energyTime > this.__current_power_time) {
+        this.__current_power_time = this.__accum_energyTime;
+        this.__pendingEnergy = [0, 0, 0, 0];
+        this.__fakeEnergy = [0, 0, 0, 0];
+        this.updateLog('Last shutdown failed, not all state was saved correctly', c.LOG_ERROR);
+      }
       const timeSincePowerloss = (new Date() - this.__current_power_time) / (1000 * 60);
       this.updateLog(`Restored state after shutdown. Last power ${timeSincePowerloss} minutes ago: [${this.__accum_energy}] ${this.__current_power} `
         + `${this.__current_power_time} ${this.__energy_last_slot} ${this.__missing_power_this_slot}`, c.LOG_ALL);
@@ -2327,7 +2335,7 @@ class PiggyBank extends Homey.App {
 
       // Estimate power in case all full-power reports are greater than the last reported power
       if (now > this.__current_power_time) {
-        if (this.__oldMeterTime >= this.__current_power_time) {
+        if ((this.__oldMeterTime >= this.__current_power_time) || (lapsedTimeMeter < 60000)) {
           this.__current_power = (allUsedEnergy / lapsedTimeMeter) * 3600000;
           this.__current_power_time = this.__accum_energyTime;
         }
@@ -2372,7 +2380,7 @@ class PiggyBank extends Homey.App {
       // ignore fakePower if we got real power within the last minute
       return Promise.resolve();
     }
-    if (lapsedTime < 0) {
+    if (lapsedTime <= 0) {
       // This should normally not really happen. These cases are considered:
       // 1) When the power reading accidently was delayed after a meter reading.
       //    => Detected by comparing to previous power reading and not meter reading (now is > prev_power_time)
@@ -2381,16 +2389,17 @@ class PiggyBank extends Homey.App {
       //    => Detected by comparing to previous power reading and not meter reading (now is < prev_power_time)
       //    => Resolve by resetting time
       // Notes:
-      // __current_power_time is reset both by Power updates and Meter updates
+      // __current_power_time is reset both by Power updates and Meter updates (but not always)
       // __previous_power_time is reset only by Power updates
-      if (now > this.__previous_power_time) {
-        // Meter reading is already more recent, so ignore
-        return Promise.resolve();
+      const timingOk = (!this.__previous_power_time) || (now > this.__previous_power_time);
+      this.__previous_power_time = new Date(now.getTime());
+      this.__current_power_time = new Date(now.getTime());
+      this.__current_power = newPower;
+      if (!timingOk &&  lapsedTime < -60000) {
+        const message = 'The reported power time was more than a minute from the past. Either your meter reader is unreliable or the clock was adjusted.';
+        this.updateLog(message, c.LOG_ERROR);
       }
-      const message = 'The reported power time was from the past. This should only happen when the clock is adjusted.';
-      this.updateLog(message, c.LOG_ERROR);
-      this.__current_power_time = new Date(now.getTime()); // just update the time to ensure the following Forced crash below will recover
-      return Promise.resolve(); // Just return and do nothing as the archive will be messed up
+      return Promise.resolve(); // Meter reading is already more recent, so ignore
     }
     this.__previous_power_time = new Date(now.getTime());
 
@@ -2399,7 +2408,10 @@ class PiggyBank extends Homey.App {
     const numLimits = Array.isArray(limits) ? limits.length : 0;
     const unknownPower = (limits[TIMESPAN.QUARTER] < Infinity) ? limits[TIMESPAN.QUARTER] * 4
       : (limits[TIMESPAN.HOUR] < Infinity) ? limits[TIMESPAN.HOUR] : this.__current_power;
-    const safePower = fakePower ? unknownPower : this.__current_power;
+    const currentPowerIsDeprecated = (lapsedTime > 60000) && (+this.homey.settings.get('maxAlarmRate') > 0); // Do not deprecate power if the alarm for missing power is not enabled
+    const safePower = fakePower ? unknownPower
+      : currentPowerIsDeprecated ? Math.max(this.__current_power, unknownPower)
+        : this.__current_power;
     let newBaseSlot = false;
     for (let limitIdx = 0; limitIdx < numLimits; limitIdx++) {
       // Accumulate the power for the rest of the slot only
@@ -2416,6 +2428,7 @@ class PiggyBank extends Homey.App {
       // }
       this.__fakeEnergy[limitIdx] = fakePower ? energyUsed : 0;
       this.__pendingEnergy[limitIdx] += fakePower ? 0 : energyUsed;
+
       const timeWithinLimit = timeSinceLastLimiter(now, limitIdx, this.homey);
       if (limitIdx === lowestLimit) {
         this.__missing_rate_this_slot = (this.__missing_power_this_slot + newMissingMinutes) / this.granularity;
@@ -2720,8 +2733,15 @@ class PiggyBank extends Homey.App {
     const numDevices = currentModeList.length;
     const reorderedModeList = [...currentModeList]; // Make sure all devices with communication errors are handled last (e.g. in case nothing else was possible)
     reorderedModeList.sort((a, b) => { // Err last
-      return this.__current_state[a.id].nComError
+      let order;
+      try {
+        order = this.__current_state[a.id].nComError
         - this.__current_state[b.id].nComError;
+      } catch(err) {
+        console.log('Test environment error: Most likely you forgot to set app.__deviceList')
+        order = 0; // Should only happen when loading old states from files
+      }
+      return order;
     });
     // Turn on devices from top down in the priority list
     // Only turn on one device at the time

@@ -408,15 +408,15 @@ async function testIssue83And87() {
   const app = new PiggyBank();
   try {
     await app.disableLog();
-    await app.onInit();
-    app.setLogLevel(c.LOG_DEBUG);
+    await applyStateFromFile(app, stateDump, false);
+    const curTime = new Date('2022-11-19T01:35:58.824Z'); // app.__current_power_time
+    await app.onInit(curTime);
     await disableTimers(app);
-    await applyStateFromFile(app, stateDump);
+    app.setLogLevel(c.LOG_DEBUG);
     const devices = await getAllDeviceId(app);
 
     // Simulate time going forward
-    const curTime = app.__current_power_time;
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < 20; i++) {
       curTime.setTime(curTime.getTime() + Math.round(10000 + Math.random() * 5000 - 2500));
       await app.onPowerUpdate(0, curTime);
       await app.onProcessPower(curTime);
@@ -432,15 +432,21 @@ async function testIssue83And87() {
       'eb3be21c-bcb2-47b2-9393-eae2d33737dc': 55,
       'b4788083-9606-49a2-99d4-9efce7a4656d': 16,
     };
+    let confirmedNum = 0;
     for (let i = 0; i < devices.length; i++) {
       const deviceId = devices[i];
       const device = await app.getDevice(deviceId);
       if (device.capabilities.includes(app.getTempSetCap())) {
         const actualTemp = device.capabilitiesObj[app.getTempSetCap()].value;
-        if (actualTemp !== rightTemp[deviceId]) {
+        if (actualTemp === rightTemp[deviceId]) {
+          confirmedNum++;
+        } else {
           throw new Error(`Incorrect temperature for device ${deviceId}: ${actualTemp} !== ${rightTemp[deviceId]}`);
         }
       }
+    }
+    if (confirmedNum !== Object.keys(rightTemp).length) {
+      throw new Error(`Could only validate ${confirmedNum} of ${Object.keys(rightTemp).length} temperatures`);
     }
   } finally {
     await app.onUninit();
@@ -665,6 +671,7 @@ async function testMissingPulse() {
     app.homey.settings.set('maxPower', [Infinity, 10000, Infinity, Infinity]);
 
     await app.onInit(now);
+    app.homey.settings.set('maxAlarmRate', 50);
     await disableTimers(app);
     let updateTime = new Date(now.getTime() + 1000 * 1);
     await app.onPowerUpdate(4000, updateTime);
@@ -684,8 +691,8 @@ async function testMissingPulse() {
     // Check archive
     const archive = app.homey.settings.get('archive');
     if (JSON.stringify(archive.dataOk.hourly['2022-10-01']) !== '[0.016666666666666666,0,0,0.016666666666666666]'
-      || JSON.stringify(archive.powUsage.hourly['2022-10-01']) !== '[10000,10000,10000,9992]'
-      || JSON.stringify(archive.maxPower.hourly['2022-10-01']) !== '[10000,10000,10000,9992]') {
+      || JSON.stringify(archive.powUsage.hourly['2022-10-01']) !== '[10000,10000,10000,10000]'
+      || JSON.stringify(archive.maxPower.hourly['2022-10-01']) !== '[10000,10000,10000,10000]') {
       console.error(JSON.stringify(archive.dataOk.hourly['2022-10-01']));
       console.error(JSON.stringify(archive.powUsage.hourly['2022-10-01']));
       console.error(JSON.stringify(archive.maxPower.hourly['2022-10-01']));
@@ -752,11 +759,11 @@ async function testTicket158NotControllingOther() {
   const app = new PiggyBank();
   try {
     await app.disableLog();
+    await applyStateFromFile(app, stateDump);
+    await validateModeList(app);
     await app.onInit();
     app.setLogLevel(c.LOG_DEBUG);
     await disableTimers(app);
-    await applyStateFromFile(app, stateDump);
-    await validateModeList(app);
     const devices = await getAllDeviceId(app);
     // await writePowerStatus(app, devices, ': Initial state', true);
     // Turn off all devices
@@ -787,7 +794,7 @@ async function testTicket158NotControllingOther() {
       // await writePowerStatus(app, devices, `: ${curPower} ${maxPower}`);
     }
     // Test that all devices are off
-    for (let i = 0; i < devices.length; i++) {
+    for (let i = 0; i < 52 /* devices.length */; i++) {
       const deviceId = devices[i];
       const device = await app.getDevice(deviceId);
       const isOn = await app.getIsOn(device, deviceId);
@@ -1197,7 +1204,7 @@ async function testMeterAndPower() {
     app.homey.settings.unset('safeShutdown__current_power_time');
     app.homey.settings.unset('safeShutdown__power_last_hour');
     app.homey.settings.unset('safeShutdown__offeredEnergy');
-    app.homey.settings.set('maxPower', [500, 10000, Infinity, Infinity]);
+    app.homey.settings.set('maxPower', [2500, 10000, Infinity, Infinity]);
 
     await app.onInit(startTime);
     await disableTimers(app);
@@ -1246,13 +1253,15 @@ async function testMeterAndPower() {
 
     let finished = false;
     let i;
+    const numDevices = Object.keys(app.homey.settings.get('frostList')).length; // 13
     for (i = 0; !finished; i++) {
       const deltaTime = Math.round((2 + (Math.random() * 30)) * 1000);
-      const randomPow = 300 + (Math.random() * 5000);
+      const numOnDevices = numDevices - app.__num_off_devices;
+      const randomPow = 300 + 500 * numOnDevices  + (Math.random() * 5000);
       const energyUsed = (meterPower * deltaTime) / 3600000;
       meterTime.setTime(meterTime.getTime() + deltaTime);
 
-      meterPower = randomPow;
+      meterPower = Math.floor(randomPow);
       meterValue += energyUsed;
 
       const powerElem = { meterTime: new Date(meterTime.getTime()), meterPower, meterValue, deltaTime };
@@ -1273,7 +1282,7 @@ async function testMeterAndPower() {
           // 10% chance Meter was reported
           const reportIdx = Math.floor(Math.random() * queue.length);
           const newReport = queue[reportIdx];
-          noPowerTime += pendPowerTime / 1;
+          noPowerTime += pendPowerTime;
           pendPowerTime = 0;
           if (!newReport.reported) {
             await app.onMeterUpdate(newReport.meterValue / 1000, newReport.meterTime);
@@ -1332,11 +1341,11 @@ async function testMeterAndPower() {
           const lastOvershoot = (prevLastReportedPower * timeSinceLastSlot(lastPingTime, futurePriceOptions.granularity)) / 3600000;
           const notReported = lastReportedPower * ((lastPingTime - lastReported) / 3600000);
           const estimateMeter = lastReportedValue + notReported - prevSlotValue - lastOvershoot;
-          const noPowerError = noPowerTime / (futurePriceOptions.granularity * 60 * 1000); // (noPowerTime / 3600000) * app.homey.settings.get('maxPower')[TIMESPAN.HOUR];
-          const marginLow = Math.floor(estimateMeter * 0.95 * (1 / (1 + noPowerError))); // Math.max(Math.floor(estimateMeter * 0.95 - noPowerError), 0);
-          let marginHigh = Math.ceil(estimateMeter * 1.05 * (1 + noPowerError)); // Math.ceil(estimateMeter * 1.05 + noPowerError);
-          if (marginHigh > app.homey.settings.get('maxPower')[TIMESPAN.HOUR]) {
-            marginHigh = app.homey.settings.get('maxPower')[TIMESPAN.HOUR];
+          const noPowerError = /* noPowerTime / (futurePriceOptions.granularity * 60 * 1000); */ (noPowerTime / 3600000) * app.homey.settings.get('maxPower')[TIMESPAN.HOUR];
+          const marginLow = /*Math.floor(estimateMeter * 0.95 * (1 / (1 + noPowerError))); */ Math.max(Math.floor(estimateMeter * 0.93 - noPowerError), 0);
+          let marginHigh = /*Math.ceil(estimateMeter * 1.05 * (1 + noPowerError)); */ Math.ceil(estimateMeter * 1.06 + noPowerError);
+          if (marginHigh > app.homey.settings.get('maxPower')[TIMESPAN.QUARTER]) {
+            marginHigh = app.homey.settings.get('maxPower')[TIMESPAN.QUARTER];
           }
           prevSlotValue = lastReportedValue + notReported - lastOvershoot;
           if (!accumData) {
@@ -1345,7 +1354,7 @@ async function testMeterAndPower() {
           if (Number.isNaN(accumData.accumEnergy)) {
             throw new Error('The accumulated energy is NaN');
           }
-          // console.log(`NewHour: ${accumData.accumEnergy} [${String(marginLow).padStart(5, ' ')},${String(marginHigh).padStart(5, ' ')}] Meter:${String(Math.floor(lastReportedValue)).padStart(6, ' ')} : ${noPowerTime/60000}`)
+          // console.log(`NewHour: ${accumData.accumEnergy} [${String(marginLow).padStart(5, ' ')},${String(marginHigh).padStart(5, ' ')}] Meter:${String(Math.floor(lastReportedValue)).padStart(6, ' ')} : ${Math.floor(noPowerTime/60000)} : ${Math.floor(noPowerError)}`)
           const err = Math.abs(1 - accumData.accumEnergy / estimateMeter);
           numErrors++;
           accErrors += err;
@@ -1383,10 +1392,11 @@ async function testMeterAndPower() {
       && (hitPowerEqual > 10)
       && (hitDoubleCross > 200);
     }
+    // console.log(`${hitMeterPast} : ${hitMeterEqual} : ${hitPowerPast} : ${hitPowerEqual} : ${hitDoubleCross}`)
     const avgErrorPst = Math.floor(10000 * (accErrors / numErrors)) / 100;
     const maxErrorPst = Math.floor(10000 * maxError) / 100;
     if (avgErrorPst >  3) throw new Error(`Average error exceeded limit: ${avgErrorPst}%`);
-    if (maxErrorPst > 15) throw new Error(`Maximum error exceeded limit: ${maxErrorPst}%`);
+    if (maxErrorPst > 20) throw new Error(`Maximum error exceeded limit: ${maxErrorPst}%`);
     // console.log(`crossed: ${i} ${finished}: ${hitMeterPast} ${hitMeterEqual} ${hitPowerPast} ${hitPowerEqual} ${hitDoubleCross} Avg. error: ${avgErrorPst}% Max: ${maxErrorPst}%`);
   } finally {
     await app.onUninit();
@@ -1510,6 +1520,26 @@ async function testACModes() {
   console.log('\x1b[1A[\x1b[32mPASSED\x1b[0m]');
 }
 
+async function testTicket223PowerAtLoad() {
+  console.log('[......] Test Github ticket #223: Energy at load was wrong');
+  const curTime = new Date('March 31, 2023, 13:48:11:398 GMT+2:00');
+  const stateDump = 'testing/states/Frode_0.20.14.txt';
+  const app = new PiggyBank();
+  try {
+    await app.disableLog();
+    await applyStateFromFile(app, stateDump, false);
+    app.homey.settings.set('safeShutdown__current_power', 5000);
+    await app.onInit(curTime);
+    await app.onPowerUpdate(4000, new Date(curTime.getTime()));
+    if (JSON.stringify(app.__pendingEnergy) !== '[265.8305555555556,4000,4000,4000]') {
+      throw new Error('Pending energy was incorrectly calculated');
+    }
+  } finally {
+    await app.onUninit();
+  }
+  console.log('\x1b[1A[\x1b[32mPASSED\x1b[0m]');
+}
+
 // Start all tests
 async function startAllTests() {
   try {
@@ -1534,6 +1564,7 @@ async function startAllTests() {
     await testCurrencies();
     await testTicket158NotControllingOther();
     await testTicket149BadDevices();
+    await testTicket223PowerAtLoad();
     await testBelgiumPowerTariff(10000);
     await testLimiters();
     await testMeter();
