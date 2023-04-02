@@ -394,7 +394,7 @@
       "getState": "État de récupération"
     },
     "ACMode": {
-      "header": "Mode CA",
+      "header": "Mode AC",
       "fromAC": "Inchangé",
       "auto": "Auto",
       "heat": "Chaleur",
@@ -406,7 +406,7 @@
   },
   "newdevice": {
     "info": "Cet appareil vous donnera un aperçu de ce qui se passe lorsque l'application contrôle le flux. Il n'est pas nécessaire d'installer ce dispositif pour faire fonctionner l'application.",
-    "info2": "Comme l'appareil ne fonctionne que comme une fenêtre dans l'application, vous ne pouvez donc pas configurer ce qui se passe à travers les paramètres de cet appareil. Vous ne pouvez configurer ce qui se passe que par les paramètres de l'application."
+    "info2": "Étant donné que cet appareil ne fonctionne que pour surveiller l'application, vous ne pouvez donc pas configurer ce qui se passe à travers les paramètres de cet appareil. Vous ne pouvez configurer ce qui se passe que par les paramètres de l'application."
   },
   "warnings": {
     "homeyApiNotResponding": "Avoir des difficultés à obtenir des états de périphériques de l'API Homey. Ce problème devrait résoudre sous peu, si vous ne contactez pas le développeur de l'application car il pourrait être un bug.",
@@ -415,9 +415,9 @@
     "notEnabled": "L'application n'a pas encore été activée. Veuillez saisir les paramètres de l'application pour activer l'application.",
     "noDevices": "Veuillez sélectionner au moins un appareil à contrôler",
     "savingWait": "Sauver, s'il vous plaît attendez.",
-    "savingFailed": "Failed to save, Cela ne devrait pas se produire, s'il vous plaît aviser le développeur pour que cela puisse être corrigé",
-    "noPriceApi": "Vous devez installer l'application no.almli.utilitycost pour obtenir les prix de l'électricité à travailler. Alternativement définir le point de prix à partir des flux.",
-    "noPriceApiDevice": "Vous devez installer l'appareil correspondant à l'application no.almli.utilitycost afin d'obtenir les prix de l'électricité de l'application. Alternativement définir le point de prix à partir des flux.",
+    "savingFailed": "Impossible d'enregistrer, cela ne devrait pas se produire, s'il vous plaît aviser le développeur pour que cela puisse être corrigé",
+    "noPriceApi": "Vous devez installer l'application 'https://homey.app/a/no.almli.utilitycost/' pour obtenir les prix de l'électricité à travailler. Alternativement définir le point de prix à partir des flux.",
+    "noPriceApiDevice": "Vous devez installer l'appareil correspondant à l'application 'https://homey.app/a/no.almli.utilitycost/' afin d'obtenir les prix de l'électricité de l'application. Alternativement définir le point de prix à partir des flux.",
     "noPriceApiData": "L'application Utilitycost est définie pour utiliser le prix à partir des flux. Ainsi, il ne transmettra pas le coût. Essayez de configurer le prix avec la fonction de prix intégrée dans piggy à la place.",
     "notPMfromFlow": "Afin de définir des points de prix avec des flux, vous devez d'abord activer la gestion des prix en utilisant des flux dans l'application de configuration",
     "rememberToSave": "Souviens-toi de sauver !",

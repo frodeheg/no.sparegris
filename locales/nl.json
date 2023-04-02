@@ -40,7 +40,7 @@
       "carChargerMissingHint": "Geen ondersteunde oplader gevonden. Je kunt een flowkaartje gebruiken om te gaanladen.",
       "carChargerNotAddedHint": "Er is een ondersteunde oplader gevonden, maar deze is niet toegevoegd als een controleerbaar apparaat.",
       "chargeTargetHint": ["Ondersteunde opladers worden automatisch door de app bestuurd, op voorwaarde dat ze worden toegevoegd als een bestuurbaar apparaat. Voor niet-ondersteunde opladers kun je flowkaarten gebruiken of een <a href=\"ShowLog\" onclick=\"changeTab(event, 'logPage');return false;\">apparaat rapport verzenden</a>. <!--",
-        "--><p>Houd er rekening mee dat laders vermeld bij <a href=\"ShowDevices\" onclick=\"changeTab(event, 'helpSupportedPage');return false;\">genegeerde apparaten</a> aangestuurd moeten worden via flows.</p><!--",
+        "--><p>Houd er rekening mee dat laders vermeld bij <a href=\"ShowDevices\" onclick=\"changeTab(event, 'helpSupportedPage');return false;\">overschreven apparaten</a> aangestuurd moeten worden via flows.</p><!--",
         "--><p>Om het via flows te regelen, moet je verbinding maken met de volgende triggers in de app: 'Start opladen' en 'Stop met opladen', terwijl 'Laadvermogen wijzigen' optioneel is, maar wel wordt aanbevolen.</p> <!--",
         "--><p>Om het laadproces te starten moet je de flowkaart actie 'Start laadcyclus' gebruiken.</p>"],
       "chargeMinHint": "De minimale laadstroom geeft het laadvermogen aan dat uw oplader gebruikt wanneer je deze inschakelt. Als de oplader slechts één instelling heeft, voer je deze hier in. Als de oplader de stroom kan regelen, voer je het minimale vermogen in dat hij kan opnemen. Om de waarde te verhogen, moet de drempel voor het starten van het opladen mogelijk eerst worden verhoogd, omdat deze niet kan worden overschreden om de lader te beschermen.",
@@ -139,13 +139,13 @@
       "controlTempNo": "Nee",
       "settings": "Algemene instellingen",
       "errorMargin": "Foutmarge",
-      "errorMarginHint1": "Zorg ervoor dat je altijd een beetje onder het effecttarief uitkomt.",
+      "errorMarginHint1": "Zorg ervoor dat je altijd een beetje onder het piektarief uitkomt.",
       "errorMarginHint2": "Hint: dit geeft je ruimte voor een kleine overbelasting op een andere dag, omdat het tarief is gebaseerd op een 3-daags gemiddelde.",
       "safetyPower": "Gereserveerd vermogen",
       "safetyPowerHint1": "Voorkom dat het stroom doel faalt door stroom te reserveren voor oncontroleerbare apparaten.",
       "safetyPowerHint2": "Tip: je kunt flowkaartjes gebruiken om het gereserveerde vermogen gedurende de dag te wijzigen. Het wordt aanbevolen om meer vermogen te reserveren voordat je bijv. gaat koken.",
       "crossSlotSmooth": "Tijdvenster 'smoothing'",
-      "crossSlotSmoothHint": "Met deze functie kun je aan het begin van elk tijdvenster te veel stroom gebruiken. Het hoeveelheid wordt aan het begin van elk tijdslot opgeteld bij het toegestane stroomverbruik, en aan het einde van elk tijdslot geleidelijk verlaagd tot 0.",
+      "crossSlotSmoothHint": "Met deze functie kun je aan het begin van elk tijdvenster te veel stroom gebruiken. De hoeveelheid wordt aan het begin van elk tijdslot opgeteld bij het toegestane stroomverbruik, en aan het einde van elk tijdslot geleidelijk verlaagd tot 0.",
       "mainFuse": "Hoofdzekering",
       "mainFuseHint": "De hoofdzekering is belangrijk voor wat wordt berekend als het maximaal beschikbare vermogen. De app laat je installatie niet meer stroom verbruiken dan de hoofdzekering toestaat.",
       "freeThreshold": "Vrije capaciteitsdrempel",
@@ -221,8 +221,8 @@
       "deviceTypeWaterHeater": "Waterkokers",
       "deviceTypeAC": "Air conditioners",
       "deviceTypeCharger": "Laders",
-      "deviceTypeIgnore": "Genegeerde apparaten",
-      "deviceTypeMeter": "Meter lezers",
+      "deviceTypeIgnore": "Overschreven apparaten",
+      "deviceTypeMeter": "Meteruitlezers",
       "ongoing": "In ontwikkeling",
       "aboutInfo": "Over Spaarpot",
       "aboutInfoHint": ["<p> Deze app is gemaakt om iedereen op een eenvoudige manier het energieverbruik te laten beheren, en tegelijkertijd zoveel mogelijk geld te besparen. </p> <!-",
@@ -239,7 +239,7 @@
     },
     "wizzard": {
       "welcome": "Welkom",
-      "guide": "Een rondleiding die laat zien hoe de app werkt, binnenkort beschhikbaar."
+      "guide": "Een rondleiding die laat zien hoe de app werkt, binnenkort beschikbaar."
     },
     "price": {
       "header": "Prijsbeheer",
@@ -317,8 +317,8 @@
     "zone": {
       "header": "Zone besturing",
       "zoneHint": "Het doel van zones is om alle verwarmings-/koelingsbronnen in een zone volledig uit te schakelen als er deuren / ramen open zijn. Je hoeft je geen zorgen te maken over zones als je geen deur- en/of raamsensoren hebt.",
-      "zoneHint2": "Je moet flows gebruiken om zones uit- en in te schakelen.",
-      "zonesOff": "De volgende zones zijn afgedwongen",
+      "zoneHint2": "Gebruik flows om zones uit- en in te schakelen.",
+      "zonesOff": "De volgende zones zijn uitgeschakeld",
       "zonesClear": "Wis alle zones",
       "zoneName": "Zone",
       "zoneNum": "Aantal betrokken apparaten"
@@ -326,9 +326,9 @@
     "override": {
       "header": "Overschreven apparaten",
       "overrideHint": "Apparaten kunnen op verschillende manieren worden overschreven: <ul> <li> via Zone-besturing (flowkaartjes) </li> <li> via Vorstbescherming (automatisch) </li> <li> door onderhoudsacties (in Spaarpot insights) </li> <li> door per apparaat te overschrijven (flowkaartjes) </li> </ul>",
-      "overridden": "De volgende apparaten zijn opgeheven",
+      "overridden": "De volgende apparaten zijn overschreven:",
       "device": "Apparaat",
-      "status": "Opgeheven door",
+      "status": "Overschreven door",
       "on": "Geforceerd Aan",
       "off": "Geforceerd Uit",
       "offUntilOn": "Onderhoud (eindigt wanneer het handmatig wordt ingeschakeld)",
@@ -401,12 +401,12 @@
       "cool": "Koelen",
       "dry": "Drogen",
       "fan": "Fan",
-      "hint": "A/C Modus is van invloed op alle A/C units (maar dit wordt per unit in een latere update). Als A/C Modus = 'Ongewijzigd', dan zal de app de A/C Modus niet instellen. Alle andere selecties stellen de A/C Modus in. NB: Als de A/C Modus is ingesteld op koelen, worden de deltatemperaturen voor het prijspunt omgekeerd, zodat u naadloos kunt schakelen tussen verwarmen en koelen zonder dat dit invloed heeft op het vermogen van de app om geld te besparen."
+      "hint": "A/C Modus is van invloed op alle A/C units (maar dit wordt - per unit - in een latere update). Als A/C Modus = 'Ongewijzigd', dan zal de app de A/C Modus niet instellen. Alle andere selecties stellen de A/C Modus in. NB: Als de A/C Modus is ingesteld op koelen, worden de deltatemperaturen voor het prijspunt omgekeerd, zodat u naadloos kunt schakelen tussen verwarmen en koelen zonder dat dit invloed heeft op het vermogen van de app om geld te besparen."
     }
   },
   "newdevice": {
-    "info": "Dit apparaat geeft je inzicht in wat er gebeurt wanneer de app de stroom regelt. Het is niet nodig om dit apparaat te installeren om de app te laten werken.",
-    "info2": "aangezien het apparaat alleen als een venster in de app werkt, kunt je daarom niet configureren wat er gebeurt via de instellingen van dit apparaat. je kunt alleen configureren wat er gebeurt via de instellingen van de app."
+    "info": "Dit apparaat geeft je inzicht in wat er gebeurt wanneer de app de stroom regelt. Het is niet nodig om dit apparaat te installeren om de app te laten functioneren.",
+    "info2": "Aangezien dit apparaat alleen werkt om de app te monitoren, kun je daarom niet configureren wat er gebeurt via de instellingen van dit apparaat. Je kunt enkel configureren wat er gebeurt via de instellingen van de app."
   },
   "warnings": {
     "homeyApiNotResponding": "Er zijn problemen om apparaat statussen uit de Homey API te halen. Dit probleem zou vanzelf weer op moeten lossen; zo niet graag contact opnemen met de app ontwikkelaar, omdat het een bug kan zijn.",
@@ -416,10 +416,10 @@
     "noDevices": "Selecteer ten minste één apparaat dat moet worden bestuurd",
     "savingWait": "Opslaan, even geduld...",
     "savingFailed": "Opslaan mislukt -> dit zou niet moeten gebeuren, meld het bij de ontwikkelaar zodat dit kan worden opgelost",
-    "noPriceApi": "Je moet de app 'no.almli.utilitycost' installeren om de elektriciteitsprijzen te laten werken. Als alternatief stel je de prijs via flows in.",
-    "noPriceApiDevice": "je dient het bijnbehorende apparaat te installeren op de app 'no.almli.utilitycost' om de elekticiteititsprijzen uit de app te krijgen. Je kunt ook het prijsnivo instellen op basis van flows.",
-    "noPriceApiData": "de utilitycost app is ingesteld om de prijs uit flows te gebruiken. het zal dus de kosten niet doorsturen. probeer in plaats daarvan de prijs te configureren met de ingebouwde prijsfunctie in piggy.",
-    "notPMfromFlow": "Om prijspunten in te stellen met flows, moet je eerst prijsbeheer inschakelen maken met flows in de app instellingen/configuratie",
+    "noPriceApi": "Je moet de app 'https://homey.app/a/no.almli.utilitycost/' installeren om de elektriciteitsprijzen te laten werken. Als alternatief stel je de prijs via flows in.",
+    "noPriceApiDevice": "je dient het bijnbehorende apparaat te installeren op de app 'https://homey.app/a/no.almli.utilitycost/' om de elekticiteititsprijzen uit de app te krijgen. Je kunt ook het prijsnivo instellen op basis van flows.",
+    "noPriceApiData": "De utilitycost app is ingesteld om de prijs uit flows te gebruiken. het zal dus de kosten niet doorsturen. probeer in plaats daarvan de prijs te configureren met de ingebouwde prijsfunctie in Piggy.",
+    "notPMfromFlow": "Om prijsniveau's in te stellen met flows, moet je eerst prijsbeheer inschakelen maken met flows in de app instellingen/configuratie",
     "rememberToSave": "Vergeet niet om op te slaan!",
     "appDisabled": "De bedrijfsmodus is uitgeschakeld. Schakel het weer in in via de app instellingen of middels een flow.",
     "timeout": "Time-out! Homey is druk. Wacht nog iets langer, probeer het later opnieuw, of neem contact op met de app -ontwikkelaar als het probleem aanhoudt. Als je vanaf een browser werkt, helpt het meestal om de pagina te herladen.",
@@ -474,7 +474,7 @@
     "maxhour": "Max verbruik",
     "prices": "Prijzen",
     "savings": "Besparing",
-    "pricePoint": "Prijs punt",
+    "pricePoint": "Prijsniveau",
     "priceDistribution": "Prijsverdeling",
     "unavailable": "Niet beschikbaar",
     "hours": "Uren",
