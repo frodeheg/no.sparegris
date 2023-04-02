@@ -1535,8 +1535,8 @@
           "title": {
             "en": "Manual powerdown required!",
             "no": "Manuell nedstegning påkrevd!",
-            "nl": "",
-            "fr": ""
+            "nl": "Handmatige uitschakeling vereist!",
+            "fr": "arrêt manuel requis!"
           },
           "insightsTitleTrue": {
             "en": "Unable to maintain power limit!",
@@ -1555,8 +1555,8 @@
           "title": {
             "en": "Limited Power!",
             "no": "Begrenset strøm!",
-            "nl": "",
-            "fr": ""
+            "nl": "Beperkt vermogen!",
+            "fr": "Puissance limitée!"
           },
           "insightsTitleTrue": {
             "en": "The power is being limited!",
