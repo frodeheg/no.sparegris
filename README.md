@@ -10,7 +10,6 @@ New features I want input from others before I do anything:
 
 TODO list:
 * Make some outputs from "innsikt" deprecated so only the app flows are visible.
-* Add graphs to display monthly tariff guide
 * Add zone-control for mode changes.
 * Improve handling of AC devices (not sure how yet - might need more discussions requested by @dooniem)
 * Add number of cheap/expensive/normal hours to the device capability list
