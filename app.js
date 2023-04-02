@@ -713,6 +713,18 @@ class PiggyBank extends Homey.App {
       this.homey.settings.set('settingsVersion', 13);
     }
 
+    // Version 0.20.18 - Make sure belgian users use belgian cost schema, an error forced this to Norwegian after 2 saves
+    if (+settingsVersion < 14) {
+      if (!firstInstall) {
+        const futurePriceOptions = this.homey.settings.get('futurePriceOptions');
+        if (futurePriceOptions.priceCountry === 'be') {
+          futurePriceOptions.costSchema = 'be';
+          this.homey.settings.set('futurePriceOptions', futurePriceOptions);
+        }
+      }
+      this.homey.settings.set('settingsVersion', 14);
+    }
+
     // Internal state that preferably should be removed as it is in the archive
     // this.homey.settings.unset('stats_savings_all_time_use');
     // this.homey.settings.unset('stats_savings_all_time_power_part');
