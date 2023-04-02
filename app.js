@@ -1241,11 +1241,11 @@ class PiggyBank extends Homey.App {
     // ===== KEEPING STATE ACROSS RESTARTS =====
     // We only got 1s to do this so need to save state before anything else
     // For onPowerUpdate + onNewSlot
+    this.homey.settings.set('safeShutdown__accum_energy', this.__accum_energy);
+    this.homey.settings.set('safeShutdown__accum_energyTime', this.__accum_energyTime);
     this.homey.settings.set('safeShutdown__oldMeterValue', this.__oldMeterValue);
     this.homey.settings.set('safeShutdown__oldMeterValueValid', this.__oldMeterValueValid);
     this.homey.settings.set('safeShutdown__oldMeterTime', this.__oldMeterTime);
-    this.homey.settings.set('safeShutdown__accum_energy', this.__accum_energy);
-    this.homey.settings.set('safeShutdown__accum_energyTime', this.__accum_energyTime);
     this.homey.settings.set('safeShutdown__pendingEnergy', this.__pendingEnergy);
     this.homey.settings.set('safeShutdown__current_power', this.__current_power);
     this.homey.settings.set('safeShutdown__current_power_time', this.__current_power_time);
