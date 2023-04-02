@@ -784,5 +784,8 @@
   },
   "0.20.16": {
     "en": "Reverted translation changes such that the app can be pushed to stable without permission from Athom."
+  },
+  "0.20.17": {
+    "en": "Many translation fixes for French and Dutch + Improved function to save state across app restarts."
   }
 }
