@@ -787,5 +787,8 @@
   },
   "0.20.17": {
     "en": "Many translation fixes for French and Dutch + Improved function to save state across app restarts."
+  },
+  "0.20.18": {
+    "en": "Fixed a critical bug that caused Belgian users to flip over to the Norwegian cost schema after saving the settings 2 times."
   }
 }
