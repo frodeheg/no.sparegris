@@ -268,9 +268,9 @@
         list.innerHTML = options;
       }
 
-      function updateCountries(selectedCountry) {
+      function updateCountries(selectedCountry, schema) {
         var list = document.getElementById('priceCountry');
-        setSchema(selectedCountry);
+        setSchema(selectedCountry, schema);
         var options = '';
         const countries = Object.keys(ENTSOE_BIDDING_ZONES);
         for (var i = 0; i < countries.length; i++) {
@@ -1092,7 +1092,7 @@
           <tr>
             <td class="settings_row_name"><label for="priceCountry" data-i18n="settings.price.spotPrice.country">spotPrice.country</label>:</td>
             <td class="settings_row_input">
-              <select id="priceCountry" onchange="updateRegions(this.value, futurePriceOptions.priceRegion);changeSchema(this.value);displaySaveHint()">
+              <select id="priceCountry" onchange="updateRegions(this.value, futurePriceOptions.priceRegion);changeSchema(this.value, this.value);displaySaveHint()">
                 <option value="0" selected>Country selector</option>
               </select>
               <div class="hintButton" onclick="toggle(this,'countryHint', 'table-row');return false;">i</div>
@@ -1102,7 +1102,7 @@
           <tr id="costSchemaBox">
             <td class="settings_row_name"><label for="costSchema" data-i18n="settings.cost.schema">cost.schema</label>:</td>
             <td class="settings_row_input">
-              <select id="costSchema" onchange="changeSchema(this.value);displaySaveHint()">
+              <select id="costSchema" onchange="changeSchema(document.getElementById('priceCountry').value, this.value);displaySaveHint()">
                 <option value="0" selected>Controller Schema</option>
               </select>
             </td>
@@ -2002,7 +2002,8 @@
           // Initialize state and show the welcome page:
           updateOperatingModes(currentOperatingMode);
           updatePricePoints(currentPricePoint);
-          updateCountries(futurePriceOptions.priceCountry);
+          updateCostSchemas();
+          updateCountries(futurePriceOptions.priceCountry, futurePriceOptions.costSchema);
           updateRegions(futurePriceOptions.priceCountry, futurePriceOptions.priceRegion);
           loadElement.style.display = "none";
           document.getElementById("main_menu").style.display = "table";
@@ -2880,7 +2881,6 @@
 
         // Refresh cost Schema page
         if (tabPage == 'costPage') {
-          updateCostSchemas();
           refreshSchema();
         }
         

@@ -143,6 +143,7 @@ const COUNTRY = {
 };
 
 let currentSchema = 'no';
+let currentCountry = 'no';
 
 // =============================================================================
 // = APP FUNCTIONS
@@ -176,16 +177,22 @@ async function hideScemaObjects() {
   for (let i = 0; i < keys.length; i++) {
     const item = document.getElementById(keys[i]);
     const value = SCHEMA[currentSchema].hide[keys[i]];
-    if (value === null) item.hidden = true;
-    else item.style.display = 'none';
+    const overrideHidden = (keys[i] === 'costSchemaBox') && (currentSchema !== currentCountry);
+    if (!overrideHidden) {
+      if (value === null) item.hidden = true;
+      else item.style.display = 'none';
+    }
   }
 }
 /**
  * Programatically set the new schema without changing anything else.
  */
-async function setSchema(newSchema) {
+async function setSchema(newCountry, newSchema) {
+  if (!(newSchema in SCHEMA)) newSchema = newCountry;
+  if (!(newSchema in SCHEMA)) newSchema = 'custom';
   await displayHiddenSchema();
   currentSchema = newSchema;
+  currentCountry = newCountry;
   await hideScemaObjects();
 }
 
@@ -193,12 +200,13 @@ async function setSchema(newSchema) {
  * Changes the schema and updates all related values
  * @param {} newSchema
  */
-async function changeSchema(newSchema) {
+async function changeSchema(newCountry, newSchema) {
   if (!(newSchema in SCHEMA)) newSchema = 'custom';
-  if (newSchema !== currentSchema) {
+  if ((newSchema !== currentSchema) || (newCountry !== currentCountry)) {
     // Display old hidden elements
     await displayHiddenSchema();
     currentSchema = newSchema;
+    currentCountry = newCountry;
     document.getElementById('costSchema').value = newSchema;
     document.getElementById('currency').value = SCHEMA[newSchema].currency;
     document.getElementById('VAT').value = SCHEMA[newSchema].vat;
