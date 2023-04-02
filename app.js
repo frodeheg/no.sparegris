@@ -676,6 +676,43 @@ class PiggyBank extends Homey.App {
       this.homey.settings.set('settingsVersion', 12);
     }
 
+    // Version 0.20.17 - Update settings
+    if (+settingsVersion < 13) {
+      if (!firstInstall) {
+        const safeShutdown = {
+          accum_energy: this.homey.settings.get('safeShutdown__accum_energy'),
+          accum_energyTime: this.homey.settings.get('safeShutdown__accum_energyTime'),
+          oldMeterValue: this.homey.settings.get('safeShutdown__oldMeterValue'),
+          oldMeterValueValid: this.homey.settings.get('safeShutdown__oldMeterValueValid'),
+          oldMeterTime: this.homey.settings.get('safeShutdown__oldMeterTime'),
+          pendingEnergy: this.homey.settings.get('safeShutdown__pendingEnergy'),
+          current_power: this.homey.settings.get('safeShutdown__current_power'),
+          current_power_time: this.homey.settings.get('safeShutdown__current_power_time'),
+          energy_last_slot: this.homey.settings.get('safeShutdown__energy_last_slot'),
+          offeredEnergy: this.homey.settings.get('safeShutdown__offeredEnergy'),
+          missing_power_this_slot: this.homey.settings.get('safeShutdown__missing_power_this_slot'),
+          fakeEnergy: this.homey.settings.get('safeShutdown__fakeEnergy'),
+          pendingOnNewSlot: this.homey.settings.get('safeShutdown__pendingOnNewSlot')
+        };
+        this.homey.settings.set('safeShutdown', safeShutdown);
+        this.homey.settings.unset('safeShutdown__accum_energy');
+        this.homey.settings.unset('safeShutdown__accum_energyTime');
+        this.homey.settings.unset('safeShutdown__oldMeterValue');
+        this.homey.settings.unset('safeShutdown__oldMeterValueValid');
+        this.homey.settings.unset('safeShutdown__oldMeterTime');
+        this.homey.settings.unset('safeShutdown__pendingEnergy');
+        this.homey.settings.unset('safeShutdown__current_power');
+        this.homey.settings.unset('safeShutdown__current_power_time');
+        this.homey.settings.unset('safeShutdown__energy_last_slot');
+        this.homey.settings.unset('safeShutdown__offeredEnergy');
+        this.homey.settings.unset('safeShutdown__missing_power_this_slot');
+        this.homey.settings.unset('safeShutdown__fakeEnergy');
+        this.homey.settings.unset('safeShutdown__pendingOnNewSlot');
+        this.log('Successfully updated the safe shutdown values');
+      }
+      this.homey.settings.set('settingsVersion', 13);
+    }
+
     // Internal state that preferably should be removed as it is in the archive
     // this.homey.settings.unset('stats_savings_all_time_use');
     // this.homey.settings.unset('stats_savings_all_time_power_part');
@@ -683,19 +720,37 @@ class PiggyBank extends Homey.App {
     // ===== BREAKING CHANGES END =====
 
     // ===== KEEPING STATE ACROSS RESTARTS =====
-    this.__oldMeterValue = await this.homey.settings.get('safeShutdown__oldMeterValue') || undefined;
-    this.__oldMeterValueValid = await this.homey.settings.get('safeShutdown__oldMeterValueValid') || false;
-    this.__oldMeterTime = new Date(await this.homey.settings.get('safeShutdown__oldMeterTime')); // When null then date is start of unix time
-    this.__accum_energy = await this.homey.settings.get('safeShutdown__accum_energy');
-    this.__accum_energyTime = new Date(await this.homey.settings.get('safeShutdown__accum_energyTime')); // When null then date is start of unix time
-    this.__pendingEnergy = await this.homey.settings.get('safeShutdown__pendingEnergy') || [0, 0, 0, 0];
-    this.__current_power = toNumber(await this.homey.settings.get('safeShutdown__current_power')) || undefined;
-    this.__current_power_time = new Date(await this.homey.settings.get('safeShutdown__current_power_time')); // When null then date is start of unix time
-    this.__energy_last_slot = toNumber(await this.homey.settings.get('safeShutdown__energy_last_slot')) || undefined;
-    this.__offeredEnergy = toNumber(await this.homey.settings.get('safeShutdown__offeredEnergy')) || 0;
-    this.__missing_power_this_slot = toNumber(await this.homey.settings.get('safeShutdown__missing_power_this_slot')) || 0; // Set later when 0
-    this.__fakeEnergy = await this.homey.settings.get('safeShutdown__fakeEnergy') || [0, 0, 0, 0];
-    this.__pendingOnNewSlot = await this.homey.settings.get('safeShutdown__pendingOnNewSlot') || [];
+    const safeShutdown = await this.homey.settings.get('safeShutdown');
+    if (safeShutdown) {
+      this.__accum_energy = safeShutdown.accum_energy;
+      this.__accum_energyTime = new Date(safeShutdown.accum_energyTime || 0);
+      this.__oldMeterValue = safeShutdown.oldMeterValue || undefined;
+      this.__oldMeterValueValid = safeShutdown.oldMeterValueValid || false;
+      this.__oldMeterTime = new Date(safeShutdown.oldMeterTime || 0);
+      this.__pendingEnergy = safeShutdown.pendingEnergy || [0, 0, 0, 0];
+      this.__current_power = toNumber(safeShutdown.current_power) || undefined;
+      this.__current_power_time = new Date(safeShutdown.current_power_time || 0);
+      this.__energy_last_slot = toNumber(safeShutdown.energy_last_slot) || undefined;
+      this.__offeredEnergy = toNumber(safeShutdown.offeredEnergy) || 0;
+      this.__missing_power_this_slot = toNumber(safeShutdown.missing_power_this_slot) || 0; // Set later when 0
+      this.__fakeEnergy = safeShutdown.fakeEnergy || [0, 0, 0, 0];
+      this.__pendingOnNewSlot = safeShutdown.pendingOnNewSlot || [];
+    } else {
+      this.__accum_energy = undefined;
+      this.__accum_energyTime = new Date(0);
+      this.__oldMeterValue = undefined;
+      this.__oldMeterValueValid = false;
+      this.__oldMeterTime = new Date(0);
+      this.__pendingEnergy = [0, 0, 0, 0];
+      this.__current_power = undefined;
+      this.__current_power_time = new Date(0);
+      this.__energy_last_slot = undefined;
+      this.__offeredEnergy = 0;
+      this.__missing_power_this_slot = 0; // Set later when 0
+      this.__fakeEnergy = [0, 0, 0, 0];
+      this.__pendingOnNewSlot = [];
+    }
+
     if (!Array.isArray(this.__accum_energy)) {
       // No stored data, set it to something senseful (first time only)
       this.__accum_energy = [0, 0, 0, 0];
@@ -707,6 +762,7 @@ class PiggyBank extends Homey.App {
       // If accumulated time is newer than the old power time, then pending energy is invalid
       // This could happen when the onUninit did not complete before it was killed.
       if (this.__accum_energyTime > this.__current_power_time) {
+        // TODO: This entire if may be Wasted after the change in Ticket #226 that stores the entire shutdown state in one go, remove after the update
         this.__current_power_time = this.__accum_energyTime;
         this.__pendingEnergy = [0, 0, 0, 0];
         this.__fakeEnergy = [0, 0, 0, 0];
@@ -1241,19 +1297,22 @@ class PiggyBank extends Homey.App {
     // ===== KEEPING STATE ACROSS RESTARTS =====
     // We only got 1s to do this so need to save state before anything else
     // For onPowerUpdate + onNewSlot
-    this.homey.settings.set('safeShutdown__accum_energy', this.__accum_energy);
-    this.homey.settings.set('safeShutdown__accum_energyTime', this.__accum_energyTime);
-    this.homey.settings.set('safeShutdown__oldMeterValue', this.__oldMeterValue);
-    this.homey.settings.set('safeShutdown__oldMeterValueValid', this.__oldMeterValueValid);
-    this.homey.settings.set('safeShutdown__oldMeterTime', this.__oldMeterTime);
-    this.homey.settings.set('safeShutdown__pendingEnergy', this.__pendingEnergy);
-    this.homey.settings.set('safeShutdown__current_power', this.__current_power);
-    this.homey.settings.set('safeShutdown__current_power_time', this.__current_power_time);
-    this.homey.settings.set('safeShutdown__energy_last_slot', this.__energy_last_slot);
-    this.homey.settings.set('safeShutdown__offeredEnergy', this.__offeredEnergy);
-    this.homey.settings.set('safeShutdown__missing_power_this_slot', this.__missing_power_this_slot);
-    this.homey.settings.set('safeShutdown__fakeEnergy', this.__fakeEnergy);
-    this.homey.settings.set('safeShutdown__pendingOnNewSlot', this.__pendingOnNewSlot);
+    const safeShutdown = {
+      accum_energy: this.__accum_energy,
+      accum_energyTime: this.__accum_energyTime,
+      oldMeterValue: this.__oldMeterValue,
+      oldMeterValueValid: this.__oldMeterValueValid,
+      oldMeterTime: this.__oldMeterTime,
+      pendingEnergy: this.__pendingEnergy,
+      current_power: this.__current_power,
+      current_power_time: this.__current_power_time,
+      energy_last_slot: this.__energy_last_slot,
+      offeredEnergy: this.__offeredEnergy,
+      missing_power_this_slot: this.__missing_power_this_slot,
+      fakeEnergy: this.__fakeEnergy,
+      pendingOnNewSlot: this.__pendingOnNewSlot
+    };
+    this.homey.settings.set('safeShutdown', safeShutdown);
     // ===== KEEPING STATE ACROSS RESTARTS END =====
 
     this.log('OnUnInit');
