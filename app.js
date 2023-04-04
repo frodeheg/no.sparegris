@@ -2247,7 +2247,7 @@ class PiggyBank extends Homey.App {
   async onMeterUpdate(newMeter, now = new Date()) {
     // Input checking
     if (!Number.isFinite(newMeter)) return Promise.resolve();
-    if (newMeter === this.__oldMeterValue) {
+    if ((newMeter === this.__oldMeterValue) && this.__oldMeterValueValid) {
       this.updateLog('onMeterUpdate was called with an invalid trigger (meter value did not change)', c.LOG_INFO);
       return Promise.resolve();
     }
@@ -2263,12 +2263,12 @@ class PiggyBank extends Homey.App {
       this.__oldMeterValueValid = true;
       return Promise.resolve();
     }
-    if (Number.isFinite(this.__oldMeterValue)) {
+    if (this.__oldMeterValueValid) {
       if (this.__oldMeterTime < this.__accum_energyTime) {
+        this.__oldMeterValueValid = false;
         throw new Error(`Invalid case ${this.__oldMeterTime} : ${this.__accum_energyTime}`);
       } else if (newMeter < this.__oldMeterValue) {
         // Power meter was reset - treat it as value was first time reported
-        this.__oldMeterValue = NaN;
         this.__oldMeterValueValid = false;
       }
     }
@@ -2277,7 +2277,7 @@ class PiggyBank extends Homey.App {
     const limits = this.readMaxPower();
     const numLimits = Array.isArray(limits) ? limits.length : 0;
     // First time meter reporting or meter value was reset --> Fake the old value so the regular code can be used to process power
-    if (Number.isNaN(+this.__oldMeterValue)) {
+    if (!this.__oldMeterValueValid) {
       const unknownPower = (limits[TIMESPAN.QUARTER] < Infinity) ? limits[TIMESPAN.QUARTER] * 4
         : (limits[TIMESPAN.HOUR] < Infinity) ? limits[TIMESPAN.HOUR] : this.__current_power;
       const newestTime = (this.__current_power_time > this.__accum_energyTime) ? this.__current_power_time : this.__accum_energyTime;
