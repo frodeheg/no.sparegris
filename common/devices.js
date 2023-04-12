@@ -419,6 +419,12 @@ const DEVICE_CMD = {
     tempStep: 1,
     default: false
   },
+  'no.connecte:thermostat_pm': {
+    ...DEFAULT_HEATER,
+    tempMax: 35,
+    tempStep: 1,
+    default: false
+  },
   'no.easee:charger': {
     ...DEFAULT_CHARGER,
     onChargeStart: {
