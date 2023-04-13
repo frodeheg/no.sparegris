@@ -1381,10 +1381,6 @@ class PiggyBank extends Homey.App {
       let onoffCap = device.capabilities.includes('onoff') ? 'onoff' : device.capabilities.find(cap => cap.includes('onoff'));
       if ((onoffCap === undefined) && (driverId in d.DEVICE_CMD)) {
         onoffCap = d.DEVICE_CMD[driverId].setOnOffCap;
-        if ((typeof onoffCap === 'object') && (onoffCap !== null)) {
-          const filteredArray = onoffCap.filter(value => device.capabilities.includes(value));
-          onoffCap = filteredArray[0];
-        }
       }
       if (onoffCap === undefined) {
         this.updateLog(`ignoring: ${device.name}`, c.LOG_DEBUG);
@@ -3321,12 +3317,7 @@ class PiggyBank extends Homey.App {
 
   getOnOffCap(deviceId) {
     try {
-      const onOffCap = d.DEVICE_CMD[this.__deviceList[deviceId].driverId].setOnOffCap;
-      if (typeof onOffCap === 'object') {
-        // The devicelist onoff cap should already have been set for this
-        return this.__deviceList[deviceId].onoff_cap;
-      }
-      return onOffCap;
+      return d.DEVICE_CMD[this.__deviceList[deviceId].driverId].setOnOffCap;
     } catch (err) {
       return this.__deviceList[deviceId].onoff_cap;
     }
@@ -3334,12 +3325,7 @@ class PiggyBank extends Homey.App {
 
   getOnOffTrue(deviceId) {
     try {
-      const onOffValue = d.DEVICE_CMD[this.__deviceList[deviceId].driverId].setOnValue;
-      if (typeof onOffValue === 'object') {
-        // The devicelist onoff cap should already have been set for this
-        return onOffValue[this.getOnOffCap(deviceId)];
-      }
-      return onOffValue;
+      return d.DEVICE_CMD[this.__deviceList[deviceId].driverId].setOnValue;
     } catch (err) {
       return true;
     }
@@ -3347,12 +3333,7 @@ class PiggyBank extends Homey.App {
 
   getOnOffFalse(deviceId) {
     try {
-      const onOffValue = d.DEVICE_CMD[this.__deviceList[deviceId].driverId].setOffValue;
-      if (typeof onOffValue === 'object') {
-        // The devicelist onoff cap should already have been set for this
-        return onOffValue[this.getOnOffCap(deviceId)];
-      }
-      return onOffValue;
+      return d.DEVICE_CMD[this.__deviceList[deviceId].driverId].setOffValue;
     } catch (err) {
       return false;
     }
