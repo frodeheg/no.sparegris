@@ -4453,14 +4453,16 @@ class PiggyBank extends Homey.App {
       if (this.homey.settings.get('__no_price_notification') === null) {
         this.homey.settings.set('__no_price_notification', true);
         const noPriceText = this.homey.__('settings.welcome.taskNoPrices');
-        this.homey.notifications.createNotification({ excerpt: noPriceText });
+        this.homey.notifications.createNotification({ excerpt: noPriceText })
+          .catch(err => this.updateLog(noPriceText, c.LOG_ERROR));
       }
       return this.onPricePointUpdate(c.PP.NORM, now);
     }
     if (this.homey.settings.get('__no_price_notification')) {
       this.homey.settings.unset('__no_price_notification');
       const yesPriceText = this.homey.__('settings.welcome.taskYesPrices');
-      this.homey.notifications.createNotification({ excerpt: yesPriceText });
+      this.homey.notifications.createNotification({ excerpt: yesPriceText })
+        .catch(err => this.updateLog(yesPriceText, c.LOG_ERROR));
     }
     if (!this.app_is_configured) {
       return Promise.reject(new Error(this.homey.__('warnings.notConfigured')));
