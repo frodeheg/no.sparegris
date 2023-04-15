@@ -115,13 +115,18 @@ const DEFAULT_IGNORED = {
   type: DEVICE_TYPE.IGNORE
 };
 
-// Default Ignored device:
+// Default Meter reader device:
 const DEFAULT_METER = {
   type: DEVICE_TYPE.METERREADER,
   readPowerCap: 'measure_power',
   readMeterCap: 'meter_power',
   default: true
 };
+
+// Default Solar devices:
+const DEFAULT_SOLAR = {
+  type: DEVICE_TYPE.IGNORE
+}
 
 // Supported devices and how to use them
 const DEVICE_CMD = {
@@ -352,6 +357,7 @@ const DEVICE_CMD = {
     tempMax: 30,
     tempStep: 0.5
   },
+  'it.diederik.solar:growatt': DEFAULT_SOLAR,
   'me.nanoleaf:shapes': DEFAULT_SWITCH,
   'net.filllip-namron:4512725': {
     ...DEFAULT_HEATER,

@@ -1,0 +1,13 @@
+Log ID: 2023-04-10T10:50:17.438Z
+App version 0.20.19
+
++10:50:17.438: ----- ANALYZING DEVICE -----
++10:50:17.440: Report type: Device is not listed
++10:50:17.457: Device name: Solceller
++10:50:17.459: Driver Id: homey:app:it.diederik.solar:growatt
++10:50:17.461: Error: TypeError: Cannot read properties of undefined (reading 'onoff_cap')
++10:50:17.462: Capabilities: measure_power,meter_power
++10:50:17.463: Options for 'measure_power': {"id":"measure_power","type":"number","iconObj":null,"title":"Effekt","getable":true,"setable":false,"insights":true,"insightsTitleTrue":null,"insightsTitleFalse":null,"units":"W","decimals":2,"value":5020.2,"lastUpdated":"2023-04-10T10:50:13.407Z"}
++10:50:17.465: Options for 'meter_power': {"id":"meter_power","type":"number","iconObj":null,"title":"Energi","getable":true,"setable":false,"insights":true,"insightsTitleTrue":null,"insightsTitleFalse":null,"units":"kWh","decimals":2,"value":17.3,"lastUpdated":"2023-04-10T10:50:13.404Z"}
++10:50:17.466: --- ANALYZING DEVICE DONE ---
++10:52:2.499: Sending log
