@@ -1,88 +1,37 @@
-Log ID: 2022-11-08T17:41:50.814ZApp version 0.18.31
-+17:41:50.814: No state from previous shutdown? Powerloss, deactivated or forced restart.
-+17:41:50.898: Homey reboot detected. Delaying device control by 736 seconds to improve Zigbee recovery.
-+19:6:12.702: Failed to turn off device Altherma III Geo - HotWaterTank, will try to turn off other devices instead. (Error: hotwatertank_onoff_altherma3 InvalidTypeError: false is of type boolean but expected string (invalid_type))
-+19:6:12.823: Failed to reduce power usage by 202W (number of forced on devices: 4)
-+19:6:22.709: Failed to turn off device Altherma III Geo - HotWaterTank, will try to turn off other devices instead. (Error: hotwatertank_onoff_altherma3 InvalidTypeError: false is of type boolean but expected string (invalid_type))
-+19:6:22.792: Failed to reduce power usage by 313W (number of forced on devices: 4)
-+19:8:13.805: Failed to turn off device Altherma III Geo - HotWaterTank, will try to turn off other devices instead. (Error: hotwatertank_onoff_altherma3 InvalidTypeError: false is of type boolean but expected string (invalid_type))
-+19:8:13.880: Failed to reduce power usage by 128W (number of forced on devices: 4)
-+19:8:22.720: Failed to turn off device Altherma III Geo - HotWaterTank, will try to turn off other devices instead. (Error: hotwatertank_onoff_altherma3 InvalidTypeError: false is of type boolean but expected string (invalid_type))
-+19:8:22.812: Failed to reduce power usage by 274W (number of forced on devices: 4)
-+19:32:8.994: Electricity price api not installed
-+7:52:0.435: Electricity price api not installed
-+7:53:21.109: ----- ANALYZING DEVICE -----
-+7:53:21.113: Report type: Device is not being turned on/off
-+7:53:21.115: Device ID: 1e793ddd-e9fa-4a68-b32a-d38a01be60b3
-+7:53:21.148: Device name: Altherma III Geo - ClimateControl
-+7:53:21.149: Driver Uri: homey:app:climate.onecta.daikin
-+7:53:21.151: Driver Id: altherma3_geo
-+7:53:21.154: Found onoff cap: onoff
-+7:53:21.155: Found temp cap: true
-+7:53:21.158: Device reliability: 1
-+7:53:21.160: Capabilities: onoff,operation_mode_altherma3,target_temperature,measure_temperature,measure_temperature.outdoorTemperature,measure_temperature.leavingWaterTemperature
-+7:53:21.162: Options for 'onoff': {"value":true,"lastUpdated":"2022-11-08T09:22:11.158Z","type":"boolean","getable":true,"setable":true,"title":"On / Off","desc":null,"units":null,"chartType":"stepLine","id":"onoff","options":{"title":{"en":"On / Off","nl":"Aan / Uit"},"platforms":["local","cloud"],"insights":true,"chartType":"stepLine","getable":true,"setable":true,"uiComponent":"toggle","uiQuickAction":true}}
-+7:53:21.165: Options for 'operation_mode_altherma3': {"value":"heating","lastUpdated":"2022-11-08T09:22:11.073Z","type":"enum","getable":true,"setable":true,"title":"Operation Mode","desc":null,"units":null,"values":[{"id":"auto","title":"Auto"},{"id":"cooling","title":"Cooling"},{"id":"heating","title":"Heating"}],"id":"operation_mode_altherma3","options":{}}
-+7:53:21.167: Options for 'target_temperature': {"value":10,"lastUpdated":"2022-11-08T09:26:46.874Z","type":"number","getable":true,"setable":true,"title":"Target temperature","desc":null,"units":"�C","decimals":1,"min":4,"max":35,"chartType":"spline","id":"target_temperature","options":{"title":{"en":"Target temperature","nl":"Ingestelde temperatuur"},"platforms":["local","cloud"],"units":{"en":"�C","nl":"�C"},"insights":true,"decimals":1,"chartType":"spline","getable":true,"setable":true,"uiComponent":"thermostat"}}
-+7:53:21.170: Options for 'measure_temperature': {"value":null,"lastUpdated":null,"type":"number","getable":true,"setable":false,"title":"Indoor temperature","desc":"Temperature in degrees Celsius (�C)","units":"�C","decimals":1,"chartType":"spline","id":"measure_temperature","options":{"type":"number","title":{"en":"Indoor temperature","nl":"Binnen temperatuur"},"platforms":["local","cloud"],"units":{"en":"�C","nl":"�C"},"insights":true,"decimals":1,"chartType":"spline","getable":true,"setable":false,"uiComponent":"sensor"}}
-+7:53:21.173: Options for 'measure_temperature.outdoorTemperature': {"value":10,"lastUpdated":"2022-11-09T07:34:03.718Z","type":"number","getable":true,"setable":false,"title":"Outdoor temperature","desc":"Temperature in degrees Celsius (�C)","units":"�C","decimals":1,"chartType":"spline","id":"measure_temperature.outdoorTemperature","options":{"title":{"en":"Outdoor temperature","nl":"Buiten temperatuur"},"platforms":["local","cloud"],"units":{"en":"�C","nl":"�C"},"insights":true,"decimals":1,"chartType":"spline","getable":true,"setable":false,"uiComponent":"sensor"}}
-+7:53:21.178: Options for 'measure_temperature.leavingWaterTemperature': {"value":35,"lastUpdated":"2022-11-08T14:22:12.456Z","type":"number","getable":true,"setable":false,"title":"Leavingwater temperature","desc":"Temperature in degrees Celsius (�C)","units":"�C","decimals":1,"chartType":"spline","id":"measure_temperature.leavingWaterTemperature","options":{"title":{"en":"Leavingwater temperature","nl":"Weggaandewater temperatuur"},"platforms":["local","cloud"],"units":{"en":"�C","nl":"�C"},"insights":true,"decimals":1,"chartType":"spline","getable":true,"setable":false,"uiComponent":"sensor"}}
-+7:53:21.181: --- ANALYZING DEVICE DONE ---
-+7:53:32.415: ----- ANALYZING DEVICE -----
-+7:53:32.422: Report type: Device is not being turned on/off
-+7:53:32.428: Device ID: 1e793ddd-e9fa-4a68-b32a-d38a01be60b3
-+7:53:32.496: Device name: Altherma III Geo - ClimateControl
-+7:53:32.498: Driver Uri: homey:app:climate.onecta.daikin
-+7:53:32.500: Driver Id: altherma3_geo
-+7:53:32.506: Found onoff cap: onoff
-+7:53:32.509: Found temp cap: true
-+7:53:32.510: Device reliability: 1
-+7:53:32.512: Capabilities: onoff,operation_mode_altherma3,target_temperature,measure_temperature,measure_temperature.outdoorTemperature,measure_temperature.leavingWaterTemperature
-+7:53:32.524: Options for 'onoff': {"value":true,"lastUpdated":"2022-11-08T09:22:11.158Z","type":"boolean","getable":true,"setable":true,"title":"On / Off","desc":null,"units":null,"chartType":"stepLine","id":"onoff","options":{"title":{"en":"On / Off","nl":"Aan / Uit"},"platforms":["local","cloud"],"insights":true,"chartType":"stepLine","getable":true,"setable":true,"uiComponent":"toggle","uiQuickAction":true}}
-+7:53:32.530: Options for 'operation_mode_altherma3': {"value":"heating","lastUpdated":"2022-11-08T09:22:11.073Z","type":"enum","getable":true,"setable":true,"title":"Operation Mode","desc":null,"units":null,"values":[{"id":"auto","title":"Auto"},{"id":"cooling","title":"Cooling"},{"id":"heating","title":"Heating"}],"id":"operation_mode_altherma3","options":{}}
-+7:53:32.532: Options for 'target_temperature': {"value":10,"lastUpdated":"2022-11-08T09:26:46.874Z","type":"number","getable":true,"setable":true,"title":"Target temperature","desc":null,"units":"�C","decimals":1,"min":4,"max":35,"chartType":"spline","id":"target_temperature","options":{"title":{"en":"Target temperature","nl":"Ingestelde temperatuur"},"platforms":["local","cloud"],"units":{"en":"�C","nl":"�C"},"insights":true,"decimals":1,"chartType":"spline","getable":true,"setable":true,"uiComponent":"thermostat"}}
-+7:53:32.535: Options for 'measure_temperature': {"value":null,"lastUpdated":null,"type":"number","getable":true,"setable":false,"title":"Indoor temperature","desc":"Temperature in degrees Celsius (�C)","units":"�C","decimals":1,"chartType":"spline","id":"measure_temperature","options":{"type":"number","title":{"en":"Indoor temperature","nl":"Binnen temperatuur"},"platforms":["local","cloud"],"units":{"en":"�C","nl":"�C"},"insights":true,"decimals":1,"chartType":"spline","getable":true,"setable":false,"uiComponent":"sensor"}}
-+7:53:32.537: Options for 'measure_temperature.outdoorTemperature': {"value":10,"lastUpdated":"2022-11-09T07:34:03.718Z","type":"number","getable":true,"setable":false,"title":"Outdoor temperature","desc":"Temperature in degrees Celsius (�C)","units":"�C","decimals":1,"chartType":"spline","id":"measure_temperature.outdoorTemperature","options":{"title":{"en":"Outdoor temperature","nl":"Buiten temperatuur"},"platforms":["local","cloud"],"units":{"en":"�C","nl":"�C"},"insights":true,"decimals":1,"chartType":"spline","getable":true,"setable":false,"uiComponent":"sensor"}}
-+7:53:32.540: Options for 'measure_temperature.leavingWaterTemperature': {"value":35,"lastUpdated":"2022-11-08T14:22:12.456Z","type":"number","getable":true,"setable":false,"title":"Leavingwater temperature","desc":"Temperature in degrees Celsius (�C)","units":"�C","decimals":1,"chartType":"spline","id":"measure_temperature.leavingWaterTemperature","options":{"title":{"en":"Leavingwater temperature","nl":"Weggaandewater temperatuur"},"platforms":["local","cloud"],"units":{"en":"�C","nl":"�C"},"insights":true,"decimals":1,"chartType":"spline","getable":true,"setable":false,"uiComponent":"sensor"}}
-+7:53:32.542: --- ANALYZING DEVICE DONE ---
-+7:53:38.950: Email: #removed#Comment:
-+7:53:38.989: Sending log
-+7:53:39.173: Send log error: Error: Can not use IPv4 addresses with current network
-+8:32:24.102: Electricity price api not installed
-+8:52:22.862: Electricity price api not installed
-+9:42:14.479: Electricity price api not installed
-+9:50:19.867: Electricity price api not installed
-+9:50:56.860: ----- ANALYZING DEVICE -----
-+9:50:56.862: Report type: Device does not set temperature
-+9:50:56.865: Device ID: 1e793ddd-e9fa-4a68-b32a-d38a01be60b3
-+9:50:56.914: Device name: Altherma III Geo - ClimateControl
-+9:50:56.916: Driver Uri: homey:app:climate.onecta.daikin
-+9:50:56.918: Driver Id: altherma3_geo
-+9:50:56.920: Found onoff cap: onoff
-+9:50:56.922: Found temp cap: true
-+9:50:56.924: Device reliability: 1
-+9:50:56.926: Capabilities: onoff,operation_mode_altherma3,target_temperature,measure_temperature,measure_temperature.outdoorTemperature,measure_temperature.leavingWaterTemperature
-+9:50:56.928: Options for 'onoff': {"value":true,"lastUpdated":"2022-11-08T09:22:11.158Z","type":"boolean","getable":true,"setable":true,"title":"On / Off","desc":null,"units":null,"chartType":"stepLine","id":"onoff","options":{"title":{"en":"On / Off","nl":"Aan / Uit"},"platforms":["local","cloud"],"insights":true,"chartType":"stepLine","getable":true,"setable":true,"uiComponent":"toggle","uiQuickAction":true}}
-+9:50:56.933: Options for 'operation_mode_altherma3': {"value":"heating","lastUpdated":"2022-11-08T09:22:11.073Z","type":"enum","getable":true,"setable":true,"title":"Operation Mode","desc":null,"units":null,"values":[{"id":"auto","title":"Auto"},{"id":"cooling","title":"Cooling"},{"id":"heating","title":"Heating"}],"id":"operation_mode_altherma3","options":{}}
-+9:50:56.935: Options for 'target_temperature': {"value":10,"lastUpdated":"2022-11-08T09:26:46.874Z","type":"number","getable":true,"setable":true,"title":"Target temperature","desc":null,"units":"�C","decimals":1,"min":4,"max":35,"chartType":"spline","id":"target_temperature","options":{"title":{"en":"Target temperature","nl":"Ingestelde temperatuur"},"platforms":["local","cloud"],"units":{"en":"�C","nl":"�C"},"insights":true,"decimals":1,"chartType":"spline","getable":true,"setable":true,"uiComponent":"thermostat"}}
-+9:50:56.937: Options for 'measure_temperature': {"value":null,"lastUpdated":null,"type":"number","getable":true,"setable":false,"title":"Indoor temperature","desc":"Temperature in degrees Celsius (�C)","units":"�C","decimals":1,"chartType":"spline","id":"measure_temperature","options":{"type":"number","title":{"en":"Indoor temperature","nl":"Binnen temperatuur"},"platforms":["local","cloud"],"units":{"en":"�C","nl":"�C"},"insights":true,"decimals":1,"chartType":"spline","getable":true,"setable":false,"uiComponent":"sensor"}}
-+9:50:56.940: Options for 'measure_temperature.outdoorTemperature': {"value":10,"lastUpdated":"2022-11-09T07:34:03.718Z","type":"number","getable":true,"setable":false,"title":"Outdoor temperature","desc":"Temperature in degrees Celsius (�C)","units":"�C","decimals":1,"chartType":"spline","id":"measure_temperature.outdoorTemperature","options":{"title":{"en":"Outdoor temperature","nl":"Buiten temperatuur"},"platforms":["local","cloud"],"units":{"en":"�C","nl":"�C"},"insights":true,"decimals":1,"chartType":"spline","getable":true,"setable":false,"uiComponent":"sensor"}}
-+9:50:56.942: Options for 'measure_temperature.leavingWaterTemperature': {"value":35,"lastUpdated":"2022-11-08T14:22:12.456Z","type":"number","getable":true,"setable":false,"title":"Leavingwater temperature","desc":"Temperature in degrees Celsius (�C)","units":"�C","decimals":1,"chartType":"spline","id":"measure_temperature.leavingWaterTemperature","options":{"title":{"en":"Leavingwater temperature","nl":"Weggaandewater temperatuur"},"platforms":["local","cloud"],"units":{"en":"�C","nl":"�C"},"insights":true,"decimals":1,"chartType":"spline","getable":true,"setable":false,"uiComponent":"sensor"}}
-+9:50:56.945: --- ANALYZING DEVICE DONE ---
+Log ID: 2023-04-13T12:18:57.740Z
+App version 0.20.19
 
-Log ID: 2022-11-09T09:51:44.035ZApp version 0.18.31
++12:18:57.740: ----- ANALYZING DEVICE -----
++12:18:57.745: Report type: Device does not set temperature
++12:18:57.776: Device name: Altherma III Geo - ClimateControl
++12:18:57.778: Driver Id: homey:app:climate.onecta.daikin:altherma3_geo
++12:18:57.779: Found onoff cap: onoff
++12:18:57.781: Found temp cap: false
++12:18:57.783: Device reliability: 0.9999999999999946
++12:18:57.785: Capabilities: onoff,operation_mode_altherma3,measure_temperature.outdoorTemperature,measure_temperature.leavingWaterTemperature,LeavingWaterOffset_altherma3
++12:18:57.788: Options for 'onoff': {"value":true,"lastUpdated":"2023-03-04T07:54:25.133Z","type":"boolean","getable":true,"setable":true,"title":"On / Off","desc":null,"units":null,"chartType":"stepLine","id":"onoff","options":{"title":{"en":"On / Off","nl":"Aan / Uit"},"platforms":["local","cloud"],"insights":true,"chartType":"stepLine","getable":true,"setable":true,"uiComponent":"toggle","uiQuickAction":true}}
++12:18:57.791: Options for 'operation_mode_altherma3': {"value":"heating","lastUpdated":"2022-11-10T06:32:36.635Z","type":"enum","getable":true,"setable":true,"title":"Operation Mode","desc":null,"units":null,"values":[{"id":"auto","title":"Auto"},{"id":"cooling","title":"Cooling"},{"id":"heating","title":"Heating"}],"id":"operation_mode_altherma3","options":{}}
++12:18:57.795: Options for 'measure_temperature.outdoorTemperature': {"value":8,"lastUpdated":"2023-04-13T11:35:15.252Z","type":"number","getable":true,"setable":false,"title":"Outdoor temperature","desc":"Temperature in degrees Celsius (°C)","units":"°C","decimals":1,"chartType":"spline","id":"measure_temperature.outdoorTemperature","options":{"title":{"en":"Outdoor temperature","nl":"Buiten temperatuur"},"platforms":["local","cloud"],"units":{"en":"°C","nl":"°C"},"insights":true,"decimals":1,"chartType":"spline","getable":true,"setable":false,"uiComponent":"sensor"}}
++12:18:57.799: Options for 'measure_temperature.leavingWaterTemperature': {"value":37,"lastUpdated":"2023-04-13T12:03:54.764Z","type":"number","getable":true,"setable":false,"title":"Leavingwater temperature","desc":"Temperature in degrees Celsius (°C)","units":"°C","decimals":1,"chartType":"spline","id":"measure_temperature.leavingWaterTemperature","options":{"title":{"en":"Leavingwater temperature","nl":"Weggaandewater temperatuur"},"platforms":["local","cloud"],"units":{"en":"°C","nl":"°C"},"insights":true,"decimals":1,"chartType":"spline","getable":true,"setable":false,"uiComponent":"sensor"}}
++12:18:57.801: Options for 'LeavingWaterOffset_altherma3': {"value":"0","lastUpdated":"2023-04-13T09:33:54.335Z","type":"enum","getable":true,"setable":true,"title":"Offset","desc":null,"units":null,"values":[{"id":"-10","title":"-10"},{"id":"-9","title":"-9"},{"id":"-8","title":"-8"},{"id":"-7","title":"-7"},{"id":"-6","title":"-6"},{"id":"-5","title":"-5"},{"id":"-4","title":"-4"},{"id":"-3","title":"-3"},{"id":"-2","title":"-2"},{"id":"-1","title":"-1"},{"id":"0","title":"0"},{"id":"1","title":"1"},{"id":"2","title":"2"},{"id":"3","title":"3"},{"id":"4","title":"4"},{"id":"5","title":"5"},{"id":"6","title":"6"},{"id":"7","title":"7"},{"id":"8","title":"8"},{"id":"9","title":"9"},{"id":"10","title":"10"}],"id":"LeavingWaterOffset_altherma3","options":{}}
++12:18:57.803: --- ANALYZING DEVICE DONE ---
++12:19:3.565: Sending log
 
-+9:51:44.035: ----- ANALYZING DEVICE -----
-+9:51:44.038: Report type: Device does not set temperature
-+9:51:44.040: Device ID: 077d5b93-8f2a-473e-97c8-6f7a78f7472e
-+9:51:44.070: Device name: Altherma III Geo - HotWaterTank
-+9:51:44.072: Driver Uri: homey:app:climate.onecta.daikin
-+9:51:44.074: Driver Id: altherma3_geo
-+9:51:44.075: Found onoff cap: hotwatertank_onoff_altherma3
-+9:51:44.077: Found temp cap: false
-+9:51:44.079: Device reliability: 1
-+9:51:44.080: Capabilities: hotwatertank_onoff_altherma3,powerFulMode_altherma3,measure_temperature.tankTemperature
-+9:51:44.082: Options for 'hotwatertank_onoff_altherma3': {"value":"on","lastUpdated":"2022-11-08T19:49:09.879Z","type":"enum","getable":true,"setable":true,"title":"Hotwatertank","desc":null,"units":null,"values":[{"id":"on","title":"On"},{"id":"off","title":"Off"}],"id":"hotwatertank_onoff_altherma3","options":{}}
-+9:51:44.084: Options for 'powerFulMode_altherma3': {"value":"off","lastUpdated":"2022-11-08T09:22:11.213Z","type":"enum","getable":true,"setable":true,"title":"Powerful Mode","desc":null,"units":null,"values":[{"id":"on","title":"On"},{"id":"off","title":"Off"}],"id":"powerFulMode_altherma3","options":{}}
-+9:51:44.086: Options for 'measure_temperature.tankTemperature': {"value":50,"lastUpdated":"2022-11-09T08:20:51.278Z","type":"number","getable":true,"setable":false,"title":"Hotwatertank temperature ","desc":"Temperature in degrees Celsius (�C)","units":"�C","decimals":1,"chartType":"spline","id":"measure_temperature.tankTemperature","options":{"title":{"en":"Hotwatertank temperature ","nl":"Heetwatertank temperature"},"platforms":["local","cloud"],"units":{"en":"�C","nl":"�C"},"insights":true,"decimals":1,"chartType":"spline","getable":true,"setable":false,"uiComponent":"sensor"}}
-+9:51:44.088: --- ANALYZING DEVICE DONE ---
+Log ID: 2023-04-13T12:19:17.807Z
+App version 0.20.19
+
++12:19:17.807: ----- ANALYZING DEVICE -----
++12:19:17.813: Report type: Device does not set temperature
++12:19:17.854: Device name: Altherma III Geo - HotWaterTank
++12:19:17.860: Driver Id: homey:app:climate.onecta.daikin:altherma3_geo
++12:19:17.866: Found onoff cap: hotwatertank_onoff_altherma3
++12:19:17.871: Found temp cap: false
++12:19:17.872: Device reliability: 1
++12:19:17.875: Capabilities: hotwatertank_onoff_altherma3,powerFulMode_altherma3,measure_temperature.tankTemperature,LeavingWaterOffset_altherma3
++12:19:17.877: Options for 'hotwatertank_onoff_altherma3': {"value":"on","lastUpdated":"2023-03-04T07:54:47.882Z","type":"enum","getable":true,"setable":true,"title":"Hotwatertank","desc":null,"units":null,"values":[{"id":"on","title":"On"},{"id":"off","title":"Off"}],"id":"hotwatertank_onoff_altherma3","options":{}}
++12:19:17.879: Options for 'powerFulMode_altherma3': {"value":"off","lastUpdated":"2022-11-27T23:23:11.070Z","type":"enum","getable":true,"setable":true,"title":"Powerful Mode","desc":null,"units":null,"values":[{"id":"on","title":"On"},{"id":"off","title":"Off"}],"id":"powerFulMode_altherma3","options":{}}
++12:19:17.881: Options for 'measure_temperature.tankTemperature': {"value":54,"lastUpdated":"2023-04-13T11:33:54.347Z","type":"number","getable":true,"setable":false,"title":"Hotwatertank temperature ","desc":"Temperature in degrees Celsius (°C)","units":"°C","decimals":1,"chartType":"spline","id":"measure_temperature.tankTemperature","options":{"title":{"en":"Hotwatertank temperature ","nl":"Heetwatertank temperature"},"platforms":["local","cloud"],"units":{"en":"°C","nl":"°C"},"insights":true,"decimals":1,"chartType":"spline","getable":true,"setable":false,"uiComponent":"sensor"}}
++12:19:17.884: Options for 'LeavingWaterOffset_altherma3': {"value":"0","lastUpdated":"2023-04-13T09:33:54.376Z","type":"enum","getable":true,"setable":true,"title":"Offset","desc":null,"units":null,"values":[{"id":"-10","title":"-10"},{"id":"-9","title":"-9"},{"id":"-8","title":"-8"},{"id":"-7","title":"-7"},{"id":"-6","title":"-6"},{"id":"-5","title":"-5"},{"id":"-4","title":"-4"},{"id":"-3","title":"-3"},{"id":"-2","title":"-2"},{"id":"-1","title":"-1"},{"id":"0","title":"0"},{"id":"1","title":"1"},{"id":"2","title":"2"},{"id":"3","title":"3"},{"id":"4","title":"4"},{"id":"5","title":"5"},{"id":"6","title":"6"},{"id":"7","title":"7"},{"id":"8","title":"8"},{"id":"9","title":"9"},{"id":"10","title":"10"}],"id":"LeavingWaterOffset_altherma3","options":{}}
++12:19:17.886: --- ANALYZING DEVICE DONE ---
+Comment:Daikin Altherma III geo - hotwater
++12:19:20.771: Sending log

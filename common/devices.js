@@ -144,19 +144,11 @@ const DEVICE_CMD = {
     default: false
   },
   'climate.onecta.daikin:altherma3_geo:1': {
-    identifierCap: 'operation_mode_altherma3',
-    type: DEVICE_TYPE.AC,
-    note: 'This device will emulate off by setting the temperature to the minimum setting',
-    setOnOffCap: null, // The onoff capability is unreliable
-    readTempCap: 'measure_temperature.leavingWaterTemperature',
-    setTempCap: 'target_temperature',
-    tempMin: 4,
-    tempMax: 35,
-    tempStep: 0.5,
-    setModeCap: 'operation_mode_altherma3',
-    setModeHeatValue: 'heating',
-    setModeCoolValue: 'cooling',
-    setModeAutoValue: 'auto'
+    identifierCap: 'onoff',
+    type: DEVICE_TYPE.SWITCH,
+    setOnOffCap: 'onoff',
+    setOnValue: true,
+    setOffValue: false
   },
   'climate.onecta.daikin:perfera_floor_fvxm': {
     ...DEFAULT_AC,
