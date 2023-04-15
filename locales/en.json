@@ -137,6 +137,8 @@
       "controlTemp": "Allow temperature control",
       "controlTempYes": "Yes",
       "controlTempNo": "No",
+      "controlTempPreferred": "Preferred",
+      "controlTempHint": "<p>No - Will only control on/off.</p><p>Yes - Uses on/off to keep power tariff, temperatures are set according to the current preferences.</p><p>Preferred - Avoid using on/off where possible, temperatures are set to min/max depending on heating/cooling when trying to keep the power tariff, otherwise according to the current preferences.</p>",
       "settings": "Global Settings",
       "errorMargin" : "Error Margin",
       "errorMarginHint1" : "Ensure that you always end up a bit below the effect tariff.",

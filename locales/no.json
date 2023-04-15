@@ -137,6 +137,8 @@
       "controlTemp": "Tillat temperatursyring",
       "controlTempYes": "Ja",
       "controlTempNo": "Nei",
+      "controlTempPreferred": "Foretrukket",
+      "controlTempHint": "<p>Nei - Vil bare kontrollere av/på.</p><p>Ja - Bruker av/på for å holde strømtariffen, temperaturene stilles inn i henhold til gjeldende preferanser.</p><p>Foretrukket - Unngå å bruke av/på der det er mulig, temperaturene settes til min/maks avhengig av oppvarming/kjøling når man prøver å holde strømtariffen, ellers i henhold til gjeldende preferanser.</p>",
       "settings": "Globale Innstillinger",
       "errorMargin" : "Feilmargin",
       "errorMarginHint1" : "Sørger for at du alltid ender opp på et nivå under effekttariffen.",

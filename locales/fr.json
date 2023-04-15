@@ -137,6 +137,8 @@
       "controlTemp": "Réglage de la température",
       "controlTempYes": "Oui",
       "controlTempNo": "Non",
+      "controlTempPreferred": "Préféré",
+      "controlTempHint": "<p>Non - Contrôlera uniquement marche/arrêt.</p><p>Oui - Utilise marche/arrêt pour conserver le tarif de l'électricité, les températures sont réglées en fonction des préférences actuelles.</p><p>Préféré - Évite d'utiliser marche/arrêt lorsque cela est possible, les températures sont réglées sur min/max en fonction du chauffage/refroidissement lorsque l'on essaie de conserver le tarif de puissance, sinon selon les préférences actuelles.</p>",
       "settings": "Paramètres mondiaux",
       "errorMargin": "Erreur Margin",
       "errorMarginHint1": "Assurez-vous de toujours finir un peu en dessous du tarif d'effet.",

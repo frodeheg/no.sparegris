@@ -3103,6 +3103,38 @@ class PiggyBank extends Homey.App {
   }
 
   /**
+   * Return the intended temperature for a device.
+   */
+  getWantedTemp(device, deviceId) {
+    // Base temperature
+    const modeList = this.homey.settings.get('modeList');
+    const currentMode = +this.homey.settings.get('operatingMode');
+    const currentModeList = modeList[currentMode - 1];
+    const modeIdx = this.findModeIdx(deviceId);
+    const modeTemp = +currentModeList[modeIdx].targetTemp;
+
+    // Delta temperature
+    const actionLists = this.homey.settings.get('priceActionList');
+    const actionListIdx = +this.homey.settings.get('pricePoint');
+    const currentAction = actionLists[actionListIdx][deviceId]; // Action state: .operation
+    const currentPriceMode = +this.homey.settings.get('priceMode');
+    const deltaTemp = ((currentPriceMode !== c.PRICE_MODE_DISABLED) && (currentAction.operation === TARGET_OP.DELTA_TEMP)) ? +currentAction.delta : 0;
+
+    // In case AC Mode is cool, invert the temperature deltas
+    const currentACMode = this.getACMode(device);
+    const invertDelta = currentACMode === c.ACMODE.COOL;
+    let newTemp = invertDelta
+      ? (modeTemp - deltaTemp)
+      : (modeTemp + deltaTemp);
+    const minTemp = this.getTempCapMin(device, deviceId) + (invertDelta ? 0 : 1); // Minimum reserved for on/off
+    const maxTemp = this.getTempCapMax(device, deviceId) - (invertDelta ? 1 : 0); // Maximum reserved for on/off
+    if (newTemp < minTemp) newTemp = minTemp;
+    if (newTemp > maxTemp) newTemp = maxTemp;
+    if (this.logUnit === deviceId) this.updateLog(`Calculating Device Temperature for ${device.name}: ${newTemp} | Mode temp(${modeTemp}) + Delta temp(${deltaTemp})`, c.LOG_ALL);
+    return newTemp;
+  }
+
+  /**
    * Find the new target temperature for a device
    * @return [success, noChange] - success means that the result is as requested, noChange indicate if the result was already as requested
    */
@@ -3112,17 +3144,6 @@ class PiggyBank extends Homey.App {
       if (this.logUnit === deviceId) this.updateLog(`aborted refreshTemp() for '${deviceId} - Temperature control has been disabled`, c.LOG_ALL);
       return Promise.resolve([true, true]);
     }
-    const modeList = this.homey.settings.get('modeList');
-    const frostList = this.homey.settings.get('frostList');
-    const currentMode = +this.homey.settings.get('operatingMode');
-    const actionLists = this.homey.settings.get('priceActionList');
-    const actionListIdx = +this.homey.settings.get('pricePoint');
-    const currentModeList = modeList[currentMode - 1];
-    const modeIdx = this.findModeIdx(deviceId);
-    const modeTemp = +currentModeList[modeIdx].targetTemp;
-    const currentAction = actionLists[actionListIdx][deviceId]; // Action state: .operation
-    const currentPriceMode = +this.homey.settings.get('priceMode');
-    const deltaTemp = ((currentPriceMode !== c.PRICE_MODE_DISABLED) && (currentAction.operation === TARGET_OP.DELTA_TEMP)) ? +currentAction.delta : 0;
     return this.getDevice(deviceId)
       .then(device => {
         if (this.logUnit === deviceId) this.updateLog(`attempt refreshTemp() for ${device.name}`, c.LOG_ALL);
@@ -3140,9 +3161,11 @@ class PiggyBank extends Homey.App {
           if (this.logUnit === deviceId) this.updateLog(`aborted refreshTemp() for ${device.name} - Device is off`, c.LOG_ALL);
           return Promise.resolve([true, true]);
         }
-        // In case AC Mode is cool, invert the temperature deltas
-        const currentACMode = this.getACMode(device);
-        const invertDelta = currentACMode === c.ACMODE.COOL;
+        const override = this.homey.settings.get('override') || {};
+        if (override[deviceId] === c.OVERRIDE.MANUAL_TEMP) {
+          if (this.logUnit === deviceId) this.updateLog(`aborted refreshTemp() for ${device.name} - Manual override`, c.LOG_ALL);
+          return Promise.resolve([true, true]);
+        }
         const tempSetCap = this.getTempSetCap(deviceId);
         const tempGetCap = this.getTempGetCap(deviceId);
         const hasTargetTemp = device.capabilities.includes(tempSetCap);
@@ -3151,14 +3174,7 @@ class PiggyBank extends Homey.App {
           if (this.logUnit === deviceId) this.updateLog(`aborted refreshTemp() for ${device.name} - Device does not have temperature capabilities`, c.LOG_ALL);
           return Promise.resolve([true, true]);
         }
-        const frostGuardActive = this.isFrostGuardActive(device, deviceId);
-        let newTemp = frostGuardActive ? +frostList[deviceId].minTemp
-          : invertDelta ? (modeTemp - deltaTemp)
-            : (modeTemp + deltaTemp);
-        const minTemp = this.getTempCapMin(device, deviceId);
-        const maxTemp = this.getTempCapMax(device, deviceId);
-        if (newTemp < minTemp) newTemp = minTemp;
-        if (newTemp > maxTemp) newTemp = maxTemp;
+        const newTemp = this.getWantedTemp(device, deviceId);
         this.__current_state[deviceId].temp = newTemp;
         if (device.capabilitiesObj[tempSetCap].value === newTemp) {
           if (this.logUnit === deviceId) this.updateLog(`finished refreshTemp() for ${device.name} - Old temperature was equal to new one ${newTemp}`, c.LOG_ALL);
@@ -3166,12 +3182,7 @@ class PiggyBank extends Homey.App {
         }
         this.__current_state[deviceId].ongoing = true;
         this.__current_state[deviceId].confirmed = false;
-        const override = this.homey.settings.get('override') || {};
-        if (override[deviceId] === c.OVERRIDE.MANUAL_TEMP) {
-          if (this.logUnit === deviceId) this.updateLog(`aborted refreshTemp() for ${device.name} - Manual override`, c.LOG_ALL);
-          return Promise.resolve([true, true]);
-        }
-        if (this.logUnit === deviceId) this.updateLog(`Setting Device ${device.name}.${tempSetCap} = ${newTemp} | Origin RefreshTemp(${modeTemp} + ${deltaTemp})`, c.LOG_ALL);
+        if (this.logUnit === deviceId) this.updateLog(`Setting Device ${device.name}.${tempSetCap} = ${newTemp} | Origin RefreshTemp()`, c.LOG_ALL);
         return device.setCapabilityValue({ capabilityId: tempSetCap, value: newTemp })
           .then(() => Promise.resolve([true, false]));
       })
@@ -3281,8 +3292,12 @@ class PiggyBank extends Homey.App {
 
   getTempCapMin(device, deviceId) {
     try {
+      const frostList = this.homey.settings.get('frostList');
       const definedCap = d.DEVICE_CMD[this.__deviceList[deviceId].driverId].tempMin;
       if (definedCap === undefined) throw new Error(); // Fall back to the capability.min
+      if (deviceId in frostList) {
+        return Math.max(+frostList[deviceId].minTemp, +definedCap);
+      }
       return definedCap;
     } catch (err) {
       try {
@@ -3317,6 +3332,13 @@ class PiggyBank extends Homey.App {
 
   getOnOffCap(deviceId) {
     try {
+      if ((+this.homey.settings.get('controlTemp') === 2)
+        && (this.__deviceList[deviceId].thermostat_cap)) {
+        const override = this.homey.settings.get('override') || {};
+        if (override[deviceId] !== c.OVERRIDE.MANUAL_TEMP) {
+          return null;
+        }
+      }
       return d.DEVICE_CMD[this.__deviceList[deviceId].driverId].setOnOffCap;
     } catch (err) {
       return this.__deviceList[deviceId].onoff_cap;
@@ -3343,10 +3365,12 @@ class PiggyBank extends Homey.App {
     if (device.capabilitiesObj === null) return undefined;
     const onOffCap = this.getOnOffCap(deviceId);
     if (onOffCap === null) {
-      // Heater without off option, treat off as min temperature
-      const targetTempCap = d.DEVICE_CMD[this.__deviceList[deviceId].driverId].setTempCap;
+      // Heater without off option, treat off as min/max temperature
+      const targetTempCap = this.getTempSetCap(deviceId);
       if (!(targetTempCap in device.capabilitiesObj)) return undefined;
-      const offTemp = (d.DEVICE_CMD[this.__deviceList[deviceId].driverId].tempMin - 1);
+      const currentACMode = this.getACMode(device);
+      const isCooling = currentACMode === c.ACMODE.COOL;
+      const offTemp = isCooling ? this.getTempCapMax(device, deviceId) : this.getTempCapMin(device, deviceId);
       return device.capabilitiesObj[targetTempCap].value !== offTemp;
     }
     if (!(onOffCap in device.capabilitiesObj)) return undefined;
@@ -3359,11 +3383,20 @@ class PiggyBank extends Homey.App {
   async setOnOff(device, deviceId, onOff) {
     if (this.logUnit === deviceId) this.updateLog(`attempt setOnOff(${onOff}) for ${device.name}`, c.LOG_ALL);
     let onOffCap = this.getOnOffCap(deviceId);
-    let onOffValue = onOff ? this.getOnOffTrue(deviceId) : this.getOnOffFalse(deviceId);
+    let onOffValue;
     if (onOffCap === null) {
-      onOffCap = d.DEVICE_CMD[this.__deviceList[deviceId].driverId].setTempCap;
-      onOffValue = onOff ? d.DEVICE_CMD[this.__deviceList[deviceId].driverId].tempMin
-        : (d.DEVICE_CMD[this.__deviceList[deviceId].driverId].tempMin - 1);
+      // Heater without off option, treat off as min/max temperature
+      onOffCap = this.getTempSetCap(deviceId);
+
+      if (onOff) {
+        onOffValue = this.getWantedTemp(device, deviceId);
+      } else {
+        const currentACMode = this.getACMode(device);
+        const isCooling = currentACMode === c.ACMODE.COOL;
+        onOffValue = isCooling ? this.getTempCapMax(device, deviceId) : this.getTempCapMin(device, deviceId);
+      }
+    } else {
+      onOffValue = onOff ? this.getOnOffTrue(deviceId) : this.getOnOffFalse(deviceId);
     }
     if (this.logUnit === deviceId) this.updateLog(`Setting Device ${device.name}.${onOffCap} = ${onOffValue} | Origin setOnOff(${onOff})`, c.LOG_ALL);
     return device.setCapabilityValue({ capabilityId: onOffCap, value: onOffValue })

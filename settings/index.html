@@ -412,7 +412,7 @@
             case PP_EXTREME: maxClamp = 0; legendText = priceExtremeText; break;
             case PP_DIRTCHEAP: minClamp = 0; legendText = priceDirtCheapText; break;
           }
-          var displayTemp = document.getElementById("controlTemp").value == 1;
+          var displayTemp = document.getElementById("controlTemp").value >= 1;
           var priceTabText =
             '<fieldset>' +
               '<legend>' + legendText + ' <div class="hintButton" onclick="toggle(this,\'priceActionHint\');return false;">i</div></legend>' +
@@ -464,7 +464,7 @@
       }
 
       function generatePriorityList(listNum) {
-        var displayTemp = document.getElementById("controlTemp").value == 1;
+        var displayTemp = document.getElementById("controlTemp").value >= 1;
         var list = document.getElementById("priorityList");
         var gen_list =
           '<table class=device-list>' +
@@ -511,7 +511,7 @@
 
       function updatePriceAction(button, pricePoint, device_id, newstate = undefined) {
         var deltaTempInput = undefined;
-        var displayTemp = document.getElementById("controlTemp").value == 1;
+        var displayTemp = document.getElementById("controlTemp").value >= 1;
         if (pricePoint !== undefined) {
           if (newstate == undefined) {
             newstate = (priceActionList[pricePoint][device_id].operation + 1) % 5;
@@ -1477,10 +1477,13 @@
             <td class="settings_row_input">
               <select id="controlTemp">
                 <option value=0 data-i18n="settings.global.controlTempNo">global.controlTempNo</option>
-                <option value=1 data-i18n="settings.global.controlTempYes" selected>global.controlTempYes</option>
+                <option value=1 data-i18n="settings.global.controlTempYes">global.controlTempYes</option>
+                <option value=2 data-i18n="settings.global.controlTempPreferred" selected>global.controlTempPreferred</option>
               </select>
+              <div class="hintButton" onclick="toggle(this,'controlTempHint', 'table-row');return false;">i</div>
             </td>
           </tr>
+          <tr id="controlTempHint" class="hint"><td colspan="2"><p data-i18n="settings.global.controlTempHint">global.controlTempHint</p></td></tr>
           <tr>
             <td class="settings_row_name"><label for="ACMode" data-i18n="settings.ACMode.header">ACMode.header</label>:</td>
             <td class="settings_row_input">
@@ -2400,7 +2403,7 @@
           if (temp !== null) {
             document.getElementById("controlTemp").value = +temp;
           } else {
-            document.getElementById("controlTemp").value = 1;
+            document.getElementById("controlTemp").value = 2;
           }
           controlTempLoaded = true;
           checkLoadingDone();

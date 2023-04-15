@@ -137,6 +137,8 @@
       "controlTemp": "Temperatuurregeling toestaan",
       "controlTempYes": "Ja",
       "controlTempNo": "Nee",
+      "controlTempPreferred": "Voorkeur",
+      "controlTempHint": "<p>Nee - Regelt alleen aan/uit.</p><p>Ja - Gebruikt aan/uit om stroomtarief te behouden, temperaturen worden ingesteld volgens de huidige voorkeuren.</p><p>Voorkeur - Vermijd gebruik aan/uit waar mogelijk, temperaturen worden ingesteld op min/max afhankelijk van verwarmen/koelen bij het proberen het stroomtarief te behouden, anders volgens de huidige voorkeuren.</p>",
       "settings": "Algemene instellingen",
       "errorMargin": "Foutmarge",
       "errorMarginHint1": "Zorg ervoor dat je altijd een beetje onder het piektarief uitkomt.",

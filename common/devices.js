@@ -150,7 +150,7 @@ const DEVICE_CMD = {
     setOnOffCap: null, // The onoff capability is unreliable
     readTempCap: 'measure_temperature.leavingWaterTemperature',
     setTempCap: 'target_temperature',
-    tempMin: 5, // Min is 4, but using 4 as emulated Off
+    tempMin: 4,
     tempMax: 35,
     tempStep: 0.5,
     setModeCap: 'operation_mode_altherma3',
@@ -355,7 +355,7 @@ const DEVICE_CMD = {
     setOnOffCap: null,
     readTempCap: 'measure_temperature',
     setTempCap: 'target_temperature',
-    tempMin: 6, // Min is 5, but using 5 as emulated Off
+    tempMin: 5,
     tempMax: 30,
     tempStep: 0.5
   },
@@ -516,7 +516,7 @@ const DEVICE_CMD = {
     setOnOffCap: null, // There is no such capability for this device
     readTempCap: 'measure_temperature',
     setTempCap: 'target_temperature',
-    tempMin: 5, // Min is 4, but using 4 as emulated Off
+    tempMin: 4,
     tempMax: 35,
     tempStep: 0.5
   },
@@ -526,7 +526,7 @@ const DEVICE_CMD = {
     setOnOffCap: null, // There is no such capability for this device
     readTempCap: 'RADIATOR_RETURN_TEMP', // Indoor temp does not work on the device in question...
     setTempCap: 'target_temperature',
-    tempMin: 5, // Min is 4, but using 4 as emulated Off
+    tempMin: 4,
     tempMax: 35,
     tempStep: 0.5,
     beta: true
