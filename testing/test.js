@@ -76,7 +76,7 @@ async function testEntsoe() {
     const dayLength = Math.max(hoursInDay(todayStart, app.homey), 23); // 24 hours normally, but allow 23 hours for summer-time transitions
     if (finalPrices.length < dayLength) {
       console.log(finalPrices);
-      throw new Error('Entsoe API is not returning the prices');
+      throw new Error(`Entsoe API is not returning the prices (${finalPrices.length} != ${dayLength})`);
     }
   } finally {
     await app.onUninit();
