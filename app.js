@@ -3296,7 +3296,7 @@ class PiggyBank extends Homey.App {
       const definedCap = d.DEVICE_CMD[this.__deviceList[deviceId].driverId].tempMin;
       if (definedCap === undefined) throw new Error(); // Fall back to the capability.min
       if (deviceId in frostList) {
-        return Math.max(+frostList[deviceId].minTemp, +definedCap);
+        return Math.max(Math.min(+frostList[deviceId].minTemp, 15), +definedCap);
       }
       return definedCap;
     } catch (err) {

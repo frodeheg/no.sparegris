@@ -301,7 +301,7 @@
             '</tr>';
         for (var deviceId in frostList) {
           var device = deviceList[deviceId]; // refreshFrostList already called, so indexing by deviceId is safe
-          var frost_temp_input = device.thermostat_cap ? '<input type="number" id="minTemp' + String(deviceId) + '" min=0 max=90 size="4" onchange="setFrostTemp(this, \'' + String(deviceId) + '\');displaySaveHint()" value="' + String(frostList[deviceId].minTemp) + '">°C' : '-';
+          var frost_temp_input = device.thermostat_cap ? '<input type="number" id="minTemp' + String(deviceId) + '" min=0 max=15 size="4" onchange="setFrostTemp(this, \'' + String(deviceId) + '\');displaySaveHint()" value="' + String(frostList[deviceId].minTemp) + '">°C' : '-';
           gen_list +=
             '<tr>' +
               '<td><img src="' + device.image + '" alt="icon" width="auto" height="50"></td>' +
