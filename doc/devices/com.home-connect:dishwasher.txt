@@ -1,0 +1,21 @@
+Log ID: 2023-04-06T00:08:57.413Z
+App version 0.20.19
+
++20:3:45.580: ----- ANALYZING DEVICE -----
++20:3:45.586: Report type: Device is not being turned on/off
++20:3:45.647: Device name: Oppvaskmaskin hjemme
++20:3:45.653: Driver Id: homey:app:com.home-connect:dishwasher
++20:3:45.660: Found onoff cap: onoff
++20:3:45.667: Found temp cap: false
++20:3:45.674: Device reliability: 0.8923005732699592
++20:3:45.680: Capabilities: onoff,alarm_contact,bshc_string.remaining_time,bshc_string.progress
++20:3:45.686: Options for 'onoff': {"value":true,"lastUpdated":"2023-04-15T08:33:05.204Z","type":"boolean","getable":true,"setable":true,"title":"Slått på","desc":null,"units":null,"id":"onoff","options":{}}
++20:3:45.692: Options for 'alarm_contact': {"value":true,"lastUpdated":"2023-03-06T04:55:05.771Z","type":"boolean","getable":true,"setable":false,"title":"Door open","desc":"Kontaktsensor, f.eks. for vindu (sant/usant)","units":null,"id":"alarm_contact","options":{"title":{"en":"Door open","nl":"Deur geopend"},"zoneActivity":false}}
++20:3:45.702: Options for 'bshc_string.remaining_time': {"value":"0:00","lastUpdated":"2023-03-05T22:31:44.353Z","type":"string","getable":true,"setable":true,"title":"Remaining time","desc":null,"units":null,"iconObj":{"id":"0f607bc3465e9a37420a9baf58a7fd64","url":"/icon/0f607bc3465e9a37420a9baf58a7fd64/icon.svg"},"id":"bshc_string.remaining_time","options":{"title":{"en":"Remaining time","nl":"Resterende tijd"}}}
++20:3:45.714: Options for 'bshc_string.progress': {"value":"100%","lastUpdated":"2023-03-05T22:31:44.342Z","type":"string","getable":true,"setable":true,"title":"Program progress","desc":null,"units":null,"iconObj":{"id":"0f607bc3465e9a37420a9baf58a7fd64","url":"/icon/0f607bc3465e9a37420a9baf58a7fd64/icon.svg"},"id":"bshc_string.progress","options":{"title":{"en":"Program progress","nl":"Programmavoortgang"}}}
++20:3:45.719: --- ANALYZING DEVICE DONE ---
++20:3:48.735: Failed to turn off device Oppvaskmaskin hjemme, will try to turn off other devices instead. (Error: Rate Limited. Please retry after 1438 minutes.)
++20:3:59.588: Failed to turn off device Oppvaskmaskin hjemme, will try to turn off other devices instead. (Error: Rate Limited. Please retry after 1438 minutes.)
++20:4:5.254: Email: optional.email@for.feedback
+Comment:Optional
++20:4:5.261: Sending log

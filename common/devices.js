@@ -219,6 +219,7 @@ const DEVICE_CMD = {
     setModeFanValue: 'fan_only',
     default: false
   },
+  'com.home-connect:dishwasher': DEFAULT_IGNORED,
   'com.home-connect:dryer': DEFAULT_IGNORED,
   'com.homewizard:energy': {
     ...DEFAULT_METER,
