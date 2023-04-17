@@ -10,13 +10,15 @@ const ALARMS = {
 };
 
 // AC Modes
-const ACMODE = {
+// eslint-disable-next-line no-var
+var ACMODE = {
   UNCHANGED: 0,
   AUTO: 1,
   HEAT: 2,
   COOL: 3,
   DRY: 4,
   FAǸ: 5,
+  PIGGY: 6,
 };
 
 // Granularity for archive
