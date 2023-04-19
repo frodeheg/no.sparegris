@@ -17,7 +17,7 @@ var ACMODE = {
   HEAT: 2,
   COOL: 3,
   DRY: 4,
-  FAǸ: 5,
+  FAN: 5,
   PIGGY: 6,
 };
 

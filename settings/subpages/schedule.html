@@ -172,7 +172,6 @@
                 <option value="1" data-i18n="settings.schedule.statictemp">Static temperature</option>
                 <option value="2" data-i18n="settings.schedule.pricetemp">Price controlled</option>
             </select><br>
-            <div id="scTemp">
             <label for="timerACMode" data-i18n="settings.ACMode.header">AC Mode</label>:<br>
             <select id="timerACMode" onchange="changeACMode(this.value);displaySaveHint();">
               <option value="6" data-i18n="settings.ACMode.fan">Piggy</option>
@@ -183,208 +182,23 @@
               <option value="4" data-i18n="settings.ACMode.dry">Dry</option>
               <option value="5" data-i18n="settings.ACMode.fan">Fan</option>
             </select><br>
-            <label for="timerBaseTempHeat" data-i18n="settings.schedule.basetemp">Base temperature (heating)</label>:<br>
-            <input id="timerBaseTempHeat" class="inputElem" type="number" min="-30" max="90" step="0.5" onchange="changeBaseTemp(this.value);displaySaveHint()">°C<br>
-            <div id="coolBase">
-              <label for="timerBaseTempCool" data-i18n="settings.schedule.basetemp">Base temperature (cooling)</label>:<br>
-              <input id="timerBaseTempCool" class="inputElem" type="number" min="-30" max="90" step="0.5" onchange="changeBaseTemp(this.value);displaySaveHint()">°C<br>
-            </div>
-            <canvas id="myThermostat" width="160" height="160" style="border:0px solid #d3d3d3;" onpointermove="draggingThermo(this, event);" onpointerdown="startDragThermo(this, event);" onpointerup="stopDragThermo(this, event);" onpointerleave="stopDragThermo(this, event);">
-              Your browser does not support the HTML5 canvas tag.
-            </canvas>
-            <script>
-              var thermoIsDragging = false;
-              var thermoDragSlack = 0.5; // degrees Celcius
-              var thermoDragIndex;
-              // Dimensions
-              let cWidth = 1;
-              let cHeight = 1;
-              let tCenterX = 0;
-              let tCenterY = 0;
-              let outerDia = 1;
-              let innerDia = 0;
-              // Positions
-              const markerStartPos = Math.PI * 8 / 10;
-              const markerEndPos = Math.PI * 22 / 10;
-              // Temp ranges
-              const showHeat = true;
-              const showCool = true;
-              const startTemp = 5;
-              const endTemp = 45;
-              const temps = [5, 15, 20, 21, 22, 23, 24, 25, 26, 27, 30, 45];
-              const tempsID = {
-                OFF_LO:         0,
-                HEAT_EXPENSIVE: 1,
-                HEAT_HIGH:      2,
-                HEAT_NORMAL:    3,
-                HEAT_CHEAP:     4,
-                HEAT_DIRTCHEAP: 5,
-                COOL_DIRTCHEAP: 6,
-                COOL_CHEAP:     7,
-                COOL_NORMAL:    8,
-                COOL_HIGH:      9,
-                COOL_EXPENSIVE: 10
-              }
-
-              function pressToAngleCoords(canvas, event) {
-                let rect = canvas.getBoundingClientRect();
-                let pos = {x: event.clientX - rect.left, y: event.clientY - rect.top };
-                let w = pos.x - tCenterX;
-                let h = pos.y - tCenterY;
-                let pressRadius = Math.sqrt(w * w + h * h);
-                let pressAngle = Math.atan2(h, w);
-                if (pressAngle < 0) pressAngle += 2*Math.PI;
-                if (pressAngle < Math.PI/2) pressAngle += 2*Math.PI;
-                let pressTemp = tempToAngle(startTemp, endTemp, markerStartPos, markerEndPos, pressAngle);
-                return { pressRadius, pressAngle, pressTemp };
-              }
-
-              function startDragThermo(canvas, event) {
-                const { pressRadius, pressAngle, pressTemp } = pressToAngleCoords(canvas, event);
-                if (pressRadius > innerDia && pressRadius < outerDia) {
-                  for (let t = 0; t < temps.length; t++) {
-                    if (pressTemp > (temps[t] - thermoDragSlack) && pressTemp < (temps[t] + thermoDragSlack)) {
-                      console.log(`start t: ${t}: ${temps[t]}`);
-                      thermoIsDragging = true;
-                      thermoDragIndex = t;
-                      return;
-                    }
-                  }
-                  // minTemp
-                  if (pressAngle > markerStartPos - Math.PI/10 && pressAngle < markerStartPos + Math.PI/40) {
-                    console.log('Change min temp')
-                  }
-                  // maxTemp
-                  if (pressAngle > markerEndPos - Math.PI/40 && pressAngle < markerEndPos + Math.PI/10) {
-                    console.log('Change max temp')
-                  }
-                }
-              }
-
-              function draggingThermo(canvas, event) {
-                if (thermoIsDragging) {
-                  const { pressRadius, pressAngle, pressTemp } = pressToAngleCoords(canvas, event);
-                  temps[thermoDragIndex] = Math.round(pressTemp*2) / 2;
-                  refreshThermostat();
-                }
-              }
-
-              function stopDragThermo(canvas, event) {
-                if (thermoIsDragging) {
-                  thermoIsDragging = false;
-                  const { pressRadius, pressAngle, pressTemp } = pressToAngleCoords(canvas, event);
-                  temps[thermoDragIndex] = Math.round(pressTemp*2) / 2;
-                  console.log(`stopped at angle: ${pressAngle}, temp: ${pressTemp} radius: ${pressRadius}`)
-                  refreshThermostat();
-                }
-              }
-
-              function centerText(ctx, text, x, y, fill = false) {
-                const textWidth = ctx.measureText(text).width;
-                if (fill) {
-                  ctx.fillText(text, x - (textWidth/2), y);
-                } else {
-                  ctx.strokeText(text, x - (textWidth/2), y);
-                }
-              }
-
-              function arcText(ctx, text, x, y, distance, angle) {
-                const textWidth = ctx.measureText(text).width;
-                const arcX = x + Math.cos(angle) * distance;
-                const arcY = y + Math.sin(angle) * distance;
-                ctx.fillText(text, arcX - (textWidth/2), arcY);
-              }
-
-              function tempToAngle(startAngle, endAngle, startTemp, endTemp, temp) {
-                return startAngle + ((endAngle - startAngle) * (temp - startTemp) / (endTemp - startTemp));
-              }
-
-              function refreshThermostat() {
-                const canvas = document.getElementById("myThermostat");
-                const ctx = canvas.getContext("2d");
-                // Dimensions
-                cWidth = canvas.width;
-                cHeight = canvas.height;
-                tCenterX = cWidth / 2;
-                tCenterY = cHeight / 2;
-                outerDia = Math.min(tCenterX, tCenterY);
-                innerDia = outerDia * 3 / 4;
-                // Outer circle
-                ctx.beginPath();
-                ctx.arc(tCenterX, tCenterY, outerDia, 0, 2 * Math.PI);
-                ctx.fillStyle = "#DDD";
-                ctx.strokeStyle = "#000";
-                ctx.fill();
-                ctx.stroke();
-                // Inner circle
-                ctx.beginPath();
-                ctx.arc(tCenterX, tCenterY, innerDia, 0, 2 * Math.PI);
-                ctx.fillStyle = "#CCC";
-                ctx.fill();
-                ctx.stroke();
-                // Markers
-                ctx.lineWidth = 20;
-                const numMarkers = 20;
-                for (let i = 0; i <= numMarkers; i++) {
-                  const markerPos = markerStartPos + i * (markerEndPos - markerStartPos) / numMarkers;
-                  ctx.beginPath();
-                  ctx.arc(tCenterX, tCenterY, (outerDia + innerDia) / 2, markerPos, markerPos + 0.01);
-                  ctx.stroke();
-                }
-                // Show temp ranges
-                ctx.beginPath();
-                ctx.lineWidth = 1;
-                ctx.strokeStyle = "#000";
-                ctx.font = "8px Verdana";
-                ctx.fillStyle = "#000";
-                arcText(ctx, `${startTemp}°C`, tCenterX, tCenterY, (outerDia+innerDia+4)/2, markerStartPos-(Math.PI/20));
-                arcText(ctx, `${endTemp}°C`, tCenterX, tCenterY, (outerDia+innerDia+4)/2, markerEndPos+(Math.PI/20));
-                ctx.fill();
-
-                if (showHeat) {
-                  // Heat Arc
-                  ctx.beginPath();
-                  ctx.strokeStyle = "#F00";
-                  ctx.lineWidth = 6;
-                  const heatStart = tempToAngle(markerStartPos, markerEndPos, startTemp, endTemp, temps[tempsID.HEAT_EXPENSIVE] - 0.25);
-                  const heatEnd = tempToAngle(markerStartPos, markerEndPos, startTemp, endTemp, temps[tempsID.HEAT_DIRTCHEAP] + 0.25);
-                  ctx.arc(tCenterX, tCenterY, outerDia - 3, heatStart, heatEnd);
-                  ctx.stroke();
-                  // Middle Text 
-                  ctx.beginPath();
-                  ctx.lineWidth = 1;
-                  ctx.strokeStyle = "#D00";
-                  ctx.font = "14px Verdana";
-                  ctx.fillStyle = "#000";
-                  centerText(ctx, "Heating", tCenterX, tCenterY - 30);
-                  centerText(ctx, `>[${temps[tempsID.HEAT_EXPENSIVE]},${temps[tempsID.HEAT_DIRTCHEAP]}]°C`, tCenterX, tCenterY - 10);
-                  ctx.fill();
-                }
-                if (showCool) {
-                  // Warm Arc
-                  ctx.beginPath();
-                  ctx.strokeStyle = "#00F";
-                  ctx.lineWidth = 6;
-                  const coolStart = tempToAngle(markerStartPos, markerEndPos, startTemp, endTemp, temps[tempsID.COOL_DIRTCHEAP] - 0.25);
-                  const coolEnd = tempToAngle(markerStartPos, markerEndPos, startTemp, endTemp, temps[tempsID.COOL_EXPENSIVE] + 0.25);
-                  ctx.arc(tCenterX, tCenterY, outerDia - 3, coolStart, coolEnd);
-                  ctx.stroke();
-                  // Middle Text 
-                  ctx.beginPath();
-                  ctx.lineWidth = 1;
-                  ctx.strokeStyle = "#00D";
-                  ctx.font = "14px Verdana";
-                  ctx.fillStyle = "#000";
-                  centerText(ctx, "Cooling", tCenterX, tCenterY + 30);
-                  centerText(ctx, `<[${temps[tempsID.COOL_DIRTCHEAP]},${temps[tempsID.COOL_EXPENSIVE]}]°C`, tCenterX, tCenterY + 10);
-                  ctx.fill();
-                }
-              }
-              refreshThermostat();
-            </script> 
+            <div id="thermoTab">
+              <canvas id="myThermostat" width="180" height="180" style="border:0px solid #d3d3d3;" onpointermove="draggingThermo(this, event);" onpointerdown="startDragThermo(this, event);" onpointerup="stopDragThermo(this, event);" onpointerleave="stopDragThermo(this, event);">
+                Your browser does not support the HTML5 canvas tag.
+              </canvas>
+              <div id="thermoGuide"></div>
             </div>
           </fieldset>
-          <fieldset id='scPP'>
+          <div hidden>
+            <div id="scTemp">
+              <label for="timerBaseTempHeat" data-i18n="settings.schedule.basetemp">Base temperature (heating)</label>:<br>
+              <input id="timerBaseTempHeat" class="inputElem" type="number" min="-30" max="90" step="0.5" onchange="changeBaseTemp(this.value);displaySaveHint()">°C<br>
+              <div id="coolBase">
+                <label for="timerBaseTempCool" data-i18n="settings.schedule.basetemp">Base temperature (cooling)</label>:<br>
+                <input id="timerBaseTempCool" class="inputElem" type="number" min="-30" max="90" step="0.5" onchange="changeBaseTemp(this.value);displaySaveHint()">°C<br>
+              </div>
+            </div>
+            <fieldset id='scPP'>
             <legend data-i18n="settings.menu.devices.prices">Price adjust</legend>
             <label for="tempDirtCheap" data-i18n="settings.pricetab.dirtcheap">Dirt Cheap</label>:<br>
             <input id="tempDirtCheap" class="inputElem" type="number" min="-30" max="90" step="0.5" onchange="changeDeltaTemp(0, this.value);displaySaveHint()">°C<br>
@@ -395,12 +209,25 @@
             <label for="tempExtreme" data-i18n="settings.pricetab.extreme">Extreme</label>:<br>
             <input id="tempExtreme" class="inputElem" type="number" min="-30" max="90" step="0.5" onchange="changeDeltaTemp(4, this.value);displaySaveHint()">°C<br>
           </fieldset>
+          </div>
         </td>
       </tr>
       <tr><td colspan="2"></td><td style="vertical-align:top;"><input style="width:100%" type="button" value="+" onclick="addTimer();"></td></tr>
     </table>
 
     <script type="text/javascript">
+      // TODO: REMOVE THE PARENT VARIABLE
+      const parent = {
+        DEVICE_OP: {UNCONDITIONAL_OFF: 0, UNCONDITIONAL_ON: 1, CONTROLLED_OFF: 2, CONTROLLED_ON: 3, IGNORE: 4},
+        TEMP_OP: {NONE: 0, STATIC: 1, PRICE: 2},
+        ACMODE: {UNCHANGED: 0, AUTO: 1, HEAT: 2, COOL: 3, DRY: 4, FAN: 5, PIGGY: 6},
+        displaySaveHint: (param => {console.log('TODO REMOVEME');})
+      }
+    const TEMPOP = {
+      NONE: 0,
+      STATIC: 1,
+      PRICE: 2
+    }
     const totalHeight = 24*16;
     const pixelsPerMinute = (totalHeight) / (24 * 60);
     let minuteSnap = 30;
@@ -466,17 +293,47 @@
       const curSchedule = schedules[scheduleSelected];
       const items = curSchedule.items;
       items[timerSelected].tempOp = +newTempOp;
+      // Change AC options
+      document.querySelectorAll("#timerACMode option").forEach(opt => {
+        if (((+newTempOp === TEMPOP.NONE)
+          && ((+(opt.value) !== parent.ACMODE.FAN)
+            && (+(opt.value) !== parent.ACMODE.DRY)
+            && (+(opt.value) !== parent.ACMODE.UNCHANGED)))
+          || ((+newTempOp === TEMPOP.PRICE)
+            && (+opt.value === parent.ACMODE.AUTO
+              || +opt.value === parent.ACMODE.DRY
+              || +opt.value === parent.ACMODE.FAN))
+          || ((+newTempOp === TEMPOP.STATIC)
+            && (+opt.value === parent.ACMODE.DRY
+             || +opt.value === parent.ACMODE.FAN))) {
+          opt.disabled = true;
+        } else {
+          console.log(`${opt.value} ${parent.ACMODE.FAN} ${JSON.stringify(parent.ACMODE)}`);
+          opt.disabled = false;
+        }
+      });
+      // Refresh
       refreshTempOp();
       refreshTimeTable();
+      refreshThermostat();
     }
 
     function changeACMode(newMode) {
       schedules[scheduleSelected].items[timerSelected].ACMode = +newMode;
-      document.getElementById('coolBase').style.display = ((+newMode === parent.ACMODE.PIGGY)
-        || (+newMode === parent.ACMODE.COOL) || (+newMode === parent.ACMODE.UNCHANGED)) ? 'block' : 'none';
-      if (+newMode === parent.ACMODE.PIGGY) {
-      } else {
+      if (+newMode === parent.ACMODE.DRY || +newMode === parent.ACMODE.FAN) {
+        document.getElementById('timerOpTemp').value = TEMPOP.NONE;
+        //newMode === parent.ACMODE.UNCHANGED;
       }
+      if (+newMode === parent.ACMODE.AUTO) {
+        document.getElementById('timerOpTemp').value = TEMPOP.STATIC;
+        //newMode === parent.ACMODE.UNCHANGED;
+      }
+      showHeat = ((+newMode === parent.ACMODE.PIGGY) || (+newMode === parent.ACMODE.HEAT) || (+newMode === parent.ACMODE.UNCHANGED)  || (+newMode === parent.ACMODE.AUTO))
+      showCool = ((+newMode === parent.ACMODE.PIGGY) || (+newMode === parent.ACMODE.COOL) || (+newMode === parent.ACMODE.UNCHANGED))
+      document.getElementById('coolBase').style.display = showCool ? 'block' : 'none';
+      refreshTempOp();
+      refreshTimeTable();
+      refreshThermostat();
     }
 
     function changeBaseTemp(newTemp) {
@@ -493,20 +350,24 @@
       const tempElement = document.getElementById('scTemp');
       const ppElements = document.getElementById('scPP');
       const tempOp = +document.getElementById('timerOpTemp').value;
-      switch (tempOp) {
-        case parent.TEMP_OP.NONE:
-          tempElement.style.display = "none";
-          ppElements.style.display = "none";
-          break;
-        case parent.TEMP_OP.STATIC:
-          tempElement.style.display = "block";
-          ppElements.style.display = "none";
-          break;
-        default:
-        case parent.TEMP_OP.PRICE:
-          tempElement.style.display = "block";
-          ppElements.style.display = "block";
-          break;
+      const timerACMode = +document.getElementById('timerACMode').value;
+      const thermoTab = document.getElementById('thermoTab');
+      console.log(timerACMode);
+      if (tempOp === parent.TEMP_OP.NONE
+        || timerACMode === parent.ACMODE.DRY
+        || timerACMode === parent.ACMODE.FAN) {
+        tempElement.style.display = "none";
+        ppElements.style.display = "none";
+        thermoTab.style.display = "none";
+      } else if (tempOp === parent.TEMP_OP.STATIC
+        || timerACMode === parent.ACMODE.AUTO) {
+        tempElement.style.display = "block";
+        ppElements.style.display = "none";
+        thermoTab.style.display = "block";
+      } else if (tempOp === parent.TEMP_OP.PRICE) {
+        tempElement.style.display = "block";
+        ppElements.style.display = "block";
+        thermoTab.style.display = "block";
       }
     }
 
@@ -813,6 +674,312 @@
     function displaySaveHint() {
         parent.displaySaveHint();
     }
+
+    // ===== THERMOSTAT CODE =====
+    var thermoIsDragging = false;
+    var thermoDragIndex;
+    // Dimensions
+    let cWidth = 1;
+    let cHeight = 1;
+    let tCenterX = 0;
+    let tCenterY = 0;
+    let outerDia = 1;
+    let innerDia = 0;
+    // Positions
+    const markerStartPos = Math.PI * 8 / 10;
+    const markerEndPos = Math.PI * 22 / 10;
+    // Temp ranges
+    let showHeat = true;
+    let showCool = true;
+    const startTemp = 5;
+    const endTemp = 45;
+    const temps = [5, 15, 20, 21, 22, 23, 24, 25, 26, 27, 30, 45];
+    const tempsID = {
+      HEAT_OFF:       0,
+      HEAT_EXPENSIVE: 1,
+      HEAT_HIGH:      2,
+      HEAT_NORMAL:    3,
+      HEAT_CHEAP:     4,
+      HEAT_DIRTCHEAP: 5,
+      COOL_DIRTCHEAP: 6,
+      COOL_CHEAP:     7,
+      COOL_NORMAL:    8,
+      COOL_HIGH:      9,
+      COOL_EXPENSIVE: 10,
+      COOL_OFF:       11,
+    }
+    const tempName = {
+      0: 'thermostat.HEAT_OFF',
+      1: 'thermostat.HEAT_EXPENSIVE',
+      2: 'thermostat.HEAT_HIGH',
+      3: 'thermostat.HEAT_NORMAL',
+      4: 'thermostat.HEAT_CHEAP',
+      5: 'thermostat.HEAT_DIRTCHEAP',
+      6: 'thermostat.COOL_DIRTCHEAP',
+      7: 'thermostat.COOL_CHEAP',
+      8: 'thermostat.COOL_NORMAL',
+      9: 'thermostat.COOL_HIGH',
+      10: 'thermostat.COOL_EXPENSIVE',
+      11: 'thermostat.COOL_OFF',
+    }
+    function pressToAngleCoords(canvas, event) {
+      let rect = canvas.getBoundingClientRect();
+      let pos = {x: event.clientX - rect.left, y: event.clientY - rect.top };
+      let w = pos.x - tCenterX;
+      let h = pos.y - tCenterY;
+      let pressRadius = Math.sqrt(w * w + h * h);
+      let pressAngle = Math.atan2(h, w);
+      if (pressAngle < 0) pressAngle += 2*Math.PI;
+      if (pressAngle < Math.PI/2) pressAngle += 2*Math.PI;
+      let pressTemp = tempToAngle(startTemp, endTemp, markerStartPos, markerEndPos, pressAngle);
+      return { pressRadius, pressAngle, pressTemp };
+    }
+
+    function startDragThermo(canvas, event) {
+      const { pressRadius, pressAngle, pressTemp } = pressToAngleCoords(canvas, event);
+      if (pressRadius > innerDia * 0.8 && pressRadius < outerDia * 1.2) {
+        let closestIndex;
+        let closestDist = Infinity;
+        for (let t = 0; t < temps.length; t++) {
+          let closeness = Math.abs(pressTemp - temps[t]);
+          if ((closeness < closestDist)
+            || (closeness === closestDist && (pressTemp > temps[t]))) {
+            closestDist = closeness;
+            closestIndex = t;
+          }
+        }
+        // minTemp
+        if (pressAngle > markerStartPos - Math.PI/10 && pressAngle < markerStartPos + Math.PI/40) {
+          console.log('Change min temp')
+        }
+        // maxTemp
+        if (pressAngle > markerEndPos - Math.PI/40 && pressAngle < markerEndPos + Math.PI/10) {
+          console.log('Change max temp')
+        }
+        // Drag Temp
+        thermoIsDragging = true;
+        thermoDragIndex = closestIndex;
+        const timerOpTemp = +document.getElementById('timerOpTemp').value;
+        if (timerOpTemp === TEMPOP.STATIC) {
+          if (thermoDragIndex >= tempsID.HEAT_EXPENSIVE && thermoDragIndex <= tempsID.HEAT_DIRTCHEAP) thermoDragIndex = tempsID.HEAT_NORMAL;
+          if (thermoDragIndex <= tempsID.COOL_EXPENSIVE && thermoDragIndex >= tempsID.COOL_DIRTCHEAP) thermoDragIndex = tempsID.COOL_NORMAL;
+        }
+        draggingThermo(canvas, event);
+        return;
+      }
+    }
+
+    function draggingThermo(canvas, event) {
+      if (thermoIsDragging) {
+        const { pressTemp } = pressToAngleCoords(canvas, event);
+        let newTemp = Math.round(pressTemp*2) / 2;
+        if (newTemp < startTemp) newTemp = startTemp;
+        if (newTemp > endTemp) newTemp = endTemp;
+        const timerOpTemp = +document.getElementById('timerOpTemp').value;
+        // Scale Pricepoints
+        if (timerOpTemp === TEMPOP.PRICE) {
+          if (thermoDragIndex === tempsID.HEAT_DIRTCHEAP
+            || thermoDragIndex === tempsID.HEAT_EXPENSIVE
+            || thermoDragIndex === tempsID.COOL_DIRTCHEAP
+            || thermoDragIndex === tempsID.COOL_EXPENSIVE) {
+            const oldStart = temps[(thermoDragIndex < tempsID.COOL_DIRTCHEAP) ? tempsID.HEAT_EXPENSIVE : tempsID.COOL_DIRTCHEAP];
+            const oldEnd = temps[(thermoDragIndex < tempsID.COOL_DIRTCHEAP) ? tempsID.HEAT_DIRTCHEAP : tempsID.COOL_EXPENSIVE];
+            const newStart = (thermoDragIndex === tempsID.HEAT_EXPENSIVE || thermoDragIndex === tempsID.COOL_DIRTCHEAP) ? newTemp : oldStart;
+            const newEnd = (thermoDragIndex === tempsID.HEAT_DIRTCHEAP || thermoDragIndex === tempsID.COOL_EXPENSIVE) ? newTemp : oldEnd;
+            const iStart = (thermoDragIndex < tempsID.COOL_DIRTCHEAP) ? tempsID.HEAT_HIGH : tempsID.COOL_CHEAP;
+            const iEnd = (thermoDragIndex < tempsID.COOL_DIRTCHEAP) ? tempsID.HEAT_DIRTCHEAP : tempsID.COOL_EXPENSIVE;
+            for (let i = iStart; i < iEnd; i++) {
+              temps[i] = newStart + ((oldEnd === oldStart)
+                ? ((i-iStart+1) / 4 * (newEnd-newStart))
+                  : (((temps[i]-oldStart)/(oldEnd-oldStart)) * (newEnd-newStart)));
+            }
+          }
+        }
+        temps[thermoDragIndex] = newTemp;
+        // Fix up the rest of the values:
+        if (timerOpTemp === TEMPOP.STATIC) {
+          for (let i = tempsID.HEAT_EXPENSIVE; i <= tempsID.HEAT_DIRTCHEAP; i++) {
+            temps[i] = temps[tempsID.HEAT_NORMAL];
+          }
+          for (let i = tempsID.COOL_DIRTCHEAP; i <= tempsID.COOL_EXPENSIVE; i++) {
+            temps[i] = temps[tempsID.COOL_NORMAL];
+          }
+        }
+        // Push other values out of the new range
+        for (let i = 0; i < thermoDragIndex; i++) {
+          if (temps[i] > newTemp) temps[i] = newTemp;
+        }
+        for (let i = temps.length - 1; i > thermoDragIndex; i--) {
+          if (temps[i] < newTemp) temps[i] = newTemp;
+        }
+        refreshThermostat();
+      }
+    }
+
+    function stopDragThermo(canvas, event) {
+      if (thermoIsDragging) {
+        draggingThermo(canvas, event);
+        thermoIsDragging = false;
+      }
+    }
+
+    function centerText(ctx, text, x, y, fill = false) {
+      const textWidth = ctx.measureText(text).width;
+      if (fill) {
+        ctx.fillText(text, x - (textWidth/2), y);
+      } else {
+        ctx.strokeText(text, x - (textWidth/2), y);
+      }
+    }
+
+    function arcText(ctx, text, x, y, distance, angle) {
+      const textWidth = ctx.measureText(text).width;
+      const arcX = x + Math.cos(angle) * distance;
+      const arcY = y + Math.sin(angle) * distance;
+      ctx.fillText(text, arcX - (textWidth/2), arcY);
+    }
+
+    function tempToAngle(startAngle, endAngle, startTemp, endTemp, temp) {
+      return startAngle + ((endAngle - startAngle) * (temp - startTemp) / (endTemp - startTemp));
+    }
+
+    function drawArc(ctx, col, arcStart, arcEnd, radius, width) {
+      ctx.beginPath();
+      ctx.lineWidth = width;
+      const angleStart = tempToAngle(markerStartPos, markerEndPos, startTemp, endTemp, arcStart - 0.25);
+      const angleEnd = tempToAngle(markerStartPos, markerEndPos, startTemp, endTemp, arcEnd + 0.25);
+      if (Array.isArray(col)) {
+        let gr = ctx.createConicGradient(angleStart+(Math.PI/2),tCenterX, tCenterY); 
+        const delta = 0.01;
+        gr.addColorStop(0,col[0]);
+        gr.addColorStop(((angleEnd-angleStart)/(Math.PI*2))%1,col[1]); 
+        ctx.strokeStyle = gr;
+      } else {
+        ctx.strokeStyle = col;
+      }
+      ctx.arc(tCenterX, tCenterY, radius, angleStart, angleEnd);
+      ctx.stroke();
+    }
+
+    function refreshThermostat() {
+      const canvas = document.getElementById("myThermostat");
+      const ctx = canvas.getContext("2d");
+      // Dimensions
+      cWidth = canvas.width;
+      cHeight = canvas.height;
+      tCenterX = cWidth / 2;
+      tCenterY = cHeight / 2;
+      outerDia = Math.min(tCenterX, tCenterY)-10;
+      innerDia = outerDia * 3 / 4;
+      // Outer circle
+      ctx.beginPath();
+      ctx.arc(tCenterX, tCenterY, outerDia, 0, 2 * Math.PI);
+      ctx.fillStyle = "#DDD";
+      ctx.strokeStyle = "#000";
+      ctx.fill();
+      ctx.stroke();
+      // Inner circle
+      ctx.beginPath();
+      ctx.arc(tCenterX, tCenterY, innerDia, 0, 2 * Math.PI);
+      ctx.fillStyle = "#CCC";
+      ctx.fill();
+      ctx.stroke();
+      // Markers
+      ctx.lineWidth = 20;
+      const numMarkers = 20;
+      for (let i = 0; i <= numMarkers; i++) {
+        const markerPos = markerStartPos + i * (markerEndPos - markerStartPos) / numMarkers;
+        ctx.beginPath();
+        ctx.arc(tCenterX, tCenterY, (outerDia + innerDia) / 2, markerPos, markerPos + 0.01);
+        ctx.stroke();
+      }
+      // Show temp ranges
+      const timerOpTemp = +document.getElementById('timerOpTemp').value;
+      ctx.beginPath();
+      ctx.lineWidth = 1;
+      ctx.strokeStyle = "#000";
+      ctx.font = "8px Verdana";
+      ctx.fillStyle = "#000";
+      arcText(ctx, `${startTemp}°C`, tCenterX, tCenterY, (outerDia+innerDia+4)/2, markerStartPos-(Math.PI/20));
+      arcText(ctx, `${endTemp}°C`, tCenterX, tCenterY, (outerDia+innerDia+4)/2, markerEndPos+(Math.PI/20));
+      ctx.fill();
+
+      if (showHeat) {
+        // Mode specific
+        let rangeStart, rangeEnd;
+        if (timerOpTemp === TEMPOP.PRICE) {
+          rangeStart = temps[tempsID.HEAT_EXPENSIVE];
+          rangeEnd = temps[tempsID.HEAT_DIRTCHEAP];
+        } else {
+          rangeStart = temps[tempsID.HEAT_NORMAL];
+          rangeEnd = temps[tempsID.HEAT_NORMAL];
+        }
+        const text = (rangeStart === rangeEnd) ? `${rangeStart}` : `>[${Math.round(rangeStart*2)/2},${Math.round(rangeEnd*2)/2}]`
+        // Heat Arc
+        drawArc(ctx, "#F00", rangeStart, rangeEnd, outerDia - 4, 8);
+        // Heat price points
+        if (timerOpTemp === TEMPOP.PRICE) {
+          for (let i = tempsID.HEAT_EXPENSIVE; i <= tempsID.HEAT_DIRTCHEAP; i++) {
+            drawArc(ctx, "#000", temps[i], temps[i], innerDia + 10, 4);
+          }
+          drawArc(ctx, ["#0A0", "#0F0"], temps[tempsID.HEAT_CHEAP], temps[tempsID.HEAT_DIRTCHEAP], innerDia + 4, 8);
+          drawArc(ctx, ["#00F", "#0A0"], temps[tempsID.HEAT_NORMAL], temps[tempsID.HEAT_CHEAP], innerDia + 4, 8);
+          drawArc(ctx, ["#A00", "#00F"], temps[tempsID.HEAT_HIGH], temps[tempsID.HEAT_NORMAL], innerDia + 4, 8);
+          drawArc(ctx, ["#F00", "#A00"], temps[tempsID.HEAT_EXPENSIVE], temps[tempsID.HEAT_HIGH], innerDia + 4, 8);
+        }
+        // Heat Stop
+        drawArc(ctx, "#800", temps[tempsID.HEAT_OFF], temps[tempsID.HEAT_OFF], outerDia - 10, 20);
+        // Middle Text
+        ctx.beginPath();
+        ctx.lineWidth = 1;
+        ctx.strokeStyle = "#D00";
+        ctx.font = "14px Verdana";
+        ctx.fillStyle = "#000";
+        centerText(ctx, "Heating", tCenterX, tCenterY - 30);
+        centerText(ctx, `${text}°C`, tCenterX, tCenterY - 10);
+        ctx.fill();
+      }
+      if (showCool) {
+        // Mode specific
+        let rangeStart, rangeEnd;
+        if (timerOpTemp === TEMPOP.PRICE) {
+          rangeStart = temps[tempsID.COOL_DIRTCHEAP];
+          rangeEnd = temps[tempsID.COOL_EXPENSIVE];
+        } else {
+          rangeStart = temps[tempsID.COOL_NORMAL];
+          rangeEnd = temps[tempsID.COOL_NORMAL];
+        }
+        const text = (rangeStart === rangeEnd) ? `${rangeStart}` : `<[${Math.round(rangeStart*2)/2},${Math.round(rangeEnd*2)/2}]`
+        // Cool Arc
+        drawArc(ctx, "#00F", rangeStart, rangeEnd, outerDia - 4, 8);
+        // Cool price points
+        if (timerOpTemp === TEMPOP.PRICE) {
+          for (let i = tempsID.COOL_DIRTCHEAP; i <= tempsID.COOL_EXPENSIVE; i++) {
+            drawArc(ctx, "#000", temps[i], temps[i], innerDia + 10, 4);
+          }
+          drawArc(ctx, ["#0F0", "#0A0"], temps[tempsID.COOL_DIRTCHEAP], temps[tempsID.COOL_CHEAP], innerDia + 4, 8);
+          drawArc(ctx, ["#0A0", "#00F"], temps[tempsID.COOL_CHEAP], temps[tempsID.COOL_NORMAL], innerDia + 4, 8);
+          drawArc(ctx, ["#00F", "#A00"], temps[tempsID.COOL_NORMAL], temps[tempsID.COOL_HIGH], innerDia + 4, 8);
+          drawArc(ctx, ["#A00", "#F00"], temps[tempsID.COOL_HIGH], temps[tempsID.COOL_EXPENSIVE], innerDia + 4, 8);
+        }
+        // Cool Stop
+        drawArc(ctx, "#008", temps[tempsID.COOL_OFF], temps[tempsID.COOL_OFF], outerDia - 10, 20);
+        // Middle Text
+        ctx.beginPath();
+        ctx.lineWidth = 1;
+        ctx.strokeStyle = "#00D";
+        ctx.font = "14px Verdana";
+        ctx.fillStyle = "#000";
+        centerText(ctx, "Cooling", tCenterX, tCenterY + 30);
+        centerText(ctx, `${text}°C`, tCenterX, tCenterY + 10);
+        ctx.fill();
+      }
+      // Show selected temp:
+      const guideText = thermoDragIndex ? `${tempName[thermoDragIndex]}: ${temps[thermoDragIndex]}°C` : '';
+      document.getElementById('thermoGuide').innerHTML = guideText;
+    }
+    refreshSchedules();
+    refreshThermostat();
     </script>
   </body>
 </html>
