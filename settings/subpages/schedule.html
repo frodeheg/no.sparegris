@@ -221,8 +221,43 @@
         DEVICE_OP: {UNCONDITIONAL_OFF: 0, UNCONDITIONAL_ON: 1, CONTROLLED_OFF: 2, CONTROLLED_ON: 3, IGNORE: 4},
         TEMP_OP: {NONE: 0, STATIC: 1, PRICE: 2},
         ACMODE: {UNCHANGED: 0, AUTO: 1, HEAT: 2, COOL: 3, DRY: 4, FAN: 5, PIGGY: 6},
-        displaySaveHint: (param => {console.log('TODO REMOVEME');})
+        displaySaveHint: (param => {console.log('TODO REMOVEME');}),
+        KEEP: -1,
+        turnOffText: 'Turn Off',
+        turnOnText: 'Turn On',
+        controlledOnText: 'Controlled On',
+        emergencyOffText: 'Controlled Off',
+        ignoreText: 'Ignore',
       }
+      // --- End of TODO ---
+      const tempsID = {
+      HEAT_OFF:       0,
+      HEAT_EXPENSIVE: 1,
+      HEAT_HIGH:      2,
+      HEAT_NORMAL:    3,
+      HEAT_CHEAP:     4,
+      HEAT_DIRTCHEAP: 5,
+      COOL_DIRTCHEAP: 6,
+      COOL_CHEAP:     7,
+      COOL_NORMAL:    8,
+      COOL_HIGH:      9,
+      COOL_EXPENSIVE: 10,
+      COOL_OFF:       11,
+    }
+    const tempName = {
+      0: 'thermostat.HEAT_OFF',
+      1: 'thermostat.HEAT_EXPENSIVE',
+      2: 'thermostat.HEAT_HIGH',
+      3: 'thermostat.HEAT_NORMAL',
+      4: 'thermostat.HEAT_CHEAP',
+      5: 'thermostat.HEAT_DIRTCHEAP',
+      6: 'thermostat.COOL_DIRTCHEAP',
+      7: 'thermostat.COOL_CHEAP',
+      8: 'thermostat.COOL_NORMAL',
+      9: 'thermostat.COOL_HIGH',
+      10: 'thermostat.COOL_EXPENSIVE',
+      11: 'thermostat.COOL_OFF',
+    }
     const TEMPOP = {
       NONE: 0,
       STATIC: 1,
@@ -241,41 +276,36 @@
           start: 0,
           operation: parent.DEVICE_OP.CONTROLLED_ON,
           tempOp: parent.TEMP_OP.PRICE,
-          temp: 15,
-          ACMode: 0,
-          deltas: [3, 2, 0, -2, -3]
+          temp: [5, 12, 13, 15, 17, 18, 25, 25, 25, 25, 25, 40],
+          ACMode: 0
         },
         {
           start: 6*60,
           operation: parent.DEVICE_OP.CONTROLLED_ON,
           tempOp: parent.TEMP_OP.PRICE,
-          temp: 24,
-          ACMode: 0,
-          deltas: [3, 2, 0, -2, -3]
+          temp: [5, 17, 18, 20, 22, 23, 25, 25, 25, 25, 25, 40],
+          ACMode: 0
         },
         {
           start: 8*60,
           operation: parent.DEVICE_OP.CONTROLLED_ON,
           tempOp: parent.TEMP_OP.PRICE,
-          temp: 20,
-          ACMode: 0,
-          deltas: [3, 2, 0, -2, -3]
+          temp: [5, 17, 18, 20, 22, 23, 25, 25, 25, 25, 25, 40],
+          ACMode: 0
         },
         {
           start: 15*60,
           operation: parent.DEVICE_OP.CONTROLLED_ON,
           tempOp: parent.TEMP_OP.PRICE,
-          temp: 24,
-          ACMode: 0,
-          deltas: [3, 2, 0, -2, -3]
+          temp: [5, 21, 22, 24, 26, 27, 25, 25, 25, 25, 25, 40],
+          ACMode: 0
         },
         {
           start: 22*60,
           operation: parent.DEVICE_OP.CONTROLLED_ON,
           tempOp: parent.TEMP_OP.PRICE,
-          temp: 15,
-          ACMode: 0,
-          deltas: [3, 2, 0, -2, -3]
+          temp: [5, 12, 13, 15, 17, 18, 25, 25, 25, 25, 25, 40],
+          ACMode: 0
         }]
     }];
     let timerSelected = undefined;
@@ -341,11 +371,6 @@
       refreshTimeTable();
     }
 
-    function changeDeltaTemp(pp, deltaTemp) {
-      schedules[scheduleSelected].items[timerSelected].deltas[pp] = +deltaTemp;
-      refreshTimeTable();
-    }
-
     function refreshTempOp() {
       const tempElement = document.getElementById('scTemp');
       const ppElements = document.getElementById('scPP');
@@ -398,8 +423,7 @@
           start: 0,
           operation: parent.DEVICE_OP.CONTROLLED_ON,
           tempOp: parent.TEMP_OP.PRICE,
-          temp: 23,
-          deltas: [3, 2, 0, -2, -3]
+          temp: [5, 20, 21, 23, 25, 26, 25, 25, 25, 25, 25, 40]
         }]
       };
       schedules.push(newSchedule);
@@ -488,7 +512,6 @@
       const hourEnd = String(Math.floor(endTime / 60)).padStart(2, '0');
       const minEnd = String(endTime % 60).padStart(2, '0');
       const tempOp = items[idx].tempOp;
-      const temp = items[idx].temp;
       const trashCan = (items.length === 1) ? '' :
         `<div id="scTrashCan" class="icon-trash" style="float:right; font-size:1rem" onClick="removeTimer(${idx});event.stopPropagation();displaySaveHint();">`
         + '  <div class="trash-lid" style="background-color: #e44"></div>'
@@ -497,10 +520,10 @@
         + '  <div class="trash-line-2"></div>'
         + '  <div class="trash-line-3"></div>'
         + '</div>';
-      const tempMin = temp + Math.min(...items[idx].deltas);
-      const tempMax = temp + Math.max(...items[idx].deltas);
+      const tempMin = items[idx].temp[tempsID.HEAT_EXPENSIVE];
+      const tempMax = items[idx].temp[tempsID.COOL_EXPENSIVE];
       const tempText = (tempOp == parent.TEMP_OP.NONE) ? ''
-        : (tempOp == parent.TEMP_OP.STATIC) ? `${temp}°C<br>`
+        : (tempOp == parent.TEMP_OP.STATIC) ? `${tempMin}°C<br>`
           : `${tempMin}°C - ${tempMax}°C<br>`;
       const blockText = `${trashCan}${tempText}${hourStart}:${minStart} - ${hourEnd}:${minEnd}`;
       return blockText;
@@ -587,10 +610,10 @@
         newTemp = currentSchedule.items[timerSelected].temp;
         ACMode = currentSchedule.items[timerSelected].ACMode;
         ppElements.disabled = false;
-        ppDirtElement.value = currentSchedule.items[timerSelected].deltas[0];
-        ppCheapElement.value = currentSchedule.items[timerSelected].deltas[1];
-        ppExpensiveElement.value = currentSchedule.items[timerSelected].deltas[3];
-        ppExtremeElement.value = currentSchedule.items[timerSelected].deltas[4];
+        //ppDirtElement.value = currentSchedule.items[timerSelected].deltas[0];
+        //ppCheapElement.value = currentSchedule.items[timerSelected].deltas[1];
+        //ppExpensiveElement.value = currentSchedule.items[timerSelected].deltas[3];
+        //ppExtremeElement.value = currentSchedule.items[timerSelected].deltas[4];
         tempOpElement.value = currentSchedule.items[timerSelected].tempOp;
       }
       changeDeviceAction(onoffElement, newOnOffOp, parent.KEEP);
@@ -694,34 +717,6 @@
     const startTemp = 5;
     const endTemp = 45;
     const temps = [5, 15, 20, 21, 22, 23, 24, 25, 26, 27, 30, 45];
-    const tempsID = {
-      HEAT_OFF:       0,
-      HEAT_EXPENSIVE: 1,
-      HEAT_HIGH:      2,
-      HEAT_NORMAL:    3,
-      HEAT_CHEAP:     4,
-      HEAT_DIRTCHEAP: 5,
-      COOL_DIRTCHEAP: 6,
-      COOL_CHEAP:     7,
-      COOL_NORMAL:    8,
-      COOL_HIGH:      9,
-      COOL_EXPENSIVE: 10,
-      COOL_OFF:       11,
-    }
-    const tempName = {
-      0: 'thermostat.HEAT_OFF',
-      1: 'thermostat.HEAT_EXPENSIVE',
-      2: 'thermostat.HEAT_HIGH',
-      3: 'thermostat.HEAT_NORMAL',
-      4: 'thermostat.HEAT_CHEAP',
-      5: 'thermostat.HEAT_DIRTCHEAP',
-      6: 'thermostat.COOL_DIRTCHEAP',
-      7: 'thermostat.COOL_CHEAP',
-      8: 'thermostat.COOL_NORMAL',
-      9: 'thermostat.COOL_HIGH',
-      10: 'thermostat.COOL_EXPENSIVE',
-      11: 'thermostat.COOL_OFF',
-    }
     function pressToAngleCoords(canvas, event) {
       let rect = canvas.getBoundingClientRect();
       let pos = {x: event.clientX - rect.left, y: event.clientY - rect.top };
@@ -769,6 +764,39 @@
       }
     }
 
+    function setThermoValue(index, newTemp) {
+      schedules[scheduleSelected].items[timerSelected].temp[index] = Math.round(newTemp*2)/2;
+      temps[index] = newTemp;
+
+      refreshTimeTable();
+    }
+
+    function moveThermoIndex(index, newTemp) {
+      // Scale Pricepoints if applicable
+      const timerOpTemp = +document.getElementById('timerOpTemp').value;
+      if (timerOpTemp === TEMPOP.PRICE) {
+        if (index === tempsID.HEAT_DIRTCHEAP
+          || index === tempsID.HEAT_EXPENSIVE
+          || index === tempsID.COOL_DIRTCHEAP
+          || index === tempsID.COOL_EXPENSIVE) {
+          const oldStart = temps[(index < tempsID.COOL_DIRTCHEAP) ? tempsID.HEAT_EXPENSIVE : tempsID.COOL_DIRTCHEAP];
+          const oldEnd = temps[(index < tempsID.COOL_DIRTCHEAP) ? tempsID.HEAT_DIRTCHEAP : tempsID.COOL_EXPENSIVE];
+          const newStart = (index === tempsID.HEAT_EXPENSIVE || index === tempsID.COOL_DIRTCHEAP) ? newTemp : oldStart;
+          const newEnd = (index === tempsID.HEAT_DIRTCHEAP || index === tempsID.COOL_EXPENSIVE) ? newTemp : oldEnd;
+          const iStart = (index < tempsID.COOL_DIRTCHEAP) ? tempsID.HEAT_HIGH : tempsID.COOL_CHEAP;
+          const iEnd = (index < tempsID.COOL_DIRTCHEAP) ? tempsID.HEAT_DIRTCHEAP : tempsID.COOL_EXPENSIVE;
+          for (let i = iStart; i < iEnd; i++) {
+            setThermoValue(i, newStart + ((oldEnd === oldStart)
+              ? ((i-iStart+1) / 4 * (newEnd-newStart))
+                : (((temps[i]-oldStart)/(oldEnd-oldStart)) * (newEnd-newStart)))
+            );
+          }
+        }
+      }
+      // Set new temperature
+      setThermoValue(index, newTemp);
+    }
+
     function draggingThermo(canvas, event) {
       if (thermoIsDragging) {
         const { pressTemp } = pressToAngleCoords(canvas, event);
@@ -776,41 +804,22 @@
         if (newTemp < startTemp) newTemp = startTemp;
         if (newTemp > endTemp) newTemp = endTemp;
         const timerOpTemp = +document.getElementById('timerOpTemp').value;
-        // Scale Pricepoints
-        if (timerOpTemp === TEMPOP.PRICE) {
-          if (thermoDragIndex === tempsID.HEAT_DIRTCHEAP
-            || thermoDragIndex === tempsID.HEAT_EXPENSIVE
-            || thermoDragIndex === tempsID.COOL_DIRTCHEAP
-            || thermoDragIndex === tempsID.COOL_EXPENSIVE) {
-            const oldStart = temps[(thermoDragIndex < tempsID.COOL_DIRTCHEAP) ? tempsID.HEAT_EXPENSIVE : tempsID.COOL_DIRTCHEAP];
-            const oldEnd = temps[(thermoDragIndex < tempsID.COOL_DIRTCHEAP) ? tempsID.HEAT_DIRTCHEAP : tempsID.COOL_EXPENSIVE];
-            const newStart = (thermoDragIndex === tempsID.HEAT_EXPENSIVE || thermoDragIndex === tempsID.COOL_DIRTCHEAP) ? newTemp : oldStart;
-            const newEnd = (thermoDragIndex === tempsID.HEAT_DIRTCHEAP || thermoDragIndex === tempsID.COOL_EXPENSIVE) ? newTemp : oldEnd;
-            const iStart = (thermoDragIndex < tempsID.COOL_DIRTCHEAP) ? tempsID.HEAT_HIGH : tempsID.COOL_CHEAP;
-            const iEnd = (thermoDragIndex < tempsID.COOL_DIRTCHEAP) ? tempsID.HEAT_DIRTCHEAP : tempsID.COOL_EXPENSIVE;
-            for (let i = iStart; i < iEnd; i++) {
-              temps[i] = newStart + ((oldEnd === oldStart)
-                ? ((i-iStart+1) / 4 * (newEnd-newStart))
-                  : (((temps[i]-oldStart)/(oldEnd-oldStart)) * (newEnd-newStart)));
-            }
-          }
-        }
-        temps[thermoDragIndex] = newTemp;
+        moveThermoIndex(thermoDragIndex, newTemp);
         // Fix up the rest of the values:
         if (timerOpTemp === TEMPOP.STATIC) {
           for (let i = tempsID.HEAT_EXPENSIVE; i <= tempsID.HEAT_DIRTCHEAP; i++) {
-            temps[i] = temps[tempsID.HEAT_NORMAL];
+            setThermoValue(i, temps[tempsID.HEAT_NORMAL]);
           }
           for (let i = tempsID.COOL_DIRTCHEAP; i <= tempsID.COOL_EXPENSIVE; i++) {
-            temps[i] = temps[tempsID.COOL_NORMAL];
+            setThermoValue(i, temps[tempsID.COOL_NORMAL]);
           }
         }
         // Push other values out of the new range
-        for (let i = 0; i < thermoDragIndex; i++) {
-          if (temps[i] > newTemp) temps[i] = newTemp;
+        for (let i = thermoDragIndex - 1; i >= 0; i--) {
+          if (temps[i] > newTemp) moveThermoIndex(i, newTemp);
         }
-        for (let i = temps.length - 1; i > thermoDragIndex; i--) {
-          if (temps[i] < newTemp) temps[i] = newTemp;
+        for (let i = thermoDragIndex + 1; i < temps.length; i++) {
+          if (temps[i] < newTemp) moveThermoIndex(i, newTemp);
         }
         refreshThermostat();
       }
@@ -850,7 +859,6 @@
       const angleEnd = tempToAngle(markerStartPos, markerEndPos, startTemp, endTemp, arcEnd + 0.25);
       if (Array.isArray(col)) {
         let gr = ctx.createConicGradient(angleStart+(Math.PI/2),tCenterX, tCenterY); 
-        const delta = 0.01;
         gr.addColorStop(0,col[0]);
         gr.addColorStop(((angleEnd-angleStart)/(Math.PI*2))%1,col[1]); 
         ctx.strokeStyle = gr;
@@ -914,7 +922,7 @@
           rangeStart = temps[tempsID.HEAT_NORMAL];
           rangeEnd = temps[tempsID.HEAT_NORMAL];
         }
-        const text = (rangeStart === rangeEnd) ? `${rangeStart}` : `>[${Math.round(rangeStart*2)/2},${Math.round(rangeEnd*2)/2}]`
+        const text = (rangeStart === rangeEnd) ? `${Math.round(rangeStart*2)/2}` : `>[${Math.round(rangeStart*2)/2},${Math.round(rangeEnd*2)/2}]`;
         // Heat Arc
         drawArc(ctx, "#F00", rangeStart, rangeEnd, outerDia - 4, 8);
         // Heat price points
@@ -949,7 +957,7 @@
           rangeStart = temps[tempsID.COOL_NORMAL];
           rangeEnd = temps[tempsID.COOL_NORMAL];
         }
-        const text = (rangeStart === rangeEnd) ? `${rangeStart}` : `<[${Math.round(rangeStart*2)/2},${Math.round(rangeEnd*2)/2}]`
+        const text = (rangeStart === rangeEnd) ? `${Math.round(rangeStart*2)/2}` : `<[${Math.round(rangeStart*2)/2},${Math.round(rangeEnd*2)/2}]`
         // Cool Arc
         drawArc(ctx, "#00F", rangeStart, rangeEnd, outerDia - 4, 8);
         // Cool price points
@@ -975,7 +983,7 @@
         ctx.fill();
       }
       // Show selected temp:
-      const guideText = thermoDragIndex ? `${tempName[thermoDragIndex]}: ${temps[thermoDragIndex]}°C` : '';
+      const guideText = Number.isFinite(thermoDragIndex) ? `${tempName[thermoDragIndex]}: ${temps[thermoDragIndex]}°C` : '';
       document.getElementById('thermoGuide').innerHTML = guideText;
     }
     refreshSchedules();
