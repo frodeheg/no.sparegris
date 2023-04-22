@@ -37,7 +37,6 @@
       var deviceText = "settings.mode.device";
       var turnOnText = "settings.price.turnOn";
       var turnOffText = "settings.price.turnOff";
-      var controlledOnText = "settings.schedule.controlledOn";
       var minTempText = "settings.frost.minTemp";
       var priorityText = "settings.mode.priority";
       var alwaysOnText = "settings.mode.alwaysOn";
@@ -1521,8 +1520,13 @@
     <div id="logPage" class="tabcontent">This page should not be missing. If you see this text please report it as an error</div>
 
     <!-- Time schedule -->
+    <script type="text/javascript">
+      function onIframeLoad(iframe) {
+        console.log('Iframe was loaded');
+      }
+    </script>
     <div id="schedulePage" class="tabcontent iframe-holder">
-      <iframe id="schedulePageInner" src="subpages/schedule.html" style="border:none;" frameborder="0" marginheight="0" marginwidth="0" referrerpolicy="same-origin" scrolling="no" ></iframe>
+      <iframe id="schedulePageInner" src="subpages/schedule.html" onload="onIframeLoad(this);" style="border:none;" frameborder="0" marginheight="0" marginwidth="0" referrerpolicy="same-origin" scrolling="no" ></iframe>
     </div>
 
     <!-- Price page -->
@@ -2106,7 +2110,6 @@
         deviceText = Homey.__(deviceText);
         turnOnText = Homey.__(turnOnText);
         turnOffText = Homey.__(turnOffText);
-        controlledOnText = Homey.__(controlledOnText);
         minTempText = Homey.__(minTempText);
         priorityText = Homey.__(priorityText);
         alwaysOnText = Homey.__(alwaysOnText);

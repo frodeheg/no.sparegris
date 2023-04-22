@@ -25,7 +25,36 @@
       "basetemp": "Basistemp",
       "schedule": "Current schedule",
       "schedules": "Schedules",
-      "controlledOn": "Controlled On"
+      "operations": {
+        "alwaysOn": "Always On",
+        "alwaysOff": "Always Off",
+        "controlledOn": "Preferred On",
+        "controlledOff": "On until Off",
+        "ignore": "Ignore"
+      },
+      "opHelp": {
+        "alwaysOn": "Affected units are never turned off. The Power tariff is met by controlling temperatures. Please do not use this to control relays as the power tariff cannot be met when they cannot be turned off.",
+        "alwaysOff": "Affected units are kept off no matter what.",
+        "controlledOn": "Affected units are on as much as possible. They can be turned off to keep the power tariff. If devices are being turned off they will turn on again when sufficient power is available. Thermostat devices will change temperature instead of turning on/off.",
+        "controlledOff": "Similar to 'Preferred On' except for devices turned off will not be turned on again. Thermostat devices will act as 'Preferred On'",
+        "ignore": "Affected units will not turn on or off. If it is on then the temperature will be controlled, if it's off then nothing will happen."
+      },
+      "hint": {
+        "onOffOperation": "The on/off operations are as follows:",
+        "tempOp": ["When temperature control is enabled then Temperatures are preferred to control the power tariff rather than on/off. If temperature control is disabled then only on/off operations will be used to control the power tariff.<!--",
+            "--><p>Fixed temperatures are good when you have fixed electricity prices while price-controlled temperatures allow you to set a range of temperatures depending on the prices.</p>"],
+        "ACMode": ["This is only applicable for AC devices. If the device being controlled is an AC device the mode will change as set here (as long as the device supports the available mode).<!--",
+            "--><p><b>Heating</b>: Will use the temperature range set for heating. When insufficient power the minimum temperature is set.</p><!--",
+            "--><p><b>Cooling</b>: Will use the temperature range set for cooling. When insufficient power the maximum temperature is set.</p><!--",
+            "--><p><b>Auto</b>: Sets a single temperature. Will use On/Off to meet the power tariff</p><!--",
+            "--><p><b>Fan / Dry</b>: No temperatures. Will use On/Off to meet the power tariff</p><!--",
+            "--><p><b>Piggy</b>: This will switch between heating and cooling depending on the actual temperature. The temperature triggers for switching mode is the one set for 'normal prices'.</p>",
+            "--><p><b>Unchanged</b>: This mode will not change your AC mode at all. It will detect the current Mode and act accordingly.</p>"],
+        "myThermo": ["The temperature wheel allows you to set up to 12 different temperatures. Only those that are applicable to the settings you have chosen will be visible.<!--",
+            "--><p>'Off temperature' is the temperature used when trying to keep the power tariff. There is one off temperature when heating is enabled and another one when cooling is enabled.</p><!--",
+            "--><p>'Heating temperature range' There are up to 5 temperatures that can be set for heating. The lowest is used when the prices are high while the highest is used when the prices are low.</p><!--",
+            "--><p>'Cooling temperature range' There are up to 5 temperatures that can be set for cooling. The lowest is used when the prices are low while the highest is used when the prices are high.</p>"]
+      }
     },
     "charge": {
       "header": "Car chargers",

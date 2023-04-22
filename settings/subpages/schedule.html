@@ -164,15 +164,20 @@
         <td rowspan="2" valign="top">
           <fieldset id='scTime'>
             <legend data-i18n="settings.schedule.schedule">Timeslot</legend>
-            <label for="timerOpOnOff" data-i18n="settings.schedule.onoff">OnOff operation</label>:<br>
+            <label for="timerOpOnOff" data-i18n="settings.schedule.onoff">OnOff operation</label>:
+            <div class="hintButton" onclick="parent.toggle(this,'onOffOperationHint');return false;">i</div><br>
             <div class="imgButtonText" id="timerOpOnOff" onclick="changeScheduleOp(this);">N/A</div><br>
-            <label for="timerOpTemp" data-i18n="settings.schedule.temp">Temperature</label>:<br>
+            <p id="onOffOperationHint" class="hint" data-i18n="settings.schedule.onOffOperationHint">schedule.onOffOperationHint</p>
+            <label for="timerOpTemp" data-i18n="settings.schedule.temp">Temperature</label>:
+            <div class="hintButton" onclick="parent.toggle(this,'tempOpHint');return false;">i</div><br>
             <select id="timerOpTemp" onchange="changeTempOp(this.value);displaySaveHint();">
                 <option value="0" data-i18n="settings.schedule.notemp">No temp control</option>
                 <option value="1" data-i18n="settings.schedule.statictemp">Static temperature</option>
                 <option value="2" data-i18n="settings.schedule.pricetemp">Price controlled</option>
             </select><br>
-            <label for="timerACMode" data-i18n="settings.ACMode.header">AC Mode</label>:<br>
+            <p id="tempOpHint" class="hint" data-i18n="settings.schedule.tempOpHint">schedule.tempOpHint</p>
+            <label for="timerACMode" data-i18n="settings.ACMode.header">AC Mode</label>:
+            <div class="hintButton" onclick="parent.toggle(this,'ACModeHint');return false;">i</div><br>
             <select id="timerACMode" onchange="changeACMode(this.value);displaySaveHint();">
               <option value="6" data-i18n="settings.ACMode.fan">Piggy</option>
               <option value="0" data-i18n="settings.ACMode.fromAC">Unchanged</option>
@@ -182,11 +187,14 @@
               <option value="4" data-i18n="settings.ACMode.dry">Dry</option>
               <option value="5" data-i18n="settings.ACMode.fan">Fan</option>
             </select><br>
+            <p id="ACModeHint" class="hint" data-i18n="settings.schedule.ACModeHint">schedule.ACModeHint</p>
             <div id="thermoTab">
               <canvas id="myThermostat" width="180" height="180" style="border:0px solid #d3d3d3;" onpointermove="draggingThermo(this, event);" onpointerdown="startDragThermo(this, event);" onpointerup="stopDragThermo(this, event);" onpointerleave="stopDragThermo(this, event);">
                 Your browser does not support the HTML5 canvas tag.
               </canvas>
-              <div id="thermoGuide"></div>
+              <div class="hintButton" style="position: relative; top: -150px; left: -30px;" onclick="parent.toggle(this,'myThermoHint');return false;">i</div>
+              <p id="thermoGuide"></p>
+              <p id="myThermoHint" class="hint" data-i18n="settings.schedule.myThermoHint">schedule.myThermoHint</p>
             </div>
           </fieldset>
           <div hidden>
@@ -222,14 +230,19 @@
         TEMP_OP: {NONE: 0, STATIC: 1, PRICE: 2},
         ACMODE: {UNCHANGED: 0, AUTO: 1, HEAT: 2, COOL: 3, DRY: 4, FAN: 5, PIGGY: 6},
         displaySaveHint: (param => {console.log('TODO REMOVEME');}),
+        toggle: (source, id, type = 'block') => {var e = document.getElementById(id);var visible = (e.style.display != "") && (e.style.display != "none");if (visible) { e.style.display = 'none'; if (source) source.style.cursor = "zoom-in";} else { e.style.display = type; if (source) source.style.cursor = "zoom-out"; } return false; },
         KEEP: -1,
-        turnOffText: 'Turn Off',
-        turnOnText: 'Turn On',
-        controlledOnText: 'Controlled On',
+        turnOffText: 'Always Off',
+        turnOnText: 'Always On',
+        preferredOnText: 'Preferred On', // Nonexisting
         emergencyOffText: 'Controlled Off',
         ignoreText: 'Ignore',
       }
       // --- End of TODO ---
+      const startTemp = 5;
+      const endTemp = 45;
+      let temps = [5, 15, 20, 21, 22, 23, 24, 25, 26, 27, 30, 45];
+
       const tempsID = {
       HEAT_OFF:       0,
       HEAT_EXPENSIVE: 1,
@@ -276,35 +289,28 @@
           start: 0,
           operation: parent.DEVICE_OP.CONTROLLED_ON,
           tempOp: parent.TEMP_OP.PRICE,
-          temp: [5, 12, 13, 15, 17, 18, 25, 25, 25, 25, 25, 40],
+          temp: [5, 12, 13, 15, 17, 18, 27, 28, 29, 30, 31, 40],
           ACMode: 0
         },
         {
           start: 6*60,
           operation: parent.DEVICE_OP.CONTROLLED_ON,
           tempOp: parent.TEMP_OP.PRICE,
-          temp: [5, 17, 18, 20, 22, 23, 25, 25, 25, 25, 25, 40],
-          ACMode: 0
-        },
-        {
-          start: 8*60,
-          operation: parent.DEVICE_OP.CONTROLLED_ON,
-          tempOp: parent.TEMP_OP.PRICE,
-          temp: [5, 17, 18, 20, 22, 23, 25, 25, 25, 25, 25, 40],
+          temp: [5, 17, 18, 20, 22, 23, 25, 26, 27, 28, 29, 40],
           ACMode: 0
         },
         {
           start: 15*60,
           operation: parent.DEVICE_OP.CONTROLLED_ON,
           tempOp: parent.TEMP_OP.PRICE,
-          temp: [5, 21, 22, 24, 26, 27, 25, 25, 25, 25, 25, 40],
+          temp: [5, 21, 22, 24, 26, 27, 27, 28, 29, 30, 31, 40],
           ACMode: 0
         },
         {
           start: 22*60,
           operation: parent.DEVICE_OP.CONTROLLED_ON,
           tempOp: parent.TEMP_OP.PRICE,
-          temp: [5, 12, 13, 15, 17, 18, 25, 25, 25, 25, 25, 40],
+          temp: [5, 12, 13, 15, 17, 18, 27, 28, 29, 30, 31, 40],
           ACMode: 0
         }]
     }];
@@ -323,25 +329,6 @@
       const curSchedule = schedules[scheduleSelected];
       const items = curSchedule.items;
       items[timerSelected].tempOp = +newTempOp;
-      // Change AC options
-      document.querySelectorAll("#timerACMode option").forEach(opt => {
-        if (((+newTempOp === TEMPOP.NONE)
-          && ((+(opt.value) !== parent.ACMODE.FAN)
-            && (+(opt.value) !== parent.ACMODE.DRY)
-            && (+(opt.value) !== parent.ACMODE.UNCHANGED)))
-          || ((+newTempOp === TEMPOP.PRICE)
-            && (+opt.value === parent.ACMODE.AUTO
-              || +opt.value === parent.ACMODE.DRY
-              || +opt.value === parent.ACMODE.FAN))
-          || ((+newTempOp === TEMPOP.STATIC)
-            && (+opt.value === parent.ACMODE.DRY
-             || +opt.value === parent.ACMODE.FAN))) {
-          opt.disabled = true;
-        } else {
-          console.log(`${opt.value} ${parent.ACMODE.FAN} ${JSON.stringify(parent.ACMODE)}`);
-          opt.disabled = false;
-        }
-      });
       // Refresh
       refreshTempOp();
       refreshTimeTable();
@@ -349,6 +336,7 @@
     }
 
     function changeACMode(newMode) {
+      if (timerSelected === undefined) return;
       schedules[scheduleSelected].items[timerSelected].ACMode = +newMode;
       if (+newMode === parent.ACMODE.DRY || +newMode === parent.ACMODE.FAN) {
         document.getElementById('timerOpTemp').value = TEMPOP.NONE;
@@ -377,7 +365,6 @@
       const tempOp = +document.getElementById('timerOpTemp').value;
       const timerACMode = +document.getElementById('timerACMode').value;
       const thermoTab = document.getElementById('thermoTab');
-      console.log(timerACMode);
       if (tempOp === parent.TEMP_OP.NONE
         || timerACMode === parent.ACMODE.DRY
         || timerACMode === parent.ACMODE.FAN) {
@@ -394,6 +381,24 @@
         ppElements.style.display = "block";
         thermoTab.style.display = "block";
       }
+      // Change AC options
+      document.querySelectorAll("#timerACMode option").forEach(opt => {
+        if (((tempOp === TEMPOP.NONE)
+          && ((+(opt.value) !== parent.ACMODE.FAN)
+            && (+(opt.value) !== parent.ACMODE.DRY)
+            && (+(opt.value) !== parent.ACMODE.UNCHANGED)))
+          || ((tempOp === TEMPOP.PRICE)
+            && (+opt.value === parent.ACMODE.AUTO
+              || +opt.value === parent.ACMODE.DRY
+              || +opt.value === parent.ACMODE.FAN))
+          || ((tempOp === TEMPOP.STATIC)
+            && (+opt.value === parent.ACMODE.DRY
+             || +opt.value === parent.ACMODE.FAN))) {
+          opt.disabled = true;
+        } else {
+          opt.disabled = false;
+        }
+      });
     }
 
     function selectSchedule(value) {
@@ -423,7 +428,8 @@
           start: 0,
           operation: parent.DEVICE_OP.CONTROLLED_ON,
           tempOp: parent.TEMP_OP.PRICE,
-          temp: [5, 20, 21, 23, 25, 26, 25, 25, 25, 25, 25, 40]
+          temp: [5, 20, 21, 23, 25, 26, 27, 28, 29, 30, 31, 45],
+          ACMode: 0
         }]
       };
       schedules.push(newSchedule);
@@ -540,6 +546,7 @@
         timerElement.classList.remove(`schedCol${oldOp}`);
         timerElement.classList.add(`schedCol${newOp}`);
         displaySaveHint();
+        refreshThermostat();
       }
     }
 
@@ -572,14 +579,14 @@
     function selectTimer(sourceId) {
       const sourceElement = document.getElementById(`si${sourceId}`);
       const onoffElement = document.getElementById('timerOpOnOff');
-      const tempElement = document.getElementById('timerBaseTempHeat');
+      //const tempElement = document.getElementById('timerBaseTempHeat');
       const ACModeElement = document.getElementById('timerACMode');
       const timeElements = document.getElementById('scTime');
       const ppElements = document.getElementById('scPP');
-      const ppDirtElement = document.getElementById('tempDirtCheap');
-      const ppCheapElement = document.getElementById('tempCheap');
-      const ppExpensiveElement = document.getElementById('tempExpensive');
-      const ppExtremeElement = document.getElementById('tempExtreme');
+      //const ppDirtElement = document.getElementById('tempDirtCheap');
+      //const ppCheapElement = document.getElementById('tempCheap');
+      //const ppExpensiveElement = document.getElementById('tempExpensive');
+      //const ppExtremeElement = document.getElementById('tempExtreme');
       const tempOpElement = document.getElementById('timerOpTemp');
       if (timerSelected !== undefined) {
         const oldElement = document.getElementById(`si${timerSelected}`);
@@ -589,17 +596,17 @@
       onoffElement.classList.add('imgButtonDisabled');
       onoffElement.innerHTML = 'N/A';
       ppElements.disabled = true;
-      ppDirtElement.value = '';
-      ppCheapElement.value = '';
-      ppExpensiveElement.value = '';
-      ppExtremeElement.value = '';
-      tempOpElement.value = 0;
+      //ppDirtElement.value = '';
+      //ppCheapElement.value = '';
+      //ppExpensiveElement.value = '';
+      //ppExtremeElement.value = '';
 
       let newOnOffOp = '';
       let newTemp = '';
       let ACMode = 0;
       if (timerSelected === sourceId) {
         timerSelected = undefined;
+        tempOpElement.value = TEMPOP.NONE;
       } else {
         timerSelected = sourceId;
         sourceElement.classList.add('scheduleSelect');
@@ -607,9 +614,10 @@
         onoffElement.classList.remove('imgButtonDisabled');
         const currentSchedule = schedules[scheduleSelected];
         newOnOffOp = currentSchedule.items[timerSelected].operation;
-        newTemp = currentSchedule.items[timerSelected].temp;
+        //newTemp = currentSchedule.items[timerSelected].temp;
         ACMode = currentSchedule.items[timerSelected].ACMode;
         ppElements.disabled = false;
+        temps = currentSchedule.items[timerSelected].temp;
         //ppDirtElement.value = currentSchedule.items[timerSelected].deltas[0];
         //ppCheapElement.value = currentSchedule.items[timerSelected].deltas[1];
         //ppExpensiveElement.value = currentSchedule.items[timerSelected].deltas[3];
@@ -618,8 +626,10 @@
       }
       changeDeviceAction(onoffElement, newOnOffOp, parent.KEEP);
       refreshTempOp();
-      tempElement.value = newTemp;
+      refreshThermostat();
+      //tempElement.value = newTemp;
       ACModeElement.value = ACMode;
+      changeACMode(ACMode);
     }
 
     function dragStart(e, source) {
@@ -679,7 +689,7 @@
           button.style.backgroundImage = 'radial-gradient(white, rgb(255, 255, 150), orange)';
           break;
         case parent.DEVICE_OP.CONTROLLED_ON:
-          button.innerHTML = parent.controlledOnText;
+          button.innerHTML = parent.preferredOnText;
           button.style.backgroundImage = 'radial-gradient(white, rgb(150, 255, 150), green)';
           break;
         case parent.DEVICE_OP.CONTROLLED_OFF:
@@ -714,9 +724,6 @@
     // Temp ranges
     let showHeat = true;
     let showCool = true;
-    const startTemp = 5;
-    const endTemp = 45;
-    const temps = [5, 15, 20, 21, 22, 23, 24, 25, 26, 27, 30, 45];
     function pressToAngleCoords(canvas, event) {
       let rect = canvas.getBoundingClientRect();
       let pos = {x: event.clientX - rect.left, y: event.clientY - rect.top };
@@ -859,8 +866,10 @@
       const angleEnd = tempToAngle(markerStartPos, markerEndPos, startTemp, endTemp, arcEnd + 0.25);
       if (Array.isArray(col)) {
         let gr = ctx.createConicGradient(angleStart+(Math.PI/2),tCenterX, tCenterY); 
+        let colStop = ((angleEnd-angleStart)/(Math.PI*2))%1;
+        if (colStop < 0) return;
         gr.addColorStop(0,col[0]);
-        gr.addColorStop(((angleEnd-angleStart)/(Math.PI*2))%1,col[1]); 
+        gr.addColorStop(colStop,col[1]); 
         ctx.strokeStyle = gr;
       } else {
         ctx.strokeStyle = col;
@@ -869,9 +878,29 @@
       ctx.stroke();
     }
 
-    function refreshThermostat() {
+    function refreshThermostat(ttt = undefined) {
+      if (timerSelected === undefined) return;
+      try {
       const canvas = document.getElementById("myThermostat");
       const ctx = canvas.getContext("2d");
+      // OnOff temp?
+      const curSchedule = schedules[scheduleSelected];
+      const items = curSchedule.items;
+      const onOffOp = items[timerSelected].operation;
+      const tempOp = +document.getElementById('timerOpTemp').value;
+      const ACMode = +document.getElementById('timerACMode').value;
+      let showTempOnOff =
+        (tempOp === TEMPOP.NONE
+        || ACMode === parent.ACMODE.AUTO
+        || ACMode === parent.ACMODE.DRY
+        || ACMode === parent.ACMODE.FAN)
+        ? false : true;
+      let mustUseTemp =
+        onOffOp === parent.DEVICE_OP.IGNORE
+        || onOffOp === parent.DEVICE_OP.UNCONDITIONAL_ON // (None for on/off)
+        //onOffOp === parent.DEVICE_OP.CONTROLLED_ON    => Temp (onoff else)
+
+      console.log(`Showtemp: ${onOffOp}  ${tempOp}  ${ACMode}`);
       // Dimensions
       cWidth = canvas.width;
       cHeight = canvas.height;
@@ -881,6 +910,7 @@
       innerDia = outerDia * 3 / 4;
       // Outer circle
       ctx.beginPath();
+      ctx.lineWidth = 1;
       ctx.arc(tCenterX, tCenterY, outerDia, 0, 2 * Math.PI);
       ctx.fillStyle = "#DDD";
       ctx.strokeStyle = "#000";
@@ -936,7 +966,9 @@
           drawArc(ctx, ["#F00", "#A00"], temps[tempsID.HEAT_EXPENSIVE], temps[tempsID.HEAT_HIGH], innerDia + 4, 8);
         }
         // Heat Stop
-        drawArc(ctx, "#800", temps[tempsID.HEAT_OFF], temps[tempsID.HEAT_OFF], outerDia - 10, 20);
+        if (showTempOnOff) {
+          drawArc(ctx, "#800", temps[tempsID.HEAT_OFF], temps[tempsID.HEAT_OFF], outerDia - 10, 20);
+        }
         // Middle Text
         ctx.beginPath();
         ctx.lineWidth = 1;
@@ -971,7 +1003,9 @@
           drawArc(ctx, ["#A00", "#F00"], temps[tempsID.COOL_HIGH], temps[tempsID.COOL_EXPENSIVE], innerDia + 4, 8);
         }
         // Cool Stop
-        drawArc(ctx, "#008", temps[tempsID.COOL_OFF], temps[tempsID.COOL_OFF], outerDia - 10, 20);
+        if (showTempOnOff) {
+          drawArc(ctx, "#008", temps[tempsID.COOL_OFF], temps[tempsID.COOL_OFF], outerDia - 10, 20);
+        }
         // Middle Text
         ctx.beginPath();
         ctx.lineWidth = 1;
@@ -985,6 +1019,9 @@
       // Show selected temp:
       const guideText = Number.isFinite(thermoDragIndex) ? `${tempName[thermoDragIndex]}: ${temps[thermoDragIndex]}°C` : '';
       document.getElementById('thermoGuide').innerHTML = guideText;
+      } catch (err) {
+        console.log(`Err: ${err}`);
+      }
     }
     refreshSchedules();
     refreshThermostat();
