@@ -28,8 +28,8 @@
       "operations": {
         "alwaysOn": "Altijd aan",
         "alwaysOff": "Altijd uit",
-        "controlOn": "Voorkeur aan",
-        "controledOff": "Aan tot Uit",
+        "controlledOn": "Voorkeur aan",
+        "controlledOff": "Aan tot Uit",
         "ignore": "Negeren"
       },
       "opHelp": {

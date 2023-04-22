@@ -25,7 +25,36 @@
       "basetemp": "Basistemp",
       "schedule": "Valgt plan",
       "schedules": "Timeplaner",
-      "controlledOn": "Kontrollert På"
+      "operations": {
+        "alwaysOn": "Alltid på",
+        "alwaysOff": "Alltid av",
+        "controlledOn": "Foretrukket på",
+        "controlledOff": "På til Av",
+        "ignore": "Ignorer"
+      },
+      "opHelp": {
+        "alwaysOn": "Berørte enheter slås aldri av. Strømtariffen oppfylles ved å kontrollere temperaturer. Vennligst ikke bruk denne til å styre releer da strømtariffen ikke kan oppfylles når de ikke kan slås av.",
+        "alwaysOff": "Berørte enheter holdes av uansett hva.",
+        "controlledOn": "Berørte enheter er på så mye som mulig. De kan slås av for å beholde strømtariffen. Hvis enheter blir slått av, vil de slå seg på igjen når tilstrekkelig strøm er tilgjengelig. Termostatenheter vil endre temperatur i stedet for å slå seg på på av.",
+        "controlledOff": "Samme som 'Foretrukket på', bortsett fra at enheter som er slått av ikke vil bli slått på igjen. Termostatenheter vil fungere som 'Foretrukket på'",
+        "ignore": "Berørte enheter vil ikke slå seg på eller av. Hvis de er på, vil temperaturen bli kontrollert, hvis de er av vil ingenting skje."
+      },
+      "hint": {
+        "onOffOperation": "På/av-operasjonene er som følger:",
+        "tempOp": ["Når temperaturkontroll er aktivert foretrekkes temperaturer for å kontrollere strømtariffen i stedet for på/av. Hvis temperaturkontroll er deaktivert, vil bare på/av-operasjoner bli brukt til å kontrollere strømtariffen.<!-- ",
+            "--><p>Konstant temperatur er en innstilling for faste strømpriser, mens priskontrollerte temperaturer lar deg stille inn en rekke temperaturer avhengig av prisen på strømmen.</p>"],
+        "ACMode": ["Dette gjelder kun for AC-enheter. Hvis enheten som kontrolleres er en AC-enhet, vil modusen endres som angitt her (så lenge enheten støtter den tilgjengelige modusen).<!--",
+            "--><p><b>Oppvarming</b>: Vil bruke temperaturområdet som er innstilt for oppvarming. Når effekt-taket nås vil temperaturen settes til minimum.</p><!--",
+            "--><p><b>Kjøling</b>: Vil bruke temperaturområdet som er angitt for kjøling. Når effekt-taket nås vil temperaturen settes til maks.</p><!--",
+            "--><p><b>Auto</b>: Stiller inn en enkelt temperatur. Bruker På/Av for å møte strømtariffen</p><!--",
+            "--><p><b>Vifte / tørking</b>: Ingen temperaturer. Vil bruke På/Av for å møte strømtariffen</p><!--",
+            "--><p><b>Piggy</b>: Dette vil bytte mellom oppvarming og kjøling avhengig av den faktiske temperaturen. Temperaturutløserne for byttemodus er den som er angitt for 'normale priser'.</p>" ,
+            "--><p><b>Uendret</b>: Denne modusen vil ikke endre AC-modusen din i det hele tatt. Den vil oppdage gjeldende modus og handle deretter.</p>"],
+        "myThermo": ["Temperaturhjulet lar deg stille inn opptil 12 forskjellige temperaturer. Bare de som gjelder for innstillingene du har valgt vil være synlige.<!--",
+            "--><p>'Av temperatur' er temperaturen som brukes når man prøver å holde strømtariffen. Det er én  temperatur for av når oppvarming er aktivert og en annen når kjøling er aktivert.</p><!--",
+            "--><p>'Oppvarmingstemperaturområde' Det er opptil 5 temperaturer som kan stilles inn for oppvarming. Den laveste brukes når prisene er høye mens den høyeste brukes når prisene er lave.</p>< !--",
+            "--><p>'Kjølingstemperaturområde' Det er opptil 5 temperaturer som kan stilles inn for kjøling. Den laveste brukes når prisene er lave mens den høyeste brukes når prisene er høye.</p>" ]
+      }
     },
     "charge": {
       "header": "Lading av Elbil",
