@@ -33,17 +33,17 @@
         "ignore": "Negeren"
       },
       "opHelp": {
-        "alwaysOn": "Getroffen eenheden worden nooit uitgeschakeld. Aan het stroomtarief wordt voldaan door het regelen van de temperatuur. Gebruik dit niet om relais te regelen, aangezien er niet aan het stroomtarief kan worden voldaan als ze niet kunnen worden uitgeschakeld.",
-        "alwaysOff": "Getroffen eenheden worden hoe dan ook uitgeschakeld.",
-        "controlledOn": "Getroffen apparaten staan zoveel mogelijk aan. Ze kunnen worden uitgeschakeld om het stroomtarief te behouden. Als apparaten worden uitgeschakeld, worden ze weer ingeschakeld wanneer er voldoende stroom beschikbaar is. Thermostaatapparaten veranderen de temperatuur in plaats van te draaien aan uit.",
-        "controlledOff": "Gelijk aan 'Voorkeur aan' behalve dat uitgeschakelde apparaten niet opnieuw worden ingeschakeld. Thermostaatapparaten werken als 'Voorkeur aan'",
-        "ignore": "Betrokken eenheden kunnen niet worden in- of uitgeschakeld. Als het aan is, wordt de temperatuur gecontroleerd, als het uit is, gebeurt er niets."
+        "alwaysOn": "De apparaten in kwestie worden nooit uitgeschakeld. Aan het stroomtarief wordt voldaan door het regelen van de temperatuur. Gebruik dit niet om relais te regelen, aangezien er niet aan het stroomtarief kan worden voldaan als ze niet kunnen worden uitgeschakeld.",
+        "alwaysOff": "De apparaten in kwestie worden hoe dan ook uitgeschakeld.",
+        "controlledOn": "De apparaten in kwestie staan voorzover het kan zoveel mogelijk aan. Ze kunnen worden uitgeschakeld om het stroomtarief te behouden. Als apparaten worden uitgeschakeld, worden ze weer ingeschakeld wanneer er voldoende stroom beschikbaar is. Thermostaat-apparaten passen de temperatuur aan, in plaats van aan/uit.",
+        "controlledOff": "Gelijk aan 'Voorkeur aan' behalve dat uitgeschakelde apparaten niet opnieuw worden ingeschakeld. Thermostaat-apparaten werken als 'Voorkeur aan'",
+        "ignore": "De apparaten in kwestie kunnen niet worden in- of uitgeschakeld. Als het apparaat aan is, wordt de temperatuur gecontroleerd, en als het uit is, gebeurt er niets."
       },
       "hint": {
-        "onOffOperation": "De aan/uit-handelingen zijn als volgt:",
-        "tempOp": ["Als temperatuurregeling is ingeschakeld, hebben Temperaturen de voorkeur om het stroomtarief te regelen in plaats van aan/uit. Als temperatuurregeling is uitgeschakeld, worden alleen aan/uit-bewerkingen gebruikt om het stroomtarief te regelen.<!-- ",
+        "onOffOperation": "De aan/uit handelingen zijn als volgt:",
+        "tempOp": ["Als temperatuurregeling is ingeschakeld, hebben de temperaturen de voorkeur om het stroomtarief te regelen, in plaats van aan/uit. Als temperatuurregeling is uitgeschakeld, worden alleen aan/uit-bewerkingen gebruikt om het stroomtarief te regelen.<!-- ",
             "--><p>Vaste temperaturen zijn goed als u vaste elektriciteitsprijzen heeft, terwijl prijsgecontroleerde temperaturen u in staat stellen een reeks temperaturen in te stellen, afhankelijk van de prijzen.</p>"],
-        "ACMode": ["Dit is alleen van toepassing op AC-apparaten. Als het apparaat dat wordt bestuurd een AC-apparaat is, zal de modus veranderen zoals hier ingesteld (zolang het apparaat de beschikbare modus ondersteunt).<!--",
+        "ACMode": ["Dit is alleen van toepassing op AC (airco) apparaten. Als het apparaat dat wordt bestuurd een AC-apparaat is, zal de modus veranderen zoals hier ingesteld (zolang het apparaat de beschikbare modus ondersteunt).<!--",
             "--><p><b>Verwarming</b>: Gebruikt het ingestelde temperatuurbereik voor verwarming. Bij onvoldoende vermogen wordt de minimumtemperatuur ingesteld.</p><!--",
             "--><p><b>Koelen</b>: Gebruikt het ingestelde temperatuurbereik voor koelen. Bij onvoldoende vermogen wordt de maximale temperatuur ingesteld.</p><!--",
             "--><p><b>Auto</b>: Stelt een enkele temperatuur in. Zal Aan/Uit gebruiken om aan het stroomtarief te voldoen</p><!--",
@@ -52,12 +52,12 @@
             "--><p><b>Ongewijzigd</b>: deze modus zal uw AC-modus helemaal niet veranderen. Het zal de huidige modus detecteren en dienovereenkomstig handelen.</p>"],
         "myThermo": ["Met het temperatuurwiel kun je tot 12 verschillende temperaturen instellen. Alleen de temperaturen die van toepassing zijn op de instellingen die je hebt gekozen, zijn zichtbaar.<!--",
             "--><p>'Uit-temperatuur' is de temperatuur die wordt gebruikt om het stroomtarief te behouden. Er is één uit-temperatuur wanneer verwarmen is ingeschakeld en een andere wanneer koelen is ingeschakeld.</p><!--",
-            "--><p>'Verwarmingstemperatuurbereik' Er zijn maximaal 5 temperaturen die kunnen worden ingesteld voor verwarming. De laagste wordt gebruikt als de prijzen hoog zijn en de hoogste wordt gebruikt als de prijzen laag zijn.</p><p> !--",
-            "--><p>'Koeltemperatuurbereik' Er kunnen maximaal 5 temperaturen worden ingesteld voor koeling. De laagste wordt gebruikt als de prijzen laag zijn en de hoogste wordt gebruikt als de prijzen hoog zijn.</p>" ]
+            "--><p>'Verwarmings-temperatuurbereik' Er zijn maximaal 5 verschillende temperaturen die kunnen worden ingesteld voor verwarming. De laagste wordt gebruikt als de prijzen hoog zijn en de hoogste wordt gebruikt als de prijzen laag zijn.</p><p> !--",
+            "--><p>'Koel-temperatuurbereik' Er kunnen maximaal 5 verschillende temperaturen worden ingesteld voor airco. De laagste wordt gebruikt als de prijzen laag zijn en de hoogste wordt gebruikt als de prijzen hoog zijn.</p>" ]
       }
     },
     "charge": {
-      "header": "Autoladers",
+      "header": "Voertuig (EV) laders",
       "chargeTarget": "Laadregeling",
       "chargeMin": "Minimaal laadvermogen",
       "chargeThreshold": "Startdrempel",
