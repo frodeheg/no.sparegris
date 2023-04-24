@@ -25,6 +25,8 @@
       "basetemp": "Basistemp",
       "schedule": "Current schedule",
       "schedules": "Schedules",
+      "new": "New",
+      "remove": "Remove",
       "operations": {
         "alwaysOn": "Always On",
         "alwaysOff": "Always Off",
@@ -40,17 +42,17 @@
         "ignore": "Affected units will not turn on or off. If it is on then the temperature will be controlled, if it's off then nothing will happen."
       },
       "hint": {
-        "onOffOperation": "The on/off operations are as follows:",
-        "tempOp": ["When temperature control is enabled then Temperatures are preferred to control the power tariff rather than on/off. If temperature control is disabled then only on/off operations will be used to control the power tariff.<!--",
+        "onOffOperation": "<p>The on/off operations are as follows:</p>",
+        "tempOp": ["<p>When temperature control is enabled then Temperatures are preferred to control the power tariff rather than on/off. If temperature control is disabled then only on/off operations will be used to control the power tariff.</p><!--",
             "--><p>Fixed temperatures are good when you have fixed electricity prices while price-controlled temperatures allow you to set a range of temperatures depending on the prices.</p>"],
-        "ACMode": ["This is only applicable for AC devices. If the device being controlled is an AC device the mode will change as set here (as long as the device supports the available mode).<!--",
+        "ACMode": ["<p>This is only applicable for AC devices. If the device being controlled is an AC device the mode will change as set here (as long as the device supports the available mode).</p><!--",
             "--><p><b>Heating</b>: Will use the temperature range set for heating. When insufficient power the minimum temperature is set.</p><!--",
             "--><p><b>Cooling</b>: Will use the temperature range set for cooling. When insufficient power the maximum temperature is set.</p><!--",
             "--><p><b>Auto</b>: Sets a single temperature. Will use On/Off to meet the power tariff</p><!--",
             "--><p><b>Fan / Dry</b>: No temperatures. Will use On/Off to meet the power tariff</p><!--",
-            "--><p><b>Piggy</b>: This will switch between heating and cooling depending on the actual temperature. The temperature triggers for switching mode is the one set for 'normal prices'.</p>",
+            "--><p><b>Piggy</b>: This will switch between heating and cooling depending on the actual temperature. The temperature triggers for switching mode is the one set for 'normal prices'.</p><!--",
             "--><p><b>Unchanged</b>: This mode will not change your AC mode at all. It will detect the current Mode and act accordingly.</p>"],
-        "myThermo": ["The temperature wheel allows you to set up to 12 different temperatures. Only those that are applicable to the settings you have chosen will be visible.<!--",
+        "myThermo": ["<p>The temperature wheel allows you to set up to 12 different temperatures. Only those that are applicable to the settings you have chosen will be visible.</p><!--",
             "--><p>'Off temperature' is the temperature used when trying to keep the power tariff. There is one off temperature when heating is enabled and another one when cooling is enabled.</p><!--",
             "--><p>'Heating temperature range' There are up to 5 temperatures that can be set for heating. The lowest is used when the prices are high while the highest is used when the prices are low.</p><!--",
             "--><p>'Cooling temperature range' There are up to 5 temperatures that can be set for cooling. The lowest is used when the prices are low while the highest is used when the prices are high.</p>"]
@@ -513,5 +515,19 @@
     "month": "Month",
     "year": "Year",
     "predicted": "predicted"
+  },
+  "thermostat": {
+    "HeatOff": "Heating off",
+    "HeatExtreme": "Extremely expensive heating",
+    "HeatExpensive": "Expensive heating",
+    "HeatNormal": "Normal heating",
+    "HeatCheap": "Cheap heating",
+    "HeatDirtCheap": "Dirt cheap heating",
+    "CoolDirtCheap": "Dirt cheap cooling",
+    "CoolCheap": "Cheap cooling",
+    "CoolNormal": "Normal cooling",
+    "CoolExpensive": "Expensive cooling",
+    "CoolExtreme": "Very expensive cooling",
+    "CoolOff": "Cooling off"
   }
 }

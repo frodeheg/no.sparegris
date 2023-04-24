@@ -25,6 +25,8 @@
       "basetemp": "Basistemperatuur",
       "schedule": "Huidige planning",
       "schedules": "Planningen",
+      "new": "Nieuw",
+      "remove": "Verwijderen",
       "operations": {
         "alwaysOn": "Altijd aan",
         "alwaysOff": "Altijd uit",
@@ -40,17 +42,17 @@
         "ignore": "De apparaten in kwestie kunnen niet worden in- of uitgeschakeld. Als het apparaat aan is, wordt de temperatuur gecontroleerd, en als het uit is, gebeurt er niets."
       },
       "hint": {
-        "onOffOperation": "De aan/uit handelingen zijn als volgt:",
-        "tempOp": ["Als temperatuurregeling is ingeschakeld, hebben de temperaturen de voorkeur om het stroomtarief te regelen, in plaats van aan/uit. Als temperatuurregeling is uitgeschakeld, worden alleen aan/uit-bewerkingen gebruikt om het stroomtarief te regelen.<!-- ",
+        "onOffOperation": "<p>De aan/uit handelingen zijn als volgt:</p>",
+        "tempOp": ["<p>Als temperatuurregeling is ingeschakeld, hebben de temperaturen de voorkeur om het stroomtarief te regelen, in plaats van aan/uit. Als temperatuurregeling is uitgeschakeld, worden alleen aan/uit-bewerkingen gebruikt om het stroomtarief te regelen.</p><!-- ",
             "--><p>Vaste temperaturen zijn goed als u vaste elektriciteitsprijzen heeft, terwijl prijsgecontroleerde temperaturen u in staat stellen een reeks temperaturen in te stellen, afhankelijk van de prijzen.</p>"],
-        "ACMode": ["Dit is alleen van toepassing op AC (airco) apparaten. Als het apparaat dat wordt bestuurd een AC-apparaat is, zal de modus veranderen zoals hier ingesteld (zolang het apparaat de beschikbare modus ondersteunt).<!--",
+        "ACMode": ["<p>Dit is alleen van toepassing op AC (airco) apparaten. Als het apparaat dat wordt bestuurd een AC-apparaat is, zal de modus veranderen zoals hier ingesteld (zolang het apparaat de beschikbare modus ondersteunt).</p><!--",
             "--><p><b>Verwarming</b>: Gebruikt het ingestelde temperatuurbereik voor verwarming. Bij onvoldoende vermogen wordt de minimumtemperatuur ingesteld.</p><!--",
             "--><p><b>Koelen</b>: Gebruikt het ingestelde temperatuurbereik voor koelen. Bij onvoldoende vermogen wordt de maximale temperatuur ingesteld.</p><!--",
             "--><p><b>Auto</b>: Stelt een enkele temperatuur in. Zal Aan/Uit gebruiken om aan het stroomtarief te voldoen</p><!--",
             "--><p><b>Ventilator / Drogen</b>: Geen temperaturen. Zal Aan/Uit gebruiken om aan het stroomtarief te voldoen</p><!--",
-            "--><p><b>Piggy</b>: Dit schakelt tussen verwarmen en koelen, afhankelijk van de werkelijke temperatuur. De temperatuurtriggers voor de schakelmodus zijn die ingesteld voor 'normale prijzen'.</p>" ,
+            "--><p><b>Piggy</b>: Dit schakelt tussen verwarmen en koelen, afhankelijk van de werkelijke temperatuur. De temperatuurtriggers voor de schakelmodus zijn die ingesteld voor 'normale prijzen'.</p><!--" ,
             "--><p><b>Ongewijzigd</b>: deze modus zal uw AC-modus helemaal niet veranderen. Het zal de huidige modus detecteren en dienovereenkomstig handelen.</p>"],
-        "myThermo": ["Met het temperatuurwiel kun je tot 12 verschillende temperaturen instellen. Alleen de temperaturen die van toepassing zijn op de instellingen die je hebt gekozen, zijn zichtbaar.<!--",
+        "myThermo": ["<p>Met het temperatuurwiel kun je tot 12 verschillende temperaturen instellen. Alleen de temperaturen die van toepassing zijn op de instellingen die je hebt gekozen, zijn zichtbaar.</p><!--",
             "--><p>'Uit-temperatuur' is de temperatuur die wordt gebruikt om het stroomtarief te behouden. Er is één uit-temperatuur wanneer verwarmen is ingeschakeld en een andere wanneer koelen is ingeschakeld.</p><!--",
             "--><p>'Verwarmings-temperatuurbereik' Er zijn maximaal 5 verschillende temperaturen die kunnen worden ingesteld voor verwarming. De laagste wordt gebruikt als de prijzen hoog zijn en de hoogste wordt gebruikt als de prijzen laag zijn.</p><p> !--",
             "--><p>'Koel-temperatuurbereik' Er kunnen maximaal 5 verschillende temperaturen worden ingesteld voor airco. De laagste wordt gebruikt als de prijzen laag zijn en de hoogste wordt gebruikt als de prijzen hoog zijn.</p>" ]
@@ -513,5 +515,19 @@
     "month": "Maand",
     "year": "Jaar",
     "predicted": "Voorspeld"
+  },
+  "thermostat": {
+    "HeatOff": "Verwarming uit",
+    "HeatExtreme": "Extreem dure verwarming",
+    "HeatExpensive": "Dure verwarming",
+    "HeatNormal": "Normale verwarming",
+    "HeatCheap": "Goedkope verwarming",
+    "HeatDirtCheap": "Spotgoedkoop verwarming",
+    "CoolDirtCheap": "Spotgoedkoop koeling",
+    "CoolCheap": "Goedkope koeling",
+    "CoolNormal": "Normale koeling",
+    "CoolExpensive": "Dure koeling",
+    "CoolExtreme": "Zeer dure koeling",
+    "CoolOff": "Koelen uitgeschakeld"
   }
 }

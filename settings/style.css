@@ -29,6 +29,11 @@ p {
   color: gray;
 }
 
+.small {
+  font-size: 0.8em;
+  color: gray;
+}
+
 .hint {
   font-size: 0.8em;
   color: gray;

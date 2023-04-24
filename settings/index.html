@@ -22,14 +22,22 @@
     <link href="trashcan.css" rel="stylesheet" type="text/css">
     <script type="text/javascript">
 
-      function resizeIframe(tabPage) {
+      function resizeIframe(tabPage, width, height) {
         let holder = document.getElementById(tabPage);
         let inner =  document.getElementById(`${tabPage}Inner`);
-        holder.style.height = inner.contentWindow.document.documentElement.scrollHeight + 'px';
-        holder.style.width = inner.contentWindow.document.documentElement.scrollWidth + 'px';
+        try {
+          holder.style.height = height + 'px';
+          holder.style.width = width + 'px';
+          console.log(`Resized to: ${holder.style.width}, ${holder.style.height}`);
+        } catch (err) {
+          console.log(`Rezise Error: ${err}`);
+        }
       }
 
       // Text strings that must be fetched from homey
+      var timeScheduleText = "settings.schedule";
+      var ACModeText = "settings.ACMode";
+      var thermostatText = "thermostat";
       var activeText = "settings.mode.active";
       var noPowText = "settings.mode.noMeterPower";
       var deltaText = "settings.price.delta";
@@ -198,9 +206,10 @@
           let experimentalCmd = experimental ? 'document.getElementById(\'' + experimentalId + '\').style.display=\'block\';' : '';
           let noteButton = hasNote ? ` <div class="hintButton" onclick="toggle(this,'note${key}', 'table-row');return false;" style="display:inline-block">i</div>` : '';
           let noteText = hasNote ? `<tr id="note${key}" class="hint"><td colspan=4><p>${DEVICE_CMD[device.driverId].note}</p></td></tr>` : '';
+          let img_text = device.image ? `<img src="${device.image}" alt="icon">` : '';
           gen_list +=
             '<tr>' +
-            '  <td><img src="' + device.image + '" alt="icon"></td>' +
+            `  <td>${img_text}</td>` +
             '  <td><input type="image" width="40" height="20" src="' + enabledImg + '" onclick="' + experimentalCmd + 'toggleEnableDevice(event, \'' + String(key) + '\');displaySaveHint()" id="enableDevice' + String(key) + '"></td>' +
             '  <td><h3>' + limitText(device.name) + `${noteButton}</h3></td>` +
             '  <td><p>' + device.room + '</p></td>' +
@@ -651,20 +660,6 @@
           pp3Part.style.display = 'none';
           pp4Part.style.display = 'none';
         }
-      }
-
-      function toggle(source, id, type = 'block') {
-        var element = document.getElementById(id);
-
-        var visible = (element.style.display != "") && (element.style.display != "none");
-        if (visible) {
-          element.style.display = 'none';
-          if (source) source.style.cursor = "zoom-in";
-        } else {
-          element.style.display = type;
-          if (source) source.style.cursor = "zoom-out";
-        }
-        return false; // For onclick not to follow the link
       }
 
       function displaySaveHint() {
@@ -1522,7 +1517,7 @@
     <!-- Time schedule -->
     <script type="text/javascript">
       function onIframeLoad(iframe) {
-        console.log('Iframe was loaded');
+        console.log(`Iframe was loaded: ${iframe.src}`);
       }
     </script>
     <div id="schedulePage" class="tabcontent iframe-holder">
@@ -2103,6 +2098,9 @@
         var currencyElement = document.getElementById("currency");
 
         // Fetch translation strings from Homey
+        timeScheduleText = Homey.__(timeScheduleText);
+        ACModeText = Homey.__(ACModeText);
+        thermostatText = Homey.__(thermostatText);
         activeText = Homey.__(activeText);
         noPowText = Homey.__(noPowText);
         deltaText = Homey.__(deltaText);
@@ -2478,6 +2476,39 @@
           toggleTimeLoaded = true;
           checkLoadingDone();
         });
+        // TODO: Load from Homey
+        /*schedules = [{
+          name: "Weekday - Living Room",
+          deltaTemp: 1,
+          items: [{
+            start: 0,
+            operation: this.DEVICE_OP.CONTROLLED_ON,
+            tempOp: this.TEMP_OP.PRICE,
+            temp: [5, 12, 13, 15, 17, 18, 27, 28, 29, 30, 31, 40],
+            ACMode: 0
+          },
+          {
+            start: 6*60,
+            operation: this.DEVICE_OP.CONTROLLED_ON,
+            tempOp: this.TEMP_OP.PRICE,
+            temp: [5, 17, 18, 20, 22, 23, 25, 26, 27, 28, 29, 40],
+            ACMode: 0
+          },
+          {
+            start: 15*60,
+            operation: this.DEVICE_OP.CONTROLLED_ON,
+            tempOp: this.TEMP_OP.PRICE,
+            temp: [5, 21, 22, 24, 26, 27, 27, 28, 29, 30, 31, 40],
+            ACMode: 0
+          },
+          {
+            start: 22*60,
+            operation: this.DEVICE_OP.CONTROLLED_ON,
+            tempOp: this.TEMP_OP.PRICE,
+            temp: [5, 12, 13, 15, 17, 18, 27, 28, 29, 30, 31, 40],
+            ACMode: 0
+          }]
+        }];*/
         // Refresh log data
         initializeLogPage(document, Homey)
         .catch(err => {
@@ -2918,8 +2949,47 @@
         // Refresh schedule page
         if (tabPage == 'schedulePage') {
           let inner = document.getElementById(`${tabPage}Inner`).contentWindow;
-          inner.selectSchedule(0);
-          inner.refreshSchedules();
+          try {
+            console.log(`Sending data to iFrames`);
+            // Sending translations
+            const translations = JSON.stringify({
+              id: 'translations',
+              thermostat: thermostatText,
+              settings: {
+                schedule: timeScheduleText,
+                ACMode: ACModeText
+              }
+            });
+            inner.postMessage(translations, '*');
+            // TODO: Fill buffer with real data
+            const buffer = JSON.stringify({
+              id: 'Initialize',
+              data: {
+                schedules: [{
+                  name: "Living Room - Weekdays",
+                  deltaTemp: 1,
+                  items: [{
+                    start: 0,
+                    operation: DEVICE_OP.CONTROLLED_ON,
+                    tempOp: TEMP_OP.PRICE,
+                    temp: [5, 12, 13, 15, 17, 18, 27, 28, 29, 30, 31, 40],
+                    ACMode: 0
+                  },
+                  {
+                    start: 15*60,
+                    operation: DEVICE_OP.CONTROLLED_ON,
+                    tempOp: TEMP_OP.PRICE,
+                    temp: [5, 21, 22, 24, 26, 27, 27, 28, 29, 30, 31, 40],
+                    ACMode: 0
+                  }]
+                }]
+              }
+            });
+            inner.postMessage(buffer, '*');
+          } catch (err) {
+            console.log(`Could not access iFrame... ${err}`);
+            // 
+          }
         }
 
 
@@ -2946,7 +3016,7 @@
         if (evt) currentTarget.className += " active";
 
         if (tabPage == 'logPage') changeToLogPage(debugMode);
-        if (tabPage == 'schedulePage') resizeIframe(tabPage);
+        if (tabPage == 'schedulePage') document.getElementById(`${tabPage}Inner`).contentWindow.postMessage(JSON.stringify({id:'resize'}), '*');
 
         if (tabPage == 'backupPage') {
           // Make the log text area fill the page
@@ -2961,6 +3031,28 @@
 
         if (evt) evt.stopPropagation();
       };
+
+      // Handling of iFrame function calls
+      window.addEventListener("message", (event) => {
+        if (event.origin === 'https://tools.developer.homey.app') {
+          console.log('Ignoring from homey http interface');
+          return;
+        }
+        if ((event.origin !== window.location.origin) &&
+          (event.origin !== 'null')) {
+          console.log(`Message from unknown origin! (${event.origin})`);
+          return;
+        }
+        console.log(`iFrame: ${event.data} from ${event.origin}`);
+        const message = JSON.parse(event.data);
+        if (message.id === 'displaySaveHint') {
+          displaySaveHint();
+        } else if (message.id === 'resize') {
+          console.log(`Got resize message ${message.w}, ${message.h}`);
+          resizeIframe('schedulePage', message.w, message.h);
+        }
+      });
+
     </script>
   </body>
 </html>

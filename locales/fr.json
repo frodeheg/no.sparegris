@@ -25,6 +25,8 @@
       "basetemp": "Basistemp",
       "schedule": "Calendrier actuel",
       "schedules": "Calendriers",
+      "new": "Nouveau",
+      "remove": "Retirer",
       "operations": {
         "alwaysOn": "Toujours activé",
         "alwaysOff": "Toujours désactivé",
@@ -40,17 +42,17 @@
         "ignore": "Les unités concernées ne s'allumeront ni ne s'éteindront. S'il est allumé, la température sera contrôlée, s'il est éteint, rien ne se passera."
       },
       "hint": {
-        "onOffOperation": "Les opérations marche/arrêt sont les suivantes :",
-        "tempOp": ["Lorsque le contrôle de la température est activé, les températures sont préférées pour contrôler le tarif de l'électricité plutôt que marche/arrêt. Si le contrôle de la température est désactivé, seules les opérations marche/arrêt seront utilisées pour contrôler le tarif de l'électricité.<!-- ",
+        "onOffOperation": "<p>Les opérations marche/arrêt sont les suivantes:</p>",
+        "tempOp": ["<p>Lorsque le contrôle de la température est activé, les températures sont préférées pour contrôler le tarif de l'électricité plutôt que marche/arrêt. Si le contrôle de la température est désactivé, seules les opérations marche/arrêt seront utilisées pour contrôler le tarif de l'électricité.</p><!-- ",
             "--><p>Les températures fixes sont bonnes lorsque vous avez des prix d'électricité fixes tandis que les températures contrôlées par les prix vous permettent de définir une plage de températures en fonction des prix.</p>"],
-        "ACMode": ["Ceci ne s'applique qu'aux appareils AC. Si l'appareil contrôlé est un appareil AC, le mode changera comme défini ici (tant que l'appareil prend en charge le mode disponible).<!--",
+        "ACMode": ["<p>Ceci ne s'applique qu'aux appareils AC. Si l'appareil contrôlé est un appareil AC, le mode changera comme défini ici (tant que l'appareil prend en charge le mode disponible).</p><!--",
             "--><p><b>Chauffage</b> : utilise la plage de température définie pour le chauffage. Lorsque la puissance est insuffisante, la température minimale est définie.</p><!--",
             "--><p><b>Refroidissement</b> : utilisera la plage de température définie pour le refroidissement. Lorsque la puissance est insuffisante, la température maximale est définie.</p><!--",
             "--><p><b>Auto</b> : définit une seule température. Utilisera Marche/Arrêt pour respecter le tarif électrique</p><!--",
             "--><p><b>Ventilation / Déshumidification</b> : Aucune température. Utilisera Marche/Arrêt pour respecter le tarif électrique</p><!--",
-            "--><p><b>Piggy</b> : cela basculera entre le chauffage et le refroidissement en fonction de la température réelle. Les déclencheurs de température pour le mode de commutation sont ceux définis pour les 'prix normaux'.</p>" ,
+            "--><p><b>Piggy</b> : cela basculera entre le chauffage et le refroidissement en fonction de la température réelle. Les déclencheurs de température pour le mode de commutation sont ceux définis pour les 'prix normaux'.</p><!--" ,
             "--><p><b>Inchangé</b> : ce mode ne changera pas du tout votre mode AC. Il détectera le mode actuel et agira en conséquence.</p>"],
-        "myThermo": ["La roue des températures vous permet de régler jusqu'à 12 températures différentes. Seules celles applicables aux réglages que vous avez choisis seront visibles.<!--",
+        "myThermo": ["<p>La roue des températures vous permet de régler jusqu'à 12 températures différentes. Seules celles applicables aux réglages que vous avez choisis seront visibles.</p><!--",
             "--><p>'Température d'arrêt' est la température utilisée lors de la tentative de maintien du tarif de l'électricité. Il y a une température d'arrêt lorsque le chauffage est activé et une autre lorsque le refroidissement est activé.</p><!--",
             "--><p>'Plage de température de chauffage' Il y a jusqu'à 5 températures qui peuvent être réglées pour le chauffage. La plus basse est utilisée lorsque les prix sont élevés tandis que la plus élevée est utilisée lorsque les prix sont bas.</p>< !--",
             "--><p>'Plage de température de refroidissement' Il y a jusqu'à 5 températures qui peuvent être réglées pour le refroidissement. La plus basse est utilisée lorsque les prix sont bas tandis que la plus élevée est utilisée lorsque les prix sont élevés.</p>" ]
@@ -513,5 +515,19 @@
     "month": "Mois",
     "year": "Année",
     "predicted": "Prévisions"
+  },
+  "thermostat": {
+    "HeatOff": "Chauffage éteint",
+    "HeatExtreme": "Chauffage extrêmement coûteux",
+    "HeatExpensive": "Chauffage coûteux",
+    "HeatNormal": "Chauffage normal",
+    "HeatCheap": "Chauffage pas cher",
+    "HeatDirtCheap": "Chauffage très bon marché",
+    "CoolDirtCheap": "Refroidissement très bon marché",
+    "CoolCheap": "Refroidissement pas cher",
+    "CoolNormal": "Refroidissement normal",
+    "CoolExpensive": "Refroidissement coûteux",
+    "CoolExtreme": "Refroidissement très cher",
+    "CoolOff": "Refroidissement désactivé"
   }
 }

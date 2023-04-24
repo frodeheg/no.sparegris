@@ -1,5 +1,5 @@
 {
-  "id": "no.sparegris",
+  "id": "no.sparegris2",
   "permissions": [
     "homey:manager:api",
     "homey:app:no.almli.utilitycost"
@@ -15,7 +15,7 @@
   ],
   "name": {
     "en": "Piggy Bank",
-    "no": "Sparegris",
+    "no": "Sparegris 2",
     "nl": "Spaarpot",
     "fr": "Tirelire"
   },

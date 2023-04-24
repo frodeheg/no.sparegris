@@ -2,6 +2,11 @@
 <html>
   <head>
     <meta charset="UTF-8" />
+    <script type="text/javascript">
+      let module = {}; // Just to get around that some of the included files are used both by node.js and in the browser
+    </script>
+    <script type="text/javascript" src="../constants.js"></script>
+    <script type="text/javascript" src="../tools.js"></script>
     <link href="../style.css" rel="stylesheet" type="text/css">
     <link href="../trashcan.css" rel="stylesheet" type="text/css">
     <style>
@@ -114,22 +119,100 @@
 .scheduleSpacer:hover {
   cursor: ns-resize;
 }
+
+.helpBg {
+  font-size: 0.8em;
+  color: gray;
+  visibility:visible;
+  display:none;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0%;
+  left: 0%;
+  right: 0%;
+  bottom: 0%;
+  background-color: rgba(0,0,0,0.7);
+  z-index: 2;
+}
+
+.helpText{
+  position: absolute;
+  top: 10%;
+  left: 10%;
+  font-size: 20px;
+  color: white;
+  transform: translate(-5%,-10%);
+  -ms-transform: translate(-5%,-10%);
+  display: none;
+}
+
+.helpText p,
+.helpText div {
+  font-size: 0.6em;
+  color: white;
+}
     </style>
   </head>
   <body>
+    <!-- Translation strings -->
+    <div style="display:none" data-i18n="thermostat.HeatOff" id="HeatOffText"></div>
+    <div style="display:none" data-i18n="thermostat.HeatExtreme" id="HeatExtremeText"></div>
+    <div style="display:none" data-i18n="thermostat.HeatExpensive" id="HeatExpensiveText"></div>
+    <div style="display:none" data-i18n="thermostat.HeatNormal" id="HeatNormalText"></div>
+    <div style="display:none" data-i18n="thermostat.HeatCheap" id="HeatCheapText"></div>
+    <div style="display:none" data-i18n="thermostat.HeatDirtCheap" id="HeatDirtCheapText"></div>
+    <div style="display:none" data-i18n="thermostat.CoolDirtCheap" id="CoolDirtCheapText"></div>
+    <div style="display:none" data-i18n="thermostat.CoolCheap" id="CoolCheapText"></div>
+    <div style="display:none" data-i18n="thermostat.CoolNormal" id="CoolNormalText"></div>
+    <div style="display:none" data-i18n="thermostat.CoolExpensive" id="CoolExpensiveText"></div>
+    <div style="display:none" data-i18n="thermostat.CoolExtreme" id="CoolExtremeText"></div>
+    <div style="display:none" data-i18n="thermostat.CoolOff" id="CoolOffText"></div>
+
+    <!-- Help dialog -->
+    <div id="helpPage" class="helpBg" onclick="helpOff()">
+      <div id="onOffOperationHint" class="helpText">
+        <p data-i18n="settings.schedule.hint.onOffOperation" class="helpText">hint.onOffOperation</p>
+        <p><b data-i18n="settings.schedule.operations.alwaysOff"></b>: <i data-i18n="settings.schedule.opHelp.alwaysOff"></i></p>
+        <p><b data-i18n="settings.schedule.operations.alwaysOn"></b>: <i data-i18n="settings.schedule.opHelp.alwaysOn"></i></p>
+        <p><b data-i18n="settings.schedule.operations.controlledOn"></b>: <i data-i18n="settings.schedule.opHelp.controlledOn"></i></p>
+        <p><b data-i18n="settings.schedule.operations.controlledOff"></b>: <i data-i18n="settings.schedule.opHelp.controlledOff"></i></p>
+        <p><b data-i18n="settings.schedule.operations.ignore"></b>: <i data-i18n="settings.schedule.opHelp.ignore"></i></p>
+      </div>
+      <p id="tempOpHint" class="helpText" data-i18n="settings.schedule.hint.tempOp">hint.tempOp</p>
+      <p id="ACModeHint" class="helpText" data-i18n="settings.schedule.hint.ACMode">hint.ACMode</p>
+      <p id="myThermoHint" class="helpText" data-i18n="settings.schedule.hint.myThermo">hint.myThermo</p>
+      <div id="previewHint" class="helpText">
+        <h1>NOTE!</h1>
+        <p>This is a preview / testing ground of upcoming functionality. The Layout may differ in the final version. Absolutely nothing will be affected if you play around here.</p>
+        <p>The intent is that you can assign a schedule per device under each mode instead of an operation.</p>
+        <p>Price behavior is likely to be part of the schedule.</p>
+        <p>If you have any feedback before this is finalized please put it in the forum.</p>
+      </div>
+    </div>
+    <script>
+      let prevOn;
+      function helpOn(elem) {
+        document.getElementById("helpPage").style.display = 'block';
+        console.log(`Help for ${elem}`)
+        prevOn = document.getElementById(elem);
+        prevOn.style.display = 'block';
+      }
+      function helpOff() {
+        prevOn.style.display = 'none';
+        document.getElementById("helpPage").style.display = 'none';
+      }
+    </script>
+
     <h3>Time Schedule Preview</h3>
-    <p>This is a preview / testing ground of upcoming functionality. The Layout may differ in the final version. Absolutely nothing will be affected if you play around here.</p>
-    <p>The intent is that you can assign a schedule per device under each mode instead of an operation.</p>
-    <p>Price behavior is likely to be part of the schedule.</p>
-    <p>If you have any feedback before this is finalized please put it in the forum.</p>
     <fieldset>
       <legend data-i18n="settings.schedule.schedules">Schedules</legend>
       <select id="allSchedules" onchange="selectSchedule(this.value);">
       </select><br>
       <label for="timerOpName" data-i18n="settings.schedule.name">Name</label>:
-      <input id="timerOpName" type="text" onchange="schedules[scheduleSelected].name = this.value || 'Noname';refreshSchedules();displaySaveHint()"><br>
-      <input type="button" value="New" onclick="addSchedule();">
-      <input type="button" value="Remove" onclick="removeSchedule();"><br>
+      <input id="timerOpName" type="text" onchange="parent.schedules[scheduleSelected].name = this.value || 'Noname';refreshSchedules();displaySaveHint()"><br>
+      <input type="button" value="New" data-i18n="settings.schedule.new" onclick="addSchedule();">
+      <input type="button" value="Remove" data-i18n="settings.schedule.remove" onclick="removeSchedule();"><br>
     </fieldset>
     <table class="scheduleLegend">
       <tr>
@@ -165,36 +248,38 @@
           <fieldset id='scTime'>
             <legend data-i18n="settings.schedule.schedule">Timeslot</legend>
             <label for="timerOpOnOff" data-i18n="settings.schedule.onoff">OnOff operation</label>:
-            <div class="hintButton" onclick="parent.toggle(this,'onOffOperationHint');return false;">i</div><br>
-            <div class="imgButtonText" id="timerOpOnOff" onclick="changeScheduleOp(this);">N/A</div><br>
-            <p id="onOffOperationHint" class="hint" data-i18n="settings.schedule.onOffOperationHint">schedule.onOffOperationHint</p>
+            <div class="hintButton" onclick="helpOn('onOffOperationHint')">i</div><br>
+            <select id="timerOpOnOff" onchange="changeScheduleOp(this.value);displaySaveHint();">
+              <option value="0" data-i18n="settings.schedule.operations.alwaysOff">UNCONDITIONAL_OFF</option>
+              <option value="1" data-i18n="settings.schedule.operations.alwaysOn">UNCONDITIONAL_ON</option>
+              <option value="3" data-i18n="settings.schedule.operations.controlledOn">CONTROLLED_ON</option>
+              <option value="2" data-i18n="settings.schedule.operations.controlledOff">CONTROLLED_OFF</option>
+              <option value="4" data-i18n="settings.schedule.operations.ignore">IGNORE</option>
+            </select><br>
             <label for="timerOpTemp" data-i18n="settings.schedule.temp">Temperature</label>:
-            <div class="hintButton" onclick="parent.toggle(this,'tempOpHint');return false;">i</div><br>
+            <div class="hintButton" onclick="helpOn('tempOpHint')">i</div><br>
             <select id="timerOpTemp" onchange="changeTempOp(this.value);displaySaveHint();">
                 <option value="0" data-i18n="settings.schedule.notemp">No temp control</option>
                 <option value="1" data-i18n="settings.schedule.statictemp">Static temperature</option>
                 <option value="2" data-i18n="settings.schedule.pricetemp">Price controlled</option>
             </select><br>
-            <p id="tempOpHint" class="hint" data-i18n="settings.schedule.tempOpHint">schedule.tempOpHint</p>
             <label for="timerACMode" data-i18n="settings.ACMode.header">AC Mode</label>:
-            <div class="hintButton" onclick="parent.toggle(this,'ACModeHint');return false;">i</div><br>
+            <div class="hintButton" onclick="helpOn('ACModeHint')">i</div><br>
             <select id="timerACMode" onchange="changeACMode(this.value);displaySaveHint();">
               <option value="6" data-i18n="settings.ACMode.fan">Piggy</option>
               <option value="0" data-i18n="settings.ACMode.fromAC">Unchanged</option>
               <option value="1" data-i18n="settings.ACMode.auto">Auto</option>
-              <option value="2" data-i18n="settings.ACMode.heat">Heating</option>
-              <option value="3" data-i18n="settings.ACMode.cool">Cooling</option>
+              <option value="2" data-i18n="settings.ACMode.heat" id="heatText">Heating</option>
+              <option value="3" data-i18n="settings.ACMode.cool" id="coolText">Cooling</option>
               <option value="4" data-i18n="settings.ACMode.dry">Dry</option>
               <option value="5" data-i18n="settings.ACMode.fan">Fan</option>
             </select><br>
-            <p id="ACModeHint" class="hint" data-i18n="settings.schedule.ACModeHint">schedule.ACModeHint</p>
             <div id="thermoTab">
               <canvas id="myThermostat" width="180" height="180" style="border:0px solid #d3d3d3;" onpointermove="draggingThermo(this, event);" onpointerdown="startDragThermo(this, event);" onpointerup="stopDragThermo(this, event);" onpointerleave="stopDragThermo(this, event);">
                 Your browser does not support the HTML5 canvas tag.
               </canvas>
-              <div class="hintButton" style="position: relative; top: -150px; left: -30px;" onclick="parent.toggle(this,'myThermoHint');return false;">i</div>
+              <div class="hintButton" style="position: relative; top: -150px; left: -30px;" onclick="helpOn('myThermoHint')">i</div>
               <p id="thermoGuide"></p>
-              <p id="myThermoHint" class="hint" data-i18n="settings.schedule.myThermoHint">schedule.myThermoHint</p>
             </div>
           </fieldset>
           <div hidden>
@@ -224,21 +309,34 @@
     </table>
 
     <script type="text/javascript">
-      // TODO: REMOVE THE PARENT VARIABLE
-      const parent = {
-        DEVICE_OP: {UNCONDITIONAL_OFF: 0, UNCONDITIONAL_ON: 1, CONTROLLED_OFF: 2, CONTROLLED_ON: 3, IGNORE: 4},
-        TEMP_OP: {NONE: 0, STATIC: 1, PRICE: 2},
-        ACMODE: {UNCHANGED: 0, AUTO: 1, HEAT: 2, COOL: 3, DRY: 4, FAN: 5, PIGGY: 6},
-        displaySaveHint: (param => {console.log('TODO REMOVEME');}),
-        toggle: (source, id, type = 'block') => {var e = document.getElementById(id);var visible = (e.style.display != "") && (e.style.display != "none");if (visible) { e.style.display = 'none'; if (source) source.style.cursor = "zoom-in";} else { e.style.display = type; if (source) source.style.cursor = "zoom-out"; } return false; },
-        KEEP: -1,
-        turnOffText: 'Always Off',
-        turnOnText: 'Always On',
-        preferredOnText: 'Preferred On', // Nonexisting
-        emergencyOffText: 'Controlled Off',
-        ignoreText: 'Ignore',
-      }
-      // --- End of TODO ---
+      let container = undefined;
+      window.addEventListener("message", (event) => {
+        if ((event.origin !== window.location.origin) &&
+          (event.origin !== 'null')) {
+          console.log(`Didn't work! (origin: ${event.origin})`);
+          return;
+        }
+        const decoded = JSON.parse(event.data);
+        if (decoded.id === 'Initialize') {
+          console.log(`Initializing time schedule`);
+          container = event.source;
+          parent = decoded.data;
+          selectSchedule(0);
+          refreshSchedules();
+          refreshThermostat();
+          helpOn('previewHint');
+        } else if (decoded.id === 'translations') {
+          console.log(`Translating time schedule`);
+          updateTranslations(decoded);
+        } else if (decoded.id === 'resize') {
+          const data = {
+            id: 'resize',
+            w: document.documentElement.scrollWidth,
+            h: document.documentElement.scrollHeight
+          }
+          event.source.postMessage(JSON.stringify(data), '*');
+        }
+      });
       const startTemp = 5;
       const endTemp = 45;
       let temps = [5, 15, 20, 21, 22, 23, 24, 25, 26, 27, 30, 45];
@@ -258,18 +356,18 @@
       COOL_OFF:       11,
     }
     const tempName = {
-      0: 'thermostat.HEAT_OFF',
-      1: 'thermostat.HEAT_EXPENSIVE',
-      2: 'thermostat.HEAT_HIGH',
-      3: 'thermostat.HEAT_NORMAL',
-      4: 'thermostat.HEAT_CHEAP',
-      5: 'thermostat.HEAT_DIRTCHEAP',
-      6: 'thermostat.COOL_DIRTCHEAP',
-      7: 'thermostat.COOL_CHEAP',
-      8: 'thermostat.COOL_NORMAL',
-      9: 'thermostat.COOL_HIGH',
-      10: 'thermostat.COOL_EXPENSIVE',
-      11: 'thermostat.COOL_OFF',
+      0: 'HeatOff',
+      1: 'HeatExtreme',
+      2: 'HeatExpensive',
+      3: 'HeatNormal',
+      4: 'HeatCheap',
+      5: 'HeatDirtCheap',
+      6: 'CoolDirtCheap',
+      7: 'CoolCheap',
+      8: 'CoolNormal',
+      9: 'CoolExpensive',
+      10: 'CoolExtreme',
+      11: 'CoolOff',
     }
     const TEMPOP = {
       NONE: 0,
@@ -282,38 +380,6 @@
     let scheduleMin = 1;
     let scheduleMax = 8;
     let scheduleSelected = 0;
-    let schedules = [{
-        name: "Weekday - Living Room",
-        deltaTemp: 1,
-        items: [{
-          start: 0,
-          operation: parent.DEVICE_OP.CONTROLLED_ON,
-          tempOp: parent.TEMP_OP.PRICE,
-          temp: [5, 12, 13, 15, 17, 18, 27, 28, 29, 30, 31, 40],
-          ACMode: 0
-        },
-        {
-          start: 6*60,
-          operation: parent.DEVICE_OP.CONTROLLED_ON,
-          tempOp: parent.TEMP_OP.PRICE,
-          temp: [5, 17, 18, 20, 22, 23, 25, 26, 27, 28, 29, 40],
-          ACMode: 0
-        },
-        {
-          start: 15*60,
-          operation: parent.DEVICE_OP.CONTROLLED_ON,
-          tempOp: parent.TEMP_OP.PRICE,
-          temp: [5, 21, 22, 24, 26, 27, 27, 28, 29, 30, 31, 40],
-          ACMode: 0
-        },
-        {
-          start: 22*60,
-          operation: parent.DEVICE_OP.CONTROLLED_ON,
-          tempOp: parent.TEMP_OP.PRICE,
-          temp: [5, 12, 13, 15, 17, 18, 27, 28, 29, 30, 31, 40],
-          ACMode: 0
-        }]
-    }];
     let timerSelected = undefined;
     var dragging = false;
     let aboveIdx;
@@ -323,10 +389,10 @@
     let belowItem;
 
     function changeTempOp(newTempOp) {
-      if (!(scheduleSelected in schedules) || (timerSelected == undefined)) {
+      if (!(scheduleSelected in parent.schedules) || (timerSelected == undefined)) {
         return;
       }
-      const curSchedule = schedules[scheduleSelected];
+      const curSchedule = parent.schedules[scheduleSelected];
       const items = curSchedule.items;
       items[timerSelected].tempOp = +newTempOp;
       // Refresh
@@ -337,17 +403,17 @@
 
     function changeACMode(newMode) {
       if (timerSelected === undefined) return;
-      schedules[scheduleSelected].items[timerSelected].ACMode = +newMode;
-      if (+newMode === parent.ACMODE.DRY || +newMode === parent.ACMODE.FAN) {
+      parent.schedules[scheduleSelected].items[timerSelected].ACMode = +newMode;
+      if (+newMode === ACMODE.DRY || +newMode === ACMODE.FAN) {
         document.getElementById('timerOpTemp').value = TEMPOP.NONE;
-        //newMode === parent.ACMODE.UNCHANGED;
+        //newMode === ACMODE.UNCHANGED;
       }
-      if (+newMode === parent.ACMODE.AUTO) {
+      if (+newMode === ACMODE.AUTO) {
         document.getElementById('timerOpTemp').value = TEMPOP.STATIC;
-        //newMode === parent.ACMODE.UNCHANGED;
+        //newMode === ACMODE.UNCHANGED;
       }
-      showHeat = ((+newMode === parent.ACMODE.PIGGY) || (+newMode === parent.ACMODE.HEAT) || (+newMode === parent.ACMODE.UNCHANGED)  || (+newMode === parent.ACMODE.AUTO))
-      showCool = ((+newMode === parent.ACMODE.PIGGY) || (+newMode === parent.ACMODE.COOL) || (+newMode === parent.ACMODE.UNCHANGED))
+      showHeat = ((+newMode === ACMODE.PIGGY) || (+newMode === ACMODE.HEAT) || (+newMode === ACMODE.UNCHANGED)  || (+newMode === ACMODE.AUTO))
+      showCool = ((+newMode === ACMODE.PIGGY) || (+newMode === ACMODE.COOL) || (+newMode === ACMODE.UNCHANGED))
       document.getElementById('coolBase').style.display = showCool ? 'block' : 'none';
       refreshTempOp();
       refreshTimeTable();
@@ -355,7 +421,7 @@
     }
 
     function changeBaseTemp(newTemp) {
-      schedules[scheduleSelected].items[timerSelected].temp = +newTemp;
+      parent.schedules[scheduleSelected].items[timerSelected].temp = +newTemp;
       refreshTimeTable();
     }
 
@@ -365,18 +431,18 @@
       const tempOp = +document.getElementById('timerOpTemp').value;
       const timerACMode = +document.getElementById('timerACMode').value;
       const thermoTab = document.getElementById('thermoTab');
-      if (tempOp === parent.TEMP_OP.NONE
-        || timerACMode === parent.ACMODE.DRY
-        || timerACMode === parent.ACMODE.FAN) {
+      if (tempOp === TEMP_OP.NONE
+        || timerACMode === ACMODE.DRY
+        || timerACMode === ACMODE.FAN) {
         tempElement.style.display = "none";
         ppElements.style.display = "none";
         thermoTab.style.display = "none";
-      } else if (tempOp === parent.TEMP_OP.STATIC
-        || timerACMode === parent.ACMODE.AUTO) {
+      } else if (tempOp === TEMP_OP.STATIC
+        || timerACMode === ACMODE.AUTO) {
         tempElement.style.display = "block";
         ppElements.style.display = "none";
         thermoTab.style.display = "block";
-      } else if (tempOp === parent.TEMP_OP.PRICE) {
+      } else if (tempOp === TEMP_OP.PRICE) {
         tempElement.style.display = "block";
         ppElements.style.display = "block";
         thermoTab.style.display = "block";
@@ -384,16 +450,16 @@
       // Change AC options
       document.querySelectorAll("#timerACMode option").forEach(opt => {
         if (((tempOp === TEMPOP.NONE)
-          && ((+(opt.value) !== parent.ACMODE.FAN)
-            && (+(opt.value) !== parent.ACMODE.DRY)
-            && (+(opt.value) !== parent.ACMODE.UNCHANGED)))
+          && ((+(opt.value) !== ACMODE.FAN)
+            && (+(opt.value) !== ACMODE.DRY)
+            && (+(opt.value) !== ACMODE.UNCHANGED)))
           || ((tempOp === TEMPOP.PRICE)
-            && (+opt.value === parent.ACMODE.AUTO
-              || +opt.value === parent.ACMODE.DRY
-              || +opt.value === parent.ACMODE.FAN))
+            && (+opt.value === ACMODE.AUTO
+              || +opt.value === ACMODE.DRY
+              || +opt.value === ACMODE.FAN))
           || ((tempOp === TEMPOP.STATIC)
-            && (+opt.value === parent.ACMODE.DRY
-             || +opt.value === parent.ACMODE.FAN))) {
+            && (+opt.value === ACMODE.DRY
+             || +opt.value === ACMODE.FAN))) {
           opt.disabled = true;
         } else {
           opt.disabled = false;
@@ -409,9 +475,9 @@
       const ppCheapElement = document.getElementById('tempCheap');
       const ppExpensiveElement = document.getElementById('tempExpensive');
       const ppExtremeElement = document.getElementById('tempExtreme');
-      if (value in schedules) {
+      if (value in parent.schedules) {
         nameElement.disabled = false;
-        nameElement.value = schedules[value].name;
+        nameElement.value = parent.schedules[value].name;
       } else {
         nameElement.disabled = true;
         nameElement.value = '';
@@ -426,25 +492,25 @@
         deltaTemp: 1,
         items: [{
           start: 0,
-          operation: parent.DEVICE_OP.CONTROLLED_ON,
-          tempOp: parent.TEMP_OP.PRICE,
+          operation: DEVICE_OP.CONTROLLED_ON,
+          tempOp: TEMP_OP.PRICE,
           temp: [5, 20, 21, 23, 25, 26, 27, 28, 29, 30, 31, 45],
           ACMode: 0
         }]
       };
-      schedules.push(newSchedule);
-      selectSchedule(schedules.length - 1);
+      parent.schedules.push(newSchedule);
+      selectSchedule(parent.schedules.length - 1);
       refreshSchedules();
     }
 
     function removeSchedule() {
       if ((scheduleSelected == '')
-        || (+scheduleSelected > (schedules.length-1))
-        || (schedules.length === 1)) {
+        || (+scheduleSelected > (parent.schedules.length-1))
+        || (parent.schedules.length === 1)) {
         return;
       }
       if (timerSelected !== undefined) selectTimer(timerSelected); // Deselect timer if selected
-      schedules.splice(scheduleSelected,1);
+      parent.schedules.splice(scheduleSelected,1);
       selectSchedule('');
       refreshSchedules();
       document.getElementById('allSchedules').value='';
@@ -453,16 +519,16 @@
     function refreshSchedules(change) {
       let allSchedulesElement = document.getElementById('allSchedules');
       let newList = '';
-      for (let i = 0; i < schedules.length; i++) {
+      for (let i = 0; i < parent.schedules.length; i++) {
         const selectText = (i === scheduleSelected) ? ' selected' : '';
-        newList += `<option value="${i}"${selectText}>${schedules[i].name}</option>"`;
+        newList += `<option value="${i}"${selectText}>${parent.schedules[i].name}</option>"`;
       }
       allSchedulesElement.innerHTML = newList;
       refreshTimeTable();
     }
 
     function timerHeight(item) {
-      const items = schedules[scheduleSelected].items;
+      const items = parent.schedules[scheduleSelected].items;
       const abovePos = items[item].start;
       const belowPos = ((item + 1) >= items.length) ? (24 * 60) : items[item + 1].start;
       const height = (belowPos - abovePos) * pixelsPerMinute;
@@ -470,15 +536,17 @@
     }
 
     function addTimer() {
-      if (!(scheduleSelected in schedules)) {
+      if (!(scheduleSelected in parent.schedules)) {
         return;
       }
-      const curSchedule = schedules[scheduleSelected];
+      const curSchedule = parent.schedules[scheduleSelected];
       const items = curSchedule.items;
       const numTimers = items.length;
+      console.log(`len: ${numTimers}`);
       if (numTimers < scheduleMax) {
         items[numTimers] = {
           ...items[numTimers-1],
+          temp: [...items[numTimers -1].temp],
           start: (items[numTimers - 1].start + 24 * 60) / 2
         }
         let lastStart = 24 * 60;
@@ -494,11 +562,11 @@
     }
 
     function removeTimer(idx) {
-      if (!(scheduleSelected in schedules)) {
+      if (!(scheduleSelected in parent.schedules)) {
         return;
       }
       if (timerSelected !== undefined) selectTimer(timerSelected); // Deselect timer if selected
-      const items = schedules[scheduleSelected].items;
+      const items = parent.schedules[scheduleSelected].items;
       const numTimers = items.length;
       if (numTimers > scheduleMin) {
         items.splice(idx, 1);
@@ -509,7 +577,7 @@
     }
 
     function getTimeBlockText(idx) {
-      const curSchedule = schedules[scheduleSelected]
+      const curSchedule = parent.schedules[scheduleSelected]
       const items = curSchedule.items;
       const startTime = items[idx].start;
       const endTime = ((idx + 1) >= items.length) ? (24 * 60) : items[idx+1].start;
@@ -528,23 +596,22 @@
         + '</div>';
       const tempMin = items[idx].temp[tempsID.HEAT_EXPENSIVE];
       const tempMax = items[idx].temp[tempsID.COOL_EXPENSIVE];
-      const tempText = (tempOp == parent.TEMP_OP.NONE) ? ''
-        : (tempOp == parent.TEMP_OP.STATIC) ? `${tempMin}°C<br>`
+      const tempText = (tempOp == TEMP_OP.NONE) ? ''
+        : (tempOp == TEMP_OP.STATIC) ? `${tempMin}°C<br>`
           : `${tempMin}°C - ${tempMax}°C<br>`;
       const blockText = `${trashCan}${tempText}${hourStart}:${minStart} - ${hourEnd}:${minEnd}`;
       return blockText;
     }
 
-    function changeScheduleOp(origin) {
-      if (scheduleSelected in schedules && timerSelected !== undefined) {
-        const curSchedule = schedules[scheduleSelected];
+    function changeScheduleOp(value) {
+      if (scheduleSelected in parent.schedules && timerSelected !== undefined) {
+        const curSchedule = parent.schedules[scheduleSelected];
         const items = curSchedule.items
         const oldOp = items[timerSelected].operation;
-        const newOp = changeDeviceAction(origin, items[timerSelected].operation);
-        items[timerSelected].operation = newOp;
+        items[timerSelected].operation = value;
         const timerElement = document.getElementById(`si${timerSelected}`);
         timerElement.classList.remove(`schedCol${oldOp}`);
-        timerElement.classList.add(`schedCol${newOp}`);
+        timerElement.classList.add(`schedCol${value}`);
         displaySaveHint();
         refreshThermostat();
       }
@@ -552,8 +619,8 @@
 
     function refreshTimeTable(change) {
       const container = document.getElementById("scheduleContainer");
-      const currentSchedule = schedules[scheduleSelected];
-      const numTimers = (scheduleSelected in schedules) ? currentSchedule.items.length : 0;
+      const currentSchedule = parent.schedules[scheduleSelected];
+      const numTimers = (scheduleSelected in parent.schedules) ? currentSchedule.items.length : 0;
       let newContent = '<div style="position:relative;">';
       newContent += `<div style="height:${pixelsPerMinute*30}px"></div>`;
       let yPos = pixelsPerMinute*30;
@@ -593,8 +660,7 @@
         oldElement.classList.remove('scheduleSelect');
       }
       timeElements.disabled = true;
-      onoffElement.classList.add('imgButtonDisabled');
-      onoffElement.innerHTML = 'N/A';
+      onoffElement.disabled = true;
       ppElements.disabled = true;
       //ppDirtElement.value = '';
       //ppCheapElement.value = '';
@@ -611,8 +677,8 @@
         timerSelected = sourceId;
         sourceElement.classList.add('scheduleSelect');
         timeElements.disabled = false;
-        onoffElement.classList.remove('imgButtonDisabled');
-        const currentSchedule = schedules[scheduleSelected];
+        onoffElement.disabled = false;
+        const currentSchedule = parent.schedules[scheduleSelected];
         newOnOffOp = currentSchedule.items[timerSelected].operation;
         //newTemp = currentSchedule.items[timerSelected].temp;
         ACMode = currentSchedule.items[timerSelected].ACMode;
@@ -624,7 +690,7 @@
         //ppExtremeElement.value = currentSchedule.items[timerSelected].deltas[4];
         tempOpElement.value = currentSchedule.items[timerSelected].tempOp;
       }
-      changeDeviceAction(onoffElement, newOnOffOp, parent.KEEP);
+      onoffElement.value = newOnOffOp;
       refreshTempOp();
       refreshThermostat();
       //tempElement.value = newTemp;
@@ -643,7 +709,7 @@
 
     function moving(e) {
       if (dragging) {
-        const items = schedules[scheduleSelected].items;
+        const items = parent.schedules[scheduleSelected].items;
         let deltaY = e.clientY - prevPosY;
         let deltaMinutes = Math.round(deltaY / (pixelsPerMinute * minuteSnap)) * minuteSnap;
         if (Math.abs(deltaMinutes) >= minuteSnap) {
@@ -671,41 +737,33 @@
       displaySaveHint();
     }
 
-    function changeDeviceAction(button, oldstate, newstate = undefined) {
-      if (oldstate !== undefined) {
-        if (newstate == undefined) {
-          newstate = (oldstate + 1) % 5;
-        } else if (newstate == parent.KEEP) {
-          newstate = oldstate;
-        }
-      }
-      switch (newstate) {
-        case parent.DEVICE_OP.UNCONDITIONAL_OFF:
-          button.innerHTML = parent.turnOffText;
+    function changeDeviceAction(button, newstate) {
+      switch (+newstate) {
+        case DEVICE_OP.UNCONDITIONAL_OFF:
           button.style.backgroundImage = 'radial-gradient(white, lightgray, gray)';
           break;
-        case parent.DEVICE_OP.UNCONDITIONAL_ON:
-          button.innerHTML = parent.turnOnText;
+        case DEVICE_OP.UNCONDITIONAL_ON:
           button.style.backgroundImage = 'radial-gradient(white, rgb(255, 255, 150), orange)';
           break;
-        case parent.DEVICE_OP.CONTROLLED_ON:
-          button.innerHTML = parent.preferredOnText;
+          case DEVICE_OP.CONTROLLED_OFF:
           button.style.backgroundImage = 'radial-gradient(white, rgb(150, 255, 150), green)';
           break;
-        case parent.DEVICE_OP.CONTROLLED_OFF:
-          button.innerHTML = parent.emergencyOffText;
+        case DEVICE_OP.CONTROLLED_ON:
           button.style.backgroundImage = 'radial-gradient(white, rgb(150, 255, 150), green)';
           break;
-        case parent.DEVICE_OP.IGNORE:
-          button.innerHTML = parent.ignoreText;
+        case DEVICE_OP.IGNORE:
           button.style.backgroundImage = 'radial-gradient(white, lightgray, gray)';
           break;
       }
-      return newstate;
     }
 
     function displaySaveHint() {
-        parent.displaySaveHint();
+      if (container) {
+        container.postMessage(JSON.stringify({id: 'displaySaveHint'}), '*');
+        console.log('TODO: Post back schedule for saving');
+      } else {
+        console.log('ERROR: iFrame has not been connected properly.');
+      }
     }
 
     // ===== THERMOSTAT CODE =====
@@ -772,7 +830,7 @@
     }
 
     function setThermoValue(index, newTemp) {
-      schedules[scheduleSelected].items[timerSelected].temp[index] = Math.round(newTemp*2)/2;
+      parent.schedules[scheduleSelected].items[timerSelected].temp[index] = Math.round(newTemp*2)/2;
       temps[index] = newTemp;
 
       refreshTimeTable();
@@ -884,21 +942,21 @@
       const canvas = document.getElementById("myThermostat");
       const ctx = canvas.getContext("2d");
       // OnOff temp?
-      const curSchedule = schedules[scheduleSelected];
+      const curSchedule = parent.schedules[scheduleSelected];
       const items = curSchedule.items;
       const onOffOp = items[timerSelected].operation;
       const tempOp = +document.getElementById('timerOpTemp').value;
       const ACMode = +document.getElementById('timerACMode').value;
       let showTempOnOff =
         (tempOp === TEMPOP.NONE
-        || ACMode === parent.ACMODE.AUTO
-        || ACMode === parent.ACMODE.DRY
-        || ACMode === parent.ACMODE.FAN)
+        || ACMode === ACMODE.AUTO
+        || ACMode === ACMODE.DRY
+        || ACMode === ACMODE.FAN)
         ? false : true;
       let mustUseTemp =
-        onOffOp === parent.DEVICE_OP.IGNORE
-        || onOffOp === parent.DEVICE_OP.UNCONDITIONAL_ON // (None for on/off)
-        //onOffOp === parent.DEVICE_OP.CONTROLLED_ON    => Temp (onoff else)
+        onOffOp === DEVICE_OP.IGNORE
+        || onOffOp === DEVICE_OP.UNCONDITIONAL_ON // (None for on/off)
+        //onOffOp === DEVICE_OP.CONTROLLED_ON    => Temp (onoff else)
 
       console.log(`Showtemp: ${onOffOp}  ${tempOp}  ${ACMode}`);
       // Dimensions
@@ -975,7 +1033,8 @@
         ctx.strokeStyle = "#D00";
         ctx.font = "14px Verdana";
         ctx.fillStyle = "#000";
-        centerText(ctx, "Heating", tCenterX, tCenterY - 30);
+        const heatText = document.getElementById("heatText").innerHTML;
+        centerText(ctx, heatText, tCenterX, tCenterY - 30);
         centerText(ctx, `${text}°C`, tCenterX, tCenterY - 10);
         ctx.fill();
       }
@@ -1012,19 +1071,58 @@
         ctx.strokeStyle = "#00D";
         ctx.font = "14px Verdana";
         ctx.fillStyle = "#000";
-        centerText(ctx, "Cooling", tCenterX, tCenterY + 30);
+        const coolText = document.getElementById("coolText").innerHTML;
+        centerText(ctx, coolText, tCenterX, tCenterY + 30);
         centerText(ctx, `${text}°C`, tCenterX, tCenterY + 10);
         ctx.fill();
       }
       // Show selected temp:
-      const guideText = Number.isFinite(thermoDragIndex) ? `${tempName[thermoDragIndex]}: ${temps[thermoDragIndex]}°C` : '';
+      const guideText = Number.isFinite(thermoDragIndex) ? `${document.getElementById(`${tempName[thermoDragIndex]}Text`).innerHTML}: ${temps[thermoDragIndex]}°C` : '';
       document.getElementById('thermoGuide').innerHTML = guideText;
       } catch (err) {
         console.log(`Err: ${err}`);
       }
     }
-    refreshSchedules();
-    refreshThermostat();
+    // TODO: REMOVE THE PARENT VARIABLE
+    try {
+      if (parent.modeList === undefined) {
+        // For debug only... this will crash the deployment environment
+        console.log(`Debug environment detected for: ${window.location}`);
+        parent = {
+          turnOffText: 'Always Off',
+          turnOnText: 'Always On',
+          preferredOnText: 'Preferred On', // Nonexisting
+          emergencyOffText: 'Controlled Off',
+          ignoreText: 'Ignore',
+          schedules: [{
+            name: "Debug Room",
+            deltaTemp: 1,
+            items: [{
+              start: 0,
+              operation: DEVICE_OP.CONTROLLED_ON,
+              tempOp: this.TEMP_OP.PRICE,
+              temp: [5, 12, 13, 15, 17, 18, 27, 28, 29, 30, 31, 40],
+              ACMode: 0
+            },
+            {
+              start: 15*60,
+              operation: DEVICE_OP.CONTROLLED_ON,
+              tempOp: this.TEMP_OP.PRICE,
+              temp: [5, 21, 22, 24, 26, 27, 27, 28, 29, 30, 31, 40],
+              ACMode: 0
+            }]
+          }]
+        };
+        refreshSchedules();
+        refreshThermostat();
+      } else {
+        // This is ok, as it means we run in a real system
+        console.log(`Used as an iframe: ${window.location}`);
+      }
+    } catch (err) {
+      console.log(`Used as an iframe inside athom environment: ${window.location}`)
+    }
+    // --- End of TODO ---
     </script>
   </body>
 </html>
