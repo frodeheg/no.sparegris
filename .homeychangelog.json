@@ -796,5 +796,8 @@
   },
   "0.20.20": {
     "en": "Added feature: Use Temperature min/max instead of on/off for heating/cooling (must be manually enabled for old users - default for new users)"
+  },
+  "0.20.21": {
+    "en": "Updates to the time schedules."
   }
 }
