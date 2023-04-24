@@ -168,7 +168,7 @@ class PiggyBank extends Homey.App {
     this.log('OnInit');
     this.homey.on('unload', () => this.onUninit());
 
-    /* DEBUG_ACTIVE_BEGIN */
+    /* DEBUG_BEGIN
     // Reset settings to simulate fresh device in case of debug
     if (this.homey.app.manifest.id === 'no.sparegris2') {
       this.log('===== DEBUG MODE =====');
@@ -179,7 +179,7 @@ class PiggyBank extends Homey.App {
       //   this.homey.settings.unset(settings[i]);
       // }
     }
-    /* DEBUG_ACTIVE_END */
+    DEBUG_END */
 
     // Logging
     try {
