@@ -463,13 +463,14 @@ input.toggle[type='checkbox'] { display: none; }
 
 .iframe-holder {
   min-width: 200px;
-  height: 500px;
+  height: 610px;
+  margin: 0px;
   -webkit-overflow-scrolling: touch;
   overflow-y: scroll;
 }
 
 .iframe-holder iframe {
-  height: 100%;
+  height: 600px;
   width: 100%;
 }
 
@@ -483,3 +484,4 @@ input.toggle[type='checkbox'] { display: none; }
     opacity: 0;
   }
 }
+

@@ -1521,7 +1521,8 @@
       }
     </script>
     <div id="schedulePage" class="tabcontent iframe-holder">
-      <iframe id="schedulePageInner" src="subpages/schedule.html" onload="onIframeLoad(this);" style="border:none;" frameborder="0" marginheight="0" marginwidth="0" referrerpolicy="same-origin" scrolling="no" ></iframe>
+      <iframe id="schedulePageInner" src="subpages/schedule.html" onload="onIframeLoad(this);" style="border-style: none;" referrerpolicy="same-origin"></iframe>
+      <!--  frameborder="2" marginheight="2" marginwidth="0px" -->
     </div>
 
     <!-- Price page -->
@@ -3049,7 +3050,7 @@
           displaySaveHint();
         } else if (message.id === 'resize') {
           console.log(`Got resize message ${message.w}, ${message.h}`);
-          resizeIframe('schedulePage', message.w, message.h);
+          //resizeIframe('schedulePage', message.w, message.h);
         }
       });
 
