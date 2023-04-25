@@ -16,7 +16,6 @@
       "myTasks": "The App State"
     },
     "schedule": {
-      "name": "Name",
       "onoff": "OnOff operation",
       "temp": "Temperature",
       "notemp": "No temp control",
@@ -27,6 +26,7 @@
       "schedules": "Schedules",
       "new": "New",
       "remove": "Remove",
+      "noneSelected": "&larr; Please select an interval to edit.",
       "operations": {
         "alwaysOn": "Always On",
         "alwaysOff": "Always Off",
@@ -434,6 +434,7 @@
       "cool": "Cool",
       "dry": "Dry",
       "fan": "Fan",
+      "piggy": "Smart",
       "hint": "AC Mode affects all AC units (but will come per unit in a later update). If ACMode='Unchanged', the app will not set the AC mode. All other selections will set the AC mode. NB: If the AC mode is set to cooling, the delta temperatures for the price point will be inverted so that you can seamlessly switch between heating and cooling without affecting the app's ability to save money."
     }
   },

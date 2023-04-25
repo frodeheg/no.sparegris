@@ -16,7 +16,6 @@
       "myTasks": "Appens Tilstand"
     },
     "schedule": {
-      "name": "Navn",
       "onoff": "Operasjon",
       "temp": "Temperatur",
       "notemp": "Ingen temp kontroll",
@@ -27,6 +26,7 @@
       "schedules": "Timeplaner",
       "new": "Ny",
       "remove": "Slett",
+      "noneSelected": "&larr; Vennligst velg ønsket intervall for redigering.",
       "operations": {
         "alwaysOn": "Alltid på",
         "alwaysOff": "Alltid av",
@@ -54,7 +54,7 @@
             "--><p><b>Uendret</b>: Denne modusen vil ikke endre AC-modusen din i det hele tatt. Den vil oppdage gjeldende modus og handle deretter.</p>"],
         "myThermo": ["<p>Temperaturhjulet lar deg stille inn opptil 12 forskjellige temperaturer. Bare de som gjelder for innstillingene du har valgt vil være synlige.</p><!--",
             "--><p>'Av temperatur' er temperaturen som brukes når man prøver å holde strømtariffen. Det er én  temperatur for av når oppvarming er aktivert og en annen når kjøling er aktivert.</p><!--",
-            "--><p>'Oppvarmingstemperaturområde' Det er opptil 5 temperaturer som kan stilles inn for oppvarming. Den laveste brukes når prisene er høye mens den høyeste brukes når prisene er lave.</p>< !--",
+            "--><p>'Oppvarmingstemperaturområde' Det er opptil 5 temperaturer som kan stilles inn for oppvarming. Den laveste brukes når prisene er høye mens den høyeste brukes når prisene er lave.</p><!--",
             "--><p>'Kjølingstemperaturområde' Det er opptil 5 temperaturer som kan stilles inn for kjøling. Den laveste brukes når prisene er lave mens den høyeste brukes når prisene er høye.</p>" ]
       }
     },
@@ -434,6 +434,7 @@
       "cool": "Kjøling",
       "dry": "Tørking",
       "fan": "Vifte",
+      "piggy": "Smart",
       "hint": "AC Modus påvirker alle AC-enheter (men vil komme per enhet ved en senere oppdatering). Om ACMode='Uendret' vil appen ikke sette AC modus. Alle andre valg vil sette AC-modus. NB: Dersom AC-modus er satt til kjøling så vil delta-temperaturer for prispunkt bli invertert slik at du sømløst kan bytte mellom oppvarming og kjøling uten at det vil påvirke appens evne til å spare penger."
     }
   },

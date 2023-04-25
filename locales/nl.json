@@ -16,7 +16,6 @@
       "myTasks": "De app status"
     },
     "schedule": {
-      "name": "Naam",
       "onoff": "Aan-Uit werking",
       "temp": "Temperatuur",
       "notemp": "Geen temperatuur regeling",
@@ -27,6 +26,7 @@
       "schedules": "Planningen",
       "new": "Nieuw",
       "remove": "Verwijderen",
+      "noneSelected": "&larr; Selecteer een interval om te bewerken.",
       "operations": {
         "alwaysOn": "Altijd aan",
         "alwaysOff": "Altijd uit",
@@ -54,7 +54,7 @@
             "--><p><b>Ongewijzigd</b>: deze modus zal uw AC-modus helemaal niet veranderen. Het zal de huidige modus detecteren en dienovereenkomstig handelen.</p>"],
         "myThermo": ["<p>Met het temperatuurwiel kun je tot 12 verschillende temperaturen instellen. Alleen de temperaturen die van toepassing zijn op de instellingen die je hebt gekozen, zijn zichtbaar.</p><!--",
             "--><p>'Uit-temperatuur' is de temperatuur die wordt gebruikt om het stroomtarief te behouden. Er is één uit-temperatuur wanneer verwarmen is ingeschakeld en een andere wanneer koelen is ingeschakeld.</p><!--",
-            "--><p>'Verwarmings-temperatuurbereik' Er zijn maximaal 5 verschillende temperaturen die kunnen worden ingesteld voor verwarming. De laagste wordt gebruikt als de prijzen hoog zijn en de hoogste wordt gebruikt als de prijzen laag zijn.</p><p> !--",
+            "--><p>'Verwarmings-temperatuurbereik' Er zijn maximaal 5 verschillende temperaturen die kunnen worden ingesteld voor verwarming. De laagste wordt gebruikt als de prijzen hoog zijn en de hoogste wordt gebruikt als de prijzen laag zijn.</p><!--",
             "--><p>'Koel-temperatuurbereik' Er kunnen maximaal 5 verschillende temperaturen worden ingesteld voor airco. De laagste wordt gebruikt als de prijzen laag zijn en de hoogste wordt gebruikt als de prijzen hoog zijn.</p>" ]
       }
     },
@@ -434,6 +434,7 @@
       "cool": "Koelen",
       "dry": "Drogen",
       "fan": "Fan",
+      "piggy": "Slim",
       "hint": "A/C Modus is van invloed op alle A/C units (maar dit wordt - per unit - in een latere update). Als A/C Modus = 'Ongewijzigd', dan zal de app de A/C Modus niet instellen. Alle andere selecties stellen de A/C Modus in. NB: Als de A/C Modus is ingesteld op koelen, worden de deltatemperaturen voor het prijspunt omgekeerd, zodat u naadloos kunt schakelen tussen verwarmen en koelen zonder dat dit invloed heeft op het vermogen van de app om geld te besparen."
     }
   },

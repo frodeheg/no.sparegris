@@ -16,7 +16,6 @@
       "myTasks": "l'État de l'appli"
     },
     "schedule": {
-      "name": "Nom",
       "onoff": "Opérations en cours",
       "temp": "Température",
       "notemp": "Pas de contrôle temporel",
@@ -27,6 +26,7 @@
       "schedules": "Calendriers",
       "new": "Nouveau",
       "remove": "Retirer",
+      "noneSelected": "&larr; Veuillez sélectionner un intervalle à modifier.",
       "operations": {
         "alwaysOn": "Toujours activé",
         "alwaysOff": "Toujours désactivé",
@@ -54,7 +54,7 @@
             "--><p><b>Inchangé</b> : ce mode ne changera pas du tout votre mode AC. Il détectera le mode actuel et agira en conséquence.</p>"],
         "myThermo": ["<p>La roue des températures vous permet de régler jusqu'à 12 températures différentes. Seules celles applicables aux réglages que vous avez choisis seront visibles.</p><!--",
             "--><p>'Température d'arrêt' est la température utilisée lors de la tentative de maintien du tarif de l'électricité. Il y a une température d'arrêt lorsque le chauffage est activé et une autre lorsque le refroidissement est activé.</p><!--",
-            "--><p>'Plage de température de chauffage' Il y a jusqu'à 5 températures qui peuvent être réglées pour le chauffage. La plus basse est utilisée lorsque les prix sont élevés tandis que la plus élevée est utilisée lorsque les prix sont bas.</p>< !--",
+            "--><p>'Plage de température de chauffage' Il y a jusqu'à 5 températures qui peuvent être réglées pour le chauffage. La plus basse est utilisée lorsque les prix sont élevés tandis que la plus élevée est utilisée lorsque les prix sont bas.</p><!--",
             "--><p>'Plage de température de refroidissement' Il y a jusqu'à 5 températures qui peuvent être réglées pour le refroidissement. La plus basse est utilisée lorsque les prix sont bas tandis que la plus élevée est utilisée lorsque les prix sont élevés.</p>" ]
       }
     },
@@ -434,6 +434,7 @@
       "cool": "Refroidissement",
       "dry": "Sécher",
       "fan": "Ventilateur",
+      "piggy": "Intelligent",
       "hint": "Le mode AC affecte toutes les unités AC (mais viendra par unité dans une mise à jour ultérieure). Si ACMode='Unchanged', l'application ne définira pas le mode AC. Toutes les autres sélections définiront le mode AC. NB : Si le mode AC est réglé sur refroidissement, les températures delta pour le prix seront inversées afin que vous puissiez basculer de manière transparente entre le chauffage et le refroidissement sans affecter la capacité de l'application à économiser de l'argent."
     }
   },
