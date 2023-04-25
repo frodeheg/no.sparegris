@@ -799,5 +799,8 @@
   },
   "0.20.21": {
     "en": "Updates to the time schedules."
+  },
+  "0.20.22": {
+    "en": "Big UI improvements in how the thermostat function is going to work."
   }
 }
