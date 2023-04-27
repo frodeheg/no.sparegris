@@ -84,6 +84,9 @@ class FakeHomey {
       if (string in this.translationTable) {
         return this.__(this.translationTable[string]);
       }
+      if (JSON.stringify(string) in this.translationTable) {
+        return this.__(this.translationTable[JSON.stringify(string)]);
+      }
       return `Missing: ${string}`;
     }
     let ptr = this.languageTable;
@@ -100,7 +103,11 @@ class FakeHomey {
       }
     }
     // console.log(`requested ${string} ==> ${ptr}`);
-    this.translationTable[ptr] = string;
+    if (typeof ptr === 'object') {
+      this.translationTable[JSON.stringify(ptr)] = string;
+    } else {
+      this.translationTable[ptr] = string;
+    }
     return ptr;
   }
 

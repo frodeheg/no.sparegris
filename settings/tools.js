@@ -60,32 +60,17 @@ function toggle(source, id, type = 'block') {
 /**
  * Local function only used by updateTranslations
  */
-const translationTable = {}; // Cache
 function __localTranslate(string, languageTable) {
-  let parts;
-  try {
-    parts = string.split('.');
-  } catch (err) {
-    if (string in translationTable) {
-      return this.__(translationTable[string]);
-    }
-    return `Missing: ${string}`;
-  }
+  const parts = string.split('.');
   let ptr = languageTable;
   for (let i = 0; i < parts.length; i++) {
     if (parts[i] in ptr) {
       ptr = ptr[parts[i]];
-    } else if (string in translationTable) {
-      // This is a hack to reverse engineer previously loaded strings that has been overwritten by a translation string
-      // This is only applicable when debugging and changing language
-      return this.__(translationTable[string]);
     } else {
       console.log(`requested ${string} not found`);
       return `Missing: ${string}`;
     }
   }
-  // console.log(`requested ${string} ==> ${ptr}`);
-  translationTable[ptr] = string;
   return ptr;
 }
 

@@ -331,7 +331,7 @@
             </select><br>
             <div id="thermoTab" class="maxWidth">
               <div class="hintButton" style="position: absolute; top: 5px; left: 5px;" onclick="helpOn('myThermoHint')">i</div>
-              <div id="closeThermo" class="closeButton" style="position: absolute; top: 5px; right: 5px; display: none;" onclick="unZoomThermo()">X</div>
+              <div id="closeThermo" class="closeButton" style="position: absolute; top: 5px; right: 5px; min-width: 20px;" onclick="if (thermoIsBig) unZoomThermo(); else zoomThermo()">&#8703;</div>
               <canvas id="myThermostat" class="thermo" width="400" height="400" onpointermove="draggingThermo(this, event);" onpointerdown="startDragThermo(this, event);" onpointerup="stopDragThermo(this, event);" onpointerleave="stopDragThermo(this, event);">
                 Your browser does not support the HTML5 canvas tag.
               </canvas>
@@ -908,7 +908,7 @@
       myThermostat.style.left = "50%";
       myThermostat.style.transform = "translate(-50%, -50%)";
       myThermostat.style.backgroundColor = "rgba(0,0,0,0.7)";
-      document.getElementById("closeThermo").style.display = "block";
+      document.getElementById("closeThermo").innerHTML = "X";
       document.getElementById("thermoGuide").style.color = "white";
     }
 
@@ -922,7 +922,7 @@
       myThermostat.style.marginRight = "";
       myThermostat.style.transform = "";
       myThermostat.style.backgroundColor = "rgba(0,0,0,0.0)";
-      document.getElementById("closeThermo").style.display = "none";
+      document.getElementById("closeThermo").innerHTML = "&#8703;";
       document.getElementById("thermoGuide").style.color = "black";
     }
 
