@@ -31,6 +31,7 @@
         "alwaysOn": "Toujours activé",
         "alwaysOff": "Toujours désactivé",
         "controlledOn": "Préféré activé",
+        "controlledOnCheapest": "X heures les moins chères",
         "controlledOff": "On jusqu'à Off",
         "ignore": "Ignorer"
       },
@@ -38,7 +39,8 @@
         "alwaysOn": "Les unités concernées ne sont jamais éteintes. Le tarif d'alimentation est satisfait en contrôlant les températures. Veuillez ne pas l'utiliser pour contrôler les relais car le tarif d'alimentation ne peut pas être respecté lorsqu'ils ne peuvent pas être éteints.",
         "alwaysOff": "Les unités affectées sont tenues à l'écart quoi qu'il arrive.",
         "controlledOn": "Les unités concernées sont allumées autant que possible. Elles peuvent être éteintes pour conserver le tarif de l'électricité. Si les appareils sont éteints, ils se rallumeront lorsqu'une puissance suffisante sera disponible. Les thermostats changeront de température au lieu de s'allumer Allumé éteint.",
-        "controlledOff": "Similaire à 'Preferred On' sauf que les appareils éteints ne seront pas rallumés. Les thermostats agiront comme 'Preferred On'",
+        "controlledOnCheapest": "Similaire à 'Préféré activé', sauf qu'il n'est activé que pendant les X heures les moins chères.",
+        "controlledOff": "Similaire à 'Préféré activé' sauf que les appareils éteints ne seront pas rallumés. Les thermostats agiront comme 'Preferred On'",
         "ignore": "Les unités concernées ne s'allumeront ni ne s'éteindront. S'il est allumé, la température sera contrôlée, s'il est éteint, rien ne se passera."
       },
       "hint": {

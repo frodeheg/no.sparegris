@@ -31,6 +31,7 @@
         "alwaysOn": "Always On",
         "alwaysOff": "Always Off",
         "controlledOn": "Preferred On",
+        "controlledOnCheapest": "Cheapest X hours",
         "controlledOff": "On until Off",
         "ignore": "Ignore"
       },
@@ -38,6 +39,7 @@
         "alwaysOn": "Affected units are never turned off. The Power tariff is met by controlling temperatures. Please do not use this to control relays as the power tariff cannot be met when they cannot be turned off.",
         "alwaysOff": "Affected units are kept off no matter what.",
         "controlledOn": "Affected units are on as much as possible. They can be turned off to keep the power tariff. If devices are being turned off they will turn on again when sufficient power is available. Thermostat devices will change temperature instead of turning on/off.",
+        "controlledOnCheapest": "Similar to 'Preferred On' except that it is only on in the cheapest X hours.",
         "controlledOff": "Similar to 'Preferred On' except for devices turned off will not be turned on again. Thermostat devices will act as 'Preferred On'",
         "ignore": "Affected units will not turn on or off. If it is on then the temperature will be controlled, if it's off then nothing will happen."
       },

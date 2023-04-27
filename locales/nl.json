@@ -31,6 +31,7 @@
         "alwaysOn": "Altijd aan",
         "alwaysOff": "Altijd uit",
         "controlledOn": "Voorkeur aan",
+        "controlledOnCheapest": "Goedkoopste X uur",
         "controlledOff": "Aan tot Uit",
         "ignore": "Negeren"
       },
@@ -38,6 +39,7 @@
         "alwaysOn": "De apparaten in kwestie worden nooit uitgeschakeld. Aan het stroomtarief wordt voldaan door het regelen van de temperatuur. Gebruik dit niet om relais te regelen, aangezien er niet aan het stroomtarief kan worden voldaan als ze niet kunnen worden uitgeschakeld.",
         "alwaysOff": "De apparaten in kwestie worden hoe dan ook uitgeschakeld.",
         "controlledOn": "De apparaten in kwestie staan voorzover het kan zoveel mogelijk aan. Ze kunnen worden uitgeschakeld om het stroomtarief te behouden. Als apparaten worden uitgeschakeld, worden ze weer ingeschakeld wanneer er voldoende stroom beschikbaar is. Thermostaat-apparaten passen de temperatuur aan, in plaats van aan/uit.",
+        "controlledOnCheapest": "Gelijk aan 'Voorkeur aan' behalve dat het alleen aan staat op de goedkoopste X uur.",
         "controlledOff": "Gelijk aan 'Voorkeur aan' behalve dat uitgeschakelde apparaten niet opnieuw worden ingeschakeld. Thermostaat-apparaten werken als 'Voorkeur aan'",
         "ignore": "De apparaten in kwestie kunnen niet worden in- of uitgeschakeld. Als het apparaat aan is, wordt de temperatuur gecontroleerd, en als het uit is, gebeurt er niets."
       },
