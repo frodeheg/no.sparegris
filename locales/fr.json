@@ -27,6 +27,7 @@
       "new": "Nouveau",
       "remove": "Retirer",
       "noneSelected": "&larr; Veuillez sélectionner un intervalle à modifier.",
+      "maxHours": "Heures de marche",
       "operations": {
         "alwaysOn": "Toujours activé",
         "alwaysOff": "Toujours désactivé",

@@ -27,6 +27,7 @@
       "new": "New",
       "remove": "Remove",
       "noneSelected": "&larr; Please select an interval to edit.",
+      "maxHours": "Hours On",
       "operations": {
         "alwaysOn": "Always On",
         "alwaysOff": "Always Off",

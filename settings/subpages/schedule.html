@@ -119,7 +119,7 @@
 .schedCol2 {
   /* CONTROLLED_OFF */
   border: solid black 1px;
-  background-image: linear-gradient(rgb(150, 255, 150), green);
+  background-image: linear-gradient(green, gray);
 }
 
 .schedCol3 {
@@ -131,7 +131,13 @@
 .schedCol4 {
   /* IGNORE */
   border: solid black 1px;
-  background-image: linear-gradient(gray, lightgray);
+  background-image: repeating-linear-gradient(145deg, orange, orange 15%, gray 15%, gray 25%, orange 25%);
+}
+
+.schedCol5 {
+  /* CONTROLLED_CHEAPEST */
+  border: solid black 1px;
+  background-image: repeating-linear-gradient(145deg, green, green 15%, gray 15%, gray 25%, green 25%);
 }
 
 .scheduleSelect {
@@ -313,6 +319,11 @@
               <option value="2" data-i18n="settings.schedule.operations.controlledOff">CONTROLLED_OFF</option>
               <option value="4" data-i18n="settings.schedule.operations.ignore">IGNORE</option>
             </select><br>
+            <div id="maxHoursContainer">
+              <label for="maxHours" data-i18n="settings.schedule.maxHours">Max Hours</label>:<br>
+              <input id="maxHours" class="inputElem" type="number" min="1" max="24" step="1" onchange="changeMaxHours(this.value);displaySaveHint()">
+              <span data-i18n="units.hours">h</span>
+            </div>
             <label for="timerOpTemp" data-i18n="settings.schedule.temp">Temperature</label>:
             <div class="hintButton" onclick="helpOn('tempOpHint')">i</div><br>
             <select id="timerOpTemp" onchange="changeTempOp(this.value);displaySaveHint();">
@@ -554,7 +565,8 @@
           operation: DEVICE_OP.CONTROLLED_ON,
           tempOp: TEMP_OP.PRICE,
           temp: [5, 20, 21, 23, 25, 26, 27, 28, 29, 30, 31, 45],
-          ACMode: 0
+          ACMode: 0,
+          maxHours: 4
         }]
       };
       parent.schedules.push(newSchedule);
@@ -672,7 +684,26 @@
         timerElement.classList.remove(`schedCol${oldOp}`);
         timerElement.classList.add(`schedCol${value}`);
         displaySaveHint();
+        refreshScheduleOp();
         refreshThermostat();
+      }
+    }
+
+    function changeMaxHours(value) {
+      if (scheduleSelected in parent.schedules && timerSelected !== undefined) {
+        const curSchedule = parent.schedules[scheduleSelected];
+        const items = curSchedule.items;
+        items[timerSelected].maxHours = value;
+      }
+    }
+
+    function refreshScheduleOp() {
+      const { value } = document.getElementById('timerOpOnOff');
+      const maxHours = document.getElementById('maxHoursContainer');
+      if (+value === DEVICE_OP.CONTROLLED_CHEAPEST) {
+        maxHours.style.display = 'block';
+      } else {
+        maxHours.style.display = 'none';
       }
     }
 
@@ -714,6 +745,7 @@
       //const ppExpensiveElement = document.getElementById('tempExpensive');
       //const ppExtremeElement = document.getElementById('tempExtreme');
       const tempOpElement = document.getElementById('timerOpTemp');
+      const maxHoursElement = document.getElementById('maxHours');
       if (timerSelected !== undefined) {
         const oldElement = document.getElementById(`si${timerSelected}`);
         oldElement.classList.remove('scheduleSelect');
@@ -750,8 +782,10 @@
         //ppExpensiveElement.value = currentSchedule.items[timerSelected].deltas[3];
         //ppExtremeElement.value = currentSchedule.items[timerSelected].deltas[4];
         tempOpElement.value = currentSchedule.items[timerSelected].tempOp;
+        maxHoursElement.value = (currentSchedule.items[timerSelected].maxHours);
       }
       onoffElement.value = newOnOffOp;
+      refreshScheduleOp();
       refreshTempOp();
       refreshThermostat();
       //tempElement.value = newTemp;
@@ -1054,7 +1088,7 @@
         ? false : true;
       let mustUseTemp =
         onOffOp === DEVICE_OP.IGNORE
-        || onOffOp === DEVICE_OP.UNCONDITIONAL_ON // (None for on/off)
+        || onOffOp === DEVICE_OP.UNCONDITIONAL_ON; // (None for on/off)
         //onOffOp === DEVICE_OP.CONTROLLED_ON    => Temp (onoff else)
 
       console.log(`Showtemp: ${onOffOp}  ${tempOp}  ${ACMode}`);
@@ -1201,14 +1235,16 @@
               operation: DEVICE_OP.CONTROLLED_ON,
               tempOp: this.TEMP_OP.PRICE,
               temp: [5, 12, 13, 15, 17, 18, 27, 28, 29, 30, 31, 40],
-              ACMode: 0
+              ACMode: 0,
+              maxHours: 4
             },
             {
               start: 15*60,
               operation: DEVICE_OP.CONTROLLED_ON,
               tempOp: this.TEMP_OP.PRICE,
               temp: [5, 21, 22, 24, 26, 27, 27, 28, 29, 30, 31, 40],
-              ACMode: 0
+              ACMode: 0,
+              maxHours: 4
             }]
           }]
         };

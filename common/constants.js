@@ -71,6 +71,7 @@ var DEVICE_OP = {
   CONTROLLED_OFF: 2,
   CONTROLLED_ON: 3,
   IGNORE: 4,
+  CONTROLLED_CHEAPEST: 5,
 };
 
 // Temperature operations

@@ -27,6 +27,7 @@
       "new": "Nieuw",
       "remove": "Verwijderen",
       "noneSelected": "&larr; Selecteer een interval om te bewerken.",
+      "maxHours": "Uren Aan",
       "operations": {
         "alwaysOn": "Altijd aan",
         "alwaysOff": "Altijd uit",

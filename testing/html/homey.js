@@ -77,29 +77,33 @@ class FakeHomey {
   }
 
   __(string) {
-    let parts;
-    try {
-      parts = string.split('.');
-    } catch (err) {
-      if (string in this.translationTable) {
-        return this.__(this.translationTable[string]);
-      }
-      if (JSON.stringify(string) in this.translationTable) {
-        return this.__(this.translationTable[JSON.stringify(string)]);
-      }
-      return `Missing: ${string}`;
-    }
     let ptr = this.languageTable;
-    for (let i = 0; i < parts.length; i++) {
-      if (parts[i] in ptr) {
-        ptr = ptr[parts[i]];
-      } else if (string in this.translationTable) {
-        // This is a hack to reverse engineer previously loaded strings that has been overwritten by a translation string
-        // This is only applicable when debugging and changing language
-        return this.__(this.translationTable[string]);
-      } else {
-        console.log(`requested ${string} not found`);
+    let parts;
+    if (string in ptr) {
+      ptr = ptr[string];
+    } else {
+      try {
+        parts = string.split('.');
+      } catch (err) {
+        if (string in this.translationTable) {
+          return this.__(this.translationTable[string]);
+        }
+        if (JSON.stringify(string) in this.translationTable) {
+          return this.__(this.translationTable[JSON.stringify(string)]);
+        }
         return `Missing: ${string}`;
+      }
+      for (let i = 0; i < parts.length; i++) {
+        if (parts[i] in ptr) {
+          ptr = ptr[parts[i]];
+        } else if (string in this.translationTable) {
+          // This is a hack to reverse engineer previously loaded strings that has been overwritten by a translation string
+          // This is only applicable when debugging and changing language
+          return this.__(this.translationTable[string]);
+        } else {
+          console.log(`requested ${string} not found`);
+          return `Missing: ${string}`;
+        }
       }
     }
     // console.log(`requested ${string} ==> ${ptr}`);

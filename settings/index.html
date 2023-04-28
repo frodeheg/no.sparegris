@@ -35,6 +35,7 @@
       }
 
       // Text strings that must be fetched from homey
+      var unitsText = "units";
       var timeScheduleText = "settings.schedule";
       var ACModeText = "settings.ACMode";
       var thermostatText = "thermostat";
@@ -2099,6 +2100,7 @@
         var currencyElement = document.getElementById("currency");
 
         // Fetch translation strings from Homey
+        unitsText = Homey.__(unitsText);
         timeScheduleText = Homey.__(timeScheduleText);
         ACModeText = Homey.__(ACModeText);
         thermostatText = Homey.__(thermostatText);
@@ -2959,7 +2961,8 @@
               settings: {
                 schedule: timeScheduleText,
                 ACMode: ACModeText
-              }
+              },
+              units: unitsText
             });
             inner.postMessage(translations, '*');
             // TODO: Fill buffer with real data
@@ -2974,14 +2977,16 @@
                     operation: DEVICE_OP.CONTROLLED_ON,
                     tempOp: TEMP_OP.PRICE,
                     temp: [5, 12, 13, 15, 17, 18, 27, 28, 29, 30, 31, 40],
-                    ACMode: 0
+                    ACMode: 0,
+                    maxHours: 4
                   },
                   {
                     start: 15*60,
                     operation: DEVICE_OP.CONTROLLED_ON,
                     tempOp: TEMP_OP.PRICE,
                     temp: [5, 21, 22, 24, 26, 27, 27, 28, 29, 30, 31, 40],
-                    ACMode: 0
+                    ACMode: 0,
+                    maxHours: 4
                   }]
                 }]
               }

@@ -27,6 +27,7 @@
       "new": "Ny",
       "remove": "Slett",
       "noneSelected": "&larr; Vennligst velg ønsket intervall for redigering.",
+      "maxHours": "Timer påslått",
       "operations": {
         "alwaysOn": "Alltid på",
         "alwaysOff": "Alltid av",
@@ -432,7 +433,7 @@
       "header": "AC Modus",
       "fromAC": "Uendret",
       "auto": "Auto",
-      "heat": "Varming",
+      "heat": "Oppvarming",
       "cool": "Kjøling",
       "dry": "Tørking",
       "fan": "Vifte",
@@ -502,8 +503,8 @@
     "dec": "Desember"
   },
   "units": {
-    "kWh": "kWh",
-    "hours": "h"
+    "kWh": "kWt",
+    "hours": "t"
   },
   "graph": {
     "consumption": "Forbruk",
