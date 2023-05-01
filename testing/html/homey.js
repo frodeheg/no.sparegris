@@ -270,6 +270,8 @@ document.write(`
   background-color: #f1f1f1;
   text-align: center;
   border: 1px solid #d3d3d3;
+  box-shadow: 10px 10px 10px #000A;
+  border-radius: 7px;
 }
 
 #mydivheader {
@@ -278,6 +280,7 @@ document.write(`
   z-index: 10;
   background-color: #2196F3;
   color: #fff;
+  border-radius: 7px 7px 0 0;
 }
 </style>
 

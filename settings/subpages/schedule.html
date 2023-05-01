@@ -7,8 +7,22 @@
     </script>
     <script type="text/javascript" src="../constants.js"></script>
     <script type="text/javascript" src="../tools.js"></script>
+    <script type="text/javascript" src="./wizzard.js"></script>
     <link href="../style.css" rel="stylesheet" type="text/css">
     <link href="../trashcan.css" rel="stylesheet" type="text/css">
+    <script type="text/javascript">
+      const wizExplainSchedule = [
+        { action: UI_FORCE_NEXT, hint: 'Welcome to the schedule wizzard! <br>We will now go through the process of creating a schedule and configure it to your needs.<br>You can move this window around however you want and exit the wizzard at any time.'},
+        { action: UI_FORCE_CLICK, id: 'newButton', hint: 'First click the "New" button to create a new schedule.' },
+        { action: UI_FORCE_NEXT, id: 'timerOpName', hint: 'Select an appropriate name of the schedule and click next to continue.' },
+        { action: UI_FORCE_CLICK, id: 'si0', hint: 'As you can see, your new schedule contains one timer lasting the whole day. Click to configure it.' },
+        { action: UI_FORCE_NEXT, id: 'timerOpOnOff', require: 3, hint: 'For this timeslot we want the devices to stay on, but still turn off when needed in order to meet any limitations you may have configured.<br>For this to function, select the option Preferred On and click Next to continue.' },
+        { action: UI_FORCE_NEXT, id: 'timerOpTemp', require: 1, hint: 'For simplicity, let\'s select a static temperature. Click Next to continue.' },
+        { action: UI_FORCE_NEXT, id: 'timerACMode', require: 2, hint: 'Select heating and press next to continue.' },
+        { action: UI_FORCE_NEXT, id: 'myThermostat', require: [5,15], hint: 'Now you can select one temperature for heating and one temperature that emulates turning the device off. Select 15 degrees for on and 5 degrees for off and then click Next to continue.' },
+        { action: UI_FORCE_EXIT, hint: 'This is as far as the wizzard goes. However, it\'s under development and will be expanded.' },
+      ];
+    </script>
     <style>
 .maxWidth {
   max-width: calc(100vh / 10 * 9);
@@ -24,6 +38,7 @@
 
 .closeButton {
     display: inline-block;
+    position: relative;
     text-align:center;
     font-size: 1em;
     height: 19px;
@@ -94,6 +109,7 @@
 .scheduleItem {
   display: block;
   overflow: auto;
+  position: relative;
   border-radius: 8px;
   width: 100%;
   padding: 0px;
@@ -161,6 +177,7 @@
 }
 
 .thermo {
+  position: relative;
   border: 0px solid #d3d3d3;
   touch-action: none;
   width:100%;
@@ -262,6 +279,7 @@
         document.getElementById("helpPage").style.display = 'none';
       }
     </script>
+    <!-- End of Help dialog -->
 
     <h3>Time Schedule Preview</h3>
     <fieldset>
@@ -270,10 +288,11 @@
       <table>
         <tr>
           <td><select style="width: 150px" id="allSchedules" onchange="selectSchedule(this.value);"></select></td>
-          <td><div class="closeButton" data-i18n="settings.schedule.remove" onclick="removeSchedule();">Remove</div></td></tr>
+          <td><div class="closeButton" data-i18n="settings.schedule.remove" onclick="removeSchedule();">Remove</div></td>
+          <td rowspan="2" valign="top"><img class="wizWand" src="wand.png" onclick="runActionQueue(wizExplainSchedule)"></td></tr>
         <tr>
-          <td><input style="width: 150px" id="timerOpName" type="text" onchange="parent.schedules[scheduleSelected].name = this.value || 'Noname';refreshSchedules();displaySaveHint()"></td>
-          <td><div class="closeButton" data-i18n="settings.schedule.new" onclick="addSchedule();">New</div></td></tr>
+          <td><input style="width: 150px; position: relative;" id="timerOpName" type="text" onchange="parent.schedules[scheduleSelected].name = this.value || 'Noname';refreshSchedules();displaySaveHint()"></td>
+          <td><div id="newButton" class="closeButton" data-i18n="settings.schedule.new" onclick="addSchedule();">New</div></td></tr>
       </table>
     </fieldset>
     <table class="scheduleLegend">
@@ -311,11 +330,11 @@
             <legend data-i18n="settings.schedule.schedule">Timeslot</legend>
             <label for="timerOpOnOff" data-i18n="settings.schedule.onoff">OnOff operation</label>:
             <div class="hintButton" onclick="helpOn('onOffOperationHint')">i</div><br>
-            <select id="timerOpOnOff" onchange="changeScheduleOp(this.value);displaySaveHint();">
+            <select id="timerOpOnOff" style="position:relative" onchange="changeScheduleOp(this.value);displaySaveHint();">
               <option value="0" data-i18n="settings.schedule.operations.alwaysOff">UNCONDITIONAL_OFF</option>
               <option value="1" data-i18n="settings.schedule.operations.alwaysOn">UNCONDITIONAL_ON</option>
               <option value="3" data-i18n="settings.schedule.operations.controlledOn">CONTROLLED_ON</option>
-              <option value="5" data-i18n="settings.schedule.operations.controlledOnCheapest">CONTROLLED_ON</option>
+              <option value="5" data-i18n="settings.schedule.operations.controlledOnCheapest">CONTROLLED_CHEAPEST</option>
               <option value="2" data-i18n="settings.schedule.operations.controlledOff">CONTROLLED_OFF</option>
               <option value="4" data-i18n="settings.schedule.operations.ignore">IGNORE</option>
             </select><br>
@@ -326,14 +345,14 @@
             </div>
             <label for="timerOpTemp" data-i18n="settings.schedule.temp">Temperature</label>:
             <div class="hintButton" onclick="helpOn('tempOpHint')">i</div><br>
-            <select id="timerOpTemp" onchange="changeTempOp(this.value);displaySaveHint();">
+            <select id="timerOpTemp" style="position:relative;" onchange="changeTempOp(this.value);displaySaveHint();">
                 <option value="0" data-i18n="settings.schedule.notemp">No temp control</option>
                 <option value="1" data-i18n="settings.schedule.statictemp">Static temperature</option>
                 <option value="2" data-i18n="settings.schedule.pricetemp">Price controlled</option>
             </select><br>
             <label for="timerACMode" data-i18n="settings.ACMode.header">AC Mode</label>:
             <div class="hintButton" onclick="helpOn('ACModeHint')">i</div><br>
-            <select id="timerACMode" onchange="changeACMode(this.value);displaySaveHint();">
+            <select id="timerACMode" style="position:relative;" onchange="changeACMode(this.value);displaySaveHint();">
               <option value="6" data-i18n="settings.ACMode.piggy">Piggy</option>
               <option value="0" data-i18n="settings.ACMode.fromAC">Unchanged</option>
               <option value="1" data-i18n="settings.ACMode.auto">Auto</option>
@@ -375,7 +394,7 @@
           </div>
         </td>
       </tr>
-      <tr><td colspan="2"></td><td style="vertical-align:top;"><input style="width:100%" type="button" value="+" onclick="addTimer();"></td></tr>
+      <tr><td colspan="2"></td><td style="vertical-align:top;"><input id="addTimer" style="width:100%; position: relative;" type="button" value="+" onclick="addTimer();"></td></tr>
     </table>
 
   <script type="text/javascript">
@@ -1072,146 +1091,164 @@
     function refreshThermostat(ttt = undefined) {
       if (timerSelected === undefined) return;
       try {
-      const canvas = document.getElementById("myThermostat");
-      const ctx = canvas.getContext("2d");
-      // OnOff temp?
-      const curSchedule = parent.schedules[scheduleSelected];
-      const items = curSchedule.items;
-      const onOffOp = items[timerSelected].operation;
-      const tempOp = +document.getElementById('timerOpTemp').value;
-      const ACMode = +document.getElementById('timerACMode').value;
-      let showTempOnOff =
-        (tempOp === TEMPOP.NONE
-        || ACMode === ACMODE.AUTO
-        || ACMode === ACMODE.DRY
-        || ACMode === ACMODE.FAN)
-        ? false : true;
-      let mustUseTemp =
-        onOffOp === DEVICE_OP.IGNORE
-        || onOffOp === DEVICE_OP.UNCONDITIONAL_ON; // (None for on/off)
-        //onOffOp === DEVICE_OP.CONTROLLED_ON    => Temp (onoff else)
+        const canvas = document.getElementById("myThermostat");
+        const ctx = canvas.getContext("2d");
+        // OnOff temp?
+        const curSchedule = parent.schedules[scheduleSelected];
+        const items = curSchedule.items;
+        const onOffOp = items[timerSelected].operation;
+        const tempOp = +document.getElementById('timerOpTemp').value;
+        const ACMode = +document.getElementById('timerACMode').value;
+        let showTempOnOff =
+          (tempOp === TEMPOP.NONE
+          || ACMode === ACMODE.AUTO
+          || ACMode === ACMODE.DRY
+          || ACMode === ACMODE.FAN)
+          ? false : true;
+        let mustUseTemp =
+          onOffOp === DEVICE_OP.IGNORE
+          || onOffOp === DEVICE_OP.UNCONDITIONAL_ON; // (None for on/off)
+          //onOffOp === DEVICE_OP.CONTROLLED_ON    => Temp (onoff else)
 
-      console.log(`Showtemp: ${onOffOp}  ${tempOp}  ${ACMode}`);
-      // Dimensions
-      cWidth = canvas.width;
-      cHeight = canvas.height;
-      tCenterX = (cWidth / 2);
-      tCenterY = (cHeight / 2);
-      outerDia = Math.min(tCenterX, tCenterY)-(10*scaleFactor);
-      innerDia = outerDia * 3 / 4;
-      // Outer circle
-      ctx.beginPath();
-      ctx.lineWidth = 1;
-      ctx.arc(tCenterX, tCenterY, outerDia, 0, 2 * Math.PI);
-      ctx.fillStyle = "#DDD";
-      ctx.strokeStyle = "#000";
-      ctx.fill();
-      ctx.stroke();
-      // Inner circle
-      ctx.beginPath();
-      ctx.arc(tCenterX, tCenterY, innerDia, 0, 2 * Math.PI);
-      ctx.fillStyle = "#CCC";
-      ctx.fill();
-      ctx.stroke();
-      // Markers
-      ctx.lineWidth = 20*scaleFactor;
-      const numMarkers = 20;
-      for (let i = 0; i <= numMarkers; i++) {
-        const markerPos = markerStartPos + i * (markerEndPos - markerStartPos) / numMarkers;
+        // Dimensions
+        cWidth = canvas.width;
+        cHeight = canvas.height;
+        tCenterX = (cWidth / 2);
+        tCenterY = (cHeight / 2);
+        outerDia = Math.min(tCenterX, tCenterY)-(10*scaleFactor);
+        innerDia = outerDia * 3 / 4;
+        // Outer circle
         ctx.beginPath();
-        ctx.arc(tCenterX, tCenterY, (outerDia + innerDia) / 2, markerPos, markerPos + 0.01);
+        ctx.lineWidth = 1;
+        ctx.arc(tCenterX, tCenterY, outerDia, 0, 2 * Math.PI);
+        ctx.fillStyle = "#DDD";
+        ctx.strokeStyle = "#000";
+        ctx.fill();
         ctx.stroke();
-      }
-      // Show temp ranges
-      const timerOpTemp = +document.getElementById('timerOpTemp').value;
-      ctx.beginPath();
-      ctx.lineWidth = 1;
-      ctx.strokeStyle = "#000";
-      ctx.font = `${Math.round(8*scaleFactor*10)/10}px Verdana`;
-      ctx.fillStyle = "#000";
-      arcText(ctx, `${startTemp}°C`, tCenterX, tCenterY, (outerDia+innerDia+4)/2, markerStartPos-(Math.PI/20));
-      arcText(ctx, `${endTemp}°C`, tCenterX, tCenterY, (outerDia+innerDia+4)/2, markerEndPos+(Math.PI/20));
-      ctx.fill();
+        // Inner circle
+        ctx.beginPath();
+        ctx.arc(tCenterX, tCenterY, innerDia, 0, 2 * Math.PI);
+        ctx.fillStyle = "#CCC";
+        ctx.fill();
+        ctx.stroke();
+        // Markers
+        const numMarkers = endTemp - startTemp;
+        for (let i = 0; i <= numMarkers; i++) {
+          const markerPos = markerStartPos + i * (markerEndPos - markerStartPos) / numMarkers;
+          const markerTemp = startTemp + i;
+          ctx.lineWidth = (3 + 2*(markerTemp%5==0) + 3*(markerTemp%10==0))*scaleFactor;
+          ctx.beginPath();
+          ctx.arc(tCenterX, tCenterY, (2*outerDia - ctx.lineWidth) / 2, markerPos, markerPos + 0.01);
+          ctx.stroke();
+        }
+        // Show temp ranges
+        const timerOpTemp = +document.getElementById('timerOpTemp').value;
+        ctx.beginPath();
+        ctx.lineWidth = 1;
+        ctx.strokeStyle = "#000";
+        ctx.font = `${Math.round(8*scaleFactor*10)/10}px Verdana`;
+        ctx.fillStyle = "#000";
+        arcText(ctx, `${startTemp}°C`, tCenterX, tCenterY, (outerDia+innerDia+4)/2, markerStartPos-(Math.PI/20));
+        arcText(ctx, `${endTemp}°C`, tCenterX, tCenterY, (outerDia+innerDia+4)/2, markerEndPos+(Math.PI/20));
+        ctx.fill();
 
-      if (showHeat) {
-        // Mode specific
-        let rangeStart, rangeEnd;
-        if (timerOpTemp === TEMPOP.PRICE) {
-          rangeStart = temps[tempsID.HEAT_EXPENSIVE];
-          rangeEnd = temps[tempsID.HEAT_DIRTCHEAP];
-        } else {
-          rangeStart = temps[tempsID.HEAT_NORMAL];
-          rangeEnd = temps[tempsID.HEAT_NORMAL];
-        }
-        const text = (rangeStart === rangeEnd) ? `${Math.round(rangeStart*2)/2}` : `>[${Math.round(rangeStart*2)/2},${Math.round(rangeEnd*2)/2}]`;
-        // Heat Arc
-        drawArc(ctx, "#F00", rangeStart, rangeEnd, outerDia - 4*scaleFactor, 8*scaleFactor);
-        // Heat price points
-        if (timerOpTemp === TEMPOP.PRICE) {
-          for (let i = tempsID.HEAT_EXPENSIVE; i <= tempsID.HEAT_DIRTCHEAP; i++) {
-            drawArc(ctx, "#000", temps[i], temps[i], innerDia + 10*scaleFactor, 4*scaleFactor);
+        let value = [];
+        if (showHeat) {
+          value.push(temps[tempsID.HEAT_OFF]);
+          // Mode specific
+          let rangeStart, rangeEnd;
+          if (timerOpTemp === TEMPOP.PRICE) {
+            rangeStart = temps[tempsID.HEAT_EXPENSIVE];
+            rangeEnd = temps[tempsID.HEAT_DIRTCHEAP];
+          } else {
+            rangeStart = temps[tempsID.HEAT_NORMAL];
+            rangeEnd = temps[tempsID.HEAT_NORMAL];
           }
-          drawArc(ctx, "#0F0", temps[tempsID.HEAT_CHEAP], temps[tempsID.HEAT_DIRTCHEAP], innerDia + 4*scaleFactor, 8*scaleFactor);
-          drawArc(ctx, "#0A0", temps[tempsID.HEAT_NORMAL], temps[tempsID.HEAT_CHEAP], innerDia + 4*scaleFactor, 8*scaleFactor);
-          drawArc(ctx, "#A00", temps[tempsID.HEAT_HIGH], temps[tempsID.HEAT_NORMAL], innerDia + 4*scaleFactor, 8*scaleFactor);
-          drawArc(ctx, "#F00", temps[tempsID.HEAT_EXPENSIVE], temps[tempsID.HEAT_HIGH], innerDia + 4*scaleFactor, 8*scaleFactor);
-        }
-        // Heat Stop
-        if (showTempOnOff) {
-          drawArc(ctx, "#800", temps[tempsID.HEAT_OFF], temps[tempsID.HEAT_OFF], outerDia - 10*scaleFactor, 20*scaleFactor);
-        }
-        // Middle Text
-        ctx.beginPath();
-        ctx.lineWidth = 1*scaleFactor;
-        ctx.strokeStyle = "#D00";
-        ctx.font = `${Math.round(14*scaleFactor*10)/10}px Verdana`;
-        ctx.fillStyle = "#000";
-        const heatText = document.getElementById("heatText").innerHTML;
-        centerText(ctx, heatText, tCenterX, tCenterY - 30*scaleFactor);
-        centerText(ctx, `${text}°C`, tCenterX, tCenterY - 10*scaleFactor);
-        ctx.fill();
-      }
-      if (showCool) {
-        // Mode specific
-        let rangeStart, rangeEnd;
-        if (timerOpTemp === TEMPOP.PRICE) {
-          rangeStart = temps[tempsID.COOL_DIRTCHEAP];
-          rangeEnd = temps[tempsID.COOL_EXPENSIVE];
-        } else {
-          rangeStart = temps[tempsID.COOL_NORMAL];
-          rangeEnd = temps[tempsID.COOL_NORMAL];
-        }
-        const text = (rangeStart === rangeEnd) ? `${Math.round(rangeStart*2)/2}` : `<[${Math.round(rangeStart*2)/2},${Math.round(rangeEnd*2)/2}]`
-        // Cool Arc
-        drawArc(ctx, "#00F", rangeStart, rangeEnd, outerDia - 4*scaleFactor, 8*scaleFactor);
-        // Cool price points
-        if (timerOpTemp === TEMPOP.PRICE) {
-          for (let i = tempsID.COOL_DIRTCHEAP; i <= tempsID.COOL_EXPENSIVE; i++) {
-            drawArc(ctx, "#000", temps[i], temps[i], innerDia + 10*scaleFactor, 4*scaleFactor);
+          const text = (rangeStart === rangeEnd) ? `${Math.round(rangeStart*2)/2}` : `>[${Math.round(rangeStart*2)/2},${Math.round(rangeEnd*2)/2}]`;
+          // Heat Arc
+          drawArc(ctx, "#F00", rangeStart, rangeEnd, outerDia - 4*scaleFactor, 8*scaleFactor);
+          // Heat price points
+          if (timerOpTemp === TEMPOP.PRICE) {
+            for (let i = tempsID.HEAT_EXPENSIVE; i <= tempsID.HEAT_DIRTCHEAP; i++) {
+              drawArc(ctx, "#000", temps[i], temps[i], innerDia + 10*scaleFactor, 4*scaleFactor);
+            }
+            drawArc(ctx, "#0F0", temps[tempsID.HEAT_CHEAP], temps[tempsID.HEAT_DIRTCHEAP], innerDia + 4*scaleFactor, 8*scaleFactor);
+            drawArc(ctx, "#0A0", temps[tempsID.HEAT_NORMAL], temps[tempsID.HEAT_CHEAP], innerDia + 4*scaleFactor, 8*scaleFactor);
+            drawArc(ctx, "#A00", temps[tempsID.HEAT_HIGH], temps[tempsID.HEAT_NORMAL], innerDia + 4*scaleFactor, 8*scaleFactor);
+            drawArc(ctx, "#F00", temps[tempsID.HEAT_EXPENSIVE], temps[tempsID.HEAT_HIGH], innerDia + 4*scaleFactor, 8*scaleFactor);
+            value.push(temps[tempsID.HEAT_DIRTCHEAP]);
+            value.push(temps[tempsID.HEAT_CHEAP]);
+            value.push(temps[tempsID.HEAT_NORMAL]);
+            value.push(temps[tempsID.HEAT_HIGH]);
           }
-          drawArc(ctx, "#0F0", temps[tempsID.COOL_DIRTCHEAP], temps[tempsID.COOL_CHEAP], innerDia + 4*scaleFactor, 8*scaleFactor);
-          drawArc(ctx, "#0A0", temps[tempsID.COOL_CHEAP], temps[tempsID.COOL_NORMAL], innerDia + 4*scaleFactor, 8*scaleFactor);
-          drawArc(ctx, "#A00", temps[tempsID.COOL_NORMAL], temps[tempsID.COOL_HIGH], innerDia + 4*scaleFactor, 8*scaleFactor);
-          drawArc(ctx, "#F00", temps[tempsID.COOL_HIGH], temps[tempsID.COOL_EXPENSIVE], innerDia + 4*scaleFactor, 8*scaleFactor);
+          // Heat Stop
+          if (showTempOnOff) {
+            drawArc(ctx, "#800", temps[tempsID.HEAT_OFF], temps[tempsID.HEAT_OFF], outerDia - 10*scaleFactor, 20*scaleFactor);
+          }
+          // Middle Text
+          ctx.beginPath();
+          ctx.lineWidth = 1*scaleFactor;
+          ctx.strokeStyle = "#D00";
+          ctx.font = `${Math.round(14*scaleFactor*10)/10}px Verdana`;
+          ctx.fillStyle = "#000";
+          const heatText = document.getElementById("heatText").innerHTML;
+          centerText(ctx, heatText, tCenterX, tCenterY - 30*scaleFactor);
+          centerText(ctx, `${text}°C`, tCenterX, tCenterY - 10*scaleFactor);
+          ctx.fill();
+          value.push(temps[tempsID.HEAT_EXPENSIVE]);
         }
-        // Cool Stop
-        if (showTempOnOff) {
-          drawArc(ctx, "#008", temps[tempsID.COOL_OFF], temps[tempsID.COOL_OFF], outerDia - 10*scaleFactor, 20*scaleFactor);
+        if (showCool) {
+          value.push(temps[tempsID.COOL_DIRTCHEAP]);
+          // Mode specific
+          let rangeStart, rangeEnd;
+          if (timerOpTemp === TEMPOP.PRICE) {
+            rangeStart = temps[tempsID.COOL_DIRTCHEAP];
+            rangeEnd = temps[tempsID.COOL_EXPENSIVE];
+          } else {
+            rangeStart = temps[tempsID.COOL_NORMAL];
+            rangeEnd = temps[tempsID.COOL_NORMAL];
+          }
+          const text = (rangeStart === rangeEnd) ? `${Math.round(rangeStart*2)/2}` : `<[${Math.round(rangeStart*2)/2},${Math.round(rangeEnd*2)/2}]`
+          // Cool Arc
+          drawArc(ctx, "#00F", rangeStart, rangeEnd, outerDia - 4*scaleFactor, 8*scaleFactor);
+          // Cool price points
+          if (timerOpTemp === TEMPOP.PRICE) {
+            for (let i = tempsID.COOL_DIRTCHEAP; i <= tempsID.COOL_EXPENSIVE; i++) {
+              drawArc(ctx, "#000", temps[i], temps[i], innerDia + 10*scaleFactor, 4*scaleFactor);
+            }
+            drawArc(ctx, "#0F0", temps[tempsID.COOL_DIRTCHEAP], temps[tempsID.COOL_CHEAP], innerDia + 4*scaleFactor, 8*scaleFactor);
+            drawArc(ctx, "#0A0", temps[tempsID.COOL_CHEAP], temps[tempsID.COOL_NORMAL], innerDia + 4*scaleFactor, 8*scaleFactor);
+            drawArc(ctx, "#A00", temps[tempsID.COOL_NORMAL], temps[tempsID.COOL_HIGH], innerDia + 4*scaleFactor, 8*scaleFactor);
+            drawArc(ctx, "#F00", temps[tempsID.COOL_HIGH], temps[tempsID.COOL_EXPENSIVE], innerDia + 4*scaleFactor, 8*scaleFactor);
+            value.push(temps[tempsID.COOL_CHEAP]);
+            value.push(temps[tempsID.COOL_NORMAL]);
+            value.push(temps[tempsID.COOL_HIGH]);
+            value.push(temps[tempsID.COOL_EXPENSIVE]);
+          }
+          // Cool Stop
+          if (showTempOnOff) {
+            drawArc(ctx, "#008", temps[tempsID.COOL_OFF], temps[tempsID.COOL_OFF], outerDia - 10*scaleFactor, 20*scaleFactor);
+          }
+          // Middle Text
+          ctx.beginPath();
+          ctx.lineWidth = 1*scaleFactor;
+          ctx.strokeStyle = "#00D";
+          ctx.font = `${Math.round(14*scaleFactor*10)/10}px Verdana`;
+          ctx.fillStyle = "#000";
+          const coolText = document.getElementById("coolText").innerHTML;
+          centerText(ctx, coolText, tCenterX, tCenterY + 30*scaleFactor);
+          centerText(ctx, `${text}°C`, tCenterX, tCenterY + 10*scaleFactor);
+          ctx.fill();
+          value.push(temps[tempsID.COOL_OFF]);
         }
-        // Middle Text
-        ctx.beginPath();
-        ctx.lineWidth = 1*scaleFactor;
-        ctx.strokeStyle = "#00D";
-        ctx.font = `${Math.round(14*scaleFactor*10)/10}px Verdana`;
-        ctx.fillStyle = "#000";
-        const coolText = document.getElementById("coolText").innerHTML;
-        centerText(ctx, coolText, tCenterX, tCenterY + 30*scaleFactor);
-        centerText(ctx, `${text}°C`, tCenterX, tCenterY + 10*scaleFactor);
-        ctx.fill();
-      }
-      // Show selected temp:
-      const guideText = Number.isFinite(thermoDragIndex) ? `${document.getElementById(`${tempName[thermoDragIndex]}Text`).innerHTML}: ${temps[thermoDragIndex]}°C` : '';
-      document.getElementById('thermoGuide').innerHTML = guideText;
+        // Show selected temp:
+        const guideText = Number.isFinite(thermoDragIndex) ? `${document.getElementById(`${tempName[thermoDragIndex]}Text`).innerHTML}: ${temps[thermoDragIndex]}°C` : '';
+        document.getElementById('thermoGuide').innerHTML = guideText;
+        canvas.value = value;
+        if (canvas.onchange) {
+          console.log('onchange');
+          canvas.onchange(value);
+        }
       } catch (err) {
         console.log(`Err: ${err}`);
       }

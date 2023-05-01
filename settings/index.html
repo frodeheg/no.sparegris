@@ -166,12 +166,6 @@
         { name:"settings.pricetab.extreme", value: PP_EXTREME }
       ]
 
-      function flashElement(element) {
-        let classList = document.getElementById(element).classList;
-        classList.add('flash');
-        setTimeout(() => classList.remove('flash'), 2000);
-      }
-
       function limitText(text) {
         const splitText = text.split(" ", 5);
         for (let i = 0; i < splitText.length; i++) {
