@@ -805,5 +805,8 @@
   },
   "0.20.23": {
     "en": "Started adding wizzard to time scheduler + added 'Cheapest hours' as a control option in the time scheduler."
+  },
+  "0.20.24": {
+    "en": "Fixed touch events on the new schedule wizzard."
   }
 }
