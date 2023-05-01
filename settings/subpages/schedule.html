@@ -4,25 +4,27 @@
     <meta charset="UTF-8" />
     <script type="text/javascript">
       let module = {}; // Just to get around that some of the included files are used both by node.js and in the browser
+      let wizExplainSchedule = [];
+
+      function onWizLoaded() {
+        wizExplainSchedule = [
+          { action: UI_FORCE_NEXT, hint: 'Welcome to the schedule wizzard! <br>We will now go through the process of creating a schedule and configure it to your needs.<br>You can move this window around however you want and exit the wizzard at any time.'},
+          { action: UI_FORCE_CLICK, id: 'newButton', hint: 'First click the "New" button to create a new schedule.' },
+          { action: UI_FORCE_NEXT, id: 'timerOpName', hint: 'Select an appropriate name of the schedule and click next to continue.' },
+          { action: UI_FORCE_CLICK, id: 'si0', hint: 'As you can see, your new schedule contains one timer lasting the whole day. Click to configure it.' },
+          { action: UI_FORCE_NEXT, id: 'timerOpOnOff', require: 3, hint: 'For this timeslot we want the devices to stay on, but still turn off when needed in order to meet any limitations you may have configured.<br>For this to function, select the option Preferred On and click Next to continue.' },
+          { action: UI_FORCE_NEXT, id: 'timerOpTemp', require: 1, hint: 'As a first step we want to start with a constant temperature. Select Constant temperature and click Next to continue.' },
+          { action: UI_FORCE_NEXT, id: 'timerACMode', require: 2, hint: 'Select heating and press next to continue.' },
+          { action: UI_FORCE_NEXT, id: 'myThermostat', require: [5,15], hint: 'Now you can select one temperature for heating and one temperature that emulates turning the device off. Select 15 degrees for on and 5 degrees for off and then click Next to continue.' },
+          { action: UI_FORCE_EXIT, hint: 'This is as far as the wizzard goes. However, it\'s under development and will be expanded.' },
+        ];
+      };
     </script>
     <script type="text/javascript" src="../constants.js"></script>
     <script type="text/javascript" src="../tools.js"></script>
     <script type="text/javascript" src="./wizzard.js"></script>
     <link href="../style.css" rel="stylesheet" type="text/css">
     <link href="../trashcan.css" rel="stylesheet" type="text/css">
-    <script type="text/javascript">
-      const wizExplainSchedule = [
-        { action: UI_FORCE_NEXT, hint: 'Welcome to the schedule wizzard! <br>We will now go through the process of creating a schedule and configure it to your needs.<br>You can move this window around however you want and exit the wizzard at any time.'},
-        { action: UI_FORCE_CLICK, id: 'newButton', hint: 'First click the "New" button to create a new schedule.' },
-        { action: UI_FORCE_NEXT, id: 'timerOpName', hint: 'Select an appropriate name of the schedule and click next to continue.' },
-        { action: UI_FORCE_CLICK, id: 'si0', hint: 'As you can see, your new schedule contains one timer lasting the whole day. Click to configure it.' },
-        { action: UI_FORCE_NEXT, id: 'timerOpOnOff', require: 3, hint: 'For this timeslot we want the devices to stay on, but still turn off when needed in order to meet any limitations you may have configured.<br>For this to function, select the option Preferred On and click Next to continue.' },
-        { action: UI_FORCE_NEXT, id: 'timerOpTemp', require: 1, hint: 'As a first step we want to start with a constant temperature. Select Constant temperature and click Next to continue.' },
-        { action: UI_FORCE_NEXT, id: 'timerACMode', require: 2, hint: 'Select heating and press next to continue.' },
-        { action: UI_FORCE_NEXT, id: 'myThermostat', require: [5,15], hint: 'Now you can select one temperature for heating and one temperature that emulates turning the device off. Select 15 degrees for on and 5 degrees for off and then click Next to continue.' },
-        { action: UI_FORCE_EXIT, hint: 'This is as far as the wizzard goes. However, it\'s under development and will be expanded.' },
-      ];
-    </script>
     <style>
 .maxWidth {
   max-width: calc(100vh / 10 * 9);
@@ -362,11 +364,11 @@
               <option value="5" data-i18n="settings.ACMode.fan">Fan</option>
             </select><br>
             <div id="thermoTab" class="maxWidth">
-              <div class="hintButton" style="position: absolute; top: 5px; left: 5px;" onclick="helpOn('myThermoHint')">i</div>
-              <div id="closeThermo" class="closeButton" style="position: absolute; top: 5px; right: 5px; min-width: 20px;" onclick="if (thermoIsBig) unZoomThermo(); else zoomThermo()">&#8703;</div>
               <canvas id="myThermostat" class="thermo" width="400" height="400" onpointermove="draggingThermo(this, event);" onpointerdown="startDragThermo(this, event);" onpointerup="stopDragThermo(this, event);" onpointerleave="stopDragThermo(this, event);">
                 Your browser does not support the HTML5 canvas tag.
               </canvas>
+              <div class="hintButton" style="position: absolute; top: 5px; left: 5px;" onclick="helpOn('myThermoHint')">i</div>
+              <div id="closeThermo" class="closeButton" style="position: absolute; top: 5px; right: 5px; min-width: 20px;" onclick="if (thermoIsBig) unZoomThermo(); else zoomThermo()">&#8703;</div>
               <p id="thermoGuide" class="centerText"></p>
             </div>
             <div id="noneSelected" style="color:red; font-weight: bold;" data-i18n="settings.schedule.noneSelected">&larr; Please select an interval to edit.</div>
@@ -1246,7 +1248,6 @@
         document.getElementById('thermoGuide').innerHTML = guideText;
         canvas.value = value;
         if (canvas.onchange) {
-          console.log('onchange');
           canvas.onchange(value);
         }
       } catch (err) {
