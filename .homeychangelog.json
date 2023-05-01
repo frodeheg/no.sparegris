@@ -802,5 +802,8 @@
   },
   "0.20.22": {
     "en": "Big UI improvements in how the thermostat function is going to work."
+  },
+  "0.20.23": {
+    "en": "Started adding wizzard to time scheduler + added 'Cheapest hours' as a control option in the time scheduler."
   }
 }
