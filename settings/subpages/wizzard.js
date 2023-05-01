@@ -65,6 +65,7 @@ async function wizAction(event) {
  * Force selection of an element
  */
 async function uiForceAction(action) {
+  const wizNext = document.getElementById('wizNext');
   const focusElem = action.id ? document.getElementById(action.id) : undefined;
   const wizCircle = document.getElementById('wizCircle');
   const rect = focusElem ? focusElem.getBoundingClientRect() : undefined;
@@ -120,7 +121,6 @@ async function uiForceAction(action) {
 
   // Make sure that required values disables the next button:
   if (action.require !== undefined) {
-    const wizNext = document.getElementById('wizNext');
     const convert = (a) => {
       if (typeof a === 'object') return JSON.stringify(a);
       if (typeof a === 'number') return `${a}`;
@@ -141,6 +141,8 @@ async function uiForceAction(action) {
       }
       updateNextButton();
     };
+  } else {
+    wizNext.classList.remove('wizDisabled');
   }
 
   // Assign action to move forward:

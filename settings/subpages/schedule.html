@@ -15,7 +15,7 @@
           { action: UI_FORCE_NEXT, id: 'timerOpOnOff', require: 3, hint: 'For this timeslot we want the devices to stay on, but still turn off when needed in order to meet any limitations you may have configured.<br>For this to function, select the option Preferred On and click Next to continue.' },
           { action: UI_FORCE_NEXT, id: 'timerOpTemp', require: 1, hint: 'As a first step we want to start with a constant temperature. Select Constant temperature and click Next to continue.' },
           { action: UI_FORCE_NEXT, id: 'timerACMode', require: 2, hint: 'Select heating and press next to continue.' },
-          { action: UI_FORCE_NEXT, id: 'myThermostat', require: [5,15], hint: 'Now you can select one temperature for heating and one temperature that emulates turning the device off. Select 15 degrees for on and 5 degrees for off and then click Next to continue.' },
+          { action: UI_FORCE_NEXT, id: 'myThermostat', require: [5,15], hint: 'Now you can select one temperature for heating and one temperature that emulates turning the device off. Select 15 degrees for on and 5 degrees for off and then click Next to continue.<br>You may click the thermostat center in order to make it bigger.' },
           { action: UI_FORCE_EXIT, hint: 'This is as far as the wizzard goes. However, it\'s under development and will be expanded.' },
         ];
       };
@@ -960,6 +960,7 @@
     function zoomThermo() {
       myThermostat = document.getElementById("thermoTab");
       thermoIsBig = true;
+      myThermostat.style.zIndex = 30; // This is the same as wizzard focus
       myThermostat.style.position="absolute";
       myThermostat.style.top = "50%";
       myThermostat.style.left = "50%";
@@ -973,6 +974,7 @@
       myThermostat = document.getElementById("thermoTab");
       thermoIsBig = false;
       myThermostat.style.position="relative";
+      myThermostat.style.zIndex = "";
       myThermostat.style.top = "";
       myThermostat.style.left = "";
       myThermostat.style.marginLeft = "";
@@ -1022,6 +1024,7 @@
         let newTemp = Math.round(pressTemp*2) / 2;
         if (newTemp < startTemp) newTemp = startTemp;
         if (newTemp > endTemp) newTemp = endTemp;
+        if (newTemp > 15 && thermoDragIndex === tempsID.HEAT_OFF) newTemp = 15;
         const timerOpTemp = +document.getElementById('timerOpTemp').value;
         moveThermoIndex(thermoDragIndex, newTemp);
         // Fix up the rest of the values:
