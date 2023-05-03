@@ -286,7 +286,7 @@ p {
   cursor: pointer;
   border-collapse: collapse;
   border: 0px solid black;
-  z-index: 1;
+  z-index: 12;
 }
 
 .menuitem .dropdown{

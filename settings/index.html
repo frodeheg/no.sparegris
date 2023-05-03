@@ -3053,6 +3053,7 @@
           //resizeIframe('schedulePage', message.w, message.h);
         } else if (message.id === 'wizAction') {
           runActionQueue(message.actionQueue);
+          document.getElementById('main_menu').style.zIndex = (message.actionQueue[0].action === UI_SHOW_OVERLAY) ? 1 : 12;
         }
       });
 
