@@ -266,7 +266,7 @@ document.write(`
 <style>
 #mydiv {
   position: absolute;
-  z-index: 9;
+  z-index: 1000;
   background-color: #f1f1f1;
   text-align: center;
   border: 1px solid #d3d3d3;

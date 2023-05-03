@@ -8,6 +8,7 @@
 
       function onWizLoaded() {
         wizExplainSchedule = [
+          { action: UI_SHOW_OVERLAY },
           { action: UI_FORCE_NEXT, hint: 'Welcome to the schedule wizzard! <br>We will now go through the process of creating a schedule and configure it to your needs.<br>You can move this window around however you want and exit the wizzard at any time.'},
           { action: UI_FORCE_CLICK, id: 'newButton', hint: 'First click the "New" button to create a new schedule.' },
           { action: UI_FORCE_NEXT, id: 'timerOpName', hint: 'Select an appropriate name of the schedule and click next to continue.' },
@@ -20,9 +21,11 @@
           { action: UI_FORCE_NEXT, id: 's0', require: '7:00', hint: 'Now drag the start of the new timeslot to 7:00 and click next to continue.' },
           { action: UI_FORCE_CLICK, id: 'si1', hint: 'Now select the new timeslot by clicking it.' },
           { action: UI_FORCE_NEXT, id: 'timerOpTemp', require: 2, hint: 'In this timeslot we want temperatures to be dependent on the electricity price. Select price controlled and click next to continue.' },
-          { action: UI_FORCE_NEXT, id: 'myThermostat', require: [5,15], hint: 'Now you can select one temperature for heating and one temperature that emulates turning the device off. Select 15 degrees for on and 5 degrees for off and then click Next to continue.<br>You may click the thermostat center in order to make it bigger.' },
-          { action: UI_FORCE_EXIT, hint: 'This is as far as the wizzard goes. However, it\'s under development and will be expanded.' },
+          //{ action: UI_FORCE_NEXT, id: 'myThermostat', require: [5,15,16,17,18,19], hint: 'Now you can select five temperatures for the different price points and one temperature that emulates turning the device off. Select 15 degrees for on and 5 degrees for off and then click Next to continue.<br>You may click the thermostat center in order to make it bigger.' },
+          { action: UI_FORCE_NEXT, hint: 'This is as far as the wizzard goes. However, it\'s under development and will be expanded.' },
+          { action: UI_HIDE_OVERLAY },
         ];
+        setWizOverrides();
       };
     </script>
     <script type="text/javascript" src="../constants.js"></script>
@@ -405,7 +408,6 @@
     </table>
 
   <script type="text/javascript">
-    let container = undefined;
     window.addEventListener("message", (event) => {
       if ((event.origin !== window.location.origin) &&
         (event.origin !== 'null')) {
@@ -415,7 +417,7 @@
       const decoded = JSON.parse(event.data);
       if (decoded.id === 'Initialize') {
         console.log(`Initializing time schedule`);
-        container = event.source;
+        wizContainer = event.source;
         parent = decoded.data;
         selectSchedule(0);
         refreshSchedules();
@@ -882,8 +884,8 @@
     }
 
     function displaySaveHint() {
-      if (container) {
-        container.postMessage(JSON.stringify({id: 'displaySaveHint'}), '*');
+      if (wizContainer) {
+        wizContainer.postMessage(JSON.stringify({id: 'displaySaveHint'}), '*');
         console.log('TODO: Post back schedule for saving');
       } else {
         console.log('ERROR: iFrame has not been connected properly.');

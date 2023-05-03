@@ -1517,7 +1517,7 @@
       }
     </script>
     <div id="schedulePage" class="tabcontent iframe-holder">
-      <iframe id="schedulePageInner" src="subpages/schedule.html" onload="onIframeLoad(this);" style="border-style: none;" referrerpolicy="same-origin"></iframe>
+      <iframe id="schedulePageInner" src="subpages/schedule.html" onload="onIframeLoad(this);" style="border-style: none; z-index: 11; position: relative;" referrerpolicy="same-origin"></iframe>
       <!--  frameborder="2" marginheight="2" marginwidth="0px" -->
     </div>
 
@@ -3051,6 +3051,8 @@
         } else if (message.id === 'resize') {
           console.log(`Got resize message ${message.w}, ${message.h}`);
           //resizeIframe('schedulePage', message.w, message.h);
+        } else if (message.id === 'wizAction') {
+          runActionQueue(message.actionQueue);
         }
       });
 

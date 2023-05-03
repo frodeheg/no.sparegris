@@ -12,12 +12,16 @@ const UI_UNCHECK = 8;
 const UI_FORCE_CLICK = 9; // Highlights an element and wait for it to be clicked.
 const UI_FORCE_NEXT = 10;
 const UI_FORCE_EXIT = 11;
+const UI_SHOW_OVERLAY = 12;
+const UI_HIDE_OVERLAY = 13;
 
 let wizActive = false;
 let wizWaiting = false;
 let wizFocusAction;
 let wizChangeAction;
 let wizShadow;
+const wizOverrides = [];
+let wizContainer;
 
 const delay = (t) => new Promise((resolve) => setTimeout(resolve, t));
 
@@ -78,10 +82,6 @@ async function uiForceAction(action) {
     wizShadow = focusElem.style.boxShadow;
     focusElem.style.boxShadow = '0 0 10px 7px #DA0';
   }
-
-  // Disable all other elements:
-  const wizDisableBox = document.getElementById('wizDisableBox');
-  wizDisableBox.style.display = 'block';
 
   // Bring element to select forward:
   if (focusElem) {
@@ -160,7 +160,6 @@ async function uiForceAction(action) {
   }
 
   // Clean up
-  wizDisableBox.style.display = 'none';
   wizHint.style.display = 'none';
   if (focusElem) {
     focusElem.onclick = wizFocusAction;
@@ -178,8 +177,16 @@ async function uiForceAction(action) {
 async function runActionQueue(actionQueue) {
   wizActive = true;
   for (let i = 0; i < actionQueue.length; i++) {
-    console.log(`Action ${i}`);
+    if (wizOverrides[+actionQueue[i].action]) {
+      wizOverrides[+actionQueue[i].action]();
+    }
     switch (+actionQueue[i].action) {
+      case UI_SHOW_OVERLAY:
+        document.getElementById('wizDisableBox').style.display = 'block';
+        break;
+      case UI_HIDE_OVERLAY:
+        document.getElementById('wizDisableBox').style.display = 'none';
+        break;
       case UI_FOCUS:
         document.getElementById(actionQueue[i].id).focus();
         break;
@@ -214,9 +221,34 @@ async function runActionQueue(actionQueue) {
         break;
     }
     if (!wizActive) {
+      if (wizOverrides[UI_HIDE_OVERLAY]) wizOverrides[UI_HIDE_OVERLAY]();
+      document.getElementById('wizDisableBox').style.display = 'none';
       return;
     }
   }
+}
+
+function sendWizOverlayShow() {
+  if (!wizContainer) return;
+  const data = {
+    id: 'wizAction',
+    actionQueue: [{ action: UI_SHOW_OVERLAY }]
+  };
+  wizContainer.postMessage(JSON.stringify(data), '*');
+}
+
+function sendWizOverlayHide() {
+  if (!wizContainer) return;
+  const data = {
+    id: 'wizAction',
+    actionQueue: [{ action: UI_HIDE_OVERLAY }]
+  };
+  wizContainer.postMessage(JSON.stringify(data), '*');
+}
+
+function setWizOverrides() {
+  wizOverrides[UI_SHOW_OVERLAY] = sendWizOverlayShow;
+  wizOverrides[UI_HIDE_OVERLAY] = sendWizOverlayHide;
 }
 
 function initializeWizzard() {
@@ -387,4 +419,5 @@ onWizLoaded(); // From including document
 module.exports = {
   wizGotoLimiters,
   runActionQueue,
+  setWizOverrides,
 };
