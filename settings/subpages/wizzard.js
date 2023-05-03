@@ -17,6 +17,7 @@ let wizActive = false;
 let wizWaiting = false;
 let wizFocusAction;
 let wizChangeAction;
+let wizShadow;
 
 const delay = (t) => new Promise((resolve) => setTimeout(resolve, t));
 
@@ -67,21 +68,15 @@ async function wizAction(event) {
 async function uiForceAction(action) {
   const wizNext = document.getElementById('wizNext');
   const focusElem = action.id ? document.getElementById(action.id) : undefined;
-  const wizCircle = document.getElementById('wizCircle');
   const rect = focusElem ? focusElem.getBoundingClientRect() : undefined;
-  const circleBorder = 6;
-  const outerW = 10;
   const outerH = 10;
   const oldFocus = {};
   const scrollTop = document.documentElement.scrollTop || document.body.scrollTop || 0;
 
   // Highlight specific item
   if (focusElem) {
-    wizCircle.style.display = 'block';
-    wizCircle.style.top = `${Math.floor(rect.top) - outerH - circleBorder + scrollTop}px`;
-    wizCircle.style.left = `${Math.floor(rect.left) - outerW - circleBorder}px`;
-    wizCircle.style.width = `${Math.floor(rect.width) + outerW * 2}px`;
-    wizCircle.style.height = `${Math.floor(rect.height) + outerH * 2}px`;
+    wizShadow = focusElem.style.boxShadow;
+    focusElem.style.boxShadow = '0 0 10px 7px #DA0';
   }
 
   // Disable all other elements:
@@ -99,9 +94,10 @@ async function uiForceAction(action) {
   const wizText = document.getElementById('wizText');
   wizText.innerHTML = action.hint;
   if (focusElem) {
-    if (rect.top > 400) {
+    if (rect.top > (window.innerHeight / 2)) {
       wizHint.style.top = '';
-      wizHint.style.bottom = '0px';
+      wizHint.style.bottom = `${Math.floor(Math.max((focusElem ? (window.innerHeight - rect.bottom + Math.min(rect.height, 100)) : 0) + outerH + 10 - scrollTop, 0))}px`;
+      console.log(`${wizHint.style.bottom}`)
     } else {
       wizHint.style.top = `${Math.floor((focusElem ? (rect.top + Math.min(rect.height, 100)) : 0) + outerH + 10 + scrollTop)}px`;
       wizHint.style.bottom = '';
@@ -164,13 +160,13 @@ async function uiForceAction(action) {
   }
 
   // Clean up
-  wizCircle.style.display = 'none';
   wizDisableBox.style.display = 'none';
   wizHint.style.display = 'none';
   if (focusElem) {
     focusElem.onclick = wizFocusAction;
     focusElem.onchange = wizChangeAction;
     focusElem.style.zIndex = oldFocus.zIndex;
+    focusElem.style.boxShadow = wizShadow;
   }
   document.getElementById('wizNext').onclick = () => wizNextClick();
   wizFocusAction = undefined;
@@ -226,20 +222,6 @@ async function runActionQueue(actionQueue) {
 function initializeWizzard() {
   document.write(`
 <style>
-  .circle {
-    display: none;
-    border: 6px solid #000;
-    border-radius: 40%;
-    position: absolute;
-    border-color: #F00;
-    z-index: 20;
-//    margin:0em auto;
-//    padding:0em 0em 0em 0em;
-//    background:radial-gradient(ellipse at center, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0) 55%, rgba(0, 0, 0, 0.6) 56%, rgba(0, 0, 0, 0.6) 100%);
-//    text-align:center;
-//    vertical-align:middle;
-  }
-
 #wizDisableBox {
   display: none;
   top:0px;
@@ -327,8 +309,6 @@ function initializeWizzard() {
 <div id="wizDisableBox">
 </div>
 
-<div id="wizCircle" class="circle"></div>
-
 <div id="wizHint" class="wizPopup">
   <div id="wizHintHeader" class="wizPopupHeader">Wizzard</div>
   <p id="wizText" class="wizPopupText">
@@ -389,6 +369,7 @@ function dragElement(elmnt) {
     pos4 = e.clientY;
     // set the element's new position:
     elmnt.style.top = `${elmnt.offsetTop - pos2}px`;
+    elmnt.style.bottom = '';
     elmnt.style.left = `${elmnt.offsetLeft - pos1}px`;
   }
 

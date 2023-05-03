@@ -16,6 +16,11 @@
           { action: UI_FORCE_NEXT, id: 'timerOpTemp', require: 1, hint: 'As a first step we want to start with a constant temperature. Select Constant temperature and click Next to continue.' },
           { action: UI_FORCE_NEXT, id: 'timerACMode', require: 2, hint: 'Select heating and press next to continue.' },
           { action: UI_FORCE_NEXT, id: 'myThermostat', require: [5,15], hint: 'Now you can select one temperature for heating and one temperature that emulates turning the device off. Select 15 degrees for on and 5 degrees for off and then click Next to continue.<br>You may click the thermostat center in order to make it bigger.' },
+          { action: UI_FORCE_CLICK, id: 'addTimer', hint: 'Let\'s add another timeslot to the schedule so the temperature can be changed throughout the day. Click \'+\' to add another timeslot and click next to continue.'},
+          { action: UI_FORCE_NEXT, id: 's0', require: '7:00', hint: 'Now drag the start of the new timeslot to 7:00 and click next to continue.' },
+          { action: UI_FORCE_CLICK, id: 'si1', hint: 'Now select the new timeslot by clicking it.' },
+          { action: UI_FORCE_NEXT, id: 'timerOpTemp', require: 2, hint: 'In this timeslot we want temperatures to be dependent on the electricity price. Select price controlled and click next to continue.' },
+          { action: UI_FORCE_NEXT, id: 'myThermostat', require: [5,15], hint: 'Now you can select one temperature for heating and one temperature that emulates turning the device off. Select 15 degrees for on and 5 degrees for off and then click Next to continue.<br>You may click the thermostat center in order to make it bigger.' },
           { action: UI_FORCE_EXIT, hint: 'This is as far as the wizzard goes. However, it\'s under development and will be expanded.' },
         ];
       };
@@ -165,13 +170,13 @@
 .scheduleSpacer {
   display: block;
   position: absolute;
-  opacity: 60%;
   left: 20%;
   right: 20%;
   padding: 0px;
   border: 0px;
   height: 20px;
-  background-image: linear-gradient(rgba(100,100,100,0), gray 35%, black 35% 45%, gray 45% 55%, black 55% 65%, gray 65%, rgba(100,100,100,0));
+  background-image: linear-gradient(rgba(100,100,100,0), rgba(128,128,128,0.6) 35%, rgba(0,0,0,0.6) 35% 45%, rgba(128,128,128,0.6) 45% 55%, rgba(0,0,0,0.6) 55% 65%, rgba(128,128,128,0.6) 65%, rgba(100,100,100,0));
+  z-index: 1;
 }
 
 .scheduleSpacer:hover {
@@ -839,7 +844,10 @@
           aboveItem.style.height = `${timerHeight(aboveIdx)}px`;
           belowItem.style.height = `${timerHeight(belowIdx)}px`;
           const prevY = +document.getElementById(`s${aboveIdx}`).style.top.slice(0,-2);
-          document.getElementById(`s${aboveIdx}`).style.top = `${prevY + deltaMinutes * pixelsPerMinute}px`;
+          const spacer = document.getElementById(`s${aboveIdx}`);
+          spacer.style.top = `${prevY + deltaMinutes * pixelsPerMinute}px`;
+          spacer.value = `${Math.floor(items[belowIdx].start/60)}:${String(items[belowIdx].start%60).padStart(2, '0')}`;
+          if (spacer.onchange) spacer.onchange(spacer.value);
 
           prevPosY = (deltaMinutes * pixelsPerMinute) + prevPosY;
         }
