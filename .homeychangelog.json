@@ -808,5 +808,8 @@
   },
   "0.20.24": {
     "en": "Fixed touch events on the new schedule wizzard."
+  },
+  "0.20.25": {
+    "en": "Improved timing schedule wizzard and thermostat."
   }
 }
