@@ -16,12 +16,18 @@
           { action: UI_FORCE_NEXT, id: 'timerOpOnOff', require: 3, hint: 'For this timeslot we want the devices to stay on, but still turn off when needed in order to meet any limitations you may have configured.<br>For this to function, select the option Preferred On and click Next to continue.' },
           { action: UI_FORCE_NEXT, id: 'timerOpTemp', require: 1, hint: 'As a first step we want to start with a constant temperature. Select Constant temperature and click Next to continue.' },
           { action: UI_FORCE_NEXT, id: 'timerACMode', require: 2, hint: 'Select heating and press next to continue.' },
-          { action: UI_FORCE_NEXT, id: 'myThermostat', require: [5,15], hint: 'Now you can select one temperature for heating and one temperature that emulates turning the device off. Select 15 degrees for on and 5 degrees for off and then click Next to continue.<br>You may click the thermostat center in order to make it bigger.' },
+          { action: UI_FORCE_VALUE, id: 'myThermostat', var: 'thermoIsBig', value: true, hint: 'The thermostat wheel can be zoomed in for easier edit. Click the thermostat center in order to zoom in.' },
+          { action: UI_FORCE_NEXT, id: 'myThermostat', require: [5,15], hint: 'Now you can select one temperature for heating and one temperature that emulates turning the device off. Select 15 degrees for on and 5 degrees for off and then click Next to continue.' },
+          { action: UI_FORCE_VALUE, id: 'myThermostat', var: 'thermoIsBig', value: false, hint: 'Click the thermostat center again to zoom out.' },
           { action: UI_FORCE_CLICK, id: 'addTimer', hint: 'Let\'s add another timeslot to the schedule so the temperature can be changed throughout the day. Click \'+\' to add another timeslot and click next to continue.'},
           { action: UI_FORCE_NEXT, id: 's0', require: '7:00', hint: 'Now drag the start of the new timeslot to 7:00 and click next to continue.' },
           { action: UI_FORCE_CLICK, id: 'si1', hint: 'Now select the new timeslot by clicking it.' },
           { action: UI_FORCE_NEXT, id: 'timerOpTemp', require: 2, hint: 'In this timeslot we want temperatures to be dependent on the electricity price. Select price controlled and click next to continue.' },
-          //{ action: UI_FORCE_NEXT, id: 'myThermostat', require: [5,15,16,17,18,19], hint: 'Now you can select five temperatures for the different price points and one temperature that emulates turning the device off. Select 15 degrees for on and 5 degrees for off and then click Next to continue.<br>You may click the thermostat center in order to make it bigger.' },
+          { action: UI_FORCE_VALUE, id: 'myThermostat', var: 'thermoIsBig', value: true, hint: 'Click the thermostat center to zoom in.' },
+          { action: UI_FORCE_NEXT, id: 'myThermostat', require: [,18,,,,26], hint: 'Now the single temperature target can be expanded into a temperature range that will vary depending on the electricity price. Press well above the target temperature in order to expand the range and drag the range endpoints so they span the range 18 to 26 degrees.' },
+          { action: UI_FORCE_NEXT, id: 'myThermostat', require: [,18,,23.5,,26], hint: 'The two temperature endpoints you just set was for Dirt Cheap (26) and Extremely Expensive (18). Next, set the center temperature to 24 while keeping the heating range between 18 to 26, this will set the temperature for normal price.' },
+          { action: UI_FORCE_NEXT, id: 'myThermostat', require: [,18,22,24,25,26], hint: 'The two remaining temperature setpoints are for high and low prices, set them to 22 and 25 degrees respectively without changing the other values. If you have difficulties setting the exact settings, a textbox view will come later.' },
+          { action: UI_FORCE_VALUE, id: 'myThermostat', var: 'thermoIsBig', value: false, hint: 'You have now completed the temperature setting for different price points. Click the thermostat center to zoom out.' },
           { action: UI_FORCE_NEXT, hint: 'This is as far as the wizzard goes. However, it\'s under development and will be expanded.' },
           { action: UI_HIDE_OVERLAY },
         ];
@@ -114,6 +120,9 @@
   padding: 0rem;
   border-right: solid 0px;
   touch-action: none;
+  -webkit-user-select: none; /* Safari */
+  -ms-user-select: none; /* IE 10 and IE 11 */
+  user-select: none; /* Standard syntax */
 }
 
 .scheduleItem {
@@ -744,7 +753,7 @@
       let yPos = pixelsPerMinute*30;
       for (let i = 0; i < numTimers; i++) {
         if (i > 0) {
-          newContent += `<div id="s${i-1}" class="scheduleSpacer" onpointerdown="dragStart(event, this)" style="top:${yPos-10}px"></div>`;
+          newContent += `<div id="s${i-1}" class="scheduleSpacer" onpointerdown="dragStart(event, this)" onpointermove="moving(event)" style="top:${yPos-10}px"></div>`;
         }
         const blockText = getTimeBlockText(i);
         const cc = +currentSchedule.items[i].operation;
@@ -908,7 +917,7 @@
     // Temp ranges
     let showHeat = true;
     let showCool = true;
-    let thermoIsBig = false;
+    var thermoIsBig = false;
     let scaleFactor = 400/180;
 
     function pressToAngleCoords(canvas, event) {
@@ -1191,10 +1200,10 @@
             drawArc(ctx, "#0A0", temps[tempsID.HEAT_NORMAL], temps[tempsID.HEAT_CHEAP], innerDia + 4*scaleFactor, 8*scaleFactor);
             drawArc(ctx, "#A00", temps[tempsID.HEAT_HIGH], temps[tempsID.HEAT_NORMAL], innerDia + 4*scaleFactor, 8*scaleFactor);
             drawArc(ctx, "#F00", temps[tempsID.HEAT_EXPENSIVE], temps[tempsID.HEAT_HIGH], innerDia + 4*scaleFactor, 8*scaleFactor);
-            value.push(temps[tempsID.HEAT_DIRTCHEAP]);
-            value.push(temps[tempsID.HEAT_CHEAP]);
-            value.push(temps[tempsID.HEAT_NORMAL]);
+            value.push(temps[tempsID.HEAT_EXPENSIVE]);
             value.push(temps[tempsID.HEAT_HIGH]);
+            value.push(temps[tempsID.HEAT_NORMAL]);
+            value.push(temps[tempsID.HEAT_CHEAP]);
           }
           // Heat Stop
           if (showTempOnOff) {
@@ -1210,7 +1219,7 @@
           centerText(ctx, heatText, tCenterX, tCenterY - 30*scaleFactor);
           centerText(ctx, `${text}°C`, tCenterX, tCenterY - 10*scaleFactor);
           ctx.fill();
-          value.push(temps[tempsID.HEAT_EXPENSIVE]);
+          value.push(temps[tempsID.HEAT_DIRTCHEAP]);
         }
         if (showCool) {
           value.push(temps[tempsID.COOL_DIRTCHEAP]);

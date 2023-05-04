@@ -14,6 +14,7 @@ const UI_FORCE_NEXT = 10;
 const UI_FORCE_EXIT = 11;
 const UI_SHOW_OVERLAY = 12;
 const UI_HIDE_OVERLAY = 13;
+const UI_FORCE_VALUE = 14;
 
 let wizActive = false;
 let wizWaiting = false;
@@ -71,20 +72,26 @@ async function wizAction(event) {
  */
 async function uiForceAction(action) {
   const wizNext = document.getElementById('wizNext');
+  const wizDisableBox = document.getElementById('wizDisableBox');
   const focusElem = action.id ? document.getElementById(action.id) : undefined;
   const rect = focusElem ? focusElem.getBoundingClientRect() : undefined;
   const outerH = 10;
   const oldFocus = {};
   const scrollTop = document.documentElement.scrollTop || document.body.scrollTop || 0;
 
-  // Highlight specific item
   if (focusElem) {
+    // Capture action state
+    wizFocusAction = focusElem.onclick;
+    wizChangeAction = focusElem.onchange;
+
+    // Transfer pointer events to the background to improve dragging
+    wizDisableBox.onpointermove = focusElem.onpointermove;
+
+    // Highlight specific item
     wizShadow = focusElem.style.boxShadow;
     focusElem.style.boxShadow = '0 0 10px 7px #DA0';
-  }
 
-  // Bring element to select forward:
-  if (focusElem) {
+    // Bring element to select forward:
     oldFocus.zIndex = focusElem.style.zIndex;
     focusElem.style.zIndex = 30;
   }
@@ -123,14 +130,18 @@ async function uiForceAction(action) {
       return a;
     };
     const compare = (a, b) => convert(a) === convert(b);
+    const filter = (a, b) => {
+      if (!Array.isArray(a)) return a;
+      return a.filter((v, i) => b[i] !== undefined);
+    };
+    const filteredCompare = (a, b) => compare(filter(a, b), filter(b, b));
     const updateNextButton = () => {
-      const isOk = compare(focusElem.value, action.require);
+      const isOk = filteredCompare(focusElem.value, action.require);
       if (isOk) wizNext.classList.remove('wizDisabled');
       else wizNext.classList.add('wizDisabled');
     };
     updateNextButton();
-    wizNext.onclick = () => {if (compare(focusElem.value, action.require)) wizNextClick()};
-    wizChangeAction = focusElem.onchange;
+    wizNext.onclick = () => {if (filteredCompare(focusElem.value, action.require)) wizNextClick()};
     focusElem.onchange = (event) => {
       if (wizChangeAction) {
         wizChangeAction.call(focusElem, event);
@@ -148,20 +159,22 @@ async function uiForceAction(action) {
     default:
       break;
     case UI_FORCE_CLICK:
-      wizFocusAction = focusElem.onclick;
-      focusElem.onclick = (event) => wizAction(event);
+      focusElem.onclick = (event) => wizAction(event, action);
       break;
   }
 
   wizWaiting = true;
   while (wizActive && wizWaiting) {
     await delay(200);
-    // console.log('waiting');
+    if (action.var && (window[action.var] === action.value)) {
+      wizWaiting = false;
+    }
   }
 
   // Clean up
   wizHint.style.display = 'none';
   if (focusElem) {
+    wizDisableBox.onpointermove = undefined;
     focusElem.onclick = wizFocusAction;
     focusElem.onchange = wizChangeAction;
     focusElem.style.zIndex = oldFocus.zIndex;
@@ -266,6 +279,10 @@ function initializeWizzard() {
   z-index: 10;
   background-color: #000A;
   border: 0px solid #ddd;
+  touch-action: none;
+  -webkit-user-select: none; /* Safari */
+  -ms-user-select: none; /* IE 10 and IE 11 */
+  user-select: none; /* Standard syntax */
 }
 
 .wizWand {
