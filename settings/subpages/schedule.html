@@ -50,14 +50,38 @@
 .centerText {
   text-align: center;
   color: black;
+  -webkit-user-select: none; /* Safari */
+  -ms-user-select: none; /* IE 10 and IE 11 */
+  user-select: none; /* Standard syntax */
 }
 
+.dragTemp {
+  display: none;
+  position: absolute;
+  color: black;
+  z-index: 1;
+  padding: 10px;
+  font-size: 1em;
+  text-align: center;
+  text-shadow: #FFF 0px 0px 3px, #FFF 0px 0px 3px, #FFF 1px 1px 3px;
+  border-radius: 40px;
+  background: #D00;
+  border: 1px solid black;
+  box-shadow: 3px 3px 4px 2px #0008;
+  -webkit-user-select: none; /* Safari */
+  -ms-user-select: none; /* IE 10 and IE 11 */
+  user-select: none; /* Standard syntax */
+  touch-action: none;
+}
+
+.dragTemp::after { content: "°C" }
+
 .closeButton {
+    margin: auto;
     display: inline-block;
     position: relative;
     text-align:center;
     font-size: 1em;
-    height: 19px;
     border: 1px solid black;
     border-radius: 4px;
     color: black;
@@ -381,12 +405,13 @@
               <option value="5" data-i18n="settings.ACMode.fan">Fan</option>
             </select><br>
             <div id="thermoTab" class="maxWidth">
-              <canvas id="myThermostat" class="thermo" width="400" height="400" onpointermove="draggingThermo(this, event);" onpointerdown="startDragThermo(this, event);" onpointerup="stopDragThermo(this, event);" onpointerleave="stopDragThermo(this, event);">
+              <div id="dragTemp" class="dragTemp" onpointermove="draggingThermo(this, event);" >20</div>
+              <canvas id="myThermostat" class="thermo" width="400" height="400" onpointermove="draggingThermo(this, event);" onpointerdown="startDragThermo(this, event);" onpointerup="stopDragThermo(this, event);" onpointerleave="abortDragThermo(this, event);">
                 Your browser does not support the HTML5 canvas tag.
               </canvas>
               <div class="hintButton" style="position: absolute; top: 5px; left: 5px;" onclick="helpOn('myThermoHint')">i</div>
-              <div id="closeThermo" class="closeButton" style="position: absolute; top: 5px; right: 5px; min-width: 20px;" onclick="if (thermoIsBig) unZoomThermo(); else zoomThermo()">&#8703;</div>
-              <p id="thermoGuide" class="centerText"></p>
+              <div id="closeThermo" class="closeButton" style="font-size: 0.8em; position: absolute; top: 5px; right: 5px; min-width: 20px;" onclick="if (thermoIsBig) unZoomThermo(); else zoomThermo()">&#x2795;</div>
+              <div id="thermoGuide" class="centerText"></div>
             </div>
             <div id="noneSelected" style="color:red; font-weight: bold;" data-i18n="settings.schedule.noneSelected">&larr; Please select an interval to edit.</div>
           </fieldset>
@@ -822,6 +847,7 @@
         maxHoursElement.value = (currentSchedule.items[timerSelected].maxHours);
       }
       onoffElement.value = newOnOffOp;
+      thermoDragIndex = undefined;
       refreshScheduleOp();
       refreshTempOp();
       refreshThermostat();
@@ -963,12 +989,10 @@
           if (thermoDragIndex >= tempsID.HEAT_EXPENSIVE && thermoDragIndex <= tempsID.HEAT_DIRTCHEAP) thermoDragIndex = tempsID.HEAT_NORMAL;
           if (thermoDragIndex <= tempsID.COOL_EXPENSIVE && thermoDragIndex >= tempsID.COOL_DIRTCHEAP) thermoDragIndex = tempsID.COOL_NORMAL;
         }
+        // Show drag temp
+        document.getElementById('dragTemp').style.display = 'block';
         draggingThermo(canvas, event);
         return;
-      } else if (thermoIsBig) {
-        unZoomThermo();
-      } else if (pressRadius < innerDia * 0.8) {
-        zoomThermo();
       }
     }
 
@@ -981,7 +1005,7 @@
       myThermostat.style.left = "50%";
       myThermostat.style.transform = "translate(-50%, -50%)";
       myThermostat.style.backgroundColor = "rgba(0,0,0,0.5)";
-      document.getElementById("closeThermo").innerHTML = "X";
+      document.getElementById("closeThermo").innerHTML = "&#x2716;";
       document.getElementById("thermoGuide").style.color = "white";
     }
 
@@ -996,7 +1020,7 @@
       myThermostat.style.marginRight = "";
       myThermostat.style.transform = "";
       myThermostat.style.backgroundColor = "rgba(0,0,0,0.0)";
-      document.getElementById("closeThermo").innerHTML = "&#8703;";
+      document.getElementById("closeThermo").innerHTML = "&#x2795;";
       document.getElementById("thermoGuide").style.color = "black";
     }
 
@@ -1059,12 +1083,65 @@
           if (temps[i] < newTemp) moveThermoIndex(i, newTemp);
         }
         refreshThermostat();
+
+        // Move temp indicator:
+        const dragTemp = document.getElementById('dragTemp');
+        let cpos = canvas.getBoundingClientRect();
+        let dpos = dragTemp.getBoundingClientRect();
+        let pos = {x: Math.max(event.clientX - cpos.left - dpos.width - 40, -cpos.left), y: Math.max(event.clientY - cpos.top - dpos.height - 20, -cpos.top)};
+        dragTemp.style.top = `${pos.y}px`;
+        dragTemp.style.left = `${pos.x}px`;
+        dragTemp.innerHTML = `${newTemp}`;
+        //dragTemp.style.color = (thermoDragIndex === tempsID.HEAT_OFF || thermoDragIndex === tempsID.COOL_OFF) ? 'white' : 'black'
+        let colStart = (thermoDragIndex < tempsID.COOL_DIRTCHEAP) ? 'red' : 'blue';
+        let colEnd;
+        switch (thermoDragIndex) {
+          case tempsID.HEAT_EXPENSIVE:
+          case tempsID.COOL_EXPENSIVE:
+            colEnd = 'red';
+            break;
+          case tempsID.HEAT_HIGH:
+          case tempsID.COOL_HIGH:
+            colEnd = 'darkred';
+            break;
+          case tempsID.HEAT_NORMAL:
+          case tempsID.COOL_NORMAL:
+            colEnd = 'white';
+            break;
+          case tempsID.HEAT_CHEAP:
+          case tempsID.COOL_CHEAP:
+            colEnd = 'green';
+            break;
+          case tempsID.HEAT_DIRTCHEAP:
+          case tempsID.COOL_DIRTCHEAP:
+            colEnd = 'lightgreen';
+            break;
+          case tempsID.HEAT_OFF:
+          case tempsID.COOL_OFF:
+          default:
+            colEnd = 'black';
+            break;
+        }
+        dragTemp.style.background = `linear-gradient(${colStart}, ${colEnd})`;
       }
     }
 
     function stopDragThermo(canvas, event) {
       if (thermoIsDragging) {
+        abortDragThermo(canvas, event);
+      } else if (thermoIsBig) {
+        event.preventDefault();
+        event.stopPropagation();
+        unZoomThermo();
+      } else {
+        zoomThermo();
+      }
+    }
+
+    function abortDragThermo(canvas, event) {
+      if (thermoIsDragging) {
         draggingThermo(canvas, event);
+        document.getElementById('dragTemp').style.display = 'none';
         thermoIsDragging = false;
       }
     }
@@ -1263,7 +1340,7 @@
         }
         // Show selected temp:
         const guideText = Number.isFinite(thermoDragIndex) ? `${document.getElementById(`${tempName[thermoDragIndex]}Text`).innerHTML}: ${temps[thermoDragIndex]}°C` : '';
-        document.getElementById('thermoGuide').innerHTML = guideText;
+        document.getElementById('thermoGuide').innerHTML = guideText ? guideText : 'Select and drag temperatures';
         canvas.value = value;
         if (canvas.onchange) {
           canvas.onchange(value);
@@ -1274,7 +1351,7 @@
     }
     var isRealSystem = false;
     try {
-      if (parent.modeList === undefined) {
+      if (parent.iFrameCallback === undefined) {
         // For debug only... this will crash the deployment environment
         console.log(`Debug environment detected for: ${window.location}`);
         // TODO: REMOVE THE PARENT VARIABLE
