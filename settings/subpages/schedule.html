@@ -1132,7 +1132,7 @@
       } else if (thermoIsBig) {
         event.preventDefault();
         event.stopPropagation();
-        unZoomThermo();
+        timer(200).then(() => unZoomThermo());
       } else {
         zoomThermo();
       }
