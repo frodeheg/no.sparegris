@@ -811,5 +811,8 @@
   },
   "0.20.25": {
     "en": "Improved timing schedule wizzard and thermostat."
+  },
+  "0.20.26": {
+    "en": "Improvements for timing schedule"
   }
 }
