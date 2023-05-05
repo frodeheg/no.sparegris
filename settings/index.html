@@ -3038,8 +3038,7 @@
       var eventer = window[eventMethod];
       var messageEvent = eventMethod == "attachEvent" ? "onmessage" : "message";
 
-      // Listen to message from child window
-      eventer(messageEvent, function (event) {
+      var iFrameCallback = (event) => {
         var key = event.message ? "message" : "data";
         var data = event[key];
         //run function//
@@ -3063,7 +3062,10 @@
           runActionQueue(message.actionQueue);
           document.getElementById('main_menu').style.zIndex = (message.actionQueue[0].action === UI_SHOW_OVERLAY) ? 1 : 12;
         }
-      },false);
+      };
+
+      // Listen to message from child window
+      eventer(messageEvent, iFrameCallback, false);
 
     </script>
   </body>

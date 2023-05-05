@@ -246,10 +246,10 @@ async function runActionQueue(actionQueue) {
 }
 
 function sendWizMessage(message) {
-  if (parent && parent.myCallback) {
+  if (parent && parent.iFrameCallback) {
     // iFrame shares contect with parent, messages doesn't always work, call parent directly
     console.log(`iframe shares context - Informing message: ${message}`);
-    parent.myCallback({ message, origin: window.location.origin });
+    parent.iFrameCallback({ message, origin: window.location.origin });
   } else if (wizContainer) {
     // Iframe does not share context, must use messages to share data
     console.log(`iFrame connected - Posting Message ${message}`);
