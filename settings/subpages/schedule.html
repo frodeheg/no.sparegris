@@ -25,8 +25,8 @@
           { action: UI_FORCE_NEXT, id: 'timerOpTemp', require: 2, hint: 'In this timeslot we want temperatures to be dependent on the electricity price. Select price controlled and click next to continue.' },
           { action: UI_FORCE_VALUE, id: 'myThermostat', var: 'thermoIsBig', value: true, hint: 'Click the thermostat center to zoom in.' },
           { action: UI_FORCE_NEXT, id: 'myThermostat', require: [,18,,,,26], hint: 'Now the single temperature target can be expanded into a temperature range that will vary depending on the electricity price. Press well above the target temperature in order to expand the range and drag the range endpoints so they span the range 18 to 26 degrees.' },
-          { action: UI_FORCE_NEXT, id: 'myThermostat', require: [,18,,23.5,,26], hint: 'The two temperature endpoints you just set was for Dirt Cheap (26) and Extremely Expensive (18). Next, set the center temperature to 24 while keeping the heating range between 18 to 26, this will set the temperature for normal price.' },
-          { action: UI_FORCE_NEXT, id: 'myThermostat', require: [,18,22,24,25,26], hint: 'The two remaining temperature setpoints are for high and low prices, set them to 22 and 25 degrees respectively without changing the other values. If you have difficulties setting the exact settings, a textbox view will come later.' },
+          { action: UI_FORCE_NEXT, id: 'myThermostat', require: [,18,,23.5,,26], hint: 'The two temperature endpoints you just set was for Dirt Cheap (26) and Extremely Expensive (18). Next, set the center temperature to 23.5 while keeping the heating range between 18 to 26, this will set the temperature for normal price.' },
+          { action: UI_FORCE_NEXT, id: 'myThermostat', require: [,18,22,23.5,25,26], hint: 'The two remaining temperature setpoints are for high and low prices, set them to 22 and 25 degrees respectively without changing the other values. If you have difficulties setting the exact settings, a textbox view will come later.' },
           { action: UI_FORCE_VALUE, id: 'myThermostat', var: 'thermoIsBig', value: false, hint: 'You have now completed the temperature setting for different price points. Click the thermostat center to zoom out.' },
           { action: UI_FORCE_NEXT, hint: 'This is as far as the wizzard goes. However, it\'s under development and will be expanded.' },
           { action: UI_HIDE_OVERLAY },
@@ -427,7 +427,7 @@
       if (decoded.id === 'Initialize') {
         console.log(`Initializing time schedule`);
         wizContainer = event.source;
-        parent = decoded.data;
+        if (!isRealSystem) parent = decoded.data;
         selectSchedule(0);
         refreshSchedules();
         refreshThermostat();
@@ -441,7 +441,7 @@
           w: document.documentElement.scrollWidth,
           h: document.documentElement.scrollHeight
         }
-        event.source.postMessage(JSON.stringify(data), '*');
+        sendWizMessage(JSON.stringify(data));
       }
     });
     const startTemp = 5;
@@ -859,6 +859,7 @@
           spacer.style.top = `${prevY + deltaMinutes * pixelsPerMinute}px`;
           spacer.value = `${Math.floor(items[belowIdx].start/60)}:${String(items[belowIdx].start%60).padStart(2, '0')}`;
           if (spacer.onchange) spacer.onchange(spacer.value);
+          displaySaveHint();
 
           prevPosY = (deltaMinutes * pixelsPerMinute) + prevPosY;
         }
@@ -869,7 +870,6 @@
 
     function dragStop(e) {
       dragging = false;
-      displaySaveHint();
     }
 
     function changeDeviceAction(button, newstate) {
@@ -893,12 +893,8 @@
     }
 
     function displaySaveHint() {
-      if (wizContainer) {
-        wizContainer.postMessage(JSON.stringify({id: 'displaySaveHint'}), '*');
-        console.log('TODO: Post back schedule for saving');
-      } else {
-        console.log('ERROR: iFrame has not been connected properly.');
-      }
+      console.log('TODO: Post back schedule for saving');
+      sendWizMessage(JSON.stringify({id: 'displaySaveHint'}));
     }
 
     // ===== THERMOSTAT CODE =====
@@ -984,7 +980,7 @@
       myThermostat.style.top = "50%";
       myThermostat.style.left = "50%";
       myThermostat.style.transform = "translate(-50%, -50%)";
-      myThermostat.style.backgroundColor = "rgba(0,0,0,0.7)";
+      myThermostat.style.backgroundColor = "rgba(0,0,0,0.5)";
       document.getElementById("closeThermo").innerHTML = "X";
       document.getElementById("thermoGuide").style.color = "white";
     }
@@ -1276,11 +1272,12 @@
         console.log(`Err: ${err}`);
       }
     }
-    // TODO: REMOVE THE PARENT VARIABLE
+    var isRealSystem = false;
     try {
       if (parent.modeList === undefined) {
         // For debug only... this will crash the deployment environment
         console.log(`Debug environment detected for: ${window.location}`);
+        // TODO: REMOVE THE PARENT VARIABLE
         parent = {
           turnOffText: 'Always Off',
           turnOnText: 'Always On',
@@ -1313,9 +1310,10 @@
       } else {
         // This is ok, as it means we run in a real system
         console.log(`Used as an iframe: ${window.location}`);
+        isRealSystem = true;
       }
     } catch (err) {
-      console.log(`Used as an iframe inside athom environment: ${window.location}`)
+      console.log(`Used as an iframe inside athom environment: ${window.location}`) // postMessage works
     }
     // --- End of TODO ---
   </script>

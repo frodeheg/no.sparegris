@@ -1,3 +1,5 @@
+/* eslint-disable comma-dangle */
+
 'use strict';
 
 // Constants
@@ -86,6 +88,7 @@ async function uiForceAction(action) {
 
     // Transfer pointer events to the background to improve dragging
     wizDisableBox.onpointermove = focusElem.onpointermove;
+    wizDisableBox.touchAction = 'none';
 
     // Highlight specific item
     wizShadow = focusElem.style.boxShadow;
@@ -175,6 +178,7 @@ async function uiForceAction(action) {
   wizHint.style.display = 'none';
   if (focusElem) {
     wizDisableBox.onpointermove = undefined;
+    wizDisableBox.touchAction = undefined;
     focusElem.onclick = wizFocusAction;
     focusElem.onchange = wizChangeAction;
     focusElem.style.zIndex = oldFocus.zIndex;
@@ -241,13 +245,27 @@ async function runActionQueue(actionQueue) {
   }
 }
 
+function sendWizMessage(message) {
+  if (parent && parent.myCallback) {
+    // iFrame shares contect with parent, messages doesn't always work, call parent directly
+    console.log(`iframe shares context - Informing message: ${message}`);
+    parent.myCallback({ message, origin: window.location.origin });
+  } else if (wizContainer) {
+    // Iframe does not share context, must use messages to share data
+    console.log(`iFrame connected - Posting Message ${message}`);
+    wizContainer.postMessage(message, '*');
+  } else {
+    console.log('ERROR: iFrame has not been connected properly.');
+  }
+}
+
 function sendWizOverlayShow() {
   if (!wizContainer) return;
   const data = {
     id: 'wizAction',
     actionQueue: [{ action: UI_SHOW_OVERLAY }]
   };
-  wizContainer.postMessage(JSON.stringify(data), '*');
+  sendWizMessage(JSON.stringify(data));
 }
 
 function sendWizOverlayHide() {
@@ -256,7 +274,7 @@ function sendWizOverlayHide() {
     id: 'wizAction',
     actionQueue: [{ action: UI_HIDE_OVERLAY }]
   };
-  wizContainer.postMessage(JSON.stringify(data), '*');
+  sendWizMessage(JSON.stringify(data));
 }
 
 function setWizOverrides() {
@@ -277,9 +295,8 @@ function initializeWizzard() {
   padding: 0px;
   margin: 0px;
   z-index: 10;
-  background-color: #000A;
+  background-color: #0008;
   border: 0px solid #ddd;
-  touch-action: none;
   -webkit-user-select: none; /* Safari */
   -ms-user-select: none; /* IE 10 and IE 11 */
   user-select: none; /* Standard syntax */
@@ -328,7 +345,7 @@ function initializeWizzard() {
   display: none;
   position: absolute;
   z-index: 40;
-  background-color: #fffA;
+  background-color: #fffC;
   text-align: center;
   border: 1px solid #d3d3d3;
   box-shadow: 10px 10px 10px #000A;
@@ -436,5 +453,6 @@ onWizLoaded(); // From including document
 module.exports = {
   wizGotoLimiters,
   runActionQueue,
+  sendWizMessage,
   setWizOverrides,
 };
