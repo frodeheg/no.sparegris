@@ -814,5 +814,8 @@
   },
   "0.20.26": {
     "en": "Improvements for timing schedule"
+  },
+  "0.20.27": {
+    "en": "Added themperature popup when dragging thermostat in scheduler."
   }
 }
