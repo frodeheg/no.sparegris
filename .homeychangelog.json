@@ -820,5 +820,8 @@
   },
   "0.20.28": {
     "en": "Workaround for HP23 bug that causes insights to crash + Significant updates to the Thermostat editor."
+  },
+  "0.20.29": {
+    "en": "Another try to work around the HP23 crash bug. + Visual updates for the Thermostat editor."
   }
 }
