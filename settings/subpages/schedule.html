@@ -1099,11 +1099,11 @@
         }
         // Push other values out of the new range
         const minUpdateIndex = (thermoDragIndex >= tempsID.COOL_DIRTCHEAP) ? tempsID.COOL_DIRTCHEAP : tempsID.HEAT_OFF;
-        const maxUpdateIndex = (thermoDragIndex >= tempsID.COOL_DIRTCHEAP) ? (tempsID.COOL_OFF+1) : tempsID.HEAT_DIRTCHEAP;
+        const maxUpdateIndex = (thermoDragIndex >= tempsID.COOL_DIRTCHEAP) ? tempsID.COOL_OFF : tempsID.HEAT_DIRTCHEAP;
         for (let i = thermoDragIndex - 1; i >= minUpdateIndex; i--) {
           if (temps[i] > newTemp) moveThermoIndex(i, newTemp);
         }
-        for (let i = thermoDragIndex + 1; i < maxUpdateIndex; i++) {
+        for (let i = thermoDragIndex + 1; i <= maxUpdateIndex; i++) {
           if (temps[i] < newTemp) moveThermoIndex(i, newTemp);
         }
         moveThermoIndex(thermoDragIndex, newTemp);
@@ -1336,8 +1336,8 @@
           const text = (rangeStart === rangeEnd) ? `${Math.round(rangeStart*2)/2}` : `<[${Math.round(rangeStart*2)/2},${Math.round(rangeEnd*2)/2}]`
           // Cool Arc
           if (overlap) {
-            drawArc(ctx, `#00F${alpha}`, temps[tempsID.HEAT_DIRTCHEAP], rangeEnd + arcOffset, outerDia - 4*scaleFactor, 8*scaleFactor);
-            drawArc(ctx, `#00F${alpha}`, rangeStart - arcOffset, temps[tempsID.HEAT_DIRTCHEAP], outerDia - 6*scaleFactor, 4*scaleFactor);
+            drawArc(ctx, `#00F${alpha}`, Math.min(temps[tempsID.HEAT_DIRTCHEAP], rangeEnd + arcOffset), rangeEnd + arcOffset, outerDia - 4*scaleFactor, 8*scaleFactor);
+            drawArc(ctx, `#00F${alpha}`, rangeStart - arcOffset, Math.min(temps[tempsID.HEAT_DIRTCHEAP], rangeEnd + arcOffset), outerDia - 6*scaleFactor, 4*scaleFactor);
           } else {
             drawArc(ctx, `#00F${alpha}`, rangeStart - arcOffset, rangeEnd + arcOffset, outerDia - 4*scaleFactor, 8*scaleFactor);
           }
@@ -1379,13 +1379,13 @@
           let centerTemp = (temps[tempsID.HEAT_EXPENSIVE] + temps[tempsID.HEAT_DIRTCHEAP])/2;
           let centerAngle = tempToAngle(markerStartPos, markerEndPos, startTemp, endTemp, centerTemp);
           ctx.fillStyle = "#800";
-          let focusText = (focus === 1) ? 'unfocus' : 'focus';
+          let focusText = (focus === 1) ? '-' : '+';
           arcText(ctx, focusText, tCenterX, tCenterY, outerDia+10, centerAngle, centerAngle);
           ctx.fill();
           centerTemp = (temps[tempsID.COOL_EXPENSIVE] + temps[tempsID.COOL_DIRTCHEAP])/2;
           centerAngle = tempToAngle(markerStartPos, markerEndPos, startTemp, endTemp, centerTemp);
           ctx.fillStyle = "#008";
-          focusText = (focus === 2) ? 'unfocus' : 'focus';
+          focusText = (focus === 2) ? '-' : '+';
           arcText(ctx, focusText, tCenterX, tCenterY, outerDia+10, centerAngle, centerAngle);
           ctx.fill();
         }
