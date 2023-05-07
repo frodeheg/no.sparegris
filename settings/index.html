@@ -321,7 +321,7 @@
       function generateOverrideList() {
         var list = document.getElementById("overrideList");
         var gen_list =
-          '<table width="100%">' +
+          '<table width="100%" class="device-list">' +
             '<tr>' +
               '<th style="text-align:left" width="60%">' + overrideDeviceText + '</th>' +
               '<th style="text-align:left" width="40%">' + overrideStatusText + '</th>' +
@@ -354,14 +354,14 @@
 
             for (zone in zoneList) {
               if (zoneList[zone].enabled === false && deviceList[deviceId].memberOf.includes(zone)) {
-                reasons.push(overrideZoneText.replace("${zone}", zoneList[zone].name));
+                reasons.push(overrideZoneText.replace("${zone}", `"${limitText(zoneList[zone].name)}"`));
               }
             }
             if (reasons.length > 0) {
               gen_list +=
               "<tr>" +
-                "<td>" + limitText(deviceList[deviceId].name) + "</td>" +
-                "<td>" + limitText(reasons.join('<br>')) + "</td>" +
+                `<td><h3>${limitText(deviceList[deviceId].name)}</h3><p>${limitText(deviceList[deviceId].room)}</p></td>` +
+                `<td><p>${reasons.join('</p><p>')}</p></td>` +
               "</tr>";
             }
           }
@@ -373,7 +373,7 @@
       function generateZoneList() {
         var list = document.getElementById("zoneList");
         var gen_list =
-          '<table width="100%">' +
+          '<table width="100%" class="device-list">' +
             '<tr>' +
               '<th style="text-align:left" width="60%">' + zoneNameText + '</th>' +
               '<th style="text-align:left" width="40%">' + zoneNumText + '</th>' +
@@ -388,7 +388,7 @@
             }
             gen_list +=
               "<tr>" +
-                "<td>" + limitText(zoneList[zone].name) + "</td>" +
+                "<td><h3>" + limitText(zoneList[zone].name) + "</h3></td>" +
                 "<td>" + String(num_affected_devices) + "</td>" +
               "</tr>";
           } // else the zone has been enabled again
@@ -471,7 +471,7 @@
         var displayTemp = document.getElementById("controlTemp").value >= 1;
         var list = document.getElementById("priorityList");
         var gen_list =
-          '<table class=device-list>' +
+          '<table class="device-list">' +
             '<tr>' +
               '<th colspan="3" align="left">' + priorityText + '</th>' +
               '<th align="left">' + deviceText + '</th>' +
