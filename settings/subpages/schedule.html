@@ -1091,16 +1091,6 @@
         if (newTemp < startTemp) newTemp = startTemp;
         if (newTemp > endTemp) newTemp = endTemp;
         if (newTemp > 15 && thermoDragIndex === tempsID.HEAT_OFF) newTemp = 15;
-        const timerOpTemp = +document.getElementById('timerOpTemp').value;
-        // Fix up the rest of the values:
-        if (timerOpTemp === TEMPOP.STATIC) {
-          for (let i = tempsID.HEAT_EXPENSIVE; i <= tempsID.HEAT_DIRTCHEAP; i++) {
-            setThermoValue(i, temps[tempsID.HEAT_NORMAL]);
-          }
-          for (let i = tempsID.COOL_DIRTCHEAP; i <= tempsID.COOL_EXPENSIVE; i++) {
-            setThermoValue(i, temps[tempsID.COOL_NORMAL]);
-          }
-        }
         // Push other values out of the new range
         const minUpdateIndex = (thermoDragIndex >= tempsID.COOL_DIRTCHEAP) ? tempsID.COOL_DIRTCHEAP : tempsID.HEAT_OFF;
         const maxUpdateIndex = (thermoDragIndex >= tempsID.COOL_DIRTCHEAP) ? tempsID.COOL_OFF : tempsID.HEAT_DIRTCHEAP;
@@ -1196,7 +1186,7 @@
       ctx.stroke();
     }
 
-    function refreshThermostat(ttt = undefined) {
+    function refreshThermostat() {
       if (timerSelected === undefined) return;
       try {
         const canvas = document.getElementById("myThermostat");
@@ -1219,6 +1209,16 @@
           //onOffOp === DEVICE_OP.CONTROLLED_ON    => Temp (onoff else)
         const whenText = document.getElementById("whenText").innerHTML;
         const thenText = document.getElementById("thenText").innerHTML;
+
+        // Fix up the rest of the values:
+        if (tempOp === TEMPOP.STATIC) {
+          for (let i = tempsID.HEAT_EXPENSIVE; i <= tempsID.HEAT_DIRTCHEAP; i++) {
+            setThermoValue(i, temps[tempsID.HEAT_NORMAL]);
+          }
+          for (let i = tempsID.COOL_DIRTCHEAP; i <= tempsID.COOL_EXPENSIVE; i++) {
+            setThermoValue(i, temps[tempsID.COOL_NORMAL]);
+          }
+        }
 
         // Dimensions
         cWidth = canvas.width;
@@ -1282,7 +1282,7 @@
 
         let value = [];
         let arcOffset = 0.25;
-        overlap = showHeat && showCool && (temps[tempsID.HEAT_DIRTCHEAP] > temps[tempsID.COOL_DIRTCHEAP]);
+        overlap = showHeat && showCool && (temps[tempsID.HEAT_DIRTCHEAP] > temps[tempsID.COOL_DIRTCHEAP]) && (tempOp !== TEMPOP.STATIC);
         if (!overlap) { focus = 0; }
         if (showHeat) {
           let alpha = (focus === 2) ? '2' : 'F';
