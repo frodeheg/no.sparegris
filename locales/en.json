@@ -532,6 +532,8 @@
     "CoolNormal": "Normal cooling",
     "CoolExpensive": "Expensive cooling",
     "CoolExtreme": "Very expensive cooling",
-    "CoolOff": "Cooling off"
+    "CoolOff": "Cooling off",
+    "whenText": "when",
+    "thenText": "then"
   }
 }

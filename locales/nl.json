@@ -532,6 +532,8 @@
     "CoolNormal": "Normale koeling",
     "CoolExpensive": "Dure koeling",
     "CoolExtreme": "Zeer dure koeling",
-    "CoolOff": "Koelen uitgeschakeld"
+    "CoolOff": "Koelen uitgeschakeld",
+    "whenText": "wanneer",
+    "thenText": "dan"
   }
 }

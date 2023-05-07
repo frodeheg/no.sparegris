@@ -532,6 +532,8 @@
     "CoolNormal": "Normal kjøling",
     "CoolExpensive": "Dyr kjøling",
     "CoolExtreme": "Veldig dyr kjøling",
-    "CoolOff": "Kjøling av"
+    "CoolOff": "Kjøling av",
+    "whenText": "når",
+    "thenText": "så"
   }
 }

@@ -532,6 +532,8 @@
     "CoolNormal": "Refroidissement normal",
     "CoolExpensive": "Refroidissement coûteux",
     "CoolExtreme": "Refroidissement très cher",
-    "CoolOff": "Refroidissement désactivé"
+    "CoolOff": "Refroidissement désactivé",
+    "whenText": "quand",
+    "thenText": "alors"
   }
 }

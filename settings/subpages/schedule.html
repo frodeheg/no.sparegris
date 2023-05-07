@@ -292,6 +292,8 @@
     <div style="display:none" data-i18n="thermostat.CoolExpensive" id="CoolExpensiveText"></div>
     <div style="display:none" data-i18n="thermostat.CoolExtreme" id="CoolExtremeText"></div>
     <div style="display:none" data-i18n="thermostat.CoolOff" id="CoolOffText"></div>
+    <div style="display:none" data-i18n="thermostat.whenText" id="whenText"></div>
+    <div style="display:none" data-i18n="thermostat.thenText" id="thenText"></div>
 
     <!-- Help dialog -->
     <div id="helpPage" class="helpBg" onclick="helpOff()">
@@ -1215,6 +1217,8 @@
           onOffOp === DEVICE_OP.IGNORE
           || onOffOp === DEVICE_OP.UNCONDITIONAL_ON; // (None for on/off)
           //onOffOp === DEVICE_OP.CONTROLLED_ON    => Temp (onoff else)
+        const whenText = document.getElementById("whenText").innerHTML;
+        const thenText = document.getElementById("thenText").innerHTML;
 
         // Dimensions
         cWidth = canvas.width;
@@ -1329,8 +1333,8 @@
             if (ACMode === ACMODE.PIGGY) centerText(ctx, heatText, tCenterX, tCenterY - 36*scaleFactor);
             ctx.font = `${Math.round(10*scaleFactor*10)/10}px Verdana`;
             const heatTriggerText = (ACMode === ACMODE.PIGGY) ? `< ${heatTrigger}°C` : `${heatText.toLowerCase()}`;
-            centerText(ctx, `when ${heatTriggerText}`, tCenterX, tCenterY - 22*scaleFactor);
-            centerText(ctx, `then ${text}°C`, tCenterX, tCenterY - 8*scaleFactor);
+            centerText(ctx, `${whenText} ${heatTriggerText}`, tCenterX, tCenterY - 22*scaleFactor);
+            centerText(ctx, `${thenText} ${text}°C`, tCenterX, tCenterY - 8*scaleFactor);
           } else {
             centerText(ctx, heatText, tCenterX, tCenterY - 30*scaleFactor);
             centerText(ctx, `${text}°C`, tCenterX, tCenterY - 10*scaleFactor);
@@ -1392,8 +1396,8 @@
             if (ACMode === ACMODE.PIGGY) centerText(ctx, coolText, tCenterX, tCenterY + 38*scaleFactor);
             ctx.font = `${Math.round(10*scaleFactor*10)/10}px Verdana`;
             const coolTriggerText = (ACMode === ACMODE.PIGGY) ? `> ${coolTrigger}°C` : `${coolText.toLowerCase()}`;
-            centerText(ctx, `when ${coolTriggerText}`, tCenterX, tCenterY + 8*scaleFactor);
-            centerText(ctx, `then ${text}°C`, tCenterX, tCenterY + 22*scaleFactor);
+            centerText(ctx, `${whenText} ${coolTriggerText}`, tCenterX, tCenterY + 8*scaleFactor);
+            centerText(ctx, `${thenText} ${text}°C`, tCenterX, tCenterY + 22*scaleFactor);
           } else {
             centerText(ctx, coolText, tCenterX, tCenterY + 30*scaleFactor);
             centerText(ctx, `${text}°C`, tCenterX, tCenterY + 10*scaleFactor);
@@ -1418,7 +1422,7 @@
           ctx.fill();
         }
         // Switch mode indicators:
-        if (showCool && showHeat) {
+        if (showCool && showHeat && ACMode === ACMODE.PIGGY) {
           focusText = '‣';
           ctx.fillStyle = `#800${(focus === 2) ? '1' : '4'}`;
           centerAngle = tempToAngle(markerStartPos, markerEndPos, startTemp, endTemp, heatTrigger);
