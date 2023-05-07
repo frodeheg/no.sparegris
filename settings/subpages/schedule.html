@@ -973,6 +973,8 @@
     let showHeat = true;
     let showCool = true;
     let overlap = false;
+    let coolTrigger;
+    let heatTrigger;
     let focus = 0;
     var thermoIsBig = false;
     let scaleFactor = 400/180;
@@ -1291,7 +1293,6 @@
             rangeStart = temps[tempsID.HEAT_NORMAL];
             rangeEnd = temps[tempsID.HEAT_NORMAL];
           }
-          const text = (rangeStart === rangeEnd) ? `${Math.round(rangeStart*2)/2}` : `>[${Math.round(rangeStart*2)/2},${Math.round(rangeEnd*2)/2}]`;
           // Heat Arc
           drawArc(ctx, `#F00${alpha}`, rangeStart - arcOffset, rangeEnd + arcOffset, outerDia - 4*scaleFactor, 8*scaleFactor);
           // Heat price points
@@ -1322,8 +1323,18 @@
           ctx.font = `${Math.round(14*scaleFactor*10)/10}px Verdana`;
           ctx.fillStyle = `#000${alpha}`;
           const heatText = document.getElementById("heatText").innerHTML;
-          centerText(ctx, heatText, tCenterX, tCenterY - 30*scaleFactor);
-          centerText(ctx, `${text}°C`, tCenterX, tCenterY - 10*scaleFactor);
+          const text = (rangeStart === rangeEnd) ? `${Math.round(rangeStart*2)/2}` : `>[${Math.round(rangeStart*2)/2},${Math.round(rangeEnd*2)/2}]`;
+          if (showCool) {
+            heatTrigger = Math.min(temps[tempsID.HEAT_DIRTCHEAP], temps[tempsID.COOL_DIRTCHEAP] - 2);
+            if (ACMode === ACMODE.PIGGY) centerText(ctx, heatText, tCenterX, tCenterY - 36*scaleFactor);
+            ctx.font = `${Math.round(10*scaleFactor*10)/10}px Verdana`;
+            const heatTriggerText = (ACMode === ACMODE.PIGGY) ? `< ${heatTrigger}°C` : `${heatText.toLowerCase()}`;
+            centerText(ctx, `when ${heatTriggerText}`, tCenterX, tCenterY - 22*scaleFactor);
+            centerText(ctx, `then ${text}°C`, tCenterX, tCenterY - 8*scaleFactor);
+          } else {
+            centerText(ctx, heatText, tCenterX, tCenterY - 30*scaleFactor);
+            centerText(ctx, `${text}°C`, tCenterX, tCenterY - 10*scaleFactor);
+          }
           ctx.fill();
           value.push(temps[tempsID.HEAT_DIRTCHEAP]);
         }
@@ -1340,7 +1351,6 @@
             rangeStart = temps[tempsID.COOL_NORMAL];
             rangeEnd = temps[tempsID.COOL_NORMAL];
           }
-          const text = (rangeStart === rangeEnd) ? `${Math.round(rangeStart*2)/2}` : `<[${Math.round(rangeStart*2)/2},${Math.round(rangeEnd*2)/2}]`
           // Cool Arc
           if (overlap && !(focus === 2)) {
             drawArc(ctx, `#00F${alpha}`, Math.min(temps[tempsID.HEAT_DIRTCHEAP], rangeEnd + arcOffset), rangeEnd + arcOffset, outerDia - 4*scaleFactor, 8*scaleFactor);
@@ -1376,8 +1386,18 @@
           ctx.font = `${Math.round(14*scaleFactor*10)/10}px Verdana`;
           ctx.fillStyle = `#000${alpha}`;
           const coolText = document.getElementById("coolText").innerHTML;
-          centerText(ctx, coolText, tCenterX, tCenterY + 30*scaleFactor);
-          centerText(ctx, `${text}°C`, tCenterX, tCenterY + 10*scaleFactor);
+          const text = (rangeStart === rangeEnd) ? `${Math.round(rangeStart*2)/2}` : `<[${Math.round(rangeStart*2)/2},${Math.round(rangeEnd*2)/2}]`
+          if (showHeat) {
+            coolTrigger = Math.max(temps[tempsID.COOL_DIRTCHEAP], temps[tempsID.HEAT_DIRTCHEAP] + 2);
+            if (ACMode === ACMODE.PIGGY) centerText(ctx, coolText, tCenterX, tCenterY + 38*scaleFactor);
+            ctx.font = `${Math.round(10*scaleFactor*10)/10}px Verdana`;
+            const coolTriggerText = (ACMode === ACMODE.PIGGY) ? `> ${coolTrigger}°C` : `${coolText.toLowerCase()}`;
+            centerText(ctx, `when ${coolTriggerText}`, tCenterX, tCenterY + 8*scaleFactor);
+            centerText(ctx, `then ${text}°C`, tCenterX, tCenterY + 22*scaleFactor);
+          } else {
+            centerText(ctx, coolText, tCenterX, tCenterY + 30*scaleFactor);
+            centerText(ctx, `${text}°C`, tCenterX, tCenterY + 10*scaleFactor);
+          }
           ctx.fill();
           value.push(temps[tempsID.COOL_OFF]);
         }
@@ -1401,12 +1421,10 @@
         if (showCool && showHeat) {
           focusText = '‣';
           ctx.fillStyle = `#800${(focus === 2) ? '1' : '4'}`;
-          centerTemp = Math.min(temps[tempsID.HEAT_DIRTCHEAP], temps[tempsID.COOL_DIRTCHEAP] - 2);
-          centerAngle = tempToAngle(markerStartPos, markerEndPos, startTemp, endTemp, centerTemp);
+          centerAngle = tempToAngle(markerStartPos, markerEndPos, startTemp, endTemp, heatTrigger);
           arcText(ctx, focusText, tCenterX, tCenterY, innerDia-6, centerAngle, centerAngle-Math.PI/2, 24); // To Heat
           ctx.fillStyle = `#008${(focus === 1) ? '1' : '4'}`;
-          centerTemp = Math.max(temps[tempsID.COOL_DIRTCHEAP], temps[tempsID.HEAT_DIRTCHEAP] + 2);
-          centerAngle = tempToAngle(markerStartPos, markerEndPos, startTemp, endTemp, centerTemp);
+          centerAngle = tempToAngle(markerStartPos, markerEndPos, startTemp, endTemp, coolTrigger);
           arcText(ctx, focusText, tCenterX, tCenterY, innerDia-6, centerAngle, centerAngle-Math.PI/2, 24); // To Cool
           ctx.fill();
         }
