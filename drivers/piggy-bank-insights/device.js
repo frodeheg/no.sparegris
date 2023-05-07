@@ -16,6 +16,7 @@ class MyDevice extends Device {
     this.alive = true;
     this.intervalID = undefined;
     this.currency = 'NOK';
+    this.err = '';
 
     // Fetch poll interval and set up timer
     const settings = this.getSettings();
@@ -312,23 +313,23 @@ class MyDevice extends Device {
       }
       // this.homey.app.updateLog("Updating state: " + JSON.stringify(piggyState), 1);
       if (piggyState.power_last_hour) {
-        this.setCapabilityValue('meter_power.last_hour', piggyState.power_last_hour);
+        this.setCapabilityValue('meter_power.last_hour', piggyState.power_last_hour).catch(this.err);
       }
       if (piggyState.power_estimated) {
-        this.setCapabilityValue('meter_power.estimated', piggyState.power_estimated);
+        this.setCapabilityValue('meter_power.estimated', piggyState.power_estimated).catch(this.err);
       }
-      this.setCapabilityValue('alarm_generic.overshoot', piggyState.alarm_overshoot);
+      this.setCapabilityValue('alarm_generic.overshoot', piggyState.alarm_overshoot).catch(this.err);
 
-      this.setCapabilityValue('measure_power.free_capacity', Math.round(piggyState.free_capacity));
-      this.setCapabilityValue('measure_power.reserved_power', piggyState.safety_power);
+      this.setCapabilityValue('measure_power.free_capacity', Math.round(piggyState.free_capacity)).catch(this.err);
+      this.setCapabilityValue('measure_power.reserved_power', piggyState.safety_power).catch(this.err);
       let percentageOn = Math.round((100 * (piggyState.num_devices - piggyState.num_devices_off)) / piggyState.num_devices);
       percentageOn = (percentageOn < 0) ? 0 : (percentageOn > 100) ? 100 : percentageOn;
-      this.setCapabilityValue('piggy_devices_on', percentageOn);
+      this.setCapabilityValue('piggy_devices_on', percentageOn).catch(this.err);
 
       // Set Price point capability + update timeline using boolean workaround capabilities
       const prevPricePoint = await this.getStoreValue('piggy_price');
       if (piggyState.price_point !== null && piggyState !== undefined) {
-        this.setCapabilityValue('piggy_price', String(piggyState.price_point));
+        this.setCapabilityValue('piggy_price', String(piggyState.price_point)).catch(this.err);
       }
       if (+piggyState.price_point !== +prevPricePoint) {
         this.setStoreValue('piggy_price', piggyState.price_point);
@@ -344,7 +345,7 @@ class MyDevice extends Device {
 
       // Set Mode capability + update timeline using boolean workaround capabilities
       const prevMode = await this.getStoreValue('piggy_mode');
-      this.setCapabilityValue('piggy_mode', String(piggyState.operating_mode));
+      this.setCapabilityValue('piggy_mode', String(piggyState.operating_mode)).catch(this.err);
       if (+piggyState.operating_mode !== +prevMode) {
         this.setStoreValue('piggy_mode', +piggyState.operating_mode);
         switch (+piggyState.operating_mode) {
@@ -362,67 +363,67 @@ class MyDevice extends Device {
       }
 
       if (piggyState.power_yesterday) {
-        this.setCapabilityValue('meter_power.last_day', +piggyState.power_yesterday);
+        this.setCapabilityValue('meter_power.last_day', +piggyState.power_yesterday).catch(this.err);
       }
       if (piggyState.power_last_month) {
-        this.setCapabilityValue('meter_power.last_month', +piggyState.power_last_month);
+        this.setCapabilityValue('meter_power.last_month', +piggyState.power_last_month).catch(this.err);
       }
       if (piggyState.power_average) {
-        this.setCapabilityValue('meter_power.month_estimate', +piggyState.power_average);
+        this.setCapabilityValue('meter_power.month_estimate', +piggyState.power_average).catch(this.err);
       }
 
       // Experimental capabilities, so only update if they exist
       if (this.hasCapability('piggy_money.savings_all_time_use') === true && piggyState.savings_all_time_use) {
-        this.setCapabilityValue('piggy_money.savings_all_time_use', piggyState.savings_all_time_use);
+        this.setCapabilityValue('piggy_money.savings_all_time_use', piggyState.savings_all_time_use).catch(this.err);
       }
       if (this.hasCapability('piggy_money.savings_all_time_power_part') === true && piggyState.savings_all_time_power_part) {
-        this.setCapabilityValue('piggy_money.savings_all_time_power_part', piggyState.savings_all_time_power_part);
+        this.setCapabilityValue('piggy_money.savings_all_time_power_part', piggyState.savings_all_time_power_part).catch(this.err);
       }
       if (this.hasCapability('piggy_money.savings_all_time_total') === true && (piggyState.savings_all_time_use || piggyState.savings_all_time_power_part)) {
-        this.setCapabilityValue('piggy_money.savings_all_time_total', piggyState.savings_all_time_use + piggyState.savings_all_time_power_part);
+        this.setCapabilityValue('piggy_money.savings_all_time_total', piggyState.savings_all_time_use + piggyState.savings_all_time_power_part).catch(this.err);
       }
 
       // Debug capabilities, so only update if they exist
       if (this.hasCapability('piggy_num_failures') === true) {
-        this.setCapabilityValue('piggy_num_failures', piggyState.num_fail_on + piggyState.num_fail_off + piggyState.num_fail_temp);
+        this.setCapabilityValue('piggy_num_failures', piggyState.num_fail_on + piggyState.num_fail_off + piggyState.num_fail_temp).catch(this.err);
       }
       if (this.hasCapability('piggy_num_restarts') === true) {
-        this.setCapabilityValue('piggy_num_restarts', piggyState.num_restarts);
+        this.setCapabilityValue('piggy_num_restarts', piggyState.num_restarts).catch(this.err);
       }
 
       // Extended capabilities so only update if they exist
       if (this.hasCapability('meter_power.dirt_cheap_energy_avg') === true && piggyState.dirtcheap_price_energy_avg) {
-        this.setCapabilityValue('meter_power.dirt_cheap_energy_avg', piggyState.dirtcheap_price_energy_avg);
+        this.setCapabilityValue('meter_power.dirt_cheap_energy_avg', piggyState.dirtcheap_price_energy_avg).catch(this.err);
       }
       if (this.hasCapability('meter_power.low_energy_avg') === true && piggyState.low_price_energy_avg) {
-        this.setCapabilityValue('meter_power.low_energy_avg', piggyState.low_price_energy_avg);
+        this.setCapabilityValue('meter_power.low_energy_avg', piggyState.low_price_energy_avg).catch(this.err);
       }
       if (this.hasCapability('meter_power.norm_energy_avg') === true && piggyState.norm_price_energy_avg) {
-        this.setCapabilityValue('meter_power.norm_energy_avg', piggyState.norm_price_energy_avg);
+        this.setCapabilityValue('meter_power.norm_energy_avg', piggyState.norm_price_energy_avg).catch(this.err);
       }
       if (this.hasCapability('meter_power.high_energy_avg') === true && piggyState.high_price_energy_avg) {
-        this.setCapabilityValue('meter_power.high_energy_avg', piggyState.high_price_energy_avg);
+        this.setCapabilityValue('meter_power.high_energy_avg', piggyState.high_price_energy_avg).catch(this.err);
       }
       if (this.hasCapability('meter_power.extreme_energy_avg') === true && piggyState.extreme_price_energy_avg) {
-        this.setCapabilityValue('meter_power.extreme_energy_avg', piggyState.extreme_price_energy_avg);
+        this.setCapabilityValue('meter_power.extreme_energy_avg', piggyState.extreme_price_energy_avg).catch(this.err);
       }
       if (this.hasCapability('piggy_money.average_price') === true && piggyState.average_price) {
-        this.setCapabilityValue('piggy_money.average_price', piggyState.average_price);
+        this.setCapabilityValue('piggy_money.average_price', piggyState.average_price).catch(this.err);
       }
       if (this.hasCapability('piggy_money.current_price') === true && piggyState.current_price) {
-        this.setCapabilityValue('piggy_money.current_price', piggyState.current_price);
+        this.setCapabilityValue('piggy_money.current_price', piggyState.current_price).catch(this.err);
       }
       if (this.hasCapability('piggy_money.dirt_cheap_price_limit') === true && piggyState.dirtcheap_price_limit) {
-        this.setCapabilityValue('piggy_money.dirt_cheap_price_limit', piggyState.dirtcheap_price_limit);
+        this.setCapabilityValue('piggy_money.dirt_cheap_price_limit', piggyState.dirtcheap_price_limit).catch(this.err);
       }
       if (this.hasCapability('piggy_money.low_price_limit') === true && piggyState.low_price_limit) {
-        this.setCapabilityValue('piggy_money.low_price_limit', piggyState.low_price_limit);
+        this.setCapabilityValue('piggy_money.low_price_limit', piggyState.low_price_limit).catch(this.err);
       }
       if (this.hasCapability('piggy_money.high_price_limit') === true && piggyState.high_price_limit) {
-        this.setCapabilityValue('piggy_money.high_price_limit', piggyState.high_price_limit);
+        this.setCapabilityValue('piggy_money.high_price_limit', piggyState.high_price_limit).catch(this.err);
       }
       if (this.hasCapability('piggy_money.extreme_price_limit') === true && piggyState.extreme_price_limit) {
-        this.setCapabilityValue('piggy_money.extreme_price_limit', piggyState.extreme_price_limit);
+        this.setCapabilityValue('piggy_money.extreme_price_limit', piggyState.extreme_price_limit).catch(this.err);
       }
 
       if (this.hasCapability('button.filterChangeAC') === false && piggyState.hasAC) {
@@ -460,8 +461,8 @@ class MyDevice extends Device {
 
       // Change limiter
       const limiterState = (piggyState.activeLimit === undefined) ? '-1' : `${piggyState.activeLimit}`;
-      this.setCapabilityValue('activeLimit', limiterState);
-      this.setCapabilityValue('alarm_generic.limited', piggyState.activeLimit !== undefined);
+      this.setCapabilityValue('activeLimit', limiterState).catch(this.err);
+      this.setCapabilityValue('alarm_generic.limited', piggyState.activeLimit !== undefined).catch(this.err);
 
       // Other things to report:
       // * 4: Average power used in every mode
@@ -498,7 +499,7 @@ class MyDevice extends Device {
     }
     capValue = !capValue;
     this.setStoreValue(capabilityName, capValue);
-    this.setCapabilityValue(capabilityName, capValue);
+    this.setCapabilityValue(capabilityName, capValue).catch(this.err);
   }
 
 }
