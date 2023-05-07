@@ -817,5 +817,8 @@
   },
   "0.20.27": {
     "en": "Added themperature popup when dragging thermostat in scheduler."
+  },
+  "0.20.28": {
+    "en": "Workaround for HP23 bug that causes insights to crash + Significant updates to the Thermostat editor."
   }
 }
