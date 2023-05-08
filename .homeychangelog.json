@@ -823,5 +823,8 @@
   },
   "0.20.29": {
     "en": "Another try to work around the HP23 crash bug. + Visual updates for the Thermostat editor."
+  },
+  "0.20.30": {
+    "en": "Added room text in zone override view + Added text box editors in thermostat editor + Fixed various bugs in thermostat editor"
   }
 }
