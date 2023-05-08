@@ -424,36 +424,88 @@
             </select><br>
             <div id="thermoTab" class="thermoTab">
               <div id="dragTemp" class="dragTemp" onpointermove="draggingThermo(this, event);" >20</div>
-              <canvas id="myThermostat" class="thermo" width="400" height="400" onpointermove="draggingThermo(this, event);" onpointerdown="startDragThermo(this, event);" onpointerup="stopDragThermo(this, event);" onpointerleave="abortDragThermo(this, event);">
-                Your browser does not support the HTML5 canvas tag.
-              </canvas>
-              <div class="hintButton" style="position: absolute; top: 5px; left: 5px;" onclick="helpOn('myThermoHint')">i</div>
-              <div id="closeThermo" class="closeButton" style="padding: 0px; position: absolute; top: 5px; right: 5px; min-width: 20px;" onclick="if (thermoIsBig) unZoomThermo(); else zoomThermo()">&#10529;</div>
-              <div id="thermoGuide" class="centerText"></div>
+              <table width="100%" style="padding:0px;">
+                <tr>
+                  <td width="20%"><div class="hintButton" style="position: absolute; top: 5px; left: 5px;" onclick="helpOn('myThermoHint')">i</div></td>
+                  <td width="60%" style="text-align: center"><div id="switchView" class="closeButton" onclick="switchView()">Switch view</div></td>
+                  <td width="20%" style="text-align: right"><div id="closeThermo" class="closeButton" style="min-width: 20px;" onclick="if (thermoIsBig) unZoomThermo(); else zoomThermo()">&#10529;</div></td>
+                </tr>
+                <tr><td colspan="3">
+                  <div id="thermoView">
+                    <canvas id="myThermostat" class="thermo" width="400" height="400" onpointermove="draggingThermo(this, event);" onpointerdown="startDragThermo(this, event);" onpointerup="stopDragThermo(this, event);" onpointerleave="abortDragThermo(this, event);">
+                    Your browser does not support the HTML5 canvas tag, switch to simple view.
+                    </canvas>
+                    <div id="thermoGuide" class="centerText"></div>
+                  </div>
+                  <div id="textView" style="display: none;">
+                    <div id="scTemp">
+                      <table width="100%">
+                        <tr id="heatBase">
+                          <td width="10" style="background: #F00;"></td>
+                          <td><table>
+                            <tr name = "PPOFF"><td width="10" style="background: #000;"></td><td>
+                              <label for="timerTemp0" data-i18n="thermostat.HeatOff">OFF (heat)</label>:<br>
+                              <input id="timerTemp0" class="inputElem" type="number" min="5" max="15" step="0.5" onchange="changeTempSimple(0, this)">°C</td>
+                            </tr>
+                            <tr name = "PPRow"><td width="10" style="background: #F00"></td><td>
+                              <label for="timerTemp1" data-i18n="thermostat.HeatExtreme">Extreme</label>:<br>
+                              <input id="timerTemp1" class="inputElem" type="number" min="5" max="90" step="0.5" onchange="changeTempSimple(1, this)">°C</td>
+                            </tr>
+                            <tr name = "PPRow"><td width="10" style="background: #900"></td><td>
+                              <label for="timerTemp2" data-i18n="thermostat.HeatExpensive">Expensive</label>:<br>
+                              <input id="timerTemp2" class="inputElem" type="number" min="5" max="90" step="0.5" onchange="changeTempSimple(2, this)">°C</td>
+                            </tr>
+                            <tr><td width="10" style="background: #980"></td><td>
+                              <label for="timerTemp3" data-i18n="thermostat.HeatNormal">ON (heating)</label>:<br>
+                              <input id="timerTemp3" class="inputElem" type="number" min="5" max="90" step="0.5" onchange="changeTempSimple(3, this)">°C</td>
+                            </tr>
+                            <tr name = "PPRow"><td width="10" style="background: #080"></td><td>
+                              <label for="timerTemp4" data-i18n="thermostat.HeatCheap">Cheap</label>:<br>
+                              <input id="timerTemp4" class="inputElem" type="number" min="5" max="90" step="0.5" onchange="changeTempSimple(4, this)">°C</td>
+                            </tr>
+                            <tr name = "PPRow"><td width="10" style="background: #0F0"></td><td>
+                              <label for="timerTemp5" data-i18n="thermostat.HeatDirtCheap">Dirt Cheap</label>:<br>
+                              <input id="timerTemp5" class="inputElem" type="number" min="5" max="90" step="0.5" onchange="changeTempSimple(5, this)">°C</td>
+                            </tr>
+                          </table></td>
+                        </tr>
+                        <tr id="coolBase" width="100%">
+                          <td width="10" style="background: #00F;"></td>
+                          <td><table>
+                            <tr name = "PPRow"><td width="10" style="background: #0F0"></td><td>
+                              <label for="timerTemp6" data-i18n="thermostat.CoolDirtCheap">Dirt Cheap</label>:<br>
+                              <input id="timerTemp6" class="inputElem" type="number" min="5" max="35" step="0.5" onchange="changeTempSimple(6, this)">°C</td>
+                            </tr>
+                            <tr name = "PPRow"><td width="10" style="background: #080"></td><td>
+                              <label for="timerTemp7" data-i18n="thermostat.CoolCheap">Cheap</label>:<br>
+                              <input id="timerTemp7" class="inputElem" type="number" min="5" max="35" step="0.5" onchange="changeTempSimple(7, this)">°C</td>
+                            </tr>
+                            <tr><td width="10" style="background: #980"></td><td>
+                              <label for="timerTemp8" data-i18n="thermostat.CoolNormal">ON (cool)</label>:<br>
+                              <input id="timerTemp8" class="inputElem" type="number" min="5" max="35" step="0.5" onchange="changeTempSimple(8, this)">°C</td>
+                            </tr>
+                            <tr name = "PPRow"><td width="10" style="background: #900"></td><td>
+                              <label for="timerTemp9" data-i18n="thermostat.CoolExpensive">Expensive</label>:<br>
+                              <input id="timerTemp9" class="inputElem" type="number" min="5" max="35" step="0.5" onchange="changeTempSimple(9, this)">°C</td>
+                            </tr>
+                            <tr name = "PPRow"><td width="10" style="background: #F00"></td><td>
+                              <label for="timerTemp10" data-i18n="thermostat.CoolExtreme">Extreme</label>:<br>
+                              <input id="timerTemp10" class="inputElem" type="number" min="5" max="35" step="0.5" onchange="changeTempSimple(10, this)">°C</td>
+                            </tr>
+                            <tr name = "PPOFF"><td width="10" style="background: #000;"></td><td>
+                              <label for="timerTemp11" data-i18n="thermostat.CoolOff">OFF (cool)</label>:<br>
+                              <input id="timerTemp11" class="inputElem" type="number" min="5" max="35" step="0.5" onchange="changeTempSimple(11, this)">°C</td>
+                            </tr>
+                          </table></td>
+                        </tr>
+                      </table>
+                    </div>
+                  </div>
+                </td></tr>
+              </table>
             </div>
             <div id="noneSelected" style="color:red; font-weight: bold;" data-i18n="settings.schedule.noneSelected">&larr; Please select an interval to edit.</div>
           </fieldset>
-          <div hidden>
-            <div id="scTemp">
-              <label for="timerBaseTempHeat" data-i18n="settings.schedule.basetemp">Base temperature (heating)</label>:<br>
-              <input id="timerBaseTempHeat" class="inputElem" type="number" min="-30" max="90" step="0.5" onchange="changeBaseTemp(this.value);displaySaveHint()">°C<br>
-              <div id="coolBase">
-                <label for="timerBaseTempCool" data-i18n="settings.schedule.basetemp">Base temperature (cooling)</label>:<br>
-                <input id="timerBaseTempCool" class="inputElem" type="number" min="-30" max="90" step="0.5" onchange="changeBaseTemp(this.value);displaySaveHint()">°C<br>
-              </div>
-            </div>
-            <fieldset id='scPP'>
-            <legend data-i18n="settings.menu.devices.prices">Price adjust</legend>
-            <label for="tempDirtCheap" data-i18n="settings.pricetab.dirtcheap">Dirt Cheap</label>:<br>
-            <input id="tempDirtCheap" class="inputElem" type="number" min="-30" max="90" step="0.5" onchange="changeDeltaTemp(0, this.value);displaySaveHint()">°C<br>
-            <label for="tempCheap" data-i18n="settings.pricetab.cheap">Cheap</label>:<br>
-            <input id="tempCheap" class="inputElem" type="number" min="-30" max="90" step="0.5" onchange="changeDeltaTemp(1, this.value);displaySaveHint()">°C<br>
-            <label for="tempExpensive" data-i18n="settings.pricetab.expensive">Expensive</label>:<br>
-            <input id="tempExpensive" class="inputElem" type="number" min="-30" max="90" step="0.5" onchange="changeDeltaTemp(3, this.value);displaySaveHint()">°C<br>
-            <label for="tempExtreme" data-i18n="settings.pricetab.extreme">Extreme</label>:<br>
-            <input id="tempExtreme" class="inputElem" type="number" min="-30" max="90" step="0.5" onchange="changeDeltaTemp(4, this.value);displaySaveHint()">°C<br>
-          </fieldset>
-          </div>
         </td>
       </tr>
       <tr><td colspan="2"></td><td style="vertical-align:top;"><input id="addTimer" style="width:100%; position: relative;" type="button" value="+" onclick="addTimer();"></td></tr>
@@ -565,6 +617,7 @@
       showHeat = ((+newMode === ACMODE.PIGGY) || (+newMode === ACMODE.HEAT) || (+newMode === ACMODE.UNCHANGED)  || (+newMode === ACMODE.AUTO))
       showCool = ((+newMode === ACMODE.PIGGY) || (+newMode === ACMODE.COOL) || (+newMode === ACMODE.UNCHANGED))
       document.getElementById('coolBase').style.display = showCool ? 'block' : 'none';
+      document.getElementById('heatBase').style.display = showHeat ? 'block' : 'none';
       refreshTempOp();
       refreshTimeTable();
       refreshThermostat();
@@ -586,33 +639,55 @@
       refreshThermostat();
     }
 
-    function changeBaseTemp(newTemp) {
-      parent.schedules[scheduleSelected].items[timerSelected].temp = +newTemp;
+    function changeTempSimple(idx, elem) {
+      newTemp = +elem.value;
+      if (newTemp > +elem.max) newTemp = +elem.max;
+      if (newTemp < +elem.min) newTemp = +elem.min;
+      setThermoValue(idx, newTemp);
+      if (Math.max(...temps) > 35) changeTempRange(90)
+      else changeTempRange(35);
+      // Clamp other values to the new range
+      const minUpdateIndex = (idx >= tempsID.COOL_DIRTCHEAP) ? tempsID.COOL_DIRTCHEAP : tempsID.HEAT_OFF;
+      const maxUpdateIndex = (idx >= tempsID.COOL_DIRTCHEAP) ? tempsID.COOL_OFF : tempsID.HEAT_DIRTCHEAP;
+      for (let i = idx - 1; i >= minUpdateIndex; i--) {
+        if (temps[i] > newTemp) setThermoValue(i, newTemp);
+      }
+      for (let i = idx + 1; i <= maxUpdateIndex; i++) {
+        if (temps[i] < newTemp) setThermoValue(i, newTemp);
+      }
       refreshTimeTable();
+      displaySaveHint();
     }
 
     function refreshTempOp() {
       const tempElement = document.getElementById('scTemp');
-      const ppElements = document.getElementById('scPP');
       const tempOp = +document.getElementById('timerOpTemp').value;
       const timerACMode = +document.getElementById('timerACMode').value;
       const thermoTab = document.getElementById('thermoTab');
+      let displayPP = true;
       if (tempOp === TEMP_OP.NONE
         || timerACMode === ACMODE.DRY
         || timerACMode === ACMODE.FAN) {
         tempElement.style.display = "none";
-        ppElements.style.display = "none";
         thermoTab.style.display = "none";
+        displayPP = false;
       } else if (tempOp === TEMP_OP.STATIC
         || timerACMode === ACMODE.AUTO) {
         tempElement.style.display = "block";
-        ppElements.style.display = "none";
         thermoTab.style.display = "block";
+        displayPP = false;
       } else if (tempOp === TEMP_OP.PRICE) {
         tempElement.style.display = "block";
-        ppElements.style.display = "block";
         thermoTab.style.display = "block";
+        displayPP = true;
       }
+      // Display PP
+      let ppElements = document.getElementsByName('PPRow');
+      ppElements.forEach(row => { row.style.display = displayPP ? 'table-row' : 'none'});
+      // Display Offs
+      let displayOFF = (timerACMode !== ACMODE.AUTO);
+      ppElements = document.getElementsByName('PPOFF');
+      ppElements.forEach(row => { row.style.display = displayOFF ? 'table-row' : 'none'});
       // Change AC options
       document.querySelectorAll("#timerACMode option").forEach(opt => {
         if (((tempOp === TEMPOP.NONE)
@@ -637,10 +712,6 @@
       scheduleSelected = value;
       timerSelected = undefined;
       const nameElement = document.getElementById('timerOpName');
-      const ppDirtElement = document.getElementById('tempDirtCheap');
-      const ppCheapElement = document.getElementById('tempCheap');
-      const ppExpensiveElement = document.getElementById('tempExpensive');
-      const ppExtremeElement = document.getElementById('tempExtreme');
       if (value in parent.schedules) {
         nameElement.disabled = false;
         nameElement.value = parent.schedules[value].name;
@@ -832,14 +903,8 @@
     function selectTimer(sourceId) {
       const sourceElement = document.getElementById(`si${sourceId}`);
       const onoffElement = document.getElementById('timerOpOnOff');
-      //const tempElement = document.getElementById('timerBaseTempHeat');
       const ACModeElement = document.getElementById('timerACMode');
       const timeElements = document.getElementById('scTime');
-      const ppElements = document.getElementById('scPP');
-      //const ppDirtElement = document.getElementById('tempDirtCheap');
-      //const ppCheapElement = document.getElementById('tempCheap');
-      //const ppExpensiveElement = document.getElementById('tempExpensive');
-      //const ppExtremeElement = document.getElementById('tempExtreme');
       const tempOpElement = document.getElementById('timerOpTemp');
       const maxHoursElement = document.getElementById('maxHours');
       if (timerSelected !== undefined) {
@@ -848,11 +913,6 @@
       }
       timeElements.disabled = true;
       onoffElement.disabled = true;
-      ppElements.disabled = true;
-      //ppDirtElement.value = '';
-      //ppCheapElement.value = '';
-      //ppExpensiveElement.value = '';
-      //ppExtremeElement.value = '';
 
       let newOnOffOp = '';
       let newTemp = '';
@@ -869,24 +929,21 @@
         onoffElement.disabled = false;
         const currentSchedule = parent.schedules[scheduleSelected];
         newOnOffOp = currentSchedule.items[timerSelected].operation;
-        //newTemp = currentSchedule.items[timerSelected].temp;
         ACMode = currentSchedule.items[timerSelected].ACMode;
-        ppElements.disabled = false;
         temps = currentSchedule.items[timerSelected].temp;
-        //ppDirtElement.value = currentSchedule.items[timerSelected].deltas[0];
-        //ppCheapElement.value = currentSchedule.items[timerSelected].deltas[1];
-        //ppExpensiveElement.value = currentSchedule.items[timerSelected].deltas[3];
-        //ppExtremeElement.value = currentSchedule.items[timerSelected].deltas[4];
         tempOpElement.value = currentSchedule.items[timerSelected].tempOp;
         maxHoursElement.value = (currentSchedule.items[timerSelected].maxHours);
-        changeTempRange(currentSchedule.tempRange)
+        for (let i = 0; i < 12; i++) {
+          const tempEdit = document.getElementById(`timerTemp${i}`);
+          if (tempEdit) tempEdit.value = temps[i];
+        }
+        changeTempRange(currentSchedule.tempRange);
       }
       onoffElement.value = newOnOffOp;
       thermoDragIndex = undefined;
       refreshScheduleOp();
       refreshTempOp();
       refreshThermostat();
-      //tempElement.value = newTemp;
       ACModeElement.value = ACMode;
       changeACMode(ACMode);
     }
@@ -1055,8 +1112,11 @@
     }
 
     function setThermoValue(index, newTemp) {
-      parent.schedules[scheduleSelected].items[timerSelected].temp[index] = Math.round(newTemp*2)/2;
-      temps[index] = newTemp;
+      const tempEdit = document.getElementById(`timerTemp${index}`);
+      const roundedVal = Math.round(newTemp * 2) / 2;
+      parent.schedules[scheduleSelected].items[timerSelected].temp[index] = roundedVal;
+      temps[index] = +newTemp;
+      if (tempEdit) tempEdit.value = roundedVal;
     }
 
     function moveThermoIndex(index, newTemp) {
@@ -1443,6 +1503,21 @@
         console.log(`Err: ${err}`);
       }
     }
+
+    function switchView() {
+      const thermoView = document.getElementById('thermoView').style;
+      const textView = document.getElementById('textView').style;
+      const showGraph = thermoView.display === 'none';
+      if (showGraph) {
+        thermoView.display = 'block';
+        textView.display = 'none';
+      } else {
+        thermoView.display = 'none';
+        textView.display = 'block';
+      }
+    }
+
+
     var isRealSystem = false;
     try {
       if (parent.iFrameCallback === undefined) {

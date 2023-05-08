@@ -21,7 +21,6 @@
       "notemp": "No temp control",
       "statictemp": "Constant temp",
       "pricetemp": "Price controlled",
-      "basetemp": "Basistemp",
       "schedule": "Current schedule",
       "schedules": "Schedules",
       "new": "New",
