@@ -826,5 +826,8 @@
   },
   "0.20.30": {
     "en": "Added room text in zone override view + Added text box editors in thermostat editor + Fixed various bugs in thermostat editor"
+  },
+  "0.20.31": {
+    "en": "Changed margins so app settings get more space + Minor fixes for thermostat view."
   }
 }
