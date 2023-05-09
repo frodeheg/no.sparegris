@@ -1,8 +1,12 @@
+.noMargin {
+  margin: 0px !important;
+  padding: 0px !important;
+}
+
 body {
-    font-size: 100%;
-    background-color: powderblue;
-    overflow: auto;
-    margin: 0px;
+  font-size: 100%;
+  background-color: powderblue;
+  overflow: auto;
 }
 
 img {
@@ -31,7 +35,7 @@ p {
 }
 
 .withMargin {
-  margin: 6px;
+  padding: 20px;
 }
 
 .small {
@@ -259,7 +263,7 @@ p {
   border: 1px solid rgba(0,0,0,0.5);
   border-radius: 8px;
   box-shadow: 2px 2px 10px gray;
-  z-index: 15;
+  z-index: 12;
 }
 
 #loadingText {
@@ -296,7 +300,7 @@ p {
   cursor: pointer;
   border-collapse: collapse;
   border: 0px solid black;
-  z-index: 12;
+  z-index: 15;
 }
 
 .menuitem .dropdown{

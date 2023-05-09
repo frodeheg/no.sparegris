@@ -1171,7 +1171,10 @@
         const dragTemp = document.getElementById('dragTemp');
         let cpos = canvas.getBoundingClientRect();
         let dpos = dragTemp.getBoundingClientRect();
-        let pos = {x: Math.max(event.clientX - cpos.left - dpos.width - 40, -cpos.left), y: Math.max(event.clientY - cpos.top - dpos.height - 20, -cpos.top)};
+        let pos = {
+          x: Math.max(event.clientX - cpos.left - dpos.width - 40, 0),
+          y: Math.max(event.clientY - cpos.top - dpos.height - 20, 0)
+        };
         dragTemp.style.top = `${pos.y}px`;
         dragTemp.style.left = `${pos.x}px`;
         dragTemp.innerHTML = `${newTemp}`;
@@ -1196,6 +1199,7 @@
 
     function abortDragThermo(canvas, event) {
       if (thermoIsDragging) {
+        displaySaveHint();
         draggingThermo(canvas, event);
         document.getElementById('dragTemp').style.display = 'none';
         thermoIsDragging = false;

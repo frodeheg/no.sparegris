@@ -838,7 +838,7 @@
   </head>
 
 
-  <body>
+  <body class="noMargin">
     <!--
     <h1 data-i18n="settings.title">.title</h1>
     <p data-i18n="settings.subtitle">.subtitle</p>
@@ -900,7 +900,7 @@
 
     <!-- Welcome page -->
     <div id="welcomePage" class="tabcontent">
-      <fieldset class="withMargin">
+      <fieldset>
         <legend data-i18n="settings.mode.powerSettings">mode.powerSettings</legend>
         <table class="settings_table">
           <tr>
@@ -1733,7 +1733,7 @@
 
     <!-- Mode specific page -->
     <div id="priorityPage" class="tabcontent">
-      <fieldset class="withMargin">
+      <fieldset>
         <legend><div class="blockHeader" data-i18n="settings.mode.operatingMode">mode.operatingMode</div></legend>
         <table class="settings_table">
           <tr>
@@ -1797,7 +1797,7 @@
     </div>
     <!-- Mode specific page end -->
 
-    <div class="right" style="display:none;" id="saveOuter">
+    <div class="right withMargin" style="display:none;" id="saveOuter">
     <button id="save" class="homey-button-primary-full" data-i18n="settings.saveButton">.saveButton</button>
     </div>
 
@@ -3041,7 +3041,7 @@
           //resizeIframe('schedulePage', message.w, message.h);
         } else if (message.id === 'wizAction') {
           runActionQueue(message.actionQueue);
-          document.getElementById('main_menu').style.zIndex = (message.actionQueue[0].action === UI_SHOW_OVERLAY) ? 1 : 12;
+          document.getElementById('main_menu').style.zIndex = (message.actionQueue[0].action === UI_SHOW_OVERLAY) ? 1 : 15;
         }
       };
 
