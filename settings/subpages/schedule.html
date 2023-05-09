@@ -71,21 +71,21 @@
 .dragTemp::after { content: "°C" }
 
 .closeButton {
-    margin: auto;
-    display: inline-block;
-    position: relative;
-    text-align:center;
-    font-size: 1em;
-    border: 1px solid black;
-    border-radius: 4px;
-    color: black;
-    padding: 2px;
-    min-width: 70px;
-    background-color: lightgray;
-    -webkit-user-select: none; /* Safari */
-    -ms-user-select: none; /* IE 10 and IE 11 */
-    user-select: none; /* Standard syntax */
-  }
+  margin: auto;
+  display: inline-block;
+  position: relative;
+  text-align:center;
+  font-size: 1em;
+  border: 1px solid black;
+  border-radius: 4px;
+  color: black;
+  padding: 2px;
+  min-width: 70px;
+  background-color: lightgray;
+  -webkit-user-select: none; /* Safari */
+  -ms-user-select: none; /* IE 10 and IE 11 */
+  user-select: none; /* Standard syntax */
+}
 
 .closeButton:hover {
   box-shadow: 0px 0px 10px 2px gold;
@@ -233,13 +233,18 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background-color: rgba(0,0,0,0.5);
-  width: 100%;
+  background-color: rgba(140, 179, 184);
   max-width: calc(100vh / 10 * 9);
+  box-shadow: 1px 1px 0px black, -1px -1px 0px black, -1px 1px 0px black, 1px -1px 0px black, 4px 4px 10px #0008;
 }
 
-.thermoZoomed > div.centerText {
-  color: white;
+.thermoZoomed #header {
+  background: #AAA;
+  box-shadow: 0px 1.5px 0px gray;
+}
+
+.thermoZoomed td {
+  padding: 4px;
 }
 
 .helpBg {
@@ -424,9 +429,9 @@
             </select><br>
             <div id="thermoTab" class="thermoTab">
               <div id="dragTemp" class="dragTemp" onpointermove="draggingThermo(this, event);" >20</div>
-              <table width="100%" style="padding:0px;">
-                <tr>
-                  <td width="20%"><div class="hintButton" style="position: absolute; top: 5px; left: 5px;" onclick="helpOn('myThermoHint')">i</div></td>
+              <table width="100%" style="padding:0px; border-spacing:0px;">
+                <tr id="header">
+                  <td width="20%"><div class="hintButton" onclick="helpOn('myThermoHint')">i</div></td>
                   <td width="60%" style="text-align: center"><div id="switchView" class="closeButton" onclick="switchView()">Switch view</div></td>
                   <td width="20%" style="text-align: right"><div id="closeThermo" class="closeButton" style="min-width: 20px;" onclick="if (thermoIsBig) unZoomThermo(); else zoomThermo()">&#10529;</div></td>
                 </tr>
@@ -439,31 +444,31 @@
                   </div>
                   <div id="textView" style="display: none;">
                     <div id="scTemp">
-                      <table width="100%">
+                      <table width="100%" style="border-spacing: 0px;">
                         <tr id="heatBase">
                           <td width="10" style="background: #F00;"></td>
-                          <td><table>
-                            <tr name = "PPOFF"><td width="10" style="background: #000;"></td><td>
+                          <td><table width="100%" style="border-spacing: 0px;">
+                            <tr name = "PPOFF"><td width="3" style="background: #000;"></td><td>
                               <label for="timerTemp0" data-i18n="thermostat.HeatOff">OFF (heat)</label>:<br>
                               <input id="timerTemp0" class="inputElem" type="number" min="5" max="15" step="0.5" onchange="changeTempSimple(0, this)">°C</td>
                             </tr>
-                            <tr name = "PPRow"><td width="10" style="background: #F00"></td><td>
+                            <tr name = "PPRow"><td width="3" style="background: #F00"></td><td>
                               <label for="timerTemp1" data-i18n="thermostat.HeatExtreme">Extreme</label>:<br>
                               <input id="timerTemp1" class="inputElem" type="number" min="5" max="90" step="0.5" onchange="changeTempSimple(1, this)">°C</td>
                             </tr>
-                            <tr name = "PPRow"><td width="10" style="background: #900"></td><td>
+                            <tr name = "PPRow"><td width="3" style="background: #900"></td><td>
                               <label for="timerTemp2" data-i18n="thermostat.HeatExpensive">Expensive</label>:<br>
                               <input id="timerTemp2" class="inputElem" type="number" min="5" max="90" step="0.5" onchange="changeTempSimple(2, this)">°C</td>
                             </tr>
-                            <tr><td width="10" style="background: #980"></td><td>
+                            <tr><td width="3" style="background: #980"></td><td>
                               <label for="timerTemp3" data-i18n="thermostat.HeatNormal">ON (heating)</label>:<br>
                               <input id="timerTemp3" class="inputElem" type="number" min="5" max="90" step="0.5" onchange="changeTempSimple(3, this)">°C</td>
                             </tr>
-                            <tr name = "PPRow"><td width="10" style="background: #080"></td><td>
+                            <tr name = "PPRow"><td width="3" style="background: #080"></td><td>
                               <label for="timerTemp4" data-i18n="thermostat.HeatCheap">Cheap</label>:<br>
                               <input id="timerTemp4" class="inputElem" type="number" min="5" max="90" step="0.5" onchange="changeTempSimple(4, this)">°C</td>
                             </tr>
-                            <tr name = "PPRow"><td width="10" style="background: #0F0"></td><td>
+                            <tr name = "PPRow"><td width="3" style="background: #0F0"></td><td>
                               <label for="timerTemp5" data-i18n="thermostat.HeatDirtCheap">Dirt Cheap</label>:<br>
                               <input id="timerTemp5" class="inputElem" type="number" min="5" max="90" step="0.5" onchange="changeTempSimple(5, this)">°C</td>
                             </tr>
@@ -471,28 +476,28 @@
                         </tr>
                         <tr id="coolBase" width="100%">
                           <td width="10" style="background: #00F;"></td>
-                          <td><table>
-                            <tr name = "PPRow"><td width="10" style="background: #0F0"></td><td>
+                          <td><table width="100%" style="border-spacing: 0px;">
+                            <tr name = "PPRow"><td width="3" style="background: #0F0"></td><td>
                               <label for="timerTemp6" data-i18n="thermostat.CoolDirtCheap">Dirt Cheap</label>:<br>
                               <input id="timerTemp6" class="inputElem" type="number" min="5" max="35" step="0.5" onchange="changeTempSimple(6, this)">°C</td>
                             </tr>
-                            <tr name = "PPRow"><td width="10" style="background: #080"></td><td>
+                            <tr name = "PPRow"><td width="3" style="background: #080"></td><td>
                               <label for="timerTemp7" data-i18n="thermostat.CoolCheap">Cheap</label>:<br>
                               <input id="timerTemp7" class="inputElem" type="number" min="5" max="35" step="0.5" onchange="changeTempSimple(7, this)">°C</td>
                             </tr>
-                            <tr><td width="10" style="background: #980"></td><td>
+                            <tr><td width="3" style="background: #980"></td><td>
                               <label for="timerTemp8" data-i18n="thermostat.CoolNormal">ON (cool)</label>:<br>
                               <input id="timerTemp8" class="inputElem" type="number" min="5" max="35" step="0.5" onchange="changeTempSimple(8, this)">°C</td>
                             </tr>
-                            <tr name = "PPRow"><td width="10" style="background: #900"></td><td>
+                            <tr name = "PPRow"><td width="3" style="background: #900"></td><td>
                               <label for="timerTemp9" data-i18n="thermostat.CoolExpensive">Expensive</label>:<br>
                               <input id="timerTemp9" class="inputElem" type="number" min="5" max="35" step="0.5" onchange="changeTempSimple(9, this)">°C</td>
                             </tr>
-                            <tr name = "PPRow"><td width="10" style="background: #F00"></td><td>
+                            <tr name = "PPRow"><td width="3" style="background: #F00"></td><td>
                               <label for="timerTemp10" data-i18n="thermostat.CoolExtreme">Extreme</label>:<br>
                               <input id="timerTemp10" class="inputElem" type="number" min="5" max="35" step="0.5" onchange="changeTempSimple(10, this)">°C</td>
                             </tr>
-                            <tr name = "PPOFF"><td width="10" style="background: #000;"></td><td>
+                            <tr name = "PPOFF"><td width="3" style="background: #000;"></td><td>
                               <label for="timerTemp11" data-i18n="thermostat.CoolOff">OFF (cool)</label>:<br>
                               <input id="timerTemp11" class="inputElem" type="number" min="5" max="35" step="0.5" onchange="changeTempSimple(11, this)">°C</td>
                             </tr>
@@ -1098,16 +1103,14 @@
     }
 
     function zoomThermo() {
-      myThermostat = document.getElementById("thermoTab");
-      myThermostat.classList.add("thermoZoomed");
       thermoIsBig = true;
+      document.getElementById("thermoTab").classList.add("thermoZoomed");
       document.getElementById("closeThermo").innerHTML = "&#x2715;";
     }
 
     function unZoomThermo() {
-      myThermostat = document.getElementById("thermoTab");
-      myThermostat.classList.remove("thermoZoomed");
       thermoIsBig = false;
+      document.getElementById("thermoTab").classList.remove("thermoZoomed");
       document.getElementById("closeThermo").innerHTML = "&#10529;";
     }
 

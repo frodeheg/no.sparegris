@@ -852,7 +852,7 @@
     </div>
 
     <!-- Menu -->
-    <table id="main_menu" class="menu" style="display:none;top:0px;position:fixed;">
+    <table id="main_menu" class="menu" style="display:none;">
       <tbody class="menuitem">
       <tr>
         <td onclick="changeTab(event, 'welcomePage')">
@@ -900,7 +900,7 @@
 
     <!-- Welcome page -->
     <div id="welcomePage" class="tabcontent">
-      <fieldset>
+      <fieldset class="withMargin">
         <legend data-i18n="settings.mode.powerSettings">mode.powerSettings</legend>
         <table class="settings_table">
           <tr>
@@ -1517,7 +1517,7 @@
       }
     </script>
     <div id="schedulePage" class="tabcontent iframe-holder">
-      <iframe id="schedulePageInner" src="subpages/schedule.html" onload="onIframeLoad(this);" style="border-style: none; z-index: 11; position: relative;" referrerpolicy="same-origin"></iframe>
+      <iframe id="schedulePageInner" src="subpages/schedule.html" onload="onIframeLoad(this);" referrerpolicy="same-origin"></iframe>
       <!--  frameborder="2" marginheight="2" marginwidth="0px" -->
     </div>
 
@@ -1733,7 +1733,7 @@
 
     <!-- Mode specific page -->
     <div id="priorityPage" class="tabcontent">
-      <fieldset>
+      <fieldset class="withMargin">
         <legend><div class="blockHeader" data-i18n="settings.mode.operatingMode">mode.operatingMode</div></legend>
         <table class="settings_table">
           <tr>
