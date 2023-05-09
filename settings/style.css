@@ -476,6 +476,10 @@ input.toggle[type='checkbox'] { display: none; }
 }
 
 .iframe-holder {
+  position: relative;
+  z-index: 11;
+  top: 0px;
+  left: 0px;
   min-width: 200px;
   height: 610px;
   margin: 0px;
@@ -490,7 +494,6 @@ input.toggle[type='checkbox'] { display: none; }
 
 iframe {
   border-style: none;
-  z-index: 11;
   position: relative;
   top: 0px;
   left: 0px;
