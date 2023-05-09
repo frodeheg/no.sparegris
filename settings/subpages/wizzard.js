@@ -434,9 +434,10 @@ function dragElement(elmnt) {
     pos3 = e.clientX;
     pos4 = e.clientY;
     // set the element's new position:
-    elmnt.style.top = `${Math.min(Math.max(elmnt.offsetTop - pos2, -20), window.innerHeight - 10)}px`;
+    elmnt.style.top = `${Math.min(Math.max(elmnt.offsetTop - pos2, -20), window.innerHeight - 20)}px`;
     elmnt.style.bottom = '';
-    elmnt.style.left = `${elmnt.offsetLeft - pos1}px`;
+    const wizWidth = parseInt(document.getElementById('wizHint').style.width);
+    elmnt.style.left = `${Math.min(Math.max(elmnt.offsetLeft - pos1, 20 - wizWidth), window.innerWidth - 20)}px`;
   }
 
   function closeDragElement(e) {
