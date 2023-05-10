@@ -829,5 +829,8 @@
   },
   "0.20.31": {
     "en": "Changed margins so app settings get more space + Minor fixes for thermostat view."
+  },
+  "0.20.32": {
+    "en": "Lot of wizzard changes + additional attempt to make the wizzard work on iPhone"
   }
 }
