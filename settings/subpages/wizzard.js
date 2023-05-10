@@ -17,9 +17,11 @@ const UI_FORCE_EXIT = 11;
 const UI_SHOW_OVERLAY = 12;
 const UI_HIDE_OVERLAY = 13;
 const UI_FORCE_VALUE = 14;
+const UI_FORCE_SELECT = 15;
 
 let wizActive = false;
 let wizWaiting = false;
+let wizClicked;
 let wizFocusAction;
 let wizChangeAction;
 let wizShadow;
@@ -102,7 +104,15 @@ async function uiForceAction(action) {
   // Show hint and position relative to the highlighted item
   const wizHint = document.getElementById('wizHint');
   const wizText = document.getElementById('wizText');
-  wizText.innerHTML = action.hint;
+  if (action.action === UI_FORCE_SELECT) {
+    let buttonList = '';
+    for (let i = 0; i < action.buttons.length; i++) {
+      buttonList += `<div class="wizButton" onClick="wizButtonClick(${action.buttons[i].marker});">${action.buttons[i].text}</div>`;
+    }
+    wizText.innerHTML = `${action.hint}${buttonList}`;
+  } else {
+    wizText.innerHTML = action.hint;
+  }
   if (focusElem) {
     if (rect.top > (window.innerHeight / 2)) {
       wizHint.style.top = '';
@@ -168,9 +178,10 @@ async function uiForceAction(action) {
 
   wizWaiting = true;
   while (wizActive && wizWaiting) {
-    await delay(200);
     if (action.var && (window[action.var] === action.value)) {
       wizWaiting = false;
+    } else {
+      await delay(200);
     }
   }
 
@@ -193,7 +204,15 @@ async function uiForceAction(action) {
  */
 async function runActionQueue(actionQueue) {
   wizActive = true;
+  wizClicked = undefined;
   for (let i = 0; i < actionQueue.length; i++) {
+    if (wizClicked !== undefined) {
+      if (actionQueue[i].marker === wizClicked) {
+        wizClicked = undefined;
+      } else {
+        continue;
+      }
+    }
     if (wizOverrides[+actionQueue[i].action]) {
       wizOverrides[+actionQueue[i].action]();
     }
@@ -230,6 +249,11 @@ async function runActionQueue(actionQueue) {
         break;
       case UI_FORCE_NEXT:
         document.getElementById('wizNext').style.display = 'block';
+        await uiForceAction(actionQueue[i]);
+        document.getElementById('wizNext').style.display = 'none';
+        break;
+      case UI_FORCE_SELECT:
+        wizClicked = undefined;
         await uiForceAction(actionQueue[i]);
         break;
       case UI_FORCE_CLICK:
@@ -392,7 +416,14 @@ function initializeWizzard() {
  */
 function wizNextClick() {
   wizAction();
-  document.getElementById('wizNext').style.display = 'none';
+}
+
+/**
+ * onClick action for wizzard select buttons
+ */
+function wizButtonClick(value) {
+  wizClicked = value;
+  wizAction();
 }
 
 /**

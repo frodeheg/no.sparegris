@@ -10,26 +10,77 @@
       function onWizLoaded() {
         wizExplainSchedule = [
           { action: UI_SHOW_OVERLAY },
-          { action: UI_FORCE_NEXT, hint: 'Welcome to the schedule wizzard! <br>We will now go through the process of creating a schedule and configure it to your needs.<br>You can move this window around however you want and exit the wizzard at any time.'},
+          { action: UI_FORCE_SELECT, buttons: [{text: 'Schedule wizzard', marker: 1}, {text: 'Operation wizzard', marker: 2}, {text: 'Price control wizzard', marker: 3}], hint: 'Welcome to the wizzard menu! <br>Please select which wizzard you want to walk through.<br>You can move this window around however you want and exit the wizzard at any time.' },
+
+          { marker: 1, action: UI_FORCE_NEXT, hint: 'This is the schedule wizzard! <br>We will now go through the process of creating a schedule and configure it to your needs.'},
           { action: UI_FORCE_CLICK, id: 'newButton', hint: 'First click the "New" button to create a new schedule.' },
-          { action: UI_FORCE_NEXT, id: 'timerOpName', hint: 'Select an appropriate name of the schedule and click next to continue.' },
+          { action: UI_FORCE_NEXT, id: 'timerOpName', hint: 'The first schedule is for a holiday plan, please give the schedule an appropriate name and click next to continue.' },
           { action: UI_FORCE_CLICK, id: 'si0', hint: 'As you can see, your new schedule contains one timer lasting the whole day. Click to configure it.' },
           { action: UI_FORCE_NEXT, id: 'timerOpOnOff', require: 3, hint: 'For this timeslot we want the devices to stay on, but still turn off when needed in order to meet any limitations you may have configured.<br>For this to function, select the option Preferred On and click Next to continue.' },
           { action: UI_FORCE_NEXT, id: 'timerOpTemp', require: 1, hint: 'As a first step we want to start with a constant temperature. Select Constant temperature and click Next to continue.' },
           { action: UI_FORCE_NEXT, id: 'timerACMode', require: 2, hint: 'Select heating and press next to continue.' },
-          { action: UI_FORCE_VALUE, id: 'myThermostat', var: 'thermoIsBig', value: true, hint: 'The thermostat wheel can be zoomed in for easier edit. Click the thermostat center in order to zoom in.' },
-          { action: UI_FORCE_NEXT, id: 'myThermostat', require: [5,15], hint: 'Now you can select one temperature for heating and one temperature that emulates turning the device off. Select 15 degrees for on and 5 degrees for off and then click Next to continue.' },
-          { action: UI_FORCE_VALUE, id: 'myThermostat', var: 'thermoIsBig', value: false, hint: 'Click the thermostat center again to zoom out.' },
-          { action: UI_FORCE_CLICK, id: 'addTimer', hint: 'Let\'s add another timeslot to the schedule so the temperature can be changed throughout the day. Click \'+\' to add another timeslot and click next to continue.'},
+          { action: UI_FORCE_VALUE, id: 'thermoTab', var: 'thermoIsBig', value: true, hint: 'The thermostat wheel can be zoomed in for easier edit. Click the thermostat center in order to zoom in.' },
+          { action: UI_FORCE_NEXT, id: 'thermoTab', require: [5,15], hint: 'Now you can select one temperature for heating and one temperature that emulates turning the device off. As you will be away during the holiday, select 15°C for on and 5°C for off and then click Next to continue.' },
+          { action: UI_FORCE_CLICK, id: 'switchView', hint: 'Notice that if your screen is small the thermostat view may be difficult to use, thus you can use text input if you prefer. Click "Switch view" to see it.' },
+          { action: UI_FORCE_NEXT, id: 'thermoTab', require: [5,15], hint: 'Let\'s keep the temperatures unchanged at 15°C / 5°C for now. Click Next to continue.' },
+          { action: UI_FORCE_VALUE, id: 'switchView', var: 'showGraph', value: true, hint: 'Click "Switch view" to exit text mode again.' },
+          { action: UI_FORCE_VALUE, id: 'thermoTab', var: 'thermoIsBig', value: false, hint: 'Click the thermostat center or close button to zoom out again.' },
+          { action: UI_FORCE_CLICK, id: 'newButton', hint: 'Let\'s create another schedule to use when you\'re home. Press the "New" button again to continue.' },
+          { action: UI_FORCE_NEXT, id: 'timerOpName', hint: 'Select an appropriate name for the new schedule like "Weekdays" and click next to continue.' },
+          { action: UI_FORCE_CLICK, id: 'si0', hint: 'Click on the timer for the new schedule to configure it.' },
+          { action: UI_FORCE_NEXT, id: 'timerOpTemp', require: 1, hint: 'Select a constant temperature for this time slot as well and click Next to continue.' },
+          { action: UI_FORCE_NEXT, id: 'timerACMode', require: 2, hint: 'Select heating and press next to continue.' },
+          { action: UI_FORCE_NEXT, id: 'thermoTab', require: [5,15], hint: 'This timeslot is at night, Select 15°C for on and 5°C for off and then click Next to continue. Remember to zoom in/use text view if this makes it easier for you to edit the temperature.' },
+          { action: UI_FORCE_VALUE, id: 'thermoTab', var: 'thermoIsBig', value: false, hint: 'Close the thermostat view to continue.' },
+          { action: UI_FORCE_CLICK, id: 'addTimer', hint: 'This schedule will be varying across the day. Click \'+\' to add another timeslot.'},
           { action: UI_FORCE_NEXT, id: 's0', require: '7:00', hint: 'Now drag the start of the new timeslot to 7:00 and click next to continue.' },
-          { action: UI_FORCE_CLICK, id: 'si1', hint: 'Now select the new timeslot by clicking it.' },
+          { action: UI_FORCE_CLICK, id: 'addTimer', hint: 'Let\'s add another timeslot to the schedule so we can handle the temperature at nightfall. Click \'+\' to add the timeslot.'},
+          { action: UI_FORCE_CLICK, id: 'addTimer', hint: 'For fun, click \'+\' again to add yet another timeslot.'},
+          { action: UI_FORCE_CLICK, id: 'scTrashCan3', hint: 'It turned out we didn\'t need this last timeslot after all; Click the bin to delete it.'},
+          { action: UI_FORCE_NEXT, id: 's1', require: '22:00', hint: 'Drag the start of the new timeslot to 22:00 and click next to continue.' },
+          { action: UI_FORCE_CLICK, id: 'si1', hint: 'Now select the new second timeslot by clicking it.' },
+          { action: UI_FORCE_NEXT, id: 'thermoTab', require: [5,23], hint: 'In this timeslot, change the temperature to 23°C for on and 5°C for off and then click Next to continue.' },
+          { action: UI_FORCE_CLICK, id: 'si2', hint: 'Select the third timeslot by clicking it.' },
+          { action: UI_FORCE_NEXT, id: 'thermoTab', require: [5,15], hint: 'Change the night temperature to 15°C while the off temperature is kept at 5°C, then click Next to continue.' },
+          { action: UI_FORCE_NEXT, hint: 'You have now created two schedules. These can now be assigned to devices. For more information about using schedules please refer to the mode wizzard.Click next to continue.' },
+          { action: UI_FORCE_NEXT, id: 'allSchedules', hint: 'If you at a later time want to edit a schedule or look at it you may switch between them in schedule selector as highlighted. Click next to continue.' },
+          { action: UI_FORCE_NEXT, hint: 'Congratulations, you have completed the schedule wizzard, Click "next" to continue to the "Operation wizzard" or "Exit" to complete the wizzard.' },
+
+          { marker: 2, action: UI_FORCE_NEXT, hint: 'This is the operation wizzard! <br>This will teach you how to use different operations.'},
+          /*{ action: UI_FORCE_CLICK, id: 'newButton', hint: 'Let\'s start with a blank schedule. Click the "New" button to continue.' },*/
+          { action: UI_FORCE_NEXT, hint: 'Sorry, this wizzard is not complete yet.' },
+          /*{ action: UI_FORCE_CLICK, id: 'removeButton', hint: 'You may now delete this temporary schedule. Click the "Remove" button to continue.' },*/
+          { action: UI_FORCE_NEXT, hint: 'Congratulations, you have completed the operation wizzard, Click "next" to continue to the "Price control wizzard" or "Exit" to complete the wizzard.' },
+
+          { marker: 3, action: UI_FORCE_NEXT, hint: 'This is the price control wizzard! <br>This will teach you how to save money from the varying electricity prices.'},
+          { action: UI_FORCE_CLICK, id: 'newButton', hint: 'Let\'s start with a blank schedule. Click the "New" button to continue.' },
+          { action: UI_FORCE_CLICK, id: 'si0', hint: 'Click the timer that fills the new schedule.' },
           { action: UI_FORCE_NEXT, id: 'timerOpTemp', require: 2, hint: 'In this timeslot we want temperatures to be dependent on the electricity price. Select price controlled and click next to continue.' },
-          { action: UI_FORCE_VALUE, id: 'myThermostat', var: 'thermoIsBig', value: true, hint: 'Click the thermostat center to zoom in.' },
-          { action: UI_FORCE_NEXT, id: 'myThermostat', require: [,18,,,,26], hint: 'Now the single temperature target can be expanded into a temperature range that will vary depending on the electricity price. Press well above the target temperature in order to expand the range and drag the range endpoints so they span the range 18 to 26 degrees.' },
-          { action: UI_FORCE_NEXT, id: 'myThermostat', require: [,18,,23.5,,26], hint: 'The two temperature endpoints you just set was for Dirt Cheap (26) and Extremely Expensive (18). Next, set the center temperature to 23.5 while keeping the heating range between 18 to 26, this will set the temperature for normal price.' },
-          { action: UI_FORCE_NEXT, id: 'myThermostat', require: [,18,22,23.5,25,26], hint: 'The two remaining temperature setpoints are for high and low prices, set them to 22 and 25 degrees respectively without changing the other values. If you have difficulties setting the exact settings, a textbox view will come later.' },
-          { action: UI_FORCE_VALUE, id: 'myThermostat', var: 'thermoIsBig', value: false, hint: 'You have now completed the temperature setting for different price points. Click the thermostat center to zoom out.' },
-          { action: UI_FORCE_NEXT, hint: 'This is as far as the wizzard goes. However, it\'s under development and will be expanded.' },
+          { action: UI_FORCE_NEXT, id: 'timerACMode', require: 2, hint: 'Select heating and press next to continue.' },
+          { action: UI_FORCE_VALUE, id: 'thermoTab', var: 'thermoIsBig', value: true, hint: 'Click the thermostat center to zoom in.' },
+          { action: UI_FORCE_NEXT, id: 'thermoTab', require: [,18,,,,26], hint: 'Now, instead of a single temperature target there is a temperature range that will vary depending on electricity price. Drag the range endpoints so they span the range 18°C to 26°C.' },
+          { action: UI_FORCE_NEXT, id: 'thermoTab', require: [,,,23.5,,], hint: 'The two temperature endpoints you just set was for Dirt Cheap (26°C) and Extremely Expensive (18°C). Between these endpoints you can see 3 bars that can be moved individually. Each bar defines the temperature to use for different electricity prices. The center temperature is for normal prices, set it to 23.5°C.' },
+          { action: UI_FORCE_VALUE, id: 'switchView', var: 'showGraph', value: false, hint: 'Remember that all themperatures can be set in both thermostat view and text box view. Click "Switch view" to see use the text box view.' },
+          { action: UI_FORCE_NEXT, id: 'thermoTab', require: [5,18,22,23.5,25,26], hint: 'Now set the "Expensive" setpoint to 22°C and the "Cheap" setpoint to 25°C respectively without changing the other values. To continue all the listed temperatures must be [5, 18, 22, 23.5, 25, 26]. Use either the thermostat or textbox view and click next to continue when complete.' },
+          { action: UI_FORCE_VALUE, id: 'switchView', var: 'showGraph', value: true, hint: 'Great job. Click the "Switch view" button again to see how the thermostat changed.' },
+          { action: UI_FORCE_VALUE, id: 'thermoTab', var: 'thermoIsBig', value: false, hint: 'Your thermostat will now change the temperature depending on the electricity price. Click the thermostat center or the close button to zoom out.' },
+          { action: UI_FORCE_VALUE, id: 'thermoTab', var: 'endTemp', value: 35, hint: 'It seems like you accidently clicked the "range" button earlier, please unclick it to continue.' },
+          { action: UI_FORCE_NEXT, id: 'timerACMode', require: 3, hint: 'Now let\'s experiment with cooling. Select cooling and click next to continue.' },
+          { action: UI_FORCE_VALUE, id: 'thermoTab',  var: 'endTemp', value: 90, hint: 'As you can see, you now have a similar temperature range as before, except that it is for cooling. Notice that the price points and off temperature are in reversed order to before. You may select the temperatures as you wish, then click this mysterious "range" button at the bottom part of the thermostat to investigate it.' },
+          { action: UI_FORCE_VALUE, id: 'thermoTab',  var: 'endTemp', value: 35, hint: 'Ooops, what happened? Why was cooling unselected when the temperature range changed from max 35°C to max 90°C? This is because the extended range thermostat is only used to heat water heaters, and since water heaters can\'t cool, only heating can be selected. Please click "range" again to go back to normal thermostat view.' },
+          { action: UI_FORCE_VALUE, id: 'thermoTab', var: 'thermoIsBig', value: false, hint: 'Exit the thermostat view to continue.' },
+          { action: UI_FORCE_NEXT, id: 'timerACMode', require: 0, hint: 'Now let\'s check the unchanged mode. Select unchanged and click next to continue.' },
+          { action: UI_FORCE_CLICK, id: 'closeThermo', hint: 'The special part about this mode is that it will not set the AC mode at all, it will only use the current setting. If it is cooling then it will use the settings for cooling, otherwise it will use the settings for heating. Click the expand button to look closer at the thermostat.' },
+          { action: UI_FORCE_NEXT, id: 'thermoTab', hint: 'The heat and cool ranges can be adjusted individually. Note that when they overlap there is a \'+\' button appearing above the ranges that can be clicked to focus on either cooling or heating to make them more accessible. Play around and click next to continue.' },
+          { action: UI_FORCE_VALUE, id: 'thermoTab', var: 'endTemp', value: 35, hint: 'It seems like you accidently clicked the "range" button earlier, please unclick it to continue.' },
+          { action: UI_FORCE_VALUE, id: 'thermoTab', var: 'thermoIsBig', value: false, hint: 'Exit the thermostat view to continue.' },
+          { action: UI_FORCE_NEXT, id: 'timerACMode', require: 6, hint: 'Now let\'s try the smart mode. Select smart mode and click next to continue.' },
+          { action: UI_FORCE_NEXT, id: 'thermoTab', hint: 'Notice that this mode is similar to \'Unchanged\', however with a minor difference. This mode will switch between heating and cooling at specific trigger points. You can see the trigger points in the thermostat view. This mode may not be for you, but it offers some smartness above the AC \'auto\' mode. When done experimenting, click next to continue.' },
+          { action: UI_FORCE_VALUE, id: 'thermoTab', var: 'thermoIsBig', value: false, hint: 'Exit the thermostat view to continue.' },
+          { action: UI_FORCE_CLICK, id: 'removeButton', hint: 'You may now delete this temporary schedule. Click the "Remove" button to continue.' },
+          { action: UI_FORCE_NEXT, hint: 'Congratulations, you have completed the price control wizzard,' },
+
+          { action: UI_FORCE_NEXT, hint: 'This was all the wizzardry for now, however, more wizzards are under development and will come soon.' },
           { action: UI_HIDE_OVERLAY },
         ];
         setWizOverrides();
@@ -357,8 +408,8 @@
 
       <table>
         <tr>
-          <td><select style="width: 150px" id="allSchedules" onchange="selectSchedule(this.value);"></select></td>
-          <td><div class="closeButton" data-i18n="settings.schedule.remove" onclick="removeSchedule();">Remove</div></td>
+          <td><select style="position: relative; width: 150px" id="allSchedules" onchange="selectSchedule(this.value);"></select></td>
+          <td><div id="removeButton" class="closeButton" data-i18n="settings.schedule.remove" onclick="removeSchedule();">Remove</div></td>
           <td rowspan="2" valign="top"><img class="wizWand" src="wand.png" onclick="runActionQueue(wizExplainSchedule)"></td></tr>
         <tr>
           <td><input style="width: 150px; position: relative;" id="timerOpName" type="text" onchange="parent.schedules[scheduleSelected].name = this.value || 'Noname';refreshSchedules();displaySaveHint()"></td>
@@ -549,8 +600,9 @@
       }
     });
     const startTemp = 5;
-    let endTemp = 35;
+    var endTemp = 35; // Must be var to be visible to wizzard
     let temps = [5, 15, 20, 21, 22, 23, 24, 25, 26, 27, 30, 35];
+    var showGraph = true;
 
     const tempsID = {
       HEAT_OFF:       0,
@@ -830,7 +882,7 @@
       const minEnd = String(endTime % 60).padStart(2, '0');
       const tempOp = items[idx].tempOp;
       const trashCan = (items.length === 1) ? '' :
-        `<div id="scTrashCan" class="icon-trash" style="float:right; font-size:1rem" onClick="removeTimer(${idx});event.stopPropagation();displaySaveHint();">`
+        `<div id="scTrashCan${idx}" class="icon-trash" style="float:right; font-size:1rem" onClick="removeTimer(${idx});event.stopPropagation();displaySaveHint();">`
         + '  <div class="trash-lid" style="background-color: #e44"></div>'
         + '  <div class="trash-container" style="background-color: #e44"></div>'
         + '  <div class="trash-line-1"></div>'
@@ -1040,7 +1092,7 @@
     let coolTrigger;
     let heatTrigger;
     let focus = 0;
-    var thermoIsBig = false;
+    var thermoIsBig = false; // Must be var to be visible to wizzard
     let scaleFactor = 400/180;
 
     function pressToAngleCoords(canvas, event) {
@@ -1502,9 +1554,10 @@
         // Show selected temp:
         const guideText = Number.isFinite(thermoDragIndex) ? `${document.getElementById(`${tempDef[thermoDragIndex].name}Text`).innerHTML}: ${temps[thermoDragIndex]}°C` : '';
         document.getElementById('thermoGuide').innerHTML = guideText ? guideText : 'Select and drag temperatures';
-        canvas.value = value;
-        if (canvas.onchange) {
-          canvas.onchange(value);
+        const thermoTab = document.getElementById('thermoTab');
+        thermoTab.value = value;
+        if (thermoTab.onchange) {
+          thermoTab.onchange(value);
         }
       } catch (err) {
         console.log(`Err: ${err}`);
@@ -1514,7 +1567,7 @@
     function switchView() {
       const thermoView = document.getElementById('thermoView').style;
       const textView = document.getElementById('textView').style;
-      const showGraph = thermoView.display === 'none';
+      showGraph = thermoView.display === 'none';
       if (showGraph) {
         thermoView.display = 'block';
         textView.display = 'none';
