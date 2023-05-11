@@ -832,5 +832,8 @@
   },
   "0.20.32": {
     "en": "Lot of wizzard changes + additional attempt to make the wizzard work on iPhone"
+  },
+  "0.20.33": {
+    "en": "Fixed bug that caused an error message to appear when viewing the price graph in the settings."
   }
 }
