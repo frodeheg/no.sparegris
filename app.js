@@ -4308,7 +4308,7 @@ class PiggyBank extends Homey.App {
    */
   async buildFutureData() {
     const nowLocal = toLocalTime(new Date(), this.homey); // TODO: Check if this can be removed
-    const todayHours = hoursInDay(nowLocal, this.granularity, this.homey);
+    const todayHours = hoursInDay(nowLocal, this.homey);
 
     const futureData = {};
     futureData['price'] = {};
