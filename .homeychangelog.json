@@ -835,5 +835,8 @@
   },
   "0.20.33": {
     "en": "Fixed bug that caused an error message to appear when viewing the price graph in the settings."
+  },
+  "0.20.34": {
+    "en": "Exposed the weekend off-peak grid tax feature to Norway as Elvia use this."
   }
 }
