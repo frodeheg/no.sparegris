@@ -41,7 +41,6 @@ const SCHEMA = {
       gridStepEn: 'table-row',
       peakStartEn: 'table-row',
       peakEndEn: 'table-row',
-      peakWeekendEn: 'table-row',
       enLimit15Box: 'table-row',
       granularityEn: 'table-row',
     }
