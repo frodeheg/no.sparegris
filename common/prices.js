@@ -251,7 +251,7 @@ async function applyTaxesOnSpotprice(spotprices, surcharge, VAT, gridTaxDay, gri
     const localTime = toLocalTime(timeUTC, homey);
     const minSinceMidnight = localTime.getHours() * 60 + localTime.getMinutes();
     const weekDay = localTime.getDay();
-    const isWeekend = weekDay === 5 || weekDay === 6;
+    const isWeekend = weekDay === 6 || weekDay === 0;
     const isPeak = (minSinceMidnight >= peakStart && minSinceMidnight < peakEnd) && !(isWeekend && weekendOffPeak);
     const gridTax = isPeak ? +gridTaxDay : +gridTaxNight;
     taxedData.push({ time: spotprices[item].time, price: spotprices[item].price * (1 + +VAT) + gridTax + +surcharge });
