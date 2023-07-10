@@ -1,14 +1,15 @@
-+5:35:22.358: ----- ANALYZING DEVICE -----
-+5:35:22.362: Report type: Experimental device is working
-+5:35:22.364: Device ID:   410d2c96-a9c9-4141-b3ce-5c02c104c8bd
-+5:35:22.397: Device name: Soveromsovn
-+5:35:22.400: Driver Uri: homey:app:com.fibaro
-+5:35:22.402: Driver Id: FGWPx-102-PLUS
-+5:35:22.404: Found onoff cap: onoff
-+5:35:22.407: Found temp cap: false
-+5:35:22.410: Device reliability: 1
-+5:35:22.412: Capabilities: measure_power,meter_power,onoff
-+5:35:22.417: Options for 'measure_power': {"value":759.4,"lastUpdated":"2022-12-14T05:14:28.415Z","type":"number","getable":true,"setable":false,"title":"Effekt","desc":"Effekt i watt (W)","units":"W","decimals":2,"chartType":"stepLine","id":"measure_power","options":{}}
-+5:35:22.419: Options for 'meter_power': {"value":595.85,"lastUpdated":"2022-12-14T05:31:45.112Z","type":"number","getable":true,"setable":false,"title":"Energi","desc":"Energiforbruk i kilowattimer (kWh)","units":"kWh","decimals":2,"chartType":"spline","id":"meter_power","options":{}}
-+5:35:22.423: Options for 'onoff': {"value":true,"lastUpdated":"2022-12-14T01:14:27.706Z","type":"boolean","getable":true,"setable":true,"title":"Slått på","desc":null,"units":null,"id":"onoff","options":{}}
-+5:35:22.426: --- ANALYZING DEVICE DONE ---
+Log ID: 2023-06-26T16:00:21.097Z
+App version 0.20.33
+
++16:0:21.097: ----- ANALYZING DEVICE -----
++16:0:21.099: Report type: Device is not being turned on/off
++16:0:21.127: Device name: Vifte ovn 
++16:0:21.129: Driver Id: homey:app:com.fibaro:FGWPx-102-PLUS
++16:0:21.131: Found onoff cap: onoff
++16:0:21.132: Found temp cap: false
++16:0:21.134: Device reliability: 1
++16:0:21.137: Capabilities: measure_power,meter_power,onoff
++16:0:21.140: Options for 'measure_power': {"value":0,"lastUpdated":"2023-06-26T15:55:30.547Z","type":"number","getable":true,"setable":false,"title":"Effekt","desc":"Effekt i watt (W)","units":"W","decimals":2,"chartType":"stepLine","id":"measure_power","options":{}}
++16:0:21.147: Options for 'meter_power': {"value":4414.43,"lastUpdated":"2023-06-16T14:17:58.926Z","type":"number","getable":true,"setable":false,"title":"Energi","desc":"Energiforbruk i kilowattimer (kWh)","units":"kWh","decimals":2,"chartType":"spline","id":"meter_power","options":{}}
++16:0:21.150: Options for 'onoff': {"value":false,"lastUpdated":"2023-06-26T15:55:29.779Z","type":"boolean","getable":true,"setable":true,"title":"Slått på","desc":null,"units":null,"id":"onoff","options":{}}
++16:0:21.153: --- ANALYZING DEVICE DONE ---

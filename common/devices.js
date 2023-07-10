@@ -200,6 +200,7 @@ const DEVICE_CMD = {
     default: false
   },
   'com.datek.eva:meter-reader': DEFAULT_METER,
+  'com.datek.eva:smart-plug': DEFAULT_SWITCH,
   'com.elko:ESHSUPERTR': {
     ...DEFAULT_HEATER,
     note: 'Please note that the vendor of this device only expose the capability to set temperature in case the device is '
@@ -238,6 +239,19 @@ const DEVICE_CMD = {
     ...DEFAULT_AC,
     tempMax: 38,
     tempStep: 0.5,
+    default: false
+  },
+  'com.mennovanhout.smartthings:air_conditioning': {
+    ...DEFAULT_AC,
+    tempMin: 4,
+    tempMax: 35,
+    tempStep: 0.5,
+    setModeCap: 'air_conditioning_mode',
+    setModeHeatValue: 'heat',
+    setModeCoolValue: 'cool',
+    setModeAutoValue: 'auto',
+    setModeDryValue: 'dry',
+    setModeFanValue: 'wind',
     default: false
   },
   'com.mill:mill': {
@@ -284,6 +298,7 @@ const DEVICE_CMD = {
     tempMax: 85,
     default: false
   },
+  'com.samsung.smart:Samsung': DEFAULT_IGNORED, // TV
   'com.sensibo:Sensibo': {
     ...DEFAULT_AC,
     note: 'In case your AC device makes a beeping sound whenever signaled by a remote control, please consult your AC device '
@@ -372,6 +387,7 @@ const DEVICE_CMD = {
     default: false
   },
   'net.filllip-namron:4512746': DEFAULT_SWITCH,
+  'net.filllip-namron:4512749': DEFAULT_SWITCH,
   'net.filllip-namron:540139x': {
     ...DEFAULT_HEATER,
     tempMax: 35,
@@ -398,6 +414,7 @@ const DEVICE_CMD = {
   },
   'nl.klikaanklikuit:ACC-250': DEFAULT_SWITCH,
   'nl.klikaanklikuit:AWMR-210': DEFAULT_SWITCH,
+  'nl.philips.hue:bulb': DEFAULT_SWITCH,
   'no.adax.smart-heater.homey-app:heater-wt': {
     ...DEFAULT_HEATER,
     tempMax: 35,
@@ -519,6 +536,16 @@ const DEVICE_CMD = {
     tempMax: 35,
     tempStep: 0.5
   },
+  'se.ebeco.connect:thermostat': {
+    type: DEVICE_TYPE.HEATER,
+    note: 'This device has no onOff capability and will emulate Off by turning the temperature to absolute minimum',
+    setOnOffCap: null, // There is no such capability for this device
+    readTempCap: 'measure_temperature',
+    setTempCap: 'target_temperature',
+    tempMin: 4,
+    tempMax: 35,
+    tempStep: 1
+  },
   'se.husdata:H60': {
     type: DEVICE_TYPE.HEATER,
     note: 'This device has no onOff capability and will emulate Off by turning the temperature to absolute minimum',
@@ -532,6 +559,7 @@ const DEVICE_CMD = {
   },
   'se.nexa:EYCR-2300': DEFAULT_SWITCH,
   'se.nexa:MYC-2300S': DEFAULT_SWITCH,
+  'tesla.wall.connector:twc': DEFAULT_IGNORED, // Tesla charger, gen 3
   'vdevice:homey': DEFAULT_IGNORED, // Under homey:manager, not homey:app:
   'vdevice:virtual_socket': DEFAULT_SWITCH, // Under homey:manager, not homey:app:
   'vdevice:zwavebasic': DEFAULT_SWITCH, // Under homey:manager, not homey:app:

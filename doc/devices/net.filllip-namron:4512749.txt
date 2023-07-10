@@ -1,0 +1,16 @@
+Log ID: 2023-04-08T17:29:15.854Z
+App version 0.20.19
+
++17:29:15.854: ----- ANALYZING DEVICE -----
++17:29:15.857: Report type: Device is not being turned on/off
++17:29:15.885: Device name: Ventilasjonsaggregat
++17:29:15.887: Driver Id: homey:app:net.filllip-namron:4512749
++17:29:15.889: Found onoff cap: onoff
++17:29:15.892: Found temp cap: false
++17:29:15.894: Device reliability: 1
++17:29:15.898: Capabilities: onoff,measure_power,meter_power,measure_temperature
++17:29:15.900: Options for 'onoff': {"value":false,"lastUpdated":"2023-04-07T16:00:16.929Z","type":"boolean","getable":true,"setable":true,"title":"Slått på","desc":null,"units":null,"id":"onoff","options":{}}
++17:29:15.903: Options for 'measure_power': {"value":0,"lastUpdated":"2023-04-07T16:00:18.012Z","type":"number","getable":true,"setable":false,"title":"Effekt","desc":"Effekt i watt (W)","units":"W","decimals":2,"chartType":"stepLine","id":"measure_power","options":{}}
++17:29:15.904: Options for 'meter_power': {"value":112,"lastUpdated":"2023-04-07T16:04:56.708Z","type":"number","getable":true,"setable":false,"title":"Energi","desc":"Energiforbruk i kilowattimer (kWh)","units":"kWh","decimals":2,"chartType":"spline","id":"meter_power","options":{}}
++17:29:15.907: Options for 'measure_temperature': {"value":24,"lastUpdated":"2023-04-08T17:24:17.773Z","type":"number","getable":true,"setable":false,"title":"Temperatur","desc":"Temperatur i grader Celsius (°C)","units":"°C","decimals":2,"chartType":"spline","id":"measure_temperature","options":{}}
++17:29:15.909: --- ANALYZING DEVICE DONE ---

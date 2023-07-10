@@ -1,0 +1,15 @@
++19:16:45.380: ----- ANALYZING DEVICE -----
++19:16:45.382: Report type: Experimental device is working
++19:16:45.586: Device name: Kontor Bordlampe Hue Iris
++19:16:45.589: Driver Id: homey:app:nl.philips.hue:bulb
++19:16:45.593: Found onoff cap: onoff
++19:16:45.599: Found temp cap: false
++19:16:45.604: Device reliability: 0.9911534162977967
++19:16:45.608: Capabilities: onoff,dim,light_hue,light_saturation,light_temperature,light_mode
++19:16:45.612: Options for 'onoff': {"value":true,"lastUpdated":"2023-07-02T19:16:35.244Z","type":"boolean","getable":true,"setable":true,"title":"Turned on","desc":null,"units":null,"id":"onoff","options":{}}
++19:16:45.616: Options for 'dim': {"value":0.26,"lastUpdated":"2023-07-02T19:16:41.038Z","type":"number","getable":true,"setable":true,"title":"Dim level","desc":null,"units":"%","decimals":2,"min":0,"max":1,"chartType":"stepLine","id":"dim","options":{"opts":{"duration":true}}}
++19:16:45.630: Options for 'light_hue': {"value":0.75,"lastUpdated":"2023-07-02T16:45:35.353Z","type":"number","getable":true,"setable":true,"title":"Hue","desc":null,"units":null,"decimals":2,"min":0,"max":1,"chartType":"stepLine","id":"light_hue","options":{"opts":{"duration":true}}}
++19:16:45.635: Options for 'light_saturation': {"value":0.96,"lastUpdated":"2023-07-02T16:45:35.366Z","type":"number","getable":true,"setable":true,"title":"Color saturation","desc":null,"units":null,"decimals":2,"min":0,"max":1,"chartType":"stepLine","id":"light_saturation","options":{"opts":{"duration":true}}}
++19:16:45.640: Options for 'light_temperature': {"value":0,"lastUpdated":"2023-07-02T16:45:35.367Z","type":"number","getable":true,"setable":true,"title":"Color temperature","desc":null,"units":null,"decimals":2,"min":0,"max":1,"chartType":"stepLine","id":"light_temperature","options":{"opts":{"duration":true}}}
++19:16:45.644: Options for 'light_mode': {"value":null,"lastUpdated":"2023-07-02T16:45:13.274Z","type":"enum","getable":true,"setable":true,"title":"Light mode","desc":"Switch between color or temperature mode","units":null,"values":[{"id":"color","title":"Color"},{"id":"temperature","title":"Temperature"}],"id":"light_mode","options":{}}
++19:16:45.660: --- ANALYZING DEVICE DONE ---

@@ -1,0 +1,19 @@
+Log ID: 2023-07-02T19:50:56.467Z
+App version 0.20.33
+
++20:11:39.798: ----- ANALYZING DEVICE -----
++20:11:39.799: Report type: Experimental device is working
++20:11:40.380: Device name: TV
++20:11:40.385: Driver Id: homey:app:com.samsung.smart:Samsung
++20:11:40.395: Found onoff cap: onoff
++20:11:40.400: Found temp cap: false
++20:11:40.404: Device reliability: 1
++20:11:40.406: Capabilities: onoff,volume_up,channel_up,volume_down,channel_down,volume_mute,volume_set
++20:11:40.411: Options for 'onoff': {"value":false,"lastUpdated":"2023-07-02T19:50:41.703Z","type":"boolean","getable":true,"setable":true,"title":"Turned on","desc":null,"units":null,"id":"onoff","options":{}}
++20:11:40.417: Options for 'volume_up': {"value":null,"lastUpdated":null,"type":"boolean","getable":false,"setable":true,"title":"Volume up","desc":null,"units":null,"id":"volume_up","options":{}}
++20:11:40.424: Options for 'channel_up': {"value":null,"lastUpdated":null,"type":"boolean","getable":false,"setable":true,"title":"Channel up","desc":null,"units":null,"id":"channel_up","options":{}}
++20:11:40.427: Options for 'volume_down': {"value":null,"lastUpdated":null,"type":"boolean","getable":false,"setable":true,"title":"Volume down","desc":null,"units":null,"id":"volume_down","options":{}}
++20:11:40.431: Options for 'channel_down': {"value":null,"lastUpdated":null,"type":"boolean","getable":false,"setable":true,"title":"Channel down","desc":null,"units":null,"id":"channel_down","options":{}}
++20:11:40.433: Options for 'volume_mute': {"value":false,"lastUpdated":"2023-07-02T00:03:18.349Z","type":"boolean","getable":true,"setable":true,"title":"Volume muted","desc":null,"units":null,"id":"volume_mute","options":{}}
++20:11:40.435: Options for 'volume_set': {"value":0.83,"lastUpdated":"2023-07-02T11:16:35.912Z","type":"number","getable":true,"setable":true,"title":"Set volume","desc":"Volume","units":null,"decimals":2,"min":0,"max":1,"chartType":"stepLine","id":"volume_set","options":{}}
++20:11:40.441: --- ANALYZING DEVICE DONE ---

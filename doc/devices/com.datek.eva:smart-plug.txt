@@ -1,0 +1,14 @@
+Log ID: 2023-06-27T10:41:30.866Z
+App version 0.20.33
+
++10:55:53.679: ----- ANALYZING DEVICE -----
++10:55:53.682: Report type: Device is not being turned on/off
++10:55:53.702: Device name: Oppvaskmaskin
++10:55:53.703: Driver Id: homey:app:com.datek.eva:smart-plug
++10:55:53.705: Found onoff cap: onoff
++10:55:53.706: Found temp cap: false
++10:55:53.707: Device reliability: 1
++10:55:53.708: Capabilities: onoff,measure_power
++10:55:53.710: Options for 'onoff': {"id":"onoff","type":"boolean","iconObj":null,"title":"Slått på","getable":true,"setable":true,"insights":true,"insightsTitleTrue":"Slått på","insightsTitleFalse":"Slått av","value":true,"lastUpdated":"2023-06-27T10:50:41.219Z"}
++10:55:53.711: Options for 'measure_power': {"id":"measure_power","type":"number","iconObj":null,"title":"Effekt","getable":true,"setable":false,"insights":true,"insightsTitleTrue":null,"insightsTitleFalse":null,"units":"W","decimals":2,"value":5,"lastUpdated":"2023-06-27T10:55:48.723Z"}
++10:55:53.712: --- ANALYZING DEVICE DONE ---

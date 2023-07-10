@@ -1,0 +1,14 @@
+Log ID: 2023-06-23T18:48:34.849Z
+App version 0.20.33
+
++18:48:34.849: ----- ANALYZING DEVICE -----
++18:48:34.850: Report type: Device is not listed
++18:48:34.862: Device name: Gulvvarme stue 
++18:48:34.863: Driver Id: homey:app:se.ebeco.connect:thermostat
++18:48:34.864: Error: TypeError: Cannot read properties of undefined (reading 'onoff_cap')
++18:48:34.865: Capabilities: target_temperature,measure_temperature,measure_temperature.alt,measure_power
++18:48:34.865: Options for 'target_temperature': {"id":"target_temperature","type":"number","iconObj":null,"title":"Ønsket temperatur","getable":true,"setable":true,"insights":true,"insightsTitleTrue":null,"insightsTitleFalse":null,"min":4,"max":35,"step":1,"units":"°C","decimals":0,"value":8,"lastUpdated":"2023-06-23T07:50:33.631Z"}
++18:48:34.866: Options for 'measure_temperature': {"id":"measure_temperature","type":"number","iconObj":null,"title":"Room temperature","getable":true,"setable":false,"insights":true,"insightsTitleTrue":null,"insightsTitleFalse":null,"units":"°C","decimals":0,"value":23,"lastUpdated":"2023-06-23T10:29:52.348Z"}
++18:48:34.867: Options for 'measure_temperature.alt': {"id":"measure_temperature.alt","type":"number","iconObj":null,"title":"Floor temperature","getable":true,"setable":false,"insights":true,"insightsTitleTrue":null,"insightsTitleFalse":null,"units":"°C","decimals":0,"value":22,"lastUpdated":"2023-06-23T16:50:10.553Z"}
++18:48:34.868: Options for 'measure_power': {"id":"measure_power","type":"number","iconObj":null,"title":"Effekt","getable":true,"setable":false,"insights":true,"insightsTitleTrue":null,"insightsTitleFalse":null,"units":"W","decimals":2,"value":0.5,"lastUpdated":"2023-06-20T18:07:07.414Z"}
++18:48:34.868: --- ANALYZING DEVICE DONE ---

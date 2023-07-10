@@ -1,3 +1,24 @@
+Log ID: 2023-05-19T21:34:13.299Z
+App version 0.20.33
+
++8:7:27.708: ----- ANALYZING DEVICE -----
++8:7:27.710: Report type: Device is not being turned on/off
++8:7:27.740: Device name: Heavy Duty Smart Switch
++8:7:27.742: Driver Id: homey:app:com.aeotec:ZW078
++8:7:27.743: Found onoff cap: onoff
++8:7:27.745: Found temp cap: false
++8:7:27.746: Device reliability: 1
++8:7:27.747: Capabilities: measure_power,meter_power,measure_voltage,measure_current,onoff,measure_temperature,button.reset_meter
++8:7:27.749: Options for 'measure_power': {"id":"measure_power","type":"number","iconObj":null,"title":"Effekt","getable":true,"setable":false,"insights":true,"insightsTitleTrue":null,"insightsTitleFalse":null,"units":"W","decimals":2,"value":3128.84,"lastUpdated":"2023-05-20T08:07:19.094Z"}
++8:7:27.751: Options for 'meter_power': {"id":"meter_power","type":"number","iconObj":null,"title":"Energi","getable":true,"setable":false,"insights":true,"insightsTitleTrue":null,"insightsTitleFalse":null,"units":"kWh","decimals":2,"value":1,"lastUpdated":"2023-05-19T22:08:49.417Z"}
++8:7:27.752: Options for 'measure_voltage': {"id":"measure_voltage","type":"number","iconObj":null,"title":"Spenning","getable":true,"setable":false,"insights":true,"insightsTitleTrue":null,"insightsTitleFalse":null,"units":"V","decimals":2,"value":239.28,"lastUpdated":"2023-05-20T08:03:49.012Z"}
++8:7:27.754: Options for 'measure_current': {"id":"measure_current","type":"number","iconObj":null,"title":"Strøm","getable":true,"setable":false,"insights":true,"insightsTitleTrue":null,"insightsTitleFalse":null,"units":"A","decimals":2,"value":13.26,"lastUpdated":"2023-05-20T08:07:19.008Z"}
++8:7:27.755: Options for 'onoff': {"id":"onoff","type":"boolean","iconObj":null,"title":"Slått på","getable":true,"setable":true,"insights":true,"insightsTitleTrue":"Slått på","insightsTitleFalse":"Slått av","value":true,"lastUpdated":"2023-05-20T08:05:43.061Z"}
++8:7:27.756: Options for 'measure_temperature': {"id":"measure_temperature","type":"number","iconObj":null,"title":"System Temperatur","getable":true,"setable":false,"insights":true,"insightsTitleTrue":null,"insightsTitleFalse":null,"units":"°C","decimals":2,"value":35.73,"lastUpdated":"2023-05-20T08:02:31.634Z"}
++8:7:27.757: Options for 'button.reset_meter': {"id":"button.reset_meter","type":"boolean","iconObj":null,"title":"Reset power meter","getable":false,"setable":true,"insightsTitleTrue":null,"insightsTitleFalse":null,"maintenanceAction":true,"desc":"Reset the accumulated power usage (kWh), note that this can not be reversed.","value":null,"lastUpdated":null}
++8:7:27.759: --- ANALYZING DEVICE DONE ---
+
+
 Log ID: 2022-09-12T09:19:11.980Z
 App version 0.13.0
 

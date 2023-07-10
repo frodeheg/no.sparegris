@@ -1,0 +1,19 @@
+Log ID: 2023-07-03T08:04:20.926Z
+App version 0.20.33
+
++12:15:37.926: ----- ANALYZING DEVICE -----
++12:15:37.930: Report type: Experimental device is working
++12:15:37.982: Device name: AC Stue
++12:15:37.990: Driver Id: homey:app:com.mennovanhout.smartthings:air_conditioning
++12:15:38.000: Found onoff cap: onoff
++12:15:38.013: Found temp cap: true
++12:15:38.019: Device reliability: 1
++12:15:38.026: Capabilities: target_temperature,measure_temperature,measure_humidity,onoff,air_conditioning_mode,air_conditioning_fan_oscillation_mode,air_conditioning_fan_mode
++12:15:38.033: Options for 'target_temperature': {"value":26,"lastUpdated":"2023-07-03T12:14:01.284Z","type":"number","getable":true,"setable":true,"title":"Ønsket temperatur","desc":null,"units":"°C","decimals":2,"min":4,"max":35,"chartType":"stepLine","id":"target_temperature","options":{}}
++12:15:38.041: Options for 'measure_temperature': {"value":24,"lastUpdated":"2023-07-03T11:38:14.744Z","type":"number","getable":true,"setable":false,"title":"Temperatur","desc":"Temperatur i grader Celsius (°C)","units":"°C","decimals":2,"chartType":"spline","id":"measure_temperature","options":{}}
++12:15:38.050: Options for 'measure_humidity': {"value":0,"lastUpdated":"2023-07-03T07:58:41.064Z","type":"number","getable":true,"setable":false,"title":"Luftfuktighet","desc":"Luftfuktighet i prosent (%)","units":"%","decimals":2,"chartType":"spline","id":"measure_humidity","options":{}}
++12:15:38.059: Options for 'onoff': {"value":true,"lastUpdated":"2023-07-03T11:25:51.583Z","type":"boolean","getable":true,"setable":true,"title":"Slått på","desc":null,"units":null,"id":"onoff","options":{}}
++12:15:38.071: Options for 'air_conditioning_mode': {"value":"auto","lastUpdated":"2023-07-03T07:58:41.457Z","type":"enum","getable":true,"setable":true,"title":"Mode","desc":null,"units":null,"values":[{"id":"cool","title":"Cool"},{"id":"dry","title":"Dry"},{"id":"wind","title":"Wind"},{"id":"auto","title":"Auto"},{"id":"heat","title":"Heat"}],"id":"air_conditioning_mode","options":{}}
++12:15:38.083: Options for 'air_conditioning_fan_oscillation_mode': {"value":"all","lastUpdated":"2023-07-03T07:58:41.807Z","type":"enum","getable":true,"setable":true,"title":"Fan oscillation mode","desc":null,"units":null,"values":[{"id":"fixed","title":"Fixed"},{"id":"all","title":"All"},{"id":"vertical","title":"Vertical"},{"id":"horizontal","title":"Horizontal"}],"id":"air_conditioning_fan_oscillation_mode","options":{}}
++12:15:38.099: Options for 'air_conditioning_fan_mode': {"value":"auto","lastUpdated":"2023-07-03T07:58:42.148Z","type":"enum","getable":true,"setable":true,"title":"Fan mode","desc":null,"units":null,"values":[{"id":"auto","title":"Auto"},{"id":"low","title":"Low"},{"id":"medium","title":"Medium"},{"id":"high","title":"High"},{"id":"turbo","title":"Turbo"}],"id":"air_conditioning_fan_mode","options":{}}
++12:15:38.106: --- ANALYZING DEVICE DONE ---
