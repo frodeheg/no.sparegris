@@ -838,5 +838,8 @@
   },
   "0.20.34": {
     "en": "Exposed the weekend off-peak grid tax feature to Norway as Elvia use this."
+  },
+  "0.20.35": {
+    "en": "Fixed issue where weekends was detected incorrectly. + Added support for net.filllip-namron:4512749 + se.ebeco.connect:thermostat + com.datek.eva:smart-plug + nl.philips.hue:bulb + com.mennovanhout.smartthings:air_conditioning"
   }
 }
