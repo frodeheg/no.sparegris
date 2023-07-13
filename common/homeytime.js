@@ -367,4 +367,5 @@ module.exports = {
   hoursInDay,
   slotsInDay,
   daysInMonth,
+  timeToMinSinceMidnight,
 };

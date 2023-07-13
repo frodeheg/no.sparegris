@@ -37,7 +37,7 @@ const {
   daysInMonth, toLocalTime, timeDiff, timeSinceLastLimiter, timeToNextSlot,
   timeToNextLimiter, limiterLength, roundToStartOfMonth, roundToNearestHour,
   roundToStartOfSlot, roundToStartOfDay, roundToStartOfLimit, hoursInDay, fromLocalTime,
-  TIMESPAN, timeToNextHour
+  TIMESPAN, timeToNextHour, timeToMinSinceMidnight
 } = require('./common/homeytime');
 const {
   isNumber, toNumber, combine, sumArray
@@ -725,6 +725,19 @@ class PiggyBank extends Homey.App {
       this.homey.settings.set('settingsVersion', 14);
     }
 
+    // Version 0.20.35 - Reset peakStart and peakEnd as they can be bogous
+    if (+settingsVersion < 15) {
+      if (!firstInstall) {
+        const futurePriceOptions = this.homey.settings.get('futurePriceOptions');
+        if (futurePriceOptions.peakStart === 0 || futurePriceOptions.peakEnd === 0 || futurePriceOptions.priceCountry === 'no') {
+          // Invalid values - Force setting defaults below
+          delete futurePriceOptions.peakStart;
+          delete futurePriceOptions.peakEnd;
+          this.homey.settings.set('futurePriceOptions', futurePriceOptions);
+        }
+      }
+      this.homey.settings.set('settingsVersion', 15);
+    }
     // Internal state that preferably should be removed as it is in the archive
     // this.homey.settings.unset('stats_savings_all_time_use');
     // this.homey.settings.unset('stats_savings_all_time_power_part');
@@ -854,8 +867,8 @@ class PiggyBank extends Homey.App {
       if (!(Array.isArray(futurePriceOptions.gridCosts))) futurePriceOptions.gridCosts = await this.fetchTariffTable();
       if (!('costSchema' in futurePriceOptions)) futurePriceOptions.costSchema = await locale.getDefaultSchema(this.homey);
       const schema = (futurePriceOptions.costSchema in locale.SCHEMA) ? futurePriceOptions.costSchema : 'no';
-      if (!(Number.isInteger(futurePriceOptions.peakStart))) futurePriceOptions.peakStart = locale.SCHEMA[schema].peakStart;
-      if (!(Number.isInteger(futurePriceOptions.peakEnd))) futurePriceOptions.peakEnd = locale.SCHEMA[schema].peakEnd;
+      if (!(Number.isInteger(futurePriceOptions.peakStart))) futurePriceOptions.peakStart = timeToMinSinceMidnight(locale.SCHEMA[schema].peakStart);
+      if (!(Number.isInteger(futurePriceOptions.peakEnd))) futurePriceOptions.peakEnd = timeToMinSinceMidnight(locale.SCHEMA[schema].peakEnd);
       if (!('weekendOffPeak' in futurePriceOptions)) futurePriceOptions.weekendOffPeak = locale.SCHEMA[schema].weekendOffPeak;
       if (!('gridSteps' in futurePriceOptions)) futurePriceOptions.gridSteps = locale.SCHEMA[schema].gridSteps;
       if (!(Number.isFinite(futurePriceOptions.peakMin))) futurePriceOptions.peakMin = locale.SCHEMA[schema].peakMin;

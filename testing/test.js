@@ -988,7 +988,7 @@ async function testLimiters() {
 
     const limitsToTest = [300, 3000, 8000, 2000000];
     const lowerLimit   = [250, 2500, 7500, 1850000];
-    const timeSteps    = [1000, 1000, 8000, 600000];
+    const timeSteps    = [1000, 1000, 8000, 300000];
     const timeLimit    = [6 * 60 * 4, 6 * 60 * 4, 6 * 60 * 6, 6 * 60 * 3];
 
     for (let limit = 0; limit < 4; limit++) {
@@ -1540,6 +1540,25 @@ async function testTicket223PowerAtLoad() {
   console.log('\x1b[1A[\x1b[32mPASSED\x1b[0m]');
 }
 
+async function testGridPeak() {
+  console.log('[......] Test grid Peak times');
+  const curTime = new Date('March 31, 2023, 13:48:11:398 GMT+2:00');
+  const stateDump = 'testing/states/Frode_0.20.14.txt';
+  const app = new PiggyBank();
+  try {
+    await app.disableLog();
+    await applyStateFromFile(app, stateDump, false);
+    await app.onInit(curTime);
+    const futurePriceOptions = app.homey.settings.get('futurePriceOptions');
+    if ((futurePriceOptions.peakStart !== 360) || (futurePriceOptions.peakEnd !== 1320)) {
+      throw new Error(`Peak start/end is not correct for default case (was: ${futurePriceOptions.peakStart}, ${futurePriceOptions.peakEnd})`);
+    }
+  } finally {
+    await app.onUninit();
+  }
+  console.log('\x1b[1A[\x1b[32mPASSED\x1b[0m]');
+}
+
 // Start all tests
 async function startAllTests() {
   try {
@@ -1571,6 +1590,7 @@ async function startAllTests() {
     await testMeterWithReset();
     await testMeterAndPower();
     await testACModes();
+    await testGridPeak();
     await testMail();
   } catch (err) {
     console.log('\x1b[1A[\x1b[31mFAILED\x1b[0m]');
