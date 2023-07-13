@@ -841,5 +841,8 @@
   },
   "0.20.35": {
     "en": "Fixed issue where weekends was detected incorrectly. + Added support for net.filllip-namron:4512749 + se.ebeco.connect:thermostat + com.datek.eva:smart-plug + nl.philips.hue:bulb + com.mennovanhout.smartthings:air_conditioning"
+  },
+  "0.20.36": {
+    "en": "Fixed issue where the grid cost was not calculated correctly in peak hours."
   }
 }
