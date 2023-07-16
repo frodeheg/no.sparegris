@@ -54,7 +54,7 @@ async function testApp() {
 
 // Test Entsoe Integration
 async function testEntsoe() {
-  console.log('[......] Entsoe');
+  console.log('[......] Entsoe - Test today prices');
   const app = new PiggyBank();
   try {
     await app.disableLog();
@@ -63,6 +63,37 @@ async function testEntsoe() {
     const todayStart = new Date();
     todayStart.setHours(0, 0, 0, 0);
     const biddingZone = '10YNO-3--------J';
+    const priceData = await prices.entsoeGetData(todayStart, 'NOK', biddingZone);
+    // console.log(priceData);
+    const surcharge = 0.0198;// Network provider provision
+    const VAT = 0.25; // 25% moms
+    const gridTaxDay = 0.3626; // Between 6-22
+    const gridTaxNight = 0.2839; // Between 22-6
+    const peakStart = 6 * 60;
+    const peakEnd = 22 * 60;
+    const weekendOffPeak = false;
+    const finalPrices = await prices.applyTaxesOnSpotprice(priceData, surcharge, VAT, gridTaxDay, gridTaxNight, peakStart, peakEnd, weekendOffPeak, app.homey);
+    const dayLength = Math.max(hoursInDay(todayStart, app.homey), 23); // 24 hours normally, but allow 23 hours for summer-time transitions
+    if (finalPrices.length < dayLength) {
+      console.log(finalPrices);
+      throw new Error(`Entsoe API is not returning the prices (${finalPrices.length} != ${dayLength})`);
+    }
+  } finally {
+    await app.onUninit();
+  }
+  console.log('\x1b[1A[\x1b[32mPASSED\x1b[0m]');
+}
+
+async function testNegativePrice() {
+  console.log('[......] Entsoe - Test negative prices');
+  const app = new PiggyBank();
+  try {
+    await app.disableLog();
+    await app.onInit();
+    await prices.entsoeApiInit(Homey.env.ENTSOE_TOKEN);
+    const todayStart = new Date('July 2, 2023, 03:00:00:000 GMT+2:00'); // A day with negative prices
+    todayStart.setHours(0, 0, 0, 0);
+    const biddingZone = '10YNO-1--------2';
     const priceData = await prices.entsoeGetData(todayStart, 'NOK', biddingZone);
     // console.log(priceData);
     const surcharge = 0.0198;// Network provider provision
@@ -1566,6 +1597,7 @@ async function startAllTests() {
     await testCurrencyConverter();
     await testApp();
     await testEntsoe();
+    await testNegativePrice();
     await testNewHour(20000);
     await testCharging();
     await testReliability();

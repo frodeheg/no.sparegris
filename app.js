@@ -1029,6 +1029,11 @@ class PiggyBank extends Homey.App {
       if (!this.app_is_configured) return Promise.reject(new Error(this.homey.__('warnings.notConfigured')));
       if (+this.homey.settings.get('operatingMode') === c.MODE_DISABLED) return Promise.reject(new Error(this.homey.__('warnings.notEnabled')));
       if (+this.homey.settings.get('priceMode') !== c.PRICE_MODE_FLOW) return Promise.reject(new Error(this.homey.__('warnings.notPMfromFlow')));
+      if (this.gotPPFromFlow === undefined) {
+        // Remember that the flow has been triggered:
+        this.homey.settings.set('gotPPFromFlow', true);
+        this.gotPPFromFlow = true;
+      }
       return this.onPricePointUpdate(+args.mode);
     });
     const cardActionMaxUsageUpdate = this.homey.flow.getActionCard('change-piggy-bank-max-usage');
@@ -2639,11 +2644,6 @@ class PiggyBank extends Homey.App {
     // Do not continue if price points are disabled:
     if (+this.homey.settings.get('priceMode') === c.PRICE_MODE_DISABLED) {
       return Promise.resolve();
-    }
-    if (this.gotPPFromFlow === undefined) {
-      // Store it in settings as well so it is remembered across reboots, but don't save settings all the time
-      this.homey.settings.set('gotPPFromFlow', true);
-      this.gotPPFromFlow = true;
     }
     // Do not continue if the price point did not change
     const oldPricePoint = this.homey.settings.get('pricePoint');
