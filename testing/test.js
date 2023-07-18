@@ -84,7 +84,7 @@ async function testEntsoe() {
   console.log('\x1b[1A[\x1b[32mPASSED\x1b[0m]');
 }
 
-async function testNegativePrice() {
+async function testEntsoeNegativePrice() {
   console.log('[......] Entsoe - Test negative prices');
   const app = new PiggyBank();
   try {
@@ -108,6 +108,58 @@ async function testNegativePrice() {
     if (finalPrices.length < dayLength) {
       console.log(finalPrices);
       throw new Error(`Entsoe API is not returning the prices (${finalPrices.length} != ${dayLength})`);
+    }
+  } finally {
+    await app.onUninit();
+  }
+  console.log('\x1b[1A[\x1b[32mPASSED\x1b[0m]');
+}
+
+async function testPPNegativePrice() {
+  console.log('[......] PP - Test negative prices');
+  const app = new PiggyBank();
+  try {
+    await app.disableLog();
+    await app.onInit();
+
+    // Set future price options:
+    const futurePriceOptions = {
+      ...app.homey.settings.get('futurePriceOptions'),
+      minCheapTime: 0,
+      minExpensiveTime: 0,
+      averageTimeFuture: 0,
+      averageTimePast: 96,
+      dirtCheapPriceModifier: -50,
+      lowPriceModifier: -25,
+      highPriceModifier: 50,
+      extremePriceModifier: 100,
+    };
+
+    app.homey.settings.set('futurePriceOptions', futurePriceOptions);
+
+    const todayArray = [
+      { refPrice: 1, price: 0.4, expectedPP: 4 }, // DIRTCHEAP: -50%
+      { refPrice: 1, price: 0.7, expectedPP: 0 }, // LOW:       -25%
+      { refPrice: 1, price: 1.0, expectedPP: 1 }, // NORMAL:      0%
+      { refPrice: 1, price: 1.6, expectedPP: 2 }, // HIGH:      +50%
+      { refPrice: 1, price: 2.1, expectedPP: 3 }, // EXTREME:  +100%
+      { refPrice: 0, price: -10, expectedPP: 4 }, // DIRTCHEAP: -50%
+      { refPrice: 0, price: -0.1, expectedPP: 4 }, // DIRTCHEAP: -50%
+      { refPrice: 0, price: 0.0, expectedPP: 1 }, // NORMAL:      0%
+      { refPrice: 0, price: 0.1, expectedPP: 3 }, // EXTREME:  +100%
+      { refPrice: 0, price: 10, expectedPP: 3 }, // EXTREME:  +100%
+      { refPrice: -1, price: -0.4, expectedPP: 4 }, // DIRTCHEAP: (below zero)
+      { refPrice: -1, price: -0.7, expectedPP: 4 }, // DIRTCHEAP: (below zero)
+      { refPrice: -1, price: -1.0, expectedPP: 4 }, // DIRTCHEAP: (below zero)
+      { refPrice: -1, price: -1.6, expectedPP: 4 }, // HDIRTCHEAP: (below zero)
+      { refPrice: -1, price: -2.1, expectedPP: 4 }, // DIRTCHEAP: (below zero)
+    ];
+    for (let idx = 0; idx < todayArray.length; idx++) {
+      const comparePrice = todayArray[idx].refPrice;
+      const nextPP = await app.calculateNextPP(comparePrice, [todayArray[idx].price], 0);
+      if (nextPP.mode !== todayArray[idx].expectedPP) {
+        throw new Error(`Mismatching Price point ${nextPP.mode} != ${todayArray[idx].expectedPP} for price ${todayArray[idx].price.toFixed(2)} (reference: ${comparePrice.toFixed(2)})`)
+      }
     }
   } finally {
     await app.onUninit();
@@ -1597,7 +1649,8 @@ async function startAllTests() {
     await testCurrencyConverter();
     await testApp();
     await testEntsoe();
-    await testNegativePrice();
+    await testEntsoeNegativePrice();
+    await testPPNegativePrice();
     await testNewHour(20000);
     await testCharging();
     await testReliability();

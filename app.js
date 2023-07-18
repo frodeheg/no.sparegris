@@ -4418,11 +4418,16 @@ class PiggyBank extends Homey.App {
       outState.__low_price_limit = todayArray.reduce((a, b) => a + b, 0) / todayArray.length;
     }
 
+    // Negative prices are never expensive
+    if (outState.__dirtcheap_price_limit < 0) outState.__dirtcheap_price_limit = 0;
+    if (outState.__low_price_limit < 0) outState.__low_price_limit = 0;
+
     // Trigger new Price points
-    const isDirtCheapPrice = isFixedPrice ? false : (todayArray[todayIndex] < outState.__dirtcheap_price_limit);
-    const isLowPrice = (todayArray[todayIndex] < outState.__low_price_limit);
-    const isHighPrice = isFixedPrice ? false : (todayArray[todayIndex] > outState.__high_price_limit);
-    const isExtremePrice = isFixedPrice ? false : (todayArray[todayIndex] > outState.__extreme_price_limit) && Number.isInteger(+futureData.extremePriceModifier);
+    const currentPrice = todayArray[todayIndex];
+    const isDirtCheapPrice = isFixedPrice ? false : (currentPrice < outState.__dirtcheap_price_limit);
+    const isLowPrice = (currentPrice < outState.__low_price_limit);
+    const isHighPrice = isFixedPrice ? false : (currentPrice > outState.__high_price_limit);
+    const isExtremePrice = isFixedPrice ? false : (currentPrice > outState.__extreme_price_limit) && Number.isInteger(+futureData.extremePriceModifier);
     outState.mode = isDirtCheapPrice ? c.PP.DIRTCHEAP
       : isLowPrice ? c.PP.LOW
         : isExtremePrice ? c.PP.EXTREME
