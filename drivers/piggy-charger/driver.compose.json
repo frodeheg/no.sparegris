@@ -1,0 +1,45 @@
+{
+    "name": {
+      "en": "Piggy Charge Controller",
+      "no": "Sparegris Ladestyring"
+    },
+    "class": "other",
+    "capabilities": [
+      "onoff",
+      "measure_power",
+      "measure_current",
+      "target_current",
+      "charge_status"
+    ],
+    "capabilitiesOptions": {
+    },
+    "platforms": [
+      "local"
+    ],
+    "connectivity": [],
+    "images": {
+      "small": "{{driverAssetsPath}}/images/small.png",
+      "large": "{{driverAssetsPath}}/images/large.png",
+      "xlarge": "{{driverAssetsPath}}/images/xlarge.png"
+    },
+    "pair": [
+      {
+        "id": "info",
+        "navigation": {
+          "next": "list_my_devices"
+        }
+      },
+      {
+        "id": "list_my_devices",
+        "template": "list_devices",
+        "navigation": {
+          "next": "add_my_devices"
+        }
+      },
+      {
+        "id": "add_my_devices",
+        "template": "add_devices"
+      }
+    ]
+  }
+  

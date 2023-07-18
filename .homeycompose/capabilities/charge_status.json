@@ -1,0 +1,55 @@
+{
+  "type": "enum",
+  "title": {
+    "en": "Charge status",
+    "no": "Ladestatus"
+  },
+  "getable": true,
+  "setable": false,
+  "values": [
+    {
+      "id": "0",
+      "title": {
+        "en": "Car disconnected",
+        "no": "Bil frakoblet"
+      }
+    },
+    {
+      "id": "1",
+      "title": {
+        "en": "Car connected",
+        "no": "Bil tilkoblet"
+      }
+    },
+    {
+      "id": "2",
+      "title": {
+        "en": "Charging",
+        "no": "Lader"
+      }
+    },
+    {
+      "id": "3",
+      "title": {
+        "en": "Paused charging",
+        "no": "Pauset lading"
+      }
+    },
+    {
+      "id": "4",
+      "title": {
+        "en": "Charging completed",
+        "no": "Lading fullført"
+      }
+    },
+    {
+      "id": "5",
+      "title": {
+        "en": "Charging failed",
+        "no": "Lading feilet"
+      }
+    }
+  ],
+  "uiComponent": "sensor",
+  "uiQuickAction": false
+}
