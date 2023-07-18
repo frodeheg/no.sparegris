@@ -844,5 +844,8 @@
   },
   "0.20.36": {
     "en": "Fixed issue where the grid cost was not calculated correctly in peak hours."
+  },
+  "0.20.37": {
+    "en": "Made all negative prices dirt cheap"
   }
 }
