@@ -1854,6 +1854,318 @@
           }
         }
       ]
+    },
+    {
+      "name": {
+        "en": "Piggy Charge Controller",
+        "no": "Sparegris Ladestyring"
+      },
+      "class": "other",
+      "energy": {
+        "batteries": [
+          "OTHER",
+          "OTHER"
+        ]
+      },
+      "capabilities": [
+        "onoff",
+        "measure_power",
+        "measure_current",
+        "measure_battery",
+        "measure_battery.charge_cycle",
+        "target_current",
+        "charge_status",
+        "button.validate",
+        "alarm_generic.validated"
+      ],
+      "capabilitiesOptions": {
+        "measure_battery": {
+          "title": {
+            "en": "Battery capacity"
+          }
+        },
+        "measure_battery.charge_cycle": {
+          "title": {
+            "en": "Charge cycle"
+          }
+        },
+        "alarm_generic.validated": {
+          "title": {
+            "en": "Device connected properly"
+          },
+          "insightsTitleTrue": {
+            "en": "Some device flows are not working. New device validation is required."
+          },
+          "insightsTitleFalse": {
+            "en": "The device has been validated."
+          },
+          "titleTrue": {
+            "en": "Validation required"
+          },
+          "titleFalse": {
+            "en": "Validated"
+          }
+        },
+        "button.validate": {
+          "maintenanceAction": true,
+          "title": {
+            "en": "Validate charger"
+          },
+          "desc": {
+            "en": "Checks if all required flows has been created and marks this device as validated."
+          }
+        }
+      },
+      "platforms": [
+        "local"
+      ],
+      "connectivity": [],
+      "images": {
+        "small": "/drivers/piggy-charger/assets/images/small.png",
+        "large": "/drivers/piggy-charger/assets/images/large.png",
+        "xlarge": "/drivers/piggy-charger/assets/images/xlarge.png"
+      },
+      "pair": [
+        {
+          "id": "info",
+          "navigation": {
+            "next": "list_my_devices"
+          }
+        },
+        {
+          "id": "list_my_devices",
+          "template": "list_devices",
+          "navigation": {
+            "next": "add_my_devices"
+          }
+        },
+        {
+          "id": "add_my_devices",
+          "template": "add_devices"
+        }
+      ],
+      "id": "piggy-charger",
+      "settings": [
+        {
+          "type": "group",
+          "label": {
+            "en": "Control settings"
+          },
+          "children": [
+            {
+              "id": "startCurrent",
+              "type": "number",
+              "label": {
+                "en": "Start Current"
+              },
+              "hint": {
+                "en": "This is the amount of Amps offered to the charger when starting charging."
+              },
+              "value": 11,
+              "min": 0,
+              "max": 40,
+              "units": {
+                "en": "A"
+              }
+            },
+            {
+              "id": "stopCurrent",
+              "type": "number",
+              "label": {
+                "en": "Stop Current"
+              },
+              "hint": {
+                "en": "This is the amount of Amps offered to the charger when charging stops (normally 0A)."
+              },
+              "value": 0,
+              "min": 0,
+              "max": 40,
+              "units": {
+                "en": "A"
+              }
+            },
+            {
+              "id": "pauseCurrent",
+              "type": "number",
+              "label": {
+                "en": "Pause Current"
+              },
+              "hint": {
+                "en": "This is the amount of Amps offered to the charger when charging is paused - Some cars does not support pausing the charging, in this case set it to the lowest Amps the car support."
+              },
+              "value": 4,
+              "min": 0,
+              "max": 40,
+              "units": {
+                "en": "A"
+              }
+            },
+            {
+              "id": "minCurrent",
+              "type": "number",
+              "label": {
+                "en": "Minimum Current"
+              },
+              "hint": {
+                "en": "The charging current offered to the car will never go below this value while charging. The pause and stop current must be less than or equal to this value."
+              },
+              "value": 7,
+              "min": 0,
+              "max": 40,
+              "units": {
+                "en": "A"
+              }
+            },
+            {
+              "id": "maxCurrent",
+              "type": "number",
+              "label": {
+                "en": "Maximum Current"
+              },
+              "hint": {
+                "en": "The charging current offered to the car will never go above this value."
+              },
+              "value": 40,
+              "min": 0,
+              "max": 40,
+              "units": {
+                "en": "A"
+              }
+            }
+          ]
+        },
+        {
+          "type": "group",
+          "label": {
+            "en": "Response settings"
+          },
+          "children": [
+            {
+              "id": "toggleTime",
+              "type": "number",
+              "label": {
+                "en": "Minimum toggle time"
+              },
+              "hint": {
+                "en": "Please keep this resonably higher than the measured toggle time to allow sufficient slack for reliable charging control."
+              },
+              "value": 120,
+              "min": 5,
+              "max": 180,
+              "units": {
+                "en": "seconds"
+              }
+            },
+            {
+              "id": "toggleMeasureW",
+              "type": "label",
+              "label": {
+                "en": "Measured response time for W"
+              },
+              "hint": {
+                "en": "The time it took for piggy to send a start charging request before the used Watts was reported back to piggy."
+              },
+              "value": "-"
+            },
+            {
+              "id": "toggleMeasureA",
+              "type": "label",
+              "label": {
+                "en": "Measured response time for Amps"
+              },
+              "hint": {
+                "en": "The time it took for piggy to send a start charging request before the used Amps was reported back to piggy."
+              },
+              "value": "-"
+            }
+          ]
+        },
+        {
+          "type": "group",
+          "label": {
+            "en": "Validation status"
+          },
+          "children": [
+            {
+              "id": "GotSignalAmps",
+              "type": "label",
+              "label": {
+                "en": "Amp Usage Received"
+              },
+              "hint": {
+                "en": "Please make sure a flow updates this device with how many amps the charger is actually charging with whenever the value changes."
+              },
+              "value": "False"
+            },
+            {
+              "id": "GotSignalWatt",
+              "type": "label",
+              "label": {
+                "en": "Watt Usage Received"
+              },
+              "hint": {
+                "en": "Please make sure a flow updates this device with how many watts the charger is actually charging with whenever the value changes."
+              },
+              "value": "False"
+            },
+            {
+              "id": "GotSignalBattery",
+              "type": "label",
+              "label": {
+                "en": "Battery Level Received"
+              },
+              "hint": {
+                "en": "Please make sure a flow updates this device with the battery level whenever the value changes."
+              },
+              "value": "False"
+            },
+            {
+              "id": "GotSignalStatusDisconnected",
+              "type": "label",
+              "label": {
+                "en": "Status Disconnected Received"
+              },
+              "hint": {
+                "en": "Please make sure a flow updates this device with the charger status whenever a car is disconnected."
+              },
+              "value": "False"
+            },
+            {
+              "id": "GotSignalStatusConnected",
+              "type": "label",
+              "label": {
+                "en": "Status Connected Received"
+              },
+              "hint": {
+                "en": "Please make sure a flow updates this device with the charger status whenever a car is connected."
+              },
+              "value": "False"
+            },
+            {
+              "id": "GotSignalStatusDone",
+              "type": "label",
+              "label": {
+                "en": "Status Done Received"
+              },
+              "hint": {
+                "en": "Please make sure a flow updates this device with the charger status whenever a car is done charging.\nThis is not required for device validation but it will improve the app performance."
+              },
+              "value": "False"
+            },
+            {
+              "id": "GotSignalStatusError",
+              "type": "label",
+              "label": {
+                "en": "Status Error Received"
+              },
+              "hint": {
+                "en": "Please make sure a flow updates this device with the charger status whenever an error occurs.\nThis is not required for device validation but it will improve the app performance."
+              },
+              "value": "False"
+            }
+          ]
+        }
+      ]
     }
   ],
   "capabilities": {
@@ -1924,6 +2236,61 @@
         }
       ],
       "icon": "/assets/limit.svg",
+      "uiComponent": "sensor",
+      "uiQuickAction": false
+    },
+    "charge_status": {
+      "type": "enum",
+      "title": {
+        "en": "Charge status",
+        "no": "Ladestatus"
+      },
+      "getable": true,
+      "setable": false,
+      "values": [
+        {
+          "id": "0",
+          "title": {
+            "en": "Car disconnected",
+            "no": "Bil frakoblet"
+          }
+        },
+        {
+          "id": "1",
+          "title": {
+            "en": "Car connected",
+            "no": "Bil tilkoblet"
+          }
+        },
+        {
+          "id": "2",
+          "title": {
+            "en": "Charging",
+            "no": "Lader"
+          }
+        },
+        {
+          "id": "3",
+          "title": {
+            "en": "Paused charging",
+            "no": "Pauset lading"
+          }
+        },
+        {
+          "id": "4",
+          "title": {
+            "en": "Charging completed",
+            "no": "Lading fullført"
+          }
+        },
+        {
+          "id": "5",
+          "title": {
+            "en": "Charging failed",
+            "no": "Lading feilet"
+          }
+        }
+      ],
       "uiComponent": "sensor",
       "uiQuickAction": false
     },
@@ -2545,6 +2912,23 @@
         "nl": "Prijsniveau is veranderd naar normaal",
         "fr": "Niveau de prix changé en normal"
       }
+    },
+    "target_current": {
+      "type": "number",
+      "min": 4,
+      "max": 35,
+      "title": {
+        "en": "Target current"
+      },
+      "units": {
+        "en": "A"
+      },
+      "chartType": "stepLine",
+      "decimals": 0,
+      "insights": true,
+      "getable": true,
+      "setable": true,
+      "uiComponent": "slider"
     }
   }
 }

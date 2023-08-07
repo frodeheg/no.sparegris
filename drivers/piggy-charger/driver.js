@@ -1,3 +1,5 @@
+/* eslint-disable comma-dangle */
+
 'use strict';
 
 const { Driver } = require('homey');
@@ -17,11 +19,14 @@ class MyDriver extends Driver {
    * This should return an array with the data of devices that are available for pairing.
    */
   async onPairListDevices() {
+    const randHex = () => Math.floor(Math.random() * 65536).toString(16).padStart(4, '0');
+    const randomId = `${randHex()}-${randHex()}-${randHex()}-${randHex()}`;
     return [
       {
-        //name: 'My Device',
+        // name: 'My Device',
+        // icon: '',
         data: {
-          id: 'there-can-only-be-one-instance',
+          id: randomId
         }
       //   store: {
       //     address: '127.0.0.1',

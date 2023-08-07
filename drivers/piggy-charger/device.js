@@ -11,6 +11,33 @@ class MyDevice extends Device {
    */
   async onInit() {
     this.homey.app.updateLog('Piggy Charger has been initialized', 1);
+
+    // Register maintainance action to validate the device
+    this.registerCapabilityListener('button.validate', async () => {
+      this.log('Validating charger');
+      const settings = this.getSettings();
+      if (settings['GotSignalAmps'] !== 'True') return Promise.reject(this.homey.__('charger.warnings.noSignalAmps'));
+      if (settings['GotSignalWatt'] !== 'True') return Promise.reject(new Error(this.homey.__('charger.warnings.noSignalWatts')));
+      if (settings['GotSignalBattery'] !== 'True') return Promise.reject(new Error(this.homey.__('charger.warnings.noSignalBattery')));
+      if (settings['GotSignalStatusDisconnected'] !== 'True') return Promise.reject(new Error(this.homey.__('charger.warnings.noStatusDisconnected')));
+      if (settings['GotSignalStatusConnected'] !== 'True') return Promise.reject(new Error(this.homey.__('charger.warnings.noStatusConnected')));
+      // if (settings['GotSignalStatusDone'] !== 'True') return Promise.reject(new Error(this.homey.__('charger.warnings.noStatusDone')));
+      // if (settings['GotSignalStatusError'] !== 'True') return Promise.reject(new Error(this.homey.__('charger.warnings.noStatusError')));
+      return Promise.resolve();
+    });
+
+    this.homey.images.createImage()
+      .then((image) => {
+        image.setPath('../drivers/piggy-charger/assets/images/large.png');
+        this.setCameraImage('front', 'Help image', image);
+      })
+      .catch(this.error);
+    this.homey.images.createImage()
+      .then((image) => {
+        image.setPath('../assets/images/large.png');
+        this.setCameraImage('help', 'Help image 2', image);
+      })
+      .catch(this.error);
   }
 
   /**

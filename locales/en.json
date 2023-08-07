@@ -97,6 +97,20 @@
       "overrideMinCurrent": "Minimum charging current",
       "overrideMaxCurrent": "Maximum charging current"
     },
+    "charger": {
+      "new": {
+        "info1": "This device will allow you to control a car charger with piggy.",
+        "info2": "The device will have to be connected to the car charger by using flows.",
+        "info3": "Please enter the app settings after installing this device for more help on how to connect the car charger and to test that you have connected it properly."
+      },
+      "warnings": {
+        "noSignalAmps": "No Amp signal received from the charger",
+        "noSignalWatts": "No Watt signal received from the charger",
+        "noSignalBattery": "No Battery level received from the charger",
+        "noStatusDisconnected": "No car disconnected signal received from the charger",
+        "noStatusConnected": "No car connected signal received from the charger"
+      }
+    },
     "menu": {
       "home": {
         "title": "Home"

@@ -1,45 +1,88 @@
 {
-    "name": {
-      "en": "Piggy Charge Controller",
-      "no": "Sparegris Ladestyring"
-    },
-    "class": "other",
-    "capabilities": [
-      "onoff",
-      "measure_power",
-      "measure_current",
-      "target_current",
-      "charge_status"
-    ],
-    "capabilitiesOptions": {
-    },
-    "platforms": [
-      "local"
-    ],
-    "connectivity": [],
-    "images": {
-      "small": "{{driverAssetsPath}}/images/small.png",
-      "large": "{{driverAssetsPath}}/images/large.png",
-      "xlarge": "{{driverAssetsPath}}/images/xlarge.png"
-    },
-    "pair": [
-      {
-        "id": "info",
-        "navigation": {
-          "next": "list_my_devices"
-        }
-      },
-      {
-        "id": "list_my_devices",
-        "template": "list_devices",
-        "navigation": {
-          "next": "add_my_devices"
-        }
-      },
-      {
-        "id": "add_my_devices",
-        "template": "add_devices"
-      }
+  "name": {
+    "en": "Piggy Charge Controller",
+    "no": "Sparegris Ladestyring"
+  },
+  "class": "other",
+  "energy": {
+    "batteries": [
+      "OTHER",
+      "OTHER"
     ]
-  }
-  
+  },
+  "capabilities": [
+    "onoff",
+    "measure_power",
+    "measure_current",
+    "measure_battery",
+    "measure_battery.charge_cycle",
+    "target_current",
+    "charge_status",
+    "button.validate",
+    "alarm_generic.validated"
+  ],
+  "capabilitiesOptions": {
+    "measure_battery": {
+      "title": {
+        "en": "Battery capacity"
+      }
+    },
+    "measure_battery.charge_cycle": {
+      "title": {
+        "en": "Charge cycle"
+      }
+    },
+    "alarm_generic.validated": {
+      "title": {
+        "en": "Device connected properly"
+      },
+      "insightsTitleTrue": {
+        "en": "Some device flows are not working. New device validation is required."
+      },
+      "insightsTitleFalse": {
+        "en": "The device has been validated."
+      },
+      "titleTrue": {
+        "en": "Validation required"
+      },
+      "titleFalse": {
+        "en": "Validated"
+      }
+    },
+    "button.validate": {
+      "maintenanceAction": true,
+      "title": {
+        "en": "Validate charger"
+      },
+      "desc": { "en": "Checks if all required flows has been created and marks this device as validated." }
+    }
+  },
+  "platforms": [
+    "local"
+  ],
+  "connectivity": [],
+  "images": {
+    "small": "{{driverAssetsPath}}/images/small.png",
+    "large": "{{driverAssetsPath}}/images/large.png",
+    "xlarge": "{{driverAssetsPath}}/images/xlarge.png"
+  },
+  "pair": [
+    {
+      "id": "info",
+      "navigation": {
+        "next": "list_my_devices"
+      }
+    },
+    {
+      "id": "list_my_devices",
+      "template": "list_devices",
+      "navigation": {
+        "next": "add_my_devices"
+      }
+    },
+    {
+      "id": "add_my_devices",
+      "template": "add_devices"
+    }
+  ]
+}
