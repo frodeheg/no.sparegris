@@ -1,0 +1,76 @@
+ <style>
+/* HIDE RADIO */
+[type=radio] { 
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* IMAGE STYLES */
+[type=radio] + img {
+  cursor: pointer;
+}
+
+/* CHECKED STYLES */
+[type=radio]:checked + img {
+  outline: 2px solid #f00;
+  background-color: #ddd;
+}
+</style>
+
+<form class="homey-form">
+  <legend class="homey-form-legend" data-i18n="charger.new.imageHeader">Select Icon</legend>
+
+  <div class="homey-form-group">
+    <label>
+      <input type="radio" name="imageID" value="icon4" onchange="updateImage(this.value)" checked>
+      <img width=70 height=70 src="../assets/icon4.svg" alt="Option 4">
+    </label>
+
+    <label>
+      <input type="radio" name="imageID" value="icon1" onchange="updateImage(this.value)">
+      <img width=70 height=70 src="../assets/icon1.svg" alt="Option 1">
+    </label>
+    
+    <label>
+      <input type="radio" name="imageID" value="icon2" onchange="updateImage(this.value)">
+      <img width=70 height=70 src="../assets/icon2.svg" alt="Option 2">
+    </label>
+
+    <label>
+      <input type="radio" name="imageID" value="icon3" onchange="updateImage(this.value)">
+      <img width=70 height=70 src="../assets/icon3.svg" alt="Option 3">
+    </label>
+
+    <label>
+      <input type="radio" name="imageID" value="icon5" onchange="updateImage(this.value)">
+      <img width=70 height=70 src="../assets/icon5.svg" alt="Option 5">
+    </label>
+  </div>
+</form>
+
+<script type="application/javascript">
+  Homey.showLoadingOverlay();
+
+  function updateImage(newValue) {
+    const randHex = () => Math.floor(Math.random() * 65536).toString(16).padStart(4, '0');
+    const randomId = `${randHex()}-${randHex()}-${randHex()}-${randHex()}`;
+    const devices =  [
+      {
+        name: Homey.__('charger.new.deviceName'), //`My Device ${randomId}`,
+        icon: `${newValue}.svg`,
+        data: {
+          id: randomId
+        }
+      //   store: {
+      //     address: '127.0.0.1',
+      //   },
+      }
+    ];
+    console.log('ding');
+    Homey.setViewStoreValue("add_devices", "devices", devices);
+  }
+  updateImage('icon4');
+  Homey.hideLoadingOverlay();
+</script>
