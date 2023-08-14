@@ -1,15 +1,15 @@
 {
   "title": {
-    "en": "Change the charging power",
-    "no": "Endre ladestyrken",
-    "nl": "Wijzig het laadvermogen",
-    "fr": "Modifier la puissance de charge"
+    "en": "The charging power should be changed",
+    "no": "Ladeeffekten bør endres",
+    "nl": "Het laadvermogen moet worden gewijzigd",
+    "fr": "La puissance de charge doit être modifiée"
   },
   "titleFormatted": {
-    "en": "Change the charging power to [[offeredPower]] W",
-    "no": "Endre ladestyrken til [[offeredPower]] W",
-    "nl": "Wijzig het laadvermogen naar [[offeredPower]] W",
-    "fr": "Changez la puissance de charge en [[offeredPower]] W"
+    "en": "The charging power should be changed to the supplied token (Offered power) W",
+    "no": "Ladeeffekten bør endres til den medfølgende token (Tilbudt effekt) W",
+    "nl": "Het laadvermogen moet worden gewijzigd in het meegeleverde token (Aangeboden vermogen) W",
+    "fr": "La puissance de charge doit être changée pour le jeton fourni (Puissance offerte) W"
   },
   "hint": {
     "en": "This trigger should be used to change the charging power. It will be called on the best schedule after the action 'Start Charging Cycle' has been initiated.",
@@ -22,8 +22,8 @@
       "type": "number",
       "name": "offeredPower",
       "title": {
-        "en": "Offered Power",
-        "no": "Tilbydt Effekt",
+        "en": "Offered power",
+        "no": "Tilbydt effekt",
         "nl": "Aangeboden vermogen",
         "fr": "Puissance offerte"
       },

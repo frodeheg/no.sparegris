@@ -1,15 +1,15 @@
 {
   "title": {
-    "en": "Stop Charging",
-    "no": "Stopp lading",
-    "nl": "Stoppen met opladen",
-    "fr": "Arrêter la charge"
+    "en": "The charging should be stopped",
+    "no": "Ladingen bør stoppes",
+    "nl": "Het opladen moet worden gestopt",
+    "fr": "La charge doit être arrêtée"
   },
   "titleFormatted": {
-    "en": "Turn off the charger.",
-    "no": "Slå av laderen.",
-    "nl": "Schakel de oplader uit.",
-    "fr": "Éteignez le chargeur."
+    "en": "The charging should be stopped",
+    "no": "Ladingen bør stoppes",
+    "nl": "Het opladen moet worden gestopt",
+    "fr": "La charge doit être arrêtée"
   },
   "hint": {
     "en": "This Trigger should be used to stop the charger. It will be called on the best schedule after the action 'Start Charging Cycle' has been initiated.",
