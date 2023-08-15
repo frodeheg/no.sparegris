@@ -850,5 +850,8 @@
   },
   "0.20.38": {
     "en": "Fixed crash bug on Homey Android app due to a malformed when-card + made the titles more intuitive as they appeared as then cards."
+  },
+  "0.20.39": {
+    "en": "Added support for com.DevelcoProducts:EMIZB-132 and com.balboa:Balboa"
   }
 }
