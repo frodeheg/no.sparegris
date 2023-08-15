@@ -1,0 +1,13 @@
+Log ID: 2023-08-02T17:34:33.523Z
+App version 0.20.33
+
++19:55:15.096: ----- ANALYZING DEVICE -----
++19:55:15.097: Report type: Device is not listed
++19:55:15.109: Device name: EMI Norwegian HAN
++19:55:15.110: Driver Id: homey:app:com.DevelcoProducts:EMIZB-132
++19:55:15.111: Error: TypeError: Cannot read properties of undefined (reading 'onoff_cap')
++19:55:15.112: Capabilities: meter_power,measure_power,alarm_generic
++19:55:15.113: Options for 'meter_power': {"id":"meter_power","type":"number","iconObj":null,"title":"Energi","getable":true,"setable":false,"insights":true,"insightsTitleTrue":null,"insightsTitleFalse":null,"units":"kWh","decimals":2,"value":98221.15,"lastUpdated":"2023-08-02T19:00:27.418Z"}
++19:55:15.115: Options for 'measure_power': {"id":"measure_power","type":"number","iconObj":null,"title":"Effekt","getable":true,"setable":false,"insights":true,"insightsTitleTrue":null,"insightsTitleFalse":null,"units":"W","decimals":2,"value":5879,"lastUpdated":"2023-08-02T19:55:12.049Z"}
++19:55:15.116: Options for 'alarm_generic': {"id":"alarm_generic","type":"boolean","iconObj":null,"title":"Check Meter","getable":true,"setable":false,"insights":true,"insightsTitleTrue":"Generell alarm aktivert","insightsTitleFalse":"Generell alarm deaktivert","value":false,"lastUpdated":"2023-08-02T18:19:41.950Z"}
++19:55:15.117: --- ANALYZING DEVICE DONE ---
