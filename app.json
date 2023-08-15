@@ -5,7 +5,7 @@
     "homey:manager:api",
     "homey:app:no.almli.utilitycost"
   ],
-  "version": "0.20.36",
+  "version": "0.20.39",
   "compatibility": ">=5.0.0",
   "sdk": 3,
   "homeyCommunityTopicId": 66677,
@@ -212,16 +212,16 @@
     "triggers": [
       {
         "title": {
-          "en": "Change the charging power",
-          "no": "Endre ladestyrken",
-          "nl": "Wijzig het laadvermogen",
-          "fr": "Modifier la puissance de charge"
+          "en": "The charging power should be changed",
+          "no": "Ladeeffekten bør endres",
+          "nl": "Het laadvermogen moet worden gewijzigd",
+          "fr": "La puissance de charge doit être modifiée"
         },
         "titleFormatted": {
-          "en": "Change the charging power to [[offeredPower]] W",
-          "no": "Endre ladestyrken til [[offeredPower]] W",
-          "nl": "Wijzig het laadvermogen naar [[offeredPower]] W",
-          "fr": "Changez la puissance de charge en [[offeredPower]] W"
+          "en": "The charging power should be changed to the supplied token (Offered power) W",
+          "no": "Ladeeffekten bør endres til den medfølgende token (Tilbudt effekt) W",
+          "nl": "Het laadvermogen moet worden gewijzigd in het meegeleverde token (Aangeboden vermogen) W",
+          "fr": "La puissance de charge doit être changée pour le jeton fourni (Puissance offerte) W"
         },
         "hint": {
           "en": "This trigger should be used to change the charging power. It will be called on the best schedule after the action 'Start Charging Cycle' has been initiated.",
@@ -234,8 +234,8 @@
             "type": "number",
             "name": "offeredPower",
             "title": {
-              "en": "Offered Power",
-              "no": "Tilbydt Effekt",
+              "en": "Offered power",
+              "no": "Tilbydt effekt",
               "nl": "Aangeboden vermogen",
               "fr": "Puissance offerte"
             },
@@ -384,16 +384,16 @@
       },
       {
         "title": {
-          "en": "Start Charging",
-          "no": "Start lading",
-          "nl": "Begin met opladen",
-          "fr": "Démarrer la charge"
+          "en": "The charging should be started",
+          "no": "Ladingen bør startes",
+          "nl": "Het opladen moet worden gestart",
+          "fr": "La charge doit commencer"
         },
         "titleFormatted": {
-          "en": "Turn on the charger, using lowest Power.",
-          "no": "Slå på laderen og bruk laveste ladestyrke.",
-          "nl": "Zet de oplader aan en gebruik het laagste laadvermogen.",
-          "fr": "Allumez le chargeur et utilisez la puissance de charge la plus faible."
+          "en": "The charging should be started, using lowest power",
+          "no": "Ladingen bør startes med lavest mulig effekt",
+          "nl": "Het opladen moet worden gestart met het laagste vermogen",
+          "fr": "La charge doit être démarrée en utilisant la puissance la plus faible"
         },
         "hint": {
           "en": "This Trigger should be used to start the charger. It will be called on the best schedule after the action 'Start Charging Cycle' has been initiated.",
@@ -423,16 +423,16 @@
       },
       {
         "title": {
-          "en": "Stop Charging",
-          "no": "Stopp lading",
-          "nl": "Stoppen met opladen",
-          "fr": "Arrêter la charge"
+          "en": "The charging should be stopped",
+          "no": "Ladingen bør stoppes",
+          "nl": "Het opladen moet worden gestopt",
+          "fr": "La charge doit être arrêtée"
         },
         "titleFormatted": {
-          "en": "Turn off the charger.",
-          "no": "Slå av laderen.",
-          "nl": "Schakel de oplader uit.",
-          "fr": "Éteignez le chargeur."
+          "en": "The charging should be stopped",
+          "no": "Ladingen bør stoppes",
+          "nl": "Het opladen moet worden gestopt",
+          "fr": "La charge doit être arrêtée"
         },
         "hint": {
           "en": "This Trigger should be used to stop the charger. It will be called on the best schedule after the action 'Start Charging Cycle' has been initiated.",

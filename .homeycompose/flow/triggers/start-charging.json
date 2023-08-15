@@ -1,15 +1,15 @@
 {
   "title": {
-    "en": "Start Charging",
-    "no": "Start lading",
-    "nl": "Begin met opladen",
-    "fr": "Démarrer la charge"
+    "en": "The charging should be started",
+    "no": "Ladingen bør startes",
+    "nl": "Het opladen moet worden gestart",
+    "fr": "La charge doit commencer"
   },
   "titleFormatted": {
-    "en": "Turn on the charger, using lowest Power.",
-    "no": "Slå på laderen og bruk laveste ladestyrke.",
-    "nl": "Zet de oplader aan en gebruik het laagste laadvermogen.",
-    "fr": "Allumez le chargeur et utilisez la puissance de charge la plus faible."
+    "en": "The charging should be started, using lowest power",
+    "no": "Ladingen bør startes med lavest mulig effekt",
+    "nl": "Het opladen moet worden gestart met het laagste vermogen",
+    "fr": "La charge doit être démarrée en utilisant la puissance la plus faible"
   },
   "hint": {
     "en": "This Trigger should be used to start the charger. It will be called on the best schedule after the action 'Start Charging Cycle' has been initiated.",

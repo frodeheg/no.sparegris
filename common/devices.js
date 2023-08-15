@@ -192,6 +192,16 @@ const DEVICE_CMD = {
     tempStep: 0.5,
     default: false
   },
+  'com.balboa:Balboa': {
+    type: DEVICE_TYPE.HEATER,
+    note: 'This device has no onOff capability and will emulate Off by turning the temperature to absolute minimum',
+    setOnOffCap: null,
+    readTempCap: 'measure_temperature',
+    setTempCap: 'target_temperature',
+    tempMin: 26.5,
+    tempMax: 40,
+    tempStep: 0.5
+  },
   'com.ctmlyng.op:mtouch-one': {
     ...DEFAULT_HEATER,
     setOnOffCap: 'operationMode',
@@ -201,6 +211,7 @@ const DEVICE_CMD = {
   },
   'com.datek.eva:meter-reader': DEFAULT_METER,
   'com.datek.eva:smart-plug': DEFAULT_SWITCH,
+  'com.DevelcoProducts:EMIZB-132': DEFAULT_METER,
   'com.elko:ESHSUPERTR': {
     ...DEFAULT_HEATER,
     note: 'Please note that the vendor of this device only expose the capability to set temperature in case the device is '
