@@ -6,7 +6,21 @@
     <script type="text/javascript" src="/homey.js" data-origin="settings"></script>
     <script type="text/javascript">
       let module = {}; // Just to get around that some of the included files are used both by node.js and in the browser
+      let totalLoadCount = 11;
+      let loadedCount = 0;
+      let scriptsLoaded = false;
       function onWizLoaded() {};
+      function onScriptLoaded(page) {
+        loadedCount += 1;
+        console.log(`Script loaded (${loadedCount}/${totalLoadCount}): ${page}`);
+        if (totalLoadCount === loadedCount) {
+          scriptsLoaded = true;
+          if (typeof checkLoadingDone === 'function') {
+            // In case the scripts are loaded before the function is defined it's ok to skip it
+            checkLoadingDone();
+          }
+        }
+      };
     </script>
     <script type="text/javascript" src="./constants.js"></script>
     <script type="text/javascript" src="./locale.js"></script>
@@ -1954,6 +1968,7 @@
           `currenciesLoaded: ${currenciesLoaded}<br>` +
           `onHomeyReadyCompleted: ${onHomeyReadyCompleted}<br>`; */
         if (maxPowerLoaded
+          && scriptsLoaded
           && deviceListLoaded
           && modeListLoaded
           && modeNamesLoaded
@@ -3023,13 +3038,14 @@
         var key = event.message ? "message" : "data";
         var data = event[key];
         //run function//
-        if (event.origin === 'https://tools.developer.homey.app') {
+        if (event.origin === 'https://tools.developer.homey.app' ||
+            event.origin === 'https://my.homey.app') {
           console.log('Ignoring from homey http interface');
           return;
         }
         if ((event.origin !== window.location.origin) &&
           (event.origin !== 'null')) {
-          console.log(`Message from unknown origin! (${event.origin})`);
+          console.log(`Message from unknown origin! (${event.origin} != ${window.location.origin})`);
           return;
         }
         console.log(`iFrame: ${data} from ${event.origin}`);

@@ -92,3 +92,8 @@ module.exports = {
   toggle,
   updateTranslations,
 };
+
+// When including this file in a web-page, inform the main page that loading is complete
+if (typeof onScriptLoaded === 'function') {
+  onScriptLoaded('tools.js');
+} // else the script is not used in a web-page
