@@ -1580,7 +1580,8 @@ async function testACModes() {
     await app.onPowerUpdate(100, now);
     await app.onProcessPower(now);
     now.setTime(startTime.getTime() + 1000000000);
-    if (ACDevice.capabilitiesObj[tempCap].value !== 21) throw new Error('Incorrect heating temperature');
+    const observedTemp = ACDevice.capabilitiesObj[tempCap].value;
+    if (observedTemp !== 21) throw new Error(`Incorrect heating temperature (saw ${observedTemp} instead of 21)`);
 
     // Set to Cooling, perform one click and verify temperature
     await app.setACMode(ACDevice, c.ACMODE.COOL);
