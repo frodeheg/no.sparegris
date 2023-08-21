@@ -853,5 +853,8 @@
   },
   "0.20.39": {
     "en": "Added support for com.DevelcoProducts:EMIZB-132 and com.balboa:Balboa"
+  },
+  "0.20.40": {
+    "en": "Custom mode names are now displayed with the overridden names in piggy insights."
   }
 }
