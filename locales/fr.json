@@ -444,6 +444,9 @@
     "info": "Cet appareil vous donnera un aperçu de ce qui se passe lorsque l'application contrôle le flux. Il n'est pas nécessaire d'installer ce dispositif pour faire fonctionner l'application.",
     "info2": "Étant donné que cet appareil ne fonctionne que pour surveiller l'application, vous ne pouvez donc pas configurer ce qui se passe à travers les paramètres de cet appareil. Vous ne pouvez configurer ce qui se passe que par les paramètres de l'application."
   },
+  "insights": {
+    "modechange": "Changé en mode [name]"
+  },
   "warnings": {
     "homeyApiNotResponding": "Avoir des difficultés à obtenir des états de périphériques de l'API Homey. Ce problème devrait résoudre sous peu, si vous ne contactez pas le développeur de l'application car il pourrait être un bug.",
     "notConfigured": "L'application n'a pas encore été configurée correctement, s'il vous plaît aller à la page des paramètres de l'application et sauvegarder votre configuration préférée",
