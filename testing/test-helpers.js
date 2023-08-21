@@ -85,10 +85,10 @@ async function applyBasicConfig(app) {
   futureData.extremePriceModifier = 100;
   app.homey.settings.set('futurePriceOptions', futureData);
   const fakeDevices = [
-    'com.mill:mill.txt',
-    'com.mill:mill.txt',
-    'com.sensibo:Sensibo.txt',
-    'com.sensibo:Sensibo.txt',
+    'com.mill;mill.txt',
+    'com.mill;mill.txt',
+    'com.sensibo;Sensibo.txt',
+    'com.sensibo;Sensibo.txt',
     { id: 'id_a', capabilitiesObj: { measure_temperature: { value: 10 }, target_temperature: { value: 20 }, onoff: { value: false } } },
     { id: 'id_b', capabilitiesObj: { measure_temperature: { value: 10 }, target_temperature: { value: 20 }, onoff: { value: false } } },
     { id: 'id_c', capabilitiesObj: { measure_temperature: { value: 10 }, target_temperature: { value: 20 }, onoff: { value: false } } },
@@ -149,7 +149,7 @@ async function applyStateFromFile(app, file, poweredOn = true) {
       }
       resolve(data);
     });
-  }).then(data => {
+  }).then((data) => {
     const parsed = JSON.parse(data, (key, value) => {
       return value === 'Infinity' ? Infinity : value;
     });
@@ -174,11 +174,11 @@ async function applyStateFromFile(app, file, poweredOn = true) {
       }
     }
     // Create fake devices to match the loaded state
-    const devInput = {...parsed.state.__meterReaders, ...parsed.settings.deviceList};
+    const devInput = { ...parsed.state.__meterReaders, ...parsed.settings.deviceList };
     const devices = [];
     for (const deviceId in devInput) {
       const devInfo = devInput[deviceId];
-      const fileName = `${devInfo.driverId}.txt`;
+      const fileName = `${devInfo.driverId.replace(':', ';')}.txt`; // Windows does not support : in filenames, use ;
       const zones = homeyApi.zones.getZones();
       if (!('memberOf' in devInfo)) devInfo.memberOf = ['none'];
       if (!('roomId' in devInfo)) devInfo.roomId = 'none';

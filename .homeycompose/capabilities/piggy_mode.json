@@ -1,5 +1,5 @@
 {
-  "type": "enum",
+  "type": "boolean",
   "title": {
     "en": "Mode",
     "no": "Driftsmodus",
@@ -8,89 +8,10 @@
   },
   "getable": true,
   "setable": false,
-  "values": [
-    {
-      "id": "0",
-      "title": {
-        "en": "Disabled",
-        "no": "Deaktivert",
-        "nl": "Uitgeschakeld",
-        "fr": "Désactivé"
-      }
-    },
-    {
-      "id": "1",
-      "title": {
-        "en": "Day",
-        "no": "Dag",
-        "nl": "Dag",
-        "fr": "Jour"
-      }
-    },
-    {
-      "id": "2",
-      "title": {
-        "en": "Night",
-        "no": "Natt",
-        "nl": "Nacht",
-        "fr": "Nuit"
-      }
-    },
-    {
-      "id": "3",
-      "title": {
-        "en": "Vacation",
-        "no": "Ferie",
-        "nl": "Vakantie",
-        "fr": "Vacances"
-      }
-    },
-    {
-      "id": "4",
-      "title": {
-        "en": "Custom 1",
-        "no": "Egendefinert 1",
-        "nl": "Aangepast 1",
-        "fr": "Personnalisé 1"
-      }
-    },
-    {
-      "id": "5",
-      "title": {
-        "en": "Custom 2",
-        "no": "Egendefinert 2",
-        "nl": "Aangepast 2",
-        "fr": "Personnalisé 2"
-      }
-    },
-    {
-      "id": "6",
-      "title": {
-        "en": "Custom 3",
-        "no": "Egendefinert 3",
-        "nl": "Aangepast 3",
-        "fr": "Personnalisé 3"
-      }
-    },
-    {
-      "id": "7",
-      "title": {
-        "en": "Custom 4",
-        "no": "Egendefinert 4",
-        "nl": "Aangepast 4",
-        "fr": "Personnalisé 4"
-      }
-    },
-    {
-      "id": "8",
-      "title": {
-        "en": "Custom 5",
-        "no": "Egendefinert 5",
-        "nl": "Aangepast 5",
-        "fr": "Personnalisé 5"
-      }
-    }
-  ],
+  "preventTag": true,
+  "preventInsights": true,
+  "titleTrue": { "en": "Mode" },
+  "titleFalse": { "en": "Mode" },
   "icon": "/assets/mode.svg",
   "uiComponent": "sensor",
   "uiQuickAction": false

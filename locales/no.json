@@ -444,6 +444,9 @@
     "info": "Denne enheten vil gi deg innblikk i hva som skjer når appen styrer strømmen. Det er ikke nødvendig å installere denne enheten for å få appen til å fungere.",
     "info2": "Ettersom enheten bare fungerer som et vindu inn i appen kan du derfor ikke konfigurere hva som skjer gjennom denne enhetens innstillinger. Du kan bare konfigurere hva som skjer gjennom appens innstillinger."
   },
+  "insights": {
+    "modechange": "Endret til [name]-modus"
+  },
   "warnings" : {
     "homeyApiNotResponding": "Problemer med å få enhetsinformasjon fra Homey API. Dette burde løse seg raskt; hvis ikke ta kontakt med utvikleren, det kan være en bug.",
     "notConfigured": "Appen har ikke blitt konfigurert riktig enda, vennligst gå til innstillinger for appen og lagre ditt ønskede oppsett.",

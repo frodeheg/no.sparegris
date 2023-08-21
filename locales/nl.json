@@ -444,6 +444,9 @@
     "info": "Dit apparaat geeft je inzicht in wat er gebeurt wanneer de app de stroom regelt. Het is niet nodig om dit apparaat te installeren om de app te laten functioneren.",
     "info2": "Aangezien dit apparaat alleen werkt om de app te monitoren, kun je daarom niet configureren wat er gebeurt via de instellingen van dit apparaat. Je kunt enkel configureren wat er gebeurt via de instellingen van de app."
   },
+  "insights": {
+    "modechange": "Gewijzigd naar [name]-modus"
+  },
   "warnings": {
     "homeyApiNotResponding": "Er zijn problemen om apparaat statussen uit de Homey API te halen. Dit probleem zou vanzelf weer op moeten lossen; zo niet graag contact opnemen met de app ontwikkelaar, omdat het een bug kan zijn.",
     "notConfigured": "de app is nog niet correct geconfigureerd, ga naar de pagina met de app -instellingen en sla uw voorkeursconfiguratie op",

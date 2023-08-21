@@ -356,7 +356,24 @@ class MyDevice extends Device {
 
       // Set Mode capability + update timeline using boolean workaround capabilities
       const prevMode = await this.getStoreValue('piggy_mode');
-      this.mySetCapabilityValue('piggy_mode', String(piggyState.operating_mode));
+      const modeNames = [
+        this.homey.__('settings.app.disabled'),
+        this.homey.__('settings.opMode.normal'),
+        this.homey.__('settings.opMode.night'),
+        this.homey.__('settings.opMode.holiday'),
+        ...this.homey.settings.get('modeNames'),
+      ];
+
+      if (this.prevValue !== piggyState.operating_mode) {
+        this.mySetCapabilityValue('piggy_mode', false); // true is red
+        const options = {
+          titleTrue: { en: modeNames[piggyState.operating_mode] },
+          titleFalse: { en: modeNames[piggyState.operating_mode] },
+        };
+        await this.setCapabilityOptions('piggy_mode', options);
+        this.prevValue = piggyState.operating_mode;
+      }
+
       if (+piggyState.operating_mode !== +prevMode) {
         this.setStoreValue('piggy_mode', +piggyState.operating_mode);
         switch (+piggyState.operating_mode) {
@@ -470,6 +487,21 @@ class MyDevice extends Device {
         this.currency = piggyState.currency;
       }
 
+      // Update piggy_mode_custom* with custom names if they don't match:
+      const capNames = ['piggy_mode_custom', 'piggy_mode_custom2', 'piggy_mode_custom3', 'piggy_mode_custom4', 'piggy_mode_custom5'];
+      if (!Array.isArray(this.prevModeNames)) {
+        this.prevModeNames = [];
+      }
+      if (Array.isArray(modeNames)) {
+        for (let i = 0; i < modeNames.length - 4; i++) {
+          const thisModeName = modeNames[i + 4];
+          if (thisModeName !== this.prevModeNames[i]) {
+            this.renameCustomModeCaps(capNames[i], thisModeName);
+            this.prevModeNames[i] = thisModeName;
+          }
+        }
+      }
+
       // Change limiter
       const limiterState = (piggyState.activeLimit === undefined) ? '-1' : `${piggyState.activeLimit}`;
       this.mySetCapabilityValue('activeLimit', limiterState);
@@ -496,6 +528,18 @@ class MyDevice extends Device {
    */
   async updateCapability(capabilityId, baseOptions) {
     const options = { ...this.homey.app.manifest.drivers[0].capabilitiesOptions[capabilityId], ...baseOptions };
+    await this.setCapabilityOptions(capabilityId, options);
+  }
+
+  async renameCustomModeCaps(capabilityId, newName) {
+    const options = {
+      insightsTitleTrue: {},
+      insightsTitleFalse: {},
+    };
+    const modeChangeText = this.homey.__('insights.modechange').replace('[name]', newName);
+    options.insightsTitleTrue.en = modeChangeText;
+    options.insightsTitleFalse.en = modeChangeText;
+
     await this.setCapabilityOptions(capabilityId, options);
   }
 
