@@ -3,6 +3,8 @@
 'use strict';
 
 const { Device } = require('homey');
+ const Textify = require('../../lib/textify');
+//const { PNG } = require('pngjs/browser');
 
 class MyDevice extends Device {
 
@@ -28,13 +30,17 @@ class MyDevice extends Device {
 
     this.homey.images.createImage()
       .then((image) => {
-        image.setPath('../drivers/piggy-charger/assets/images/large.png');
+        image.setStream(async (stream) => {
+          const dst = new Textify({ width: 100, height: 100, colorType: 2, bgColor: { red: 255, green: 0, blue: 0 }});
+          await dst.addText('Dette er en test', 0, 0);
+          return dst.pack().pipe(stream);
+        });
         this.setCameraImage('front', 'Help image', image);
       })
       .catch(this.error);
     this.homey.images.createImage()
       .then((image) => {
-        image.setPath('../assets/images/large.png');
+        image.setPath('../assets/images/Codepage-437.png');
         this.setCameraImage('help', 'Help image 2', image);
       })
       .catch(this.error);
