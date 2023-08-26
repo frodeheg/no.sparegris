@@ -31,9 +31,18 @@ class MyDevice extends Device {
     this.homey.images.createImage()
       .then((image) => {
         image.setStream(async (stream) => {
-          const dst = new Textify({ width: 100, height: 100, colorType: 2, bgColor: { red: 255, green: 0, blue: 0 }});
-          await dst.addText('Dette er en test', 0, 0);
-          return dst.pack().pipe(stream);
+          const dst = new Textify({ width: 500, height: 500, colorType: 2, bgColor: { red: 80, green: 80, blue: 80 }});
+          const okText = '[\u001b[32;1m OK \u001b[37m]';
+          const errText = '[\u001b[31;1mFAIL\u001b[37m]';
+          return dst.setCursorWindow(50, 0, 500, 16 * 4)
+            .then(() => dst.setTextColor([255, 128, 128, 255]))
+            .then(() => dst.addText('The device can not be used before the check list below has been completed\n'))
+            .then(() => dst.addText('--------------------------------'))
+            .then(() => dst.setCursorWindow(0, 2 * 16, 500, 500))
+            .then(() => dst.setTextColor([255, 255, 255, 255]))
+            .then(() => dst.addText(`${errText} Connect xxxx\n`))
+            .then(() => dst.addText(`${okText} device\n`))
+            .then(() => dst.pack().pipe(stream));
         });
         this.setCameraImage('front', 'Help image', image);
       })
