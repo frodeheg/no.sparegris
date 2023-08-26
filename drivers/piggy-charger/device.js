@@ -3,8 +3,7 @@
 'use strict';
 
 const { Device } = require('homey');
- const Textify = require('../../lib/textify');
-//const { PNG } = require('pngjs/browser');
+const Textify = require('../../lib/textify');
 
 class MyDevice extends Device {
 
@@ -34,11 +33,12 @@ class MyDevice extends Device {
           const dst = new Textify({ width: 500, height: 500, colorType: 2, bgColor: { red: 80, green: 80, blue: 80 }});
           const okText = '[\u001b[32;1m OK \u001b[37m]';
           const errText = '[\u001b[31;1mFAIL\u001b[37m]';
-          return dst.setCursorWindow(50, 0, 500, 16 * 4)
+          return dst.loadFile('../drivers/piggy-charger/assets/images/notValid.png')
+            .then(() => dst.setCursorWindow(190, 80, 460, 170))
             .then(() => dst.setTextColor([255, 128, 128, 255]))
-            .then(() => dst.addText('The device can not be used before the check list below has been completed\n'))
-            .then(() => dst.addText('--------------------------------'))
-            .then(() => dst.setCursorWindow(0, 2 * 16, 500, 500))
+            .then(() => dst.addText('The device can not be used\nbefore the check-list below\nhas been completed\n'))
+            .then(() => dst.addText('-----------------------------'))
+            .then(() => dst.setCursorWindow(40, 185, 460, 460))
             .then(() => dst.setTextColor([255, 255, 255, 255]))
             .then(() => dst.addText(`${errText} Connect xxxx\n`))
             .then(() => dst.addText(`${okText} device\n`))
