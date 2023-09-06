@@ -449,6 +449,15 @@
       "info2": "The device will have to be manually connected to the car charger by using flows.",
       "info3": "Please enter the app settings after installing this device for more help on how to connect the car charger and to test that you have connected it properly."
     },
+    "status": {
+      "turnedOn": "The controller must be enabled."
+    },
+    "tasks": {
+      "turnOn": "Please turn on the charge controller."
+    },
+    "error": {
+      "notReady": "Can not turn on the charge controller before it has been properly connected and tested. See the camera capability of this device for help."
+    },
     "warnings": {
       "noSignalAmps": "No Amp signal received from the charger",
       "noSignalWatts": "No Watt signal received from the charger",

@@ -52,9 +52,9 @@
     "button.validate": {
       "maintenanceAction": true,
       "title": {
-        "en": "Validate charger"
+        "en": "Reset controller"
       },
-      "desc": { "en": "Checks if all required flows has been created and marks this device as validated." }
+      "desc": { "en": "Reset validation status and initiates a new validation procedure for the device." }
     }
   },
   "platforms": [
