@@ -13,13 +13,12 @@
   "capabilities": [
     "onoff",
     "measure_power",
-    "measure_current",
     "measure_battery",
     "measure_battery.charge_cycle",
-    "target_current",
+    "target_power",
     "charge_status",
-    "button.validate",
-    "alarm_generic.validated"
+    "alarm_generic.notValidated",
+    "button.reset"
   ],
   "capabilitiesOptions": {
     "measure_battery": {
@@ -32,12 +31,12 @@
         "en": "Charge cycle"
       }
     },
-    "alarm_generic.validated": {
+    "alarm_generic.notValidated": {
       "title": {
-        "en": "Device connected properly"
+        "en": "Alarm"
       },
       "insightsTitleTrue": {
-        "en": "Some device flows are not working. New device validation is required."
+        "en": "Some flows are not set up correctly. New device validation is required."
       },
       "insightsTitleFalse": {
         "en": "The device has been validated."
@@ -49,7 +48,7 @@
         "en": "Validated"
       }
     },
-    "button.validate": {
+    "button.reset": {
       "maintenanceAction": true,
       "title": {
         "en": "Reset controller"

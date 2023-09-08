@@ -26,13 +26,21 @@ class MyDevice extends Device {
    * onInit is called when the device is initialized.
    */
   async onInit() {
+    console.log('Charger init');
     this.homey.app.updateLog('Piggy Charger has been initialized', 1);
     this.settingsManifest = this.driver.manifest.settings[VALIDATION_SETTINGS].children;
+
+    // Reset device setting if it's the first time the device is started
+    if (!this.getStoreValue('firstInitDone')) {
+      await this.setCapabilityValue('onoff', false);
+      await this.setCapabilityValue('alarm_generic.notValidated', true);
+      await this.setStoreValue('firstInitDone', true);
+    }
 
     // Register maintainance action used for validation of the device
     this.registerCapabilityListener('button.reset', async () => {
       this.log('Reset charger state in order to re-validate it');
-      const settings = this.getSettings();
+      const settings = await this.getSettings();
       settings.GotSignalAmps = 'False';
       settings.GotSignalWatt = 'False';
       settings.GotSignalBattery = 'False';
@@ -42,6 +50,7 @@ class MyDevice extends Device {
       settings.GotSignalStatusError = 'False';
       this.setSettings(settings);
       this.setCapabilityValue('onoff', false);
+      this.setCapabilityValue('alarm_generic.notValidated', true);
       return Promise.resolve();
     });
 
@@ -72,18 +81,63 @@ class MyDevice extends Device {
       return Promise.resolve();
     });
 
-    this.homey.images.createImage()
+    await this.homey.images.createImage()
       .then((image) => {
         image.setStream((stream) => this.refreshImageStream(stream));
-        this.setCameraImage('front', 'Help image', image);
+        return image.update()
+          .then(() => this.setCameraImage('front', 'Help image', image));
       })
-      .catch(this.error);
-    this.homey.images.createImage()
+      .catch((err) => {
+        console.log(`Camera image1 failed ${err}`);
+      });
+    await this.homey.images.createImage()
       .then((image) => {
         image.setPath('../assets/images/Codepage-437.png');
-        this.setCameraImage('help', 'Help image 2', image);
+        return image.update()
+          .then(() => this.setCameraImage('help', 'Help image 2', image));
       })
-      .catch(this.error);
+      .catch((err) => {
+        console.log(`Camera image2 failed ${err}`);
+      });
+    console.log('charger init done....');
+  }
+
+  /**
+   * Update a setting when within a validation cycle only
+   */
+  async updateSettingsIfValidationCycle(setting, newVal) {
+    if (this.getCapabilityValue('alarm_generic.notValidated') === true) {
+      const settings = this.getSettings();
+      const changed = settings[setting] !== newVal;
+      settings[setting] = newVal;
+      if (changed) this.setSettings(settings);
+    }
+  }
+
+  /**
+   * Set the charger state
+   */
+  async setChargerState(state) {
+    this.setCapabilityValue('charge_status', String(state));
+    let settingToUpdate;
+    switch (+state) {
+      case 0: settingToUpdate = 'GotSignalStatusDisconnected'; break; // Car disconnected
+      case 1: settingToUpdate = 'GotSignalStatusConnected'; break; // Car connected
+      case 2: console.log('TODO: Register state charging'); break; // Charging
+      case 3: console.log('TODO: Register state paused'); break; // Paused charging
+      case 4: settingToUpdate = 'GotSignalStatusDone'; break; // Charging completed
+      default:
+      case 5: settingToUpdate = 'GotSignalStatusError'; break; // Charging failed
+    }
+    if (settingToUpdate !== undefined) this.updateSettingsIfValidationCycle(settingToUpdate);
+  }
+
+  /**
+   * Sets the charger power
+   */
+  async setChargerPower(power) {
+    this.setCapabilityValue('measure_power', +power);
+    this.updateSettingsIfValidationCycle('GotSignalWatt', 'True');
   }
 
   /**
@@ -106,8 +160,10 @@ class MyDevice extends Device {
       .then(() => this.runBatteryTest(dst))
       .then(() => this.runDisconnectTest(dst))
       .then(() => this.runTurnedOnTest(dst))
+      .then(() => this.setAllPassed())
       .then(() => dst.addText(`${progressText} Press refresh for updates\n`))
       .catch((err) => dst.addText(`\u001b[35;m${err.message}\n`))
+      .then(() => this.setCapabilityValue('alarm_generic.notValidated', true))
       .finally(() => dst.addText('\u001b[0m(maintenance action "reset" will start over)\u001b[1m\n'))
       .then(() => dst.pack().pipe(stream));
   }
@@ -126,17 +182,9 @@ class MyDevice extends Device {
     return Promise.resolve();
   }
 
-  async runTurnedOnTest(dst) {
-    const text = this.homey.__('charger.status.turnedOn');
-    const onOffValue = this.getCapabilityValue('onoff');
-    if (!onOffValue) {
-      dst.addText(`${errText} ${text}\n`);
-      return Promise.reject(new Error(`${this.homey.__('charger.tasks.turnOn')}`));
-    }
-    dst.addText(`${okText} ${text}\n`);
-    return Promise.resolve();
-  }
-
+  /**
+   * This test will just check that the charger is within connected state
+   */
   async runConnectedTest(dst) {
     return this.runTest(dst, STATUS_GOTCONNECT, this.settings.GotSignalStatusConnected);
   }
@@ -155,6 +203,27 @@ class MyDevice extends Device {
 
   async runDisconnectTest(dst) {
     return this.runTest(dst, STATUS_GOTDISCONNECT, this.settings.GotSignalStatusDisconnected);
+  }
+
+  /**
+   * Check that the device is turned on
+   */
+  async runTurnedOnTest(dst) {
+    const text = this.homey.__('charger.status.turnedOn');
+    const onOffValue = this.getCapabilityValue('onoff');
+    if (!onOffValue) {
+      dst.addText(`${errText} ${text}\n`);
+      return Promise.reject(new Error(`${this.homey.__('charger.tasks.turnOn')}`));
+    }
+    dst.addText(`${okText} ${text}\n`);
+    return Promise.resolve();
+  }
+
+  /**
+   * Mark the device that all tests passed
+   */
+  async setAllPassed() {
+    this.setCapabilityValue('alarm_generic.notValidated', false);
   }
 
   /**

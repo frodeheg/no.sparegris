@@ -1,0 +1,70 @@
+{
+  "highlight": true,
+  "title": {
+    "en": "Update Charger State",
+    "no": "Oppdater Ladertilstand"
+  },
+  "titleFormatted": {
+    "en": "Inform Piggy about charger state [[state]]",
+    "no": "Opplys Piggy om ladertilstanden [[state]]"
+  },
+  "hint": {
+    "en": "This action will inform the charge controller about the current charger state. It is important that the charge controller knows the state of the charger at any time.",
+    "no": "Dette flytkortet vil informere ladekontrolleren om tilstanden til laderen. Det er viktig at ladekontrolleren vet tilstanden til laderen til enhver tid."
+  },
+  "args": [
+    {
+      "name": "device",
+      "type": "device",
+      "filter": "driver_id=piggy-charger"
+    },
+    {
+      "type": "dropdown",
+      "name": "state",
+      "values": [
+        {
+          "id": "0",
+          "label": {
+            "en": "Car disconnected",
+            "no": "Bil frakoblet"
+          }
+        },
+        {
+          "id": "1",
+          "label": {
+            "en": "Car connected",
+            "no": "Bil tilkoblet"
+          }
+        },
+        {
+          "id": "2",
+          "label": {
+            "en": "Charging",
+            "no": "Lader"
+          }
+        },
+        {
+          "id": "3",
+          "label": {
+            "en": "Paused charging",
+            "no": "Pauset lading"
+          }
+        },
+        {
+          "id": "4",
+          "label": {
+            "en": "Charging completed",
+            "no": "Lading fullført"
+          }
+        },
+        {
+          "id": "5",
+          "label": {
+            "en": "Charging failed",
+            "no": "Lading feilet"
+          }
+        }
+      ]
+    }
+  ]
+}

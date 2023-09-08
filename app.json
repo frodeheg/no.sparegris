@@ -211,6 +211,7 @@
   "flow": {
     "triggers": [
       {
+        "deprecated": true,
         "title": {
           "en": "The charging power should be changed",
           "no": "Ladeeffekten bør endres",
@@ -248,6 +249,52 @@
           }
         ],
         "id": "change-charging-power"
+      },
+      {
+        "title": {
+          "en": "The charging power should be changed",
+          "no": "Ladeeffekten bør endres",
+          "nl": "Het laadvermogen moet worden gewijzigd",
+          "fr": "La puissance de charge doit être modifiée"
+        },
+        "titleFormatted": {
+          "en": "The charging power should be changed to the supplied token (Offered power) W",
+          "no": "Ladeeffekten bør endres til den medfølgende token (Tilbudt effekt) W",
+          "nl": "Het laadvermogen moet worden gewijzigd in het meegeleverde token (Aangeboden vermogen) W",
+          "fr": "La puissance de charge doit être changée pour le jeton fourni (Puissance offerte) W"
+        },
+        "hint": {
+          "en": "This trigger should be used to change the charging power. It will be called on the best schedule after the action 'Start Charging Cycle' has been initiated.",
+          "no": "Denne triggeren skal brukes for å endre ladestyrken. Den blir trigget på optimale tidspunkt etter at handlingen 'Start ladesyklus' har blitt utført.",
+          "nl": "Deze trigger moet worden gebruikt om het laadvermogen te wijzigen. Het zal volgens het beste schema worden aangeroepen, nadat de actie 'Start oplaadcyclus' is gestart.",
+          "fr": "Ce déclencheur doit être utilisé pour modifier la puissance de charge. Il sera appelé au meilleur moment après le lancement de l'action 'Démarrer le cycle de charge'."
+        },
+        "args": [
+          {
+            "name": "device",
+            "type": "device",
+            "filter": "driver_id=piggy-charger"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "number",
+            "name": "offeredPower",
+            "title": {
+              "en": "Offered power",
+              "no": "Tilbydt effekt",
+              "nl": "Aangeboden vermogen",
+              "fr": "Puissance offerte"
+            },
+            "example": {
+              "en": "Number of Watts to set the charging power to.",
+              "no": "Antall Watt å sette ladestyrken til.",
+              "nl": "Aantal Watt waarop het laadvermogen moet worden ingesteld",
+              "fr": "Nombre de Watts pour régler la puissance de charge."
+            }
+          }
+        ],
+        "id": "charger-change-target-power"
       },
       {
         "title": {
@@ -383,6 +430,7 @@
         "id": "price-point-changed2"
       },
       {
+        "deprecated": true,
         "title": {
           "en": "The charging should be started",
           "no": "Ladingen bør startes",
@@ -422,6 +470,7 @@
         "id": "start-charging"
       },
       {
+        "deprecated": true,
         "title": {
           "en": "The charging should be stopped",
           "no": "Ladingen bør stoppes",
@@ -1032,6 +1081,114 @@
         "id": "change-zone-active"
       },
       {
+        "highlight": true,
+        "title": {
+          "en": "Update Charger Power",
+          "no": "Oppdater Effekt"
+        },
+        "titleFormatted": {
+          "en": "Inform Piggy about current charger power [[power]]W",
+          "no": "Opplys Piggy om nåværende ladeeffekt [[power]]W"
+        },
+        "hint": {
+          "en": "This action will inform the charge controller about the current charger power. It is important that the charge controller knows the state of the charger at any time.",
+          "no": "Dette flytkortet vil informere ladekontrolleren om nåværende ladeeffekt. Det er viktig at ladekontrolleren vet tilstanden til laderen til enhver tid."
+        },
+        "args": [
+          {
+            "name": "device",
+            "type": "device",
+            "filter": "driver_id=piggy-charger"
+          },
+          {
+            "name": "power",
+            "type": "number",
+            "min": 0,
+            "max": 100,
+            "placeholder": {
+              "en": "power in use",
+              "no": "effekt i bruk"
+            },
+            "title": {
+              "en": "Power in use (W)",
+              "no": "Effekt i bruk (W)"
+            }
+          }
+        ],
+        "id": "charger-change-power"
+      },
+      {
+        "highlight": true,
+        "title": {
+          "en": "Update Charger State",
+          "no": "Oppdater Ladertilstand"
+        },
+        "titleFormatted": {
+          "en": "Inform Piggy about charger state [[state]]",
+          "no": "Opplys Piggy om ladertilstanden [[state]]"
+        },
+        "hint": {
+          "en": "This action will inform the charge controller about the current charger state. It is important that the charge controller knows the state of the charger at any time.",
+          "no": "Dette flytkortet vil informere ladekontrolleren om tilstanden til laderen. Det er viktig at ladekontrolleren vet tilstanden til laderen til enhver tid."
+        },
+        "args": [
+          {
+            "name": "device",
+            "type": "device",
+            "filter": "driver_id=piggy-charger"
+          },
+          {
+            "type": "dropdown",
+            "name": "state",
+            "values": [
+              {
+                "id": "0",
+                "label": {
+                  "en": "Car disconnected",
+                  "no": "Bil frakoblet"
+                }
+              },
+              {
+                "id": "1",
+                "label": {
+                  "en": "Car connected",
+                  "no": "Bil tilkoblet"
+                }
+              },
+              {
+                "id": "2",
+                "label": {
+                  "en": "Charging",
+                  "no": "Lader"
+                }
+              },
+              {
+                "id": "3",
+                "label": {
+                  "en": "Paused charging",
+                  "no": "Pauset lading"
+                }
+              },
+              {
+                "id": "4",
+                "label": {
+                  "en": "Charging completed",
+                  "no": "Lading fullført"
+                }
+              },
+              {
+                "id": "5",
+                "label": {
+                  "en": "Charging failed",
+                  "no": "Lading feilet"
+                }
+              }
+            ]
+          }
+        ],
+        "id": "charger-change-state"
+      },
+      {
         "title": {
           "en": "Override device",
           "no": "Overstyr enhet",
@@ -1131,6 +1288,7 @@
         "id": "override-device"
       },
       {
+        "deprecated": true,
         "title": {
           "en": "Start charging cycle (kWh)",
           "no": "Start ladesyklus (kWh)",
@@ -1188,6 +1346,7 @@
         "id": "start-charging-cycle"
       },
       {
+        "deprecated": true,
         "title": {
           "en": "Start charging cycle (hours)",
           "no": "Start ladesyklus (timer)",
@@ -1245,6 +1404,7 @@
         "id": "start-charging-cycle2"
       },
       {
+        "deprecated": true,
         "title": {
           "en": "Stop charging cycle ahead of time",
           "no": "Stopp ladesyklus før tiden",
@@ -1870,13 +2030,12 @@
       "capabilities": [
         "onoff",
         "measure_power",
-        "measure_current",
         "measure_battery",
         "measure_battery.charge_cycle",
-        "target_current",
+        "target_power",
         "charge_status",
-        "button.validate",
-        "alarm_generic.validated"
+        "alarm_generic.notValidated",
+        "button.reset"
       ],
       "capabilitiesOptions": {
         "measure_battery": {
@@ -1889,12 +2048,12 @@
             "en": "Charge cycle"
           }
         },
-        "alarm_generic.validated": {
+        "alarm_generic.notValidated": {
           "title": {
-            "en": "Device connected properly"
+            "en": "Alarm"
           },
           "insightsTitleTrue": {
-            "en": "Some device flows are not working. New device validation is required."
+            "en": "Some flows are not set up correctly. New device validation is required."
           },
           "insightsTitleFalse": {
             "en": "The device has been validated."
@@ -1906,7 +2065,7 @@
             "en": "Validated"
           }
         },
-        "button.validate": {
+        "button.reset": {
           "maintenanceAction": true,
           "title": {
             "en": "Reset controller"
@@ -2290,6 +2449,7 @@
           }
         }
       ],
+      "icon": "/drivers/piggy-charger/assets/icon1.svg",
       "uiComponent": "sensor",
       "uiQuickAction": false
     },
@@ -2837,22 +2997,22 @@
         "fr": "Niveau de prix changé en normal"
       }
     },
-    "target_current": {
+    "target_power": {
       "type": "number",
-      "min": 4,
-      "max": 35,
+      "min": 0,
+      "max": 20000,
       "title": {
-        "en": "Target current"
+        "en": "Target Power"
       },
       "units": {
-        "en": "A"
+        "en": "W"
       },
       "chartType": "stepLine",
       "decimals": 0,
       "insights": true,
       "getable": true,
       "setable": true,
-      "uiComponent": "slider"
+      "uiComponent": null
     }
   }
 }

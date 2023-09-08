@@ -50,6 +50,7 @@
       }
     }
   ],
+  "icon": "/drivers/piggy-charger/assets/icon1.svg",
   "uiComponent": "sensor",
   "uiQuickAction": false
 }

@@ -1,5 +1,4 @@
 {
-  "deprecated": true,
   "title": {
     "en": "The charging power should be changed",
     "no": "Ladeeffekten bør endres",
@@ -18,6 +17,13 @@
     "nl": "Deze trigger moet worden gebruikt om het laadvermogen te wijzigen. Het zal volgens het beste schema worden aangeroepen, nadat de actie 'Start oplaadcyclus' is gestart.",
     "fr": "Ce déclencheur doit être utilisé pour modifier la puissance de charge. Il sera appelé au meilleur moment après le lancement de l'action 'Démarrer le cycle de charge'."
   },
+  "args": [
+    {
+      "name": "device",
+      "type": "device",
+      "filter": "driver_id=piggy-charger"
+    }
+  ],
   "tokens": [
     {
       "type": "number",

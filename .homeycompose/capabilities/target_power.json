@@ -1,0 +1,17 @@
+{
+  "type": "number",
+  "min": 0,
+  "max": 20000,
+  "title": {
+    "en": "Target Power"
+  },
+  "units": {
+    "en": "W"
+  },
+  "chartType": "stepLine",
+  "decimals": 0,
+  "insights": true,
+  "getable": true,
+  "setable": true,
+  "uiComponent": null
+}

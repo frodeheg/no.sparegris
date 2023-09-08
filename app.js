@@ -1130,6 +1130,17 @@ class PiggyBank extends Homey.App {
       return this.onChargingCycleStop();
     });
 
+    // Initiate action cards for piggy-charger
+    const cardActionSetChargerState = this.homey.flow.getActionCard('charger-change-state');
+    cardActionSetChargerState.registerRunListener(async args => {
+      return args.device.setChargerState(args.state);
+    });
+    const cardActionSetChargerPower = this.homey.flow.getActionCard('charger-change-power');
+    cardActionSetChargerPower.registerRunListener(async args => {
+      return args.device.setChargerPower(args.power);
+    });
+
+
     // Prepare which devices was on for setting deviceList which is called after this
     this.__oldDeviceList = this.homey.settings.get('deviceList') || {};
 

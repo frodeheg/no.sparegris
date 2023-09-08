@@ -1,4 +1,5 @@
 {
+  "deprecated": true,
   "title": {
     "en": "Start charging cycle (kWh)",
     "no": "Start ladesyklus (kWh)",
