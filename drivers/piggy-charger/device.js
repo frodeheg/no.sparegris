@@ -261,6 +261,60 @@ class MyDevice extends Device {
     this.homey.app.updateLog('Piggy charger has been deleted', 1);
   }
 
+  /**
+   * Called when the user initiates a charging cycles through a flow
+   * @param offerEnergy number of kWh to offer before time runs out (will be undefined if offerHours)
+   * @param endTime the localtime for when to end charging
+   * @param offerHours number of hours to offer energy before time runs out (will be undefined if offerEnergy)
+   */
+  async onChargingCycleStart(offerEnergy, endTime, offerHours = undefined, now = new Date()) {
+    console.log('Start charging cycle xxx');
+    /*if ((typeof (endTime) !== 'string') || (!endTime.includes(':'))) {
+      return Promise.reject(new Error(this.homey.__('warnings.notValidTime')));
+    }
+    const hoursEnd = +endTime.split(':').at(0);
+    const minutesEnd = +endTime.split(':').at(1);
+    if (hoursEnd < 0 || hoursEnd > 23 || Number.isNaN(hoursEnd)
+      || minutesEnd < 0 || minutesEnd > 59 || Number.isNaN(minutesEnd)) {
+      return Promise.reject(new Error(this.homey.__('warnings.notValidTime')));
+    }
+
+    this.updateLog('Charging cycle started', c.LOG_INFO);
+    this.__spookey_check_activated = undefined;
+    this.__spookey_changes = 0;
+    const chargerOptions = this.homey.settings.get('chargerOptions');
+    if (chargerOptions) {
+      // Convert local end time to UTC
+      const nowLocal = toLocalTime(now, this.homey);
+      const minutesDiff = timeDiff(nowLocal.getHours(), nowLocal.getMinutes(), hoursEnd, minutesEnd);
+      const endTimeUTC = new Date(now.getTime());
+      endTimeUTC.setUTCMinutes(endTimeUTC.getUTCMinutes() + minutesDiff, 0, 0);
+      chargerOptions.chargeRemaining = offerEnergy ? (offerEnergy * 1000) : +offerHours;
+      chargerOptions.chargeCycleType = offerEnergy ? c.OFFER_ENERGY : c.OFFER_HOURS;
+      chargerOptions.chargeEnd = endTimeUTC;
+      this.homey.settings.set('chargerOptions', chargerOptions);
+    }
+    await this.rescheduleCharging(false, now);
+    return Promise.resolve();*/
+  }
+
+  /**
+   * Only called when stopping the charging cycle ahead of time
+   */
+  async onChargingCycleStop() {
+    console.log('Stop charging cycle xxx');
+    /*this.updateLog('Charging cycle abruptly ended', c.LOG_INFO);
+    const chargerOptions = this.homey.settings.get('chargerOptions');
+    if (chargerOptions) {
+      chargerOptions.chargeRemaining = 0;
+      this.homey.settings.set('chargerOptions', chargerOptions);
+      this.rescheduleCharging(false);
+    } else {
+      this.__charge_plan = [];
+      throw new Error('No charging cycle was to stop');
+    }*/
+  }
+
 }
 
 module.exports = MyDevice;

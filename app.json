@@ -1190,6 +1190,158 @@
       },
       {
         "title": {
+          "en": "Start charging cycle (kWh)",
+          "no": "Start ladesyklus (kWh)",
+          "nl": "Start laadcyclus (kWh)",
+          "fr": "Démarrer le cycle de charge (kWh)"
+        },
+        "titleFormatted": {
+          "en": "Start charging cheapest [[offerEnergy]] kWh before [[endTime]]",
+          "no": "Start lading av billigste [[offerEnergy]] kWh før kl. [[endTime]]",
+          "nl": "Begin met het opladen met de goedkoopste [[offerEnergy]] kWh vóór [[endTime]]",
+          "fr": "Commencez à charger le [[offerEnergy]] kWh le moins cher avant le [[endTime]]"
+        },
+        "hint": {
+          "en": "Tell Piggy Bank to start a charging cycle. The offered energy (kWh) will be distributed on the cheapest hours before the time runs out. When the given amount of energy has been offered to the car the charging cycle will stop.\n\nNote that for supported car chargers the offered energy and used energy will be the same. For unsupported car chargers this may not be the case.",
+          "no": "Be Sparegris om å starte en ladesyklus. Den tilbydde energien (kWh) vil bli distribuert på de billigste timene før tiden går ut. Når den gitte mengden energi har blitt tilbydd bilen, vil ladesyklusen stoppe. Det samme skjer når tiden går ut\n\nMerk at for støttede billadere vil tilbudt energi og brukt energi være den samme. For billadere som ikke støttes, er dette kanskje ikke tilfelle.",
+          "nl": "Vraag Spaarpot om een laadcyclus te starten. De aangeboden energie (kWh) wordt verdeeld in de goedkoopste uren voordat de tijd om is. Wanneer de opgegeven hoeveelheid energie aan de auto is aangeboden, stopt de laadcyclus . Hetzelfde gebeurt wanneer de tijd verstrijkt\n\nLet op: voor ondersteunde autoladers is de aangeboden energie en gebruikte energie hetzelfde. Voor niet-ondersteunde autoladers is dit mogelijk niet het geval.",
+          "fr": "Demandez à Tirelire de démarrer un cycle de charge. L'énergie offerte (kWh) sera distribuée dans les heures les moins chères avant la fin du temps imparti. Lorsque la quantité d'énergie donnée a été offerte à la voiture, le cycle de charge s'arrêtera . La même chose se produit lorsque le délai expire\n\nNotez que pour les chargeurs de voiture pris en charge, l'énergie offerte et l'énergie utilisée seront les mêmes. Pour les chargeurs de voiture non pris en charge, cela peut ne pas être le cas."
+        },
+        "args": [
+          {
+            "name": "device",
+            "type": "device",
+            "filter": "driver_id=piggy-charger"
+          },
+          {
+            "type": "number",
+            "min": 0,
+            "max": 100,
+            "placeholder": {
+              "en": "energy to offer",
+              "no": "energi å tilby",
+              "nl": "Energie om aan te bieden",
+              "fr": "énergie à offrir"
+            },
+            "title": {
+              "en": "Offered energy (kWh)",
+              "no": "Tilbydd energi (kWh)",
+              "nl": "Aangeboden energie (kWh)",
+              "fr": "Énergie offerte (kWh)"
+            },
+            "name": "offerEnergy"
+          },
+          {
+            "type": "text",
+            "placeholder": {
+              "en": "end time (HH:MM)",
+              "no": "sluttid (TT:MM)",
+              "nl": "Eindtijd (UU:MM)",
+              "fr": "Heure de fin (HH:MM)"
+            },
+            "title": {
+              "en": "End time",
+              "no": "Sluttid",
+              "nl": "Eindtijd",
+              "fr": "Heure de fin"
+            },
+            "name": "endTime"
+          }
+        ],
+        "id": "charger-start-charging-cycle"
+      },
+      {
+        "title": {
+          "en": "Start charging cycle (hours)",
+          "no": "Start ladesyklus (timer)",
+          "nl": "Start laadcyclus (uren)",
+          "fr": "Démarrer le cycle de charge (heures)"
+        },
+        "titleFormatted": {
+          "en": "Start charging [[offerHours]] cheapest hours before [[endTime]]",
+          "no": "Start lading [[offerHours]] billigste timer før kl. [[endTime]]",
+          "nl": "Begin met opladen met de [[offerHours]] goedkoopste uren vóór [[endTime]]",
+          "fr": "Commencez à facturer [[offerHours]] les heures les moins chères avant [[endTime]]"
+        },
+        "hint": {
+          "en": "Tell Piggy Bank to start a charging cycle. It will only charge in the X cheapest hours before the time runs out. (Note that if the current hour is one of them then the charging time will be shorter)\n\nFor unsupported car chargers this may be the most deterministic starting function as they do not report used energy.",
+          "no": "Be Sparegris om å starte en ladesyklus. Ladingen vil kun bli tilbydt i de X billigste timene før tiden går ut. (NB! Dersom inneværende time er blant de billigste så vil ladetiden være kortere)\n\nDette er den mest deterministiske startfunsjonen for billadere som ikke støttes, ettersom appen ikke får rapportert energiforbruk.",
+          "nl": "Vraag Spaarpot om een laadcyclus te starten. Laden wordt alleen aangeboden in de X goedkoopste uren voordat de tijd om is. (NB! Als het huidige uur tot de goedkoopste behoort, zal de laadtijd korter zijn)\n \nDit is de meest effectieve startfunctie voor niet-ondersteunde autoladers, aangezien de app geen gerapporteerd energieverbruik krijgt.",
+          "fr": "Demandez à Tirelire de démarrer un cycle de charge. La charge ne sera proposée que dans les X heures les moins chères avant la fin du délai. (NB! Si l'heure actuelle est parmi les moins chères, le temps de charge sera plus court)\n \nIl s'agit de la fonction de démarrage la plus déterministe pour les chargeurs de voiture non pris en charge, car l'application n'obtient pas de consommation d'énergie signalée."
+        },
+        "args": [
+          {
+            "name": "device",
+            "type": "device",
+            "filter": "driver_id=piggy-charger"
+          },
+          {
+            "type": "number",
+            "min": 0,
+            "max": 24,
+            "placeholder": {
+              "en": "number of hours",
+              "no": "antall timer",
+              "nl": "antal uren",
+              "fr": "nombre d'heures"
+            },
+            "title": {
+              "en": "Number of hours to offer energy",
+              "no": "Antall timer å tilby energi",
+              "nl": "Aantal uren om energie aan te bieden",
+              "fr": "Nombre d'heures pour offrir de l'énergie"
+            },
+            "name": "offerHours"
+          },
+          {
+            "type": "text",
+            "placeholder": {
+              "en": "End time (HH:MM)",
+              "no": "Sluttid (TT:MM)",
+              "nl": "Eindtijd (UU:MM)",
+              "fr": "Heure de fin (HH:MM)"
+            },
+            "title": {
+              "en": "End time",
+              "no": "Sluttid",
+              "nl": "Eindtijd",
+              "fr": "Heure de fin"
+            },
+            "name": "endTime"
+          }
+        ],
+        "id": "charger-start-charging-cycle2"
+      },
+      {
+        "title": {
+          "en": "Stop charging cycle ahead of time",
+          "no": "Stopp ladesyklus før tiden",
+          "nl": "Stop de oplaadcyclus voortijdig",
+          "fr": "Arrêtez le cycle de charge à l'avance"
+        },
+        "titleFormatted": {
+          "en": "Stop the charging cycle ahead of time",
+          "no": "Stopp ladesyklus før tiden",
+          "nl": "Stop de laadcyclus voortijdig",
+          "fr": "Arrêtez le cycle de charge à l'avance"
+        },
+        "hint": {
+          "en": "In case you need to stop the charging cycle ahead of time you can call this flow card in order to prevent the app from offering more energy.",
+          "no": "Dersom du ønsker å avbryte ladesyklusen før tiden kan du kalle dette flytkortet for å hindre appen i å tilby mer energi.",
+          "nl": "Als je de laadcyclus voortijdig wilt onderbreken, kun je deze flowkaart aanroepen om te voorkomen dat de app meer energie aanbiedt.",
+          "fr": "Si vous souhaitez interrompre le cycle de charge avant l'heure, vous pouvez appeler cette carte de débit pour empêcher l'application d'offrir plus d'énergie."
+        },
+        "args": [
+          {
+            "name": "device",
+            "type": "device",
+            "filter": "driver_id=piggy-charger"
+          }
+        ],
+        "id": "charger-stop-charging-cycle"
+      },
+      {
+        "title": {
           "en": "Override device",
           "no": "Overstyr enhet",
           "nl": "Apparaat negeren",

@@ -457,7 +457,7 @@
       "turnOn": "Please turn on the charge controller."
     },
     "error": {
-      "notReady": "Can not turn on the charge controller before it has been properly connected and tested. See the camera capability of this device for help."
+      "notReady": "Can not turn on the charge controller before it has been properly connected and tested. See the camera capability of this device for instructions."
     },
     "warnings": {
       "noSignalAmps": "No Amp signal received from the charger",

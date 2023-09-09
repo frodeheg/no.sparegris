@@ -162,6 +162,16 @@ class PiggyBank extends Homey.App {
   }
 
   /**
+   * Checks if a flow action can continue
+   */
+  async canFlowContinue(checkForEnabled = true) {
+    if (preventZigbee) return Promise.reject(new Error(this.homey.__('warnings.homeyReboot')));
+    if (!this.app_is_configured) return Promise.reject(new Error(this.homey.__('warnings.notConfigured')));
+    if (checkForEnabled && +this.homey.settings.get('operatingMode') === c.MODE_DISABLED) return Promise.reject(new Error(this.homey.__('warnings.notEnabled')));
+    return Promise.resolve();
+  }
+
+  /**
    * onInit is called when the app is initialized.
    */
   async onInit(now = new Date()) {
@@ -989,45 +999,23 @@ class PiggyBank extends Homey.App {
     });
 
     // Enable action cards
-    const cardActionEnergyUpdate = this.homey.flow.getActionCard('update-meter-energy'); // Marked as deprecated so nobody will see it yet
-    cardActionEnergyUpdate.registerRunListener(async args => {
-      if (preventZigbee) return Promise.reject(new Error(this.homey.__('warnings.homeyReboot')));
-      if (!this.app_is_configured) return Promise.reject(new Error(this.homey.__('warnings.notConfigured')));
-      if (+this.homey.settings.get('operatingMode') === c.MODE_DISABLED) return Promise.reject(new Error(this.homey.__('warnings.notEnabled')));
+    const cardActionEnergyUpdate = this.homey.flow.getActionCard('update-meter-energy');
+    cardActionEnergyUpdate.registerRunListener(async args => this.canFlowContinue().then(() => {
       if (this.homey.settings.get('meterReader') in this.__meterReaders) return Promise.reject(new Error(this.homey.__('warnings.meterIsAuto')));
       return this.mutexForPower.runExclusive(async () => this.onMeterUpdate(+args.TotalEnergyUsage));
-    });
+    }));
     const cardActionPowerUpdate = this.homey.flow.getActionCard('update-meter-power');
-    cardActionPowerUpdate.registerRunListener(async args => {
-      if (preventZigbee) return Promise.reject(new Error(this.homey.__('warnings.homeyReboot')));
-      if (!this.app_is_configured) return Promise.reject(new Error(this.homey.__('warnings.notConfigured')));
-      if (+this.homey.settings.get('operatingMode') === c.MODE_DISABLED) return Promise.reject(new Error(this.homey.__('warnings.notEnabled')));
+    cardActionPowerUpdate.registerRunListener(async args => this.canFlowContinue().then(() => {
       if (this.homey.settings.get('meterReader') in this.__meterReaders) return Promise.reject(new Error(this.homey.__('warnings.meterIsAuto')));
       return this.mutexForPower.runExclusive(async () => this.onPowerUpdate(+args.CurrentPower));
-    });
+    }));
     const cardActionModeUpdate = this.homey.flow.getActionCard('change-piggy-bank-mode');
-    cardActionModeUpdate.registerRunListener(async args => {
-      if (preventZigbee) return Promise.reject(new Error(this.homey.__('warnings.homeyReboot')));
-      if (!this.app_is_configured) return Promise.reject(new Error(this.homey.__('warnings.notConfigured')));
-      return this.onModeUpdate(+args.mode);
-    });
+    cardActionModeUpdate.registerRunListener(async args => this.canFlowContinue(false).then(() => this.onModeUpdate(+args.mode)));
     const cardActionModeUpdate2 = this.homey.flow.getActionCard('change-piggy-bank-mode2');
-    cardActionModeUpdate2.registerRunListener(async args => {
-      if (preventZigbee) return Promise.reject(new Error(this.homey.__('warnings.homeyReboot')));
-      if (!this.app_is_configured) return Promise.reject(new Error(this.homey.__('warnings.notConfigured')));
-      return this.onModeUpdate(+args.mode.id);
-    });
-    cardActionModeUpdate2.registerArgumentAutocompleteListener(
-      'mode',
-      async (query, args) => {
-        return this.generateModeList(query, args);
-      }
-    );
+    cardActionModeUpdate2.registerRunListener(async args => this.canFlowContinue(false).then(() => this.onModeUpdate(+args.mode.id)));
+    cardActionModeUpdate2.registerArgumentAutocompleteListener('mode', async (query, args) => this.generateModeList(query, args));
     const cardActionPricePointUpdate = this.homey.flow.getActionCard('change-piggy-bank-price-point');
-    cardActionPricePointUpdate.registerRunListener(async args => {
-      if (preventZigbee) return Promise.reject(new Error(this.homey.__('warnings.homeyReboot')));
-      if (!this.app_is_configured) return Promise.reject(new Error(this.homey.__('warnings.notConfigured')));
-      if (+this.homey.settings.get('operatingMode') === c.MODE_DISABLED) return Promise.reject(new Error(this.homey.__('warnings.notEnabled')));
+    cardActionPricePointUpdate.registerRunListener(async args => this.canFlowContinue().then(() => {
       if (+this.homey.settings.get('priceMode') !== c.PRICE_MODE_FLOW) return Promise.reject(new Error(this.homey.__('warnings.notPMfromFlow')));
       if (this.gotPPFromFlow === undefined) {
         // Remember that the flow has been triggered:
@@ -1035,49 +1023,17 @@ class PiggyBank extends Homey.App {
         this.gotPPFromFlow = true;
       }
       return this.onPricePointUpdate(+args.mode);
-    });
+    }));
     const cardActionMaxUsageUpdate = this.homey.flow.getActionCard('change-piggy-bank-max-usage');
-    cardActionMaxUsageUpdate.registerRunListener(async args => {
-      if (preventZigbee) return Promise.reject(new Error(this.homey.__('warnings.homeyReboot')));
-      if (!this.app_is_configured) return Promise.reject(new Error(this.homey.__('warnings.notConfigured')));
-      if (+this.homey.settings.get('operatingMode') === c.MODE_DISABLED) return Promise.reject(new Error(this.homey.__('warnings.notEnabled')));
-      return this.onMaxUsageUpdate(args.maxPow);
-    });
+    cardActionMaxUsageUpdate.registerRunListener(async args => this.canFlowContinue().then(() => this.onMaxUsageUpdate(args.maxPow)));
     const cardActionSafetyPowerUpdate = this.homey.flow.getActionCard('change-piggy-bank-safety-power');
-    cardActionSafetyPowerUpdate.registerRunListener(async args => {
-      if (preventZigbee) return Promise.reject(new Error(this.homey.__('warnings.homeyReboot')));
-      if (!this.app_is_configured) return Promise.reject(new Error(this.homey.__('warnings.notConfigured')));
-      if (+this.homey.settings.get('operatingMode') === c.MODE_DISABLED) return Promise.reject(new Error(this.homey.__('warnings.notEnabled')));
-      return this.onSafetyPowerUpdate(args.reserved);
-    });
+    cardActionSafetyPowerUpdate.registerRunListener(async args => this.canFlowContinue().then(() => this.onSafetyPowerUpdate(args.reserved)));
     const cardActionOverride = this.homey.flow.getActionCard('override-device');
-    cardActionOverride.registerRunListener(async args => {
-      if (preventZigbee) return Promise.reject(new Error(this.homey.__('warnings.homeyReboot')));
-      if (!this.app_is_configured) return Promise.reject(new Error(this.homey.__('warnings.notConfigured')));
-      return this.onOverrideChanged(args.device.id, +args.mode);
-    });
-    cardActionOverride.registerArgumentAutocompleteListener(
-      'device',
-      async (query, args) => {
-        return this.generateDeviceList(query, args);
-      }
-    );
+    cardActionOverride.registerRunListener(async args => this.canFlowContinue(false).then(() => this.onOverrideChanged(args.device.id, +args.mode)));
+    cardActionOverride.registerArgumentAutocompleteListener('device', async (query, args) => this.generateDeviceList(query, args));
     const cardZoneUpdate = this.homey.flow.getActionCard('change-zone-active');
-    cardZoneUpdate.registerArgumentAutocompleteListener(
-      'zone',
-      async (query, args) => {
-        if (preventZigbee) return Promise.reject(new Error(this.homey.__('warnings.homeyReboot')));
-        if (!this.app_is_configured) return Promise.reject(new Error(this.homey.__('warnings.notConfigured')));
-        if (+this.homey.settings.get('operatingMode') === c.MODE_DISABLED) return Promise.reject(new Error(this.homey.__('warnings.notEnabled')));
-        return this.generateZoneList(query, args);
-      }
-    );
-    cardZoneUpdate.registerRunListener(async args => {
-      if (preventZigbee) return Promise.reject(new Error(this.homey.__('warnings.homeyReboot')));
-      if (!this.app_is_configured) return Promise.reject(new Error(this.homey.__('warnings.notConfigured')));
-      if (+this.homey.settings.get('operatingMode') === c.MODE_DISABLED) return Promise.reject(new Error(this.homey.__('warnings.notEnabled')));
-      return this.onZoneUpdate(args.zone, args.enabled);
-    });
+    cardZoneUpdate.registerArgumentAutocompleteListener('zone', async (query, args) => this.canFlowContinue().then(() => this.generateZoneList(query, args)));
+    cardZoneUpdate.registerRunListener(async args => this.canFlowContinue().then(() => this.onZoneUpdate(args.zone, args.enabled)));
     const noPriceCondition = this.homey.flow.getConditionCard('future-prices-unavailable');
     noPriceCondition.registerRunListener(async (args, state) => {
       return this.__current_prices[args.hours] === undefined;
@@ -1109,36 +1065,23 @@ class PiggyBank extends Homey.App {
     );
     // Action cards for charging
     const cardActionStartChargingCycle = this.homey.flow.getActionCard('start-charging-cycle');
-    cardActionStartChargingCycle.registerRunListener(async args => {
-      if (preventZigbee) return Promise.reject(new Error(this.homey.__('warnings.homeyReboot')));
-      if (!this.app_is_configured) return Promise.reject(new Error(this.homey.__('warnings.notConfigured')));
-      if (+this.homey.settings.get('operatingMode') === c.MODE_DISABLED) return Promise.reject(new Error(this.homey.__('warnings.notEnabled')));
-      return this.onChargingCycleStart(args.offerEnergy, args.endTime);
-    });
     const cardActionStartChargingCycle2 = this.homey.flow.getActionCard('start-charging-cycle2');
-    cardActionStartChargingCycle2.registerRunListener(async args => {
-      if (preventZigbee) return Promise.reject(new Error(this.homey.__('warnings.homeyReboot')));
-      if (!this.app_is_configured) return Promise.reject(new Error(this.homey.__('warnings.notConfigured')));
-      if (+this.homey.settings.get('operatingMode') === c.MODE_DISABLED) return Promise.reject(new Error(this.homey.__('warnings.notEnabled')));
-      return this.onChargingCycleStart(undefined, args.endTime, args.offerHours);
-    });
     const cardActionStopChargingCycle = this.homey.flow.getActionCard('stop-charging-cycle');
-    cardActionStopChargingCycle.registerRunListener(async args => {
-      if (preventZigbee) return Promise.reject(new Error(this.homey.__('warnings.homeyReboot')));
-      if (!this.app_is_configured) return Promise.reject(new Error(this.homey.__('warnings.notConfigured')));
-      if (+this.homey.settings.get('operatingMode') === c.MODE_DISABLED) return Promise.reject(new Error(this.homey.__('warnings.notEnabled')));
-      return this.onChargingCycleStop();
-    });
+    cardActionStartChargingCycle.registerRunListener(async args => this.canFlowContinue().then(() => this.onChargingCycleStart(args.offerEnergy, args.endTime)));
+    cardActionStartChargingCycle2.registerRunListener(async args => this.canFlowContinue().then(() => this.onChargingCycleStart(undefined, args.endTime, args.offerHours)));
+    cardActionStopChargingCycle.registerRunListener(async args => this.canFlowContinue().then(() => this.onChargingCycleStop()));
 
     // Initiate action cards for piggy-charger
-    const cardActionSetChargerState = this.homey.flow.getActionCard('charger-change-state');
-    cardActionSetChargerState.registerRunListener(async args => {
-      return args.device.setChargerState(args.state);
-    });
-    const cardActionSetChargerPower = this.homey.flow.getActionCard('charger-change-power');
-    cardActionSetChargerPower.registerRunListener(async args => {
-      return args.device.setChargerPower(args.power);
-    });
+    const chargerActionSetChargerState = this.homey.flow.getActionCard('charger-change-state');
+    const chargerActionSetChargerPower = this.homey.flow.getActionCard('charger-change-power');
+    const chargerActionStartChargingCycle = this.homey.flow.getActionCard('charger-start-charging-cycle');
+    const chargerActionStartChargingCycle2 = this.homey.flow.getActionCard('charger-start-charging-cycle2');
+    const chargerActionStopChargingCycle = this.homey.flow.getActionCard('charger-stop-charging-cycle');
+    chargerActionSetChargerState.registerRunListener(async args => args.device.setChargerState(args.state));
+    chargerActionSetChargerPower.registerRunListener(async args => args.device.setChargerPower(args.power));
+    chargerActionStartChargingCycle.registerRunListener(async args => this.canFlowContinue().then(() => args.device.onChargingCycleStart(args.offerEnergy, args.endTime)));
+    chargerActionStartChargingCycle2.registerRunListener(async args => this.canFlowContinue().then(() => args.device.onChargingCycleStart(undefined, args.endTime, args.offerHours)));
+    chargerActionStopChargingCycle.registerRunListener(async args => this.canFlowContinue().then(() => args.device.onChargingCycleStop()));
 
 
     // Prepare which devices was on for setting deviceList which is called after this
