@@ -69,6 +69,16 @@
     {
       "id": "info",
       "navigation": {
+        "next": "list_devices"
+      }
+    },
+    {
+      "id": "list_devices",
+      "template": "list_devices",
+      "options": {
+        "singular": true
+      },
+      "navigation": {
         "next": "select_image"
       }
     },

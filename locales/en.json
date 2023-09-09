@@ -443,11 +443,12 @@
   "charger": {
     "new": {
       "deviceName": "Charge Controller",
+      "flowBased": "Flow based controller",
+      "controlFor": "Controller for",
       "infoHeader": "Charge controller info",
       "imageHeader": "Select icon",
       "info1": "This device will allow you to control a car charger with piggy.",
-      "info2": "The device will have to be manually connected to the car charger by using flows.",
-      "info3": "Please enter the app settings after installing this device for more help on how to connect the car charger and to test that you have connected it properly."
+      "info2": "If your charger is directly supported, it will be listed in the next screen. If not you must select the flow based controller."
     },
     "status": {
       "turnedOn": "The controller must be enabled."
