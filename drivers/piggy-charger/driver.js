@@ -3,6 +3,9 @@
 'use strict';
 
 const { Driver } = require('homey');
+const supportedDevices = {
+  'no.easee:charger': { icon: 'easee.svg' }
+};
 
 class MyDriver extends Driver {
 
@@ -30,7 +33,7 @@ class MyDriver extends Driver {
       icon: 'flow.svg',
       data: {
         id: randomId,
-        easee: false
+        targetDriver: null
       }
       //   store: {
       //     address: '127.0.0.1',
@@ -44,16 +47,16 @@ class MyDriver extends Driver {
     for (let idx = 0; idx < deviceIds.length; idx++) {
       const deviceId = deviceIds[idx];
       const { driverId, name } = devices[deviceId];
-      if (driverId === 'no.easee:charger') {
-        const easeeCharger = {
+      if (driverId in supportedDevices) {
+        const deviceCharger = {
           name: `${this.homey.__('charger.new.controlFor')} ${name}`,
-          icon: 'easee.svg',
+          icon: supportedDevices[driverId].icon,
           data: {
             id: deviceId,
-            easee: true
+            targetDriver: driverId
           }
         };
-        devicelist.push(easeeCharger);
+        devicelist.push(deviceCharger);
       }
     }
 

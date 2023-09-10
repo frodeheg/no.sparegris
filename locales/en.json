@@ -464,7 +464,8 @@
       "noSignalWatts": "No Watt signal received from the charger",
       "noSignalBattery": "No Battery level received from the charger",
       "noStatusDisconnected": "No car disconnected signal received from the charger",
-      "noStatusConnected": "No car connected signal received from the charger"
+      "noStatusConnected": "No car connected signal received from the charger",
+      "redundantFlow": "Flow signal ignored, this is fetched directly from the controlled device."
     }
   },
   "newdevice": {

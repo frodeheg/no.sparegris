@@ -3,6 +3,8 @@
 'use strict';
 
 const { Device } = require('homey');
+const c = require('../../common/constants');
+const d = require('../../common/devices');
 const Textify = require('../../lib/textify');
 
 // Driver Manifest references
@@ -29,6 +31,15 @@ class MyDevice extends Device {
     console.log('Charger init');
     this.homey.app.updateLog('Piggy Charger has been initialized', 1);
     this.settingsManifest = this.driver.manifest.settings[VALIDATION_SETTINGS].children;
+
+    // Make short access to device data
+    const data = this.getData();
+    this.targetDriver = data.targetDriver;
+    if (this.targetDriver) {
+      console.log(`Controller will use direct access for ${this.targetDriver} (Device ID: ${data.id})`);
+      this.targetId = data.id;
+      this.targetDef = d.DEVICE_CMD[this.targetDriver];
+    }
 
     // Reset device setting if it's the first time the device is started
     if (!this.getStoreValue('firstInitDone')) {
@@ -135,9 +146,15 @@ class MyDevice extends Device {
   /**
    * Sets the charger power
    */
-  async setChargerPower(power) {
+  async setChargerPower(power, fromFlow = true) {
+    if (fromFlow && this.targetDriver && this.targetDef.measurePowerCap) {
+      const newErr = new Error(this.homey.__('charger.warnings.redundantFlow'));
+      this.homey.app.updateLog(newErr.message, c.LOG_ERROR);
+      return Promise.reject(newErr);
+    }
     this.setCapabilityValue('measure_power', +power);
     this.updateSettingsIfValidationCycle('GotSignalWatt', 'True');
+    return Promise.resolve(+power);
   }
 
   /**
@@ -194,7 +211,8 @@ class MyDevice extends Device {
   }
 
   async runWattTest(dst) {
-    return this.runTest(dst, STATUS_GOTWATT, this.settings.GotSignalWatt);
+    return this.getPower() // If watt is not present, trise to fetch from a connected device
+      .then(() => this.runTest(dst, STATUS_GOTWATT, this.settings.GotSignalWatt));
   }
 
   async runBatteryTest(dst) {
@@ -313,6 +331,40 @@ class MyDevice extends Device {
       this.__charge_plan = [];
       throw new Error('No charging cycle was to stop');
     }*/
+  }
+
+  /** *******************************************************************************************************
+   * Internal getters/setters that does not make difference to if the device is Flow or directly controlled *
+   ******************************************************************************************************** */
+
+  /**
+   * Get a capability value from the controlled device
+   */
+  async getCapValue(capName) {
+    return this.homey.app.getDevice(this.targetId)
+      .then((device) => {
+        if (!device.capabilitiesObj) {
+          return Promise.resolve(undefined);
+        }
+        if (!(capName in device.capabilitiesObj)) {
+          const newErr = new Error(`Could not find the capability ${capName} for ${device.name}. Please install the most recent driver.`);
+          this.homey.app.updateLog(newErr, c.LOG_ERROR);
+          return Promise.reject(newErr);
+        }
+        return Promise.resolve(device.capabilitiesObj[capName].value);
+      });
+  }
+
+  /**
+   * Returns power from power cap
+   * If it's a non-flow device then the power cap is updated first with the value from the charger
+   */
+  async getPower() {
+    if (this.targetDriver && this.targetDef.measurePowerCap !== null) {
+      return this.getCapValue(this.targetDef.measurePowerCap)
+        .then((targetPower) => this.setChargerPower(targetPower, false));
+    }
+    return Promise.resolve(this.getCapabilityValue('measure_power'));
   }
 
 }
