@@ -1083,7 +1083,6 @@ class PiggyBank extends Homey.App {
     chargerActionStartChargingCycle2.registerRunListener(async args => this.canFlowContinue().then(() => args.device.onChargingCycleStart(undefined, args.endTime, args.offerHours)));
     chargerActionStopChargingCycle.registerRunListener(async args => this.canFlowContinue().then(() => args.device.onChargingCycleStop()));
 
-
     // Prepare which devices was on for setting deviceList which is called after this
     this.__oldDeviceList = this.homey.settings.get('deviceList') || {};
 

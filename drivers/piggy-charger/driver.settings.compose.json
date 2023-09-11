@@ -116,20 +116,20 @@
           "en": "Measured response time for W"
         },
         "hint": {
-          "en": "The time it took for piggy to send a start charging request before the used Watts was reported back to piggy."
+          "en": "The time it took between the controller sent a target power change request and the used Watts was reported back to piggy."
         },
         "value": "-"
       },
       {
-        "id": "toggleMeasureA",
-        "type": "label",
+        "id": "batteryFlowRequired",
+        "type": "checkbox",
         "label": {
-          "en": "Measured response time for Amps"
+          "en": "Battery flow Required"
         },
         "hint": {
-          "en": "The time it took for piggy to send a start charging request before the used Amps was reported back to piggy."
+          "en": "When ticked, the device will not validate unless you create a flow to update the battery level. If you don't have this available then this checkbox should be unticked."
         },
-        "value": "-"
+        "value": true
       }
     ]
   },
@@ -139,17 +139,6 @@
       "en": "Validation status"
     },
     "children": [
-      {
-        "id": "GotSignalAmps",
-        "type": "label",
-        "label": {
-          "en": "Amp Usage Received"
-        },
-        "hint": {
-          "en": "Please make sure a flow updates this device with how many amps the charger is actually charging with whenever the value changes."
-        },
-        "value": "False"
-      },
       {
         "id": "GotSignalWatt",
         "type": "label",
@@ -168,15 +157,15 @@
           "en": "Battery Level Received"
         },
         "hint": {
-          "en": "Please make sure a flow updates this device with the battery level whenever the value changes."
+          "en": "Please make sure a flow updates this device\nwith the battery level whenever the value\nchanges or enter the device setting and untick\nthe battery status requirement."
         },
         "value": "False"
       },
       {
-        "id": "GotSignalStatusDisconnected",
+        "id": "GotSignalStatusCanCharge",
         "type": "label",
         "label": {
-          "en": "Status Disconnected Received"
+          "en": "Status Can Charge Received"
         },
         "hint": {
           "en": "Please make sure a flow updates this device with the charger status whenever a car is disconnected."
@@ -184,24 +173,13 @@
         "value": "False"
       },
       {
-        "id": "GotSignalStatusConnected",
+        "id": "GotSignalStatusCantCharge",
         "type": "label",
         "label": {
-          "en": "Status Connected Received"
+          "en": "Status Standby Received"
         },
         "hint": {
           "en": "Please make sure a flow updates this device with the charger status whenever a car is connected."
-        },
-        "value": "False"
-      },
-      {
-        "id": "GotSignalStatusDone",
-        "type": "label",
-        "label": {
-          "en": "Status Done Received"
-        },
-        "hint": {
-          "en": "Please make sure a flow updates this device with the charger status whenever a car is done charging.\nThis is not required for device validation but it will improve the app performance."
         },
         "value": "False"
       },

@@ -9,8 +9,8 @@
     "no": "Opplys Piggy om ladertilstanden [[state]]"
   },
   "hint": {
-    "en": "This action will inform the charge controller about the current charger state. It is important that the charge controller knows the state of the charger at any time.",
-    "no": "Dette flytkortet vil informere ladekontrolleren om tilstanden til laderen. Det er viktig at ladekontrolleren vet tilstanden til laderen til enhver tid."
+    "en": "This action will inform the charge controller about how to interact with the charger. This should be directly linked to the state of the charger. It is important that the charge controller does is prevented from charging when charging is complete, no car is connected and in error situations.",
+    "no": "Dette flytkortet vil informere ladekontrolleren om hvordan den skal snakke med laderen. Dette skal være direkte linket til tilstanden på laderen. Det er viktig at ladekontrolleren blir blokkert fra å lade når ladingen er fullført, ingen bil er tilkoblet og en feilsituasjon har oppstått."
   },
   "args": [
     {
@@ -25,40 +25,19 @@
         {
           "id": "0",
           "label": {
-            "en": "Car disconnected",
-            "no": "Bil frakoblet"
+            "en": "Allow Charging",
+            "no": "Tillat lading"
           }
         },
         {
           "id": "1",
           "label": {
-            "en": "Car connected",
-            "no": "Bil tilkoblet"
+            "en": "Prevent Charging",
+            "no": "Blokker lading"
           }
         },
         {
           "id": "2",
-          "label": {
-            "en": "Charging",
-            "no": "Lader"
-          }
-        },
-        {
-          "id": "3",
-          "label": {
-            "en": "Paused charging",
-            "no": "Pauset lading"
-          }
-        },
-        {
-          "id": "4",
-          "label": {
-            "en": "Charging completed",
-            "no": "Lading fullført"
-          }
-        },
-        {
-          "id": "5",
           "label": {
             "en": "Charging failed",
             "no": "Lading feilet"

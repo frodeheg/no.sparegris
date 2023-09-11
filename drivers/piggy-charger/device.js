@@ -9,13 +9,16 @@ const Textify = require('../../lib/textify');
 
 // Driver Manifest references
 const VALIDATION_SETTINGS = 2;
-const STATUS_GOTAMP = 0;
-const STATUS_GOTWATT = 1;
-const STATUS_GOTBATTERY = 2;
-const STATUS_GOTDISCONNECT = 3;
-const STATUS_GOTCONNECT = 4;
-const STATUS_GOTDONE = 5;
-const STATUS_GOTERROR = 6;
+const STATUS_GOTWATT = 0;
+const STATUS_GOTBATTERY = 1;
+const STATUS_GOTCANCHARGE = 2;
+const STATUS_GOTCANTCHARGE = 3;
+const STATUS_GOTERROR = 4;
+
+// States
+const STATE_CANCHARGE = 0;
+const STATE_CANTCHARGE = 1;
+const STATE_ERROR = 2;
 
 // Default text
 const okText = '[\u001b[32;1m OK \u001b[37m]';
@@ -31,6 +34,7 @@ class MyDevice extends Device {
     console.log('Charger init');
     this.homey.app.updateLog('Piggy Charger has been initialized', 1);
     this.settingsManifest = this.driver.manifest.settings[VALIDATION_SETTINGS].children;
+    this.killed = false;
 
     // Make short access to device data
     const data = this.getData();
@@ -51,14 +55,13 @@ class MyDevice extends Device {
     // Register maintainance action used for validation of the device
     this.registerCapabilityListener('button.reset', async () => {
       this.log('Reset charger state in order to re-validate it');
-      const settings = await this.getSettings();
-      settings.GotSignalAmps = 'False';
+      const settings = {};
       settings.GotSignalWatt = 'False';
       settings.GotSignalBattery = 'False';
-      settings.GotSignalStatusDisconnected = 'False';
-      settings.GotSignalStatusConnected = 'False';
-      settings.GotSignalStatusDone = 'False';
+      settings.GotSignalStatusCanCharge = 'False';
+      settings.GotSignalStatusCantCharge = 'False';
       settings.GotSignalStatusError = 'False';
+      settings.toggleMeasureW = '-';
       this.setSettings(settings);
       this.setCapabilityValue('onoff', false);
       this.setCapabilityValue('alarm_generic.notValidated', true);
@@ -72,12 +75,10 @@ class MyDevice extends Device {
       if (newVal) {
         // Check if the device can be turned on
         const settings = this.getSettings();
-        if (settings.GotSignalAmps === 'False'
-          || settings.GotSignalWatt === 'False'
-          || settings.GotSignalBattery === 'False'
-          || settings.GotSignalStatusDisconnected === 'False'
-          || settings.GotSignalStatusConnected === 'False'
-          || settings.GotSignalStatusDone === 'False'
+        if (settings.GotSignalWatt === 'False'
+          || (settings.GotSignalBattery === 'False' && settings.batteryFlowRequired)
+          || settings.GotSignalStatusCanCharge === 'False'
+          || settings.GotSignalStatusCantCharge === 'False'
           || settings.GotSignalStatusError === 'False') {
           return Promise.reject(new Error(this.homey.__('charger.error.notReady')));
         }
@@ -120,41 +121,61 @@ class MyDevice extends Device {
     if (this.getCapabilityValue('alarm_generic.notValidated') === true) {
       const settings = this.getSettings();
       const changed = settings[setting] !== newVal;
-      settings[setting] = newVal;
-      if (changed) this.setSettings(settings);
+      const newSetting = {};
+      newSetting[setting] = newVal;
+      if (changed) this.setSettings(newSetting);
     }
+  }
+
+  async onUninit() {
+    this.killed = true;
+    if (this.triggerThread) {
+      clearTimeout(this.triggerThread);
+      this.triggerThread = undefined;
+    }
+  }
+
+  /**
+   * Reject a setter function if it came from a flow for devices that are directly connected
+   */
+  async rejectSetterIfRedundant(fromFlow, capName) {
+    if (fromFlow && this.targetDriver && this.targetDef[capName]) {
+      const newErr = new Error(`${this.homey.__('charger.warnings.redundantFlow')} (${capName})`);
+      this.homey.app.updateLog(newErr.message, c.LOG_ERROR);
+      return Promise.reject(newErr);
+    }
+    return Promise.resolve();
   }
 
   /**
    * Set the charger state
    */
-  async setChargerState(state) {
-    this.setCapabilityValue('charge_status', String(state));
-    let settingToUpdate;
-    switch (+state) {
-      case 0: settingToUpdate = 'GotSignalStatusDisconnected'; break; // Car disconnected
-      case 1: settingToUpdate = 'GotSignalStatusConnected'; break; // Car connected
-      case 2: console.log('TODO: Register state charging'); break; // Charging
-      case 3: console.log('TODO: Register state paused'); break; // Paused charging
-      case 4: settingToUpdate = 'GotSignalStatusDone'; break; // Charging completed
-      default:
-      case 5: settingToUpdate = 'GotSignalStatusError'; break; // Charging failed
-    }
-    if (settingToUpdate !== undefined) this.updateSettingsIfValidationCycle(settingToUpdate);
+  async setChargerState(state, fromFlow = true) {
+    return this.rejectSetterIfRedundant(fromFlow, 'statusCap')
+      .then(() => {
+        this.setCapabilityValue('charge_status', String(state));
+        let settingToUpdate;
+        switch (+state) {
+          case STATE_CANCHARGE: settingToUpdate = 'GotSignalStatusCanCharge'; break;
+          case STATE_CANTCHARGE: settingToUpdate = 'GotSignalStatusCantCharge'; break;
+          default:
+          case STATE_ERROR: settingToUpdate = 'GotSignalStatusError'; break;
+        }
+        if (settingToUpdate !== undefined) this.updateSettingsIfValidationCycle(settingToUpdate);
+        return Promise.resolve(+state);
+      });
   }
 
   /**
    * Sets the charger power
    */
   async setChargerPower(power, fromFlow = true) {
-    if (fromFlow && this.targetDriver && this.targetDef.measurePowerCap) {
-      const newErr = new Error(this.homey.__('charger.warnings.redundantFlow'));
-      this.homey.app.updateLog(newErr.message, c.LOG_ERROR);
-      return Promise.reject(newErr);
-    }
-    this.setCapabilityValue('measure_power', +power);
-    this.updateSettingsIfValidationCycle('GotSignalWatt', 'True');
-    return Promise.resolve(+power);
+    return this.rejectSetterIfRedundant(fromFlow, 'measurePowerCap')
+      .then(() => {
+        this.setCapabilityValue('measure_power', +power);
+        this.updateSettingsIfValidationCycle('GotSignalWatt', 'True');
+        return Promise.resolve(+power);
+      });
   }
 
   /**
@@ -171,16 +192,17 @@ class MyDevice extends Device {
       .then(() => dst.addText('-----------------------------'))
       .then(() => dst.setCursorWindow(40, 185, 460, 460))
       .then(() => dst.setTextColor([255, 255, 255, 255]))
-      .then(() => this.runConnectedTest(dst))
-      .then(() => this.runAmpTest(dst))
-      .then(() => this.runWattTest(dst))
+      .then(() => this.runStateTest(dst))
       .then(() => this.runBatteryTest(dst))
-      .then(() => this.runDisconnectTest(dst))
+      .then(() => this.runWattTest(dst))
+      .then(() => this.runTriggerTest(dst))
       .then(() => this.runTurnedOnTest(dst))
       .then(() => this.setAllPassed())
-      .then(() => dst.addText(`${progressText} Press refresh for updates\n`))
-      .catch((err) => dst.addText(`\u001b[35;m${err.message}\n`))
-      .then(() => this.setCapabilityValue('alarm_generic.notValidated', true))
+      .catch((err) => {
+        this.setCapabilityValue('alarm_generic.notValidated', true)
+        if (err) return dst.addText(`\u001b[35;m${err.message}\n`);
+        return dst.addText(`${progressText} ${this.homey.__('charger.validation.wait')}\n`);
+      })
       .finally(() => dst.addText('\u001b[0m(maintenance action "reset" will start over)\u001b[1m\n'))
       .then(() => dst.pack().pipe(stream));
   }
@@ -200,38 +222,101 @@ class MyDevice extends Device {
   }
 
   /**
-   * This test will just check that the charger is within connected state
+   * This test will just check that the charger state has been sent to the device
    */
-  async runConnectedTest(dst) {
-    return this.runTest(dst, STATUS_GOTCONNECT, this.settings.GotSignalStatusConnected);
-  }
-
-  async runAmpTest(dst) {
-    return this.runTest(dst, STATUS_GOTAMP, this.settings.GotSignalAmps);
-  }
-
-  async runWattTest(dst) {
-    return this.getPower() // If watt is not present, trise to fetch from a connected device
-      .then(() => this.runTest(dst, STATUS_GOTWATT, this.settings.GotSignalWatt));
+  async runStateTest(dst) {
+    return this.getState()
+      .then((state) => {
+        if (state === null || state === undefined) {
+          dst.addText(`${errText} ${this.homey.__('charger.validation.stateLabel')}\n`);
+          return Promise.reject(new Error(`${this.homey.__('charger.validation.stateHint')}`));
+        }
+        dst.addText(`${okText} ${this.homey.__('charger.validation.stateLabel')}\n`);
+        return Promise.resolve();
+      });
   }
 
   async runBatteryTest(dst) {
+    if (!this.settings.batteryFlowRequired) {
+      dst.addText(`${okText} ${this.homey.__('charger.validation.batterySkipped')}\n`);
+      return Promise.resolve();
+    }
     return this.runTest(dst, STATUS_GOTBATTERY, this.settings.GotSignalBattery);
   }
 
-  async runDisconnectTest(dst) {
-    return this.runTest(dst, STATUS_GOTDISCONNECT, this.settings.GotSignalStatusDisconnected);
+  async runWattTest(dst) {
+    return this.getPower() // If watt is not present, tries to fetch from a connected device
+      .then(() => this.runTest(dst, STATUS_GOTWATT, this.settings.GotSignalWatt));
+  }
+
+  /**
+   * Wait for trigger replay
+   */
+  async checkForTriggerReply(secleft) {
+    if (this.killed) return Promise.resolve();
+    console.log(`Sec left ${secleft}`);
+    const newPower = this.getCapabilityValue('measure_power');
+    if (newPower > 0) {
+      const now = new Date();
+      const lastedTime = Math.round((now - this.triggerTestStart) / 1000);
+      const settings = { toggleMeasureW: `${lastedTime} s` };
+      this.setSettings(settings);
+      console.log(`Got Power: ${newPower}`);
+      this.triggerThread = undefined;
+      return Promise.resolve();
+    }
+    if (secleft > 0) {
+      this.triggerThread = setTimeout(() => this.checkForTriggerReply(secleft - 1), 1000);
+    } else {
+      this.triggerThread = undefined;
+    }
+    return Promise.resolve();
+  }
+
+  /**
+   * This test will check if a trigger event has been created.
+   */
+  async runTriggerTest(dst) {
+    const now = new Date();
+    const gotResult = this.settings.toggleMeasureW !== '-';
+    console.log('trigger xxx');
+    console.log(this.settings.toggleMeasureW);
+
+    if (gotResult) {
+      dst.addText(`${okText} ${this.homey.__('charger.validation.turnaroundLabel')} (${this.settings.toggleMeasureW})\n`);
+      console.log('has result....');
+      return Promise.resolve();
+    }
+    if (!this.triggerTestStart) {
+      console.log('Started new trigger test');
+      const changeChargingPowerTrigger = this.homey.flow.getDeviceTriggerCard('charger-change-target-power');
+      const tokens = { offeredPower: 2000 };
+      changeChargingPowerTrigger.trigger(this, tokens);
+      this.triggerThread = setTimeout(() => this.checkForTriggerReply(300), 1000);
+      this.triggerTestStart = now;
+    }
+
+    const secLasted = Math.round((now - this.triggerTestStart) / 1000);
+    if (secLasted > 60 * 5) {
+      dst.addText(`${errText} ${this.homey.__('charger.validation.turnaroundLabel')} (${this.homey.__('charger.validation.turnaroundTimeout')} > 300 s)\n`);
+      this.triggerTestStart = undefined;
+      console.log('Test timed out');
+      return Promise.reject();
+    }
+    dst.addText(`${progressText} ${this.homey.__('charger.validation.turnaroundLabel')} (${this.homey.__('charger.validation.turnaroundOngoing')} > ${secLasted} s)\n`);
+    console.log('waiting....');
+    return Promise.reject();
   }
 
   /**
    * Check that the device is turned on
    */
   async runTurnedOnTest(dst) {
-    const text = this.homey.__('charger.status.turnedOn');
+    const text = this.homey.__('charger.validation.turnedOnLabel');
     const onOffValue = this.getCapabilityValue('onoff');
     if (!onOffValue) {
       dst.addText(`${errText} ${text}\n`);
-      return Promise.reject(new Error(`${this.homey.__('charger.tasks.turnOn')}`));
+      return Promise.reject(new Error(`${this.homey.__('charger.validation.turnedOnHint')}`));
     }
     dst.addText(`${okText} ${text}\n`);
     return Promise.resolve();
@@ -353,6 +438,23 @@ class MyDevice extends Device {
         }
         return Promise.resolve(device.capabilitiesObj[capName].value);
       });
+  }
+
+  /**
+   * Returns state from state cap
+   * If it's a non-flow device then the state cap is updated first with the value from the charger
+   */
+  async getState() {
+    if (this.targetDriver && this.targetDef.statusCap !== null) {
+      return this.getCapValue(this.targetDef.statusCap)
+        .then((state) => {
+          const translatedState = (this.targetDef.statusProblem.includes(state)) ? STATE_ERROR
+            : (this.targetDef.statusUnavailable.includes(state)) ? STATE_CANTCHARGE
+              : STATUS_GOTCANCHARGE;
+          return this.setChargerState(translatedState, false);
+        });
+    }
+    return Promise.resolve(this.getCapabilityValue('charge_status'));
   }
 
   /**

@@ -450,11 +450,15 @@
       "info1": "This device will allow you to control a car charger with piggy.",
       "info2": "If your charger is directly supported, it will be listed in the next screen. If not you must select the flow based controller."
     },
-    "status": {
-      "turnedOn": "The controller must be enabled."
-    },
-    "tasks": {
-      "turnOn": "Please turn on the charge controller."
+    "validation": {
+      "stateLabel": "Charging state recieved",
+      "stateHint": "Please create a flow to inform the controller about the charging state.",
+      "batterySkipped": "Battery test skipped.",
+      "turnedOnLabel": "The controller must be enabled.",
+      "turnedOnHint": "Please turn on the charge controller.",
+      "turnaroundLabel": "Response test",
+      "turnaroundOngoing": "ongoing",
+      "wait": "Press refresh for updates"
     },
     "error": {
       "notReady": "Can not turn on the charge controller before it has been properly connected and tested. See the camera capability of this device for instructions."
@@ -463,8 +467,6 @@
       "noSignalAmps": "No Amp signal received from the charger",
       "noSignalWatts": "No Watt signal received from the charger",
       "noSignalBattery": "No Battery level received from the charger",
-      "noStatusDisconnected": "No car disconnected signal received from the charger",
-      "noStatusConnected": "No car connected signal received from the charger",
       "redundantFlow": "Flow signal ignored, this is fetched directly from the controlled device."
     }
   },

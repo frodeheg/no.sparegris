@@ -1128,8 +1128,8 @@
           "no": "Opplys Piggy om ladertilstanden [[state]]"
         },
         "hint": {
-          "en": "This action will inform the charge controller about the current charger state. It is important that the charge controller knows the state of the charger at any time.",
-          "no": "Dette flytkortet vil informere ladekontrolleren om tilstanden til laderen. Det er viktig at ladekontrolleren vet tilstanden til laderen til enhver tid."
+          "en": "This action will inform the charge controller about how to interact with the charger. This should be directly linked to the state of the charger. It is important that the charge controller does is prevented from charging when charging is complete, no car is connected and in error situations.",
+          "no": "Dette flytkortet vil informere ladekontrolleren om hvordan den skal snakke med laderen. Dette skal være direkte linket til tilstanden på laderen. Det er viktig at ladekontrolleren blir blokkert fra å lade når ladingen er fullført, ingen bil er tilkoblet og en feilsituasjon har oppstått."
         },
         "args": [
           {
@@ -1144,40 +1144,19 @@
               {
                 "id": "0",
                 "label": {
-                  "en": "Car disconnected",
-                  "no": "Bil frakoblet"
+                  "en": "Allow Charging",
+                  "no": "Tillat lading"
                 }
               },
               {
                 "id": "1",
                 "label": {
-                  "en": "Car connected",
-                  "no": "Bil tilkoblet"
+                  "en": "Prevent Charging",
+                  "no": "Blokker lading"
                 }
               },
               {
                 "id": "2",
-                "label": {
-                  "en": "Charging",
-                  "no": "Lader"
-                }
-              },
-              {
-                "id": "3",
-                "label": {
-                  "en": "Paused charging",
-                  "no": "Pauset lading"
-                }
-              },
-              {
-                "id": "4",
-                "label": {
-                  "en": "Charging completed",
-                  "no": "Lading fullført"
-                }
-              },
-              {
-                "id": "5",
                 "label": {
                   "en": "Charging failed",
                   "no": "Lading feilet"
@@ -2383,20 +2362,20 @@
                 "en": "Measured response time for W"
               },
               "hint": {
-                "en": "The time it took for piggy to send a start charging request before the used Watts was reported back to piggy."
+                "en": "The time it took between the controller sent a target power change request and the used Watts was reported back to piggy."
               },
               "value": "-"
             },
             {
-              "id": "toggleMeasureA",
-              "type": "label",
+              "id": "batteryFlowRequired",
+              "type": "checkbox",
               "label": {
-                "en": "Measured response time for Amps"
+                "en": "Battery flow Required"
               },
               "hint": {
-                "en": "The time it took for piggy to send a start charging request before the used Amps was reported back to piggy."
+                "en": "When ticked, the device will not validate unless you create a flow to update the battery level. If you don't have this available then this checkbox should be unticked."
               },
-              "value": "-"
+              "value": true
             }
           ]
         },
@@ -2406,17 +2385,6 @@
             "en": "Validation status"
           },
           "children": [
-            {
-              "id": "GotSignalAmps",
-              "type": "label",
-              "label": {
-                "en": "Amp Usage Received"
-              },
-              "hint": {
-                "en": "Please make sure a flow updates this device with how many amps the charger is actually charging with whenever the value changes."
-              },
-              "value": "False"
-            },
             {
               "id": "GotSignalWatt",
               "type": "label",
@@ -2435,15 +2403,15 @@
                 "en": "Battery Level Received"
               },
               "hint": {
-                "en": "Please make sure a flow updates this device with the battery level whenever the value changes."
+                "en": "Please make sure a flow updates this device\nwith the battery level whenever the value\nchanges or enter the device setting and untick\nthe battery status requirement."
               },
               "value": "False"
             },
             {
-              "id": "GotSignalStatusDisconnected",
+              "id": "GotSignalStatusCanCharge",
               "type": "label",
               "label": {
-                "en": "Status Disconnected Received"
+                "en": "Status Can Charge Received"
               },
               "hint": {
                 "en": "Please make sure a flow updates this device with the charger status whenever a car is disconnected."
@@ -2451,24 +2419,13 @@
               "value": "False"
             },
             {
-              "id": "GotSignalStatusConnected",
+              "id": "GotSignalStatusCantCharge",
               "type": "label",
               "label": {
-                "en": "Status Connected Received"
+                "en": "Status Standby Received"
               },
               "hint": {
                 "en": "Please make sure a flow updates this device with the charger status whenever a car is connected."
-              },
-              "value": "False"
-            },
-            {
-              "id": "GotSignalStatusDone",
-              "type": "label",
-              "label": {
-                "en": "Status Done Received"
-              },
-              "hint": {
-                "en": "Please make sure a flow updates this device with the charger status whenever a car is done charging.\nThis is not required for device validation but it will improve the app performance."
               },
               "value": "False"
             },
@@ -2571,40 +2528,19 @@
         {
           "id": "0",
           "title": {
-            "en": "Car disconnected",
-            "no": "Bil frakoblet"
+            "en": "Allow Charging",
+            "no": "Tillat lading"
           }
         },
         {
           "id": "1",
           "title": {
-            "en": "Car connected",
-            "no": "Bil tilkoblet"
+            "en": "Prevent Charging",
+            "no": "Blokker lading"
           }
         },
         {
           "id": "2",
-          "title": {
-            "en": "Charging",
-            "no": "Lader"
-          }
-        },
-        {
-          "id": "3",
-          "title": {
-            "en": "Paused charging",
-            "no": "Pauset lading"
-          }
-        },
-        {
-          "id": "4",
-          "title": {
-            "en": "Charging completed",
-            "no": "Lading fullført"
-          }
-        },
-        {
-          "id": "5",
           "title": {
             "en": "Charging failed",
             "no": "Lading feilet"
