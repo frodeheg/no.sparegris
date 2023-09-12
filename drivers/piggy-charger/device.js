@@ -78,8 +78,7 @@ class MyDevice extends Device {
         if (settings.GotSignalWatt === 'False'
           || (settings.GotSignalBattery === 'False' && settings.batteryFlowRequired)
           || settings.GotSignalStatusCanCharge === 'False'
-          || settings.GotSignalStatusCantCharge === 'False'
-          || settings.GotSignalStatusError === 'False') {
+          || settings.toggleMeasureW === '-') {
           return Promise.reject(new Error(this.homey.__('charger.error.notReady')));
         }
       }
@@ -90,7 +89,11 @@ class MyDevice extends Device {
       __deviceList[deviceId].use = newVal;
       this.homey.app.__deviceList = __deviceList;
       this.homey.settings.set('deviceList', __deviceList);
-      return Promise.resolve();
+      // If a device is attached, make sure the add and remove commands are run
+      if (newVal) {
+        return this.onTurnedOn();
+      }
+      return this.onTurnedOff();
     });
 
     await this.homey.images.createImage()
@@ -128,11 +131,41 @@ class MyDevice extends Device {
   }
 
   async onUninit() {
+    console.log('xxxxxxxxxxxxx onUninit piggy-charger xxxxxxxxxxxxx');
     this.killed = true;
     if (this.triggerThread) {
       clearTimeout(this.triggerThread);
       this.triggerThread = undefined;
     }
+    if (this.getCapabilityValue('onoff')) {
+      this.onTurnedOff();
+      this.setCapabilityValue('onoff', false);
+    }
+  }
+
+  /**
+   * Runs the turn-on procedure for the controller
+   * - This procedure consist of powering off the controlled devices
+   */
+  async onTurnedOn() {
+    if (this.targetDriver) {
+      return this.homey.app.runDeviceCommands(this.targetId, 'onAdd');
+    }
+    // else flow based control, make sure the charging power is 0W
+    const changeChargingPowerTrigger = this.homey.flow.getDeviceTriggerCard('charger-change-target-power');
+    const tokens = { offeredPower: 0 };
+    return changeChargingPowerTrigger.trigger(this, tokens);
+  }
+
+  /**
+   * Runs the turn-off procedure for the controller
+   * - This procedure consist of releasing power control of the controlled devices
+   */
+  async onTurnedOff() {
+    if (this.targetDriver) {
+      return this.homey.app.runDeviceCommands(this.targetId, 'onRemove');
+    }
+    return Promise.resolve();
   }
 
   /**
@@ -161,7 +194,7 @@ class MyDevice extends Device {
           default:
           case STATE_ERROR: settingToUpdate = 'GotSignalStatusError'; break;
         }
-        if (settingToUpdate !== undefined) this.updateSettingsIfValidationCycle(settingToUpdate);
+        if (settingToUpdate !== undefined) this.updateSettingsIfValidationCycle(settingToUpdate, 'True');
         return Promise.resolve(+state);
       });
   }
@@ -183,6 +216,7 @@ class MyDevice extends Device {
    */
   async refreshImageStream(stream) {
     const dst = new Textify({ width: 500, height: 500, colorType: 2, bgColor: { red: 80, green: 80, blue: 80 }});
+    console.log('Refresh image');
 
     this.settings = this.getSettings();
     return dst.loadFile('../drivers/piggy-charger/assets/images/notValid.png')
@@ -252,21 +286,28 @@ class MyDevice extends Device {
   /**
    * Wait for trigger replay
    */
-  async checkForTriggerReply(secleft) {
+  async checkForTriggerReply(secleft, testStarted) {
     if (this.killed) return Promise.resolve();
     console.log(`Sec left ${secleft}`);
     const newPower = this.getCapabilityValue('measure_power');
-    if (newPower > 0) {
+    if ((!testStarted) && (+newPower === 0)) {
+      console.log(`Starting Trigger test at time ${secleft}`);
+      const changeChargingPowerTrigger = this.homey.flow.getDeviceTriggerCard('charger-change-target-power');
+      const tokens = { offeredPower: 2000 };
+      changeChargingPowerTrigger.trigger(this, tokens);
+      this.triggerTestStart = new Date();
+      testStarted = true;
+    } else if (testStarted && (+newPower > 0)) {
       const now = new Date();
       const lastedTime = Math.round((now - this.triggerTestStart) / 1000);
       const settings = { toggleMeasureW: `${lastedTime} s` };
       this.setSettings(settings);
-      console.log(`Got Power: ${newPower}`);
+      console.log(`Ended Trigger test at time ${secleft}, got Power ${newPower}`);
       this.triggerThread = undefined;
-      return Promise.resolve();
+      return this.onTurnedOff();
     }
     if (secleft > 0) {
-      this.triggerThread = setTimeout(() => this.checkForTriggerReply(secleft - 1), 1000);
+      this.triggerThread = setTimeout(() => this.checkForTriggerReply(secleft - 1, testStarted), 1000);
     } else {
       this.triggerThread = undefined;
     }
@@ -279,7 +320,7 @@ class MyDevice extends Device {
   async runTriggerTest(dst) {
     const now = new Date();
     const gotResult = this.settings.toggleMeasureW !== '-';
-    console.log('trigger xxx');
+    console.log('Run trigger test');
     console.log(this.settings.toggleMeasureW);
 
     if (gotResult) {
@@ -287,19 +328,17 @@ class MyDevice extends Device {
       console.log('has result....');
       return Promise.resolve();
     }
-    if (!this.triggerTestStart) {
+    if (!this.triggerThreadStart) {
       console.log('Started new trigger test');
-      const changeChargingPowerTrigger = this.homey.flow.getDeviceTriggerCard('charger-change-target-power');
-      const tokens = { offeredPower: 2000 };
-      changeChargingPowerTrigger.trigger(this, tokens);
-      this.triggerThread = setTimeout(() => this.checkForTriggerReply(300), 1000);
-      this.triggerTestStart = now;
+      await this.onTurnedOn();
+      this.triggerThreadStart = now;
+      this.triggerThread = setTimeout(() => this.checkForTriggerReply(300, false), 1000);
     }
 
-    const secLasted = Math.round((now - this.triggerTestStart) / 1000);
+    const secLasted = Math.round((now - this.triggerThreadStart) / 1000);
     if (secLasted > 60 * 5) {
       dst.addText(`${errText} ${this.homey.__('charger.validation.turnaroundLabel')} (${this.homey.__('charger.validation.turnaroundTimeout')} > 300 s)\n`);
-      this.triggerTestStart = undefined;
+      this.triggerThreadStart = undefined;
       console.log('Test timed out');
       return Promise.reject();
     }
