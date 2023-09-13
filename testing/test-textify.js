@@ -60,7 +60,7 @@ class Test {
       GotSignalStatusError: 'False'
     };
     dst.loadFile('../drivers/piggy-charger/assets/images/notValid.png')
-      // --- START COPY ---
+/*      // --- START COPY ---
       .then(() => dst.setCursorWindow(190, 80, 460, 170))
       .then(() => dst.setTextColor([255, 128, 128, 255]))
       .then(() => dst.addText('The device can not be used\nbefore the check-list below\nhas been completed\n'))
@@ -77,6 +77,10 @@ class Test {
       .catch((err) => dst.addText(`\u001b[35;m${err.message}\n`))
       .finally(() => dst.addText('\u001b[0m(maintenance action "reset" will start over)\u001b[1m\n'))
       // --- END COPY ---
+      */
+      // --- START DRAW TEST ---
+      .then(() => dst.drawLineChart(50, 150, 400, 300, { xaxis: ['11:00', '12:00', '13:00', '14:00'], values: [0.1, 0.4, 1.2, 0.8] }))
+      // --- END DRAW TEST ---
       .then(() => dst.pack().pipe(fs.createWriteStream('out.png')));
   }
 
