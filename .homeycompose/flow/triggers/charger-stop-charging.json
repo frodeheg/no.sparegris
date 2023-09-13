@@ -1,0 +1,27 @@
+{
+  "title": {
+    "en": "The charging should be stopped",
+    "no": "Ladingen bør stoppes",
+    "nl": "Het opladen moet worden gestopt",
+    "fr": "La charge doit être arrêtée"
+  },
+  "titleFormatted": {
+    "en": "The charging should be stopped",
+    "no": "Ladingen bør stoppes",
+    "nl": "Het opladen moet worden gestopt",
+    "fr": "La charge doit être arrêtée"
+  },
+  "hint": {
+    "en": "This Trigger should be used to stop the charger. It will be called on the best schedule after the action 'Start Charging Cycle' has been initiated.",
+    "no": "Denne triggeren skal brukes for å stoppe ladingen. Den blir trigget på optimale tidspunkt etter at handlingen 'Start ladesyklus' har blitt utført.",
+    "nl": "Deze trigger moet worden gebruikt om het opladen te stoppen. Hij wordt geactiveerd op het optimale moment nadat de actie 'Start laadcyclus' is uitgevoerd.",
+    "fr": "Ce déclencheur doit être utilisé pour arrêter la charge. Il est déclenché au moment optimal après l'exécution de l'action 'Démarrer le cycle de charge'."
+  },
+  "args": [
+    {
+      "name": "device",
+      "type": "device",
+      "filter": "driver_id=piggy-charger"
+    }
+  ]
+}

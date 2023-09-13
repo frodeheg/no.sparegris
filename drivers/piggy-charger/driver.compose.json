@@ -31,6 +31,9 @@
         "en": "Charge cycle"
       }
     },
+    "target_power": {
+      "preventTag": true
+    },
     "alarm_generic.notValidated": {
       "title": {
         "en": "Alarm"

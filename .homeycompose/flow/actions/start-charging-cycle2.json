@@ -1,22 +1,22 @@
 {
   "deprecated": true,
   "title": {
-    "en": "Start charging cycle (hours)",
-    "no": "Start ladesyklus (timer)",
-    "nl": "Start laadcyclus (uren)",
-    "fr": "Démarrer le cycle de charge (heures)"
+    "en": "Deprecated flow: Please install the charger controller device instead",
+    "no": "Utdatert flyt: Installer laderkontrollenheten i stedet",
+    "nl": "Verouderde stroom: installeer in plaats daarvan het ladercontrollerapparaat",
+    "fr": "Flux obsolète: veuillez installer le dispositif de contrôleur de chargeur à la place"
   },
   "titleFormatted": {
-    "en": "Start charging [[offerHours]] cheapest hours before [[endTime]]",
-    "no": "Start lading [[offerHours]] billigste timer før kl. [[endTime]]",
-    "nl": "Begin met opladen met de [[offerHours]] goedkoopste uren vóór [[endTime]]",
-    "fr": "Commencez à facturer [[offerHours]] les heures les moins chères avant [[endTime]]"
+    "en": "Deprecated flow: Please install the charger controller device instead [[offerHours]] cheapest hours before [[endTime]]",
+    "no": "Utdatert flyt: Installer laderkontrollenheten i stedet [[offerHours]] billigste timer før kl. [[endTime]]",
+    "nl": "Verouderde stroom: installeer in plaats daarvan het ladercontrollerapparaat [[offerHours]] goedkoopste uren vóór [[endTime]]",
+    "fr": "Flux obsolète: veuillez installer le dispositif de contrôleur de chargeur à la place [[offerHours]] les heures les moins chères avant [[endTime]]"
   },
   "hint": {
-    "en": "Tell Piggy Bank to start a charging cycle. It will only charge in the X cheapest hours before the time runs out. (Note that if the current hour is one of them then the charging time will be shorter)\n\nFor unsupported car chargers this may be the most deterministic starting function as they do not report used energy.",
-    "no": "Be Sparegris om å starte en ladesyklus. Ladingen vil kun bli tilbydt i de X billigste timene før tiden går ut. (NB! Dersom inneværende time er blant de billigste så vil ladetiden være kortere)\n\nDette er den mest deterministiske startfunsjonen for billadere som ikke støttes, ettersom appen ikke får rapportert energiforbruk.",
-    "nl": "Vraag Spaarpot om een laadcyclus te starten. Laden wordt alleen aangeboden in de X goedkoopste uren voordat de tijd om is. (NB! Als het huidige uur tot de goedkoopste behoort, zal de laadtijd korter zijn)\n \nDit is de meest effectieve startfunctie voor niet-ondersteunde autoladers, aangezien de app geen gerapporteerd energieverbruik krijgt.",
-    "fr": "Demandez à Tirelire de démarrer un cycle de charge. La charge ne sera proposée que dans les X heures les moins chères avant la fin du délai. (NB! Si l'heure actuelle est parmi les moins chères, le temps de charge sera plus court)\n \nIl s'agit de la fonction de démarrage la plus déterministe pour les chargeurs de voiture non pris en charge, car l'application n'obtient pas de consommation d'énergie signalée."
+    "en": "This flow has been deprecated. It will still work for a limited time, but you're reccommended to install the new charger controller device as soon as possible and use the same flow from there instead.",
+    "no": "Denne flyten er avviklet. Den vil fortsatt fungere i en begrenset tid, men du anbefales å installere den nye laderkontrollenheten så snart som mulig og bruke samme flyt derfra istedenfor.",
+    "nl": "Deze stroom is beëindigd. Het zal nog een beperkte tijd werken, maar u wordt aangeraden de nieuwe opladercontroller zo snel mogelijk te installeren en van daaruit dezelfde stroom te gebruiken.",
+    "fr": "Ce flux est obsolète. Cela fonctionnera toujours pendant une durée limitée, mais il est recommandé d'installer le nouveau contrôleur de chargeur dès que possible et d'utiliser le même flux à partir de là."
   },
   "args": [
     {
