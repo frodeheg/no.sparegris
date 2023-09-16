@@ -356,12 +356,16 @@ class MyDevice extends Device {
 
       // Set Mode capability + update timeline using boolean workaround capabilities
       const prevMode = await this.getStoreValue('piggy_mode');
+      let customNames = this.homey.settings.get('modeNames');
+      if (!Array.isArray(customNames)) {
+        customNames = [];
+      }
       const modeNames = [
         this.homey.__('settings.app.disabled'),
         this.homey.__('settings.opMode.normal'),
         this.homey.__('settings.opMode.night'),
         this.homey.__('settings.opMode.holiday'),
-        ...this.homey.settings.get('modeNames'),
+        ...customNames,
       ];
 
       if (this.prevValue !== piggyState.operating_mode) {
