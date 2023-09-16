@@ -365,12 +365,7 @@ class MyDevice extends Device {
       ];
 
       if (this.prevValue !== piggyState.operating_mode) {
-        this.mySetCapabilityValue('piggy_mode', false); // true is red
-        const options = {
-          titleTrue: { en: modeNames[piggyState.operating_mode] },
-          titleFalse: { en: modeNames[piggyState.operating_mode] },
-        };
-        await this.setCapabilityOptions('piggy_mode', options);
+        this.mySetCapabilityValue('piggy_mode', modeNames[piggyState.operating_mode]);
         this.prevValue = piggyState.operating_mode;
       }
 
