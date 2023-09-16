@@ -1,0 +1,19 @@
+Log ID: 2023-08-20T17:12:50.796Z
+App version 0.20.38
+
++17:19:33.753: ----- ANALYZING DEVICE -----
++17:19:33.754: Report type: Device is not listed
++17:19:33.768: Device name: Varmekabel
++17:19:33.770: Driver Id: homey:app:no.elko:smart_plus_thermostat
++17:19:33.772: Error: TypeError: Cannot read properties of undefined (reading 'onoff_cap')
++17:19:33.773: Capabilities: measure_temperature,target_temperature,display_air_temperature,display_floor_temperature,meter_power,command_child_lock
++17:19:33.775: Options for 'measure_temperature': {"id":"measure_temperature","type":"number","iconObj":null,"title":"Temperatur","getable":true,"setable":false,"insights":true,"insightsTitleTrue":null,"insightsTitleFalse":null,"units":"°C","decimals":2,"value":24.7,"lastUpdated":"2023-08-20T17:16:28.503Z"}
++17:19:33.776: Options for 'target_temperature': {"id":"target_temperature","type":"number","iconObj":null,"title":"Ønsket temperatur","getable":true,"setable":true,
+"insights":true,"insightsTitleTrue":null,"insightsTitleFalse":null,
+min":4,"max":30,"units":"°C","decimals":2,"value":20,"lastUpdated":"2023-08-15T19:22:49.416Z"}
+
++17:19:33.778: Options for 'display_air_temperature': {"id":"display_air_temperature","type":"number","iconObj":{"id":"f96de8eed59019b8390cc62652362c20","url":"/api/icon/e47bfc8c-511e-4361-875f-c72fc1f110ff"},"title":"Lufttemperatur","getable":true,"setable":false,"insights":true,"insightsTitleTrue":null,"insightsTitleFalse":null,"units":"°C","decimals":2,"value":24.7,"lastUpdated":"2023-08-20T17:16:28.525Z"}
++17:19:33.779: Options for 'display_floor_temperature': {"id":"display_floor_temperature","type":"number","iconObj":{"id":"f96de8eed59019b8390cc62652362c20","url":"/api/icon/d2e2c759-ee3f-4301-bddd-efe153f6c937"},"title":"Gulvtemperatur","getable":true,"setable":false,"insights":true,"insightsTitleTrue":null,"insightsTitleFalse":null,"units":"°C","decimals":2,"value":0,"lastUpdated":"2023-08-15T19:21:31.213Z"}
++17:19:33.780: Options for 'meter_power': {"id":"meter_power","type":"number","iconObj":null,"title":"Energi","getable":true,"setable":false,"insights":true,"insightsTitleTrue":null,"insightsTitleFalse":null,"units":"kWh","decimals":2,"value":0,"lastUpdated":"2023-08-15T19:21:34.398Z"}
++17:19:33.781: Options for 'command_child_lock': {"id":"command_child_lock","type":"boolean","iconObj":{"id":"d17ed5dd36a0f49cd0fe5f8068c442ec","url":"/api/icon/635465f2-4f4b-4d75-840e-0ecd10b2f4da"},"title":"Barnesikring","getable":true,"setable":true,"insightsTitleTrue":null,"insightsTitleFalse":null,"value":false,"lastUpdated":"2023-08-15T19:21:50.968Z"}
++17:19:33.787: --- ANALYZING DEVICE DONE ---

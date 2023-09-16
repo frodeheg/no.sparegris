@@ -1,0 +1,28 @@
+Log ID: 2023-08-16T14:04:17.543Z
+App version 0.20.38
+
++14:4:17.543: ----- ANALYZING DEVICE -----
++14:4:17.545: Report type: Device is not listed
++14:4:17.571: Device name: Zaptec
++14:4:17.573: Driver Id: homey:app:com.zaptec:go
++14:4:17.575: Error: TypeError: Cannot read properties of undefined (reading 'onoff_cap')
++14:4:17.577: Capabilities: meter_power.current_session,meter_power.this_year,meter_power.last_session,measure_power,charging_button,charge_mode,alarm_generic.car_connected,available_installation_current,measure_current.phase1,measure_current.phase2,measure_current.phase3,measure_voltage.phase1,measure_voltage.phase2,measure_voltage.phase3
++14:4:17.578: Options for 'meter_power.current_session': {"id":"meter_power.current_session","type":"number","iconObj":null,"title":"Energy current session","getable":true,"setable":false,"insights":true,"insightsTitleTrue":null,"insightsTitleFalse":null,"units":"kWh","decimals":2,"value":0,"lastUpdated":"2023-08-12T09:55:00.939Z"}
++14:4:17.580: Options for 'meter_power.this_year': {"id":"meter_power.this_year","type":"number","iconObj":null,"title":"Energy this year","getable":true,"setable":false,"insights":true,"insightsTitleTrue":null,"insightsTitleFalse":null,"units":"kWh","decimals":2,"value":441.67,"lastUpdated":"2023-08-15T03:36:06.103Z"}
++14:4:17.581: Options for 'meter_power.last_session': {"id":"meter_power.last_session","type":"number","iconObj":null,"title":"Energy previous session","getable":true,"setable":false,"insights":true,"insightsTitleTrue":null,"insightsTitleFalse":null,"units":"kWh","decimals":2,"value":18.15,"lastUpdated":"2023-08-15T03:36:31.117Z"}
++14:4:17.583: Options for 'measure_power': {"id":"measure_power","type":"number","iconObj":null,"title":"Effekt","getable":true,"setable":false,"insights":true,"insightsTitleTrue":null,"insightsTitleFalse":null,"units":"W","decimals":2,"value":0,"lastUpdated":"2023-08-11T20:36:32.886Z"}
++14:4:17.585: Options for 'charging_button': {"id":"charging_button","type":"boolean","iconObj":null,"title":"Charging","getable":true,"setable":true,"insightsTitleTrue":null,"insightsTitleFalse":null,"value":false,"lastUpdated":"2023-08-11T20:41:30.666Z"}
++14:4:17.587: Options for 'charge_mode': {"id":"charge_mode","type":"enum","iconObj":null,"title":"Charge mode","getable":true,"setable":false,"insightsTitleTrue":null,"insightsTitleFalse":null,"values":[{"id":"Unknown","title":"Unknown"},{"id":"Disconnected","title":"Disconnected"},{"id":"Connecting to car","title":"Connecting to car"},{"id":"Charging","title":"Charging"},{"id":"Charging finished","title":"Charging finished"}],"value":"Disconnected","lastUpdated":"2023-08-12T09:55:00.961Z"}
++14:4:17.589: Options for 'alarm_generic.car_connected': {"id":"alarm_generic.car_connected","type":"boolean","iconObj":null,"title":"Car connected","getable":true,"setable":false,"insights":true,"insightsTitleTrue":"Generell alarm aktivert","insightsTitleFalse":"Generell alarm deaktivert","value":false,"lastUpdated":"2023-08-12T09:55:00.983Z"}
++14:4:17.592: Options for 'available_installation_current': {"id":"available_installation_current","type":"number","iconObj":{"id":"90dc388b015d75b858870078c06f8936","url":"/api/icon/07d68eeb-d615-4e8c-8cbc-943fe9cb2b93"},"title":"Current limit","getable":true,"setable":false,"insights":true,"insightsTitleTrue":null,"insightsTitleFalse":null,"min":0,"max":40,"step":1,"units":"A","decimals":0,"value":0,"lastUpdated":"2023-08-08T10:22:22.965Z"}
++14:4:17.594: Options for 'measure_current.phase1': {"id":"measure_current.phase1","type":"number","iconObj":null,"title":"Current L1","getable":true,"setable":false,"insights":true,"insightsTitleTrue":null,"insightsTitleFalse":null,"units":"A","decimals":2,"value":0.03,"lastUpdated":"2023-08-15T03:36:31.062Z"}
++14:4:17.596: Options for 'measure_current.phase2': {"id":"measure_current.phase2","type":"number","iconObj":null,"title":"Current L2","getable":true,"setable":false,"insights":true,"insightsTitleTrue":null,"insightsTitleFalse":null,"units":"A","decimals":2,"value":0.02,"lastUpdated":"2023-08-15T03:36:31.078Z"}
++14:4:17.599: Options for 'measure_current.phase3': {"id":"measure_current.phase3","type":"number","iconObj":null,"title":"Current L3","getable":true,"setable":false,"insights":true,"insightsTitleTrue":null,"insightsTitleFalse":null,"units":"A","decimals":2,"value":0.04,"lastUpdated":"2023-08-15T03:36:31.094Z"}
++14:4:17.601: Options for 'measure_voltage.phase1': {"id":"measure_voltage.phase1","type":"number","iconObj":null,"title":"Voltage L1","getable":true,"setable":false,"insights":true,"insightsTitleTrue":null,"insightsTitleFalse":null,"units":"V","decimals":2,"value":0.42,"lastUpdated":"2023-08-15T03:36:30.981Z"}
++14:4:17.603: Options for 'measure_voltage.phase2': {"id":"measure_voltage.phase2","type":"number","iconObj":null,"title":"Voltage L2","getable":true,"setable":false,"insights":true,"insightsTitleTrue":null,"insightsTitleFalse":null,"units":"V","decimals":2,"value":0.24,"lastUpdated":"2023-08-15T03:36:31.004Z"}
++14:4:17.605: Options for 'measure_voltage.phase3': {"id":"measure_voltage.phase3","type":"number","iconObj":null,"title":"Voltage L3","getable":true,"setable":false,"insights":true,"insightsTitleTrue":null,"insightsTitleFalse":null,"units":"V","decimals":2,"value":0.23,"lastUpdated":"2023-08-15T03:36:31.045Z"}
++14:4:17.607: --- ANALYZING DEVICE DONE ---
++14:4:58.806: Endringene har blitt lagret.
++14:5:6.387: Email: optional.email@for.feedback
+Comment:Zaptec lader mangler
++14:5:6.441: Sending log
