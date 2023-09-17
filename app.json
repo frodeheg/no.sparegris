@@ -5,7 +5,7 @@
     "homey:manager:api",
     "homey:app:no.almli.utilitycost"
   ],
-  "version": "0.20.40",
+  "version": "0.20.42",
   "compatibility": ">=5.0.0",
   "sdk": 3,
   "homeyCommunityTopicId": 66677,
@@ -2577,7 +2577,7 @@
       "icon": "/assets/percent.svg"
     },
     "piggy_mode": {
-      "type": "boolean",
+      "type": "string",
       "title": {
         "en": "Mode",
         "no": "Driftsmodus",
@@ -2588,12 +2588,6 @@
       "setable": false,
       "preventTag": true,
       "preventInsights": true,
-      "titleTrue": {
-        "en": "Mode"
-      },
-      "titleFalse": {
-        "en": "Mode"
-      },
       "icon": "/assets/mode.svg",
       "uiComponent": "sensor",
       "uiQuickAction": false

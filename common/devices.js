@@ -202,6 +202,13 @@ const DEVICE_CMD = {
     tempMax: 40,
     tempStep: 0.5
   },
+  'com.Coderax.MillHeating:mill': {
+    ...DEFAULT_HEATER,
+    tempMin: 4,
+    tempMax: 35,
+    tempStep: 0.5,
+    default: false
+  },
   'com.ctmlyng.op:mtouch-one': {
     ...DEFAULT_HEATER,
     setOnOffCap: 'operationMode',
@@ -236,6 +243,7 @@ const DEVICE_CMD = {
     setModeFanValue: 'fan_only',
     default: false
   },
+  'com.gruijter.powerhour:power': DEFAULT_IGNORED,
   'com.home-connect:dishwasher': DEFAULT_IGNORED,
   'com.home-connect:dryer': DEFAULT_IGNORED,
   'com.homewizard:energy': {
@@ -373,6 +381,19 @@ const DEVICE_CMD = {
   'com.tuya.cloud:tuyalight': DEFAULT_SWITCH,
   'com.xiaomi-mi:plug.maeu01': DEFAULT_SWITCH,
   'com.xiaomi-mi:sensor_motion.aq2': DEFAULT_IGNORED,
+  /* 'com.zaptec:go': {
+    type: DEVICE_TYPE.CHARGER,
+    setOnOffCap: 'charging_button',
+    setOnValue: true,
+    setOffValue: false,
+    measurePowerCap: 'measure_power',
+    statusCap: 'charge_mode',
+    statusUnavailable: ['Charging finished', 'Disconnected', 'Unknown'],
+    statusProblem: ['Unknown'],
+    // setCurrentCap: 'target_charger_current',  // Not available
+    // getOfferedCap: 'measure_current.offered', // Available, but ignore when not setable
+    default: false
+  }, */
   'fi.taelek.ecocontrol:oled': {
     type: DEVICE_TYPE.HEATER,
     note: 'This device has no onOff capability and will emulate Off by turning the temperature to absolute minimum',
@@ -484,6 +505,16 @@ const DEVICE_CMD = {
     readPowerExportCap: 'measure_power.surplus',
     readMeterExportCap: 'meter_power.surplus',
     default: false
+  },
+  'no.elko:smart_plus_thermostat': {
+    type: DEVICE_TYPE.HEATER,
+    note: 'This device has no onOff capability and will emulate Off by turning the temperature to absolute minimum',
+    setOnOffCap: null, // There is no such capability for this device
+    readTempCap: 'measure_temperature',
+    setTempCap: 'target_temperature',
+    tempMin: 4,
+    tempMax: 30,
+    tempStep: 0.5
   },
   'no.hoiax:hiax-connected-200': {
     type: DEVICE_TYPE.WATERHEATER,

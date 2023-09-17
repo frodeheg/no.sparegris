@@ -1,0 +1,33 @@
+Log ID: 2023-08-15T20:52:31.229Z
+App version 0.20.38
+
++15:58:28.069: ----- ANALYZING DEVICE -----
++15:58:28.082: Report type: Experimental device is working
++15:58:28.141: Device name: Ovn
++15:58:28.148: Driver Id: homey:app:com.Coderax.MillHeating:mill
++15:58:28.158: Found onoff cap: onoff
++15:58:28.172: Found temp cap: true
++15:58:28.187: Device reliability: 0.9999999999999946
++15:58:28.201: Capabilities: onoff,measure_temperature,target_temperature,mill_onoff,mill_mode,measure_power
++15:58:28.214: Options for 'onoff': {"value":true,"lastUpdated":"2023-08-22T15:51:37.576Z","type":"boolean","getable":true,"setable":true,"title":"Turned on","desc":null,"units":null,"id":"onoff","options":{}}
++15:58:28.226: Options for 'measure_temperature': {"value":23,"lastUpdated":"2023-08-22T15:41:08.918Z","type":"number","getable":true,"setable":false,"title":"Temperature","desc":"Temperature in degrees Celsius (°C)","units":"°C","decimals":2,"chartType":"spline","id":"measure_temperature","options":{}}
++15:58:28.236: Options for 'target_temperature': {"value":21,"lastUpdated":"2023-08-22T15:51:37.570Z","type":"number","getable":true,"setable":true,"title":"Target temperature","desc":null,"units":"°C","decimals":2,"min":4,"max":35,"chartType":"stepLine","id":"target_temperature","options":{}}
++15:58:28.250: Options for 'mill_onoff': {"value":false,"lastUpdated":"2023-08-22T15:41:08.931Z","type":"boolean","getable":true,"setable":false,"title":"State","desc":"State of the thermostat","units":null,"iconObj":{"id":"0b60bbfe51938ae8b27a7070a56cbb76","url":"/icon/0b60bbfe51938ae8b27a7070a56cbb76/icon.svg"},"id":"mill_onoff","options":{}}
++15:58:28.256: Options for 'mill_mode': {"value":"weekly_program","lastUpdated":"2023-08-22T15:51:45.886Z","type":"enum","getable":true,"setable":true,"title":"Thermostat mode","desc":"Mode of the thermostat","units":null,"values":[{"id":"weekly_program","title":"Program"},{"id":"comfort","title":"Comfort"},{"id":"sleep","title":"Sleep"},{"id":"away","title":"Away"},{"id":"off","title":"Off"}],"id":"mill_mode","options":{}}
++15:58:28.274: Options for 'measure_power': {"value":0,"lastUpdated":"2023-08-22T15:37:26.442Z","type":"number","getable":true,"setable":false,"title":"Power","desc":"Power in watt (W)","units":"W","decimals":2,"chartType":"stepLine","id":"measure_power","options":{"approximated":true}}
++15:58:28.284: --- ANALYZING DEVICE DONE ---
++16:4:0.874: ----- ANALYZING DEVICE -----
++16:4:0.896: Report type: Experimental device is working
++16:4:1.005: Device name: Ovn
++16:4:1.044: Driver Id: homey:app:com.Coderax.MillHeating:mill
++16:4:1.054: Found onoff cap: onoff
++16:4:1.056: Found temp cap: true
++16:4:1.058: Device reliability: 0.9999999999999946
++16:4:1.112: Capabilities: onoff,measure_temperature,target_temperature,mill_onoff,mill_mode,measure_power
++16:4:1.128: Options for 'onoff': {"value":true,"lastUpdated":"2023-08-22T15:51:37.576Z","type":"boolean","getable":true,"setable":true,"title":"Turned on","desc":null,"units":null,"id":"onoff","options":{}}
++16:4:1.138: Options for 'measure_temperature': {"value":23,"lastUpdated":"2023-08-22T15:41:08.918Z","type":"number","getable":true,"setable":false,"title":"Temperature","desc":"Temperature in degrees Celsius (°C)","units":"°C","decimals":2,"chartType":"spline","id":"measure_temperature","options":{}}
++16:4:1.148: Options for 'target_temperature': {"value":21,"lastUpdated":"2023-08-22T15:51:37.570Z","type":"number","getable":true,"setable":true,"title":"Target temperature","desc":null,"units":"°C","decimals":2,"min":4,"max":35,"chartType":"stepLine","id":"target_temperature","options":{}}
++16:4:1.160: Options for 'mill_onoff': {"value":false,"lastUpdated":"2023-08-22T15:41:08.931Z","type":"boolean","getable":true,"setable":false,"title":"State","desc":"State of the thermostat","units":null,"iconObj":{"id":"0b60bbfe51938ae8b27a7070a56cbb76","url":"/icon/0b60bbfe51938ae8b27a7070a56cbb76/icon.svg"},"id":"mill_onoff","options":{}}
++16:4:1.174: Options for 'mill_mode': {"value":"weekly_program","lastUpdated":"2023-08-22T15:51:45.886Z","type":"enum","getable":true,"setable":true,"title":"Thermostat mode","desc":"Mode of the thermostat","units":null,"values":[{"id":"weekly_program","title":"Program"},{"id":"comfort","title":"Comfort"},{"id":"sleep","title":"Sleep"},{"id":"away","title":"Away"},{"id":"off","title":"Off"}],"id":"mill_mode","options":{}}
++16:4:1.185: Options for 'measure_power': {"value":0,"lastUpdated":"2023-08-22T15:37:26.442Z","type":"number","getable":true,"setable":false,"title":"Power","desc":"Power in watt (W)","units":"W","decimals":2,"chartType":"stepLine","id":"measure_power","options":{"approximated":true}}
++16:4:1.197: --- ANALYZING DEVICE DONE ---

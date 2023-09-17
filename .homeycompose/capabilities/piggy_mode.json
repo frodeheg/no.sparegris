@@ -1,5 +1,5 @@
 {
-  "type": "boolean",
+  "type": "string",
   "title": {
     "en": "Mode",
     "no": "Driftsmodus",
@@ -10,8 +10,6 @@
   "setable": false,
   "preventTag": true,
   "preventInsights": true,
-  "titleTrue": { "en": "Mode" },
-  "titleFalse": { "en": "Mode" },
   "icon": "/assets/mode.svg",
   "uiComponent": "sensor",
   "uiQuickAction": false
