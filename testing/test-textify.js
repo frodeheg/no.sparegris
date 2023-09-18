@@ -59,6 +59,10 @@ class Test {
       GotSignalStatusDone: 'False',
       GotSignalStatusError: 'False'
     };
+    const xaxis = [];
+    for (let i = 0; i < 24; i++) {
+      xaxis[i] = `${String(i).padStart(2, ' ')}:00`;
+    }
     dst.loadFile('../drivers/piggy-charger/assets/images/notValid.png')
 /*      // --- START COPY ---
       .then(() => dst.setCursorWindow(190, 80, 460, 170))
@@ -79,7 +83,18 @@ class Test {
       // --- END COPY ---
       */
       // --- START DRAW TEST ---
-      .then(() => dst.drawLineChart(50, 150, 400, 300, { xaxis: ['11:00', '12:00', '13:00', '14:00'], values: [0.1, 0.4, 1.2, 0.8] }))
+      /* .then(() => dst.setCursorWindow(40, 185, 460, 460))
+      .then(() => dst.setTextAngle(25))
+      .then(() => dst.setTextSize(1))
+      .then(() => dst.addText(`${okText}Hei, test`)) */
+      .then(() => dst.drawLineChart(50, 150, 400, 300, {
+        xaxis,
+        values: [0.1, 0.4, 1.2, 0.8],
+        gridcol: [128, 128, 128, 255],
+        ycol: [128, 128, 128, 255],
+        xcol: [128, 128, 128, 255],
+        linecol: [255, 255, 128, 255]
+      }))
       // --- END DRAW TEST ---
       .then(() => dst.pack().pipe(fs.createWriteStream('out.png')));
   }
