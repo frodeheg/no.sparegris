@@ -263,6 +263,41 @@ class FakeLanguageClass {
 }
 
 /**
+ * Fake Image class
+ */
+class FakeImageClass {
+
+  setStream(stream) {
+    if (this.__debug) console.log('TBD implement image.setStream');
+  }
+
+  setPath(path) {
+    if (this.__debug) console.log('TBD implement image.setPath');
+  }
+
+  async update() {
+    if (this.__debug) console.log('TBD implement image.update');
+    return Promise.resolve();
+  }
+
+}
+
+/**
+ * Fake Images class
+ */
+class FakeImagesClass {
+
+  constructor(homey) {
+    this.homey = homey;
+  }
+
+  async createImage() {
+    return Promise.resolve(new FakeImageClass());
+  }
+
+}
+
+/**
  * Fake Homey class
  */
 class FakeHomeyClass {
@@ -275,6 +310,7 @@ class FakeHomeyClass {
     this.clock = new FakeClockClass(this);
     this.notifications = new FakeNotificationsClass(this);
     this.i18n = new FakeLanguageClass(this);
+    this.images = new FakeImagesClass(this);
     this.env = env;
     this.__debug = false;
   }
@@ -318,8 +354,68 @@ class App {
 
 }
 
+/**
+ * Replacement for the Homey device class
+ */
+class Device {
+
+  constructor(driver) {
+    this.homey = driver.homey;
+    this.driver = driver;
+    this.store = {};
+    this.caps = {};
+  }
+
+  getData() {
+    return {};
+  }
+
+  getStoreValue(index) {
+    return this.store[index];
+  }
+
+  setStoreValue(index, value) {
+    this.store[index] = value;
+  }
+
+  setCapabilityValue(cap, value) {
+    this.caps[cap] = value;
+  }
+
+  getCapabilityValue(cap) {
+    return this.caps[cap];
+  }
+
+  registerCapabilityListener(cap, callback) {
+    if (this.homey.__debug) console.log('TBD: Implement registerCapabilityListener');
+  }
+
+  setCameraImage(imgId, imgName, image) {
+    if (this.homey.__debug) console.log('TBD: Implement setCameraImage');
+  }
+
+}
+
+/**
+ * Replacement for the Homey driver class
+ */
+class Driver {
+
+  constructor(driverId, app) {
+    this.homey = app.homey;
+    for (let i = 0; i < manifest.drivers.length; i++) {
+      if (manifest.drivers[i].id === driverId) {
+        this.manifest = manifest.drivers[i];
+      }
+    }
+  }
+
+}
+
 module.exports = {
   App,
   manifest,
   env,
+  Driver,
+  Device,
 };

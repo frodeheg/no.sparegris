@@ -1,13 +1,17 @@
+/* eslint-disable import/no-dynamic-require */
 /* eslint-disable comma-dangle */
 
 'use strict';
 
-const { Driver } = require('homey');
+// eslint-disable-next-line no-undef
+const homeypath = ('testing' in global && testing) ? '../../testing/' : '';
+const { Driver } = require(`${homeypath}homey`);
+
 const supportedDevices = {
   'no.easee:charger': { icon: 'easee.svg' }
 };
 
-class MyDriver extends Driver {
+class ChargeDriver extends Driver {
 
   /**
    * onInit is called when the driver is initialized.
@@ -66,4 +70,4 @@ class MyDriver extends Driver {
 
 }
 
-module.exports = MyDriver;
+module.exports = ChargeDriver;

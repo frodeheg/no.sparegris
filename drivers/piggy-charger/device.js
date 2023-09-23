@@ -1,8 +1,12 @@
+/* eslint-disable import/no-dynamic-require */
 /* eslint-disable no-nested-ternary */
 
 'use strict';
 
-const { Device } = require('homey');
+// eslint-disable-next-line no-undef
+const homeypath = ('testing' in global && testing) ? '../../testing/' : '';
+const { Device } = require(`${homeypath}homey`);
+const { TIMESPAN, toLocalTime, timeDiff } = require('../../common/homeytime');
 const c = require('../../common/constants');
 const d = require('../../common/devices');
 const Textify = require('../../lib/textify');
@@ -25,13 +29,13 @@ const okText = '[\u001b[32;1m OK \u001b[37m]';
 const errText = '[\u001b[31;1mFAIL\u001b[37m]';
 const progressText = '[\u001b[37;0m....\u001b[37;1m]';
 
-class MyDevice extends Device {
+class ChargeDevice extends Device {
 
   /**
    * onInit is called when the device is initialized.
    */
   async onInit() {
-    console.log('Charger init');
+    this.homey.app.updateLog('Charger init', c.LOG_INFO);
     this.homey.app.updateLog('Piggy Charger has been initialized', 1);
     this.settingsManifest = this.driver.manifest.settings[VALIDATION_SETTINGS].children;
     this.killed = false;
@@ -68,6 +72,19 @@ class MyDevice extends Device {
       return Promise.resolve();
     });
 
+    // Register current charging setting
+    this.cycleStart = this.getStoreValue('cycleStart');
+    this.cycleStart = this.cycleStart ? new Date(this.cycleStart) : undefined;
+    this.cycleEnd = this.getStoreValue('cycleEnd');
+    this.cycleEnd = this.cycleEnd ? new Date(this.cycleEnd) : undefined;
+    this.cycleType = this.getStoreValue('cycleType');
+    this.cycleRemaining = this.getStoreValue('cycleRemaining');
+    this.__spookey_check_activated = undefined;
+    this.__spookey_changes = 0;
+    this.__offeredEnergy = 0;
+    this.__charge_plan = [];
+    await this.rescheduleCharging(false);
+
     // Link on-off button with the "controllable-device" setting in piggy
     this.registerCapabilityListener('onoff', async (newVal) => {
       const deviceId = this.getId();
@@ -103,7 +120,7 @@ class MyDevice extends Device {
           .then(() => this.setCameraImage('front', 'Help image', image));
       })
       .catch((err) => {
-        console.log(`Camera image1 failed ${err}`);
+        this.homey.app.updateLog(`Camera image1 failed ${err}`, c.LOG_ERROR);
       });
     await this.homey.images.createImage()
       .then((image) => {
@@ -112,9 +129,9 @@ class MyDevice extends Device {
           .then(() => this.setCameraImage('help', 'Help image 2', image));
       })
       .catch((err) => {
-        console.log(`Camera image2 failed ${err}`);
+        this.homey.app.updateLog(`Camera image2 failed ${err}`, c.LOG_ERROR);
       });
-    console.log('charger init done....');
+    this.homey.app.updateLog('charger init done....', c.LOG_INFO);
   }
 
   /**
@@ -131,7 +148,7 @@ class MyDevice extends Device {
   }
 
   async onUninit() {
-    console.log('xxxxxxxxxxxxx onUninit piggy-charger xxxxxxxxxxxxx');
+    this.homey.app.updateLog('piggy-charger onUninit', c.LOG_INFO);
     this.killed = true;
     if (this.triggerThread) {
       clearTimeout(this.triggerThread);
@@ -410,8 +427,7 @@ class MyDevice extends Device {
    * @param offerHours number of hours to offer energy before time runs out (will be undefined if offerEnergy)
    */
   async onChargingCycleStart(offerEnergy, endTime, offerHours = undefined, now = new Date()) {
-    console.log('Start charging cycle xxx');
-    /*if ((typeof (endTime) !== 'string') || (!endTime.includes(':'))) {
+    if ((typeof (endTime) !== 'string') || (!endTime.includes(':'))) {
       return Promise.reject(new Error(this.homey.__('warnings.notValidTime')));
     }
     const hoursEnd = +endTime.split(':').at(0);
@@ -424,37 +440,80 @@ class MyDevice extends Device {
     this.updateLog('Charging cycle started', c.LOG_INFO);
     this.__spookey_check_activated = undefined;
     this.__spookey_changes = 0;
-    const chargerOptions = this.homey.settings.get('chargerOptions');
-    if (chargerOptions) {
-      // Convert local end time to UTC
-      const nowLocal = toLocalTime(now, this.homey);
-      const minutesDiff = timeDiff(nowLocal.getHours(), nowLocal.getMinutes(), hoursEnd, minutesEnd);
-      const endTimeUTC = new Date(now.getTime());
-      endTimeUTC.setUTCMinutes(endTimeUTC.getUTCMinutes() + minutesDiff, 0, 0);
-      chargerOptions.chargeRemaining = offerEnergy ? (offerEnergy * 1000) : +offerHours;
-      chargerOptions.chargeCycleType = offerEnergy ? c.OFFER_ENERGY : c.OFFER_HOURS;
-      chargerOptions.chargeEnd = endTimeUTC;
-      this.homey.settings.set('chargerOptions', chargerOptions);
-    }
+
+    // Convert local end time to UTC
+    const nowLocal = toLocalTime(now, this.homey);
+    const minutesDiff = timeDiff(nowLocal.getHours(), nowLocal.getMinutes(), hoursEnd, minutesEnd);
+    const endTimeUTC = new Date(now.getTime());
+    endTimeUTC.setUTCMinutes(endTimeUTC.getUTCMinutes() + minutesDiff, 0, 0);
+    this.cycleRemaining = offerEnergy ? (offerEnergy * 1000) : +offerHours;
+    this.cycleType = offerEnergy ? c.OFFER_ENERGY : c.OFFER_HOURS;
+    this.cycleStart = now;
+    this.cycleEnd = endTimeUTC;
+    this.setStoreValue('cycleStart', this.cycleStart);
+    this.setStoreValue('cycleEnd', this.cycleEnd);
+    this.setStoreValue('cycleType', this.cycleType);
+    this.setStoreValue('cycleRemaining', this.cycleRemaining);
+
     await this.rescheduleCharging(false, now);
-    return Promise.resolve();*/
+    return Promise.resolve();
   }
 
   /**
    * Only called when stopping the charging cycle ahead of time
    */
   async onChargingCycleStop() {
-    console.log('Stop charging cycle xxx');
-    /*this.updateLog('Charging cycle abruptly ended', c.LOG_INFO);
-    const chargerOptions = this.homey.settings.get('chargerOptions');
-    if (chargerOptions) {
-      chargerOptions.chargeRemaining = 0;
-      this.homey.settings.set('chargerOptions', chargerOptions);
+    this.updateLog('Charging cycle abruptly ended', c.LOG_INFO);
+    if (this.cycleEnd > new Date()) {
+      this.cycleRemaining = 0;
+      this.setStoreValue('cycleRemaining', this.cycleRemaining);
       this.rescheduleCharging(false);
     } else {
       this.__charge_plan = [];
       throw new Error('No charging cycle was to stop');
-    }*/
+    }
+  }
+
+  /**
+   * Called every hour to make sure the Charging is rescheduled most optimal.
+   * Whenever a new hour passes, must be called _after_ doPriceCalculations to get correct current_price_index
+   */
+  async rescheduleCharging(isNewHour, now = new Date()) {
+    if (isNewHour) {
+      const oldRemaining = this.cycleRemaining;
+      if (this.cycleType === c.OFFER_ENERGY) {
+        this.cycleRemaining -= this.__offeredEnergy;
+        this.__offeredEnergy = 0;
+      } else if (this.__charge_plan[0] > 0) {
+        // OFFER_HOURS - Only subtract for active hours
+        this.cycleRemaining -= 1;
+      }
+      if (this.cycleRemaining < 0) this.cycleRemaining = 0;
+      if (oldRemaining !== 0) {
+        this.setStoreValue('cycleRemaining', this.cycleRemaining);
+      }
+    }
+
+    // Reset charge plan
+    this.__charge_plan = [];
+
+    // Ignore rescheduling if there is nothing left to schedule
+    if (this.cycleRemaining === 0) return Promise.resolve();
+
+    // Calculate new charging plan
+    const end = new Date(this.cycleEnd);
+    const priceArray = this.homey.app.getPricePrediction(now, end);
+    const maxLimits = this.homey.app.readMaxPower();
+    const maxPower = Math.min(+maxLimits[TIMESPAN.QUARTER] * 4, +maxLimits[TIMESPAN.HOUR]);
+    const priceSorted = Array.from(priceArray.keys()).sort((a, b) => ((priceArray[a] === priceArray[b]) ? (a - b) : (priceArray[a] - priceArray[b])));
+    let scheduleRemaining = this.cycleRemaining;
+    for (let i = 0; (i < priceSorted.length) && (scheduleRemaining > 0); i++) {
+      const idx = priceSorted[i];
+      const estimatedPower = maxPower * 0.75; // Assume 75% available to the charger TODO: replace with historic average
+      this.__charge_plan[idx] = estimatedPower;
+      scheduleRemaining -= this.cycleType === c.OFFER_ENERGY ? estimatedPower : 1;
+    }
+    return Promise.resolve();
   }
 
   /** *******************************************************************************************************
@@ -510,4 +569,4 @@ class MyDevice extends Device {
 
 }
 
-module.exports = MyDevice;
+module.exports = ChargeDevice;

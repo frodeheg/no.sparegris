@@ -1,3 +1,4 @@
+/* eslint-disable import/no-dynamic-require */
 /* eslint-disable brace-style */
 /* eslint-disable node/no-unsupported-features/es-syntax */
 /* eslint-disable no-loop-func */
@@ -19,13 +20,13 @@
 //   has a higher get enough time to recover after a reboot.
 //   (yes, it has been tested that the Zigbee driver does not recover unless this measure is taken)
 let preventZigbee = false;
-
-const Homey = require('homey');
+const homeypath = ('testing' in global && testing) ? './testing/' : '';
+const Homey = require(`${homeypath}homey`);
+const { Log } = require(`${homeypath}homey-log`);
+const { HomeyAPI } = require(`${homeypath}homey-api`);
 const nodemailer = require('nodemailer');
 const os = require('node:os');
-const { Log } = require('homey-log');
 const { Mutex } = require('async-mutex');
-const { HomeyAPI } = require('homey-api');
 const { resolve } = require('path');
 const c = require('./common/constants');
 const d = require('./common/devices');
@@ -3031,18 +3032,8 @@ class PiggyBank extends Homey.App {
     if (chargerOptions.chargeRemaining === 0) return Promise.resolve();
 
     // Calculate new charging plan
-    const startOfHour = new Date(now.getTime());
-    startOfHour.setUTCMinutes(0, 0, 0);
     const end = new Date(chargerOptions.chargeEnd);
-    const timespan = Math.min((end - startOfHour) / (60 * 60 * 1000), 24); // timespan to plan in hours
-    const priceArray = this.__current_prices.slice(this.__current_price_index, this.__current_price_index + Math.floor(timespan));
-    if (priceArray.length < Math.ceil(timespan)) {
-      // Too few prices available, use average as future
-      const futurePrice = +this.homey.settings.get('averagePrice') || this.__current_prices[this.__current_price_index];
-      while (priceArray.length < Math.ceil(timespan)) {
-        priceArray.push(futurePrice);
-      }
-    }
+    const priceArray = this.getPricePrediction(now, end);
     const maxLimits = this.readMaxPower();
     const maxPower = Math.min(+maxLimits[TIMESPAN.QUARTER] * 4, +maxLimits[TIMESPAN.HOUR]);
     const priceSorted = Array.from(priceArray.keys()).sort((a, b) => ((priceArray[a] === priceArray[b]) ? (a - b) : (priceArray[a] - priceArray[b])));
@@ -4501,6 +4492,25 @@ class PiggyBank extends Homey.App {
       }
     }
     return tariffTable.length - 1;
+  }
+
+  /**
+   * Return this.__current_prices except with average prices as a replacement when price data are missing.
+   * The returned array will never be larger than 24 hours
+   */
+  getPricePrediction(now, endTime) {
+    const startOfHour = new Date(now.getTime());
+    startOfHour.setUTCMinutes(0, 0, 0);
+    const timespan = Math.min((endTime - startOfHour) / (60 * 60 * 1000), 24); // timespan to plan in hours
+    const priceArray = this.__current_prices.slice(this.__current_price_index, this.__current_price_index + Math.floor(timespan));
+    if (priceArray.length < Math.ceil(timespan)) {
+      // Too few prices available, use average as future
+      const futurePrice = +this.homey.settings.get('averagePrice') || this.__current_prices[this.__current_price_index];
+      while (priceArray.length < Math.ceil(timespan)) {
+        priceArray.push(futurePrice);
+      }
+    }
+    return priceArray;
   }
 
 } // class

@@ -5,6 +5,8 @@
 
 'use strict';
 
+global.testing = true;
+
 // eslint-disable-next-line import/no-extraneous-dependencies
 const seedrandom = require('seedrandom');
 const fs = require('fs');
