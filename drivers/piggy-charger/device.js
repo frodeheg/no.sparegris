@@ -233,7 +233,6 @@ class ChargeDevice extends Device {
    */
   async refreshImageStream(stream) {
     const dst = new Textify({ width: 500, height: 500, colorType: 2, bgColor: { red: 80, green: 80, blue: 80 }});
-    console.log('Refresh image');
 
     this.settings = this.getSettings();
     return dst.loadFile('../drivers/piggy-charger/assets/images/notValid.png')
@@ -437,7 +436,7 @@ class ChargeDevice extends Device {
       return Promise.reject(new Error(this.homey.__('warnings.notValidTime')));
     }
 
-    this.updateLog('Charging cycle started', c.LOG_INFO);
+    this.homey.app.updateLog('Charging cycle started', c.LOG_INFO);
     this.__spookey_check_activated = undefined;
     this.__spookey_changes = 0;
 

@@ -4,6 +4,7 @@
 
 'use strict';
 
+const { PNG } = require('pngjs/browser');
 const manifest = require('../app.json');
 const env = require('../env.json');
 
@@ -265,18 +266,25 @@ class FakeLanguageClass {
 /**
  * Fake Image class
  */
-class FakeImageClass {
+class FakeImageClass extends PNG {
+
+  constructor() {
+    super();
+    this.updateFunction = undefined;
+    this.path = undefined;
+  }
 
   setStream(stream) {
-    if (this.__debug) console.log('TBD implement image.setStream');
+    this.updateFunction = stream;
   }
 
   setPath(path) {
-    if (this.__debug) console.log('TBD implement image.setPath');
+    this.path = path;
+    if (this.__debug) console.log('TBD load image at path : image.setPath');
   }
 
   async update() {
-    if (this.__debug) console.log('TBD implement image.update');
+    if (this.updateFunction) this.updateFunction(this);
     return Promise.resolve();
   }
 
@@ -364,10 +372,17 @@ class Device {
     this.driver = driver;
     this.store = {};
     this.caps = {};
+    this.camera = {};
+    this.data = {};
+    this.settings = {};
   }
 
   getData() {
-    return {};
+    return this.data;
+  }
+
+  getSettings() {
+    return this.settings;
   }
 
   getStoreValue(index) {
@@ -390,8 +405,8 @@ class Device {
     if (this.homey.__debug) console.log('TBD: Implement registerCapabilityListener');
   }
 
-  setCameraImage(imgId, imgName, image) {
-    if (this.homey.__debug) console.log('TBD: Implement setCameraImage');
+  setCameraImage(id, name, image) {
+    this.camera[id] = { name, image };
   }
 
 }
