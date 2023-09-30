@@ -1,0 +1,19 @@
++22:22:52.735: ----- ANALYZING DEVICE -----
++22:22:52.737: Report type: Experimental device is working
++22:22:52.792: Device name: Stue Elko
++22:22:52.795: Driver Id: homey:app:no.elko:super_tr_thermostat
++22:22:52.797: Found onoff cap: onoff
++22:22:52.802: Found temp cap: true
++22:22:52.805: Device reliability: 1
++22:22:52.807: Capabilities: onoff,measure_temperature,target_temperature,display_air_temperature,display_floor_temperature,display_heating,measure_power,command_night_mode,command_child_lock,command_frost_guard
++22:22:52.810: Options for 'onoff': {"value":true,"lastUpdated":"2023-09-27T22:00:47.387Z","type":"boolean","getable":true,"setable":true,"title":"Slått på","desc":null,"units":null,"id":"onoff","options":{}}
++22:22:52.813: Options for 'measure_temperature': {"value":20.3,"lastUpdated":"2023-09-27T22:21:02.360Z","type":"number","getable":true,"setable":false,"title":"Temperatur","desc":"Temperatur i grader Celsius (°C)","units":"°C","decimals":2,"chartType":"spline","id":"measure_temperature","options":{}}
++22:22:52.825: Options for 'target_temperature': {"value":6,"lastUpdated":"2023-09-18T21:02:27.802Z","type":"number","getable":true,"setable":true,"title":"Ønsket temperatur","desc":null,"units":"°C","decimals":2,"min":5,"max":40,"chartType":"stepLine","id":"target_temperature","options":{"min":5,"max":40}}
++22:22:52.831: Options for 'display_air_temperature': {"value":20.6,"lastUpdated":"2023-09-27T22:15:31.573Z","type":"number","getable":true,"setable":false,"title":"Lufttemperatur","desc":"Lufttemperatur i grader Celsius (°C)","units":"°C","decimals":2,"iconObj":{"id":"f96de8eed59019b8390cc62652362c20","url":"/icon/f96de8eed59019b8390cc62652362c20/icon.svg"},"chartType":"spline","id":"display_air_temperature","options":{}}
++22:22:52.836: Options for 'display_floor_temperature': {"value":20.3,"lastUpdated":"2023-09-27T22:21:02.381Z","type":"number","getable":true,"setable":false,"title":"Gulvtemperatur","desc":"Gulvtemperatur i grader Celsius (°C)","units":"°C","decimals":2,"iconObj":{"id":"f96de8eed59019b8390cc62652362c20","url":"/icon/f96de8eed59019b8390cc62652362c20/icon.svg"},"chartType":"spline","id":"display_floor_temperature","options":{}}
++22:22:52.840: Options for 'display_heating': {"value":false,"lastUpdated":"2023-08-16T16:51:36.777Z","type":"boolean","getable":true,"setable":false,"title":"Oppvarming","desc":null,"units":null,"iconObj":{"id":"19bfcf5258f66e6791b069aa82bb6912","url":"/icon/19bfcf5258f66e6791b069aa82bb6912/icon.svg"},"id":"display_heating","options":{}}
++22:22:52.852: Options for 'measure_power': {"value":0,"lastUpdated":"2023-08-16T16:51:36.762Z","type":"number","getable":true,"setable":false,"title":"Effekt","desc":"Effekt i watt (W)","units":"W","decimals":2,"chartType":"stepLine","id":"measure_power","options":{"approximated":true}}
++22:22:52.877: Options for 'command_night_mode': {"value":false,"lastUpdated":"2023-08-16T16:51:38.503Z","type":"boolean","getable":true,"setable":true,"title":"Nattmodus","desc":null,"units":null,"iconObj":{"id":"be2e07f2c69c203f769244bb130747ad","url":"/icon/be2e07f2c69c203f769244bb130747ad/icon.svg"},"id":"command_night_mode","options":{}}
++22:22:52.882: Options for 'command_child_lock': {"value":false,"lastUpdated":"2023-08-16T16:51:38.844Z","type":"boolean","getable":true,"setable":true,"title":"Barnesikring","desc":null,"units":null,"iconObj":{"id":"d17ed5dd36a0f49cd0fe5f8068c442ec","url":"/icon/d17ed5dd36a0f49cd0fe5f8068c442ec/icon.svg"},"id":"command_child_lock","options":{}}
++22:22:52.890: Options for 'command_frost_guard': {"value":false,"lastUpdated":"2023-08-16T16:51:39.111Z","type":"boolean","getable":true,"setable":true,"title":"Frostsikring","desc":null,"units":null,"iconObj":{"id":"17eb3db1ea231986711796875dc2bbc9","url":"/icon/17eb3db1ea231986711796875dc2bbc9/icon.svg"},"id":"command_frost_guard","options":{}}
++22:22:52.894: --- ANALYZING DEVICE DONE ---

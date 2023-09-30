@@ -516,6 +516,9 @@ const DEVICE_CMD = {
     tempMax: 30,
     tempStep: 0.5
   },
+  'no.elko:super_tr_thermostat': {
+    ...DEFAULT_HEATER
+  },
   'no.hoiax:hiax-connected-200': {
     type: DEVICE_TYPE.WATERHEATER,
     setOnOffCap: 'onoff',
