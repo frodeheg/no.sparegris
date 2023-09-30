@@ -6,6 +6,7 @@
 // eslint-disable-next-line no-undef
 const homeypath = ('testing' in global && testing) ? '../../testing/' : '';
 const { Device } = require(`${homeypath}homey`);
+const { Mutex } = require('async-mutex');
 const { TIMESPAN, toLocalTime, timeDiff } = require('../../common/homeytime');
 const c = require('../../common/constants');
 const d = require('../../common/devices');
@@ -79,6 +80,7 @@ class ChargeDevice extends Device {
     this.cycleEnd = this.cycleEnd ? new Date(this.cycleEnd) : undefined;
     this.cycleType = this.getStoreValue('cycleType');
     this.cycleRemaining = this.getStoreValue('cycleRemaining');
+    this.mutexForPower = new Mutex();
     this.__spookey_check_activated = undefined;
     this.__spookey_changes = 0;
     this.__offeredEnergy = 0;
@@ -131,6 +133,10 @@ class ChargeDevice extends Device {
       .catch((err) => {
         this.homey.app.updateLog(`Camera image2 failed ${err}`, c.LOG_ERROR);
       });
+
+    // Start the onProcessPower timer
+    this.__powerProcessID = setTimeout(() => this.onProcessPowerWrapper(), 1000 * 10);
+
     this.homey.app.updateLog('charger init done....', c.LOG_INFO);
   }
 
@@ -157,6 +163,10 @@ class ChargeDevice extends Device {
     if (this.getCapabilityValue('onoff')) {
       this.onTurnedOff();
       this.setCapabilityValue('onoff', false);
+    }
+    if (this.__powerProcessID !== undefined) {
+      clearTimeout(this.__powerProcessID);
+      this.__powerProcessID = undefined;
     }
   }
 
@@ -512,6 +522,27 @@ class ChargeDevice extends Device {
       this.__charge_plan[idx] = estimatedPower;
       scheduleRemaining -= this.cycleType === c.OFFER_ENERGY ? estimatedPower : 1;
     }
+    return Promise.resolve();
+  }
+
+  /**
+   * A wrapper function for whenever the safeguard is run
+   */
+  async onProcessPowerWrapper() {
+    return this.mutexForPower.runExclusive(async () => this.onProcessPower())
+      .finally(() => {
+        // Schedule new event in 10 sec
+        const timeToNextTrigger = 1000 * 10;
+        this.__powerProcessID = setTimeout(() => this.onProcessPowerWrapper(), timeToNextTrigger);
+      });
+  }
+
+  /**
+   * onProcessPower
+   * Called whenever we can process the new power situation
+   */
+  async onProcessPower(now = new Date()) {
+    console.log('Processing power....');
     return Promise.resolve();
   }
 
