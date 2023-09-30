@@ -862,5 +862,8 @@
   },
   "0.20.42": {
     "en": "Fixed crash bug for some users with version 0.20.41"
+  },
+  "0.20.43": {
+    "en": "Removed the experimental flag for no.elko:super_tr_thermostat"
   }
 }
