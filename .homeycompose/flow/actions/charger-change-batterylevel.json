@@ -1,0 +1,36 @@
+{
+  "highlight": true,
+  "title": {
+    "en": "Update Battery Level",
+    "no": "Oppdater Batterinivå"
+  },
+  "titleFormatted": {
+    "en": "Inform Piggy about the current battery level [[level]]%",
+    "no": "Opplys Piggy om nåværende batterinivå [[level]]%"
+  },
+  "hint": {
+    "en": "This action will inform the charge controller about the current battery level. It is important that the charge controller knows the state of the charger at any time.",
+    "no": "Dette flytkortet vil informere ladekontrolleren om nåværende batterinivå. Det er viktig at ladekontrolleren vet tilstanden til laderen til enhver tid."
+  },
+  "args": [
+    {
+      "name": "device",
+      "type": "device",
+      "filter": "driver_id=piggy-charger"
+    },
+    {
+      "name": "level",
+      "type": "number",
+      "min": 0,
+      "max": 100,
+      "placeholder": {
+        "en": "battery level",
+        "no": "batterinivå"
+      },
+      "title": {
+        "en": "Battery level",
+        "no": "Batterinivå"
+      }
+    }
+ ]
+}

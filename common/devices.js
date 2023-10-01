@@ -31,6 +31,7 @@
 //   setModeFanValue    - undefined if unavailable value for setModeCap to enter fan mode else
 //   +all HEATER parameters
 // CHARGER : Additional parameters
+//   getBatteryCap     - Capability to read battery level (if present)
 //   setCurrentCap     - Capability for changing the offered current (in Amps)
 //   minCurrent        - The offered current should never be lower than this
 //   measurePowerCap   - Capability for reading used power

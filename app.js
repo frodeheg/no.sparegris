@@ -20,6 +20,7 @@
 //   has a higher get enough time to recover after a reboot.
 //   (yes, it has been tested that the Zigbee driver does not recover unless this measure is taken)
 let preventZigbee = false;
+// eslint-disable-next-line no-undef
 const homeypath = ('testing' in global && testing) ? './testing/' : '';
 const Homey = require(`${homeypath}homey`);
 const { Log } = require(`${homeypath}homey-log`);
@@ -1075,11 +1076,13 @@ class PiggyBank extends Homey.App {
     // Initiate action cards for piggy-charger
     const chargerActionSetChargerState = this.homey.flow.getActionCard('charger-change-state');
     const chargerActionSetChargerPower = this.homey.flow.getActionCard('charger-change-power');
+    const chargerActionSetBatteryLevel = this.homey.flow.getActionCard('charger-change-batterylevel');
     const chargerActionStartChargingCycle = this.homey.flow.getActionCard('charger-start-charging-cycle');
     const chargerActionStartChargingCycle2 = this.homey.flow.getActionCard('charger-start-charging-cycle2');
     const chargerActionStopChargingCycle = this.homey.flow.getActionCard('charger-stop-charging-cycle');
     chargerActionSetChargerState.registerRunListener(async args => args.device.setChargerState(args.state));
     chargerActionSetChargerPower.registerRunListener(async args => args.device.setChargerPower(args.power));
+    chargerActionSetBatteryLevel.registerRunListener(async args => args.device.setBatteryLevel(args.level));
     chargerActionStartChargingCycle.registerRunListener(async args => this.canFlowContinue().then(() => args.device.onChargingCycleStart(args.offerEnergy, args.endTime)));
     chargerActionStartChargingCycle2.registerRunListener(async args => this.canFlowContinue().then(() => args.device.onChargingCycleStart(undefined, args.endTime, args.offerHours)));
     chargerActionStopChargingCycle.registerRunListener(async args => this.canFlowContinue().then(() => args.device.onChargingCycleStop()));

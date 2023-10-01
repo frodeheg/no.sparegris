@@ -115,6 +115,11 @@ class ChargeDevice extends Device {
       return this.onTurnedOff();
     });
 
+    // Link target-power with the piggy control (note, this cap is hidden for everyone else)
+    this.registerCapabilityListener('target_power', async (newPow) => {
+      return this.setTargetPower(newPow);
+    });
+
     await this.homey.images.createImage()
       .then((image) => {
         image.setStream((stream) => this.refreshImageStream(stream));
@@ -239,6 +244,29 @@ class ChargeDevice extends Device {
   }
 
   /**
+   * Sets the target power (called internally when the target power capability changes)
+   */
+  async setTargetPower(power) {
+      // Report power to device trigger
+      const changeChargingPowerTrigger = this.homey.flow.getDeviceTriggerCard('charger-change-target-power');
+      const tokens = { offeredPower: +power };
+      changeChargingPowerTrigger.trigger(this, tokens);
+      return Promise.resolve(+power);
+  }
+
+  /**
+   * Sets the battery level
+   */
+  async setBatteryLevel(batteryLevel, fromFlow = true) {
+    return this.rejectSetterIfRedundant(fromFlow, 'getBatteryCap')
+      .then(() => {
+        this.setCapabilityValue('measure_battery', +batteryLevel);
+        this.updateSettingsIfValidationCycle('GotSignalBattery', 'True');
+        return Promise.resolve(+batteryLevel);
+      });
+  }
+
+  /**
    * Creates a image that can be sent to the device image stream
    */
   async refreshImageStream(stream) {
@@ -259,7 +287,7 @@ class ChargeDevice extends Device {
       .then(() => this.runTurnedOnTest(dst))
       .then(() => this.setAllPassed())
       .catch((err) => {
-        this.setCapabilityValue('alarm_generic.notValidated', true)
+        this.setCapabilityValue('alarm_generic.notValidated', true);
         if (err) return dst.addText(`\u001b[35;m${err.message}\n`);
         return dst.addText(`${progressText} ${this.homey.__('charger.validation.wait')}\n`);
       })
@@ -479,7 +507,7 @@ class ChargeDevice extends Device {
       this.rescheduleCharging(false);
     } else {
       this.__charge_plan = [];
-      throw new Error('No charging cycle was to stop');
+      throw new Error('No charging cycle could be stopped');
     }
   }
 
@@ -543,6 +571,27 @@ class ChargeDevice extends Device {
    */
   async onProcessPower(now = new Date()) {
     console.log('Processing power....');
+    // TODO: Call trigger "charger-start-charging"
+    // TODO: Call trigger "charger-stop-charging"
+    // TODO: Change cap: "measure_battery.charge_cycle",
+
+    // Update charger state for non-flow devices
+    if (this.targetDriver) {
+      await this.getState();
+      // Check for power capability
+      if (this.targetDef.measurePowerCap) {
+        await this.getCapValue(this.targetDef.measurePowerCap)
+          .then((targetPower) => this.setChargerPower(targetPower, false));
+      }
+      // Check for battery capability
+      if (this.targetDef.getBatteryCap) {
+        await this.getCapValue(this.targetDef.getBatteryCap)
+          .then((batteryLevel) => this.setBatteryLevel(batteryLevel, false));
+      }
+    }
+
+
+    if ()
     return Promise.resolve();
   }
 

@@ -22,7 +22,7 @@
       "name": "power",
       "type": "number",
       "min": 0,
-      "max": 100,
+      "max": 100000,
       "placeholder": {
         "en": "power in use",
         "no": "effekt i bruk"

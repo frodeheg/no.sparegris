@@ -12,10 +12,10 @@
     "fr": "La puissance de charge doit être changée pour le jeton fourni (Puissance offerte) W"
   },
   "hint": {
-    "en": "This trigger should be used to change the charging power. It will be called on the best schedule after the action 'Start Charging Cycle' has been initiated.",
-    "no": "Denne triggeren skal brukes for å endre ladestyrken. Den blir trigget på optimale tidspunkt etter at handlingen 'Start ladesyklus' har blitt utført.",
-    "nl": "Deze trigger moet worden gebruikt om het laadvermogen te wijzigen. Het zal volgens het beste schema worden aangeroepen, nadat de actie 'Start oplaadcyclus' is gestart.",
-    "fr": "Ce déclencheur doit être utilisé pour modifier la puissance de charge. Il sera appelé au meilleur moment après le lancement de l'action 'Démarrer le cycle de charge'."
+    "en": "This trigger should be used to change the charging power. It will be called on the best schedule after the action 'Start Charging Cycle' has been initiated. If the connected charger supports direct control, this trigger will not be called.",
+    "no": "Denne triggeren skal brukes for å endre ladestyrken. Den blir trigget på optimale tidspunkt etter at handlingen 'Start ladesyklus' har blitt utført. Hvis den tilkoblede laderen støtter direkte kontroll, vil ikke denne triggeren bli utløst.",
+    "nl": "Deze trigger moet worden gebruikt om het laadvermogen te wijzigen. Het zal volgens het beste schema worden aangeroepen, nadat de actie 'Start oplaadcyclus' is gestart. Als de aangesloten oplader directe bediening ondersteunt, wordt deze trigger niet geactiveerd.",
+    "fr": "Ce déclencheur doit être utilisé pour modifier la puissance de charge. Il sera appelé au meilleur moment après le lancement de l'action 'Démarrer le cycle de charge'. Si le chargeur connecté prend en charge le contrôle direct, ce déclencheur ne sera pas appelé."
   },
   "args": [
     {
