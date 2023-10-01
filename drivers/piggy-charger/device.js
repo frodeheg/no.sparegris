@@ -79,7 +79,7 @@ class ChargeDevice extends Device {
     this.cycleEnd = this.getStoreValue('cycleEnd');
     this.cycleEnd = this.cycleEnd ? new Date(this.cycleEnd) : undefined;
     this.cycleType = this.getStoreValue('cycleType');
-    this.cycleRemaining = this.getStoreValue('cycleRemaining');
+    this.cycleRemaining = +this.getStoreValue('cycleRemaining');
     this.mutexForPower = new Mutex();
     this.__spookey_check_activated = undefined;
     this.__spookey_changes = 0;
@@ -138,9 +138,6 @@ class ChargeDevice extends Device {
       .catch((err) => {
         this.homey.app.updateLog(`Camera image2 failed ${err}`, c.LOG_ERROR);
       });
-
-    // Start the onProcessPower timer
-    this.__powerProcessID = setTimeout(() => this.onProcessPowerWrapper(), 1000 * 10);
 
     this.homey.app.updateLog('charger init done....', c.LOG_INFO);
   }
@@ -493,6 +490,12 @@ class ChargeDevice extends Device {
     this.setStoreValue('cycleRemaining', this.cycleRemaining);
 
     await this.rescheduleCharging(false, now);
+
+    // Start the onProcessPower timer if it is not active
+    if (this.__powerProcessID === undefined) {
+      this.__powerProcessID = setTimeout(() => this.onProcessPowerWrapper(), 1000 * 10);
+    }
+
     return Promise.resolve();
   }
 
@@ -559,9 +562,13 @@ class ChargeDevice extends Device {
   async onProcessPowerWrapper() {
     return this.mutexForPower.runExclusive(async () => this.onProcessPower())
       .finally(() => {
-        // Schedule new event in 10 sec
-        const timeToNextTrigger = 1000 * 10;
-        this.__powerProcessID = setTimeout(() => this.onProcessPowerWrapper(), timeToNextTrigger);
+        // Schedule new event if and only if charging is active
+        if (this.cycleRemaining > 0) {
+          const timeToNextTrigger = 1000 * 10;
+          this.__powerProcessID = setTimeout(() => this.onProcessPowerWrapper(), timeToNextTrigger);
+        } else {
+          this.__powerProcessID = undefined;
+        }
       });
   }
 
@@ -571,11 +578,7 @@ class ChargeDevice extends Device {
    */
   async onProcessPower(now = new Date()) {
     console.log('Processing power....');
-    // TODO: Call trigger "charger-start-charging"
-    // TODO: Call trigger "charger-stop-charging"
-    // TODO: Change cap: "measure_battery.charge_cycle",
-
-    // Update charger state for non-flow devices
+    // 1) Update charger state for non-flow devices
     if (this.targetDriver) {
       await this.getState();
       // Check for power capability
@@ -589,6 +592,10 @@ class ChargeDevice extends Device {
           .then((batteryLevel) => this.setBatteryLevel(batteryLevel, false));
       }
     }
+
+    // TODO: Call trigger "charger-start-charging"
+    // TODO: Call trigger "charger-stop-charging"
+    // TODO: Change cap: "measure_battery.charge_cycle",
 
 
     if ()
