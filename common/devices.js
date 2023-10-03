@@ -341,10 +341,12 @@ const DEVICE_CMD = {
     setOnOffCap: 'charge_mode',
     setOnValue: 'charge_now',
     setOffValue: 'off',
+    getBatteryCap: 'measure_battery',
     measurePowerCap: 'measure_power',
     statusCap: 'charging_state',
-    statusUnavailable: ['Complete', 'Standby????', 'Error????'],
+    statusUnavailable: ['Complete', 'Disconnected', 'Error????'], // Other observed: Charging, Stopped
     statusProblem: ['Error????'],
+    note: 'In order to control this device, please install and enable the Charge controller device',
 
     onChargeStart: {
       target_circuit_current: Infinity
@@ -391,6 +393,7 @@ const DEVICE_CMD = {
     statusCap: 'charge_mode',
     statusUnavailable: ['Charging finished', 'Disconnected', 'Unknown'],
     statusProblem: ['Unknown'],
+    note: 'In order to control this device, please install and enable the Charge controller device',
     // setCurrentCap: 'target_charger_current',  // Not available
     // getOfferedCap: 'measure_current.offered', // Available, but ignore when not setable
     default: false
@@ -499,6 +502,7 @@ const DEVICE_CMD = {
     statusCap: 'charger_status',
     statusUnavailable: ['Completed', 'Standby', 'Error'],
     statusProblem: ['Error'],
+    note: 'In order to control this device, please install and enable the Charge controller device',
     default: false
   },
   'no.easee:equalizer': {

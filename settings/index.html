@@ -212,9 +212,13 @@
           let experimental = !(device.driverId in DEVICE_CMD) || ("beta" in DEVICE_CMD[device.driverId]);
           let hasNote = (device.driverId in DEVICE_CMD) && ("note" in DEVICE_CMD[device.driverId]);
           found_experimental_on |= device.use && experimental;
-          let enabledImg = device.use ? experimental ? "experimental.png" : "enabled.png" : "disabled.png";
+          let deprecated = ((device.driverId in DEVICE_CMD) && (DEVICE_CMD[device.driverId].type === DEVICE_TYPE.CHARGER));
+          let deprecatedImg = device.use ? "deprecated_on.png" : "deprecated_off.png"
+          let deprecatedText = (deprecated && device.use) ? '<tr><td colspan=4><input type="image" width="200" height="50" src="deprecated.png"><p>The way you control this device will soon stop working. In order to continue to control this device, please de-select this device and save, then delete all old flows controlling the charger and install the charge controller device for this app.</p></td></tr>' : '';
+          let enabledImg = deprecated ? deprecatedImg : device.use ? experimental ? "experimental.png" : "enabled.png" : "disabled.png";
+          console.log(device.driverId);
           let experimentalCmd = experimental ? 'document.getElementById(\'' + experimentalId + '\').style.display=\'block\';' : '';
-          let noteButton = hasNote ? ` <div class="hintButton" onclick="toggle(this,'note${key}', 'table-row');return false;" style="display:inline-block">i</div>` : '';
+          let noteButton = hasNote ? ` <div id="expandNote${key}" class="hintButton" onclick="toggle(this,'note${key}', 'table-row');return false;" style="display:inline-block">i</div>` : '';
           let noteText = hasNote ? `<tr id="note${key}" class="hint"><td colspan=4><p>${DEVICE_CMD[device.driverId].note}</p></td></tr>` : '';
           let img_text = device.image ? `<img src="${device.image}" alt="icon">` : '';
           gen_list +=
@@ -223,7 +227,7 @@
             '  <td><input type="image" width="40" height="20" src="' + enabledImg + '" onclick="' + experimentalCmd + 'toggleEnableDevice(event, \'' + String(key) + '\');displaySaveHint()" id="enableDevice' + String(key) + '"></td>' +
             '  <td><h3>' + limitText(device.name) + `${noteButton}</h3></td>` +
             '  <td><p>' + device.room + '</p></td>' +
-            `</tr>${noteText}`;
+            `</tr>${deprecatedText}${noteText}`;
         }
         gen_list += "</table>";
         gen_list += '<div id="' + experimentalId + '" style="display:' + (found_experimental_on?'block':'none') + ';">' + experimentalText + '</div>';
@@ -257,10 +261,19 @@
       }
       
       function toggleEnableDevice(event, device_id) {
-        var button = document.getElementById('enableDevice' + String(device_id))
-        deviceList[device_id].use ^= true;
-        var experimental = !(deviceList[device_id].driverId in DEVICE_CMD) || ("beta" in DEVICE_CMD[deviceList[device_id].driverId]);
-        button.src = deviceList[device_id].use ? experimental ? "experimental.png" : "enabled.png" : "disabled.png";
+        let button = document.getElementById('enableDevice' + String(device_id))
+        let device = deviceList[device_id];
+        let experimental = !(device.driverId in DEVICE_CMD) || ("beta" in DEVICE_CMD[device.driverId]);
+        let deprecated = ((device.driverId in DEVICE_CMD) && (DEVICE_CMD[device.driverId].type === DEVICE_TYPE.CHARGER));
+        if (deprecated) {
+          if (device.use)
+          device.use = false;
+          toggle(document.getElementById(`expandNote${device_id}`), `note${device_id}`, 'table-row');
+        } else {
+          device.use ^= true;
+        }
+        let deprecatedImg = device.use ? "deprecated_on.png" : "deprecated_off.png"
+        button.src = deprecated ? deprecatedImg : deviceList[device_id].use ? experimental ? "experimental.png" : "enabled.png" : "disabled.png";
       }
 
       function updateOperatingModes(selectedMode) {
