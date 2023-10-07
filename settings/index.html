@@ -2585,6 +2585,9 @@
               chargerOptions.overridePause = +document.getElementById('overridePause').value;
               chargerOptions.overrideMinCurrent = +document.getElementById('overrideMinCurrent').value;
               chargerOptions.overrideMaxCurrent = +document.getElementById('overrideMaxCurrent').value;
+              if (+operatingModeElement.value > modeList.length) {
+                operatingModeElement.value = MODE_NORMAL;
+              }
               let opModeValue = (appEnabledElement.value === "1") ? operatingModeElement.value : 0;
               loadedMaxPower[TIMESPAN.QUARTER] = document.getElementById("enLimit15").checked
                 ? +document.getElementById("maxPower15min").value : Infinity;
@@ -2787,9 +2790,13 @@
           }
           // Update Current mode selector
           const currentModeElement = document.getElementById('operatingMode');
+          let prevOperatingMode = +currentModeElement.value;
+          if (prevOperatingMode > modeList.length) {
+            prevOperatingMode = modeList.length;
+          }
           let newOperationModeText = '';
           for (let modeId = 1; modeId <= modeList.length; modeId++) {
-            let selectedText = (currentOperatingMode === modeId) ? " selected": "";
+            let selectedText = (prevOperatingMode === modeId) ? " selected": "";
             newOperationModeText +=
               `<option value="${modeId}"${selectedText}>${allModeNames[modeId-1]}</option>`;
           }

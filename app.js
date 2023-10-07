@@ -799,8 +799,12 @@ class PiggyBank extends Homey.App {
     }
     // ===== KEEPING STATE ACROSS RESTARTS END =====
     // Initialize missing settings
-    if (this.homey.settings.get('operatingMode') === null) {
+    const operatingMode = this.homey.settings.get('operatingMode');
+    const modeList = this.homey.settings.get('modeList');
+    if (operatingMode === null || !Array.isArray(modeList)) {
       this.homey.settings.set('operatingMode', c.MODE_DISABLED);
+    } else if (Array.isArray(modeList) && operatingMode > modeList.length) {
+      this.homey.settings.set('operatingMode', c.MODE_NORMAL);
     }
     if (!Array.isArray(this.homey.settings.get('maxPower'))) {
       this.homey.settings.set('maxPower', [Infinity, 5000, Infinity, 5000000]);
