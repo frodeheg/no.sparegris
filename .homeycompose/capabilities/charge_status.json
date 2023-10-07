@@ -10,19 +10,26 @@
     {
       "id": "0",
       "title": {
-        "en": "Allow Charging",
-        "no": "Tillat lading"
+        "en": "Charging unlimited",
+        "no": "Lading ubegrenset"
       }
     },
     {
       "id": "1",
       "title": {
-        "en": "Prevent Charging",
-        "no": "Blokker lading"
+        "en": "Charging limited",
+        "no": "Lading begrenset"
       }
     },
     {
       "id": "2",
+      "title": {
+        "en": "Charging blocked",
+        "no": "Lading blokkert"
+      }
+    },
+    {
+      "id": "3",
       "title": {
         "en": "Charging failed",
         "no": "Lading feilet"

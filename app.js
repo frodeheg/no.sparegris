@@ -3686,7 +3686,6 @@ class PiggyBank extends Homey.App {
       type = [type];
     }
 
-    const priceMode = +this.homey.settings.get('priceMode');
     let statsTimeUTC = new Date(this.homey.settings.get('stats_daily_max_last_update_time'));
     let statsTimeLocal = (time === null) ? toLocalTime(statsTimeUTC, this.homey) : new Date(+time);
     statsTimeUTC = fromLocalTime(statsTimeLocal, this.homey);
@@ -3731,10 +3730,8 @@ class PiggyBank extends Homey.App {
       slotLength[part] = (minUnit === 'quarter') ? 15 : 60;
       if (+granularity === c.GRANULARITY.HOUR) period = minUnit;
       switch (part) {
-        case 'chargePlan':
-          data['chargeShedule'] = this.__charge_plan;
+        case 'elPrices':
           data['elPrices'] = this.__current_prices;
-          data['currentHour'] = (priceMode === c.PRICE_MODE_DISABLED) ? toLocalTime(new Date(), this.homey).getHours() : this.__current_price_index;
           break;
         case 'maxPower':
         case 'powUsage':

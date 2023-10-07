@@ -37,6 +37,9 @@
 //   measurePowerCap   - Capability for reading used power
 //   measureVoltageCap - Capability for reading voltage
 //   statusCap         - Capability for reading charger state
+// CHARGE_CONTROLLER
+//   setOnOffCap       - This is not present here, onoff for this device means controlled by piggy vs. not controlled by piggy
+//   setPowerCap       - To set target power
 //
 // ===== INPUT DEVICES =====
 // All input devices has the following parameters:
@@ -58,7 +61,8 @@ const DEVICE_TYPE = {
   AC: 3,
   CHARGER: 4,
   IGNORE: 5,
-  METERREADER: 6
+  METERREADER: 6,
+  CHARGE_CONTROLLER: 7
 };
 
 // Default onoff device:
@@ -536,6 +540,10 @@ const DEVICE_CMD = {
     tempStep: 0.5
   },
   'no.sparegris:piggy-bank-insights': DEFAULT_IGNORED,
+  'no.sparegris:piggy-charger': {
+    type: DEVICE_TYPE.CHARGE_CONTROLLER,
+    setPowerCap: 'target_power'
+  },
   'no.thermofloor:TF_Thermostat': {
     type: DEVICE_TYPE.HEATER,
     setOnOffCap: 'thermofloor_mode',
