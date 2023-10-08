@@ -1264,15 +1264,32 @@ class PiggyBank extends Homey.App {
    * Warning: homey does not report any errors if this function crashes, so make sure it doesn't crash
    */
   async generateDeviceList(query, args) {
-    const frostList = this.homey.settings.get('frostList');
     const results = [];
-    for (const deviceId in frostList) {
-      const device = {
-        name: this.__deviceList[deviceId].name,
-        description: this.__deviceList[deviceId].room,
-        id: deviceId
+    try {
+      const frostList = this.homey.settings.get('frostList') || {};
+      for (const deviceId in frostList) {
+        const device = {
+          name: this.__deviceList[deviceId].name,
+          description: this.__deviceList[deviceId].room,
+          id: deviceId
+        };
+        results.push(device);
+      }
+      if (results.length === 0) {
+        const noDev = {
+          name: this.homey.__('warnings.noDevFound'),
+          description: this.homey.__('warnings.noDevHelp'),
+          id: 'noDev'
+        };
+        results.push(noDev);
+      }
+    } catch (err) {
+      const errDev = {
+        name: 'Error',
+        description: `${this.homey.__('warnings.generic')}: '${err}'`,
+        id: 'error'
       };
-      results.push(device);
+      results.push(errDev);
     }
     return results.filter(result => {
       return result.name.toLowerCase().includes(query.toLowerCase());
