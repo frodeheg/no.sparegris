@@ -865,5 +865,8 @@
   },
   "0.20.43": {
     "en": "Removed the experimental flag for no.elko:super_tr_thermostat"
+  },
+  "0.20.44": {
+    "en": "Fixed 4 bugs, 3 crash bugs and one issue where outdated currency exchange rates was used during app restart."
   }
 }
