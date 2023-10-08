@@ -65,7 +65,7 @@ async function testEntsoe() {
     const todayStart = new Date();
     todayStart.setHours(0, 0, 0, 0);
     const biddingZone = '10YNO-3--------J';
-    const priceData = await prices.entsoeGetData(todayStart, 'NOK', biddingZone);
+    const priceData = await prices.entsoeGetData(todayStart, 'NOK', biddingZone, app.homey);
     // console.log(priceData);
     const surcharge = 0.0198;// Network provider provision
     const VAT = 0.25; // 25% moms
@@ -96,7 +96,7 @@ async function testEntsoeNegativePrice() {
     const todayStart = new Date('July 2, 2023, 03:00:00:000 GMT+2:00'); // A day with negative prices
     todayStart.setHours(0, 0, 0, 0);
     const biddingZone = '10YNO-1--------2';
-    const priceData = await prices.entsoeGetData(todayStart, 'NOK', biddingZone);
+    const priceData = await prices.entsoeGetData(todayStart, 'NOK', biddingZone, app.homey);
     // console.log(priceData);
     const surcharge = 0.0198;// Network provider provision
     const VAT = 0.25; // 25% moms

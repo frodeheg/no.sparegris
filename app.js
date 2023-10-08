@@ -811,8 +811,12 @@ class PiggyBank extends Homey.App {
     }
     // ===== KEEPING STATE ACROSS RESTARTS END =====
     // Initialize missing settings
-    if (this.homey.settings.get('operatingMode') === null) {
+    const operatingMode = this.homey.settings.get('operatingMode');
+    const modeList = this.homey.settings.get('modeList');
+    if (operatingMode === null || !Array.isArray(modeList)) {
       this.homey.settings.set('operatingMode', c.MODE_DISABLED);
+    } else if (Array.isArray(modeList) && operatingMode > modeList.length) {
+      this.homey.settings.set('operatingMode', c.MODE_NORMAL);
     }
     if (!Array.isArray(this.homey.settings.get('maxPower'))) {
       this.homey.settings.set('maxPower', [Infinity, 5000, Infinity, 5000000]);
@@ -1217,15 +1221,34 @@ class PiggyBank extends Homey.App {
    * Warning: homey does not report any errors if this function crashes, so make sure it doesn't crash
    */
   async generateDeviceList(query, args) {
-    const frostList = this.homey.settings.get('frostList');
     const results = [];
-    for (const deviceId in frostList) {
-      const device = {
-        name: this.__deviceList[deviceId].name,
-        description: this.__deviceList[deviceId].room,
-        id: deviceId
+    try {
+      const frostList = this.homey.settings.get('frostList') || {};
+      for (const deviceId in frostList) {
+        if ('deviceId' in this.__deviceList) {
+          const device = {
+            name: this.__deviceList[deviceId].name,
+            description: this.__deviceList[deviceId].room,
+            id: deviceId
+          };
+          results.push(device);
+        } // Else a device has been deleted but not removed as controllable in piggy settings
+      }
+      if (results.length === 0) {
+        const noDev = {
+          name: this.homey.__('warnings.noDevFound'),
+          description: this.homey.__('warnings.noDevHelp'),
+          id: 'noDev'
+        };
+        results.push(noDev);
+      }
+    } catch (err) {
+      const errDev = {
+        name: 'Error',
+        description: `${this.homey.__('warnings.generic')}: '${err}'`,
+        id: 'error'
       };
-      results.push(device);
+      results.push(errDev);
     }
     return results.filter(result => {
       return result.name.toLowerCase().includes(query.toLowerCase());
@@ -1704,7 +1727,7 @@ class PiggyBank extends Homey.App {
       frostGuardIsOn = false;
     } else {
       const frostList = this.homey.settings.get('frostList');
-      frostGuardIsOn = device.capabilitiesObj[tempCap].value < frostList[deviceId].minTemp;
+      frostGuardIsOn = (deviceId in frostList) && (device.capabilitiesObj[tempCap].value < frostList[deviceId].minTemp);
     }
     if (!frostGuardIsOn && override[deviceId] === c.OVERRIDE.FROST_GUARD) {
       delete override[deviceId]; // Done with override
@@ -4196,7 +4219,7 @@ class PiggyBank extends Homey.App {
             const biddingZone = (futurePriceOptions.priceCountry in c.ENTSOE_BIDDING_ZONES)
               && (futurePriceOptions.priceRegion in c.ENTSOE_BIDDING_ZONES[futurePriceOptions.priceCountry])
               ? c.ENTSOE_BIDDING_ZONES[futurePriceOptions.priceCountry][futurePriceOptions.priceRegion].id : undefined;
-            const priceData = await prices.entsoeGetData(todayStart, futurePriceOptions.currency, biddingZone);
+            const priceData = await prices.entsoeGetData(todayStart, futurePriceOptions.currency, biddingZone, this.homey);
             futurePrices = await prices.applyTaxesOnSpotprice(
               priceData,
               futurePriceOptions.surcharge,

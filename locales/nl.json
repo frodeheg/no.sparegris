@@ -463,7 +463,10 @@
     "appDisabled": "De bedrijfsmodus is uitgeschakeld. Schakel het weer in in via de app instellingen of middels een flow.",
     "timeout": "Time-out! Homey is druk. Wacht nog iets langer, probeer het later opnieuw, of neem contact op met de app -ontwikkelaar als het probleem aanhoudt. Als je vanaf een browser werkt, helpt het meestal om de pagina te herladen.",
     "notValidTime": "De eindtijd is niet geldig. Gebruik ajb het 24-uurs formaat HH:MM (geen AM/PM)",
-    "meterIsAuto": "Handmatige invoer van meteropnemers is niet toegestaan wanneer er een meteropnemer is geselecteerd"
+    "meterIsAuto": "Handmatige invoer van meteropnemers is niet toegestaan wanneer er een meteropnemer is geselecteerd",
+    "generic": "Het volgende probleem is opgetreden. Rapporteer dit aan de ontwikkelaar zodat het kan worden opgelost",
+    "noDevFound": "Geen bestuurbare apparaten gevonden",
+    "noDevHelp": "Markeer apparaten als bestuurbaar in de app-instellingen"
   },
   "breaking": {
     "maxPower": "Belangrijke verandering voor **Spaarpot**: Max. power (vermogen) is nu een enkele globale instelling, in plaats van per modus. Controleer of de nieuwe instelling OK is. De nieuwe instelling is ",
