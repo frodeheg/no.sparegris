@@ -199,7 +199,7 @@ async function entsoeApiInit(apiKey) {
  * Contract_MarketAgreement = A13 (Hourly)
  * ProcessType = A01 (Day ahead)
  */
-async function entsoeGetData(startTime, currency = 'NOK', biddingZone) {
+async function entsoeGetData(startTime, currency = 'NOK', biddingZone, homey) {
   const tomorrow = new Date(startTime.getTime());
   tomorrow.setDate(tomorrow.getDate() + 2);
   // tomorrow.setHours(tomorrow.getHours() + 23);
@@ -222,7 +222,7 @@ async function entsoeGetData(startTime, currency = 'NOK', biddingZone) {
         const unitName = timeSeries[serie]['price_Measure_Unit.name'];
         const seriesStartTime = timeSeries[serie].Period.timeInterval.start;
         if (unitName !== 'MWH') throw new Error(`Invalid unit in price data: ${unitName}`);
-        const currencyModifier = await getCurrencyModifier(fromCurrency, currency, seriesStartTime);
+        const currencyModifier = await getCurrencyModifier(fromCurrency, currency, seriesStartTime, homey);
 
         const serieTimeUTC = new Date(timeSeries[serie].Period.timeInterval.start);
         const serieData = timeSeries[serie].Period.Point;
