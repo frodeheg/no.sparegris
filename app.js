@@ -1751,7 +1751,7 @@ class PiggyBank extends Homey.App {
       frostGuardIsOn = false;
     } else {
       const frostList = this.homey.settings.get('frostList');
-      frostGuardIsOn = device.capabilitiesObj[tempCap].value < frostList[deviceId].minTemp;
+      frostGuardIsOn = (deviceId in frostList) && (device.capabilitiesObj[tempCap].value < frostList[deviceId].minTemp);
     }
     if (!frostGuardIsOn && override[deviceId] === c.OVERRIDE.FROST_GUARD) {
       delete override[deviceId]; // Done with override
