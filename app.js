@@ -1268,12 +1268,14 @@ class PiggyBank extends Homey.App {
     try {
       const frostList = this.homey.settings.get('frostList') || {};
       for (const deviceId in frostList) {
-        const device = {
-          name: this.__deviceList[deviceId].name,
-          description: this.__deviceList[deviceId].room,
-          id: deviceId
-        };
-        results.push(device);
+        if ('deviceId' in this.__deviceList) {
+          const device = {
+            name: this.__deviceList[deviceId].name,
+            description: this.__deviceList[deviceId].room,
+            id: deviceId
+          };
+          results.push(device);
+        } // Else a device has been deleted but not removed as controllable in piggy settings
       }
       if (results.length === 0) {
         const noDev = {
