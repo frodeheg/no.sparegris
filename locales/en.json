@@ -419,7 +419,7 @@
       "infoHeader": "Charge controller info",
       "imageHeader": "Select icon",
       "info1": "This device will allow you to control a car charger with piggy.",
-      "info2": "If your charger is directly supported, it will be listed in the next screen. If not you must select the flow based controller."
+      "info2": "If your charger is directly supported, it will be listed in the next step. If not you must select the flow based controller."
     },
     "validation": {
       "stateLabel": "Charging state recieved",

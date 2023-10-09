@@ -2,15 +2,21 @@
   "highlight": true,
   "title": {
     "en": "Update Charger State",
-    "no": "Oppdater Ladertilstand"
+    "no": "Oppdater Ladertilstand",
+    "nl": "Update de status van de oplader",
+    "fr": "Mettre à jour l'état du chargeur"
   },
   "titleFormatted": {
     "en": "Inform Piggy about charger state [[state]]",
-    "no": "Opplys Piggy om ladertilstanden [[state]]"
+    "no": "Opplys Piggy om ladertilstanden [[state]]",
+    "nl": "Informeer Piggy over de status van de oplader [[state]]",
+    "fr": "Informer Piggy de l'état du chargeur [[state]]"
   },
   "hint": {
-    "en": "This action will inform the charge controller about how to interact with the charger. This should be directly linked to the state of the charger. It is important that the charge controller does is prevented from charging when charging is complete, no car is connected and in error situations.",
-    "no": "Dette flytkortet vil informere ladekontrolleren om hvordan den skal snakke med laderen. Dette skal være direkte linket til tilstanden på laderen. Det er viktig at ladekontrolleren blir blokkert fra å lade når ladingen er fullført, ingen bil er tilkoblet og en feilsituasjon har oppstått."
+    "en": "This action will inform the charge controller about how to interact with the charger. This should be directly linked to the state of the charger. It is important that the charge controller is prevented from charging when charging is complete, no car is connected, and in error situations.",
+    "no": "Dette flytkortet vil informere ladekontrolleren om hvordan den skal snakke med laderen. Dette skal være direkte linket til tilstanden på laderen. Det er viktig at ladekontrolleren blir blokkert fra å lade når ladingen er fullført, ingen bil er tilkoblet og en feilsituasjon har oppstått.",
+    "nl": "Deze actie informeert de laadcontroller over de interactie met de oplader. Dit moet direct gekoppeld zijn aan de staat van de lader. Het is belangrijk dat de laadcontroller niet kan opladen wanneer het opladen voltooid is, er geen auto is aangesloten en in foutsituaties.",
+    "fr": "Cette action informera le contrôleur de charge sur la manière d'interagir avec le chargeur. Cela doit être directement lié à l’état du chargeur. Il est important que le contrôleur de charge ne puisse pas charger lorsque la charge est terminée, qu'aucune voiture n'est connectée et en cas d'erreur."
   },
   "args": [
     {
@@ -25,22 +31,28 @@
         {
           "id": "0",
           "label": {
-            "en": "Allow Charging",
-            "no": "Tillat lading"
+            "en": "Allow charging",
+            "no": "Tillat lading",
+            "nl": "Sta opladen toe",
+            "fr": "Autoriser le chargement"
           }
         },
         {
           "id": "1",
           "label": {
-            "en": "Prevent Charging",
-            "no": "Blokker lading"
+            "en": "Prevent charging",
+            "no": "Blokker lading",
+            "nl": "Voorkom opladen",
+            "fr": "Empêcher la charge"
           }
         },
         {
           "id": "2",
           "label": {
             "en": "Charging failed",
-            "no": "Lading feilet"
+            "no": "Lading feilet",
+            "nl": "Opladen mislukt",
+            "fr": "La charge a échoué"
           }
         }
       ]

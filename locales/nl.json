@@ -62,40 +62,11 @@
     },
     "charge": {
       "header": "Voertuig (EV) laders",
-      "chargeTarget": "Laadregeling",
-      "chargeMin": "Minimaal laadvermogen",
-      "chargeThreshold": "Startdrempel",
-      "minToggleTime": "Minimale schakeltijd",
-      "chargeRemaining": "Resterende energie",
-      "chargeEnd": "Eindtijd laadcyclus",
-      "chargeTargetAuto": "Volledig geautomatiseerd",
-      "chargeTargetFlow": "Flow gestuurd",
-      "carChargerMissingHint": "Geen ondersteunde oplader gevonden. Je kunt een flowkaartje gebruiken om te gaanladen.",
-      "carChargerNotAddedHint": "Er is een ondersteunde oplader gevonden, maar deze is niet toegevoegd als een controleerbaar apparaat.",
-      "chargeTargetHint": ["Ondersteunde opladers worden automatisch door de app bestuurd, op voorwaarde dat ze worden toegevoegd als een bestuurbaar apparaat. Voor niet-ondersteunde opladers kun je flowkaarten gebruiken of een <a href=\"ShowLog\" onclick=\"changeTab(event, 'logPage');return false;\">apparaat rapport verzenden</a>. <!--",
-        "--><p>Houd er rekening mee dat laders vermeld bij <a href=\"ShowDevices\" onclick=\"changeTab(event, 'helpSupportedPage');return false;\">overschreven apparaten</a> aangestuurd moeten worden via flows.</p><!--",
-        "--><p>Om het via flows te regelen, moet je verbinding maken met de volgende triggers in de app: 'Start opladen' en 'Stop met opladen', terwijl 'Laadvermogen wijzigen' optioneel is, maar wel wordt aanbevolen.</p> <!--",
-        "--><p>Om het laadproces te starten moet je de flowkaart actie 'Start laadcyclus' gebruiken.</p>"],
-      "chargeMinHint": "De minimale laadstroom geeft het laadvermogen aan dat uw oplader gebruikt wanneer je deze inschakelt. Als de oplader slechts één instelling heeft, voer je deze hier in. Als de oplader de stroom kan regelen, voer je het minimale vermogen in dat hij kan opnemen. Om de waarde te verhogen, moet de drempel voor het starten van het opladen mogelijk eerst worden verhoogd, omdat deze niet kan worden overschreden om de lader te beschermen.",
-      "chargeThresholdHint": "Een nieuwe laadcyclus begint pas wanneer het stationair vermogen de hier ingestelde drempelwaarde overschrijdt. Dit moet ietsje meer zijn dan de minimale laadstroom om te voorkomen dat de lader meteen weer uitvalt.",
-      "minToggleTimeHint": "Deze waarde geeft in seconden aan hoe lang het duurt tussen de signalen die naar de oplader wordt verzonden. Als de reactietijd van de lader deze waarde overschrijdt, moet deze waarde dienovereenkomstig worden verhoogd.",
-      "chargeRemainingHint": "Deze waarde geeft aan hoeveel stroom aan de oplader wordt aangeboden voordat de app stopt met opladen. Deze energie wordt verdeeld over alle resterende tijd tot het einde van de laadcyclus. Je kunt deze waarde hier niet instellen, deze moet worden ingesteld via het flowkaartje 'Laadcyclus starten'.",
-      "chargeEndHint": "Dit veld geeft aan wanneer de huidige laadcyclus eindigt. Je kunt deze waarde hier niet instellen, deze moet worden ingesteld vanuit het flowkaartje 'Laadcyclus starten'.",
-      "override": "Negeren",
-      "overrideHint": "In eerste instantie zou het opladen moeten werken zonder negeren. In sommige situaties kan het toch wenselijk zijn om hier verandering in te brengen.",
-      "overrideHintStart": "De startstroom is de stroom die wordt aangeboden wanneer de lader eerder 0w heeft gebruikt en zich in een laadcyclus bevindt (om 3-fase opladen te krijgen, moet de minimale startstroom 11a zijn).",
-      "overrideHintStop": "De stopstroom is de stroom die wordt aangeboden wanneer er geen laadcyclus is. (nb: het wordt niet geprobeerd om het aan te passen)",
-      "overrideHintPause": "De pauzestroom is de stroom die wordt aangeboden wanneer er een laadcyclus is en de prijs te hoog is.",
-      "overrideHintMin": "Minimale laadstroom zorgt ervoor dat je nooit oplaadt met minder stroom dan dit (varieert van auto tot auto, kan minder dan 11a zijn voor 3-fase opladen).",
-      "overrideHintMax": "Maximale laadstroom zorgt ervoor dat je nooit met meer stroom dan dit oplaadt (een extra waarborg tegen overconsumptie wanneer Homey of Easee API zich misdraagt).",
-      "overrideEnable": "Negeren",
-      "overrideEnableNo": "Uitgeschakeld",
-      "overrideEnableYes": "Ingeschakeld",
-      "overrideStart": "Start stroom",
-      "overrideStop": "Stroom stoppen",
-      "overridePause": "Stroom pauzeren",
-      "overrideMinCurrent": "Minimale laadstroom",
-      "overrideMaxCurrent": "Maximale laadstroom"
+      "carChargerMissingHint": ["Geen ondersteunde oplader gevonden. U kunt nog steeds een op stroom gebaseerde controller installeren, maar als u een <!-- indient",
+      "--><a href=\"ShowLog\" onclick=\"changeTab(event, 'logPage');return false;\">apparaatrapport</a> voor uw oplader, waarna directe ondersteuning later wordt toegevoegd versie."],
+      "carChargerDeprecatedHint": "De manier waarop u uw autolader bedient, zal binnenkort niet meer werken. Om de lader te blijven bedienen, deselecteert u deze in de lijst met bestuurbare apparaten en slaat u deze op. Verwijder vervolgens alle oude stromen die de lader besturen en installeer de laadcontrollerapparaat voor deze app.",
+      "controllerNotAddedHint": "Er is een ondersteunde oplader gevonden. Installeer de laadcontroller om deze te kunnen bedienen.",
+      "controllerNotEnabledHint": "Er is een ladercontroller gevonden, maar deze is niet ingeschakeld."
     },
     "menu": {
       "home": {
@@ -438,6 +409,36 @@
       "fan": "Fan",
       "piggy": "Slim",
       "hint": "A/C Modus is van invloed op alle A/C units (maar dit wordt - per unit - in een latere update). Als A/C Modus = 'Ongewijzigd', dan zal de app de A/C Modus niet instellen. Alle andere selecties stellen de A/C Modus in. NB: Als de A/C Modus is ingesteld op koelen, worden de deltatemperaturen voor het prijspunt omgekeerd, zodat u naadloos kunt schakelen tussen verwarmen en koelen zonder dat dit invloed heeft op het vermogen van de app om geld te besparen."
+    }
+  },
+  "charger": {
+    "new": {
+      "deviceName": "Oplaadcontroller",
+      "flowBased": "Flow-gebaseerde controller",
+      "controlFor": "Controller voor",
+      "infoHeader": "Informatie over laadcontroller",
+      "imageHeader": "Selecteer pictogram",
+      "info1": "Met dit apparaat kunt u een autolader met varkentje bedienen.",
+      "info2": "Als uw lader direct wordt ondersteund, wordt deze in het volgende scherm weergegeven. Als dit niet het geval is, moet u de flowgebaseerde controller selecteren."
+    },
+    "validation": {
+      "stateLabel": "Oplaadstatus ontvangen",
+      "stateHint": "Maak een stroom om de controller te informeren over de laadstatus.",
+      "batterySkipped": "Batterijtest overgeslagen.",
+      "turnedOnLabel": "De controller moet ingeschakeld zijn.",
+      "turnedOnHint": "Schakel de laadcontroller in.",
+      "turnaroundLabel": "Responstest",
+      "turnaroundOngoing": "lopend",
+      "wait": "Druk op vernieuwen voor updates"
+    },
+    "error": {
+      "notReady": "Kan de laadcontroller niet inschakelen voordat deze correct is aangesloten en getest. Zie de cameramogelijkheden van dit apparaat voor instructies."
+    },
+    "warnings": {
+      "noSignalAmps": "Geen Amp-signaal ontvangen van de lader",
+      "noSignalWatts": "Geen Watt-signaal ontvangen van de oplader",
+      "noSignalBattery": "Geen batterijniveau ontvangen van de oplader",
+      "redundantFlow": "Stroomsignaal genegeerd, dit wordt rechtstreeks opgehaald van het bestuurde apparaat."
     }
   },
   "newdevice": {

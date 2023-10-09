@@ -2,15 +2,21 @@
   "highlight": true,
   "title": {
     "en": "Update Battery Level",
-    "no": "Oppdater Batterinivå"
+    "no": "Oppdater Batterinivå",
+    "nl": "Update het batterijniveau",
+    "fr": "Mettre à jour le niveau de la batterie"
   },
   "titleFormatted": {
     "en": "Inform Piggy about the current battery level [[level]]%",
-    "no": "Opplys Piggy om nåværende batterinivå [[level]]%"
+    "no": "Opplys Piggy om nåværende batterinivå [[level]]%",
+    "nl": "Informeer Piggy over het huidige batterijniveau [[level]]%",
+    "fr": "Informer Piggy du niveau actuel de la batterie [[level]]%"
   },
   "hint": {
     "en": "This action will inform the charge controller about the current battery level. It is important that the charge controller knows the state of the charger at any time.",
-    "no": "Dette flytkortet vil informere ladekontrolleren om nåværende batterinivå. Det er viktig at ladekontrolleren vet tilstanden til laderen til enhver tid."
+    "no": "Dette flytkortet vil informere ladekontrolleren om nåværende batterinivå. Det er viktig at ladekontrolleren vet tilstanden til laderen til enhver tid.",
+    "nl": "Deze actie informeert de laadcontroller over het huidige batterijniveau. Het is belangrijk dat de laadcontroller op elk moment de status van de lader kent.",
+    "fr": "Cette action informera le contrôleur de charge du niveau actuel de la batterie. Il est important que le contrôleur de charge connaisse à tout moment l’état du chargeur."
   },
   "args": [
     {
@@ -25,11 +31,15 @@
       "max": 100,
       "placeholder": {
         "en": "battery level",
-        "no": "batterinivå"
+        "no": "batterinivå",
+        "nl": "batterijniveau",
+        "fr": "niveau de batterie"
       },
       "title": {
         "en": "Battery level",
-        "no": "Batterinivå"
+        "no": "Batterinivå",
+        "nl": "Batterijniveau",
+        "fr": "Niveau de batterie"
       }
     }
  ]

@@ -62,40 +62,11 @@
     },
     "charge": {
       "header": "Chargeurs de voiture",
-      "chargeTarget": "Contrôle des charges",
-      "chargeMin": "Puissance minimale de charge",
-      "chargeThreshold": "Démarrage",
-      "minToggleTime": "Temps minimum de lutte",
-      "chargeRemaining": "Énergie restante",
-      "chargeEnd": "Temps de fin du cycle de charge",
-      "chargeTargetAuto": "entièrement automatisé",
-      "chargeTargetFlow": "Flux contrôlé",
-      "carChargerMissingHint": "Pas de chargeur pris en charge trouvé. Vous devez utiliser une carte de flux pour recharger.",
-      "carChargerNotAddedHint": "Un chargeur supporté a été trouvé, mais il n'a pas été ajouté comme un appareil contrôlable.",
-      "chargeTargetHint": ["Les chargeurs de voiture pris en charge sont contrôlés par l'application automatiquement à condition qu'ils soient ajoutés en tant que dispositif contrôlable. Pour les chargeurs non supportés, vous pouvez soit utiliser des cartes de flux ou envoyer un <a href=\"ShowLog\" onclick=\"changeTab(event, 'logPage');return false;\">signaler un appareil</a>. <!--",
-      "--><p>Veuillez noter que les chargeurs répertoriés sur <a href=\"ShowDevices\" onclick=\"changeTab(event, 'helpsupportedpage');return false;\">périphériques ignorés</a> doivent être contrôlés à travers les flux.</p><!--",
-        "--><p>Pour contrôler les fluxs, vous devez vous connecter aux déclencheurs suivants de l'application: 'Démarrer le chargement' et 'Arrêter le chargement', tandis que 'Change charge power' est optionnel mais reccomended.</p> <!--",
-        "--><p>Pour commencer le processus de chargement, vous devez appeler l'action de la carte de flux 'Démarrer le cycle de charge'.</p>"],
-      "chargeMinHint": "Le courant de charge minimal indique la puissance de charge que votre chargeur utilise lorsque vous l'activez. Si le chargeur n'a qu'un seul réglage, entrez-le ici. Si le chargeur peut contrôler le courant, saisissez la puissance minimale qu'il peut dessiner. Pour augmenter la valeur, le seuil pour le démarrage de la charge doit éventuellement être augmenté d'abord, car cela ne peut pas être dépassé pour protéger le chargeur.",
-      "chargeThresholdHint": "Un nouveau cycle de charge ne démarre que lorsque la puissance de ralenti dépasse la valeur seuil fixée ici. Cela doit être légèrement plus que le courant de charge minimal pour éviter que le chargeur ne s'arrête de nouveau tout de suite.",
-      "minToggleTimeHint": "Cette valeur indique en quelques secondes combien de temps il est entre chaque fois qu'un signal est envoyé au chargeur. Si le temps de réponse du chargeur dépasse cette valeur, cette valeur devrait être augmentée en conséquence.",
-      "chargeRemainingHint": "Cette valeur montre combien de puissance sera offerte au chargeur avant que l'application ne cesse de recharger. Cette énergie sera distribuée sur tout le temps restant jusqu'à la fin du cycle de charge. Vous ne pouvez pas définir cette valeur ici, elle doit être définie dans le diagramme de flux 'Start charge cycle'.",
-      "chargeEndHint": "Ce champ montre quand le cycle de charge actuel se terminera. Vous ne pouvez pas définir cette valeur ici, elle doit être définie dans le diagramme de flux 'Start charge cycle'.",
-      "override": "Passer outre",
-      "overrideHint": "Initialement, la charge devrait fonctionner sans surcharge. Dans certaines situations, il peut encore être souhaitable de changer cela.",
-      "overrideHintStart": "Le courant de départ est le courant offert lorsque le chargeur a utilisé 0W avant et est dans un cycle de charge. (Pour obtenir une charge de 3 phases, le courant de départ minimum doit être de 11A)",
-      "overrideHintStop": "Le courant d'arrêt est le courant offert lorsqu'il n'y a pas de cycle de charge. (NB! Ce ne sera pas une tentative d'ajustement)",
-      "overrideHintPause": "Le courant de pause est le courant offert quand il ya un cycle de charge et le prix est trop cher.",
-      "overrideHintMin": "Le courant de charge minimum garantit que vous ne chargez jamais avec moins de courant que cela. (Varies de voiture à voiture. Peut être moins de 11A pour la charge en 3 phases)",
-      "overrideHintMax": "Le courant de charge maximal garantit que vous ne chargez jamais avec plus de courant que cela. (Une sauvegarde supplémentaire contre la surconsommation lorsque le Homey ou Easee api se comporte mal)",
-      "overrideEnable": "Passer outre",
-      "overrideEnableNo": "Inactif",
-      "overrideEnableYes": "Activé",
-      "overrideStart": "Démarrage courant",
-      "overrideStop": "Stop !",
-      "overridePause": "Actif de la douleur",
-      "overrideMinCurrent": "Courant de charge minimum",
-      "overrideMaxCurrent": "Courant de charge maximal"
+      "carChargerMissingHint": ["Aucun chargeur pris en charge trouvé. Vous pouvez toujours installer un contrôleur basé sur le flux, mais si vous soumettez un <!--",
+      "--><a href=\"ShowLog\" onclick=\"changeTab(event, 'logPage');return false;\">rapport de périphérique</a> pour votre chargeur, puis une assistance directe sera ajoutée ultérieurement version."],
+      "carChargerDeprecatedHint": "La façon dont vous contrôlez votre chargeur de voiture cessera bientôt de fonctionner. Afin de continuer à contrôler le chargeur, veuillez le désélectionner dans la liste des appareils contrôlables et l'enregistrer, puis supprimer tous les anciens flux contrôlant le chargeur et installer le dispositif de contrôleur de charge pour cette application.",
+      "controllerNotAddedHint": "Un chargeur pris en charge a été trouvé, veuillez installer le contrôleur de charge afin de le contrôler.",
+      "controllerNotEnabledHint": "Un contrôleur de chargeur a été trouvé, mais il n'est pas activé."
     },
     "menu": {
       "home": {
@@ -438,6 +409,36 @@
       "fan": "Ventilateur",
       "piggy": "Intelligent",
       "hint": "Le mode AC affecte toutes les unités AC (mais viendra par unité dans une mise à jour ultérieure). Si ACMode='Unchanged', l'application ne définira pas le mode AC. Toutes les autres sélections définiront le mode AC. NB : Si le mode AC est réglé sur refroidissement, les températures delta pour le prix seront inversées afin que vous puissiez basculer de manière transparente entre le chauffage et le refroidissement sans affecter la capacité de l'application à économiser de l'argent."
+    }
+  },
+  "charger": {
+    "new": {
+      "deviceName": "Contrôleur de charge",
+      "flowBased": "Contrôleur basé sur le flux",
+      "controlFor": "Contrôleur pour",
+      "infoHeader": "Informations sur le contrôleur de charge",
+      "imageHeader": "Sélectionner l'icône",
+      "info1": "Cet appareil vous permettra de contrôler un chargeur de voiture avec Piggy.",
+      "info2": "Si votre chargeur est directement pris en charge, il sera répertorié dans l'écran suivant. Sinon, vous devez sélectionner le contrôleur basé sur le débit."
+    },
+    "validation": {
+      "stateLabel": "État de charge reçu",
+      "stateHint": "Veuillez créer un flux pour informer le contrôleur de l'état de charge.",
+      "batterySkipped": "Test de batterie ignoré.",
+      "turnedOnLabel": "Le contrôleur doit être activé.",
+      "turnedOnHint": "Veuillez allumer le contrôleur de charge.",
+      "turnaroundLabel": "Test de réponse",
+      "turnaroundOngoing": "en cours",
+      "wait": "Appuyez sur Actualiser pour les mises à jour"
+    },
+    "error": {
+      "notReady": "Impossible d'allumer le contrôleur de charge avant qu'il n'ait été correctement connecté et testé. Consultez la capacité de la caméra de cet appareil pour obtenir des instructions."
+    },
+    "warnings": {
+      "noSignalAmps": "Aucun signal Amp reçu du chargeur",
+      "noSignalWatts": "Aucun signal Watt reçu du chargeur",
+      "noSignalBattery": "Aucun niveau de batterie reçu du chargeur",
+      "redundantFlow": "Signal de débit ignoré, il est récupéré directement depuis l'appareil contrôlé."
     }
   },
   "newdevice": {

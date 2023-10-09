@@ -2,7 +2,9 @@
   "type": "enum",
   "title": {
     "en": "Charge status",
-    "no": "Ladestatus"
+    "no": "Ladestatus",
+    "nl": "Laadstatus",
+    "fr": "Statut de facturation"
   },
   "getable": true,
   "setable": false,
@@ -11,28 +13,36 @@
       "id": "0",
       "title": {
         "en": "Charging unlimited",
-        "no": "Lading ubegrenset"
+        "no": "Lading ubegrenset",
+        "nl": "Onbeperkt opladen",
+        "fr": "Chargement illimité"
       }
     },
     {
       "id": "1",
       "title": {
         "en": "Charging limited",
-        "no": "Lading begrenset"
+        "no": "Lading begrenset",
+        "nl": "Opladen beperkt",
+        "fr": "Charge limitée"
       }
     },
     {
       "id": "2",
       "title": {
         "en": "Charging blocked",
-        "no": "Lading blokkert"
+        "no": "Lading blokkert",
+        "nl": "Opladen geblokkeerd",
+        "fr": "Chargement bloqué"
       }
     },
     {
       "id": "3",
       "title": {
         "en": "Charging failed",
-        "no": "Lading feilet"
+        "no": "Lading feilet",
+        "nl": "Opladen mislukt",
+        "fr": "La charge a échoué"
       }
     }
   ],

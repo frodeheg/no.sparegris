@@ -3,10 +3,16 @@
   "min": 0,
   "max": 20000,
   "title": {
-    "en": "Target Power"
+    "en": "Desired effect",
+    "no": "Ønsket effekt",
+    "nl": "Gewenste effect",
+    "fr": "Effet recherché"
   },
   "units": {
-    "en": "W"
+    "en": "W",
+    "no": "W",
+    "nl": "W",
+    "fr": "W"
   },
   "chartType": "stepLine",
   "decimals": 0,

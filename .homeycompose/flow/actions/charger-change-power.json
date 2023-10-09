@@ -2,15 +2,21 @@
   "highlight": true,
   "title": {
     "en": "Update Charger Power",
-    "no": "Oppdater Effekt"
+    "no": "Oppdater Effekt",
+    "nl": "Update de voeding van de oplader",
+    "fr": "Mettre à jour la puissance du chargeur"
   },
   "titleFormatted": {
     "en": "Inform Piggy about current charger power [[power]]W",
-    "no": "Opplys Piggy om nåværende ladeeffekt [[power]]W"
+    "no": "Opplys Piggy om nåværende ladeeffekt [[power]]W",
+    "nl": "Informeer Piggy over het huidige laadvermogen [[power]]W",
+    "fr": "Informer Piggy de la puissance actuelle du chargeur [[power]]W"
   },
   "hint": {
     "en": "This action will inform the charge controller about the current charger power. It is important that the charge controller knows the state of the charger at any time.",
-    "no": "Dette flytkortet vil informere ladekontrolleren om nåværende ladeeffekt. Det er viktig at ladekontrolleren vet tilstanden til laderen til enhver tid."
+    "no": "Dette flytkortet vil informere ladekontrolleren om nåværende ladeeffekt. Det er viktig at ladekontrolleren vet tilstanden til laderen til enhver tid.",
+    "nl": "Deze actie informeert de laadcontroller over het huidige laadvermogen. Het is belangrijk dat de laadcontroller op elk moment de status van de lader kent.",
+    "fr": "Cette action informera le contrôleur de charge de la puissance actuelle du chargeur. Il est important que le contrôleur de charge connaisse à tout moment l’état du chargeur."
   },
   "args": [
     {
@@ -25,11 +31,15 @@
       "max": 100000,
       "placeholder": {
         "en": "power in use",
-        "no": "effekt i bruk"
+        "no": "effekt i bruk",
+        "nl": "verbruikt vermogen",
+        "fr": "puissance utilisée"
       },
       "title": {
         "en": "Power in use (W)",
-        "no": "Effekt i bruk (W)"
+        "no": "Effekt i bruk (W)",
+        "nl": "Gebruikt vermogen (W)",
+        "fr": "Puissance utilisée (W)"
       }
     }
  ]

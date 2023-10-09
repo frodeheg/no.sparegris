@@ -1158,15 +1158,21 @@
         "highlight": true,
         "title": {
           "en": "Update Battery Level",
-          "no": "Oppdater Batterinivå"
+          "no": "Oppdater Batterinivå",
+          "nl": "Update het batterijniveau",
+          "fr": "Mettre à jour le niveau de la batterie"
         },
         "titleFormatted": {
           "en": "Inform Piggy about the current battery level [[level]]%",
-          "no": "Opplys Piggy om nåværende batterinivå [[level]]%"
+          "no": "Opplys Piggy om nåværende batterinivå [[level]]%",
+          "nl": "Informeer Piggy over het huidige batterijniveau [[level]]%",
+          "fr": "Informer Piggy du niveau actuel de la batterie [[level]]%"
         },
         "hint": {
           "en": "This action will inform the charge controller about the current battery level. It is important that the charge controller knows the state of the charger at any time.",
-          "no": "Dette flytkortet vil informere ladekontrolleren om nåværende batterinivå. Det er viktig at ladekontrolleren vet tilstanden til laderen til enhver tid."
+          "no": "Dette flytkortet vil informere ladekontrolleren om nåværende batterinivå. Det er viktig at ladekontrolleren vet tilstanden til laderen til enhver tid.",
+          "nl": "Deze actie informeert de laadcontroller over het huidige batterijniveau. Het is belangrijk dat de laadcontroller op elk moment de status van de lader kent.",
+          "fr": "Cette action informera le contrôleur de charge du niveau actuel de la batterie. Il est important que le contrôleur de charge connaisse à tout moment l’état du chargeur."
         },
         "args": [
           {
@@ -1181,11 +1187,15 @@
             "max": 100,
             "placeholder": {
               "en": "battery level",
-              "no": "batterinivå"
+              "no": "batterinivå",
+              "nl": "batterijniveau",
+              "fr": "niveau de batterie"
             },
             "title": {
               "en": "Battery level",
-              "no": "Batterinivå"
+              "no": "Batterinivå",
+              "nl": "Batterijniveau",
+              "fr": "Niveau de batterie"
             }
           }
         ],
@@ -1195,15 +1205,21 @@
         "highlight": true,
         "title": {
           "en": "Update Charger Power",
-          "no": "Oppdater Effekt"
+          "no": "Oppdater Effekt",
+          "nl": "Update de voeding van de oplader",
+          "fr": "Mettre à jour la puissance du chargeur"
         },
         "titleFormatted": {
           "en": "Inform Piggy about current charger power [[power]]W",
-          "no": "Opplys Piggy om nåværende ladeeffekt [[power]]W"
+          "no": "Opplys Piggy om nåværende ladeeffekt [[power]]W",
+          "nl": "Informeer Piggy over het huidige laadvermogen [[power]]W",
+          "fr": "Informer Piggy de la puissance actuelle du chargeur [[power]]W"
         },
         "hint": {
           "en": "This action will inform the charge controller about the current charger power. It is important that the charge controller knows the state of the charger at any time.",
-          "no": "Dette flytkortet vil informere ladekontrolleren om nåværende ladeeffekt. Det er viktig at ladekontrolleren vet tilstanden til laderen til enhver tid."
+          "no": "Dette flytkortet vil informere ladekontrolleren om nåværende ladeeffekt. Det er viktig at ladekontrolleren vet tilstanden til laderen til enhver tid.",
+          "nl": "Deze actie informeert de laadcontroller over het huidige laadvermogen. Het is belangrijk dat de laadcontroller op elk moment de status van de lader kent.",
+          "fr": "Cette action informera le contrôleur de charge de la puissance actuelle du chargeur. Il est important que le contrôleur de charge connaisse à tout moment l’état du chargeur."
         },
         "args": [
           {
@@ -1218,11 +1234,15 @@
             "max": 100000,
             "placeholder": {
               "en": "power in use",
-              "no": "effekt i bruk"
+              "no": "effekt i bruk",
+              "nl": "verbruikt vermogen",
+              "fr": "puissance utilisée"
             },
             "title": {
               "en": "Power in use (W)",
-              "no": "Effekt i bruk (W)"
+              "no": "Effekt i bruk (W)",
+              "nl": "Gebruikt vermogen (W)",
+              "fr": "Puissance utilisée (W)"
             }
           }
         ],
@@ -1232,15 +1252,21 @@
         "highlight": true,
         "title": {
           "en": "Update Charger State",
-          "no": "Oppdater Ladertilstand"
+          "no": "Oppdater Ladertilstand",
+          "nl": "Update de status van de oplader",
+          "fr": "Mettre à jour l'état du chargeur"
         },
         "titleFormatted": {
           "en": "Inform Piggy about charger state [[state]]",
-          "no": "Opplys Piggy om ladertilstanden [[state]]"
+          "no": "Opplys Piggy om ladertilstanden [[state]]",
+          "nl": "Informeer Piggy over de status van de oplader [[state]]",
+          "fr": "Informer Piggy de l'état du chargeur [[state]]"
         },
         "hint": {
-          "en": "This action will inform the charge controller about how to interact with the charger. This should be directly linked to the state of the charger. It is important that the charge controller does is prevented from charging when charging is complete, no car is connected and in error situations.",
-          "no": "Dette flytkortet vil informere ladekontrolleren om hvordan den skal snakke med laderen. Dette skal være direkte linket til tilstanden på laderen. Det er viktig at ladekontrolleren blir blokkert fra å lade når ladingen er fullført, ingen bil er tilkoblet og en feilsituasjon har oppstått."
+          "en": "This action will inform the charge controller about how to interact with the charger. This should be directly linked to the state of the charger. It is important that the charge controller is prevented from charging when charging is complete, no car is connected, and in error situations.",
+          "no": "Dette flytkortet vil informere ladekontrolleren om hvordan den skal snakke med laderen. Dette skal være direkte linket til tilstanden på laderen. Det er viktig at ladekontrolleren blir blokkert fra å lade når ladingen er fullført, ingen bil er tilkoblet og en feilsituasjon har oppstått.",
+          "nl": "Deze actie informeert de laadcontroller over de interactie met de oplader. Dit moet direct gekoppeld zijn aan de staat van de lader. Het is belangrijk dat de laadcontroller niet kan opladen wanneer het opladen voltooid is, er geen auto is aangesloten en in foutsituaties.",
+          "fr": "Cette action informera le contrôleur de charge sur la manière d'interagir avec le chargeur. Cela doit être directement lié à l’état du chargeur. Il est important que le contrôleur de charge ne puisse pas charger lorsque la charge est terminée, qu'aucune voiture n'est connectée et en cas d'erreur."
         },
         "args": [
           {
@@ -1255,22 +1281,28 @@
               {
                 "id": "0",
                 "label": {
-                  "en": "Allow Charging",
-                  "no": "Tillat lading"
+                  "en": "Allow charging",
+                  "no": "Tillat lading",
+                  "nl": "Sta opladen toe",
+                  "fr": "Autoriser le chargement"
                 }
               },
               {
                 "id": "1",
                 "label": {
-                  "en": "Prevent Charging",
-                  "no": "Blokker lading"
+                  "en": "Prevent charging",
+                  "no": "Blokker lading",
+                  "nl": "Voorkom opladen",
+                  "fr": "Empêcher la charge"
                 }
               },
               {
                 "id": "2",
                 "label": {
                   "en": "Charging failed",
-                  "no": "Lading feilet"
+                  "no": "Lading feilet",
+                  "nl": "Opladen mislukt",
+                  "fr": "La charge a échoué"
                 }
               }
             ]
@@ -2260,7 +2292,9 @@
     {
       "name": {
         "en": "Piggy Charge Controller",
-        "no": "Sparegris Ladestyring"
+        "no": "Sparegris Ladestyring",
+        "nl": "Piggy-laadcontroller",
+        "fr": "Contrôleur de charge cochon"
       },
       "class": "other",
       "energy": {
@@ -2282,12 +2316,18 @@
       "capabilitiesOptions": {
         "measure_battery": {
           "title": {
-            "en": "Battery capacity"
+            "en": "Battery capacity",
+            "no": "Batterikapasitet",
+            "nl": "Batterij capaciteit",
+            "fr": "Capacité de la batterie"
           }
         },
         "measure_battery.charge_cycle": {
           "title": {
-            "en": "Charge cycle"
+            "en": "Charge cycle",
+            "no": "Ladesyklus",
+            "nl": "Laadcyclus",
+            "fr": "Cycle de charge"
           }
         },
         "target_power": {
@@ -2295,28 +2335,49 @@
         },
         "alarm_generic.notValidated": {
           "title": {
-            "en": "Alarm"
+            "en": "Alarm",
+            "no": "Alarm",
+            "nl": "Alarm",
+            "fr": "Alarme"
           },
           "insightsTitleTrue": {
-            "en": "Some flows are not set up correctly. New device validation is required."
+            "en": "Some flows are not set up correctly. New device validation is required.",
+            "no": "Noen flytkort er ikke satt opp riktig. Ny enhetsvalidering kreves.",
+            "nl": "Sommige stromen zijn niet correct ingesteld. Validatie van een nieuw apparaat is vereist.",
+            "fr": "Certains flux ne sont pas configurés correctement. La validation du nouveau périphérique est requise."
           },
           "insightsTitleFalse": {
-            "en": "The device has been validated."
+            "en": "The device has been validated.",
+            "no": "Enheten er validert.",
+            "nl": "Het apparaat is gevalideerd.",
+            "fr": "L'appareil a été validé."
           },
           "titleTrue": {
-            "en": "Validation required"
+            "en": "Validation required",
+            "no": "Validering kreves",
+            "nl": "Validatie vereist",
+            "fr": "Validation requise"
           },
           "titleFalse": {
-            "en": "Validated"
+            "en": "Validated",
+            "no": "Validert",
+            "nl": "Gevalideerd",
+            "fr": "Validé"
           }
         },
         "button.reset": {
           "maintenanceAction": true,
           "title": {
-            "en": "Reset controller"
+            "en": "Reset controller",
+            "no": "Tilbakestill kontrolleren",
+            "nl": "Regelaar resetten",
+            "fr": "Réinitialiser le contrôleur"
           },
           "desc": {
-            "en": "Reset validation status and initiates a new validation procedure for the device."
+            "en": "Reset validation status and initiates a new validation procedure for the device.",
+            "no": "Tilbakestill valideringsstatus og starter en ny valideringsprosedyre for enheten.",
+            "nl": "Reset de validatiestatus en start een nieuwe validatieprocedure voor het apparaat.",
+            "fr": "Réinitialise l'état de validation et lance une nouvelle procédure de validation pour l'appareil."
           }
         }
       },
@@ -2362,87 +2423,135 @@
         {
           "type": "group",
           "label": {
-            "en": "Control settings"
+            "en": "Control settings",
+            "no": "Kontrollinnstillinger",
+            "nl": "Controle-instellingen",
+            "fr": "Paramètres de contrôle"
           },
           "children": [
             {
               "id": "startCurrent",
               "type": "number",
               "label": {
-                "en": "Start Current"
+                "en": "Start Current",
+                "no": "Startstrøm",
+                "nl": "Startstroom",
+                "fr": "Courant de démarrage"
               },
               "hint": {
-                "en": "This is the amount of Amps offered to the charger when starting charging."
+                "en": "This is the amount of Amps offered to the charger when starting charging.",
+                "no": "Dette er mengden Ampere som tilbys til laderen når du starter lading.",
+                "nl": "Dit is het aantal Ampère dat aan de oplader wordt aangeboden bij het starten met opladen.",
+                "fr": "Il s'agit de la quantité d'ampères offerte au chargeur lors du démarrage de la charge."
               },
               "value": 11,
               "min": 0,
               "max": 40,
               "units": {
-                "en": "A"
+                "en": "A",
+                "no": "A",
+                "nl": "A",
+                "fr": "A"
               }
             },
             {
               "id": "stopCurrent",
               "type": "number",
               "label": {
-                "en": "Stop Current"
+                "en": "Stop-current",
+                "no": "Stoppstrøm",
+                "nl": "Stop-stroom",
+                "fr": "Arrêter le courant"
               },
               "hint": {
-                "en": "This is the amount of Amps offered to the charger when charging stops (normally 0A)."
+                "en": "This is the amount of Amps offered to the charger when charging stops (normally 0A).",
+                "no": "Dette er mengden ampere som tilbys til laderen når ladingen stopper (normalt 0A).",
+                "nl": "Dit is de hoeveelheid Ampère die aan de lader wordt aangeboden wanneer het opladen stopt (normaal gesproken 0A).",
+                "fr": "Il s'agit de la quantité d'ampères offerte au chargeur lorsque la charge s'arrête (normalement 0A)."
               },
               "value": 0,
               "min": 0,
               "max": 40,
               "units": {
-                "en": "A"
+                "en": "A",
+                "no": "A",
+                "nl": "A",
+                "fr": "A"
               }
             },
             {
               "id": "pauseCurrent",
               "type": "number",
               "label": {
-                "en": "Pause Current"
+                "en": "Pause-current",
+                "no": "Pause-strøm",
+                "nl": "Pauze-stroom",
+                "fr": "Pause-courant"
               },
               "hint": {
-                "en": "This is the amount of Amps offered to the charger when charging is paused - Some cars does not support pausing the charging, in this case set it to the lowest Amps the car support."
+                "en": "This is the amount of Amps offered to the charger when charging is paused - Some cars does not support pausing the charging, in this case set it to the lowest Amps the car support.",
+                "no": "Dette er mengden ampere som tilbys til laderen når ladingen er satt på pause - Noen biler støtter ikke pause i ladingen, i dette tilfellet sett den til den laveste amperen bilen støtter.",
+                "nl": "Dit is de hoeveelheid Ampère die aan de oplader wordt aangeboden wanneer het opladen wordt gepauzeerd. Sommige auto's ondersteunen het pauzeren van het opladen niet. Stel deze in dit geval in op de laagste Ampère die de auto ondersteunt.",
+                "fr": "Il s'agit de la quantité d'ampères offerte au chargeur lorsque la charge est en pause. Certaines voitures ne prennent pas en charge la pause de la charge, dans ce cas, réglez-la sur l'ampérage le plus bas pris en charge par la voiture."
               },
               "value": 4,
               "min": 0,
               "max": 40,
               "units": {
-                "en": "A"
+                "en": "A",
+                "no": "A",
+                "nl": "A",
+                "fr": "A"
               }
             },
             {
               "id": "minCurrent",
               "type": "number",
               "label": {
-                "en": "Minimum Current"
+                "en": "Minimum current",
+                "no": "Minimum strøm",
+                "nl": "Minimale stroom",
+                "fr": "Courant minimum"
               },
               "hint": {
-                "en": "The charging current offered to the car will never go below this value while charging. The pause and stop current must be less than or equal to this value."
+                "en": "The charging current offered to the car will never go below this value while charging. The pause and stop current must be less than or equal to this value.",
+                "no": "Ladestrømmen som tilbys til bilen vil aldri gå under denne verdien under lading. Pause- og stoppstrømmen må være mindre enn eller lik denne verdien.",
+                "nl": "De aan de auto aangeboden laadstroom zal tijdens het laden nooit onder deze waarde komen. De pauze- en stopstroom moeten kleiner of gelijk zijn aan deze waarde.",
+                "fr": "Le courant de charge offert à la voiture ne descendra jamais en dessous de cette valeur pendant la charge. Le courant de pause et d'arrêt doit être inférieur ou égal à cette valeur."
               },
               "value": 7,
               "min": 0,
               "max": 40,
               "units": {
-                "en": "A"
+                "en": "A",
+                "no": "A",
+                "nl": "A",
+                "fr": "A"
               }
             },
             {
               "id": "maxCurrent",
               "type": "number",
               "label": {
-                "en": "Maximum Current"
+                "en": "Maximum current",
+                "no": "Maksimal strøm",
+                "nl": "Maximale stroom",
+                "fr": "Courant maximal"
               },
               "hint": {
-                "en": "The charging current offered to the car will never go above this value."
+                "en": "The charging current offered to the car will never go above this value.",
+                "no": "Ladestrømmen som tilbys til bilen vil aldri gå over denne verdien.",
+                "nl": "De aan de auto aangeboden laadstroom zal nooit boven deze waarde komen.",
+                "fr": "Le courant de charge offert à la voiture ne dépassera jamais cette valeur."
               },
               "value": 40,
               "min": 0,
               "max": 40,
               "units": {
-                "en": "A"
+                "en": "A",
+                "no": "A",
+                "nl": "A",
+                "fr": "A"
               }
             }
           ]
@@ -2450,33 +2559,51 @@
         {
           "type": "group",
           "label": {
-            "en": "Response settings"
+            "en": "Response settings",
+            "no": "Responsinnstillinger",
+            "nl": "Reactie-instellingen",
+            "fr": "Paramètres de réponse"
           },
           "children": [
             {
               "id": "toggleTime",
               "type": "number",
               "label": {
-                "en": "Minimum toggle time"
+                "en": "Minimum toggle time",
+                "no": "Minimum byttetid",
+                "nl": "Minimale schakeltijd",
+                "fr": "Temps de bascule minimum"
               },
               "hint": {
-                "en": "Please keep this resonably higher than the measured toggle time to allow sufficient slack for reliable charging control."
+                "en": "Please keep this reasonably higher than the measured toggle time to allow sufficient slack for reliable charging control.",
+                "no": "Vennligst hold denne litt høyere enn den målte vekslingstiden for å tillate tilstrekkelig slakk for pålitelig ladekontroll.",
+                "nl": "Houd deze redelijk hoger dan de gemeten schakeltijd, zodat er voldoende speling is voor een betrouwbare laadcontrole.",
+                "fr": "Veuillez maintenir ce temps raisonnablement supérieur au temps de bascule mesuré pour permettre un jeu suffisant pour un contrôle de charge fiable."
               },
               "value": 120,
               "min": 5,
               "max": 180,
               "units": {
-                "en": "seconds"
+                "en": "seconds",
+                "no": "sekunder",
+                "nl": "seconden",
+                "fr": "seconds"
               }
             },
             {
               "id": "toggleMeasureW",
               "type": "label",
               "label": {
-                "en": "Measured response time for W"
+                "en": "Measured response time for W",
+                "no": "Målt responstid for W",
+                "nl": "Gemeten responstijd voor W",
+                "fr": "Temps de réponse mesuré pour W"
               },
               "hint": {
-                "en": "The time it took between the controller sent a target power change request and the used Watts was reported back to piggy."
+                "en": "The time it took between the controller sending a target power change request and the used Watts was reported back to Piggy.",
+                "no": "Tiden det tok fra kontrolleren sendte en forespørsel om måleffektendring og de brukte wattene ble rapportert tilbake til Sparegris.",
+                "nl": "De tijd die verstreek tussen het verzenden van een verzoek tot wijziging van het doelvermogen en de gebruikte Watts werd teruggemeld aan Piggy.",
+                "fr": "Le temps écoulé entre l'envoi par le contrôleur d'une demande de changement de puissance cible et les watts utilisés a été signalé à Piggy."
               },
               "value": "-"
             },
@@ -2484,10 +2611,16 @@
               "id": "batteryFlowRequired",
               "type": "checkbox",
               "label": {
-                "en": "Battery flow Required"
+                "en": "Battery flow Required",
+                "no": "Batteristrøm nødvendig",
+                "nl": "Batterijstroom Vereist",
+                "fr": "Débit de la batterie requis"
               },
               "hint": {
-                "en": "When ticked, the device will not validate unless you create a flow to update the battery level. If you don't have this available then this checkbox should be unticked."
+                "en": "When ticked, the device will not validate unless you create a flow to update the battery level. If you don't have this available then this checkbox should be unticked.",
+                "no": "Når det er krysset av, vil enheten ikke validere med mindre du oppretter en flyt for å oppdatere batterinivået. Hvis du ikke har denne tilgjengelig, bør denne avkrysningsboksen være fjernet.",
+                "nl": "Indien aangevinkt, zal het apparaat niet valideren, tenzij u een stroom maakt om het batterijniveau bij te werken. Als u dit niet beschikbaar heeft, moet dit selectievakje uitgeschakeld zijn.",
+                "fr": "Lorsque cette case est cochée, l'appareil ne validera que si vous créez un flux pour mettre à jour le niveau de la batterie. Si vous ne disposez pas de cette option, cette case doit être décochée."
               },
               "value": true
             }
@@ -2496,17 +2629,26 @@
         {
           "type": "group",
           "label": {
-            "en": "Validation status"
+            "en": "Validation status",
+            "no": "Valideringsstatus",
+            "nl": "Validatiestatus",
+            "fr": "Statut de validation"
           },
           "children": [
             {
               "id": "GotSignalWatt",
               "type": "label",
               "label": {
-                "en": "Watt Usage Received"
+                "en": "Watt Usage Received",
+                "no": "Watt-bruk mottatt",
+                "nl": "Wattverbruik ontvangen",
+                "fr": "Utilisation en watts reçue"
               },
               "hint": {
-                "en": "Please make sure a flow updates this device with how many watts the charger is actually charging with whenever the value changes."
+                "en": "Please make sure a flow updates this device with how many watts the charger is actually charging with whenever the value changes.",
+                "no": "Sørg for at en flyt oppdaterer denne enheten med hvor mange watt laderen faktisk lader med hver gang verdien endres.",
+                "nl": "Zorg ervoor dat een stroom dit apparaat bijwerkt met hoeveel watt de oplader daadwerkelijk oplaadt wanneer de waarde verandert.",
+                "fr": "Veuillez vous assurer qu'un flux met à jour cet appareil avec le nombre de watts avec lequel le chargeur charge réellement chaque fois que la valeur change."
               },
               "value": "False"
             },
@@ -2514,10 +2656,16 @@
               "id": "GotSignalBattery",
               "type": "label",
               "label": {
-                "en": "Battery Level Received"
+                "en": "Battery Level Received",
+                "no": "",
+                "nl": "",
+                "fr": ""
               },
               "hint": {
-                "en": "Please make sure a flow updates this device\nwith the battery level whenever the value\nchanges or enter the device setting and untick\nthe battery status requirement."
+                "en": "Please make sure a flow updates this device\nwith the battery level whenever the value\nchanges or enter the device setting and untick\nthe battery status requirement.",
+                "no": "Batterinivå mottatt",
+                "nl": "Batterijniveau ontvangen",
+                "fr": "Niveau de batterie reçu"
               },
               "value": "False"
             },
@@ -2525,10 +2673,16 @@
               "id": "GotSignalStatusCanCharge",
               "type": "label",
               "label": {
-                "en": "Status Can Charge Received"
+                "en": "Status Can Charge Received",
+                "no": "Status kan lades mottatt",
+                "nl": "Status Kan opladen ontvangen",
+                "fr": "Le statut peut facturer reçu"
               },
               "hint": {
-                "en": "Please make sure a flow updates this device with the charger status whenever a car is disconnected."
+                "en": "Please make sure a flow updates this device with the charger status whenever a car is disconnected.",
+                "no": "Sørg for at en flyt oppdaterer denne enheten med laderstatus når en bil kobles fra.",
+                "nl": "Zorg ervoor dat een stroom dit apparaat bijwerkt met de status van de oplader wanneer een auto wordt losgekoppeld.",
+                "fr": "Veuillez vous assurer qu'un flux met à jour cet appareil avec l'état du chargeur chaque fois qu'une voiture est déconnectée."
               },
               "value": "False"
             },
@@ -2536,10 +2690,16 @@
               "id": "GotSignalStatusCantCharge",
               "type": "label",
               "label": {
-                "en": "Status Standby Received"
+                "en": "Status Standby Received",
+                "no": "Status Standby mottatt",
+                "nl": "Status Stand-by ontvangen",
+                "fr": "Statut Veille Reçu"
               },
               "hint": {
-                "en": "Please make sure a flow updates this device with the charger status whenever a car is connected."
+                "en": "Please make sure a flow updates this device with the charger status whenever a car is connected.",
+                "no": "Sørg for at en flyt oppdaterer denne enheten med laderstatus når en bil er tilkoblet.",
+                "nl": "Zorg ervoor dat een stroom dit apparaat bijwerkt met de status van de oplader wanneer een auto is aangesloten.",
+                "fr": "Veuillez vous assurer qu'un flux met à jour cet appareil avec l'état du chargeur chaque fois qu'une voiture est connectée."
               },
               "value": "False"
             },
@@ -2547,10 +2707,16 @@
               "id": "GotSignalStatusError",
               "type": "label",
               "label": {
-                "en": "Status Error Received"
+                "en": "Status Error Received",
+                "no": "Statusfeil mottatt",
+                "nl": "Statusfout ontvangen",
+                "fr": "Erreur d'état reçue"
               },
               "hint": {
-                "en": "Please make sure a flow updates this device with the charger status whenever an error occurs.\nThis is not required for device validation but it will improve the app performance."
+                "en": "Please make sure a flow updates this device with the charger status whenever an error occurs.\nThis is not required for device validation but it will improve the app performance.",
+                "no": "Sørg for at en flyt oppdaterer denne enheten med laderstatus når det oppstår en feil.\nDette er ikke nødvendig for enhetsvalidering, men det vil forbedre appytelsen.",
+                "nl": "Zorg ervoor dat een stroom dit apparaat bijwerkt met de opladerstatus wanneer er een fout optreedt.\nDit is niet vereist voor apparaatvalidatie, maar het zal de app-prestaties verbeteren.",
+                "fr": "Veuillez vous assurer qu'un flux met à jour cet appareil avec l'état du chargeur chaque fois qu'une erreur se produit.\nCeci n'est pas requis pour la validation de l'appareil, mais cela améliorera les performances de l'application."
               },
               "value": "False"
             }
@@ -2634,7 +2800,9 @@
       "type": "enum",
       "title": {
         "en": "Charge status",
-        "no": "Ladestatus"
+        "no": "Ladestatus",
+        "nl": "Laadstatus",
+        "fr": "Statut de facturation"
       },
       "getable": true,
       "setable": false,
@@ -2642,22 +2810,37 @@
         {
           "id": "0",
           "title": {
-            "en": "Allow Charging",
-            "no": "Tillat lading"
+            "en": "Charging unlimited",
+            "no": "Lading ubegrenset",
+            "nl": "Onbeperkt opladen",
+            "fr": "Chargement illimité"
           }
         },
         {
           "id": "1",
           "title": {
-            "en": "Prevent Charging",
-            "no": "Blokker lading"
+            "en": "Charging limited",
+            "no": "Lading begrenset",
+            "nl": "Opladen beperkt",
+            "fr": "Charge limitée"
           }
         },
         {
           "id": "2",
           "title": {
+            "en": "Charging blocked",
+            "no": "Lading blokkert",
+            "nl": "Opladen geblokkeerd",
+            "fr": "Chargement bloqué"
+          }
+        },
+        {
+          "id": "3",
+          "title": {
             "en": "Charging failed",
-            "no": "Lading feilet"
+            "no": "Lading feilet",
+            "nl": "Opladen mislukt",
+            "fr": "La charge a échoué"
           }
         }
       ],
@@ -3208,10 +3391,16 @@
       "min": 0,
       "max": 20000,
       "title": {
-        "en": "Target Power"
+        "en": "Desired effect",
+        "no": "Ønsket effekt",
+        "nl": "Gewenste effect",
+        "fr": "Effet recherché"
       },
       "units": {
-        "en": "W"
+        "en": "W",
+        "no": "W",
+        "nl": "W",
+        "fr": "W"
       },
       "chartType": "stepLine",
       "decimals": 0,
