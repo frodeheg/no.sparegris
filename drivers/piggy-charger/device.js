@@ -247,11 +247,11 @@ class ChargeDevice extends Device {
    * Sets the target power (called internally when the target power capability changes)
    */
   async setTargetPower(power) {
-      // Report power to device trigger
-      const changeChargingPowerTrigger = this.homey.flow.getDeviceTriggerCard('charger-change-target-power');
-      const tokens = { offeredPower: +power };
-      changeChargingPowerTrigger.trigger(this, tokens);
-      return Promise.resolve(+power);
+    // Report power to device trigger
+    const changeChargingPowerTrigger = this.homey.flow.getDeviceTriggerCard('charger-change-target-power');
+    const tokens = { offeredPower: +power };
+    changeChargingPowerTrigger.trigger(this, tokens);
+    return Promise.resolve(+power);
   }
 
   /**
@@ -276,7 +276,7 @@ class ChargeDevice extends Device {
     return dst.loadFile('../drivers/piggy-charger/assets/images/notValid.png')
       .then(() => dst.setCursorWindow(190, 80, 460, 170))
       .then(() => dst.setTextColor([255, 128, 128, 255]))
-      .then(() => dst.addText('The device can not be used\nbefore the check-list below\nhas been completed\n'))
+      .then(() => dst.addText(this.homey.__('charger.validation.heading')))
       .then(() => dst.addText('-----------------------------'))
       .then(() => dst.setCursorWindow(40, 185, 460, 460))
       .then(() => dst.setTextColor([255, 255, 255, 255]))
@@ -291,7 +291,7 @@ class ChargeDevice extends Device {
         if (err) return dst.addText(`\u001b[35;m${err.message}\n`);
         return dst.addText(`${progressText} ${this.homey.__('charger.validation.wait')}\n`);
       })
-      .finally(() => dst.addText('\u001b[0m(maintenance action "reset" will start over)\u001b[1m\n'))
+      .finally(() => dst.addText(`\u001b[0m(${this.homey.__('charger.validation.reset')})\u001b[1m\n`))
       .then(() => dst.pack().pipe(stream));
   }
 

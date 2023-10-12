@@ -5,6 +5,8 @@
 
 'use strict';
 
+const fs = require('fs');
+
 global.testing = true;
 
 // eslint-disable-next-line import/no-extraneous-dependencies
@@ -74,6 +76,46 @@ async function testChargePlan() {
   console.log('\x1b[1A[\x1b[32mPASSED\x1b[0m]');
 }
 
+// Test Character set if it is included
+async function testCharset() {
+  console.log('[......] Character set');
+  // Helper function
+  const reducer = (combined, currentValue) => {
+    if (typeof(currentValue) === 'string') {
+      for (const charIdx in currentValue) {
+        combined[currentValue[charIdx]] = true;
+      }
+    } else if (typeof(currentValue) === 'object') {
+      combined = Object.values(currentValue).reduce(reducer, combined);
+    } else {
+      console.log('Language string is not a string');
+    }
+    return combined;
+  };
+  // Find languages
+  const files = fs.readdirSync('../locales/');
+  const validLetters = {
+    'en.json': 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ .,-+/*"\'',
+    'no.json': 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ .,-+/*"\'øæåØÆÅ',
+    'nl.json': 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ .,-+/*"\'',
+    'fr.json': 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ .,-+/*"\'ôéÉçêà',
+  };
+  for (const idx in files) {
+    const fileName = `../locales/${files[idx]}`;
+    const json = JSON.parse(fs.readFileSync(fileName, { encoding: 'utf8', flag: 'r' }));
+    const letters = Object.values(json.charger).reduce(reducer, {});
+    for (const letter in letters) {
+      if (letter.charCodeAt(0) >= 256) {
+        throw new Error(`Unicode character '${letter}' from ${fileName} is not supported yet`);
+      }
+      if (!(validLetters[files[idx]].includes(letter))) {
+        throw new Error(`Letter '${letter}' from ${fileName} is not valid`);
+      }
+    }
+  }
+  console.log('\x1b[1A[\x1b[32mPASSED\x1b[0m]');
+}
+
 /**
  * Test help images that the device is properly connected
  * 1) Test that the camera image is set
@@ -100,6 +142,7 @@ async function testConnectHelp() {
 // Start all tests
 async function startAllTests() {
   try {
+    await testCharset();
     await testDeviceInit();
     await testChargePlan();
     await testConnectHelp();

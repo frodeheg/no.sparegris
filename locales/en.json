@@ -422,6 +422,8 @@
       "info2": "If your charger is directly supported, it will be listed in the next step. If not you must select the flow based controller."
     },
     "validation": {
+      "heading": "The device can not be used before the check-list below has been completed",
+      "reset": "maintenance action \"reset\" will start over",
       "stateLabel": "Charging state recieved",
       "stateHint": "Please create a flow to inform the controller about the charging state.",
       "batterySkipped": "Battery test skipped.",

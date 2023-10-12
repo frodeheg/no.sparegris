@@ -8,7 +8,9 @@ const homeypath = ('testing' in global && testing) ? '../../testing/' : '';
 const { Driver } = require(`${homeypath}homey`);
 
 const supportedDevices = {
-  'no.easee:charger': { icon: 'easee.svg' }
+  'no.easee:charger': { icon: 'easee.svg' },
+  'com.zaptec:go': { icon: 'zaptec.svg' },
+  'com.tesla.charger:Tesla': { icon: 'tesla.svg' },
 };
 
 class ChargeDriver extends Driver {
