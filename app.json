@@ -1570,10 +1570,10 @@
           "fr": "Flux obsolète: veuillez installer le dispositif de contrôleur de chargeur à la place"
         },
         "titleFormatted": {
-          "en": "Deprecated flow: Please install the charger controller device instead [[offerEnergy]] kWh before [[endTime]]",
-          "no": "Utdatert flyt: Installer laderkontrollenheten i stedet [[offerEnergy]] kWh før kl. [[endTime]]",
-          "nl": "Verouderde stroom: installeer in plaats daarvan het ladercontrollerapparaat [[offerEnergy]] kWh vóór [[endTime]]",
-          "fr": "Flux obsolète: veuillez installer le dispositif de contrôleur de chargeur à la place [[offerEnergy]] kWh avant le [[endTime]]"
+          "en": "Deprecated flow: Please install the charger controller device instead! Charge [[offerEnergy]] kWh before [[endTime]]",
+          "no": "Utdatert flyt: Installer laderkontrollenheten i stedet! Lad [[offerEnergy]] kWh før kl. [[endTime]]",
+          "nl": "Verouderde stroom: installeer in plaats daarvan het ladercontrollerapparaat! Laad [[offerEnergy]] kWh vóór [[endTime]]",
+          "fr": "Flux obsolète: veuillez installer le dispositif de contrôleur de chargeur à la place! Chargez [[offerEnergy]] kWh avant le [[endTime]]"
         },
         "hint": {
           "en": "This flow has been deprecated. It will still work for a limited time, but you're reccommended to install the new charger controller device as soon as possible and use the same flow from there instead.",
@@ -2611,16 +2611,16 @@
               "id": "batteryFlowRequired",
               "type": "checkbox",
               "label": {
-                "en": "Battery flow Required",
-                "no": "Batteristrøm nødvendig",
-                "nl": "Batterijstroom Vereist",
-                "fr": "Débit de la batterie requis"
+                "en": "Battery level available",
+                "no": "Batterinivå tilgjengelig",
+                "nl": "Batterijniveau beschikbaar",
+                "fr": "Niveau de batterie disponible"
               },
               "hint": {
-                "en": "When ticked, the device will not validate unless you create a flow to update the battery level. If you don't have this available then this checkbox should be unticked.",
-                "no": "Når det er krysset av, vil enheten ikke validere med mindre du oppretter en flyt for å oppdatere batterinivået. Hvis du ikke har denne tilgjengelig, bør denne avkrysningsboksen være fjernet.",
-                "nl": "Indien aangevinkt, zal het apparaat niet valideren, tenzij u een stroom maakt om het batterijniveau bij te werken. Als u dit niet beschikbaar heeft, moet dit selectievakje uitgeschakeld zijn.",
-                "fr": "Lorsque cette case est cochée, l'appareil ne validera que si vous créez un flux pour mettre à jour le niveau de la batterie. Si vous ne disposez pas de cette option, cette case doit être décochée."
+                "en": "When the battery level is available, create a flow to signal the battery level to this app. If you do not have the battery level available, do not tick this checkbox.",
+                "no": "Når batterinivået er tilgjengelig, må du opprette en flyt for å signalere batterinivået til denne appen. Hvis du ikke har batterinivået tilgjengelig, bør du ikke krysse av i denne avkrysningsboksen.",
+                "nl": "Wanneer het batterijniveau beschikbaar is, maakt u een stroom om het batterijniveau aan deze app door te geven. Als u niet over het batterijniveau beschikt, vink dit selectievakje dan niet aan.",
+                "fr": "Lorsque le niveau de la batterie est disponible, créez un flux pour signaler le niveau de la batterie à cette application. Si vous ne disposez pas du niveau de batterie, ne cochez pas cette case."
               },
               "value": true
             }
@@ -2657,9 +2657,9 @@
               "type": "label",
               "label": {
                 "en": "Battery Level Received",
-                "no": "",
-                "nl": "",
-                "fr": ""
+                "no": "Batterinivå mottatt",
+                "nl": "Batterijniveau ontvangen",
+                "fr": "Niveau de batterie reçu"
               },
               "hint": {
                 "en": "Please make sure a flow updates this device\nwith the battery level whenever the value\nchanges or enter the device setting and untick\nthe battery status requirement.",
@@ -2799,10 +2799,10 @@
     "charge_status": {
       "type": "enum",
       "title": {
-        "en": "Charge status",
+        "en": "Charge-status",
         "no": "Ladestatus",
         "nl": "Laadstatus",
-        "fr": "Statut de facturation"
+        "fr": "Statut de charge"
       },
       "getable": true,
       "setable": false,
@@ -2810,37 +2810,37 @@
         {
           "id": "0",
           "title": {
-            "en": "Charging unlimited",
-            "no": "Lading ubegrenset",
-            "nl": "Onbeperkt opladen",
-            "fr": "Chargement illimité"
+            "en": "Unlimited",
+            "no": "Ubegrenset",
+            "nl": "Onbeperkt",
+            "fr": "Illimité"
           }
         },
         {
           "id": "1",
           "title": {
-            "en": "Charging limited",
-            "no": "Lading begrenset",
-            "nl": "Opladen beperkt",
-            "fr": "Charge limitée"
+            "en": "Limited",
+            "no": "Begrenset",
+            "nl": "Beperkt",
+            "fr": "Limitée"
           }
         },
         {
           "id": "2",
           "title": {
-            "en": "Charging blocked",
-            "no": "Lading blokkert",
-            "nl": "Opladen geblokkeerd",
-            "fr": "Chargement bloqué"
+            "en": "Blocked",
+            "no": "Blokkert",
+            "nl": "Geblokkeerd",
+            "fr": "Bloquée"
           }
         },
         {
           "id": "3",
           "title": {
-            "en": "Charging failed",
-            "no": "Lading feilet",
-            "nl": "Opladen mislukt",
-            "fr": "La charge a échoué"
+            "en": "Failed",
+            "no": "Feilet",
+            "nl": "Mislukt",
+            "fr": "Échoué"
           }
         }
       ],

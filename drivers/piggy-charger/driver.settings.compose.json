@@ -190,16 +190,16 @@
         "id": "batteryFlowRequired",
         "type": "checkbox",
         "label": {
-          "en": "Battery flow Required",
-          "no": "Batteristrøm nødvendig",
-          "nl": "Batterijstroom Vereist",
-          "fr": "Débit de la batterie requis"
+          "en": "Battery level available",
+          "no": "Batterinivå tilgjengelig",
+          "nl": "Batterijniveau beschikbaar",
+          "fr": "Niveau de batterie disponible"
         },
         "hint": {
-          "en": "When ticked, the device will not validate unless you create a flow to update the battery level. If you don't have this available then this checkbox should be unticked.",
-          "no": "Når det er krysset av, vil enheten ikke validere med mindre du oppretter en flyt for å oppdatere batterinivået. Hvis du ikke har denne tilgjengelig, bør denne avkrysningsboksen være fjernet.",
-          "nl": "Indien aangevinkt, zal het apparaat niet valideren, tenzij u een stroom maakt om het batterijniveau bij te werken. Als u dit niet beschikbaar heeft, moet dit selectievakje uitgeschakeld zijn.",
-          "fr": "Lorsque cette case est cochée, l'appareil ne validera que si vous créez un flux pour mettre à jour le niveau de la batterie. Si vous ne disposez pas de cette option, cette case doit être décochée."
+          "en": "When the battery level is available, create a flow to signal the battery level to this app. If you do not have the battery level available, do not tick this checkbox.",
+          "no": "Når batterinivået er tilgjengelig, må du opprette en flyt for å signalere batterinivået til denne appen. Hvis du ikke har batterinivået tilgjengelig, bør du ikke krysse av i denne avkrysningsboksen.",
+          "nl": "Wanneer het batterijniveau beschikbaar is, maakt u een stroom om het batterijniveau aan deze app door te geven. Als u niet over het batterijniveau beschikt, vink dit selectievakje dan niet aan.",
+          "fr": "Lorsque le niveau de la batterie est disponible, créez un flux pour signaler le niveau de la batterie à cette application. Si vous ne disposez pas du niveau de batterie, ne cochez pas cette case."
         },
         "value": true
       }
@@ -236,9 +236,9 @@
         "type": "label",
         "label": {
           "en": "Battery Level Received",
-          "no": "",
-          "nl": "",
-          "fr": ""
+          "no": "Batterinivå mottatt",
+          "nl": "Batterijniveau ontvangen",
+          "fr": "Niveau de batterie reçu"
         },
         "hint": {
           "en": "Please make sure a flow updates this device\nwith the battery level whenever the value\nchanges or enter the device setting and untick\nthe battery status requirement.",

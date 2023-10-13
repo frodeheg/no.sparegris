@@ -92,14 +92,15 @@ class Test {
       .then(() => dst.addText('Charge plan', 250 - (dst.getWidth('Charge plan') / 2), 25))
       .then(() => dst.setTextSize(1))
       .then(() => dst.setCursorWindow(25, 60, 475, 170))
+      // .then(() => dst.addText('Letter test: øæåØÆÅ éàèùçâêîôûëïü\n', 25, 60))
       .then(() => dst.addText('No charge plan created. You can create a charge plan by starting the flow "Charge cheapest x hours before yy:00 o\'clock', 25, 60))
       .then(() => dst.drawLineChart(25, 150, 450, 325, {
         xaxis,
         values: [0.1, 0.4, 1.2, 0.8, 0.4, 0.5, 0.3, 0.4, 0.2, 0.25, 0.1, 0.4, 1.2, 0.8, 0.4, 0.5, 0.3, 0.4, 0.2, 0.25, 0.3, 0.4, 0.5, 0.3],
         enabled: [true, false, true, false, true, false, true, true, true, true, true, false, true, false, true, false, true, false, false, false, false, false, true, false],
         gridcol: [128, 128, 128, 255],
-        ycol: [128, 128, 128, 255],
-        xcol: [128, 128, 128, 255],
+        ycol: [180, 180, 180, 255],
+        xcol: [180, 180, 180, 255],
         linecol: [255, 255, 128, 255]
       }))
       // --- END DRAW TEST ---

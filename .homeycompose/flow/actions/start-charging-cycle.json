@@ -7,10 +7,10 @@
     "fr": "Flux obsolète: veuillez installer le dispositif de contrôleur de chargeur à la place"
   },
   "titleFormatted": {
-    "en": "Deprecated flow: Please install the charger controller device instead [[offerEnergy]] kWh before [[endTime]]",
-    "no": "Utdatert flyt: Installer laderkontrollenheten i stedet [[offerEnergy]] kWh før kl. [[endTime]]",
-    "nl": "Verouderde stroom: installeer in plaats daarvan het ladercontrollerapparaat [[offerEnergy]] kWh vóór [[endTime]]",
-    "fr": "Flux obsolète: veuillez installer le dispositif de contrôleur de chargeur à la place [[offerEnergy]] kWh avant le [[endTime]]"
+    "en": "Deprecated flow: Please install the charger controller device instead! Charge [[offerEnergy]] kWh before [[endTime]]",
+    "no": "Utdatert flyt: Installer laderkontrollenheten i stedet! Lad [[offerEnergy]] kWh før kl. [[endTime]]",
+    "nl": "Verouderde stroom: installeer in plaats daarvan het ladercontrollerapparaat! Laad [[offerEnergy]] kWh vóór [[endTime]]",
+    "fr": "Flux obsolète: veuillez installer le dispositif de contrôleur de chargeur à la place! Chargez [[offerEnergy]] kWh avant le [[endTime]]"
   },
   "hint": {
     "en": "This flow has been deprecated. It will still work for a limited time, but you're reccommended to install the new charger controller device as soon as possible and use the same flow from there instead.",

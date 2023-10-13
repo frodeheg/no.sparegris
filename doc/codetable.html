@@ -3,17 +3,20 @@
 <style>
 body {
 font-family: monospace, "Courier New";
-color: white;
+color: #0F0;
 }
 
 .outer {
   inline-size: 9px;
   overflow: hidden;
-  font-size: 14px;
+  font-size: 15px;
 }
 </style>
 <!---
-  Font size 14px = 9x19
+  Font size for green only (r and b has offsets)
+  Font size 14px = 8x17
+  Font size 15px = 9x18
+  Font size 28px = 17x33
 -->
 
 </header>
@@ -26,7 +29,7 @@ color: white;
 <!-- CHARACTER TABLE -->
   <script language="javascript">
   const charwidth = 9;
-  const charheight = 17;
+  const charheight = 18;
   document.getElementById("frame").style.width = `${charwidth*32}px`;
   document.getElementById("frame").style.height = `${charheight*8*8}px`;
   document.open();
@@ -54,7 +57,7 @@ color: white;
   <script language="javascript">
     const canvas = document.getElementById("myCanvas");
     const ctx = canvas.getContext("2d");
-    ctx.font = "14px monospace";
+    ctx.font = "15px monospace";
     let txt = "H"
     //ctx.fillText("width:" + ctx.measureText(txt).width, 10, 50)
     //ctx.fillText(txt, 10, 100);

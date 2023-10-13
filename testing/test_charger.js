@@ -76,16 +76,16 @@ async function testChargePlan() {
   console.log('\x1b[1A[\x1b[32mPASSED\x1b[0m]');
 }
 
-// Test Character set if it is included
+// Test Characters and do not pass if it has not been validated with test-textify.js that it look allright
 async function testCharset() {
   console.log('[......] Character set');
   // Helper function
   const reducer = (combined, currentValue) => {
-    if (typeof(currentValue) === 'string') {
+    if (typeof (currentValue) === 'string') {
       for (const charIdx in currentValue) {
         combined[currentValue[charIdx]] = true;
       }
-    } else if (typeof(currentValue) === 'object') {
+    } else if (typeof (currentValue) === 'object') {
       combined = Object.values(currentValue).reduce(reducer, combined);
     } else {
       console.log('Language string is not a string');
@@ -98,7 +98,7 @@ async function testCharset() {
     'en.json': 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ .,-+/*"\'',
     'no.json': 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ .,-+/*"\'øæåØÆÅ',
     'nl.json': 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ .,-+/*"\'',
-    'fr.json': 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ .,-+/*"\'ôéÉçêà',
+    'fr.json': 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ .,-+/*"\'éàèùçâêîôûëïü',
   };
   for (const idx in files) {
     const fileName = `../locales/${files[idx]}`;

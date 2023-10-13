@@ -1,10 +1,10 @@
 {
   "type": "enum",
   "title": {
-    "en": "Charge status",
+    "en": "Charge-status",
     "no": "Ladestatus",
     "nl": "Laadstatus",
-    "fr": "Statut de facturation"
+    "fr": "Statut de charge"
   },
   "getable": true,
   "setable": false,
@@ -12,37 +12,37 @@
     {
       "id": "0",
       "title": {
-        "en": "Charging unlimited",
-        "no": "Lading ubegrenset",
-        "nl": "Onbeperkt opladen",
-        "fr": "Chargement illimité"
+        "en": "Unlimited",
+        "no": "Ubegrenset",
+        "nl": "Onbeperkt",
+        "fr": "Illimité"
       }
     },
     {
       "id": "1",
       "title": {
-        "en": "Charging limited",
-        "no": "Lading begrenset",
-        "nl": "Opladen beperkt",
-        "fr": "Charge limitée"
+        "en": "Limited",
+        "no": "Begrenset",
+        "nl": "Beperkt",
+        "fr": "Limitée"
       }
     },
     {
       "id": "2",
       "title": {
-        "en": "Charging blocked",
-        "no": "Lading blokkert",
-        "nl": "Opladen geblokkeerd",
-        "fr": "Chargement bloqué"
+        "en": "Blocked",
+        "no": "Blokkert",
+        "nl": "Geblokkeerd",
+        "fr": "Bloquée"
       }
     },
     {
       "id": "3",
       "title": {
-        "en": "Charging failed",
-        "no": "Lading feilet",
-        "nl": "Opladen mislukt",
-        "fr": "La charge a échoué"
+        "en": "Failed",
+        "no": "Feilet",
+        "nl": "Mislukt",
+        "fr": "Échoué"
       }
     }
   ],
