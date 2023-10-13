@@ -1384,9 +1384,13 @@ class PiggyBank extends Homey.App {
         this.updateLog(`ignoring: ${device.name}`, c.LOG_DEBUG);
         continue;
       }
+      const knownDevice = oldDeviceList !== null && device.id in oldDeviceList;
+      const inUseDevice = knownDevice && oldDeviceList[device.id].use;
       // Priority 1 devices has class = thermostat & heater - capabilities ['target_temperature' + 'measure_temperature']
+      // Chargers that are in use are DEPRECATED and as such will only show as pri1 when selected... otherwise it's low pri
       const priority = (((driverId in d.DEVICE_CMD)
-        && ((d.DEVICE_CMD[driverId].type === d.DEVICE_TYPE.CHARGER)
+        && (((d.DEVICE_CMD[driverId].type === d.DEVICE_TYPE.CHARGER) && inUseDevice)
+        || (d.DEVICE_CMD[driverId].type === d.DEVICE_TYPE.CHARGE_CONTROLLER)
         || (d.DEVICE_CMD[driverId].type === d.DEVICE_TYPE.HEATER)
         || (d.DEVICE_CMD[driverId].type === d.DEVICE_TYPE.WATERHEATER)
         || (d.DEVICE_CMD[driverId].type === d.DEVICE_TYPE.AC))) ? 1 : 0)
@@ -1397,8 +1401,8 @@ class PiggyBank extends Homey.App {
       // Filter out irrelevant devices (check old device list if possible)
       let useDevice = false;
       let reliability;
-      if (oldDeviceList !== null && device.id in oldDeviceList) {
-        useDevice = oldDeviceList[device.id].use;
+      if (knownDevice) {
+        useDevice = inUseDevice;
         reliability = oldDeviceList[device.id].reliability;
       } else if (oldDeviceList === null) {
         // App opened for the first time, set usage based on priority
