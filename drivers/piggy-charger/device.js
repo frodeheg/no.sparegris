@@ -823,6 +823,13 @@ class ChargeDevice extends Device {
     return Promise.resolve(this.getCapabilityValue('measure_power'));
   }
 
+  /**
+   * Changes the power
+   */
+  async changePower(powerChange, now = new Date()) {
+    console.log(`Got Changepower ${powerChange}`);
+  }
+
 }
 
 module.exports = ChargeDevice;

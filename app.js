@@ -1540,7 +1540,42 @@ class PiggyBank extends Homey.App {
   }
 
   /**
+   * Adjusts the power usage for a charger controller
+   * Note that this function is already throttled by onBelowPowerLimit such that it will not increase power
+   * immediately after it was decreased
+   */
+  async changeControllerPower(deviceId, powerChange, now = new Date()) {
+    this.updateLog(`Controller power change: ${powerChange}`, c.LOG_DEBUG);
+    let device;
+    try {
+      device = await this.getDevice(deviceId);
+      this.updateReliability(deviceId, 1);
+    } catch (err) {
+      // Most likely timeout
+      this.updateLog(`Controller device cannot be fetched. ${String(err)}`, c.LOG_ERROR);
+      this.__current_state[deviceId].nComError += 10; // Big error so wait more until retry than smaller errors
+      this.updateReliability(deviceId, 0);
+      if (this.logUnit === deviceId) this.updateLog(`abort changeControllerPower() for '${deviceId} due to Homey API issues (Homey is busy)`, c.LOG_ALL);
+      return Promise.resolve([false, false]); // The unhandled device is solved by the later nComError handling
+    }
+
+    if (this.logUnit === deviceId) this.updateLog(`attempt changeControllerPower(${powerChange}) for ${device.name}`, c.LOG_ALL);
+
+    if (device.capabilitiesObj === null) {
+      this.updateLog('Controller device capability list missing', c.LOG_ERROR);
+      this.__current_state[deviceId].nComError += 10; // This should not happen
+      this.updateReliability(deviceId, 0);
+      if (this.logUnit === deviceId) this.updateLog(`abort changeControllerPower() for ${device.name} due to Homey API issues (Homey busy?)`, c.LOG_ALL);
+      return Promise.resolve([false, false]);
+    }
+
+    device.changePower(powerChange, now);
+    console.log("XXXXX");
+  }
+
+  /**
    * Reduces the power usage for a charger device
+   * DEPRECATED - WILL BE REMOVED
    * This function is only called if the device is a charger or a manually selected socket device
    * Note that this function is already throttled by onBelowPowerLimit such that it will not increase power
    * immediately after it was decreased
@@ -2829,7 +2864,9 @@ class PiggyBank extends Homey.App {
           try {
             let success; let noChange;
             const { driverId } = this.__deviceList[deviceId];
-            if ((driverId in d.DEVICE_CMD) && (d.DEVICE_CMD[driverId].type === d.DEVICE_TYPE.CHARGER)) {
+            if ((driverId in d.DEVICE_CMD) && (d.DEVICE_CMD[driverId].type === d.DEVICE_TYPE.CHARGE_CONTROLLER)) {
+              [success, noChange] = await this.changeControllerPower(deviceId, morePower, now);
+            } else if ((driverId in d.DEVICE_CMD) && (d.DEVICE_CMD[driverId].type === d.DEVICE_TYPE.CHARGER)) {
               [success, noChange] = await this.changeDevicePower(deviceId, morePower, now);
             } else {
               [success, noChange] = await this.changeDeviceState(deviceId, undefined);
@@ -2912,7 +2949,9 @@ class PiggyBank extends Homey.App {
         try {
           let success; let noChange;
           const { driverId } = this.__deviceList[deviceId];
-          if ((driverId in d.DEVICE_CMD) && (d.DEVICE_CMD[driverId].type === d.DEVICE_TYPE.CHARGER)) {
+          if ((driverId in d.DEVICE_CMD) && (d.DEVICE_CMD[driverId].type === d.DEVICE_TYPE.CHARGE_CONTROLLER)) {
+            [success, noChange] = await this.changeControllerPower(deviceId, -lessPower, now);
+          } else if ((driverId in d.DEVICE_CMD) && (d.DEVICE_CMD[driverId].type === d.DEVICE_TYPE.CHARGER)) {
             [success, noChange] = await this.changeDevicePower(deviceId, -lessPower, now);
           } else {
             [success, noChange] = await this.changeDeviceState(deviceId, operation);

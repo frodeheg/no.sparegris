@@ -340,7 +340,7 @@ const DEVICE_CMD = {
     tempMax: 25,
     default: false
   },
-  /* 'com.tesla.charger:Tesla': {
+  'com.tesla.charger:Tesla': {
     type: DEVICE_TYPE.CHARGER,
     setOnOffCap: 'charge_mode',
     setOnValue: 'charge_now',
@@ -370,8 +370,8 @@ const DEVICE_CMD = {
     getOfferedCap: 'measure_current.offered',
     startCurrent: 11,
     minCurrent: 7,
-    pauseCurrent: 4,
-  } */
+    pauseCurrent: 4
+  },
   'com.tibber:home': DEFAULT_IGNORED,
   'com.tibber:pulse': DEFAULT_METER,
   'com.toshiba:ac': { // Note! Has power-step modes (target_power_mode)
@@ -388,7 +388,7 @@ const DEVICE_CMD = {
   'com.tuya.cloud:tuyalight': DEFAULT_SWITCH,
   'com.xiaomi-mi:plug.maeu01': DEFAULT_SWITCH,
   'com.xiaomi-mi:sensor_motion.aq2': DEFAULT_IGNORED,
-  /* 'com.zaptec:go': {
+  'com.zaptec:go': {
     type: DEVICE_TYPE.CHARGER,
     setOnOffCap: 'charging_button',
     setOnValue: true,
@@ -401,7 +401,7 @@ const DEVICE_CMD = {
     // setCurrentCap: 'target_charger_current',  // Not available
     // getOfferedCap: 'measure_current.offered', // Available, but ignore when not setable
     default: false
-  }, */
+  },
   'fi.taelek.ecocontrol:oled': {
     type: DEVICE_TYPE.HEATER,
     note: 'This device has no onOff capability and will emulate Off by turning the temperature to absolute minimum',

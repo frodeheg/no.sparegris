@@ -112,7 +112,8 @@
         "settings.help.deviceTypeAC",
         "settings.help.deviceTypeCharger",
         "settings.help.deviceTypeIgnore",
-        "settings.help.deviceTypeMeter"
+        "settings.help.deviceTypeMeter",
+        "settings.help.deviceTypeController"
       ];
       var chargePlanGraphTitle = "chargePlanGraph.title";
       var chargePlanGraphYAxis = "chargePlanGraph.yaxis";
@@ -800,16 +801,6 @@
         element.style.display = type;
       }
 
-      function isChargerControllable() {
-        for (var key in deviceList) {
-          var device = deviceList[key];
-          if ((device.use) && (device.driverId in DEVICE_CMD) && (DEVICE_CMD[device.driverId].type === DEVICE_TYPE.CHARGER)) {
-            return true;
-          }
-        }
-        return false;
-      }
-
       function changeTaskVisibility(taksName, makeVisible) {
         if (makeVisible) {
           setVisible(taksName);
@@ -828,13 +819,12 @@
         }
         let appIsDisabled = (document.getElementById("appEnabled").value == '0');
         let haveTasks = false;
-        const { foundCharger, chargerUsed } = checkForCharger(deviceList);
+        const { foundCharger, foundController, chargerOn, controllerOn } = checkForCharger(deviceList);
         const priceMode = document.getElementById("priceMode").value;
         const priceKind = document.getElementById("priceKind").value;
         haveTasks |= changeTaskVisibility('taskEnableApp', appIsDisabled);
         haveTasks |= changeTaskVisibility('taskCreateEnergyFlow', !appIsDisabled && appConfigProgress.energyMeterNotConnected);
         haveTasks |= changeTaskVisibility('taskEnergyFlowRate', !appIsDisabled && !appConfigProgress.energyMeterNotConnected && (+appConfigProgress.timeSinceEnergyMeter > 120));
-        haveTasks |= changeTaskVisibility('taskChargerNotEnabled', !appIsDisabled && (+document.getElementById('chargeTarget').value == CHARGE_TARGET_AUTO) && (!isChargerControllable()) && (new Date(chargerOptions.chargeEnd) > new Date())); // TODO: REMOVE
         haveTasks |= changeTaskVisibility('taskNoPriceFlow', !appIsDisabled && priceMode == PRICE_MODE_FLOW && !appConfigProgress.gotPPFromFlow);
         haveTasks |= changeTaskVisibility('taskNoPriceAPI', !appIsDisabled && priceMode == PRICE_MODE_INTERNAL && priceKind == PRICE_KIND_EXTERNAL && appConfigProgress.ApiStatus == PRICE_API_NO_APP);
         haveTasks |= changeTaskVisibility('taskNoPriceAPIDevice', !appIsDisabled && priceMode == PRICE_MODE_INTERNAL && priceKind == PRICE_KIND_EXTERNAL && appConfigProgress.ApiStatus == PRICE_API_NO_DEVICE);
@@ -845,7 +835,9 @@
         haveTasks |= changeTaskVisibility('taskExperimental', !appIsDisabled && experimentalEnabled);
         haveTasks |= changeTaskVisibility('taskSpookey', !appIsDisabled && (+appConfigProgress.numSpookeyChanges > 0));
         haveTasks |= changeTaskVisibility('errorDevices', !appIsDisabled && numErrorDevices > 0);
-        haveTasks |= changeTaskVisibility('taskAddCarCharger', !appIsDisabled && foundCharger && !chargerUsed);
+        haveTasks |= changeTaskVisibility('taskDeprecatedCharger', !appIsDisabled && foundCharger && chargerOn);
+        haveTasks |= changeTaskVisibility('taskNoController', !appIsDisabled && foundCharger && !chargerOn && !foundController);
+        haveTasks |= changeTaskVisibility('taskNoActiveController', !appIsDisabled && foundCharger && foundController && !controllerOn);
         changeTaskVisibility('taskNone', !haveTasks);
       }
 
@@ -988,17 +980,18 @@
           <tr id="taskNoPriceAPI"><td style="vertical-align:top;"><span id="iconE2" class="⚠ err"></span></td><td><span data-i18n="settings.welcome.taskNoPriceAPI">taskNoPriceAPI</span></td></tr>
           <tr id="taskNoPriceAPIDevice"><td style="vertical-align:top;"><span id="iconE3" class="⚠ err"></span></td><td><span data-i18n="settings.welcome.taskNoPriceAPIDevice">taskNoPriceAPIDevice</span></td></tr>
           <tr id="taskNoPriceAPIData"><td style="vertical-align:top;"><span id="iconE4" class="⚠ err"></span></td><td><span data-i18n="settings.welcome.taskNoPriceAPIData">taskNoPriceAPIData</span></td></tr>
-          <tr id="taskChargerNotEnabled"><td style="vertical-align:top;"><span id="iconE5" class="⚠ err"></span></td><td><span data-i18n="settings.welcome.taskChargerNotEnabled">taskChargerNotEnabled</span></td></tr>
-          <tr id="taskNoPrices"><td style="vertical-align:top;"><span id="iconE6" class="⚠ err"></span></td><td><span data-i18n="settings.welcome.taskNoPrices">taskNoPrices</span></td></tr>
+          <tr id="taskNoPrices"><td style="vertical-align:top;"><span id="iconE5" class="⚠ err"></span></td><td><span data-i18n="settings.welcome.taskNoPrices">taskNoPrices</span></td></tr>
           <tr id="taskEnableApp"><td style="vertical-align:top;"><span id="iconW1" class="⚠ warn"></span></td><td><span data-i18n="settings.welcome.taskEnableApp">taskEnableApp</span></td></tr>
           <tr id="taskEnergyFlowRate"><td style="vertical-align:top;"><span id="iconW2" class="⚠ warn"></span></td><td><span id="energyFlowRateText">taskEnergyFlowRate</span></td></tr>
           <tr id="taskNoPriceFlow"><td style="vertical-align:top;"><span id="iconW3" class="⚠ warn"></span></td><td><span data-i18n="settings.welcome.taskNoPriceFlow">taskNoPriceFlow</span></td></tr>
           <tr id="taskDisableLogging"><td style="vertical-align:top;"><span id="iconW4" class="⚠ warn"></span></td><td><span data-i18n="settings.welcome.taskDisableLogging">taskDisableLogging</span></td></tr>
           <tr id="taskExperimental"><td style="vertical-align:top;"><span id="iconW5" class="⚠ warn"></span></td><td><span data-i18n="settings.welcome.taskExperimental">taskExperimental</span></td></tr>
-          <tr id="taskSpookey"><td style="vertical-align:top;"><span id="iconW5" class="⚠ warn"></span></td><td><span id="spookeyText">taskSpookey</span></td></tr>
-          <tr id="errorDevices"><td style="vertical-align:top;"><span id="iconW6" class="⚠ warn"></span></td><td><span data-i18n="settings.welcome.errorDevices">errorDevices</span><div id="errorDeviceList"></div></td></tr>
-          <tr id="taskAddCarCharger"><td style="vertical-align:top;"><span id="iconW7" class="⚠ warn"></span></td><td><span data-i18n="settings.charge.controllerNotAddedHint">charge.controllerNotAddedHint</span></td></tr>
+          <tr id="taskSpookey"><td style="vertical-align:top;"><span id="iconW6" class="⚠ warn"></span></td><td><span id="spookeyText">taskSpookey</span></td></tr>
+          <tr id="errorDevices"><td style="vertical-align:top;"><span id="iconW7" class="⚠ warn"></span></td><td><span data-i18n="settings.welcome.errorDevices">errorDevices</span><div id="errorDeviceList"></div></td></tr>
+          <tr id="taskDeprecatedCharger"><td style="vertical-align:top;"><span id="iconW8" class="⚠ warn"></span></td><td><span data-i18n="settings.charge.carChargerDeprecatedHint">carChargerDeprecatedHint</span></td></tr>
+          <tr id="taskNoActiveController"><td style="vertical-align:top;"><span id="iconW9" class="⚠ warn"></span></td><td><span data-i18n="settings.charge.controllerNotEnabledHint">controllerNotEnabledHint</span></td></tr>
           <tr id="taskNoPriceEnabled"><td style="vertical-align:top;"><span id="iconI1" class="⚠ info"></span></td><td><span data-i18n="settings.welcome.taskNoPriceEnabled">taskNoPriceEnabled</span></td></tr>
+          <tr id="taskNoController"><td style="vertical-align:top;"><span id="iconI2" class="⚠ info"></span></td><td><span data-i18n="settings.charge.controllerNotAddedHint">charge.controllerNotAddedHint</span></td></tr>
           <tr id="taskNone"><td style="vertical-align:top;"><span id="iconI2" class="⚠ info"></span></td><td><span data-i18n="settings.welcome.taskNone">taskNone</span></td></tr>
         </table>
 
@@ -1363,7 +1356,7 @@
         <legend data-i18n="settings.charge.header">charge.header</legend>
         <table class="settings_table">
           <tr id="carChargerMissingHint"><td style="vertical-align:top;"><span id="iconC1" class="⚠ info"></span></td><td><span data-i18n="settings.charge.carChargerMissingHint">charge.carChargerMissingHint</span></td></tr>
-          <tr id="controllerNotAddedHint"><td style="vertical-align:top;"><span id="iconC2" class="⚠ warn"></span></td><td><span data-i18n="settings.charge.controllerNotAddedHint">charge.controllerNotAddedHint</span></td></tr>
+          <tr id="controllerNotAddedHint"><td style="vertical-align:top;"><span id="iconC2" class="⚠ info"></span></td><td><span data-i18n="settings.charge.controllerNotAddedHint">charge.controllerNotAddedHint</span></td></tr>
           <tr id="controllerNotEnabledHint"><td style="vertical-align:top;"><span id="iconC3" class="⚠ warn"></span></td><td><span data-i18n="settings.charge.controllerNotEnabledHint">charge.controllerNotEnabledHint</span></td></tr>
           <tr id="carChargerDeprecatedHint"><td style="vertical-align:top;"><span id="iconC4" class="⚠ warn"></span></td><td><span data-i18n="settings.charge.carChargerDeprecatedHint">charge.carChargerDeprecatedHint</span></td></tr>
         </table>
@@ -1974,6 +1967,7 @@
         deviceTypeText[4] = Homey.__(deviceTypeText[4]);
         deviceTypeText[5] = Homey.__(deviceTypeText[5]);
         deviceTypeText[6] = Homey.__(deviceTypeText[6]);
+        deviceTypeText[7] = Homey.__(deviceTypeText[7]);
         chargePlanGraphTitle = Homey.__(chargePlanGraphTitle);
         chargePlanGraphYAxis = Homey.__(chargePlanGraphYAxis);
         chargePlanGraphPrice = Homey.__(chargePlanGraphPrice);
