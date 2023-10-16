@@ -868,5 +868,8 @@
   },
   "0.20.44": {
     "en": "Fixed 4 bugs, 3 crash bugs and one issue where outdated currency exchange rates was used during app restart."
+  },
+  "0.20.45": {
+    "en": "Fixed the broken override flow (again)"
   }
 }
