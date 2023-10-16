@@ -1268,7 +1268,7 @@ class PiggyBank extends Homey.App {
     try {
       const frostList = this.homey.settings.get('frostList') || {};
       for (const deviceId in frostList) {
-        if ('deviceId' in this.__deviceList) {
+        if (deviceId in this.__deviceList) {
           const device = {
             name: this.__deviceList[deviceId].name,
             description: this.__deviceList[deviceId].room,
