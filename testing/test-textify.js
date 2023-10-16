@@ -97,7 +97,16 @@ class Test {
       .then(() => dst.drawLineChart(25, 150, 450, 325, {
         xaxis,
         values: [0.1, 0.4, 1.2, 0.8, 0.4, 0.5, 0.3, 0.4, 0.2, 0.25, 0.1, 0.4, 1.2, 0.8, 0.4, 0.5, 0.3, 0.4, 0.2, 0.25, 0.3, 0.4, 0.5, 0.3],
-        enabled: [true, false, true, false, true, false, true, true, true, true, true, false, true, false, true, false, true, false, false, false, false, false, true, false],
+        class: [4, 3, 4, 4, 1, 2, 1, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        classCol: [
+          [0, 0, 0, 128], // Outside schedule
+          [64, 255, 64, 128], // Planned on
+          [255, 64, 64, 128], // Planned off
+          [0, 64, 0, 128], // Past on
+          [64, 0, 0, 128] // Past off
+        ],
+        yAxisText: 'Price',
+        classText: 'Enabled',
         gridcol: [128, 128, 128, 255],
         ycol: [180, 180, 180, 255],
         xcol: [180, 180, 180, 255],

@@ -267,12 +267,10 @@ class ChargeDevice extends Device {
   }
 
   /**
-   * Creates a image that can be sent to the device image stream
+   * Validation procedure
+   * Returns the validation image
    */
-  async refreshImageStream(stream) {
-    const dst = new Textify({ width: 500, height: 500, colorType: 2, bgColor: { red: 80, green: 80, blue: 80 }});
-
-    this.settings = this.getSettings();
+  async validationProcedure(dst) {
     return dst.loadFile('../drivers/piggy-charger/assets/images/notValid.png')
       .then(() => dst.setCursorWindow(190, 80, 460, 170))
       .then(() => dst.setTextColor([255, 128, 128, 255]))
@@ -291,7 +289,35 @@ class ChargeDevice extends Device {
         if (err) return dst.addText(`\u001b[35;m${err.message}\n`);
         return dst.addText(`${progressText} ${this.homey.__('charger.validation.wait')}\n`);
       })
-      .finally(() => dst.addText(`\u001b[0m(${this.homey.__('charger.validation.reset')})\u001b[1m\n`))
+      .finally(() => dst.addText(`\u001b[0m(${this.homey.__('charger.validation.reset')})\u001b[1m\n`));
+  }
+
+  /**
+   * Returns an image displaying the charge plan
+   */
+  async displayPlan(dst) {
+    
+  }
+
+  /**
+   * Returns an image suggesting to create a charge plan
+   */
+  async displayNoPlan(dst) {
+
+  }
+
+  /**
+   * Creates a image that can be sent to the device image stream
+   */
+  async refreshImageStream(stream) {
+    const dst = new Textify({ width: 500, height: 500, colorType: 2, bgColor: { red: 80, green: 80, blue: 80 }});
+    this.settings = this.getSettings();
+    return Promise.resolve(this.getCapabilityValue('alarm_generic.notValidated'))
+      .then((notValidated) => {
+        if (notValidated) return this.validationProcedure(dst);
+        if (hasPlan) return this.displayPlan();
+        return this.displayNoPlan();
+      })
       .then(() => dst.pack().pipe(stream));
   }
 
