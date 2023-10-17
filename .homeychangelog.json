@@ -871,5 +871,8 @@
   },
   "0.20.45": {
     "en": "Fixed the broken override flow (again)"
+  },
+  "0.20.46": {
+    "en": "Fixed the AC maintenance action"
   }
 }
