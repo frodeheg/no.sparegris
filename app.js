@@ -2995,6 +2995,7 @@ class PiggyBank extends Homey.App {
     }
     const override = this.homey.settings.get('override') || {};
     override[deviceId] = forcedState;
+    this.homey.settings.set('override', override);
     const device = await this.getDevice(deviceId);
     let promise;
     switch (+forcedState) {
@@ -3018,7 +3019,6 @@ class PiggyBank extends Homey.App {
         promise = Promise.resolve(true);
         break;
     }
-    this.homey.settings.set('override', override);
     // Resolve to true even on error because the override has been stopped and as such will the error resolve later
     return promise.then(() => Promise.resolve(true));
   }
@@ -3371,7 +3371,8 @@ class PiggyBank extends Homey.App {
       if ((+this.homey.settings.get('controlTemp') === 2)
         && (this.__deviceList[deviceId].thermostat_cap)) {
         const override = this.homey.settings.get('override') || {};
-        if (override[deviceId] !== c.OVERRIDE.MANUAL_TEMP) {
+        if ((override[deviceId] !== c.OVERRIDE.MANUAL_TEMP)
+          && (override[deviceId] !== c.OVERRIDE.OFF_UNTIL_MANUAL_ON)) {
           return null;
         }
       }
@@ -3740,11 +3741,11 @@ class PiggyBank extends Homey.App {
       const { driverId } = this.__deviceList[deviceId];
       if ((driverId in d.DEVICE_CMD) && (d.DEVICE_CMD[driverId].type === d.DEVICE_TYPE.AC)) {
         override[deviceId] = c.OVERRIDE.OFF_UNTIL_MANUAL_ON;
+        this.homey.settings.set('override', override); // NB! Cannot be after setOnOff (so have to live with it being called multiple times)
         const device = await this.getDevice(deviceId);
         await this.setOnOff(device, deviceId, false);
       }
     }
-    this.homey.settings.set('override', override);
   }
 
   /**
