@@ -489,11 +489,14 @@
     "incomplete": "Incomplete data, period not completed."
   },
   "chargePlanGraph": {
-    "title": "Charge cycle plan",
+    "title": "Charge plan",
     "yaxis": "Price per kWh",
     "price": "Price",
+    "enabled": "Enabled",
     "charging": "Charging enabled",
     "nocharge": "Charging disabled",
+    "noPlan": "No charge plan created. You can create a charge plan by starting the flow \"Charge cheapest x hours before hh:00 o'clock\".",
+    "cycleEnded": "The chargeing cycle has completed.",
     "noPrice": "No price data yet"
   },
   "month": {

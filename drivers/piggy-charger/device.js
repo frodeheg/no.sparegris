@@ -1,3 +1,4 @@
+/* eslint-disable comma-dangle */
 /* eslint-disable import/no-dynamic-require */
 /* eslint-disable no-nested-ternary */
 
@@ -25,6 +26,15 @@ const STATE_FULL_CHARGE = 0;
 const STATE_PARTIAL_CHARGE = 1;
 const STATE_CANT_CHARGE = 2;
 const STATE_ERROR = 3;
+
+// Charge groups
+const CHARGEGROUP = {
+  OUTSIDE_SHEDULE: 0,
+  PLANNED_ON: 1,
+  PLANNED_OFF: 2,
+  PAST_ON: 3,
+  PAST_OFF: 4
+};
 
 // Default text
 const okText = '[\u001b[32;1m OK \u001b[37m]';
@@ -86,6 +96,8 @@ class ChargeDevice extends Device {
     this.__spookey_changes = 0;
     this.__offeredEnergy = 0;
     this.__charge_plan = [];
+    this.__past_plan = [];
+    this.__plan_prices = [];
     this.limited = false;
     await this.rescheduleCharging(false);
 
@@ -295,28 +307,75 @@ class ChargeDevice extends Device {
   /**
    * Returns an image displaying the charge plan
    */
-  async displayPlan(dst) {
-    
+  async displayPlan(dst, now) {
+    const title = this.homey.__('chargePlanGraph.title');
+    const yAxisText = this.homey.__('chargePlanGraph.price');
+    const groupText = this.homey.__('chargePlanGraph.enabled');
+    const endedText = this.homey.__('chargePlanGraph.cycleEnded');
+    const startHour = this.cycleStart ? this.cycleStart.getHours() : 0;
+    const cycleEnded = this.cycleEnd < now;
+    const xAxisText = [];
+    // TBD: Values && group (CHARGEGROUP)
+    const group = [
+      ...this.__past_plan.map((charge) => (charge ? CHARGEGROUP.PAST_ON : CHARGEGROUP.PAST_OFF)),
+      ...this.__charge_plan.map((charge) => (charge ? CHARGEGROUP.PLANNED_ON : CHARGEGROUP.PLANNED_OFF))
+    ].slice(0, 24);
+    const indices = Array.from(Array(24).keys());
+    const values = indices.map((i) => this.__plan_prices[i]); // to make the index undefined instead of too short array
+    for (let i = 0; i < 24; i++) {
+      xAxisText[i] = `${String((i + startHour) % 24).padStart(2, ' ')}:00`;
+    }
+    return dst.loadFile('assets/images/valid.png')
+      .then(() => dst.setTextSize(2))
+      .then(() => dst.addText(title, 250 - (dst.getWidth(title) / 2), 25))
+      .then(() => dst.setTextSize(1))
+      .then(() => dst.setCursorWindow(25, 60, 475, 170))
+      .then(() => dst.addText(cycleEnded ? endedText : '', 25, 80))
+      .then(() => dst.drawLineChart(25, 150, 450, 325, {
+        xAxisText,
+        yAxisText,
+        groupText,
+        values,
+        group,
+        groupCol: [
+          [0, 0, 0, 128], // Outside schedule
+          [64, 255, 64, 128], // Planned on
+          [255, 64, 64, 128], // Planned off
+          [0, 64, 0, 128], // Past on
+          [64, 0, 0, 128] // Past off
+        ],
+        gridCol: [128, 128, 128, 255],
+        yCol: [180, 180, 180, 255],
+        xCol: [180, 180, 180, 255],
+        lineCol: [255, 255, 128, 255]
+      }));
   }
 
   /**
    * Returns an image suggesting to create a charge plan
    */
   async displayNoPlan(dst) {
-
+    const title = this.homey.__('chargePlanGraph.title');
+    const noPlanText = this.homey.__('chargePlanGraph.noPlan');
+    return dst.loadFile('assets/images/large.png')
+      .then(() => dst.setTextSize(2))
+      .then(() => dst.addText(`\x1B[4;30m${title}\x1B[24m`, 250 - (dst.getWidth(title) / 2), 25))
+      .then(() => dst.setTextSize(1))
+      .then(() => dst.setCursorWindow(25, 60, 475, 170))
+      .then(() => dst.addText(noPlanText, 25, 80));
   }
 
   /**
    * Creates a image that can be sent to the device image stream
    */
-  async refreshImageStream(stream) {
+  async refreshImageStream(stream, now = new Date()) {
     const dst = new Textify({ width: 500, height: 500, colorType: 2, bgColor: { red: 80, green: 80, blue: 80 }});
     this.settings = this.getSettings();
     return Promise.resolve(this.getCapabilityValue('alarm_generic.notValidated'))
       .then((notValidated) => {
         if (notValidated) return this.validationProcedure(dst);
-        if (hasPlan) return this.displayPlan();
-        return this.displayNoPlan();
+        if (this.cycleStart < now) return this.displayPlan(dst, now);
+        return this.displayNoPlan(dst);
       })
       .then(() => dst.pack().pipe(stream));
   }
@@ -548,14 +607,26 @@ class ChargeDevice extends Device {
    * Whenever a new hour passes, must be called _after_ doPriceCalculations to get correct current_price_index
    */
   async rescheduleCharging(isNewHour, now = new Date()) {
+    const end = new Date(this.cycleEnd);
+    const priceArray = this.homey.app.getPricePrediction(now, end);
+
     if (isNewHour) {
       const oldRemaining = this.cycleRemaining;
       if (this.cycleType === c.OFFER_ENERGY) {
         this.cycleRemaining -= this.__offeredEnergy;
         this.__offeredEnergy = 0;
+        this.__past_plan.push(this.__offeredEnergy);
       } else if (this.__charge_plan[0] > 0) {
         // OFFER_HOURS - Only subtract for active hours
         this.cycleRemaining -= 1;
+        this.__past_plan.push(true);
+      } else {
+        // OFFER HOURS - Inactive hours
+        this.__past_plan.push(false);
+      }
+      const startIndex = (now.getHours() - this.cycleStart.getHours() + 24) % 24;
+      for (let loop = 0; loop < 24; loop++) {
+        this.__plan_prices[startIndex + loop] = priceArray[loop];
       }
       if (this.cycleRemaining < 0) this.cycleRemaining = 0;
       if (oldRemaining !== 0) {
@@ -570,8 +641,6 @@ class ChargeDevice extends Device {
     if (this.cycleRemaining === 0) return Promise.resolve();
 
     // Calculate new charging plan
-    const end = new Date(this.cycleEnd);
-    const priceArray = this.homey.app.getPricePrediction(now, end);
     const maxLimits = this.homey.app.readMaxPower();
     const maxPower = Math.min(+maxLimits[TIMESPAN.QUARTER] * 4, +maxLimits[TIMESPAN.HOUR]);
     const priceSorted = Array.from(priceArray.keys()).sort((a, b) => ((priceArray[a] === priceArray[b]) ? (a - b) : (priceArray[a] - priceArray[b])));

@@ -490,8 +490,11 @@
     "title": "Laadcyclusplan",
     "yaxis": "Prijs per kWh",
     "price": "Prijs",
+    "enabled": "Activa",
     "charging": "Opladen ingeschakeld",
     "nocharge": "Opladen uitgeschakeld",
+    "noPlan": "Er is geen laadplan aangemaakt. U kunt een laadplan aanmaken door de flow \"Kostegoedkoopste x uur vóór uu:00 uur\" te starten.",
+    "cycleEnded": "De oplaadcyclus is voltooid.",
     "noPrice": "Nog geen prijsgegevens"
   },
   "month": {

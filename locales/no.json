@@ -490,8 +490,11 @@
     "title": "Ladesyklus",
     "yaxis": "Pris per kWh",
     "price": "Pris",
+    "enabled": "Påslått",
     "charging": "Lading aktivert",
     "nocharge": "Lading deaktivert",
+    "noPlan": "Ingen ladeplan opprettet. Du kan opprette en ladeplan ved å starte flyten \"Lad billigste x timer før klokken tt:00\".",
+    "cycleEnded": "Ladesyklusen er fullført.",
     "noPrice": "Ingen prisdata tilgjengelig"
   },
   "month": {

@@ -487,11 +487,14 @@
     "incomplete": "Données incomplètes, période non terminée."
   },
   "chargePlanGraph": {
-    "title": "Plan du cycle de charge",
+    "title": "Cycle de charge",
     "yaxis": "Prix par kWh",
     "price": "Prix",
+    "enabled": "Activé",
     "charging": "Chargement activé",
     "nocharge": "Chargement inactif",
+    "noPlan": "Aucun plan de recharge créé. Vous pouvez créer un plan de recharge en démarrant le flux \"Charger le moins cher x heures avant hh:00 heures\".",
+    "cycleEnded": "Le cycle de charge est terminé.",
     "noPrice": "Pas de données de prix encore"
   },
   "month": {
