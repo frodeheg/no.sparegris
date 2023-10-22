@@ -430,6 +430,8 @@
       "info2": "Als uw lader direct wordt ondersteund, wordt deze in het volgende scherm weergegeven. Als dit niet het geval is, moet u de flowgebaseerde controller selecteren."
     },
     "validation": {
+      "heading": "Het apparaat kan pas worden gebruikt als onderstaande checklist is ingevuld",
+      "reset": "onderhoudsactie \"reset\" begint opnieuw",
       "stateLabel": "Oplaadstatus ontvangen",
       "stateHint": "Maak een stroom om de controller te informeren over de laadstatus.",
       "batterySkipped": "Batterijtest overgeslagen.",

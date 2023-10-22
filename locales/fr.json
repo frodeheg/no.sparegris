@@ -430,6 +430,8 @@
       "info2": "Si votre chargeur est directement pris en charge, il sera répertorié dans l'écran suivant. Sinon, vous devez sélectionner le contrôleur basé sur le débit."
     },
     "validation": {
+      "heading": "L'appareil ne peut être utilisé avant que la check-list ci-dessous n'ait été complétée",
+      "reset": "L'action de maintenance \"reset\" va recommencer",
       "stateLabel": "État de charge reçu",
       "stateHint": "Veuillez créer un flux pour informer le contrôleur de l'état de charge.",
       "batterySkipped": "Test de batterie ignoré.",

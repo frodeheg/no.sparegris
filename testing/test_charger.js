@@ -98,7 +98,7 @@ async function testCharset() {
     'en.json': 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ .,-+/*"\'',
     'no.json': 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ .,-+/*"\'øæåØÆÅ',
     'nl.json': 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ .,-+/*"\'',
-    'fr.json': 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ .,-+/*"\'éàèùçâêîôûëïü',
+    'fr.json': 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ .,-+/*"\'éàèùçâêîôûëïüÉ',
   };
   for (const idx in files) {
     const fileName = `../locales/${files[idx]}`;

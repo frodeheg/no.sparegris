@@ -430,6 +430,8 @@
       "info2": "Hvis laderen din støttes direkte, vil den bli oppført i neste steg. Hvis ikke må du velge den flytbaserte kontrolleren."
     },
     "validation": {
+      "heading": "Enheten kan ikke brukes før sjekklisten nedenfor er fullført",
+      "reset": "Vedlikeholdshandlingen \"reset\" starter på nytt",
       "stateLabel": "Ladetilstand mottatt",
       "stateHint": "Vennligst opprett en flyt for å informere kontrolleren om ladetilstanden.",
       "batterySkipped": "Batteritest hoppet over.",
