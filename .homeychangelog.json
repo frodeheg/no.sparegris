@@ -874,5 +874,8 @@
   },
   "0.20.46": {
     "en": "Fixed the AC maintenance action"
+  },
+  "0.20.47": {
+    "en": "Added posibility to fix values in the archive that are broken"
   }
 }
