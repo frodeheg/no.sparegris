@@ -334,6 +334,28 @@ async function getArchive(homey, dataId = undefined, period = undefined, time = 
 }
 
 /**
+ * Replaces an existing archive value with a new value
+ */
+async function replaceArchiveValue(homey, dataId, period, time, dataIdx, newVal) {
+  console.log('saving');
+  const archive = await homey.settings.get('archive') || {};
+  if (!(dataId in archive)) throw new Error(`Invalid dataId in archive (${dataId})`);
+  if (!(period in archive[dataId])) throw new Error(`Invalid period in archive[${dataId}] (${period})`);
+  if (!(time in archive[dataId][period])) throw new Error(`Invalid time in archive[${dataId}][${period}] (${time})`);
+  if (!Number.isFinite(+newVal)) throw new Error(`Invalid number '${newVal}'`);
+  let oldVal = archive[dataId][period][time];
+  if (Array.isArray(oldVal)) {
+    if (!(dataIdx in oldVal)) throw new Error(`Invalid dataIdx in archive[${dataId}][${period}][${time}] (${dataIdx})`);
+    oldVal[dataIdx] = +newVal;
+  } else {
+    oldVal = +newVal;
+  }
+  archive[dataId][period][time] = oldVal;
+  console.log(`saved: ${dataId}, ${period}, ${time}, ${JSON.stringify(oldVal)}`);
+  homey.settings.set('archive', archive);
+}
+
+/**
  * Cleans up the archive by deleting expired content
  */
 async function cleanArchive(homey, timeUTC = new Date()) {
@@ -402,4 +424,5 @@ module.exports = {
   removeFromArchive,
   cleanArchive,
   getArchive,
+  replaceArchiveValue,
 };

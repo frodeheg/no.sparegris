@@ -93,6 +93,7 @@
         "title": "Hjelp",
         "wiz": "Guidet tur",
         "notfound": "Appen finner ikke enheten min",
+        "fixarchive": "Reparer ødelagt arkiv",
         "debug": "Feilsøking",
         "supported": "Støttede enheter",
         "about": "Om"
@@ -191,7 +192,14 @@
       "settings": "Arkiv",
       "expireDaily": "Foreldelsestid daglig statistikk",
       "expireHourly": "Foreldelsestid timestatistikk",
-      "expireHint": "Antall dager å beholde statistikken med den angitte oppløsningen. Statistikk for månedlig og årlig oppløsning beholdes for evig.<br><b>NB!</b> Mer enn noen måneder kan forringe ytelsen på appen."
+      "expireHint": "Antall dager å beholde statistikken med den angitte oppløsningen. Statistikk for månedlig og årlig oppløsning beholdes for evig.<br><b>NB!</b> Mer enn noen måneder kan forringe ytelsen på appen.",
+      "fixHint": "Noen ganger kan feil måleravlesning, tidsstempel eller en annen feil forårsake arkivkorrupsjon. Dette kan i noen tilfeller påvirke driften av appen. Som sådan kan du rette opp ødelagte verdier nedenfor... (men vennligst gi beskjed til apputvikleren også, slik at håndtering av fremtidige hendelser kan forbedres.)",
+      "fixParameter": "Parameter",
+      "fixTimespan": "Tidsrom",
+      "fixSlot": "Tid",
+      "fixItem": "Element",
+      "fixValue": "Verdi",
+      "fixSubmit": "Send inn ny verdi"
     },
     "deviceinfo": {
       "header": "Rapportering av enheter",

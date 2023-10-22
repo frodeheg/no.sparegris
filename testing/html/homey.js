@@ -10,6 +10,7 @@ class FakeHomey {
 
   constructor(homey) {
     this.callbacks = [];
+    this.flipper = 0;
     // Set up some fake settings
     this.settings = {
       expireDaily: 31,
@@ -207,6 +208,11 @@ class FakeHomey {
       response = [{name: 'Nothing selected', value: ''}, {name: 'something', value: 'avv-bbb'}, {name: 'another thing', value: 'ffe-bbb'}];
     } else if (command.includes('/apiCommand?cmd=getMeterReaders')) {
       response = { CCDEB: 'Eva Meter Reader', CAR: 'Easee Equaliser' };
+    } else if (command.includes('/apiCommand?cmd=getArchiveSlot')) {
+      response = ['2024-01-23', '2024-01-24', '2024-01-26'];
+    } else if (command.includes('/apiCommand?cmd=getArchiveItem')) {
+      this.flipper ^= 1;
+      response = this.flipper ? [12, 32] : 55;
     } else {
       // No return value expected
       // '/apiCommand?cmd=log'

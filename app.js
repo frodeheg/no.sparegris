@@ -33,7 +33,7 @@ const c = require('./common/constants');
 const d = require('./common/devices');
 const {
   getMinUnit, addToArchive, removeFromArchive, cleanArchive, getArchive,
-  changeArchiveMode, clearArchive
+  replaceArchiveValue, changeArchiveMode, clearArchive
 } = require('./common/archive');
 const {
   daysInMonth, toLocalTime, timeDiff, timeSinceLastLimiter, timeToNextSlot,
@@ -1539,6 +1539,17 @@ class PiggyBank extends Homey.App {
     return myState;
   }
 
+  /**
+   * Archive relays for settings api
+   */
+  async getArchiveRelay(param, timespan, slot = undefined, item = undefined) {
+    return getArchive(this.homey, param, timespan, slot, item);
+  }
+
+  async replaceArchiveValueRelay(param, timespan, slot, item, value) {
+    return replaceArchiveValue(this.homey, param, timespan, slot, item, value);
+  }
+  
   /**
    * Adjusts the power usage for a charger controller
    * Note that this function is already throttled by onBelowPowerLimit such that it will not increase power

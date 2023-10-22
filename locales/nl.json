@@ -93,6 +93,7 @@
         "title": "Help",
         "wiz": "Eerste keer wizard",
         "notfound": "De app kan mijn apparaat niet vinden",
+        "fixarchive": "Gebroken archief repareren",
         "debug": "Foutzoeken",
         "supported": "Ondersteunde apparaten",
         "about": "Over"
@@ -191,7 +192,14 @@
       "settings": "Archief",
       "expireDaily": "Vervaltijd dagelijkse statistieken",
       "expireHourly": "Vervaltijd statistieken per uur",
-      "expireHint": "Aantal dagen om statistieken bij te houden bij de gegeven interval. Voor maandelijkse en jaarlijkse intervallen worden de statistieken voor eeuwig bijgehouden.<br><b>nb!</b>meer dan een paar maanden, kan de prestaties van de app verslechteren."
+      "expireHint": "Aantal dagen om statistieken bij te houden bij de gegeven interval. Voor maandelijkse en jaarlijkse intervallen worden de statistieken voor eeuwig bijgehouden.<br><b>nb!</b>meer dan een paar maanden, kan de prestaties van de app verslechteren.",
+      "fixHint": "Soms kan een onjuiste meterstand, tijdstempel of een andere bug archiefbeschadiging veroorzaken. Dit kan in sommige gevallen de werking van de app beïnvloeden. Als zodanig kunt u hieronder defecte waarden corrigeren... (maar alstublieft ook informeer de app-ontwikkelaar, zodat de afhandeling van toekomstige gebeurtenissen kan worden verbeterd.)",
+      "fixParameter": "Parameter",
+      "fixTimespan": "Tijdspanne",
+      "fixSlot": "Sleuf",
+      "fixItem": "Item",
+      "fixValue": "Waarde",
+      "fixSubmit": "Nieuwe waarde indienen"
     },
     "deviceinfo": {
       "header": "Apparaat rapportage",
