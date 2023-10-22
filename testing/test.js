@@ -5,6 +5,8 @@
 
 'use strict';
 
+global.testing = true;
+
 // eslint-disable-next-line import/no-extraneous-dependencies
 const seedrandom = require('seedrandom');
 const fs = require('fs');
@@ -1493,13 +1495,13 @@ async function testLanguages() {
     console.log(`[......] Test Translations for locales/${languages[langIdx]}.json && README.${languages[langIdx]}.txt`);
 
     // Check if all files are present:
-    const fileReadme = `README.${languages[langIdx]}.txt`;
-    const fileLocale = `locales/${languages[langIdx]}.json`;
+    const fileReadme = `../README.${languages[langIdx]}.txt`;
+    const fileLocale = `../locales/${languages[langIdx]}.json`;
     if (!fs.existsSync(fileReadme)) throw new Error(`Could not find file ${fileReadme}`);
     if (!fs.existsSync(fileLocale)) throw new Error(`Could not find file ${fileLocale}`);
 
     // Check if the locale file is out of sync with english
-    const localeDataEn = JSON.parse(fs.readFileSync('locales/en.json', { encoding: 'utf8', flag: 'r' }));
+    const localeDataEn = JSON.parse(fs.readFileSync('../locales/en.json', { encoding: 'utf8', flag: 'r' }));
     const localeData = JSON.parse(fs.readFileSync(fileLocale, { encoding: 'utf8', flag: 'r' }));
     compareJSON(localeDataEn, localeData);
 
@@ -1509,16 +1511,17 @@ async function testLanguages() {
   // Test capabilities
   const dirs = [
     'drivers/piggy-bank-insights',
+    'drivers/piggy-charger',
     '.homeycompose',
     '.homeycompose/capabilities',
     '.homeycompose/flow/actions',
     '.homeycompose/flow/conditions',
-    '.homeycompose/flow/triggers']
+    '.homeycompose/flow/triggers'];
   for (let i = 0; i < dirs.length; i++) {
     const dir = dirs[i];
-    const files = fs.readdirSync(dir);
+    const files = fs.readdirSync(`../${dir}`);
     for (let fileIdx = 0; fileIdx < files.length; fileIdx++) {
-      const fileName = `${dir}/${files[fileIdx]}`;
+      const fileName = `../${dir}/${files[fileIdx]}`;
       if (!fileName.includes('.json')) continue;
       if (fileName.includes('homeychangelog')) continue;
       console.log(`[......] Test Translations for ${fileName}`);
