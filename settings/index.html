@@ -884,6 +884,7 @@
           <div class="dropdown-content" style="position:fixed;right:0">
             <a href="#" data-i18n="settings.menu.help.wiz" onclick="changeTab(event, 'wizzardPage')">Wizzard</a>
             <a href="#" data-i18n="settings.menu.help.notfound" onclick="changeTab(event, 'helpNotFoundPage')">Not Found</a>
+            <a href="#" data-i18n="settings.menu.help.fixarchive" onclick="changeTab(event, 'fixArchivePage')">Fix Archive</a>
             <a href="#" data-i18n="settings.menu.help.debug" onclick="debugMode=true;changeTab(event, 'logPage')">Debug</a>
             <a href="#" data-i18n="settings.menu.help.supported" onclick="changeTab(event, 'helpSupportedPage')">Supported Devices</a>
             <a href="#" data-i18n="settings.menu.help.about" onclick="changeTab(event, 'helpAboutPage')">About</a>
@@ -995,6 +996,72 @@
         <legend data-i18n="settings.help.notFound">help.notFound</legend>
         <p data-i18n="settings.help.notFoundHint">help.notFoundHint</p>
         <a href="#ShowLog" data-i18n="settings.log.show" onclick="debugMode=false;changeTab(event, 'logPage');return false;">log.show</a>
+      </fieldset>
+    </div>
+
+    <!-- Fix archive page -->
+    <div id="fixArchivePage" class="tabcontent">
+      <fieldset>
+        <legend data-i18n="settings.menu.help.fixarchive">help.fixarchive</legend>
+        <p data-i18n="settings.archive.fixHint">archive.fixHint</p>
+        <table>
+          <tr>
+            <th><span data-i18n="settings.archive.fixParameter">Parameter</span>:</th>
+            <td>
+              <select id="archiveParam">
+                <option value="" selected>-</option>
+                <option value="maxPower">maxPower</option>
+                <option value="dataOk">dataOk</option>
+                <option value="powUsage">powUsage</option>
+                <option value="charged">charged</option>
+                <option value="moneySavedTariff">moneySavedTariff</option>
+                <option value="moneySavedUsage">moneySavedUsage</option>
+                <option value="price">price</option>
+                <option value="pricePoints">pricePoints</option>
+                <option value="overShootAvoided">overShootAvoided</option>
+                <option value="cost">cost</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <th><span data-i18n="settings.archive.fixTimespan">Timespan</span>:</th>
+            <td>
+              <select id="archiveTimespan">
+                <option value="" selected>-</option>
+                <option value="yearly">Yearly samples</option>
+                <option value="monthly">Monthly samples</option>
+                <option value="daily">Daily samples</option>
+                <option value="hourly">Hourly sampels</option>
+                <option value="quarter">15 minutes samples</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <th><span data-i18n="settings.archive.fixSlot">Slot</span>:</th>
+            <td>
+              <select id="archiveSlot" disabled>
+                <option value="" >...</option>
+              </select>
+            </td>
+          </tr>
+          <tr id="archiveItemRow" style="display: none;">
+            <th><span data-i18n="settings.archive.fixItem">Item</span>:</th>
+            <td>
+              <select id="archiveItem">
+                <option value="" >...</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <th><span data-i18n="settings.archive.fixValue">Value</span>:</th>
+            <td><input id="archiveValue" type="text" value="N/A" disabled></td>
+          </tr>
+          <tr>
+            <th></th>
+            <td><button id="archiveButton" data-i18n="settings.archive.fixSubmit" disabled>.fixSubmit</button></td>
+          </tr>
+        </table>
+        <div id="archiveFeedback"></div>
       </fieldset>
     </div>
 
@@ -2532,6 +2599,12 @@
             }, 2);
           });
         });
+        document.getElementById("archiveParam").addEventListener("change", e => updateArchiveParam(Homey, 0));
+        document.getElementById("archiveTimespan").addEventListener("change", e => updateArchiveParam(Homey, 1));
+        document.getElementById("archiveSlot").addEventListener("change", e => updateArchiveParam(Homey, 2));
+        document.getElementById("archiveItem").addEventListener("change", e => updateArchiveParam(Homey, 3));
+        document.getElementById("archiveButton").addEventListener("click", e => submitArchiveParam(Homey));
+
         const saveFunc = () => {
           saveElement.classList.add('is-loading');
           Homey.alert(Homey.__('warnings.savingWait'));

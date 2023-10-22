@@ -122,6 +122,7 @@
         "title": "Help",
         "wiz": "First time Wizzard",
         "notfound": "The app can't find my device",
+        "fixarchive": "Repair broken archive",
         "debug": "Debug",
         "supported": "Supported Devices",
         "about": "About"
@@ -221,7 +222,14 @@
       "settings": "Archive",
       "expireDaily": "Expire time Daily stats",
       "expireHourly": "Expire time Hourly stats",
-      "expireHint": "Number of days to keep statistics with the given granularity. For Monthly and Yearly granularity the statistics are kept forever.<br><b>NB!</b> More than a few months can degrade the performance of the app."
+      "expireHint": "Number of days to keep statistics with the given granularity. For Monthly and Yearly granularity the statistics are kept forever.<br><b>NB!</b> More than a few months can degrade the performance of the app.",
+      "fixHint": "Sometimes, an incorrect meter reading, timestamp, or another bug may cause archive corruption. This may in some cases affect the operation of the app. As such, you may correct broken values below... (but please also inform the app developer, so that handling of future occurrences can be improved.)",
+      "fixParameter": "Select parameter",
+      "fixTimespan": "Select timespan",
+      "fixSlot": "Select slot",
+      "fixItem": "Select item",
+      "fixValue": "Value",
+      "fixSubmit": "Submit new value"
     },
     "deviceinfo": {
       "header": "Device reporting",

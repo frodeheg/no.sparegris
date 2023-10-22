@@ -122,6 +122,7 @@
         "title": "Aide",
         "wiz": "Première fois questionnaire",
         "notfound": "L'application ne trouve pas mon appareil.",
+        "fixarchive": "Réparer l'archive cassée",
         "debug": "Déboguer",
         "supported": "Appareils pris en charge",
         "about": "À propos"
@@ -221,7 +222,14 @@
       "settings": "Archive",
       "expireDaily": "Durée d'expiration Statistiques quotidiennes",
       "expireHourly": "Durée d'expiration Statistiques horaires",
-      "expireHint": "Nombre de jours pour garder des statistiques avec la granularité donnée. Pour la granularité mensuelle et annuelle les statistiques sont conservées pour toujours. NB! Plus de quelques mois peuvent dégrader la performance de l'application."
+      "expireHint": "Nombre de jours pour garder des statistiques avec la granularité donnée. Pour la granularité mensuelle et annuelle les statistiques sont conservées pour toujours. NB! Plus de quelques mois peuvent dégrader la performance de l'application.",
+      "fixHint": "Parfois, un relevé de compteur incorrect, un horodatage ou un autre bug peut provoquer une corruption des archives. Cela peut dans certains cas affecter le fonctionnement de l'application. En tant que tel, vous pouvez corriger les valeurs cassées ci-dessous... (mais s'il vous plaît aussi informer le développeur de l'application afin que la gestion des événements futurs puisse être améliorée.)",
+      "fixParameter": "Sélectionner le paramètre",
+      "fixTimespan": "Sélectionner la période",
+      "fixSlot": "Sélectionner un emplacement",
+      "fixItem": "Sélectionner un élément",
+      "fixValue": "Valeur",
+      "fixSubmit": "Soumettre une nouvelle valeur"
     },
     "deviceinfo": {
       "header": "Rapports des appareils",

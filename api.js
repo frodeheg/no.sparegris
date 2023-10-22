@@ -47,6 +47,12 @@ module.exports = {
         return homey.app.getFullState();
       case 'getMeterReaders':
         return homey.app.__meterReaders;
+      case 'getArchiveItem':
+        return homey.app.getArchiveRelay(query.param, query.timespan, query.slot, query.item);
+      case 'setArchiveItem':
+        return homey.app.replaceArchiveValueRelay(query.param, query.timespan, query.slot, query.item, query.value);
+      case 'getArchiveSlots':
+        return Object.keys(await homey.app.getArchiveRelay(query.param, query.timespan) || {});
       default:
         throw (new Error(`Incorrect api command: ${query.cmd}`));
     }
