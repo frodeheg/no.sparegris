@@ -284,7 +284,7 @@ class FakeImageClass extends PNG {
   }
 
   async update() {
-    if (this.updateFunction) this.updateFunction(this);
+    if (this.updateFunction) await this.updateFunction(this);
     return Promise.resolve();
   }
 

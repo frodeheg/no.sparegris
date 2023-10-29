@@ -90,6 +90,7 @@ class ChargeDevice extends Device {
     this.cycleEnd = this.getStoreValue('cycleEnd');
     this.cycleEnd = this.cycleEnd ? new Date(this.cycleEnd) : undefined;
     this.cycleType = this.getStoreValue('cycleType');
+    this.cycleTotal = +this.getStoreValue('cycleTotal');
     this.cycleRemaining = +this.getStoreValue('cycleRemaining');
     this.mutexForPower = new Mutex();
     this.__spookey_check_activated = undefined;
@@ -569,18 +570,20 @@ class ChargeDevice extends Device {
     const endTimeUTC = new Date(now.getTime());
     endTimeUTC.setUTCMinutes(endTimeUTC.getUTCMinutes() + minutesDiff, 0, 0);
     this.cycleRemaining = offerEnergy ? (offerEnergy * 1000) : +offerHours;
+    this.cycleTotal = this.cycleRemaining;
     this.cycleType = offerEnergy ? c.OFFER_ENERGY : c.OFFER_HOURS;
     this.cycleStart = now;
     this.cycleEnd = endTimeUTC;
     this.setStoreValue('cycleStart', this.cycleStart);
     this.setStoreValue('cycleEnd', this.cycleEnd);
     this.setStoreValue('cycleType', this.cycleType);
+    this.setStoreValue('cycleTotal', this.cycleTotal);
     this.setStoreValue('cycleRemaining', this.cycleRemaining);
 
     await this.rescheduleCharging(false, now);
 
     // Start the onProcessPower timer if it is not active
-    if (this.__powerProcessID === undefined) {
+    if (this.__powerProcessID === undefined && !this.killed) {
       this.__powerProcessID = setTimeout(() => this.onProcessPowerWrapper(), 1000 * 10);
     }
 
@@ -651,6 +654,7 @@ class ChargeDevice extends Device {
       this.__charge_plan[idx] = estimatedPower;
       scheduleRemaining -= this.cycleType === c.OFFER_ENERGY ? estimatedPower : 1;
     }
+    this.setCapabilityValue('measure_battery.charge_cycle', 100 * (1 - ((this.cycleTotal - this.cycleRemaining) / this.cycleRemaining)));
     return Promise.resolve();
   }
 
@@ -658,6 +662,10 @@ class ChargeDevice extends Device {
    * A wrapper function for whenever the safeguard is run
    */
   async onProcessPowerWrapper() {
+    if (this.killed) {
+      console.log('The app was killed before properly being shut down...');
+      return Promise.resolve();
+    }
     return this.mutexForPower.runExclusive(async () => this.onProcessPower())
       .finally(() => {
         // Schedule new event if and only if charging is active

@@ -87,18 +87,18 @@ class Test {
       .then(() => dst.setTextAngle(25))
       .then(() => dst.setTextSize(1))
       .then(() => dst.addText(`${okText}Hei, test`)) */
-    /*dst.loadFile('../drivers/piggy-charger/assets/images/valid.png')
+    dst.loadFile('../drivers/piggy-charger/assets/images/valid.png')
       .then(() => dst.setTextSize(2))
       .then(() => dst.addText('Charge plan', 250 - (dst.getWidth('Charge plan') / 2), 25))
       .then(() => dst.setTextSize(1))
       .then(() => dst.setCursorWindow(25, 60, 475, 170))
       // .then(() => dst.addText('Letter test: øæåØÆÅ éàèùçâêîôûëïü\n', 25, 60))
       // .then(() => dst.addText('No charge plan created. You can create a charge plan by starting the flow "Charge cheapest x hours before yy:00 o\'clock', 25, 60))
-      .then(() => dst.addText('The chargeing cycle has ended.', 25, 80))
+      .then(() => dst.addText('Charging in progress.', 25, 80))
       .then(() => dst.drawLineChart(25, 150, 450, 325, {
         xAxisText: xaxis,
-        values: [0.1, 0.4, 1.2, 0.8, 0.4, 0.5, 0.3, 0.4, 0.2, 0.25, 0.1, 0.4, 1.2, 0.8, 0.4, 0.5, 0.3, 0.4, 0.2, 0.25, 0.3, 0.4, 0.5, 0.3],
-        group: [4, 3, 4, 4, 1, 2, 1, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        values: [0.1, 0.45, 1.2, 0.8, 0.4, 0.5, 0.3, 0.6, 0.2, 0.25, 0.25, 0.4, 1.2, 0.8, 0.4, 0.5, 0.3, 0.4, 0.2, 0.25, 0.3, 0.4, 0.5, 0.3],
+        group: [3, 4, 4, 4, 1, 2, 1, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         groupCol: [
           [0, 0, 0, 128], // Outside schedule
           [64, 255, 64, 128], // Planned on
@@ -112,13 +112,13 @@ class Test {
         yCol: [180, 180, 180, 255],
         xCol: [180, 180, 180, 255],
         lineCol: [255, 255, 128, 255]
-      }))*/
-      dst.loadFile('../drivers/piggy-charger/assets/images/large.png')
+      }))
+      /*dst.loadFile('../drivers/piggy-charger/assets/images/large.png')
       .then(() => dst.setTextSize(2))
       .then(() => dst.addText('\x1B[4;30mCycle de charge\x1B[24m', 250 - (dst.getWidth('Cycle de charge') / 2), 25))
       .then(() => dst.setTextSize(1))
       .then(() => dst.setCursorWindow(25, 60, 475, 170))
-      .then(() => dst.addText('No charge plan blah blah blah blah blah blah blah blah ', 25, 80))
+      .then(() => dst.addText('No charge plan blah blah blah blah blah blah blah blah ', 25, 80))*/
       // --- END DRAW TEST ---
       .then(() => dst.pack().pipe(fs.createWriteStream('out.png')));
   }
