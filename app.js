@@ -2847,15 +2847,13 @@ class PiggyBank extends Homey.App {
     const numDevices = currentModeList.length;
     const reorderedModeList = [...currentModeList]; // Make sure all devices with communication errors are handled last (e.g. in case nothing else was possible)
     reorderedModeList.sort((a, b) => { // Err last
-      let order;
-      try {
-        order = this.__current_state[a.id].nComError
-        - this.__current_state[b.id].nComError;
-      } catch (err) {
+      const aErr = (('id' in a) && (a.id in this.__current_state)) ? this.__current_state[a.id].nComError : 100;
+      const bErr = (('id' in b) && (b.id in this.__current_state)) ? this.__current_state[b.id].nComError : 100;
+      if (!('id' in a) || !('id' in b) || !(a.id in this.__current_state) || !(b.id in this.__current_state)) {
+        // Occurs in test environment with incorrect setup and for real when controlling deleted devices
         console.log('Test environment error: Most likely you forgot to set app.__deviceList');
-        order = 0; // Should only happen when loading old states from files
       }
-      return order;
+      return aErr - bErr;
     });
     // Turn on devices from top down in the priority list
     // Only turn on one device at the time
@@ -2934,15 +2932,15 @@ class PiggyBank extends Homey.App {
     const currentModeList = modeList[currentMode - 1];
     const numDevices = currentModeList.length;
     const reorderedModeList = [...currentModeList]; // Make sure all devices with communication errors are handled last (e.g. in case nothing else was possible)
-    try {
-      reorderedModeList.sort((a, b) => { // Err first
-        return this.__current_state[b.id].nComError
-          - this.__current_state[a.id].nComError;
-      });
-    } catch (err) {
-      // This error cannot occur in live version, only in testing, thus console.log
-      console.log(`__current_state was not set up. Please update the testcase such that __deviceList = undefined before onInit is called. (${err})`);
-    }
+    reorderedModeList.sort((a, b) => { // Err first
+      const aErr = (('id' in a) && (a.id in this.__current_state)) ? this.__current_state[a.id].nComError : 100;
+      const bErr = (('id' in b) && (b.id in this.__current_state)) ? this.__current_state[b.id].nComError : 100;
+      if (!('id' in a) || !('id' in b) || !(a.id in this.__current_state) || !(b.id in this.__current_state)) {
+        // This error cannot occur in live version, only in testing, thus console.log
+        console.log('__current_state was not set up. Please update the testcase such that __deviceList = undefined before onInit is called.');
+      }
+      return bErr - aErr; // Err first
+    });
     // Turn off devices from bottom and up in the priority list
     // Only turn off one device at the time
     let numForcedOnDevices;
