@@ -880,5 +880,8 @@
   },
   "0.20.48": {
     "en": "Changed popup to passive feedback when saving settings + supressed multiple error popups when network connection is bad."
+  },
+  "0.20.49": {
+    "en": "Fixed minor bug in the css file for settings layout."
   }
 }
