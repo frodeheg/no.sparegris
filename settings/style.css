@@ -475,7 +475,7 @@ input.toggle[type='checkbox'] { display: none; }
   animation-name: flash;
 }
 
-.iframe-holder {
+.iframe-holder {savingOverlay
   position: relative;
   z-index: 11;
   top: 0px;
@@ -510,3 +510,73 @@ iframe {
   }
 }
 
+#savingOverlay {
+  display: none;
+  top:0px;
+  left:0px;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  padding: 0px;
+  margin: 0px;
+  z-index: 200;
+  background-color: #0008;
+  border: 0px solid #ddd;
+  -webkit-user-select: none; /* Safari */
+  -ms-user-select: none; /* IE 10 and IE 11 */
+  user-select: none; /* Standard syntax */
+}
+
+.center {
+  margin: 0;
+  padding: 15px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #a0d0d6;
+  box-shadow: 10px 10px 10px #000A;
+  border-radius: 7px;
+
+  border: 1px solid #90c0c6;
+}
+
+.spinner {
+  animation: spin-animation 0.5s infinite;
+  display: inline-block;
+}
+
+@keyframes spin-animation {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(359deg);
+  }
+}
+
+.anim-text {
+  --bg-size: 200%;
+  --color-one: #004;
+  --color-two: #08F;
+  background: linear-gradient(
+      90deg,
+      var(--color-one),
+      var(--color-two),
+      var(--color-one)
+    )
+    0 0 / var(--bg-size) 100%;
+  color: transparent;
+  background-clip: text;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .anim-text {
+    animation: move-bg 1s linear infinite;
+  }
+  @keyframes move-bg {
+    to {
+      background-position: var(--bg-size) 0;
+    }
+  }
+}

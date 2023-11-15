@@ -851,6 +851,16 @@
     <div data-i18n="settings.sponsorText" id="sponsorText">sponsorText</div>
     </div>
 
+    <!-- Saving overlay -->
+    <div id="savingOverlay">
+      <div class="center">
+        <b>
+          <div class="spinner">!</div>
+          <span class="anim-text" data-i18n="warnings.savingWait"></span>
+        </b>
+      </div>
+    </div>
+
     <!-- Menu -->
     <table id="main_menu" class="menu" style="display:none;">
       <tbody class="menuitem">
@@ -2581,14 +2591,19 @@
           if (err) alertUser(Homey, err)
         });
 
-        // This error function is a bit deciving because it only returns err on success
-        // And this err is that all settings was saved successfully
+        // This error function is a bit deciving because it is also called on success, however then with message = 'OK'
         const errFunc = (err) => { 
           if (err) {
-            rememberToSaveElement.style.display = 'none';
             Homey.api('GET', `/apiCommand?cmd=log&text=${err.message}&loglevel=0`, null, function (err2, result) {});
-            alertUser(Homey, err.message);
+            if (err.message == 'OK') {
+              // Settings was saved successfully
+              rememberToSaveElement.style.display = 'none';
+            } else {
+              // An error occured
+              alertUser(Homey, err.message);
+            }
             saveElement.classList.remove('is-loading');
+            document.getElementById("savingOverlay").style.display = 'none';
           }
         }
         document.getElementById("getState").addEventListener("click", e => {
@@ -2607,7 +2622,7 @@
 
         const saveFunc = () => {
           saveElement.classList.add('is-loading');
-          Homey.alert(Homey.__('warnings.savingWait'));
+          document.getElementById("savingOverlay").style.display = 'block';
           try {
             // Make sure all settings are up to date:
             refreshModeLists(); // It's a pitty but the user did not even visit these pages. Probably they will do later
@@ -2696,11 +2711,12 @@
               Homey.set("meterFrequency", document.getElementById("meterFrequency").value, errFunc);
               Homey.set("toggleTime", document.getElementById("toggleTime").value, errFunc);
               Homey.set("settingsSaved", "", errFunc); // On settings is only called if the settings actually changed
-              Homey.set("settingsSaved", "true", errFunc); // This one will throw the message settings.alert.settingssaved on success
+              Homey.set("settingsSaved", "true", errFunc); // This one will throw the message 'OK' on success
             }
           }
           catch (err) {
             saveElement.classList.remove('is-loading');
+            document.getElementById("savingOverlay").style.display = 'none';
             Homey.alert(Homey.__(`warnings.savingFailed: ${err}`));
           }
         }

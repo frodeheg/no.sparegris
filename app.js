@@ -1178,8 +1178,8 @@ class PiggyBank extends Homey.App {
           this.homey.settings.set('all_prices', this.__all_prices);
           this.onRefreshInternals(false); // Just to refresh prices and reschedule charging.
           this.homey.settings.set('settingsSaved', '');
-          // The callback only returns on error so notify success with failure
-          throw (new Error(this.homey.__('settings.alert.settingssaved')));
+          // The callback only returns on error so notify success with failure = 'OK'
+          throw (new Error('OK'));
         }
       }
     });

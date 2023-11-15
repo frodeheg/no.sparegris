@@ -408,7 +408,6 @@
     },
     "saveButton": "Lagre Endringer",
     "alert": {
-      "settingssaved": "Endringene har blitt lagret.",
       "maxPowerChanged": "Du har justert opp effekt-taket. Dette medfører ekstra kostnader. Ønsker du å fortsette?",
       "leavepage": "Er du sikker på at du vil forlate siden?"
     },
