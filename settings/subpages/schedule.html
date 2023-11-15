@@ -85,6 +85,10 @@
         ];
         setWizOverrides();
       };
+
+      function onScriptLoaded(page) {
+        console.log(`Script loaded by schedule.html: ${page}`);
+      };
     </script>
     <script type="text/javascript" src="../constants.js"></script>
     <script type="text/javascript" src="../tools.js"></script>

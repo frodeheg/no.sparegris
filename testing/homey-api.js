@@ -27,7 +27,7 @@ class FakeDeviceClass {
     if (typeof (definition) === 'string') {
       // File name
       const numDevices = Object.keys(this.homey.devices.fakeDevices).length;
-      const data = fs.readFileSync(`./doc/devices/${definition}`, 'utf8');
+      const data = fs.readFileSync(`../doc/devices/${definition}`, 'utf8');
       const lines = data.split('\n');
       let startFound = false;
       let driverUri;

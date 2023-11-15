@@ -38,7 +38,7 @@
       "opHelp": {
         "alwaysOn": "De apparaten in kwestie worden nooit uitgeschakeld. Aan het stroomtarief wordt voldaan door het regelen van de temperatuur. Gebruik dit niet om relais te regelen, aangezien er niet aan het stroomtarief kan worden voldaan als ze niet kunnen worden uitgeschakeld.",
         "alwaysOff": "De apparaten in kwestie worden hoe dan ook uitgeschakeld.",
-        "controlledOn": "De apparaten in kwestie staan voorzover het kan zoveel mogelijk aan. Ze kunnen worden uitgeschakeld om het stroomtarief te behouden. Als apparaten worden uitgeschakeld, worden ze weer ingeschakeld wanneer er voldoende stroom beschikbaar is. Thermostaat-apparaten passen de temperatuur aan, in plaats van aan/uit.",
+        "controlledOn": "De apparaten in kwestie staan voorzover het kan zoveel mogelijk aan. Ze kunnen worden uitgeschakeld om het stroomtarief te behouden. Als apparaten worden uitgeschakeld, worden ze weer ingeschakeld wanneer er voldoende stroom beschikbaar is. Thermostaten veranderen de temperatuur in plaats van aan en uit te zetten.",
         "controlledOnCheapest": "Gelijk aan 'Voorkeur aan' behalve dat het alleen aan staat op de goedkoopste X uur.",
         "controlledOff": "Gelijk aan 'Voorkeur aan' behalve dat uitgeschakelde apparaten niet opnieuw worden ingeschakeld. Thermostaat-apparaten werken als 'Voorkeur aan'",
         "ignore": "De apparaten in kwestie kunnen niet worden in- of uitgeschakeld. Als het apparaat aan is, wordt de temperatuur gecontroleerd, en als het uit is, gebeurt er niets."
@@ -62,40 +62,11 @@
     },
     "charge": {
       "header": "Voertuig (EV) laders",
-      "chargeTarget": "Laadregeling",
-      "chargeMin": "Minimaal laadvermogen",
-      "chargeThreshold": "Startdrempel",
-      "minToggleTime": "Minimale schakeltijd",
-      "chargeRemaining": "Resterende energie",
-      "chargeEnd": "Eindtijd laadcyclus",
-      "chargeTargetAuto": "Volledig geautomatiseerd",
-      "chargeTargetFlow": "Flow gestuurd",
-      "carChargerMissingHint": "Geen ondersteunde oplader gevonden. Je kunt een flowkaartje gebruiken om te gaanladen.",
-      "carChargerNotAddedHint": "Er is een ondersteunde oplader gevonden, maar deze is niet toegevoegd als een controleerbaar apparaat.",
-      "chargeTargetHint": ["Ondersteunde opladers worden automatisch door de app bestuurd, op voorwaarde dat ze worden toegevoegd als een bestuurbaar apparaat. Voor niet-ondersteunde opladers kun je flowkaarten gebruiken of een <a href=\"ShowLog\" onclick=\"changeTab(event, 'logPage');return false;\">apparaat rapport verzenden</a>. <!--",
-        "--><p>Houd er rekening mee dat laders vermeld bij <a href=\"ShowDevices\" onclick=\"changeTab(event, 'helpSupportedPage');return false;\">overschreven apparaten</a> aangestuurd moeten worden via flows.</p><!--",
-        "--><p>Om het via flows te regelen, moet je verbinding maken met de volgende triggers in de app: 'Start opladen' en 'Stop met opladen', terwijl 'Laadvermogen wijzigen' optioneel is, maar wel wordt aanbevolen.</p> <!--",
-        "--><p>Om het laadproces te starten moet je de flowkaart actie 'Start laadcyclus' gebruiken.</p>"],
-      "chargeMinHint": "De minimale laadstroom geeft het laadvermogen aan dat uw oplader gebruikt wanneer je deze inschakelt. Als de oplader slechts één instelling heeft, voer je deze hier in. Als de oplader de stroom kan regelen, voer je het minimale vermogen in dat hij kan opnemen. Om de waarde te verhogen, moet de drempel voor het starten van het opladen mogelijk eerst worden verhoogd, omdat deze niet kan worden overschreden om de lader te beschermen.",
-      "chargeThresholdHint": "Een nieuwe laadcyclus begint pas wanneer het stationair vermogen de hier ingestelde drempelwaarde overschrijdt. Dit moet ietsje meer zijn dan de minimale laadstroom om te voorkomen dat de lader meteen weer uitvalt.",
-      "minToggleTimeHint": "Deze waarde geeft in seconden aan hoe lang het duurt tussen de signalen die naar de oplader wordt verzonden. Als de reactietijd van de lader deze waarde overschrijdt, moet deze waarde dienovereenkomstig worden verhoogd.",
-      "chargeRemainingHint": "Deze waarde geeft aan hoeveel stroom aan de oplader wordt aangeboden voordat de app stopt met opladen. Deze energie wordt verdeeld over alle resterende tijd tot het einde van de laadcyclus. Je kunt deze waarde hier niet instellen, deze moet worden ingesteld via het flowkaartje 'Laadcyclus starten'.",
-      "chargeEndHint": "Dit veld geeft aan wanneer de huidige laadcyclus eindigt. Je kunt deze waarde hier niet instellen, deze moet worden ingesteld vanuit het flowkaartje 'Laadcyclus starten'.",
-      "override": "Negeren",
-      "overrideHint": "In eerste instantie zou het opladen moeten werken zonder negeren. In sommige situaties kan het toch wenselijk zijn om hier verandering in te brengen.",
-      "overrideHintStart": "De startstroom is de stroom die wordt aangeboden wanneer de lader eerder 0w heeft gebruikt en zich in een laadcyclus bevindt (om 3-fase opladen te krijgen, moet de minimale startstroom 11a zijn).",
-      "overrideHintStop": "De stopstroom is de stroom die wordt aangeboden wanneer er geen laadcyclus is. (nb: het wordt niet geprobeerd om het aan te passen)",
-      "overrideHintPause": "De pauzestroom is de stroom die wordt aangeboden wanneer er een laadcyclus is en de prijs te hoog is.",
-      "overrideHintMin": "Minimale laadstroom zorgt ervoor dat je nooit oplaadt met minder stroom dan dit (varieert van auto tot auto, kan minder dan 11a zijn voor 3-fase opladen).",
-      "overrideHintMax": "Maximale laadstroom zorgt ervoor dat je nooit met meer stroom dan dit oplaadt (een extra waarborg tegen overconsumptie wanneer Homey of Easee API zich misdraagt).",
-      "overrideEnable": "Negeren",
-      "overrideEnableNo": "Uitgeschakeld",
-      "overrideEnableYes": "Ingeschakeld",
-      "overrideStart": "Start stroom",
-      "overrideStop": "Stroom stoppen",
-      "overridePause": "Stroom pauzeren",
-      "overrideMinCurrent": "Minimale laadstroom",
-      "overrideMaxCurrent": "Maximale laadstroom"
+      "carChargerMissingHint": ["Geen ondersteunde oplader gevonden. U kunt nog steeds een op stroom gebaseerde controller installeren, maar als u een <!-- indient",
+      "--><a href=\"ShowLog\" onclick=\"changeTab(event, 'logPage');return false;\">apparaatrapport</a> voor uw oplader, waarna directe ondersteuning later wordt toegevoegd versie."],
+      "carChargerDeprecatedHint": "De manier waarop u uw autolader bedient, zal binnenkort niet meer werken. Om de lader te blijven bedienen, deselecteert u deze in de lijst met bestuurbare apparaten en slaat u deze op. Verwijder vervolgens alle oude stromen die de lader besturen en installeer de laadcontrollerapparaat voor deze app.",
+      "controllerNotAddedHint": "Er is een ondersteunde oplader gevonden. Installeer de laadcontroller om deze te kunnen bedienen.",
+      "controllerNotEnabledHint": "Er is een ladercontroller gevonden, maar deze is niet ingeschakeld."
     },
     "menu": {
       "home": {
@@ -146,7 +117,6 @@
       "taskEnableApp": "De app moet ingeschakeld zijn om geld te besparen.",
       "taskCreateEnergyFlow": "Koppel je (P1) energiemeter aan de energie invoer van deze app. <a href=\"meterPage\" onclick=\"changeTab(event, 'meterPage');return false;\"> Zie hier voor meer informatie</a>.",
       "taskEnergyFlowRate": "Ee snelheid waarmee de energiemeter de energie rapporteert, is erg laag (laatste signaal ontving ${interval} minuten geleden). Verhoog het tarief indien mogelijk.",
-      "taskChargerNotEnabled": "Je hebt een laadcyclus gestart zonder dat een ondersteunde oplader is ingesteld op regelbaar in de app. Je moet de oplader selecteren als bestuurbaar of je moet de laadregelaar instellen op flowkaarten.",
       "taskNoPriceFlow": "Je instelling zegt dat prijzen door een flow moeten worden gestuurd, maar er lijkt niet zo'n flow actief.",
       "taskNoPriceAPI": "Je hebt ervoor gekozen om prijzen op te halen bij een externe app, waarvoor de app 'Norwegian Electricity Bill' moet worden geïnstalleerd, maar deze kan niet worden gevonden, of de versie is te oud. Misschien moet je in plaats daarvan de instelling 'Spotprijs' gebruiken.",
       "taskNoPriceAPIDevice": "Je keuze om prijzen op te halen uit een externe app vereist dat de app 'Norwegian Electricity Bill' is geïnstalleerd. De app is gevonden, maar prijzen kunnen alleen worden opgehaald wanneer het bijbehorende apparaat van de app is geïnstalleerd.",
@@ -266,7 +236,8 @@
       "deviceTypeCharger": "Laders",
       "deviceTypeIgnore": "Overschreven apparaten",
       "deviceTypeMeter": "Meteruitlezers",
-      "ongoing": "In ontwikkeling",
+      "deviceTypeController": "Vermogensregelaars",
+      "ongoing": "Wachten op feedback van gebruikers",
       "aboutInfo": "Over Spaarpot",
       "aboutInfoHint": ["<p> Deze app is gemaakt om iedereen op een eenvoudige manier het energieverbruik te laten beheren, en tegelijkertijd zoveel mogelijk geld te besparen. </p> <!-",
         "-> <p> Er is veel vrije tijd in gestoken om deze app te ontwikkelen. Als je happy bent met wat je bespaart, kunt je de ontwikkeling van de app op de volgende manieren ondersteunen (volledig optioneel):</p><!--",
@@ -447,6 +418,38 @@
       "hint": "A/C Modus is van invloed op alle A/C units (maar dit wordt - per unit - in een latere update). Als A/C Modus = 'Ongewijzigd', dan zal de app de A/C Modus niet instellen. Alle andere selecties stellen de A/C Modus in. NB: Als de A/C Modus is ingesteld op koelen, worden de deltatemperaturen voor het prijspunt omgekeerd, zodat u naadloos kunt schakelen tussen verwarmen en koelen zonder dat dit invloed heeft op het vermogen van de app om geld te besparen."
     }
   },
+  "charger": {
+    "new": {
+      "deviceName": "Oplaadcontroller",
+      "flowBased": "Flow-gebaseerde controller",
+      "controlFor": "Controller voor",
+      "infoHeader": "Informatie over laadcontroller",
+      "imageHeader": "Selecteer pictogram",
+      "info1": "Met dit apparaat kunt u een autolader met varkentje bedienen.",
+      "info2": "Als uw lader direct wordt ondersteund, wordt deze in het volgende scherm weergegeven. Als dit niet het geval is, moet u de flowgebaseerde controller selecteren."
+    },
+    "validation": {
+      "heading": "Het apparaat kan pas worden gebruikt als onderstaande checklist is ingevuld",
+      "reset": "onderhoudsactie \"reset\" begint opnieuw",
+      "stateLabel": "Oplaadstatus ontvangen",
+      "stateHint": "Maak een stroom om de controller te informeren over de laadstatus.",
+      "batterySkipped": "Batterijtest overgeslagen.",
+      "turnedOnLabel": "De controller moet ingeschakeld zijn.",
+      "turnedOnHint": "Schakel de laadcontroller in.",
+      "turnaroundLabel": "Responstest",
+      "turnaroundOngoing": "lopend",
+      "wait": "Druk op vernieuwen voor updates"
+    },
+    "error": {
+      "notReady": "Kan de laadcontroller niet inschakelen voordat deze correct is aangesloten en getest. Zie de cameramogelijkheden van dit apparaat voor instructies."
+    },
+    "warnings": {
+      "noSignalAmps": "Geen Amp-signaal ontvangen van de lader",
+      "noSignalWatts": "Geen Watt-signaal ontvangen van de oplader",
+      "noSignalBattery": "Geen batterijniveau ontvangen van de oplader",
+      "redundantFlow": "Stroomsignaal genegeerd, dit wordt rechtstreeks opgehaald van het bestuurde apparaat."
+    }
+  },
   "newdevice": {
     "info": "Dit apparaat geeft je inzicht in wat er gebeurt wanneer de app de stroom regelt. Het is niet nodig om dit apparaat te installeren om de app te laten functioneren.",
     "info2": "Aangezien dit apparaat alleen werkt om de app te monitoren, kun je daarom niet configureren wat er gebeurt via de instellingen van dit apparaat. Je kunt enkel configureren wat er gebeurt via de instellingen van de app."
@@ -496,8 +499,11 @@
     "title": "Laadcyclusplan",
     "yaxis": "Prijs per kWh",
     "price": "Prijs",
+    "enabled": "Activa",
     "charging": "Opladen ingeschakeld",
     "nocharge": "Opladen uitgeschakeld",
+    "noPlan": "Er is geen laadplan aangemaakt. U kunt een laadplan aanmaken door de flow \"Kostegoedkoopste x uur vóór uu:00 uur\" te starten.",
+    "cycleEnded": "De oplaadcyclus is voltooid.",
     "noPrice": "Nog geen prijsgegevens"
   },
   "month": {

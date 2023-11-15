@@ -6,7 +6,21 @@
     <script type="text/javascript" src="/homey.js" data-origin="settings"></script>
     <script type="text/javascript">
       let module = {}; // Just to get around that some of the included files are used both by node.js and in the browser
+      let totalLoadCount = 11;
+      let loadedCount = 0;
+      let scriptsLoaded = false;
       function onWizLoaded() {};
+      function onScriptLoaded(page) {
+        loadedCount += 1;
+        console.log(`Script loaded (${loadedCount}/${totalLoadCount}): ${page}`);
+        if (totalLoadCount === loadedCount) {
+          scriptsLoaded = true;
+          if (typeof checkLoadingDone === 'function') {
+            // In case the scripts are loaded before the function is defined it's ok to skip it
+            checkLoadingDone();
+          }
+        }
+      };
     </script>
     <script type="text/javascript" src="./constants.js"></script>
     <script type="text/javascript" src="./locale.js"></script>
@@ -98,14 +112,10 @@
         "settings.help.deviceTypeAC",
         "settings.help.deviceTypeCharger",
         "settings.help.deviceTypeIgnore",
-        "settings.help.deviceTypeMeter"
+        "settings.help.deviceTypeMeter",
+        "settings.help.deviceTypeController"
       ];
-      var chargePlanGraphTitle = "chargePlanGraph.title";
-      var chargePlanGraphYAxis = "chargePlanGraph.yaxis";
       var chargePlanGraphPrice = "chargePlanGraph.price";
-      var chargePlanGraphCharge = "chargePlanGraph.charging";
-      var chargePlanGraphNoCharge = "chargePlanGraph.nocharge";
-      var chargePlanGraphNoPrice = "chargePlanGraph.noPrice";
 
       var debugMode = false;
 
@@ -154,7 +164,6 @@
       var currentSafetyPower = 500;
       var currentMainFuse = 63;
       var futurePriceOptions = {};
-      var chargerOptions = {};
       var appConfigProgress = {ApiStatus:0};
       var currentModeTab = 0; // Normal
       var loadedMaxPower = undefined;
@@ -198,9 +207,12 @@
           let experimental = !(device.driverId in DEVICE_CMD) || ("beta" in DEVICE_CMD[device.driverId]);
           let hasNote = (device.driverId in DEVICE_CMD) && ("note" in DEVICE_CMD[device.driverId]);
           found_experimental_on |= device.use && experimental;
-          let enabledImg = device.use ? experimental ? "experimental.png" : "enabled.png" : "disabled.png";
+          let deprecated = ((device.driverId in DEVICE_CMD) && (DEVICE_CMD[device.driverId].type === DEVICE_TYPE.CHARGER));
+          let deprecatedImg = device.use ? "deprecated_on.png" : "deprecated_off.png"
+          let deprecatedText = (deprecated && device.use) ? '<tr><td colspan=4><input type="image" width="200" height="50" src="deprecated.png"><p>The way you control this device will soon stop working. In order to continue to control this device, please de-select this device and save, then delete all old flows controlling the charger and install the charge controller device for this app.</p></td></tr>' : '';
+          let enabledImg = deprecated ? deprecatedImg : device.use ? experimental ? "experimental.png" : "enabled.png" : "disabled.png";
           let experimentalCmd = experimental ? 'document.getElementById(\'' + experimentalId + '\').style.display=\'block\';' : '';
-          let noteButton = hasNote ? ` <div class="hintButton" onclick="toggle(this,'note${key}', 'table-row');return false;" style="display:inline-block">i</div>` : '';
+          let noteButton = hasNote ? ` <div id="expandNote${key}" class="hintButton" onclick="toggle(this,'note${key}', 'table-row');return false;" style="display:inline-block">i</div>` : '';
           let noteText = hasNote ? `<tr id="note${key}" class="hint"><td colspan=4><p>${DEVICE_CMD[device.driverId].note}</p></td></tr>` : '';
           let img_text = device.image ? `<img src="${device.image}" alt="icon">` : '';
           gen_list +=
@@ -209,7 +221,7 @@
             '  <td><input type="image" width="40" height="20" src="' + enabledImg + '" onclick="' + experimentalCmd + 'toggleEnableDevice(event, \'' + String(key) + '\');displaySaveHint()" id="enableDevice' + String(key) + '"></td>' +
             '  <td><h3>' + limitText(device.name) + `${noteButton}</h3></td>` +
             '  <td><p>' + device.room + '</p></td>' +
-            `</tr>${noteText}`;
+            `</tr>${deprecatedText}${noteText}`;
         }
         gen_list += "</table>";
         gen_list += '<div id="' + experimentalId + '" style="display:' + (found_experimental_on?'block':'none') + ';">' + experimentalText + '</div>';
@@ -243,10 +255,19 @@
       }
       
       function toggleEnableDevice(event, device_id) {
-        var button = document.getElementById('enableDevice' + String(device_id))
-        deviceList[device_id].use ^= true;
-        var experimental = !(deviceList[device_id].driverId in DEVICE_CMD) || ("beta" in DEVICE_CMD[deviceList[device_id].driverId]);
-        button.src = deviceList[device_id].use ? experimental ? "experimental.png" : "enabled.png" : "disabled.png";
+        let button = document.getElementById('enableDevice' + String(device_id))
+        let device = deviceList[device_id];
+        let experimental = !(device.driverId in DEVICE_CMD) || ("beta" in DEVICE_CMD[device.driverId]);
+        let deprecated = ((device.driverId in DEVICE_CMD) && (DEVICE_CMD[device.driverId].type === DEVICE_TYPE.CHARGER));
+        if (deprecated) {
+          if (device.use)
+          device.use = false;
+          toggle(document.getElementById(`expandNote${device_id}`), `note${device_id}`, 'table-row');
+        } else {
+          device.use ^= true;
+        }
+        let deprecatedImg = device.use ? "deprecated_on.png" : "deprecated_off.png"
+        button.src = deprecated ? deprecatedImg : deviceList[device_id].use ? experimental ? "experimental.png" : "enabled.png" : "disabled.png";
       }
 
       function updateOperatingModes(selectedMode) {
@@ -775,16 +796,6 @@
         element.style.display = type;
       }
 
-      function isChargerControllable() {
-        for (var key in deviceList) {
-          var device = deviceList[key];
-          if ((device.use) && (device.driverId in DEVICE_CMD) && (DEVICE_CMD[device.driverId].type === DEVICE_TYPE.CHARGER)) {
-            return true;
-          }
-        }
-        return false;
-      }
-
       function changeTaskVisibility(taksName, makeVisible) {
         if (makeVisible) {
           setVisible(taksName);
@@ -803,13 +814,12 @@
         }
         let appIsDisabled = (document.getElementById("appEnabled").value == '0');
         let haveTasks = false;
-        const { foundCharger, chargerUsed } = checkForCharger(deviceList);
+        const { foundCharger, foundController, chargerOn, controllerOn } = checkForCharger(deviceList);
         const priceMode = document.getElementById("priceMode").value;
         const priceKind = document.getElementById("priceKind").value;
         haveTasks |= changeTaskVisibility('taskEnableApp', appIsDisabled);
         haveTasks |= changeTaskVisibility('taskCreateEnergyFlow', !appIsDisabled && appConfigProgress.energyMeterNotConnected);
         haveTasks |= changeTaskVisibility('taskEnergyFlowRate', !appIsDisabled && !appConfigProgress.energyMeterNotConnected && (+appConfigProgress.timeSinceEnergyMeter > 120));
-        haveTasks |= changeTaskVisibility('taskChargerNotEnabled', !appIsDisabled && (+document.getElementById('chargeTarget').value == CHARGE_TARGET_AUTO) && (!isChargerControllable()) && (new Date(chargerOptions.chargeEnd) > new Date()));
         haveTasks |= changeTaskVisibility('taskNoPriceFlow', !appIsDisabled && priceMode == PRICE_MODE_FLOW && !appConfigProgress.gotPPFromFlow);
         haveTasks |= changeTaskVisibility('taskNoPriceAPI', !appIsDisabled && priceMode == PRICE_MODE_INTERNAL && priceKind == PRICE_KIND_EXTERNAL && appConfigProgress.ApiStatus == PRICE_API_NO_APP);
         haveTasks |= changeTaskVisibility('taskNoPriceAPIDevice', !appIsDisabled && priceMode == PRICE_MODE_INTERNAL && priceKind == PRICE_KIND_EXTERNAL && appConfigProgress.ApiStatus == PRICE_API_NO_DEVICE);
@@ -820,7 +830,9 @@
         haveTasks |= changeTaskVisibility('taskExperimental', !appIsDisabled && experimentalEnabled);
         haveTasks |= changeTaskVisibility('taskSpookey', !appIsDisabled && (+appConfigProgress.numSpookeyChanges > 0));
         haveTasks |= changeTaskVisibility('errorDevices', !appIsDisabled && numErrorDevices > 0);
-        haveTasks |= changeTaskVisibility('taskAddCarCharger', !appIsDisabled && foundCharger && !chargerUsed);
+        haveTasks |= changeTaskVisibility('taskDeprecatedCharger', !appIsDisabled && foundCharger && chargerOn);
+        haveTasks |= changeTaskVisibility('taskNoController', !appIsDisabled && foundCharger && !chargerOn && !foundController);
+        haveTasks |= changeTaskVisibility('taskNoActiveController', !appIsDisabled && foundCharger && foundController && !controllerOn);
         changeTaskVisibility('taskNone', !haveTasks);
       }
 
@@ -974,17 +986,18 @@
           <tr id="taskNoPriceAPI"><td style="vertical-align:top;"><span id="iconE2" class="⚠ err"></span></td><td><span data-i18n="settings.welcome.taskNoPriceAPI">taskNoPriceAPI</span></td></tr>
           <tr id="taskNoPriceAPIDevice"><td style="vertical-align:top;"><span id="iconE3" class="⚠ err"></span></td><td><span data-i18n="settings.welcome.taskNoPriceAPIDevice">taskNoPriceAPIDevice</span></td></tr>
           <tr id="taskNoPriceAPIData"><td style="vertical-align:top;"><span id="iconE4" class="⚠ err"></span></td><td><span data-i18n="settings.welcome.taskNoPriceAPIData">taskNoPriceAPIData</span></td></tr>
-          <tr id="taskChargerNotEnabled"><td style="vertical-align:top;"><span id="iconE5" class="⚠ err"></span></td><td><span data-i18n="settings.welcome.taskChargerNotEnabled">taskChargerNotEnabled</span></td></tr>
-          <tr id="taskNoPrices"><td style="vertical-align:top;"><span id="iconE6" class="⚠ err"></span></td><td><span data-i18n="settings.welcome.taskNoPrices">taskNoPrices</span></td></tr>
+          <tr id="taskNoPrices"><td style="vertical-align:top;"><span id="iconE5" class="⚠ err"></span></td><td><span data-i18n="settings.welcome.taskNoPrices">taskNoPrices</span></td></tr>
           <tr id="taskEnableApp"><td style="vertical-align:top;"><span id="iconW1" class="⚠ warn"></span></td><td><span data-i18n="settings.welcome.taskEnableApp">taskEnableApp</span></td></tr>
           <tr id="taskEnergyFlowRate"><td style="vertical-align:top;"><span id="iconW2" class="⚠ warn"></span></td><td><span id="energyFlowRateText">taskEnergyFlowRate</span></td></tr>
           <tr id="taskNoPriceFlow"><td style="vertical-align:top;"><span id="iconW3" class="⚠ warn"></span></td><td><span data-i18n="settings.welcome.taskNoPriceFlow">taskNoPriceFlow</span></td></tr>
           <tr id="taskDisableLogging"><td style="vertical-align:top;"><span id="iconW4" class="⚠ warn"></span></td><td><span data-i18n="settings.welcome.taskDisableLogging">taskDisableLogging</span></td></tr>
           <tr id="taskExperimental"><td style="vertical-align:top;"><span id="iconW5" class="⚠ warn"></span></td><td><span data-i18n="settings.welcome.taskExperimental">taskExperimental</span></td></tr>
-          <tr id="taskSpookey"><td style="vertical-align:top;"><span id="iconW5" class="⚠ warn"></span></td><td><span id="spookeyText">taskSpookey</span></td></tr>
-          <tr id="errorDevices"><td style="vertical-align:top;"><span id="iconW6" class="⚠ warn"></span></td><td><span data-i18n="settings.welcome.errorDevices">errorDevices</span><div id="errorDeviceList"></div></td></tr>
-          <tr id="taskAddCarCharger"><td style="vertical-align:top;"><span id="iconW7" class="⚠ warn"></span></td><td><span data-i18n="settings.charge.carChargerNotAddedHint">charge.carChargerNotAddedHint</span></td></tr>
+          <tr id="taskSpookey"><td style="vertical-align:top;"><span id="iconW6" class="⚠ warn"></span></td><td><span id="spookeyText">taskSpookey</span></td></tr>
+          <tr id="errorDevices"><td style="vertical-align:top;"><span id="iconW7" class="⚠ warn"></span></td><td><span data-i18n="settings.welcome.errorDevices">errorDevices</span><div id="errorDeviceList"></div></td></tr>
+          <tr id="taskDeprecatedCharger"><td style="vertical-align:top;"><span id="iconW8" class="⚠ warn"></span></td><td><span data-i18n="settings.charge.carChargerDeprecatedHint">carChargerDeprecatedHint</span></td></tr>
+          <tr id="taskNoActiveController"><td style="vertical-align:top;"><span id="iconW9" class="⚠ warn"></span></td><td><span data-i18n="settings.charge.controllerNotEnabledHint">controllerNotEnabledHint</span></td></tr>
           <tr id="taskNoPriceEnabled"><td style="vertical-align:top;"><span id="iconI1" class="⚠ info"></span></td><td><span data-i18n="settings.welcome.taskNoPriceEnabled">taskNoPriceEnabled</span></td></tr>
+          <tr id="taskNoController"><td style="vertical-align:top;"><span id="iconI2" class="⚠ info"></span></td><td><span data-i18n="settings.charge.controllerNotAddedHint">charge.controllerNotAddedHint</span></td></tr>
           <tr id="taskNone"><td style="vertical-align:top;"><span id="iconI2" class="⚠ info"></span></td><td><span data-i18n="settings.welcome.taskNone">taskNone</span></td></tr>
         </table>
 
@@ -1415,119 +1428,11 @@
         <legend data-i18n="settings.charge.header">charge.header</legend>
         <table class="settings_table">
           <tr id="carChargerMissingHint"><td style="vertical-align:top;"><span id="iconC1" class="⚠ info"></span></td><td><span data-i18n="settings.charge.carChargerMissingHint">charge.carChargerMissingHint</span></td></tr>
-          <tr id="carChargerNotAddedHint"><td style="vertical-align:top;"><span id="iconC2" class="⚠ warn"></span></td><td><span data-i18n="settings.charge.carChargerNotAddedHint">charge.carChargerNotAddedHint</span></td></tr>
+          <tr id="controllerNotAddedHint"><td style="vertical-align:top;"><span id="iconC2" class="⚠ info"></span></td><td><span data-i18n="settings.charge.controllerNotAddedHint">charge.controllerNotAddedHint</span></td></tr>
+          <tr id="controllerNotEnabledHint"><td style="vertical-align:top;"><span id="iconC3" class="⚠ warn"></span></td><td><span data-i18n="settings.charge.controllerNotEnabledHint">charge.controllerNotEnabledHint</span></td></tr>
+          <tr id="carChargerDeprecatedHint"><td style="vertical-align:top;"><span id="iconC4" class="⚠ warn"></span></td><td><span data-i18n="settings.charge.carChargerDeprecatedHint">charge.carChargerDeprecatedHint</span></td></tr>
         </table>
-        <table class="settings_table">
-          <tr>
-            <td class="settings_row_name"><label for="chargeTarget" data-i18n="settings.charge.chargeTarget">charge.chargeTarget</label>:</td>
-            <td class="settings_row_input">
-              <select id="chargeTarget" disabled class="inputElem" onchange="updateAdvancedSettings();displaySaveHint()">
-                <option value="1" data-i18n="settings.charge.chargeTargetAuto" selected >Auto</option>
-                <option value="2" data-i18n="settings.charge.chargeTargetFlow">Manual</option>
-              </select> <div class="hintButton" onclick="toggle(this,'chargeTargetHint', 'table-row');return false;">i</div>
-            </td>
-          </tr>
-          <tr id="chargeTargetHint" class="hint"><td colspan="2"><p data-i18n="settings.charge.chargeTargetHint">charge.chargeTargetHint</p></td></tr>
-          <tr id ="chargeMinRow">
-            <td class="settings_row_name"><label for="chargeMin" data-i18n="settings.charge.chargeMin">charge.chargeMin</label>:</td>
-            <td class="settings_row_input"><input id="chargeMin" class="inputElem" type="number" min="1500" max="2000" step="100" value="2000"
-              onchange="limitElement(this); updateAdvancedSettings(); displaySaveHint()"> W
-              <div class="hintButton" onclick="toggle(this,'chargeMinHint', 'table-row');return false;">i</div>
-            </td>
-          </tr>
-          <tr id="chargeMinHint" class="hint"><td colspan="2"><p data-i18n="settings.charge.chargeMinHint">charge.chargeMinHint</p></td></tr>
-          <tr>
-            <td class="settings_row_name"><label for="chargeThreshold" data-i18n="settings.charge.chargeThreshold">charge.chargeThreshold</label>:</td>
-            <td class="settings_row_input"><input id="chargeThreshold" class="inputElem" type="number" min="1500" max="20000" step="100" value="2000"
-              onchange="limitElement(this); updateAdvancedSettings(); displaySaveHint()"> W
-              <div class="hintButton" onclick="toggle(this,'chargeThresholdHint', 'table-row');return false;">i</div>
-            </td>
-          </tr>
-          <tr id="chargeThresholdHint" class="hint"><td colspan="2"><p data-i18n="settings.charge.chargeThresholdHint">charge.chargeThresholdHint</p></td></tr>
-          <tr>
-            <td class="settings_row_name"><label for="minToggleTime" data-i18n="settings.charge.minToggleTime">charge.minToggleTime</label>:</td>
-            <td class="settings_row_input"><input id="minToggleTime" class="inputElem" type="number" min="90" max="300" step="1" value="120"
-              onchange="limitElement(this); displaySaveHint()"> s
-              <div class="hintButton" onclick="toggle(this,'minToggleTimeHint', 'table-row');return false;">i</div>
-            </td>
-          </tr>
-          <tr id="minToggleTimeHint" class="hint"><td colspan="2"><p data-i18n="settings.charge.minToggleTimeHint">charge.minToggleTimeHint</p></td></tr>
-          <tr>
-            <td class="settings_row_name"><label for="chargeRemaining" data-i18n="settings.charge.chargeRemaining">charge.chargeRemaining</label>:</td>
-            <td class="settings_row_input"><input disabled id="chargeRemaining" class="inputElem" type="number" min="0" max="100" step="1" value="0" onchange="displaySaveHint()">
-              <span id="chargeRemainingUnit_kWh" data-i18n="units.kWh">kWh</span>
-              <span id="chargeRemainingUnit_h" data-i18n="units.hours">h</span>
-              <div class="hintButton" onclick="toggle(this,'chargeRemainingHint', 'table-row');return false;">i</div>
-            </td>
-          </tr>
-          <tr id="chargeRemainingHint" class="hint"><td colspan="2"><p data-i18n="settings.charge.chargeRemainingHint">charge.chargeRemainingHint</p></td></tr>
-          <tr>
-            <td class="settings_row_name"><label for="chargeEnd" data-i18n="settings.charge.chargeEnd">charge.chargeEnd</label>:</td>
-            <td class="settings_row_input"><input disabled id="chargeEnd" pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}" type="datetime-local" value="2022-10-13T20:00" onchange="displaySaveHint()">
-              <div class="hintButton" onclick="toggle(this,'chargeEndHint', 'table-row');return false;">i</div>
-            </td>
-          </tr>
-          <tr id="chargeEndHint" class="hint"><td colspan="2"><p data-i18n="settings.charge.chargeEndHint">charge.chargeEndHint</p></td></tr>
-        </table>
-
-        <div id ="overrides">
-          <input id="collapsibleOverride" class="toggle" type="checkbox">
-          <label for="collapsibleOverride" class="lbl-toggle" data-i18n="settings.charge.override" style="color: whitesmoke;">charge.override</label>
-          <div class="collapsible-content">
-            <div class="content-inner">
-              <p data-i18n="settings.charge.overrideHint">charge.overrideHint</p>
-              <table class="settings_table">
-                <tr>
-                  <td class="settings_row_name"><label for="overrideEnable" data-i18n="settings.charge.overrideEnable">charge.overrideEnable</label>:</td>
-                  <td class="settings_row_input">
-                    <select id="overrideEnable" class="inputElem" onchange="displaySaveHint()">
-                      <option value="0" data-i18n="settings.charge.overrideEnableNo">Disabled</option>
-                      <option value="1" data-i18n="settings.charge.overrideEnableYes">Enabled</option>
-                    </select>
-                  </td>
-                </tr>
-                <tr>
-                  <td class="settings_row_name"><label for="overrideStart" data-i18n="settings.charge.overrideStart">charge.overrideStart</label>:</td>
-                  <td class="settings_row_input"><input id="overrideStart" class="inputElem" type="number" min="0" max="40" value="0" onchange="limitElement(this);displaySaveHint()"> A
-                    <div class="hintButton" onclick="toggle(this,'overrideHintStart', 'table-row');return false;">i</div>
-                  </td>
-                </tr>
-                <tr id="overrideHintStart" class="hint"><td colspan="2"><p data-i18n="settings.charge.overrideHintStart">charge.overrideHintStart</p></td></tr>
-                <tr>
-                  <td class="settings_row_name"><label for="overrideStop" data-i18n="settings.charge.overrideStop">charge.overrideStop</label>:</td>
-                  <td class="settings_row_input"><input id="overrideStop" class="inputElem" type="number" min="0" max="40" value="0" onchange="limitElement(this);displaySaveHint()"> A
-                    <div class="hintButton" onclick="toggle(this,'overrideHintStop', 'table-row');return false;">i</div>
-                  </td>
-                </tr>
-                <tr id="overrideHintStop" class="hint"><td colspan="2"><p data-i18n="settings.charge.overrideHintStop">charge.overrideHintStop</p></td></tr>
-                <tr>
-                  <td class="settings_row_name"><label for="overridePause" data-i18n="settings.charge.overridePause">charge.overridePause</label>:</td>
-                  <td class="settings_row_input"><input id="overridePause" class="inputElem" type="number" min="0" max="40" value="4" onchange="limitElement(this);displaySaveHint()"> A
-                    <div class="hintButton" onclick="toggle(this,'overrideHintPause', 'table-row');return false;">i</div>
-                  </td>
-                </tr>
-                <tr id="overrideHintPause" class="hint"><td colspan="2"><p data-i18n="settings.charge.overrideHintPause">charge.overrideHintPause</p></td></tr>
-                <tr>
-                  <td class="settings_row_name"><label for="overrideMinCurrent" data-i18n="settings.charge.overrideMinCurrent">charge.overrideMinCurrent</label>:</td>
-                  <td class="settings_row_input"><input id="overrideMinCurrent" class="inputElem" type="number" min="0" max="40" value="7" onchange="limitElement(this);displaySaveHint()"> A
-                    <div class="hintButton" onclick="toggle(this,'overrideHintMin', 'table-row');return false;">i</div>
-                  </td>
-                </tr>
-                <tr id="overrideHintMin" class="hint"><td colspan="2"><p data-i18n="settings.charge.overrideHintMin">charge.overrideHintMin</p></td></tr>
-                <tr>
-                  <td class="settings_row_name"><label for="overrideMaxCurrent" data-i18n="settings.charge.overrideMaxCurrent">charge.overrideMaxCurrent</label>:</td>
-                  <td class="settings_row_input"><input id="overrideMaxCurrent" class="inputElem" type="number" min="0" max="40" value="40" onchange="limitElement(this);displaySaveHint()"> A
-                    <div class="hintButton" onclick="toggle(this,'overrideHintMax', 'table-row');return false;">i</div>
-                  </td>
-                </tr>
-                <tr id="overrideHintMax" class="hint"><td colspan="2"><p data-i18n="settings.charge.overrideHintMax">charge.overrideHintMax</p></td></tr>
-              </table>
-            </div>
-          </div>
-        </div>
       </fieldset>
-
-      <canvas id="chargeSheduleChart" style="max-height:250px;min-height:250px;display:none"></canvas>
     </div>
 
     <!-- Global page -->
@@ -1907,94 +1812,9 @@
       var toggleTimeLoaded = false;
       var graphLoaded = false;
       var futurePriceOptionsLoaded = false;
-      var chargerOptionsLoaded = false;
       var appConfigProgressLoaded = false;
       var currenciesLoaded = false;
       var onHomeyReadyCompleted = false;
-
-      function updateCarSheduleGraph(chargeShedule, elPrices, currentHour) {
-        // Generate data
-        let dataHours = Array.from(Array(24).keys()).map((x)=>`${(x+currentHour)%24}:00`);
-        let dataPrices = Array.from(Array(24).keys()).map((x)=>elPrices[x+currentHour] || 0);
-        let maxPrice = dataPrices.reduce((a,b) => { return !a ? b : !b ? a : a > b ? a : b }) || 1;
-        let dataPlan = Array.from(Array(24).keys()).map((x)=>chargeShedule[x] ? maxPrice : 0 );
-        let colorBars = Array(24).fill(`skyblue`);
-        let colorBarLines = Array(24).fill('black');
-
-        new Chart("chargeSheduleChart", {
-          data: {
-            labels: dataHours,
-            datasets: [{
-              type: 'line',
-              label: chargePlanGraphPrice,
-              borderColor: "black",
-              pointBackgroundColor: "black",
-              data: dataPrices,
-              borderWidth: 1,
-              pointRadius: 0,
-            }, {
-              type: "bar",
-              label: 'Charge',
-              backgroundColor: colorBars,
-              borderColor: colorBarLines,
-              borderWidth: 1,
-              data: dataPlan
-            }]
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-              y: {
-                title: {
-                  display: true,
-                  text: chargePlanGraphYAxis
-                }
-              }
-            },
-            interaction: {
-              intersect: false,
-              mode: 'index'
-            },
-            plugins: {
-              tooltip: {
-                callbacks: {
-                  title: function(context) {
-                    return `${dataHours[context[0].dataIndex]}`;
-                  },
-                  beforeFooter: function(context) {
-                    if (dataPrices[context[0].dataIndex] === 0) return chargePlanGraphNoPrice;
-                    if (dataPlan[context[0].dataIndex]) return chargePlanGraphCharge;
-                    return chargePlanGraphNoCharge;
-                  }
-                },
-                filter: function(context) {
-                  if (context.dataset.label.startsWith('Charge')) return false;
-                  return true;
-                }
-              },
-              legend: {
-                display: false,
-                position: 'right',
-                labels: {
-                  boxWidth: 10,
-                  font: {
-                    size: 9
-                  }
-                }
-              },
-              title: {
-                display: true,
-                text: chargePlanGraphTitle,
-                font: {
-                  size: 15
-                }
-              }
-            }
-          }
-        });
-        document.getElementById("chargeSheduleChart").style.display='block';
-      }
 
       // Called whenever things has been loaded
       function checkLoadingDone() {
@@ -2026,11 +1846,11 @@
           `toggleTimeLoaded: ${toggleTimeLoaded}<br>` +
           `graphLoaded: ${graphLoaded}<br>` +
           `futurePriceOptionsLoaded: ${futurePriceOptionsLoaded}<br>` +
-          `chargerOptionsLoaded: ${chargerOptionsLoaded}<br>` +
           `appConfigProgressLoaded: ${appConfigProgressLoaded}<br>` +
           `currenciesLoaded: ${currenciesLoaded}<br>` +
           `onHomeyReadyCompleted: ${onHomeyReadyCompleted}<br>`; */
         if (maxPowerLoaded
+          && scriptsLoaded
           && deviceListLoaded
           && modeListLoaded
           && modeNamesLoaded
@@ -2056,7 +1876,6 @@
           && toggleTimeLoaded
           && graphLoaded
           && futurePriceOptionsLoaded
-          && chargerOptionsLoaded
           && appConfigProgressLoaded
           && currenciesLoaded
           && onHomeyReadyCompleted) {
@@ -2112,20 +1931,6 @@
           document.getElementById("gridTaxNight").value = futurePriceOptions.gridTaxNight;
           document.getElementById("VAT").value = futurePriceOptions.VAT;
           document.getElementById('currency').value = futurePriceOptions.currency;
-          document.getElementById('chargeTarget').value = chargerOptions.chargeTarget;
-          document.getElementById('chargeMin').value = chargerOptions.chargeMin;
-          document.getElementById('chargeThreshold').value = chargerOptions.chargeThreshold;
-          document.getElementById('minToggleTime').value = chargerOptions.minToggleTime;
-          document.getElementById('chargeRemaining').value = chargerOptions.chargeRemaining / ((chargerOptions.chargeCycleType === OFFER_HOURS) ? 1 : 1000);
-          document.getElementById('chargeRemainingUnit_kWh').style.display = (chargerOptions.chargeCycleType === OFFER_ENERGY) ? 'inline-block' : 'none';
-          document.getElementById('chargeRemainingUnit_h').style.display = (chargerOptions.chargeCycleType === OFFER_HOURS) ? 'inline-block' : 'none';
-          document.getElementById('chargeEnd').value = toTimeString(new Date(chargerOptions.chargeEnd));
-          document.getElementById('overrideEnable').value = +chargerOptions.overrideEnable;
-          document.getElementById('overrideStart').value = +chargerOptions.overrideStart;
-          document.getElementById('overrideStop').value = +chargerOptions.overrideStop;
-          document.getElementById('overridePause').value = +chargerOptions.overridePause;
-          document.getElementById('overrideMinCurrent').value = +chargerOptions.overrideMinCurrent;
-          document.getElementById('overrideMaxCurrent').value = +chargerOptions.overrideMaxCurrent;
           document.getElementById("energyFlowRateText").innerHTML = energyFlowRateText.replace("${interval}", Math.round(appConfigProgress.timeSinceEnergyMeter / 60));
           document.getElementById("spookeyText").innerHTML = spookeyText.replace("${times}", appConfigProgress.numSpookeyChanges);
           checkPriceMode(document.getElementById("priceMode")); // not called automatically when programatically changed
@@ -2244,12 +2049,8 @@
         deviceTypeText[4] = Homey.__(deviceTypeText[4]);
         deviceTypeText[5] = Homey.__(deviceTypeText[5]);
         deviceTypeText[6] = Homey.__(deviceTypeText[6]);
-        chargePlanGraphTitle = Homey.__(chargePlanGraphTitle);
-        chargePlanGraphYAxis = Homey.__(chargePlanGraphYAxis);
+        deviceTypeText[7] = Homey.__(deviceTypeText[7]);
         chargePlanGraphPrice = Homey.__(chargePlanGraphPrice);
-        chargePlanGraphCharge = Homey.__(chargePlanGraphCharge);
-        chargePlanGraphNoCharge = Homey.__(chargePlanGraphNoCharge);
-        chargePlanGraphNoPrice = Homey.__(chargePlanGraphNoPrice);
 
         for (var i = 0; i < pricePoints.length; i++) {
           pricePoints[i].name = Homey.__(pricePoints[i].name);
@@ -2293,11 +2094,10 @@
 
           // Aquire graphs (must be after setGridCost)
           const instantly = new Date().getTime();
-          Homey.api('GET', `/getStats?type=[chargePlan,maxPower]&time=${instantly}&granularity=${GRANULARITY.DAY}`, null, function (err, res) {
+          Homey.api('GET', `/getStats?type=[elPrices,maxPower]&time=${instantly}&granularity=${GRANULARITY.DAY}`, null, function (err, res) {
             if (err) return alertUser(Homey, err);
             try {
               InitGraph(Homey, res, futurePriceOptions.granularity);
-              updateCarSheduleGraph(res.data.chargeShedule || [], res.data.elPrices || [], res.data.currentHour);
               noPrices = !Array.isArray(res.data.elPrices) || (res.data.elPrices.length == 0)
             } catch (err2) {
               return alertUser(Homey, err2);
@@ -2306,18 +2106,6 @@
             checkLoadingDone();
           });
 
-        });
-
-        // Refresh charger data
-        Homey.get("chargerOptions", function (err, options) {
-          if (err) return popUp(Homey, err);
-          if (options) {
-            chargerOptions = options;
-          } else {
-            chargerOptions = {}
-          }
-          chargerOptionsLoaded = true;
-          checkLoadingDone();
         });
 
         // Refresh currencies
@@ -2639,7 +2427,6 @@
             refreshFrostList(); // It's a pitty but the user did not even visit these pages. Probably they will do later
             refreshPriceActionList(); // It's a pitty but the user did not even visit these pages. Probably they will do later
             updateChargerHints(deviceList); // In case the user added a charger as controllable then the charger mode is still FLOW and must be updated to AUTO
-            updateAdvancedSettings();
             if (Object.keys(frostList).length === 0) {
               try {
                 popUp(Homey, Homey.__('warnings.noDevices'));
@@ -2671,18 +2458,6 @@
               futurePriceOptions.VAT = document.getElementById("VAT").value;
               futurePriceOptions.currency = document.getElementById('currency').value;
               futurePriceOptions.gridCosts = gridCost;
-              chargerOptions.chargeTarget = +document.getElementById('chargeTarget').value;
-              chargerOptions.chargeMin = +document.getElementById('chargeMin').value;
-              chargerOptions.chargeThreshold = +document.getElementById('chargeThreshold').value;
-              chargerOptions.minToggleTime = +document.getElementById('minToggleTime').value;
-              // chargerOptions.chargeRemaining = +document.getElementById('chargeRemaining').value; // Ignore as it is read only
-              // chargerOptions.chargeEnd = +document.getElementById('chargeEnd').value; // Ignore as it is read only (and converted to localtime)
-              chargerOptions.overrideEnable = +document.getElementById('overrideEnable').value;
-              chargerOptions.overrideStart = +document.getElementById('overrideStart').value;
-              chargerOptions.overrideStop = +document.getElementById('overrideStop').value;
-              chargerOptions.overridePause = +document.getElementById('overridePause').value;
-              chargerOptions.overrideMinCurrent = +document.getElementById('overrideMinCurrent').value;
-              chargerOptions.overrideMaxCurrent = +document.getElementById('overrideMaxCurrent').value;
               if (+operatingModeElement.value > modeList.length) {
                 operatingModeElement.value = MODE_NORMAL;
               }
@@ -2696,7 +2471,6 @@
               loadedMaxPower[TIMESPAN.MONTH] = document.getElementById("enLimitMonth").checked
                 ? +document.getElementById("maxPowerMonth").value * 1000 : Infinity;
               Homey.set("futurePriceOptions", futurePriceOptions, errFunc);
-              Homey.set('chargerOptions', chargerOptions, errFunc);
               Homey.set("deviceList", deviceList, errFunc);
               Homey.set("modeList", modeList, errFunc);
               Homey.set("modeNames", modeNames, errFunc);
@@ -3018,7 +2792,6 @@
         // Update the advanced settings page
         if (tabPage == 'chargerPage') {
           updateChargerHints(deviceList);
-          updateAdvancedSettings();
         }
 
         // Refresh cost Schema page
@@ -3129,13 +2902,14 @@
         var key = event.message ? "message" : "data";
         var data = event[key];
         //run function//
-        if (event.origin === 'https://tools.developer.homey.app') {
+        if (event.origin === 'https://tools.developer.homey.app' ||
+            event.origin === 'https://my.homey.app') {
           console.log('Ignoring from homey http interface');
           return;
         }
         if ((event.origin !== window.location.origin) &&
           (event.origin !== 'null')) {
-          console.log(`Message from unknown origin! (${event.origin})`);
+          console.log(`Message from unknown origin! (${event.origin} != ${window.location.origin})`);
           return;
         }
         console.log(`iFrame: ${data} from ${event.origin}`);
