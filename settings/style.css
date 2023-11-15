@@ -475,7 +475,7 @@ input.toggle[type='checkbox'] { display: none; }
   animation-name: flash;
 }
 
-.iframe-holder {savingOverlay
+.iframe-holder {
   position: relative;
   z-index: 11;
   top: 0px;
