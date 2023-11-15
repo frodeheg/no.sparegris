@@ -877,5 +877,8 @@
   },
   "0.20.47": {
     "en": "Added posibility to fix values in the archive that are broken"
+  },
+  "0.20.48": {
+    "en": "Changed popup to passive feedback when saving settings + supressed multiple error popups when network connection is bad."
   }
 }

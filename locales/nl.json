@@ -379,7 +379,6 @@
     },
     "saveButton": "Wijzigingen opslaan",
     "alert": {
-      "settingssaved": "Je wijzingen zijn bewaard!",
       "maxPowerChanged": "Je hebt het piekvermogen verhoogd. Dit kan leiden tot extra kosten. Wil je toch doorgaan?",
       "leavepage": "Pagina verlaten?"
     },

@@ -233,7 +233,9 @@ class FakeHomey {
       }
     }
     if (settingName === 'settingsSaved' && value === 'true') {
-      callback(new Error('Prentending to have saved'));
+      setTimeout(() => {
+        callback(new Error('OK'));
+      }, 1000);
     }
   }
 

@@ -863,6 +863,16 @@
     <div data-i18n="settings.sponsorText" id="sponsorText">sponsorText</div>
     </div>
 
+    <!-- Saving overlay -->
+    <div id="savingOverlay">
+      <div class="center">
+        <b>
+          <div class="spinner">!</div>
+          <span class="anim-text" data-i18n="warnings.savingWait"></span>
+        </b>
+      </div>
+    </div>
+
     <!-- Menu -->
     <table id="main_menu" class="menu" style="display:none;">
       <tbody class="menuitem">
@@ -1929,19 +1939,29 @@
         }
       }
 
+      // Filters a popup so the user doesn't get spammed
+      let popUpOk = true;
+      function popUp(Homey, message) {
+        if (popUpOk) {
+          try {
+            Homey.alert(message);
+          } catch(err) {}; // Ignore popup blockers
+          popUpOk = false;
+          setTimeout(() => { popUpOk = true; }, 1000);
+        } else {
+          console.log(`Supressed popup: ${message}`);
+        }
+      }
+
       // a method to alert the user about something went wrong
       function alertUser(Homey, message) {
         if (String(message).includes('getVersion')
           || String(message).includes('getDevices')
           || String(message).includes('apiCommand')
           || String(message).includes('getStats')) {
-          try {
-            Homey.alert('It seems like Homey is updating the app version. Please try again in a minute or two when the app has been properly installed.');
-          } catch(err) {}; // Ignore popup blockers
+          popUp(Homey, 'It seems like Homey is updating the app version. Please try again in a minute or two when the app has been properly installed.');
         } else {
-          try {
-            Homey.alert(message);
-          } catch(err) {}; // Ignore popup blockers
+          popUp(Homey, message);
         }
       }
 
@@ -2041,7 +2061,7 @@
           if (err) {
             alertUser(Homey, `Could not load device list (${err})`);
           } else if (Object.keys(response).length === 0) {
-            Homey.alert('No controllable devices found (check help section for instructions)');
+            popUp(Homey, 'No controllable devices found (check help section for instructions)');
           } else {
             deviceList = response;
             deviceListLoaded = true;
@@ -2051,7 +2071,7 @@
 
         // Refresh price data
         Homey.get("futurePriceOptions", function (err, options) {
-          if (err) return Homey.alert(err);
+          if (err) return popUp(Homey, err);
           if (options) {
             futurePriceOptions = options;
           } else {
@@ -2062,7 +2082,7 @@
 
           // Maxpower cannot be updated before after setGridCost has been called
           Homey.get("maxPower", function (err, maxPower) {
-            if (err) return Homey.alert(err);
+            if (err) return popUp(Homey, err);
             if (maxPower === null || !Array.isArray(maxPower)) {
               // use defaults set from the top (this is the first time)
               maxPower = [Infinity, 5000, Infinity, 5000000];
@@ -2119,7 +2139,7 @@
           }
 
           Homey.get("meterReader", function (err, meterReader) {
-            if (err) return Homey.alert(err);
+            if (err) return popUp(Homey, err);
             if (meterReader !== null) document.getElementById('meterReader').value = meterReader;
             meterReaderLoaded = true;
             checkLoadingDone();
@@ -2144,7 +2164,7 @@
 
         // Get the mode list
         Homey.get("modeList", function (err, myModeList) {
-          if (err) return Homey.alert(err);
+          if (err) return popUp(Homey, err);
           if (Array.isArray(myModeList)) {
             modeList = myModeList;
           } else {
@@ -2160,7 +2180,7 @@
         })
         // Get the mode names
         Homey.get("modeNames", function (err, myModeNames) {
-          if (err) return Homey.alert(err);
+          if (err) return popUp(Homey, err);
           if (Array.isArray(myModeNames)) {
             modeNames = myModeNames;
           } else {
@@ -2171,7 +2191,7 @@
           checkLoadingDone();
         })
         Homey.get("frostList", function (err, myFrostList) {
-          if (err) return Homey.alert(err);
+          if (err) return popUp(Homey, err);
           if (myFrostList !== null) {
             frostList = myFrostList;
           } // else use defaults set from the top (this is the first time)
@@ -2179,7 +2199,7 @@
           checkLoadingDone();
         });
         Homey.get("zones", function (err, myZoneList) {
-          if (err) return Homey.alert(err);
+          if (err) return popUp(Homey, err);
           if (myZoneList !== null) {
             zoneList = myZoneList;
           } // else use defaults set from the top
@@ -2187,7 +2207,7 @@
           checkLoadingDone();
         })
         Homey.get("override", function (err, myOverrideList) {
-          if (err) return Homey.alert(err);
+          if (err) return popUp(Homey, err);
           if (myOverrideList !== null) {
             overrideList = myOverrideList;
           } // else use defaults set from the top
@@ -2195,7 +2215,7 @@
           checkLoadingDone();
         })
         Homey.get("priceActionList", function (err, mypriceActionList) {
-          if (err) return Homey.alert(err);
+          if (err) return popUp(Homey, err);
           if (mypriceActionList !== null) {
             priceActionList = mypriceActionList;
           } // else use defaults set from the top (this is the first time)
@@ -2203,7 +2223,7 @@
           checkLoadingDone();
         });
         Homey.get("operatingMode", function (err, operatingMode) {
-          if (err) return Homey.alert(err);
+          if (err) return popUp(Homey, err);
           if (operatingMode !== null) {
             currentOperatingMode = +operatingMode;
           } else {
@@ -2213,7 +2233,7 @@
           checkLoadingDone();
         });
         Homey.get("ACMode", function (err, ACMode) {
-          if (err) return Homey.alert(err);
+          if (err) return popUp(Homey, err);
           if (ACMode !== null) {
             document.getElementById("ACMode").value = +ACMode
           } else {
@@ -2223,7 +2243,7 @@
           checkLoadingDone();
         });
         Homey.get("priceMode", function (err, priceMode) {
-          if (err) return Homey.alert(err);
+          if (err) return popUp(Homey, err);
           if (priceMode !== null) {
             document.getElementById("priceMode").value = +priceMode;
           } else {
@@ -2233,7 +2253,7 @@
           checkLoadingDone();
         });
         Homey.get("pricePoint", function (err, pricePoint) {
-          if (err) return Homey.alert(err);
+          if (err) return popUp(Homey, err);
           if (pricePoint !== null) {
             currentPricePoint = pricePoint;
           } else {
@@ -2243,7 +2263,7 @@
           checkLoadingDone();
         });
         Homey.get("errorMargin", function (err, errorMargin) {
-          if (err) return Homey.alert(err);
+          if (err) return popUp(Homey, err);
           if (errorMargin !== null) {
             currentErrorMargin = errorMargin;
           } else {
@@ -2253,7 +2273,7 @@
           checkLoadingDone();
         });
         Homey.get("controlTemp", function (err, temp) {
-          if (err) return Homey.alert(err);
+          if (err) return popUp(Homey, err);
           if (temp !== null) {
             document.getElementById("controlTemp").value = +temp;
           } else {
@@ -2263,7 +2283,7 @@
           checkLoadingDone();
         });
         Homey.get("freeThreshold", function (err, threshold) {
-          if (err) return Homey.alert(err);
+          if (err) return popUp(Homey, err);
           if (threshold !== null) {
             currentfreeThreshold = threshold;
           } else {
@@ -2273,19 +2293,19 @@
           checkLoadingDone();
         });
         Homey.get("expireDaily", function (err, expiretime) {
-          if (err) return Homey.alert(err);
+          if (err) return popUp(Homey, err);
           document.getElementById("expireDaily").value = expiretime;
           expireDailyLoaded = true;
           checkLoadingDone();
         });
         Homey.get("expireHourly", function (err, expiretime) {
-          if (err) return Homey.alert(err);
+          if (err) return popUp(Homey, err);
           document.getElementById("expireHourly").value = expiretime;
           expireHourlyLoaded = true;
           checkLoadingDone();
         });
         Homey.get("safetyPower", function (err, safetyPower) {
-          if (err) return Homey.alert(err);
+          if (err) return popUp(Homey, err);
           if (safetyPower !== null) {
             currentSafetyPower = safetyPower;
           } else {
@@ -2295,20 +2315,20 @@
           checkLoadingDone();
         });
         Homey.get("crossSlotSmooth", function (err, crossSlotSmooth) {
-          if (err) return Homey.alert(err);
+          if (err) return popUp(Homey, err);
           document.getElementById("crossSlotSmooth").value = crossSlotSmooth;
           crossSlotSmoothLoaded = true;
           checkLoadingDone();
         });
         Homey.get("maxAlarmRate", function (err, maxAlarmRate) {
-          if (err) return Homey.alert(err);
+          if (err) return popUp(Homey, err);
           document.getElementById("maxAlarmRate").value = maxAlarmRate;
           document.getElementById('enLimitMissing').checked = +maxAlarmRate !== 0;
           maxAlarmRateLoaded = true;
           checkLoadingDone();
         });
         Homey.get("mainFuse", function (err, mainFuse) {
-          if (err) return Homey.alert(err);
+          if (err) return popUp(Homey, err);
           if (mainFuse !== null) {
             currentMainFuse = mainFuse;
           } else {
@@ -2318,13 +2338,13 @@
           checkLoadingDone();
         });
         Homey.get("meterFrequency", function (err, meterFrequency) {
-          if (err) return Homey.alert(err);
+          if (err) return popUp(Homey, err);
           document.getElementById('meterFrequency').value = meterFrequency;
           meterFrequencyLoaded = true;
           checkLoadingDone();
         });
         Homey.get("toggleTime", function (err, toggleTime) {
-          if (err) return Homey.alert(err);
+          if (err) return popUp(Homey, err);
           document.getElementById('toggleTime').value = toggleTime;
           toggleTimeLoaded = true;
           checkLoadingDone();
@@ -2369,14 +2389,19 @@
           if (err) alertUser(Homey, err)
         });
 
-        // This error function is a bit deciving because it only returns err on success
-        // And this err is that all settings was saved successfully
+        // This error function is a bit deciving because it is also called on success, however then with message = 'OK'
         const errFunc = (err) => { 
           if (err) {
-            rememberToSaveElement.style.display = 'none';
             Homey.api('GET', `/apiCommand?cmd=log&text=${err.message}&loglevel=0`, null, function (err2, result) {});
-            alertUser(Homey, err.message);
+            if (err.message == 'OK') {
+              // Settings was saved successfully
+              rememberToSaveElement.style.display = 'none';
+            } else {
+              // An error occured
+              alertUser(Homey, err.message);
+            }
             saveElement.classList.remove('is-loading');
+            document.getElementById("savingOverlay").style.display = 'none';
           }
         }
         document.getElementById("getState").addEventListener("click", e => {
@@ -2395,7 +2420,7 @@
 
         const saveFunc = () => {
           saveElement.classList.add('is-loading');
-          Homey.alert(Homey.__('warnings.savingWait'));
+          document.getElementById("savingOverlay").style.display = 'block';
           try {
             // Make sure all settings are up to date:
             refreshModeLists(); // It's a pitty but the user did not even visit these pages. Probably they will do later
@@ -2404,7 +2429,7 @@
             updateChargerHints(deviceList); // In case the user added a charger as controllable then the charger mode is still FLOW and must be updated to AUTO
             if (Object.keys(frostList).length === 0) {
               try {
-                Homey.alert(Homey.__('warnings.noDevices'));
+                popUp(Homey, Homey.__('warnings.noDevices'));
               } catch(err) {}; // Ignore popup blockers
             } else {
               futurePriceOptions.costSchema = document.getElementById("costSchema").value;
@@ -2470,12 +2495,13 @@
               Homey.set("meterFrequency", document.getElementById("meterFrequency").value, errFunc);
               Homey.set("toggleTime", document.getElementById("toggleTime").value, errFunc);
               Homey.set("settingsSaved", "", errFunc); // On settings is only called if the settings actually changed
-              Homey.set("settingsSaved", "true", errFunc); // This one will throw the message settings.alert.settingssaved on success
+              Homey.set("settingsSaved", "true", errFunc); // This one will throw the message 'OK' on success
             }
           }
           catch (err) {
             saveElement.classList.remove('is-loading');
-            Homey.alert(Homey.__(`warnings.savingFailed: ${err}`));
+            document.getElementById("savingOverlay").style.display = 'none';
+            popUp(Homey, Homey.__(`warnings.savingFailed: ${err}`));
           }
         }
         saveElement.addEventListener("click", function (e) {

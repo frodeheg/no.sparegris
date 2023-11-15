@@ -379,7 +379,6 @@
     },
     "saveButton": "Sauvegarder les modifications",
     "alert": {
-      "settingssaved": "Vos changements ont été enregistrés.",
       "maxPowerChanged": "Vous avez augmenté le tarif de puissance. Cela peut entraîner des coûts supplémentaires. Tu veux continuer ?",
       "leavepage": "Vous voulez quitter cette page ?"
     },

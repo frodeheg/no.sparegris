@@ -379,7 +379,6 @@
     },
     "saveButton": "Save changes",
     "alert": {
-      "settingssaved": "Your changes have been saved.",
       "maxPowerChanged": "You have increased the power tariff. This may result in additional cost. Do you wish to continue?",
       "leavepage": "Do you want to leave this page?"
     },
