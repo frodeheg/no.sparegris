@@ -174,7 +174,9 @@
         { name:"settings.pricetab.normal", value: PP_NORM },
         { name:"settings.pricetab.expensive", value: PP_HIGH },
         { name:"settings.pricetab.extreme", value: PP_EXTREME }
-      ]
+      ];
+
+      var schedules = [];
 
       function limitText(text) {
         const splitText = text.split(" ", 5);
@@ -1936,6 +1938,41 @@
           checkPriceMode(document.getElementById("priceMode")); // not called automatically when programatically changed
           checkPriceKind(document.getElementById("priceKind")); // not called automatically when programatically changed
           changeTab(false, 'welcomePage');
+
+          // TODO: Load from Homey
+          schedules = [{
+            name: "Weekday - Living Room",
+            deltaTemp: 1,
+            tempRange: 35,
+            items: [{
+              start: 0,
+              operation: this.DEVICE_OP.CONTROLLED_ON,
+              tempOp: this.TEMP_OP.PRICE,
+              temp: [5, 12, 13, 15, 17, 18, 27, 28, 29, 30, 31, 35],
+              ACMode: 0
+            },
+            {
+              start: 6*60,
+              operation: this.DEVICE_OP.CONTROLLED_ON,
+              tempOp: this.TEMP_OP.PRICE,
+              temp: [5, 17, 18, 20, 22, 23, 25, 26, 27, 28, 29, 35],
+              ACMode: 0
+            },
+            {
+              start: 15*60,
+              operation: this.DEVICE_OP.CONTROLLED_ON,
+              tempOp: this.TEMP_OP.PRICE,
+              temp: [5, 21, 22, 24, 26, 27, 27, 28, 29, 30, 31, 35],
+              ACMode: 0
+            },
+            {
+              start: 22*60,
+              operation: this.DEVICE_OP.CONTROLLED_ON,
+              tempOp: this.TEMP_OP.PRICE,
+              temp: [5, 12, 13, 15, 17, 18, 27, 28, 29, 30, 31, 35],
+              ACMode: 0
+            }]
+          }];
         }
       }
 
@@ -2349,40 +2386,6 @@
           toggleTimeLoaded = true;
           checkLoadingDone();
         });
-        // TODO: Load from Homey
-        schedules = [{
-          name: "Weekday - Living Room",
-          deltaTemp: 1,
-          tempRange: 35,
-          items: [{
-            start: 0,
-            operation: this.DEVICE_OP.CONTROLLED_ON,
-            tempOp: this.TEMP_OP.PRICE,
-            temp: [5, 12, 13, 15, 17, 18, 27, 28, 29, 30, 31, 35],
-            ACMode: 0
-          },
-          {
-            start: 6*60,
-            operation: this.DEVICE_OP.CONTROLLED_ON,
-            tempOp: this.TEMP_OP.PRICE,
-            temp: [5, 17, 18, 20, 22, 23, 25, 26, 27, 28, 29, 35],
-            ACMode: 0
-          },
-          {
-            start: 15*60,
-            operation: this.DEVICE_OP.CONTROLLED_ON,
-            tempOp: this.TEMP_OP.PRICE,
-            temp: [5, 21, 22, 24, 26, 27, 27, 28, 29, 30, 31, 35],
-            ACMode: 0
-          },
-          {
-            start: 22*60,
-            operation: this.DEVICE_OP.CONTROLLED_ON,
-            tempOp: this.TEMP_OP.PRICE,
-            temp: [5, 12, 13, 15, 17, 18, 27, 28, 29, 30, 31, 35],
-            ACMode: 0
-          }]
-        }];
         // Refresh log data
         initializeLogPage(document, Homey)
         .catch(err => {
