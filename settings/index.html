@@ -615,7 +615,8 @@
         }
       }
 
-      function checkPriceKind(source) {
+      function checkPriceKind() {
+        var source = document.getElementById("priceKind");
         var priceSpotPart =  document.getElementById('priceSpotPart');
         var priceFixedPart =  document.getElementById('priceFixedPart');
         var priceInterpretPart =  document.getElementById('priceInterpretPart');
@@ -624,6 +625,7 @@
         var pp2Part = document.getElementById('subtablink2');
         var pp3Part = document.getElementById('subtablink3');
         var pp4Part = document.getElementById('subtablink4');
+        var regionPart = document.getElementById('regionPart');
 
         if (+source.value == PRICE_KIND_SPOT) {
           // Spot price
@@ -635,16 +637,18 @@
           pp2Part.style.display = 'table-cell';
           pp3Part.style.display = 'table-cell';
           pp4Part.style.display = 'table-cell';
+          regionPart.style.display = 'table-row';
         } else if (+source.value == PRICE_KIND_EXTERNAL) {
           // External app Utility bill
           priceSpotPart.style.display = 'none';
           priceFixedPart.style.display = 'none';
           priceInterpretPart.style.display = 'block';
           priceFixedAndSpotPart.style.display = 'none';
-          apiErrorPart.style.display = (appConfigProgress.ApiStatus != 2) ? 'inline-block' : 'none';
+          apiErrorPart.style.display = (appConfigProgress.ApiStatus != 2) ? 'table-row' : 'none';
           pp2Part.style.display = 'table-cell';
           pp3Part.style.display = 'table-cell';
           pp4Part.style.display = 'table-cell';
+          regionPart.style.display = 'none';
         } else { // Value = PRICE_KIND_FIXED
           // Fixded price
           priceSpotPart.style.display = 'none';
@@ -655,6 +659,7 @@
           pp2Part.style.display = 'none';
           pp3Part.style.display = 'none';
           pp4Part.style.display = 'none';
+          regionPart.style.display = document.getElementById("govSubsidy").checked ? 'table-row' : 'none';
         }
       }
 
@@ -1188,171 +1193,192 @@
           </tr>
         </table>
       </fieldset>
-        <input id="collapsible2" class="toggle" type="checkbox">
-        <label for="collapsible2" class="lbl-toggle" data-i18n="settings.price.usagePart" style="color: whitesmoke;">price.usagePart</label>
-        <div class="collapsible-content"><div class="content-inner">
+
+      <input id="collapsible2" class="toggle" type="checkbox">
+      <label for="collapsible2" class="lbl-toggle" data-i18n="settings.price.usagePart" style="color: whitesmoke;">price.usagePart</label>
+      <div class="collapsible-content"><div class="content-inner">
+        <table class="settings_table">
+          <tr>
+            <td class="settings_row_name"><label for="priceKind" data-i18n="settings.price.priceKind">price.priceKind</label>:</td>
+            <td class="settings_row_input">
+              <select id="priceKind" onchange="checkPriceKind();displaySaveHint()">
+                <option value="1" data-i18n="settings.price.priceKindSpot" selected>Spot price</option>
+                <option value="2" data-i18n="settings.price.priceKindFixed">Fixed price</option>
+                <option id="priceKindOptionUtil" value="0" data-i18n="settings.price.priceKindUtil">UtilityCost</option>
+              </select>
+              <div class="hintButton" onclick="toggle(this,'hintPriceKind', 'table-row');return false;">i</div>
+            </td>
+          </tr>
+          <tr id="hintPriceKind" class="hint"><td colspan="2"><p data-i18n="settings.price.priceKindHint">price.priceKindHint</p></td></tr>
+          <tr id="errp1" class="error"><td colspan="2"><p data-i18n="settings.price.priceErr1">price.priceErr1</p></td></tr>
+          <tr id="regionPart">
+            <td class="settings_row_name"><label for="priceRegion" data-i18n="settings.price.spotPrice.region">spotPrice.region</label>:</td>
+            <td class="settings_row_input">
+              <select id="priceRegion" onchange="displaySaveHint()">
+                <option value="0" selected>Region selector</option>
+              </select>
+            </td>
+          </tr>
+      </table>
+
+        <span id="priceSpotPart" style="display: none">
           <table class="settings_table">
             <tr>
-              <td class="settings_row_name"><label for="priceKind" data-i18n="settings.price.priceKind">price.priceKind</label>:</td>
-              <td class="settings_row_input">
-                <select id="priceKind" onchange="checkPriceKind(this);displaySaveHint()">
-                  <option value="1" data-i18n="settings.price.priceKindSpot" selected>Spot price</option>
-                  <option value="2" data-i18n="settings.price.priceKindFixed">Fixed price</option>
-                  <option id="priceKindOptionUtil" value="0" data-i18n="settings.price.priceKindUtil">UtilityCost</option>
-                </select>
-                <div class="hintButton" onclick="toggle(this,'hintPriceKind');return false;">i</div>
-              </td>
+              <td class="settings_row_name"><label for="surcharge" data-i18n="settings.cost.surcharge">cost.surcharge</label>:</td>
+              <td class="settings_row_input"><input id="surcharge" class="inputElem" type="number" min="0" value="0" onchange="displaySaveHint()">/kWh</td>
             </tr>
           </table>
-          <p id="hintPriceKind" class="hint" data-i18n="settings.price.priceKindHint">price.priceKindHint</p>
-          <p id="errp1" class="error" data-i18n="settings.price.priceErr1">price.priceErr1</p>
+        </span>
 
-          <span id="priceSpotPart" style="display: none">
+        <span id="priceFixedPart" style="display: none">
+          <table class="settings_table">
+            <tr>
+              <td class="settings_row_name"><label for="priceFixed" data-i18n="settings.price.fixed">price.fixed</label>:</td>
+              <td class="settings_row_input"><input id="priceFixed" class="inputElem" type="number" size="10" min="0" step="0.01" value="0.50" onchange="displaySaveHint()">/kWh</td>
+            </tr>
+          </table>
+        </span>
+
+        <span id="priceFixedAndSpotPart" style="display: none">
+          <table class="settings_table">
+            <tr>
+              <td class="settings_row_name"><label for="gridTaxDay" data-i18n="settings.cost.gridTaxDay">cost.gridTaxDay</label>:</td>
+              <td class="settings_row_input"><input id="gridTaxDay" class="inputElem" type="number" min="0" value="0.3626" onchange="displaySaveHint()">/kWh</td>
+            </tr>
+            <tr>
+              <td class="settings_row_name"><label for="gridTaxNight" data-i18n="settings.cost.gridTaxNight">cost.gridTaxNight</label>:</td>
+              <td class="settings_row_input"><input id="gridTaxNight" class="inputElem" type="number" min="0" value="0.2839" onchange="displaySaveHint()">/kWh</td>
+            </tr>
+            <tr id="peakStartEn">
+              <td class="settings_row_name"><label for="peakStart" data-i18n="settings.cost.peakStart">cost.peakStart</label>:</td>
+              <td class="settings_row_input"><input id="peakStart" class="inputElem" type="time" value="07:00" pattern="[0-9]{2}:[0-9]{2}" onchange="displaySaveHint()"></td>
+            </tr>
+            <tr id="peakEndEn">
+              <td class="settings_row_name"><label for="peakEnd" data-i18n="settings.cost.peakEnd">cost.peakEnd</label>:</td>
+              <td class="settings_row_input"><input id="peakEnd" class="inputElem" type="time" value="22:00" pattern="[0-9]{2}:[0-9]{2}" onchange="displaySaveHint()"></td>
+            </tr>
+            <tr id="peakWeekendEn">
+              <td class="settings_row_name"><label for="weekendOffPeak" data-i18n="settings.cost.weekendOffPeak">cost.weekendOffPeak</label>:</td>
+              <td class="settings_row_input"><input id="weekendOffPeak" type="checkbox" onchange="displaySaveHint()"></td>
+            </tr>
+          </table>
+
+          <span id="subsidyPart" style="display: block">
             <table class="settings_table">
-              <tr>
-                <td class="settings_row_name"><label for="priceRegion" data-i18n="settings.price.spotPrice.region">spotPrice.region</label>:</td>
-                <td class="settings_row_input">
-                  <select id="priceRegion" onchange="displaySaveHint()">
-                    <option value="0" selected>Region selector</option>
-                  </select>
+              <tr id="subsidyEn">
+                <td class="settings_row_name"><label for="govSubsidy" data-i18n="settings.cost.govSubsidy">cost.govSubsidy</label>:</td>
+                <td class="settings_row_input"><input id="govSubsidy" type="checkbox" onchange="checkPriceKind();refreshSchema();displaySaveHint()">
+                  <div class="hintButton" onclick="toggle(this,'hintSubsidy', 'table-row');return false;">i</div>
                 </td>
               </tr>
-              <tr>
-                <td class="settings_row_name"><label for="surcharge" data-i18n="settings.cost.surcharge">cost.surcharge</label>:</td>
-                <td class="settings_row_input"><input id="surcharge" class="inputElem" type="number" min="0" value="0" onchange="displaySaveHint()">/kWh</td>
+              <tr id="hintSubsidy" class="hint"><td colspan="2"><p data-i18n="settings.cost.govSubsidyHint">cost.govSubsidyHint</p></td></tr>
+              <tr id="subsidyThreshold">
+                <td class="settings_row_name"><label for="govSubsidyThreshold" data-i18n="settings.cost.govSubsidyThreshold">cost.govSubsidyThreshold</label>:</td>
+                <td class="settings_row_input"><input id="govSubsidyThreshold" class="inputElem" type="number" min="0" value="0.70" step="0.01" onchange="displaySaveHint()">/kWh</td>
+              </tr>
+              <tr id="subsidyRate">
+                <td class="settings_row_name"><label for="govSubsidyRate" data-i18n="settings.cost.govSubsidyRate">cost.govSubsidyRate</label>:</td>
+                <td class="settings_row_input"><input id="govSubsidyRate" class="inputElem" type="number" min="0" max="100" value="90" step="1" onchange="displaySaveHint()">%</td>
               </tr>
             </table>
           </span>
+        </span>
+      </div></div>
 
-          <span id="priceFixedPart" style="display: none">
-            <table class="settings_table">
-              <tr>
-                <td class="settings_row_name"><label for="priceFixed" data-i18n="settings.price.fixed">price.fixed</label>:</td>
-                <td class="settings_row_input"><input id="priceFixed" class="inputElem" type="number" size="10" min="0" step="0.01" value="0.50" onchange="displaySaveHint()">/kWh</td>
-              </tr>
-            </table>
-          </span>
-          <span id="priceFixedAndSpotPart" style="display: none">
-            <table class="settings_table">
-              <tr>
-                <td class="settings_row_name"><label for="gridTaxDay" data-i18n="settings.cost.gridTaxDay">cost.gridTaxDay</label>:</td>
-                <td class="settings_row_input"><input id="gridTaxDay" class="inputElem" type="number" min="0" value="0.3626" onchange="displaySaveHint()">/kWh</td>
-              </tr>
-              <tr>
-                <td class="settings_row_name"><label for="gridTaxNight" data-i18n="settings.cost.gridTaxNight">cost.gridTaxNight</label>:</td>
-                <td class="settings_row_input"><input id="gridTaxNight" class="inputElem" type="number" min="0" value="0.2839" onchange="displaySaveHint()">/kWh</td>
-              </tr>
-              <tr id="peakStartEn">
-                <td class="settings_row_name"><label for="peakStart" data-i18n="settings.cost.peakStart">cost.peakStart</label>:</td>
-                <td class="settings_row_input"><input id="peakStart" class="inputElem" type="time" value="07:00" pattern="[0-9]{2}:[0-9]{2}" onchange="displaySaveHint()"></td>
-              </tr>
-              <tr id="peakEndEn">
-                <td class="settings_row_name"><label for="peakEnd" data-i18n="settings.cost.peakEnd">cost.peakEnd</label>:</td>
-                <td class="settings_row_input"><input id="peakEnd" class="inputElem" type="time" value="22:00" pattern="[0-9]{2}:[0-9]{2}" onchange="displaySaveHint()"></td>
-              </tr>
-              <tr id="peakWeekendEn">
-                <td class="settings_row_name"><label for="weekendOffPeak" data-i18n="settings.cost.weekendOffPeak">cost.weekendOffPeak</label>:</td>
-                <td class="settings_row_input"><input id="weekendOffPeak" type="checkbox" onchange="displaySaveHint()"></td>
-              </tr>
-            </table>
-          </span>
-        </div></div>
-
-        <input id="collapsible3" class="toggle" type="checkbox">
-        <label for="collapsible3" class="lbl-toggle" data-i18n="settings.price.powerPart" style="color: whitesmoke;">price.powerPart</label>
-        <div class="collapsible-content"><div class="content-inner">
+      <input id="collapsible3" class="toggle" type="checkbox">
+      <label for="collapsible3" class="lbl-toggle" data-i18n="settings.price.powerPart" style="color: whitesmoke;">price.powerPart</label>
+      <div class="collapsible-content"><div class="content-inner">
+        <table class="settings_table">
+          <tr id="granularityEn">
+            <td class="settings_row_name"><label for="granularity" data-i18n="settings.cost.granularity">cost.granularity</label>:</td>
+            <td class="settings_row_input">
+              <select id="granularity" onchange="refreshSchema();displaySaveHint()">
+                <option value="15" data-i18n="settings.cost.granularity15">15 min</option>
+                <option value="60" data-i18n="settings.cost.granularity60" selected>60 min</option>
+              </select></td>
+          </tr>
+          <tr id="gridStepEn">
+            <td class="settings_row_name"><label for="gridSteps" data-i18n="settings.cost.gridSteps">cost.gridSteps</label>:</td>
+            <td class="settings_row_input"><input id="gridSteps" type="checkbox" checked onchange="refreshSchema();displaySaveHint()"></td>
+          </tr>
+        </table>
+        <div id="gridLinearBlock">
           <table class="settings_table">
-            <tr id="granularityEn">
-              <td class="settings_row_name"><label for="granularity" data-i18n="settings.cost.granularity">cost.granularity</label>:</td>
-              <td class="settings_row_input">
-                <select id="granularity" onchange="refreshSchema();displaySaveHint()">
-                  <option value="15" data-i18n="settings.cost.granularity15">15 min</option>
-                  <option value="60" data-i18n="settings.cost.granularity60" selected>60 min</option>
-                </select></td>
-            </tr>
-            <tr id="gridStepEn">
-              <td class="settings_row_name"><label for="gridSteps" data-i18n="settings.cost.gridSteps">cost.gridSteps</label>:</td>
-              <td class="settings_row_input"><input id="gridSteps" type="checkbox" checked onchange="refreshSchema();displaySaveHint()"></td>
-            </tr>
-          </table>
-          <div id="gridLinearBlock">
-            <table class="settings_table">
-              <tr>
-                <td class="settings_row_name"><label for="peakMin" data-i18n="settings.cost.peakMin">cost.peakMin</label>:</td>
-                <td class="settings_row_input"><input id="peakMin" class="inputElem" type="number" min="0" value="2500" onchange="displaySaveHint()">Wh/h</td>
-              </tr>
-              <tr>
-                <td class="settings_row_name"><label for="peakTax" data-i18n="settings.cost.peakTax">cost.peakTax</label>:</td>
-                <td class="settings_row_input"><input id="peakTax" class="inputElem" type="number" min="0" value="0.2839" onchange="displaySaveHint()">/MWh</td>
-              </tr>
-            </table>
-          </div>
-          <div id="gridStepBlock">
-          <p data-i18n="settings.cost.gridLimitHint">cost.gridLimitHint</p>
-          <table id = "gridCostsTable" class="settings_table">
             <tr>
-              <th class="settings_row_input"><label for="gridLimit1" data-i18n="settings.cost.gridLimit">cost.gridLimit</label></th>
-              <th class="settings_row_input"><label for="gridCost1" data-i18n="settings.cost.gridCost">cost.gridCost</label></th>
+              <td class="settings_row_name"><label for="peakMin" data-i18n="settings.cost.peakMin">cost.peakMin</label>:</td>
+              <td class="settings_row_input"><input id="peakMin" class="inputElem" type="number" min="0" value="2500" onchange="displaySaveHint()">Wh/h</td>
+            </tr>
+            <tr>
+              <td class="settings_row_name"><label for="peakTax" data-i18n="settings.cost.peakTax">cost.peakTax</label>:</td>
+              <td class="settings_row_input"><input id="peakTax" class="inputElem" type="number" min="0" value="0.2839" onchange="displaySaveHint()">/MWh</td>
             </tr>
           </table>
-          <input type="button" value="-" onclick="removeMaxPowerElement();">
-          <input type="button" value="+" onclick="addMaxPowerElement();">
-          </div>
-        </div></div>
+        </div>
+        <div id="gridStepBlock">
+        <p data-i18n="settings.cost.gridLimitHint">cost.gridLimitHint</p>
+        <table id = "gridCostsTable" class="settings_table">
+          <tr>
+            <th class="settings_row_input"><label for="gridLimit1" data-i18n="settings.cost.gridLimit">cost.gridLimit</label></th>
+            <th class="settings_row_input"><label for="gridCost1" data-i18n="settings.cost.gridCost">cost.gridCost</label></th>
+          </tr>
+        </table>
+        <input type="button" value="-" onclick="removeMaxPowerElement();">
+        <input type="button" value="+" onclick="addMaxPowerElement();">
+        </div>
+      </div></div>
 
-        <input id="collapsible4" class="toggle" type="checkbox">
-        <label for="collapsible4" class="lbl-toggle" data-i18n="settings.price.limitPart" style="color: whitesmoke;">price.limitPart</label>
-        <div class="collapsible-content"><div class="content-inner">
-          <table id="maxPowerTable" class="settings_table">
-            <tr>
-              <th class="settings_row_name">&nbsp;</th>
-              <th class="settings_row_en" data-i18n="settings.cost.enabled">cost.enabled</th>
-              <th class="settings_row_input"><span data-i18n="settings.cost.limit">cost.limit</span>
-                <div class="hintButton" onclick="toggle(this,'maxPowHint', 'table-row');return false;">i</div>
-              </th>
-            </tr>
-            <tr id="enLimit15Box">
-              <td class="settings_row_name"><label for="maxPower15min" data-i18n="settings.mode.maxPower15min">mode.maxPower15min</label>:</td>
-              <td class="settings_row_en"><input id="enLimit15" type="checkbox" onchange="refreshSchema();displaySaveHint()"></td>
-              <td class="settings_row_input"><input class="inputElem" id="maxPower15min" type="number" min="10" max="25000" value="1000" onchange="limitElement(this);displaySaveHint()">Wh/15 min.</td>
-            </tr>
-            <tr id="enLimit60Box">
-              <td class="settings_row_name"><label for="maxPowerHour" data-i18n="settings.mode.maxPowerHour">mode.maxPowerHour</label>:</td>
-              <td class="settings_row_en"><input id="enLimit60" type="checkbox" onchange="refreshSchema();displaySaveHint()"></td>
-              <td class="settings_row_input">
-                <div id="enLimit60InBox">
-                  <input class="inputElem" id="maxPowerHour" type="number" min="10" max="100000" value="1000" onchange="setMaxPowerHour(this.value,1000,100000);displaySaveHint()">Wh/hour
-                </div>
-                <div id="enLimit60SelBox">
-                <select id ="maxPowerList" onchange="setMaxPowerHour(this.value,1000,100000);displaySaveHint();">
-                  <option value="0" selected>Error - should be replaced with max power</option>
-                </select>
-                <div class="edit icon" onclick="document.getElementById('collapsible3').checked = true;flashElement('gridCostsTable')"></div>
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td class="settings_row_name"><label for="maxPowerDay" data-i18n="settings.mode.maxPowerDay">mode.maxPowerDay</label>:</td>
-              <td class="settings_row_en"><input id="enLimitDay" type="checkbox" onchange="refreshSchema();displaySaveHint()"></td>
-              <td class="settings_row_input"><input id="maxPowerDay" type="number" min="10" max="1000" value="1000" onchange="limitElement(this);displaySaveHint()">kWh/day</td>
-            </tr>
-            <tr>
-              <td class="settings_row_name"><label for="maxPowerMonth" data-i18n="settings.mode.maxPowerMonth">mode.maxPowerMonth</label>:</td>
-              <td class="settings_row_en"><input id="enLimitMonth" type="checkbox" onchange="refreshSchema();displaySaveHint()"></td>
-              <td class="settings_row_input"><input id="maxPowerMonth" type="number" min="50" max="50000" value="5000" step="1" onchange="limitElement(this);displaySaveHint()">kWh/month</td>
-            </tr>
-            <tr id="maxPowHint" class="hint"><td colspan="3"><p data-i18n="settings.app.maxPowHint">app.maxPowHint</p></td></tr>
-            <tr>
-              <td class="settings_row_name"><label for="maxAlarmRate" data-i18n="settings.mode.maxAlarmRate">mode.maxAlarmRate</label>:</td>
-              <td class="settings_row_en"><input id="enLimitMissing" type="checkbox" checked onchange="refreshSchema();displaySaveHint();elem = document.getElementById('maxAlarmRate'); if (this.checked) elem.value = 50; else elem.value=0;"></td>
-              <td class="settings_row_input"><input id="maxAlarmRate" type="number" min="0" max="100" step="100" value="20" onchange="displaySaveHint()">%
-                <div class="hintButton" onclick="toggle(this,'maxAlarmRateHint', 'table-row');return false;">i</div>
-              </td>
-            </tr>
-            <tr id="maxAlarmRateHint" class="hint"><td colspan="3"><p data-i18n="settings.app.maxAlarmRateHint">app.maxAlarmRateHint</p></td></tr>
-
-          </table>
-        </div></div>
+      <input id="collapsible4" class="toggle" type="checkbox">
+      <label for="collapsible4" class="lbl-toggle" data-i18n="settings.price.limitPart" style="color: whitesmoke;">price.limitPart</label>
+      <div class="collapsible-content"><div class="content-inner">
+        <table id="maxPowerTable" class="settings_table">
+          <tr>
+            <th class="settings_row_name">&nbsp;</th>
+            <th class="settings_row_en" data-i18n="settings.cost.enabled">cost.enabled</th>
+            <th class="settings_row_input"><span data-i18n="settings.cost.limit">cost.limit</span>
+              <div class="hintButton" onclick="toggle(this,'maxPowHint', 'table-row');return false;">i</div>
+            </th>
+          </tr>
+          <tr id="enLimit15Box">
+            <td class="settings_row_name"><label for="maxPower15min" data-i18n="settings.mode.maxPower15min">mode.maxPower15min</label>:</td>
+            <td class="settings_row_en"><input id="enLimit15" type="checkbox" onchange="refreshSchema();displaySaveHint()"></td>
+            <td class="settings_row_input"><input class="inputElem" id="maxPower15min" type="number" min="10" max="25000" value="1000" onchange="limitElement(this);displaySaveHint()">Wh/15 min.</td>
+          </tr>
+          <tr id="enLimit60Box">
+            <td class="settings_row_name"><label for="maxPowerHour" data-i18n="settings.mode.maxPowerHour">mode.maxPowerHour</label>:</td>
+            <td class="settings_row_en"><input id="enLimit60" type="checkbox" onchange="refreshSchema();displaySaveHint()"></td>
+            <td class="settings_row_input">
+              <div id="enLimit60InBox">
+                <input class="inputElem" id="maxPowerHour" type="number" min="10" max="100000" value="1000" onchange="setMaxPowerHour(this.value,1000,100000);displaySaveHint()">Wh/hour
+              </div>
+              <div id="enLimit60SelBox">
+              <select id ="maxPowerList" onchange="setMaxPowerHour(this.value,1000,100000);displaySaveHint();">
+                <option value="0" selected>Error - should be replaced with max power</option>
+              </select>
+              <div class="edit icon" onclick="document.getElementById('collapsible3').checked = true;flashElement('gridCostsTable')"></div>
+              </d    iv>
+            </td>
+          </tr>
+          <tr>
+            <td class="settings_row_name"><label for="maxPowerDay" data-i18n="settings.mode.maxPowerDay">mode.maxPowerDay</label>:</td>
+            <td class="settings_row_en"><input id="enLimitDay" type="checkbox" onchange="refreshSchema();displaySaveHint()"></td>
+            <td class="settings_row_input"><input id="maxPowerDay" type="number" min="10" max="1000" value="1000" onchange="limitElement(this);displaySaveHint()">kWh/day</td>
+          </tr>
+          <tr>
+            <td class="settings_row_name"><label for="maxPowerMonth" data-i18n="settings.mode.maxPowerMonth">mode.maxPowerMonth</label>:</td>
+            <td class="settings_row_en"><input id="enLimitMonth" type="checkbox" onchange="refreshSchema();displaySaveHint()"></td>
+            <td class="settings_row_input"><input id="maxPowerMonth" type="number" min="50" max="50000" value="5000" step="1" onchange="limitElement(this);displaySaveHint()">kWh/month</td>
+          </tr>
+          <tr id="maxPowHint" class="hint"><td colspan="3"><p data-i18n="settings.app.maxPowHint">app.maxPowHint</p></td></tr>
+          <tr>
+            <td class="settings_row_name"><label for="maxAlarmRate" data-i18n="settings.mode.maxAlarmRate">mode.maxAlarmRate</label>:</td>
+            <td class="settings_row_en"><input id="enLimitMissing" type="checkbox" checked onchange="refreshSchema();displaySaveHint();elem = document.getElementById('maxAlarmRate'); if (this.checked) elem.value = 50; else elem.value=0;"></td>
+            <td class="settings_row_input"><input id="maxAlarmRate" type="number" min="0" max="100" step="100" value="20" onchange="displaySaveHint()">%
+              <div class="hintButton" onclick="toggle(this,'maxAlarmRateHint', 'table-row');return false;">i</div>
+            </td>
+          </tr>
+          <tr id="maxAlarmRateHint" class="hint"><td colspan="3"><p data-i18n="settings.app.maxAlarmRateHint">app.maxAlarmRateHint</p></td></tr>
+        </table>
+      </div></div>
     </div>
 
     <!-- Advanced page -->
@@ -2093,6 +2119,9 @@
           document.getElementById("peakStart").value = minToTime(futurePriceOptions.peakStart);
           document.getElementById("peakEnd").value = minToTime(futurePriceOptions.peakEnd);
           document.getElementById("weekendOffPeak").checked = futurePriceOptions.weekendOffPeak;
+          document.getElementById("govSubsidy").checked = futurePriceOptions.govSubsidyEn;
+          document.getElementById("govSubsidyThreshold").value = futurePriceOptions.govSubsidyThreshold;
+          document.getElementById("govSubsidyRate").value = futurePriceOptions.govSubsidyRate;
           document.getElementById("gridSteps").checked = futurePriceOptions.gridSteps;
           document.getElementById("granularity").value = futurePriceOptions.granularity;
           document.getElementById("peakMin").value = futurePriceOptions.peakMin;
@@ -2129,7 +2158,7 @@
           document.getElementById("energyFlowRateText").innerHTML = energyFlowRateText.replace("${interval}", Math.round(appConfigProgress.timeSinceEnergyMeter / 60));
           document.getElementById("spookeyText").innerHTML = spookeyText.replace("${times}", appConfigProgress.numSpookeyChanges);
           checkPriceMode(document.getElementById("priceMode")); // not called automatically when programatically changed
-          checkPriceKind(document.getElementById("priceKind")); // not called automatically when programatically changed
+          checkPriceKind(); // not called automatically when programatically changed
           changeTab(false, 'welcomePage');
         }
       }
@@ -2649,6 +2678,9 @@
               futurePriceOptions.peakStart = timeToMinSinceMidnight(document.getElementById("peakStart").value);
               futurePriceOptions.peakEnd = timeToMinSinceMidnight(document.getElementById("peakEnd").value);
               futurePriceOptions.weekendOffPeak = document.getElementById("weekendOffPeak").checked;
+              futurePriceOptions.govSubsidyEn = document.getElementById("govSubsidy").checked;
+              futurePriceOptions.govSubsidyThreshold = +document.getElementById("govSubsidyThreshold").value;
+              futurePriceOptions.govSubsidyRate = +document.getElementById("govSubsidyRate").value;
               futurePriceOptions.gridSteps = document.getElementById("gridSteps").checked;
               futurePriceOptions.granularity = +document.getElementById("granularity").value;
               futurePriceOptions.peakMin = +document.getElementById("peakMin").value;

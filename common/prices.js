@@ -1,3 +1,4 @@
+/* eslint-disable comma-dangle */
 /* eslint-disable max-len */
 
 'use strict';
@@ -247,7 +248,10 @@ async function entsoeGetData(startTime, currency = 'NOK', biddingZone, homey) {
 /**
  * Add taxes to the spot prices
  */
-async function applyTaxesOnSpotprice(spotprices, surcharge, VAT, gridTaxDay, gridTaxNight, peakStart, peakEnd, weekendOffPeak, homey) {
+async function applyTaxesOnSpotprice(
+  spotprices, surcharge, VAT, gridTaxDay, gridTaxNight, peakStart, peakEnd, weekendOffPeak,
+  subsidyTreshold, subsidyRate, homey
+) {
   const taxedData = [];
   for (let item = 0; item < spotprices.length; item++) {
     const timeUTC = new Date(spotprices[item].time * 1000);
@@ -257,9 +261,25 @@ async function applyTaxesOnSpotprice(spotprices, surcharge, VAT, gridTaxDay, gri
     const isWeekend = weekDay === 6 || weekDay === 0;
     const isPeak = (minSinceMidnight >= peakStart && minSinceMidnight < peakEnd) && !(isWeekend && weekendOffPeak);
     const gridTax = isPeak ? +gridTaxDay : +gridTaxNight;
-    taxedData.push({ time: spotprices[item].time, price: spotprices[item].price * (1 + +VAT) + gridTax + +surcharge });
+    const spotWithVAT = spotprices[item].price * (1 + +VAT);
+    const spotWithSubsidy = spotWithVAT > subsidyTreshold ? subsidyTreshold + ((spotWithVAT - subsidyTreshold) * ((100 - subsidyRate) / 100)) : spotWithVAT;
+    taxedData.push({ time: spotprices[item].time, price: spotWithSubsidy + gridTax + +surcharge });
   }
   return taxedData;
+}
+
+/**
+ * Calculate subsidy from spot price
+ */
+async function calculateSubsidy(
+  spotprices,
+  VAT,
+  subsidyEn,
+  subsidyThreshold,
+  subsidyRate
+) {
+  if (!Array.isArray(spotprices)) return [];
+  return spotprices.map((val) => ((!subsidyEn || ((val * (1 + +VAT)) < subsidyThreshold)) ? 0 : (((val * (1 + +VAT)) - subsidyThreshold) * subsidyRate)));
 }
 
 // =============================================================================
@@ -376,4 +396,5 @@ module.exports = {
   entsoeApiInit,
   entsoeGetData,
   applyTaxesOnSpotprice,
+  calculateSubsidy,
 };

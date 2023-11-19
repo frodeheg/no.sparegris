@@ -216,7 +216,11 @@
       "peakTax": "Coût max puissance",
       "granularity": "Intervalle limite",
       "granularity15": "15 min",
-      "granularity60": "60 min"
+      "granularity60": "60 min",
+      "govSubsidy": "Prendre en compte la subvention à l'électricité",
+      "govSubsidyThreshold": "Seuil de subvention de l'électricité",
+      "govSubsidyRate": "Taux de subvention de l'électricité",
+      "govSubsidyHint": "Si vous avez des prix d'électricité subventionnés, vous pouvez activer cette option pour soustraire les subventions du prix de l'électricité avant que l'évaluation du prix ne soit effectuée. Les subventions sont calculées exclusivement à partir du prix spot."
     },
     "archive": {
       "settings": "Archive",

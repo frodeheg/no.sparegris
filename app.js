@@ -849,6 +849,9 @@ class PiggyBank extends Homey.App {
       || !(Number.isInteger(futurePriceOptions.peakStart))
       || !(Number.isInteger(futurePriceOptions.peakEnd))
       || !('weekendOffPeak' in futurePriceOptions)
+      || !('govSubsidyEn' in futurePriceOptions)
+      || !('govSubsidyThreshold' in futurePriceOptions)
+      || !('govSubsidyRate' in futurePriceOptions)
       || !('gridSteps' in futurePriceOptions)
       || !(Number.isFinite(futurePriceOptions.peakMin))
       || !(Number.isFinite(futurePriceOptions.peakTax))
@@ -874,6 +877,9 @@ class PiggyBank extends Homey.App {
       if (!(Number.isInteger(futurePriceOptions.peakStart))) futurePriceOptions.peakStart = timeToMinSinceMidnight(locale.SCHEMA[schema].peakStart);
       if (!(Number.isInteger(futurePriceOptions.peakEnd))) futurePriceOptions.peakEnd = timeToMinSinceMidnight(locale.SCHEMA[schema].peakEnd);
       if (!('weekendOffPeak' in futurePriceOptions)) futurePriceOptions.weekendOffPeak = locale.SCHEMA[schema].weekendOffPeak;
+      if (!('govSubsidyEn' in futurePriceOptions)) futurePriceOptions.govSubsidy = locale.SCHEMA[schema].govSubsidy;
+      if (!('govSubsidyThreshold' in futurePriceOptions)) futurePriceOptions.govSubsidyThreshold = 0.7;
+      if (!('govSubsidyRate' in futurePriceOptions)) futurePriceOptions.govSubsidyRate = 90;
       if (!('gridSteps' in futurePriceOptions)) futurePriceOptions.gridSteps = locale.SCHEMA[schema].gridSteps;
       if (!(Number.isFinite(futurePriceOptions.peakMin))) futurePriceOptions.peakMin = locale.SCHEMA[schema].peakMin;
       if (!(Number.isFinite(futurePriceOptions.peakTax))) futurePriceOptions.peakTax = locale.SCHEMA[schema].peakTax;
@@ -4279,46 +4285,66 @@ class PiggyBank extends Homey.App {
       // fetching new prices before we have less than 12 hours with future prices left
       if ((!isNumber(this.__current_price_index)) || (this.__all_prices.length - this.__current_price_index) < 12) {
         let futurePrices;
+        let subsidy;
         if (priceMode !== c.PRICE_MODE_DISABLED) {
           const futurePriceOptions = await this.homey.settings.get('futurePriceOptions');
           if (priceKind === c.PRICE_KIND_EXTERNAL) {
             futurePrices = await this.elPriceApi.get('/prices');
-          } else if (priceKind === c.PRICE_KIND_SPOT) {
+            subsidy = futurePrices.map(val => 0);
+          } else {
             const biddingZone = (futurePriceOptions.priceCountry in c.ENTSOE_BIDDING_ZONES)
               && (futurePriceOptions.priceRegion in c.ENTSOE_BIDDING_ZONES[futurePriceOptions.priceCountry])
               ? c.ENTSOE_BIDDING_ZONES[futurePriceOptions.priceCountry][futurePriceOptions.priceRegion].id : undefined;
-            const priceData = await prices.entsoeGetData(todayStart, futurePriceOptions.currency, biddingZone, this.homey);
-            futurePrices = await prices.applyTaxesOnSpotprice(
-              priceData,
-              futurePriceOptions.surcharge,
-              futurePriceOptions.VAT / 100,
-              futurePriceOptions.gridTaxDay, // Between 6-22
-              futurePriceOptions.gridTaxNight, // Between 22-6
-              futurePriceOptions.peakStart,
-              futurePriceOptions.peakEnd,
-              futurePriceOptions.weekendOffPeak,
-              this.homey
-            );
-          } else { // priceKind === PRICE_KIND_FIXED
-            const priceData = [];
-            const intervalStart = todayStart.getTime() / 1000;
-            for (let i = 0; i < 48; i++) {
-              priceData.push({ time: intervalStart + (i * 60 * 60), price: 0 });
+            const spotData = (priceKind === c.PRICE_KIND_SPOT || futurePriceOptions.govSubsidyEn)
+              ? await prices.entsoeGetData(todayStart, futurePriceOptions.currency, biddingZone, this.homey) : undefined;
+            if (priceKind === c.PRICE_KIND_SPOT) {
+              futurePrices = await prices.applyTaxesOnSpotprice(
+                spotData,
+                futurePriceOptions.surcharge,
+                futurePriceOptions.VAT / 100,
+                futurePriceOptions.gridTaxDay, // Between 6-22
+                futurePriceOptions.gridTaxNight, // Between 22-6
+                futurePriceOptions.peakStart,
+                futurePriceOptions.peakEnd,
+                futurePriceOptions.weekendOffPeak,
+                futurePriceOptions.govSubsidyEn ? futurePriceOptions.govSubsidyThreshold : 0,
+                futurePriceOptions.govSubsidyEn ? futurePriceOptions.govSubsidyRate : 0,
+                this.homey
+              );
+            } else { // priceKind === PRICE_KIND_FIXED
+              const priceData = [];
+              const intervalStart = todayStart.getTime() / 1000;
+              for (let i = 0; i < 48; i++) {
+                priceData.push({ time: intervalStart + (i * 60 * 60), price: 0 });
+              }
+              futurePrices = await prices.applyTaxesOnSpotprice(
+                priceData,
+                futurePriceOptions.priceFixed,
+                0, // VAT is already included in the fixed price
+                futurePriceOptions.gridTaxDay, // Between 6-22
+                futurePriceOptions.gridTaxNight, // Between 22-6
+                futurePriceOptions.peakStart,
+                futurePriceOptions.peakEnd,
+                futurePriceOptions.weekendOffPeak,
+                futurePriceOptions.govSubsidyEn ? futurePriceOptions.govSubsidyThreshold : 0,
+                futurePriceOptions.govSubsidyEn ? futurePriceOptions.govSubsidyRate : 0,
+                this.homey
+              );
             }
-            futurePrices = await prices.applyTaxesOnSpotprice(
-              priceData,
-              futurePriceOptions.priceFixed,
-              0, // VAT is already included in the fixed price
-              futurePriceOptions.gridTaxDay, // Between 6-22
-              futurePriceOptions.gridTaxNight, // Between 22-6
-              futurePriceOptions.peakStart,
-              futurePriceOptions.peakEnd,
-              futurePriceOptions.weekendOffPeak,
-              this.homey
+            subsidy = await prices.calculateSubsidy(
+              spotData,
+              futurePriceOptions.VAT / 100,
+              futurePriceOptions.govSubsidyEn,
+              futurePriceOptions.govSubsidyThreshold,
+              futurePriceOptions.govSubsidyRate
             );
+            if (futurePriceOptions.govSubsidyEn) {
+              futurePrices = futurePrices.map((valueA, indexInA) => valueA - subsidy[indexInA]);
+            }
           }
         } else {
           futurePrices = []; // No prices;
+          subsidy = [];
         }
 
         if (Array.isArray(futurePrices)) {
