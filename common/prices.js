@@ -248,10 +248,7 @@ async function entsoeGetData(startTime, currency = 'NOK', biddingZone, homey) {
 /**
  * Add taxes to the spot prices
  */
-async function applyTaxesOnSpotprice(
-  spotprices, surcharge, VAT, gridTaxDay, gridTaxNight, peakStart, peakEnd, weekendOffPeak,
-  subsidyTreshold, subsidyRate, homey
-) {
+async function applyTaxesOnSpotprice(spotprices, surcharge, VAT, gridTaxDay, gridTaxNight, peakStart, peakEnd, weekendOffPeak, homey) {
   const taxedData = [];
   for (let item = 0; item < spotprices.length; item++) {
     const timeUTC = new Date(spotprices[item].time * 1000);
@@ -262,8 +259,7 @@ async function applyTaxesOnSpotprice(
     const isPeak = (minSinceMidnight >= peakStart && minSinceMidnight < peakEnd) && !(isWeekend && weekendOffPeak);
     const gridTax = isPeak ? +gridTaxDay : +gridTaxNight;
     const spotWithVAT = spotprices[item].price * (1 + +VAT);
-    const spotWithSubsidy = spotWithVAT > subsidyTreshold ? subsidyTreshold + ((spotWithVAT - subsidyTreshold) * ((100 - subsidyRate) / 100)) : spotWithVAT;
-    taxedData.push({ time: spotprices[item].time, price: spotWithSubsidy + gridTax + +surcharge });
+    taxedData.push({ time: spotprices[item].time, price: spotWithVAT + gridTax + +surcharge });
   }
   return taxedData;
 }
@@ -279,7 +275,7 @@ async function calculateSubsidy(
   subsidyRate
 ) {
   if (!Array.isArray(spotprices)) return [];
-  return spotprices.map((val) => ((!subsidyEn || ((val * (1 + +VAT)) < subsidyThreshold)) ? 0 : (((val * (1 + +VAT)) - subsidyThreshold) * subsidyRate)));
+  return spotprices.map((val) => ((!subsidyEn || !('price' in val) || ((val.price * (1 + +VAT)) < +subsidyThreshold)) ? 0 : (((val.price * (1 + +VAT)) - +subsidyThreshold) * +subsidyRate)));
 }
 
 // =============================================================================

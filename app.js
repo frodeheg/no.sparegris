@@ -946,6 +946,7 @@ class PiggyBank extends Homey.App {
     this.__num_off_devices = 0;
     this.__all_prices = this.homey.settings.get('all_prices');
     this.__current_prices = [];
+    this.__current_subsidy = [];
     this.__current_price_index = undefined;
     this.mutexForPower = new Mutex();
     this.homeyApi = await HomeyAPI.createAppAPI({ homey: this.homey });
@@ -1180,6 +1181,7 @@ class PiggyBank extends Homey.App {
           // Prices might have changed, need to fetch them again
           this.__all_prices = undefined;
           this.__current_prices = [];
+          this.__current_subsidy = [];
           this.__current_price_index = undefined;
           this.homey.settings.set('all_prices', this.__all_prices);
           this.onRefreshInternals(false); // Just to refresh prices and reschedule charging.
@@ -3642,6 +3644,7 @@ class PiggyBank extends Homey.App {
     }
     if (Array.isArray(this.__current_prices)) {
       data.price = this.__current_prices[this.__current_price_index]; // Per kWh
+      data.subsidy = this.__current_subsidy[this.__current_price_index];
       data.cost = (data.powUsage / 1000) * data.price;
     }
     await addToArchive(this.homey, data, slotStartUTC);
@@ -3835,6 +3838,7 @@ class PiggyBank extends Homey.App {
         case 'moneySavedTariff':
         case 'moneySavedUsage':
         case 'price':
+        case 'subsidy':
         case 'pricePoints':
         case 'overShootAvoided':
           this.log(`trying: ${part} ${period} ${timeId} granularity: ${granularity}`);
@@ -4285,12 +4289,10 @@ class PiggyBank extends Homey.App {
       // fetching new prices before we have less than 12 hours with future prices left
       if ((!isNumber(this.__current_price_index)) || (this.__all_prices.length - this.__current_price_index) < 12) {
         let futurePrices;
-        let subsidy;
         if (priceMode !== c.PRICE_MODE_DISABLED) {
           const futurePriceOptions = await this.homey.settings.get('futurePriceOptions');
           if (priceKind === c.PRICE_KIND_EXTERNAL) {
             futurePrices = await this.elPriceApi.get('/prices');
-            subsidy = futurePrices.map(val => 0);
           } else {
             const biddingZone = (futurePriceOptions.priceCountry in c.ENTSOE_BIDDING_ZONES)
               && (futurePriceOptions.priceRegion in c.ENTSOE_BIDDING_ZONES[futurePriceOptions.priceCountry])
@@ -4307,8 +4309,6 @@ class PiggyBank extends Homey.App {
                 futurePriceOptions.peakStart,
                 futurePriceOptions.peakEnd,
                 futurePriceOptions.weekendOffPeak,
-                futurePriceOptions.govSubsidyEn ? futurePriceOptions.govSubsidyThreshold : 0,
-                futurePriceOptions.govSubsidyEn ? futurePriceOptions.govSubsidyRate : 0,
                 this.homey
               );
             } else { // priceKind === PRICE_KIND_FIXED
@@ -4326,25 +4326,22 @@ class PiggyBank extends Homey.App {
                 futurePriceOptions.peakStart,
                 futurePriceOptions.peakEnd,
                 futurePriceOptions.weekendOffPeak,
-                futurePriceOptions.govSubsidyEn ? futurePriceOptions.govSubsidyThreshold : 0,
-                futurePriceOptions.govSubsidyEn ? futurePriceOptions.govSubsidyRate : 0,
                 this.homey
               );
             }
-            subsidy = await prices.calculateSubsidy(
-              spotData,
-              futurePriceOptions.VAT / 100,
-              futurePriceOptions.govSubsidyEn,
-              futurePriceOptions.govSubsidyThreshold,
-              futurePriceOptions.govSubsidyRate
-            );
             if (futurePriceOptions.govSubsidyEn) {
-              futurePrices = futurePrices.map((valueA, indexInA) => valueA - subsidy[indexInA]);
+              const subsidy = await prices.calculateSubsidy(
+                spotData,
+                futurePriceOptions.VAT / 100,
+                futurePriceOptions.govSubsidyEn,
+                futurePriceOptions.govSubsidyThreshold,
+                futurePriceOptions.govSubsidyRate / 100
+              );
+              futurePrices = futurePrices.map((valueA, indexInA) => { return { ...valueA, price: valueA.price - subsidy[indexInA], subsidy: subsidy[indexInA] }; });
             }
           }
         } else {
           futurePrices = []; // No prices;
-          subsidy = [];
         }
 
         if (Array.isArray(futurePrices)) {
@@ -4366,15 +4363,17 @@ class PiggyBank extends Homey.App {
 
     // Analyze the prizes we got and return 24 values + (today and maybe tomorrow)
     const pricesOnly = [];
+    const subsidyOnly = [];
     let currentIndex = 0;
     const nPricesToAdd = Math.min(this.__all_prices.length, 48);
     for (let i = 0; i < nPricesToAdd; i++) {
       pricesOnly.push(this.__all_prices[i].price);
+      subsidyOnly.push(this.__all_prices[i].subsidy);
       if ((nowSeconds - 3600) >= this.__all_prices[i].time) {
         currentIndex++;
       }
     }
-    return { prices: pricesOnly, now: currentIndex };
+    return { prices: pricesOnly, subsidy: subsidyOnly, now: currentIndex };
   }
 
   /**
@@ -4389,16 +4388,20 @@ class PiggyBank extends Homey.App {
     futureData['price']['hourly'] = {};
     futureData['pricePoints'] = {};
     futureData['pricePoints']['hourly'] = {};
+    futureData['subsidy'] = {};
+    futureData['subsidy']['hourly'] = {};
     let floatingPrice = +this.homey.settings.get('averagePrice') || undefined;
     const todayArray = this.__current_prices.slice(0, todayHours);
     if (this.__current_prices.length > 0) {
       const todayIndex = `${nowLocal.getFullYear()}-${String(nowLocal.getMonth() + 1).padStart(2, '0')}-${String(nowLocal.getDate()).padStart(2, '0')}`;
       futureData['price']['hourly'][todayIndex] = [];
+      futureData['subsidy']['hourly'][todayIndex] = [];
       futureData['pricePoints']['hourly'][todayIndex] = [];
       for (let idx = this.__current_price_index; idx < todayHours; idx++) {
         const nextPP = await this.calculateNextPP(floatingPrice, todayArray, idx);
         floatingPrice = nextPP.averagePrice;
         futureData['price']['hourly'][todayIndex][idx] = this.__current_prices[idx];
+        futureData['subsidy']['hourly'][todayIndex][idx] = this.__current_subsidy[idx];
         futureData['pricePoints']['hourly'][todayIndex][idx] = nextPP.mode;
       }
     }
@@ -4407,11 +4410,13 @@ class PiggyBank extends Homey.App {
       tomorrowLocal.setDate(tomorrowLocal.getDate() + 1);
       const tomorrowIndex = `${tomorrowLocal.getFullYear()}-${String(tomorrowLocal.getMonth() + 1).padStart(2, '0')}-${String(tomorrowLocal.getDate()).padStart(2, '0')}`;
       futureData['price']['hourly'][tomorrowIndex] = [];
+      futureData['subsidy']['hourly'][tomorrowIndex] = [];
       futureData['pricePoints']['hourly'][tomorrowIndex] = [];
       for (let idx = todayHours; idx < this.__current_prices.length; idx++) {
         const nextPP = await this.calculateNextPP(floatingPrice, todayArray, idx);
         floatingPrice = nextPP.averagePrice;
         futureData['price']['hourly'][tomorrowIndex][idx - todayHours] = this.__current_prices[idx];
+        futureData['subsidy']['hourly'][tomorrowIndex][idx - todayHours] = this.__current_subsidy[idx];
         futureData['pricePoints']['hourly'][tomorrowIndex][idx] = nextPP.mode;
       }
     }
@@ -4520,6 +4525,7 @@ class PiggyBank extends Homey.App {
     }
     const priceInfo = await this.currentPrices(priceMode, priceKind, now);
     this.__current_prices = priceInfo.prices;
+    this.__current_subsidy = priceInfo.subsidy;
     this.__current_price_index = priceInfo.now;
 
     this.statsSetLastHourPrice(this.__last_hour_price);

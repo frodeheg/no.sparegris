@@ -502,7 +502,9 @@
     "price": "Pris",
     "charging": "Lading aktivert",
     "nocharge": "Lading deaktivert",
-    "noPrice": "Ingen prisdata tilgjengelig"
+    "noPrice": "Ingen prisdata tilgjengelig",
+    "withSubsidy": "Subsidiert",
+    "withoutSubsidy": "Faktisk"
   },
   "month": {
     "jan": "Januar",

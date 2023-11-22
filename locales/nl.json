@@ -501,7 +501,9 @@
     "price": "Prijs",
     "charging": "Opladen ingeschakeld",
     "nocharge": "Opladen uitgeschakeld",
-    "noPrice": "Nog geen prijsgegevens"
+    "noPrice": "Nog geen prijsgegevens",
+    "withSubsidy": "Gesubsidieerd",
+    "withoutSubsidy": "Werkelijk"
   },
   "month": {
     "jan": "januari",

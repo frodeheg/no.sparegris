@@ -502,7 +502,9 @@
     "price": "Price",
     "charging": "Charging enabled",
     "nocharge": "Charging disabled",
-    "noPrice": "No price data yet"
+    "noPrice": "No price data yet",
+    "withSubsidy": "Subsidized",
+    "withoutSubsidy": "Actual"
   },
   "month": {
     "jan": "January",

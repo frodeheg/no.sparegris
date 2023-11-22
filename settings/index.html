@@ -106,6 +106,8 @@
       var chargePlanGraphCharge = "chargePlanGraph.charging";
       var chargePlanGraphNoCharge = "chargePlanGraph.nocharge";
       var chargePlanGraphNoPrice = "chargePlanGraph.noPrice";
+      var withSubsidyText = "chargePlanGraph.withSubsidy";
+      var withoutSubsidyText = "chargePlanGraph.withoutSubsidy";
 
       var debugMode = false;
 
@@ -1033,6 +1035,7 @@
                 <option value="moneySavedUsage">moneySavedUsage</option>
                 <option value="price">price</option>
                 <option value="pricePoints">pricePoints</option>
+                <option value="subsidy">subsidy</option>
                 <option value="overShootAvoided">overShootAvoided</option>
                 <option value="cost">cost</option>
               </select>
@@ -2279,6 +2282,8 @@
         chargePlanGraphCharge = Homey.__(chargePlanGraphCharge);
         chargePlanGraphNoCharge = Homey.__(chargePlanGraphNoCharge);
         chargePlanGraphNoPrice = Homey.__(chargePlanGraphNoPrice);
+        withSubsidyText = Homey.__(withSubsidyText);
+        withoutSubsidyText = Homey.__(withoutSubsidyText);
 
         for (var i = 0; i < pricePoints.length; i++) {
           pricePoints[i].name = Homey.__(pricePoints[i].name);
