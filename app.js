@@ -738,6 +738,23 @@ class PiggyBank extends Homey.App {
       }
       this.homey.settings.set('settingsVersion', 15);
     }
+
+    // Version 0.20.50
+    if (+settingsVersion < 16) {
+      if (!firstInstall) {
+        const futurePriceOptions = this.homey.settings.get('futurePriceOptions');
+        futurePriceOptions.govSubsidyEn = false; // Do not enable by default
+        this.homey.settings.set('futurePriceOptions', futurePriceOptions);
+
+        const alertText = '**Piggy Bank** - New feature: Government subsidies can now be enabled under '
+          + 'settings -> advanced -> cost to improve cost control. This also introduces a variable element '
+          + 'for fixed prices, so price control can be used there as well.';
+        this.homey.notifications.createNotification({ excerpt: alertText })
+          .catch(err => this.updateLog(alertText, c.LOG_ERROR));
+      }
+      this.homey.settings.set('settingsVersion', 16);
+    }
+
     // Internal state that preferably should be removed as it is in the archive
     // this.homey.settings.unset('stats_savings_all_time_use');
     // this.homey.settings.unset('stats_savings_all_time_power_part');
@@ -877,7 +894,7 @@ class PiggyBank extends Homey.App {
       if (!(Number.isInteger(futurePriceOptions.peakStart))) futurePriceOptions.peakStart = timeToMinSinceMidnight(locale.SCHEMA[schema].peakStart);
       if (!(Number.isInteger(futurePriceOptions.peakEnd))) futurePriceOptions.peakEnd = timeToMinSinceMidnight(locale.SCHEMA[schema].peakEnd);
       if (!('weekendOffPeak' in futurePriceOptions)) futurePriceOptions.weekendOffPeak = locale.SCHEMA[schema].weekendOffPeak;
-      if (!('govSubsidyEn' in futurePriceOptions)) futurePriceOptions.govSubsidy = locale.SCHEMA[schema].govSubsidy;
+      if (!('govSubsidyEn' in futurePriceOptions)) futurePriceOptions.govSubsidyEn = locale.SCHEMA[schema].govSubsidy;
       if (!('govSubsidyThreshold' in futurePriceOptions)) futurePriceOptions.govSubsidyThreshold = 0.7;
       if (!('govSubsidyRate' in futurePriceOptions)) futurePriceOptions.govSubsidyRate = 90;
       if (!('gridSteps' in futurePriceOptions)) futurePriceOptions.gridSteps = locale.SCHEMA[schema].gridSteps;
@@ -4479,7 +4496,7 @@ class PiggyBank extends Homey.App {
     }
 
     // Special case Fixed price
-    const isFixedPrice = priceKind === c.PRICE_KIND_FIXED;
+    const isFixedPrice = (priceKind === c.PRICE_KIND_FIXED) && (!futureData.govSubsidyEn);
     if (isFixedPrice) {
       outState.__low_price_limit = todayArray.reduce((a, b) => a + b, 0) / todayArray.length;
     }

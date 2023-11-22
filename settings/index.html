@@ -628,6 +628,7 @@
         var pp3Part = document.getElementById('subtablink3');
         var pp4Part = document.getElementById('subtablink4');
         var regionPart = document.getElementById('regionPart');
+        let subisidyOn = document.getElementById("govSubsidy").checked;
 
         if (+source.value == PRICE_KIND_SPOT) {
           // Spot price
@@ -652,16 +653,16 @@
           pp4Part.style.display = 'table-cell';
           regionPart.style.display = 'none';
         } else { // Value = PRICE_KIND_FIXED
-          // Fixded price
+          // Fixed price
           priceSpotPart.style.display = 'none';
           priceFixedPart.style.display = 'block';
-          priceInterpretPart.style.display = 'none';
+          priceInterpretPart.style.display = subisidyOn ? 'block' : 'none';
           priceFixedAndSpotPart.style.display = 'block';
           apiErrorPart.style.display = 'none';
-          pp2Part.style.display = 'none';
-          pp3Part.style.display = 'none';
-          pp4Part.style.display = 'none';
-          regionPart.style.display = document.getElementById("govSubsidy").checked ? 'table-row' : 'none';
+          pp2Part.style.display = subisidyOn ? 'table-cell' : 'none';
+          pp3Part.style.display = subisidyOn ? 'table-cell' : 'none';
+          pp4Part.style.display = subisidyOn ? 'table-cell' : 'none';
+          regionPart.style.display = subisidyOn ? 'table-row' : 'none';
         }
       }
 
