@@ -2640,16 +2640,23 @@
         const errFunc = (err) => { 
           if (err) {
             Homey.api('GET', `/apiCommand?cmd=log&text=${err.message}&loglevel=0`, null, function (err2, result) {});
-            if (err.message == 'OK') {
-              // Settings was saved successfully
-              rememberToSaveElement.style.display = 'none';
-            } else {
-              // An error occured
-              alertUser(Homey, err.message);
-            }
+            // An error occured
+            alertUser(Homey, err.message);
             saveElement.classList.remove('is-loading');
             document.getElementById("savingOverlay").style.display = 'none';
           }
+        }
+        const savedFunc = (err) => {
+          if (err) {
+            Homey.api('GET', `/apiCommand?cmd=log&text=${err.message}&loglevel=0`, null, function (err2, result) {});
+            // An error occured
+            alertUser(Homey, err.message);
+          } else {
+            // Settings was saved successfully
+            rememberToSaveElement.style.display = 'none';
+          }
+          saveElement.classList.remove('is-loading');
+          document.getElementById("savingOverlay").style.display = 'none';
         }
         document.getElementById("getState").addEventListener("click", e => {
           Homey.api('GET', '/apiCommand?cmd=getFullState', null, function (err, result) {
@@ -2759,7 +2766,7 @@
               Homey.set("meterFrequency", document.getElementById("meterFrequency").value, errFunc);
               Homey.set("toggleTime", document.getElementById("toggleTime").value, errFunc);
               Homey.set("settingsSaved", "", errFunc); // On settings is only called if the settings actually changed
-              Homey.set("settingsSaved", "true", errFunc); // This one will throw the message 'OK' on success
+              Homey.set("settingsSaved", "true", savedFunc);
             }
           }
           catch (err) {
@@ -3167,8 +3174,9 @@
         var key = event.message ? "message" : "data";
         var data = event[key];
         //run function//
-        if (event.origin === 'https://tools.developer.homey.app') {
-          console.log('Ignoring from homey http interface');
+        if (event.origin === 'https://tools.developer.homey.app' ||
+            event.origin === 'https://my.homey.app') {
+          console.log('Ignoring message from homey http interface');
           return;
         }
         if ((event.origin !== window.location.origin) &&

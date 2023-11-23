@@ -745,7 +745,6 @@ class PiggyBank extends Homey.App {
         const futurePriceOptions = this.homey.settings.get('futurePriceOptions');
         futurePriceOptions.govSubsidyEn = false; // Do not enable by default
         this.homey.settings.set('futurePriceOptions', futurePriceOptions);
-
         const alertText = '**Piggy Bank** - New feature: Government subsidies can now be enabled under '
           + 'settings -> advanced -> cost to improve cost control. This also introduces a variable element '
           + 'for fixed prices, so price control can be used there as well.';
@@ -1203,8 +1202,6 @@ class PiggyBank extends Homey.App {
           this.homey.settings.set('all_prices', this.__all_prices);
           this.onRefreshInternals(false); // Just to refresh prices and reschedule charging.
           this.homey.settings.set('settingsSaved', '');
-          // The callback only returns on error so notify success with failure = 'OK'
-          throw (new Error('OK'));
         }
       }
     });
