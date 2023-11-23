@@ -883,5 +883,8 @@
   },
   "0.20.49": {
     "en": "Fixed minor bug in the css file for settings layout."
+  },
+  "0.21.0": {
+    "en": "Added option to enable governemnt subsidies. + fixed info icon on iphone"
   }
 }
