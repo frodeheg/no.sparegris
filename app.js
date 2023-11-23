@@ -739,7 +739,7 @@ class PiggyBank extends Homey.App {
       this.homey.settings.set('settingsVersion', 15);
     }
 
-    // Version 0.20.50
+    // Version 0.21.0 - Introduction of subsidies: Make sure subsidies are not enabled by default for old users
     if (+settingsVersion < 16) {
       if (!firstInstall) {
         const futurePriceOptions = this.homey.settings.get('futurePriceOptions');
