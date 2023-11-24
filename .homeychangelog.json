@@ -886,5 +886,8 @@
   },
   "0.21.0": {
     "en": "Added option to enable governemnt subsidies. + fixed info icon on iphone"
+  },
+  "0.21.1": {
+    "en": "Fixed incorrect price graph in version 0.21.0 + Fixed prices with subsidy did not last more than a day."
   }
 }
