@@ -3861,8 +3861,8 @@ class PiggyBank extends Homey.App {
             const archiveData = ((part in archive) ? archive[part][period] : undefined) || {};
             searchData = combine(archiveData, futureData);
             data[part] = searchData[timeId];
-            if (searchData === undefined) throw new Error('No searchData');
-            if (data[part] === undefined) throw new Error('No data');
+            if (+partIdx === 0 && searchData === undefined) throw new Error('No searchData');
+            if (+partIdx === 0 && data[part] === undefined) throw new Error('No data');
           } catch (err) {
             if (searchData) {
               let closestTime = statsTimeLocal;
@@ -3880,6 +3880,7 @@ class PiggyBank extends Homey.App {
               dataGood = searchDataGood[closestItem];
               statsTimeLocal = closestTime;
               statsTimeUTC = fromLocalTime(statsTimeLocal, this.homey);
+              timeId = closestItem; // Update time so other data sets use the same timestamp
             } else {
               data = { error: err };
               dataGood = [];
@@ -4285,7 +4286,7 @@ class PiggyBank extends Homey.App {
         this.__all_prices = [];
       }
       for (let i = this.__all_prices.length - 1; i >= 0; i--) {
-        if (this.__all_prices[i].time < todayStartSec) {
+        if (this.__all_prices[i].time < todayStartSec || !Number.isFinite(this.__all_prices[i].price)) {
           this.__all_prices.splice(i, 1);
         } else if (this.__all_prices[i].time > newestPriceWeGot) {
           newestPriceWeGot = this.__all_prices[i].time;
@@ -4351,6 +4352,10 @@ class PiggyBank extends Homey.App {
                 futurePriceOptions.govSubsidyThreshold,
                 futurePriceOptions.govSubsidyRate / 100
               );
+              // In case the spot prices are missing, then make sure the fixed prices doesn't expose too many prices
+              if (subsidy.length < futurePrices.length) {
+                futurePrices.length = subsidy.length;
+              }
               futurePrices = futurePrices.map((valueA, indexInA) => { return { ...valueA, price: valueA.price - subsidy[indexInA], subsidy: subsidy[indexInA] }; });
             }
           }
