@@ -220,6 +220,12 @@ const DEVICE_CMD = {
     tempStep: 0.5,
     default: false
   },
+  'com.Coderax.MillHeating:mill-v2': {
+    ...DEFAULT_HEATER,
+    tempMin: 4,
+    tempMax: 35,
+    default: false
+  },
   'com.ctmlyng.op:mtouch-one': {
     ...DEFAULT_HEATER,
     setOnOffCap: 'operationMode',
