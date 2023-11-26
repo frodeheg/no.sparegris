@@ -2188,6 +2188,8 @@
           || String(message).includes('apiCommand')
           || String(message).includes('getStats')) {
           popUp(Homey, 'It seems like Homey is updating the app version. Please try again in a minute or two when the app has been properly installed.');
+          console.log('Believed app update detected?');
+          console.log(message);
         } else {
           popUp(Homey, message);
         }
