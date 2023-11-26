@@ -892,5 +892,8 @@
   },
   "0.21.2": {
     "en": "Added support for new devices: climate.onecta.daikin:comfora_ftxp + net.filllip-namron:4512757 + no.futurehome:puck_relay + no.thermofloor:Z-TRM6"
+  },
+  "0.21.3": {
+    "en": "Added support for com.Coderax.MillHeating:mill-v2"
   }
 }
