@@ -1,0 +1,17 @@
+Log ID: 2023-11-09T18:12:04.756Z
+App version 0.20.47
+
++18:12:4.756: ----- ANALYZING DEVICE -----
++18:12:4.757: Report type: Experimental device is working
++18:12:4.774: Device name: Rele 16A VVB
++18:12:4.775: Driver Id: homey:app:no.futurehome:puck_relay
++18:12:4.777: Found onoff cap: onoff
++18:12:4.778: Found temp cap: false
++18:12:4.779: Device reliability: 1
++18:12:4.780: Capabilities: onoff,meter_power,measure_voltage,measure_current,measure_power
++18:12:4.782: Options for 'onoff': {"id":"onoff","type":"boolean","iconObj":null,"title":"Slått på","getable":true,"setable":true,"insights":true,"insightsTitleTrue":"Slått på","insightsTitleFalse":"Slått av","value":false,"lastUpdated":"2023-11-09T02:06:33.760Z"}
++18:12:4.783: Options for 'meter_power': {"id":"meter_power","type":"number","iconObj":null,"title":"Energi","getable":true,"setable":false,"insights":true,"insightsTitleTrue":null,"insightsTitleFalse":null,"units":"kWh","decimals":2,"value":133.5,"lastUpdated":"2023-11-09T02:04:54.006Z"}
++18:12:4.786: Options for 'measure_voltage': {"id":"measure_voltage","type":"number","iconObj":null,"title":"Spenning","getable":true,"setable":false,"insights":true,"insightsTitleTrue":null,"insightsTitleFalse":null,"units":"V","decimals":2,"value":241,"lastUpdated":"2023-11-09T18:11:38.056Z"}
++18:12:4.789: Options for 'measure_current': {"id":"measure_current","type":"number","iconObj":null,"title":"Strøm","getable":true,"setable":false,"insights":true,"insightsTitleTrue":null,"insightsTitleFalse":null,"units":"A","decimals":2,"value":0,"lastUpdated":"2023-11-09T18:11:59.031Z"}
++18:12:4.790: Options for 'measure_power': {"id":"measure_power","type":"number","iconObj":null,"title":"Effekt","getable":true,"setable":false,"insights":true,"insightsTitleTrue":null,"insightsTitleFalse":null,"units":"W","decimals":2,"value":0,"lastUpdated":"2023-11-09T18:03:05.867Z"}
++18:12:4.792: --- ANALYZING DEVICE DONE ---

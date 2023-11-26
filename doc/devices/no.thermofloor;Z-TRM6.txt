@@ -1,0 +1,17 @@
+Log ID: 2023-11-25T21:39:46.023Z
+App version 0.20.47
+
++21:41:50.408: ----- ANALYZING DEVICE -----
++21:41:50.409: Report type: Device is not listed
++21:41:50.421: Device name: Treningsrom
++21:41:50.422: Driver Id: homey:app:no.thermofloor:Z-TRM6
++21:41:50.425: Error: TypeError: Cannot read properties of undefined (reading 'onoff_cap')
++21:41:50.426: Capabilities: thermostat_mode,target_temperature,thermostat_state_13570,meter_power,measure_power,measure_temperature,button.reset_meter
++21:41:50.427: Options for 'thermostat_mode': {"id":"thermostat_mode","type":"enum","iconObj":null,"title":"Thermostat mode","getable":true,"setable":true,"insightsTitleTrue":null,"insightsTitleFalse":null,"values":[{"id":"auto","title":"Automatic"},{"id":"heat","title":"Heat"},{"id":"cool","title":"Cool"},{"id":"off","title":"Off"}],"value":"heat","lastUpdated":"2023-11-25T21:03:56.662Z"}
++21:41:50.428: Options for 'target_temperature': {"id":"target_temperature","type":"number","iconObj":null,"title":"Target temperature","getable":true,"setable":true,"insights":true,"insightsTitleTrue":null,"insightsTitleFalse":null,"min":4,"max":35,"units":"°C","decimals":2,"value":21,"lastUpdated":"2023-11-25T21:04:17.763Z"}
++21:41:50.429: Options for 'thermostat_state_13570': {"id":"thermostat_state_13570","type":"enum","iconObj":{"id":"456dee58632d27d63ca37047d71cfc01","url":"/api/icon/94728a6d-abca-4330-b871-2366ec53d411"},"title":"State","getable":true,"setable":false,"insights":true,"insightsTitleTrue":null,"insightsTitleFalse":null,"values":[{"id":"Idle","title":"Idle"},{"id":"Heating","title":"Heating"},{"id":"Cooling","title":"Cooling"}],"value":"Idle","lastUpdated":"2023-11-25T21:03:56.691Z"}
++21:41:50.431: Options for 'meter_power': {"id":"meter_power","type":"number","iconObj":null,"title":"Energy","getable":true,"setable":false,"insights":true,"insightsTitleTrue":null,"insightsTitleFalse":null,"units":"kWh","decimals":2,"value":0,"lastUpdated":"2023-11-25T21:03:56.560Z"}
++21:41:50.432: Options for 'measure_power': {"id":"measure_power","type":"number","iconObj":null,"title":"Power","getable":true,"setable":false,"insights":true,"insightsTitleTrue":null,"insightsTitleFalse":null,"units":"W","decimals":2,"value":0,"lastUpdated":"2023-11-25T21:03:56.526Z"}
++21:41:50.433: Options for 'measure_temperature': {"id":"measure_temperature","type":"number","iconObj":null,"title":"Temperature","getable":true,"setable":false,"insights":true,"insightsTitleTrue":null,"insightsTitleFalse":null,"units":"°C","decimals":2,"value":23.5,"lastUpdated":"2023-11-25T21:04:17.689Z"}
++21:41:50.434: Options for 'button.reset_meter': {"id":"button.reset_meter","type":"boolean","iconObj":null,"title":"Reset power meter","getable":false,"setable":true,"insightsTitleTrue":null,"insightsTitleFalse":null,"maintenanceAction":true,"desc":"Reset the accumulated power usage (kWh), note that this can not be reversed.","value":null,"lastUpdated":null}
++21:41:50.435: --- ANALYZING DEVICE DONE ---

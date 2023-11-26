@@ -155,6 +155,17 @@ const DEVICE_CMD = {
     setOnValue: true,
     setOffValue: false
   },
+  'climate.onecta.daikin:comfora_ftxp': {
+    ...DEFAULT_AC,
+    tempStep: 0.5,
+    setModeCap: 'operation_mode',
+    setModeHeatValue: 'heating',
+    setModeCoolValue: 'cooling',
+    setModeAutoValue: 'auto',
+    setModeDryValue: 'dry',
+    setModeFanValue: 'fanOnly',
+    default: false
+  },
   'climate.onecta.daikin:perfera_floor_fvxm': {
     ...DEFAULT_AC,
     tempStep: 0.5,
@@ -420,6 +431,11 @@ const DEVICE_CMD = {
   },
   'net.filllip-namron:4512746': DEFAULT_SWITCH,
   'net.filllip-namron:4512749': DEFAULT_SWITCH,
+  'net.filllip-namron:4512757': {
+    ...DEFAULT_HEATER,
+    tempMin: 0,
+    default: false
+  },
   'net.filllip-namron:540139x': {
     ...DEFAULT_HEATER,
     tempMax: 35,
@@ -519,6 +535,7 @@ const DEVICE_CMD = {
   'no.elko:super_tr_thermostat': {
     ...DEFAULT_HEATER
   },
+  'no.futurehome:puck_relay': DEFAULT_SWITCH,
   'no.hoiax:hiax-connected-200': {
     type: DEVICE_TYPE.WATERHEATER,
     setOnOffCap: 'onoff',
@@ -568,6 +585,24 @@ const DEVICE_CMD = {
   'no.thermofloor:Z-TRM3': {
     ...DEFAULT_HEATER,
     workaround: 'The Z-TRM3 devices are known to lose connection with homey when using encryption. You can try to pair it again with code 0000 to make it unencrypted as this is much more reliable.',
+    default: false
+  },
+  'no.thermofloor:Z-TRM6': {
+    type: DEVICE_TYPE.AC,
+    note: 'This device has no onOff capability and will have to emulate On by turning the mode into heat (for now). '
+      + 'For this reason, please set temperature control to preferred to avoid mode switches when using cooling.',
+    setOnOffCap: 'thermostat_mode',
+    setOnValue: 'heat',
+    setOffValue: 'off',
+    readTempCap: 'measure_temperature',
+    setTempCap: 'target_temperature',
+    tempMin: 4,
+    tempMax: 35,
+    tempStep: 0.5,
+    setModeCap: 'thermostat_mode',
+    setModeHeatValue: 'heat',
+    setModeCoolValue: 'cool',
+    setModeAutoValue: 'auto',
     default: false
   },
   'org.knx:knx_dimmer': DEFAULT_SWITCH,

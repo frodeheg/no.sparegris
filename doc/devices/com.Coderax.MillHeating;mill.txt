@@ -1,3 +1,21 @@
+Log ID: 2023-10-19T22:13:30.646Z
+App version 0.20.46
++22:15:52.156: ----- ANALYZING DEVICE -----
++22:15:52.158: Report type: Device does not set temperature
++22:15:52.202: Device name: Gang
++22:15:52.204: Driver Id: homey:app:com.Coderax.MillHeating:mill
++22:15:52.207: Found onoff cap: onoff
++22:15:52.210: Found temp cap: true
++22:15:52.212: Device reliability: 1
++22:15:52.215: Capabilities: onoff,measure_temperature,target_temperature,mill_onoff,mill_mode,measure_power
++22:15:52.218: Options for 'onoff': {"value":true,"lastUpdated":"2023-10-18T21:47:45.897Z","type":"boolean","getable":true,"setable":true,"title":"Slått på","desc":null,"units":null,"id":"onoff","options":{}}
++22:15:52.221: Options for 'measure_temperature': {"value":19.96,"lastUpdated":"2023-10-19T22:05:16.045Z","type":"number","getable":true,"setable":false,"title":"Temperatur","desc":"Temperatur i grader Celsius (°C)","units":"°C","decimals":2,"chartType":"spline","id":"measure_temperature","options":{}}
++22:15:52.224: Options for 'target_temperature': {"value":16.5,"lastUpdated":"2023-10-19T22:15:49.112Z","type":"number","getable":true,"setable":true,"title":"Ønsket temperatur","desc":null,"units":"°C","decimals":2,"min":4,"max":35,"chartType":"stepLine","id":"target_temperature","options":{}}
++22:15:52.229: Options for 'mill_onoff': {"value":false,"lastUpdated":"2023-10-18T21:47:45.878Z","type":"boolean","getable":true,"setable":false,"title":"Status","desc":"Termostatstatus","units":null,"iconObj":{"id":"0b60bbfe51938ae8b27a7070a56cbb76","url":"/icon/0b60bbfe51938ae8b27a7070a56cbb76/icon.svg"},"id":"mill_onoff","options":{}}
++22:15:52.232: Options for 'mill_mode': {"value":"weekly_program","lastUpdated":"2023-10-18T21:47:45.878Z","type":"enum","getable":true,"setable":true,"title":"Termostatmodus","desc":"Termostatmodus","units":null,"values":[{"id":"weekly_program","title":"Program"},{"id":"comfort","title":"Komfort"},{"id":"sleep","title":"Sover"},{"id":"away","title":"Borte"},{"id":"off","title":"Av"}],"id":"mill_mode","options":{}}
++22:15:52.236: Options for 'measure_power': {"value":0,"lastUpdated":"2023-10-18T21:47:45.897Z","type":"number","getable":true,"setable":false,"title":"Effekt","desc":"Effekt i watt (W)","units":"W","decimals":2,"chartType":"stepLine","id":"measure_power","options":{"approximated":true}}
++22:15:52.238: --- ANALYZING DEVICE DONE ---
+
 Log ID: 2023-08-15T20:52:31.229Z
 App version 0.20.38
 
