@@ -1,0 +1,23 @@
+{
+  "type": "number",
+  "min": 0,
+  "max": 20000,
+  "title": {
+    "en": "Desired effect",
+    "no": "Ønsket effekt",
+    "nl": "Gewenste effect",
+    "fr": "Effet recherché"
+  },
+  "units": {
+    "en": "W",
+    "no": "W",
+    "nl": "W",
+    "fr": "W"
+  },
+  "chartType": "stepLine",
+  "decimals": 0,
+  "insights": true,
+  "getable": true,
+  "setable": true,
+  "uiComponent": null
+}

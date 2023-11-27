@@ -211,23 +211,24 @@
   "flow": {
     "triggers": [
       {
+        "deprecated": true,
         "title": {
-          "en": "The charging power should be changed",
-          "no": "Ladeeffekten bør endres",
-          "nl": "Het laadvermogen moet worden gewijzigd",
-          "fr": "La puissance de charge doit être modifiée"
+          "en": "Deprecated flow: Please install the charger controller device instead",
+          "no": "Utdatert flyt: Installer laderkontrollenheten i stedet",
+          "nl": "Verouderde stroom: installeer in plaats daarvan het ladercontrollerapparaat",
+          "fr": "Flux obsolète: veuillez installer le dispositif de contrôleur de chargeur à la place"
         },
         "titleFormatted": {
-          "en": "The charging power should be changed to the supplied token (Offered power) W",
-          "no": "Ladeeffekten bør endres til den medfølgende token (Tilbudt effekt) W",
-          "nl": "Het laadvermogen moet worden gewijzigd in het meegeleverde token (Aangeboden vermogen) W",
-          "fr": "La puissance de charge doit être changée pour le jeton fourni (Puissance offerte) W"
+          "en": "Deprecated flow: Please install the charger controller device instead",
+          "no": "Utdatert flyt: Installer laderkontrollenheten i stedet",
+          "nl": "Verouderde stroom: installeer in plaats daarvan het ladercontrollerapparaat",
+          "fr": "Flux obsolète: veuillez installer le dispositif de contrôleur de chargeur à la place"
         },
         "hint": {
-          "en": "This trigger should be used to change the charging power. It will be called on the best schedule after the action 'Start Charging Cycle' has been initiated.",
-          "no": "Denne triggeren skal brukes for å endre ladestyrken. Den blir trigget på optimale tidspunkt etter at handlingen 'Start ladesyklus' har blitt utført.",
-          "nl": "Deze trigger moet worden gebruikt om het laadvermogen te wijzigen. Het zal volgens het beste schema worden aangeroepen, nadat de actie 'Start oplaadcyclus' is gestart.",
-          "fr": "Ce déclencheur doit être utilisé pour modifier la puissance de charge. Il sera appelé au meilleur moment après le lancement de l'action 'Démarrer le cycle de charge'."
+          "en": "This flow has been deprecated. It will still work for a limited time, but you're reccommended to install the new charger controller device as soon as possible and use the same flow from there instead.",
+          "no": "Denne flyten er avviklet. Den vil fortsatt fungere i en begrenset tid, men du anbefales å installere den nye laderkontrollenheten så snart som mulig og bruke samme flyt derfra istedenfor.",
+          "nl": "Deze stroom is beëindigd. Het zal nog een beperkte tijd werken, maar u wordt aangeraden de nieuwe opladercontroller zo snel mogelijk te installeren en van daaruit dezelfde stroom te gebruiken.",
+          "fr": "Ce flux est obsolète. Cela fonctionnera toujours pendant une durée limitée, mais il est recommandé d'installer le nouveau contrôleur de chargeur dès que possible et d'utiliser le même flux à partir de là."
         },
         "tokens": [
           {
@@ -248,6 +249,126 @@
           }
         ],
         "id": "change-charging-power"
+      },
+      {
+        "title": {
+          "en": "The charging power should be changed",
+          "no": "Ladeeffekten bør endres",
+          "nl": "Het laadvermogen moet worden gewijzigd",
+          "fr": "La puissance de charge doit être modifiée"
+        },
+        "titleFormatted": {
+          "en": "The charging power should be changed to the supplied token (Offered power) W",
+          "no": "Ladeeffekten bør endres til den medfølgende token (Tilbudt effekt) W",
+          "nl": "Het laadvermogen moet worden gewijzigd in het meegeleverde token (Aangeboden vermogen) W",
+          "fr": "La puissance de charge doit être changée pour le jeton fourni (Puissance offerte) W"
+        },
+        "hint": {
+          "en": "This trigger should be used to change the charging power. It will be called on the best schedule after the action 'Start Charging Cycle' has been initiated. If the connected charger supports direct control, this trigger will not be called.",
+          "no": "Denne triggeren skal brukes for å endre ladestyrken. Den blir trigget på optimale tidspunkt etter at handlingen 'Start ladesyklus' har blitt utført. Hvis den tilkoblede laderen støtter direkte kontroll, vil ikke denne triggeren bli utløst.",
+          "nl": "Deze trigger moet worden gebruikt om het laadvermogen te wijzigen. Het zal volgens het beste schema worden aangeroepen, nadat de actie 'Start oplaadcyclus' is gestart. Als de aangesloten oplader directe bediening ondersteunt, wordt deze trigger niet geactiveerd.",
+          "fr": "Ce déclencheur doit être utilisé pour modifier la puissance de charge. Il sera appelé au meilleur moment après le lancement de l'action 'Démarrer le cycle de charge'. Si le chargeur connecté prend en charge le contrôle direct, ce déclencheur ne sera pas appelé."
+        },
+        "args": [
+          {
+            "name": "device",
+            "type": "device",
+            "filter": "driver_id=piggy-charger"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "number",
+            "name": "offeredPower",
+            "title": {
+              "en": "Offered power",
+              "no": "Tilbydt effekt",
+              "nl": "Aangeboden vermogen",
+              "fr": "Puissance offerte"
+            },
+            "example": {
+              "en": "Number of Watts to set the charging power to.",
+              "no": "Antall Watt å sette ladestyrken til.",
+              "nl": "Aantal Watt waarop het laadvermogen moet worden ingesteld",
+              "fr": "Nombre de Watts pour régler la puissance de charge."
+            }
+          }
+        ],
+        "id": "charger-change-target-power"
+      },
+      {
+        "title": {
+          "en": "The charging should be started",
+          "no": "Ladingen bør startes",
+          "nl": "Het opladen moet worden gestart",
+          "fr": "La charge doit commencer"
+        },
+        "titleFormatted": {
+          "en": "The charging should be started, using lowest power",
+          "no": "Ladingen bør startes med lavest mulig effekt",
+          "nl": "Het opladen moet worden gestart met het laagste vermogen",
+          "fr": "La charge doit être démarrée en utilisant la puissance la plus faible"
+        },
+        "hint": {
+          "en": "This Trigger should be used to start the charger. It will be called on the best schedule after the action 'Start Charging Cycle' has been initiated. If the connected charger supports direct control, this trigger will not be called.",
+          "no": "Denne triggeren skal brukes for å starte ladingen. Den blir trigget på optimale tidspunkt etter at handlingen 'Start ladesyklus' har blitt utført. Hvis den tilkoblede laderen støtter direkte kontroll, vil ikke denne triggeren bli utløst.",
+          "nl": "Deze trigger moet worden gebruikt om het opladen te starten. Het wordt geactiveerd op het optimale moment nadat de actie 'Start oplaadcyclus' is uitgevoerd. Als de aangesloten oplader directe bediening ondersteunt, wordt deze trigger niet geactiveerd.",
+          "fr": "Ce déclencheur doit être utilisé pour démarrer le chargeur. Il sera appelé au meilleur horaire après le lancement de l'action 'Démarrer le cycle de charge'. Si le chargeur connecté prend en charge le contrôle direct, ce déclencheur ne sera pas appelé."
+        },
+        "args": [
+          {
+            "name": "device",
+            "type": "device",
+            "filter": "driver_id=piggy-charger"
+          }
+        ],
+        "tokens": [
+          {
+            "type": "number",
+            "name": "offeredPower",
+            "title": {
+              "en": "Offered Power",
+              "no": "Tilbydt Effekt",
+              "nl": "Aangeboden vermogen",
+              "fr": "Puissance offerte"
+            },
+            "example": {
+              "en": "Number of Watts to set the initial charging power to (as configured in the app).",
+              "no": "Antall Watt å sette initsiell ladestyrke til (som konfigurert i appen).",
+              "nl": "Aantal Watts waarop het initiële laadvermogen moet worden ingesteld (zoals geconfigureerd in de app).",
+              "fr": "Nombre de Watts pour régler la puissance de charge initiale (comme configuré dans l'application)."
+            }
+          }
+        ],
+        "id": "charger-start-charging"
+      },
+      {
+        "title": {
+          "en": "The charging should be stopped",
+          "no": "Ladingen bør stoppes",
+          "nl": "Het opladen moet worden gestopt",
+          "fr": "La charge doit être arrêtée"
+        },
+        "titleFormatted": {
+          "en": "The charging should be stopped",
+          "no": "Ladingen bør stoppes",
+          "nl": "Het opladen moet worden gestopt",
+          "fr": "La charge doit être arrêtée"
+        },
+        "hint": {
+          "en": "This Trigger should be used to stop the charger. It will be called on the best schedule after the action 'Start Charging Cycle' has been initiated. If the connected charger supports direct control, this trigger will not be called.",
+          "no": "Denne triggeren skal brukes for å stoppe ladingen. Den blir trigget på optimale tidspunkt etter at handlingen 'Start ladesyklus' har blitt utført. Hvis den tilkoblede laderen støtter direkte kontroll, vil ikke denne triggeren bli utløst.",
+          "nl": "Deze trigger moet worden gebruikt om het opladen te stoppen. Hij wordt geactiveerd op het optimale moment nadat de actie 'Start laadcyclus' is uitgevoerd. Als de aangesloten oplader directe bediening ondersteunt, wordt deze trigger niet geactiveerd.",
+          "fr": "Ce déclencheur doit être utilisé pour arrêter la charge. Il est déclenché au moment optimal après l'exécution de l'action 'Démarrer le cycle de charge'. Si le chargeur connecté prend en charge le contrôle direct, ce déclencheur ne sera pas appelé."
+        },
+        "args": [
+          {
+            "name": "device",
+            "type": "device",
+            "filter": "driver_id=piggy-charger"
+          }
+        ],
+        "id": "charger-stop-charging"
       },
       {
         "title": {
@@ -383,23 +504,24 @@
         "id": "price-point-changed2"
       },
       {
+        "deprecated": true,
         "title": {
-          "en": "The charging should be started",
-          "no": "Ladingen bør startes",
-          "nl": "Het opladen moet worden gestart",
-          "fr": "La charge doit commencer"
+          "en": "Deprecated flow: Please install the charger controller device instead",
+          "no": "Utdatert flyt: Installer laderkontrollenheten i stedet",
+          "nl": "Verouderde stroom: installeer in plaats daarvan het ladercontrollerapparaat",
+          "fr": "Flux obsolète: veuillez installer le dispositif de contrôleur de chargeur à la place"
         },
         "titleFormatted": {
-          "en": "The charging should be started, using lowest power",
-          "no": "Ladingen bør startes med lavest mulig effekt",
-          "nl": "Het opladen moet worden gestart met het laagste vermogen",
-          "fr": "La charge doit être démarrée en utilisant la puissance la plus faible"
+          "en": "Deprecated flow: Please install the charger controller device instead",
+          "no": "Utdatert flyt: Installer laderkontrollenheten i stedet",
+          "nl": "Verouderde stroom: installeer in plaats daarvan het ladercontrollerapparaat",
+          "fr": "Flux obsolète: veuillez installer le dispositif de contrôleur de chargeur à la place"
         },
         "hint": {
-          "en": "This Trigger should be used to start the charger. It will be called on the best schedule after the action 'Start Charging Cycle' has been initiated.",
-          "no": "Denne triggeren skal brukes for å starte ladingen. Den blir trigget på optimale tidspunkt etter at handlingen 'Start ladesyklus' har blitt utført.",
-          "nl": "Deze trigger moet worden gebruikt om het opladen te starten. Het wordt geactiveerd op het optimale moment nadat de actie 'Start oplaadcyclus' is uitgevoerd.",
-          "fr": "Ce déclencheur doit être utilisé pour démarrer le chargeur. Il sera appelé au meilleur horaire après le lancement de l'action 'Démarrer le cycle de charge'."
+          "en": "This flow has been deprecated. It will still work for a limited time, but you're reccommended to install the new charger controller device as soon as possible and use the same flow from there instead.",
+          "no": "Denne flyten er avviklet. Den vil fortsatt fungere i en begrenset tid, men du anbefales å installere den nye laderkontrollenheten så snart som mulig og bruke samme flyt derfra istedenfor.",
+          "nl": "Deze stroom is beëindigd. Het zal nog een beperkte tijd werken, maar u wordt aangeraden de nieuwe opladercontroller zo snel mogelijk te installeren en van daaruit dezelfde stroom te gebruiken.",
+          "fr": "Ce flux est obsolète. Cela fonctionnera toujours pendant une durée limitée, mais il est recommandé d'installer le nouveau contrôleur de chargeur dès que possible et d'utiliser le même flux à partir de là."
         },
         "tokens": [
           {
@@ -422,23 +544,24 @@
         "id": "start-charging"
       },
       {
+        "deprecated": true,
         "title": {
-          "en": "The charging should be stopped",
-          "no": "Ladingen bør stoppes",
-          "nl": "Het opladen moet worden gestopt",
-          "fr": "La charge doit être arrêtée"
+          "en": "Deprecated flow: Please install the charger controller device instead",
+          "no": "Utdatert flyt: Installer laderkontrollenheten i stedet",
+          "nl": "Verouderde stroom: installeer in plaats daarvan het ladercontrollerapparaat",
+          "fr": "Flux obsolète: veuillez installer le dispositif de contrôleur de chargeur à la place"
         },
         "titleFormatted": {
-          "en": "The charging should be stopped",
-          "no": "Ladingen bør stoppes",
-          "nl": "Het opladen moet worden gestopt",
-          "fr": "La charge doit être arrêtée"
+          "en": "Deprecated flow: Please install the charger controller device instead",
+          "no": "Utdatert flyt: Installer laderkontrollenheten i stedet",
+          "nl": "Verouderde stroom: installeer in plaats daarvan het ladercontrollerapparaat",
+          "fr": "Flux obsolète: veuillez installer le dispositif de contrôleur de chargeur à la place"
         },
         "hint": {
-          "en": "This Trigger should be used to stop the charger. It will be called on the best schedule after the action 'Start Charging Cycle' has been initiated.",
-          "no": "Denne triggeren skal brukes for å stoppe ladingen. Den blir trigget på optimale tidspunkt etter at handlingen 'Start ladesyklus' har blitt utført.",
-          "nl": "Deze trigger moet worden gebruikt om het opladen te stoppen. Hij wordt geactiveerd op het optimale moment nadat de actie 'Start laadcyclus' is uitgevoerd.",
-          "fr": "Ce déclencheur doit être utilisé pour arrêter la charge. Il est déclenché au moment optimal après l'exécution de l'action 'Démarrer le cycle de charge'."
+          "en": "This flow has been deprecated. It will still work for a limited time, but you're reccommended to install the new charger controller device as soon as possible and use the same flow from there instead.",
+          "no": "Denne flyten er avviklet. Den vil fortsatt fungere i en begrenset tid, men du anbefales å installere den nye laderkontrollenheten så snart som mulig og bruke samme flyt derfra istedenfor.",
+          "nl": "Deze stroom is beëindigd. Het zal nog een beperkte tijd werken, maar u wordt aangeraden de nieuwe opladercontroller zo snel mogelijk te installeren en van daaruit dezelfde stroom te gebruiken.",
+          "fr": "Ce flux est obsolète. Cela fonctionnera toujours pendant une durée limitée, mais il est recommandé d'installer le nouveau contrôleur de chargeur dès que possible et d'utiliser le même flux à partir de là."
         },
         "id": "stop-charging"
       },
@@ -1032,6 +1155,314 @@
         "id": "change-zone-active"
       },
       {
+        "highlight": true,
+        "title": {
+          "en": "Update Battery Level",
+          "no": "Oppdater Batterinivå",
+          "nl": "Update het batterijniveau",
+          "fr": "Mettre à jour le niveau de la batterie"
+        },
+        "titleFormatted": {
+          "en": "Inform Piggy about the current battery level [[level]]%",
+          "no": "Opplys Piggy om nåværende batterinivå [[level]]%",
+          "nl": "Informeer Piggy over het huidige batterijniveau [[level]]%",
+          "fr": "Informer Piggy du niveau actuel de la batterie [[level]]%"
+        },
+        "hint": {
+          "en": "This action will inform the charge controller about the current battery level. It is important that the charge controller knows the state of the charger at any time.",
+          "no": "Dette flytkortet vil informere ladekontrolleren om nåværende batterinivå. Det er viktig at ladekontrolleren vet tilstanden til laderen til enhver tid.",
+          "nl": "Deze actie informeert de laadcontroller over het huidige batterijniveau. Het is belangrijk dat de laadcontroller op elk moment de status van de lader kent.",
+          "fr": "Cette action informera le contrôleur de charge du niveau actuel de la batterie. Il est important que le contrôleur de charge connaisse à tout moment l’état du chargeur."
+        },
+        "args": [
+          {
+            "name": "device",
+            "type": "device",
+            "filter": "driver_id=piggy-charger"
+          },
+          {
+            "name": "level",
+            "type": "number",
+            "min": 0,
+            "max": 100,
+            "placeholder": {
+              "en": "battery level",
+              "no": "batterinivå",
+              "nl": "batterijniveau",
+              "fr": "niveau de batterie"
+            },
+            "title": {
+              "en": "Battery level",
+              "no": "Batterinivå",
+              "nl": "Batterijniveau",
+              "fr": "Niveau de batterie"
+            }
+          }
+        ],
+        "id": "charger-change-batterylevel"
+      },
+      {
+        "highlight": true,
+        "title": {
+          "en": "Update Charger Power",
+          "no": "Oppdater Effekt",
+          "nl": "Update de voeding van de oplader",
+          "fr": "Mettre à jour la puissance du chargeur"
+        },
+        "titleFormatted": {
+          "en": "Inform Piggy about current charger power [[power]]W",
+          "no": "Opplys Piggy om nåværende ladeeffekt [[power]]W",
+          "nl": "Informeer Piggy over het huidige laadvermogen [[power]]W",
+          "fr": "Informer Piggy de la puissance actuelle du chargeur [[power]]W"
+        },
+        "hint": {
+          "en": "This action will inform the charge controller about the current charger power. It is important that the charge controller knows the state of the charger at any time.",
+          "no": "Dette flytkortet vil informere ladekontrolleren om nåværende ladeeffekt. Det er viktig at ladekontrolleren vet tilstanden til laderen til enhver tid.",
+          "nl": "Deze actie informeert de laadcontroller over het huidige laadvermogen. Het is belangrijk dat de laadcontroller op elk moment de status van de lader kent.",
+          "fr": "Cette action informera le contrôleur de charge de la puissance actuelle du chargeur. Il est important que le contrôleur de charge connaisse à tout moment l’état du chargeur."
+        },
+        "args": [
+          {
+            "name": "device",
+            "type": "device",
+            "filter": "driver_id=piggy-charger"
+          },
+          {
+            "name": "power",
+            "type": "number",
+            "min": 0,
+            "max": 100000,
+            "placeholder": {
+              "en": "power in use",
+              "no": "effekt i bruk",
+              "nl": "verbruikt vermogen",
+              "fr": "puissance utilisée"
+            },
+            "title": {
+              "en": "Power in use (W)",
+              "no": "Effekt i bruk (W)",
+              "nl": "Gebruikt vermogen (W)",
+              "fr": "Puissance utilisée (W)"
+            }
+          }
+        ],
+        "id": "charger-change-power"
+      },
+      {
+        "highlight": true,
+        "title": {
+          "en": "Update Charger State",
+          "no": "Oppdater Ladertilstand",
+          "nl": "Update de status van de oplader",
+          "fr": "Mettre à jour l'état du chargeur"
+        },
+        "titleFormatted": {
+          "en": "Inform Piggy about charger state [[state]]",
+          "no": "Opplys Piggy om ladertilstanden [[state]]",
+          "nl": "Informeer Piggy over de status van de oplader [[state]]",
+          "fr": "Informer Piggy de l'état du chargeur [[state]]"
+        },
+        "hint": {
+          "en": "This action will inform the charge controller about how to interact with the charger. This should be directly linked to the state of the charger. It is important that the charge controller is prevented from charging when charging is complete, no car is connected, and in error situations.",
+          "no": "Dette flytkortet vil informere ladekontrolleren om hvordan den skal snakke med laderen. Dette skal være direkte linket til tilstanden på laderen. Det er viktig at ladekontrolleren blir blokkert fra å lade når ladingen er fullført, ingen bil er tilkoblet og en feilsituasjon har oppstått.",
+          "nl": "Deze actie informeert de laadcontroller over de interactie met de oplader. Dit moet direct gekoppeld zijn aan de staat van de lader. Het is belangrijk dat de laadcontroller niet kan opladen wanneer het opladen voltooid is, er geen auto is aangesloten en in foutsituaties.",
+          "fr": "Cette action informera le contrôleur de charge sur la manière d'interagir avec le chargeur. Cela doit être directement lié à l’état du chargeur. Il est important que le contrôleur de charge ne puisse pas charger lorsque la charge est terminée, qu'aucune voiture n'est connectée et en cas d'erreur."
+        },
+        "args": [
+          {
+            "name": "device",
+            "type": "device",
+            "filter": "driver_id=piggy-charger"
+          },
+          {
+            "type": "dropdown",
+            "name": "state",
+            "values": [
+              {
+                "id": "0",
+                "label": {
+                  "en": "Allow charging",
+                  "no": "Tillat lading",
+                  "nl": "Sta opladen toe",
+                  "fr": "Autoriser le chargement"
+                }
+              },
+              {
+                "id": "1",
+                "label": {
+                  "en": "Prevent charging",
+                  "no": "Blokker lading",
+                  "nl": "Voorkom opladen",
+                  "fr": "Empêcher la charge"
+                }
+              },
+              {
+                "id": "2",
+                "label": {
+                  "en": "Charging failed",
+                  "no": "Lading feilet",
+                  "nl": "Opladen mislukt",
+                  "fr": "La charge a échoué"
+                }
+              }
+            ]
+          }
+        ],
+        "id": "charger-change-state"
+      },
+      {
+        "title": {
+          "en": "Start charging cycle (kWh)",
+          "no": "Start ladesyklus (kWh)",
+          "nl": "Start laadcyclus (kWh)",
+          "fr": "Démarrer le cycle de charge (kWh)"
+        },
+        "titleFormatted": {
+          "en": "Start charging cheapest [[offerEnergy]] kWh before [[endTime]]",
+          "no": "Start lading av billigste [[offerEnergy]] kWh før kl. [[endTime]]",
+          "nl": "Begin met het opladen met de goedkoopste [[offerEnergy]] kWh vóór [[endTime]]",
+          "fr": "Commencez à charger le [[offerEnergy]] kWh le moins cher avant le [[endTime]]"
+        },
+        "hint": {
+          "en": "Tell Piggy Bank to start a charging cycle. The offered energy (kWh) will be distributed on the cheapest hours before the time runs out. When the given amount of energy has been offered to the car the charging cycle will stop.\n\nNote that for supported car chargers the offered energy and used energy will be the same. For unsupported car chargers this may not be the case.",
+          "no": "Be Sparegris om å starte en ladesyklus. Den tilbydde energien (kWh) vil bli distribuert på de billigste timene før tiden går ut. Når den gitte mengden energi har blitt tilbydd bilen, vil ladesyklusen stoppe. Det samme skjer når tiden går ut\n\nMerk at for støttede billadere vil tilbudt energi og brukt energi være den samme. For billadere som ikke støttes, er dette kanskje ikke tilfelle.",
+          "nl": "Vraag Spaarpot om een laadcyclus te starten. De aangeboden energie (kWh) wordt verdeeld in de goedkoopste uren voordat de tijd om is. Wanneer de opgegeven hoeveelheid energie aan de auto is aangeboden, stopt de laadcyclus . Hetzelfde gebeurt wanneer de tijd verstrijkt\n\nLet op: voor ondersteunde autoladers is de aangeboden energie en gebruikte energie hetzelfde. Voor niet-ondersteunde autoladers is dit mogelijk niet het geval.",
+          "fr": "Demandez à Tirelire de démarrer un cycle de charge. L'énergie offerte (kWh) sera distribuée dans les heures les moins chères avant la fin du temps imparti. Lorsque la quantité d'énergie donnée a été offerte à la voiture, le cycle de charge s'arrêtera . La même chose se produit lorsque le délai expire\n\nNotez que pour les chargeurs de voiture pris en charge, l'énergie offerte et l'énergie utilisée seront les mêmes. Pour les chargeurs de voiture non pris en charge, cela peut ne pas être le cas."
+        },
+        "args": [
+          {
+            "name": "device",
+            "type": "device",
+            "filter": "driver_id=piggy-charger"
+          },
+          {
+            "type": "number",
+            "min": 0,
+            "max": 100,
+            "placeholder": {
+              "en": "energy to offer",
+              "no": "energi å tilby",
+              "nl": "Energie om aan te bieden",
+              "fr": "énergie à offrir"
+            },
+            "title": {
+              "en": "Offered energy (kWh)",
+              "no": "Tilbydd energi (kWh)",
+              "nl": "Aangeboden energie (kWh)",
+              "fr": "Énergie offerte (kWh)"
+            },
+            "name": "offerEnergy"
+          },
+          {
+            "type": "text",
+            "placeholder": {
+              "en": "end time (HH:MM)",
+              "no": "sluttid (TT:MM)",
+              "nl": "Eindtijd (UU:MM)",
+              "fr": "Heure de fin (HH:MM)"
+            },
+            "title": {
+              "en": "End time",
+              "no": "Sluttid",
+              "nl": "Eindtijd",
+              "fr": "Heure de fin"
+            },
+            "name": "endTime"
+          }
+        ],
+        "id": "charger-start-charging-cycle"
+      },
+      {
+        "title": {
+          "en": "Start charging cycle (hours)",
+          "no": "Start ladesyklus (timer)",
+          "nl": "Start laadcyclus (uren)",
+          "fr": "Démarrer le cycle de charge (heures)"
+        },
+        "titleFormatted": {
+          "en": "Start charging [[offerHours]] cheapest hours before [[endTime]]",
+          "no": "Start lading [[offerHours]] billigste timer før kl. [[endTime]]",
+          "nl": "Begin met opladen met de [[offerHours]] goedkoopste uren vóór [[endTime]]",
+          "fr": "Commencez à facturer [[offerHours]] les heures les moins chères avant [[endTime]]"
+        },
+        "hint": {
+          "en": "Tell Piggy Bank to start a charging cycle. It will only charge in the X cheapest hours before the time runs out. (Note that if the current hour is one of them then the charging time will be shorter)\n\nFor unsupported car chargers this may be the most deterministic starting function as they do not report used energy.",
+          "no": "Be Sparegris om å starte en ladesyklus. Ladingen vil kun bli tilbydt i de X billigste timene før tiden går ut. (NB! Dersom inneværende time er blant de billigste så vil ladetiden være kortere)\n\nDette er den mest deterministiske startfunsjonen for billadere som ikke støttes, ettersom appen ikke får rapportert energiforbruk.",
+          "nl": "Vraag Spaarpot om een laadcyclus te starten. Laden wordt alleen aangeboden in de X goedkoopste uren voordat de tijd om is. (NB! Als het huidige uur tot de goedkoopste behoort, zal de laadtijd korter zijn)\n \nDit is de meest effectieve startfunctie voor niet-ondersteunde autoladers, aangezien de app geen gerapporteerd energieverbruik krijgt.",
+          "fr": "Demandez à Tirelire de démarrer un cycle de charge. La charge ne sera proposée que dans les X heures les moins chères avant la fin du délai. (NB! Si l'heure actuelle est parmi les moins chères, le temps de charge sera plus court)\n \nIl s'agit de la fonction de démarrage la plus déterministe pour les chargeurs de voiture non pris en charge, car l'application n'obtient pas de consommation d'énergie signalée."
+        },
+        "args": [
+          {
+            "name": "device",
+            "type": "device",
+            "filter": "driver_id=piggy-charger"
+          },
+          {
+            "type": "number",
+            "min": 0,
+            "max": 24,
+            "placeholder": {
+              "en": "number of hours",
+              "no": "antall timer",
+              "nl": "antal uren",
+              "fr": "nombre d'heures"
+            },
+            "title": {
+              "en": "Number of hours to offer energy",
+              "no": "Antall timer å tilby energi",
+              "nl": "Aantal uren om energie aan te bieden",
+              "fr": "Nombre d'heures pour offrir de l'énergie"
+            },
+            "name": "offerHours"
+          },
+          {
+            "type": "text",
+            "placeholder": {
+              "en": "End time (HH:MM)",
+              "no": "Sluttid (TT:MM)",
+              "nl": "Eindtijd (UU:MM)",
+              "fr": "Heure de fin (HH:MM)"
+            },
+            "title": {
+              "en": "End time",
+              "no": "Sluttid",
+              "nl": "Eindtijd",
+              "fr": "Heure de fin"
+            },
+            "name": "endTime"
+          }
+        ],
+        "id": "charger-start-charging-cycle2"
+      },
+      {
+        "title": {
+          "en": "Stop charging cycle ahead of time",
+          "no": "Stopp ladesyklus før tiden",
+          "nl": "Stop de oplaadcyclus voortijdig",
+          "fr": "Arrêtez le cycle de charge à l'avance"
+        },
+        "titleFormatted": {
+          "en": "Stop the charging cycle ahead of time",
+          "no": "Stopp ladesyklus før tiden",
+          "nl": "Stop de laadcyclus voortijdig",
+          "fr": "Arrêtez le cycle de charge à l'avance"
+        },
+        "hint": {
+          "en": "In case you need to stop the charging cycle ahead of time you can call this flow card in order to prevent the app from offering more energy.",
+          "no": "Dersom du ønsker å avbryte ladesyklusen før tiden kan du kalle dette flytkortet for å hindre appen i å tilby mer energi.",
+          "nl": "Als je de laadcyclus voortijdig wilt onderbreken, kun je deze flowkaart aanroepen om te voorkomen dat de app meer energie aanbiedt.",
+          "fr": "Si vous souhaitez interrompre le cycle de charge avant l'heure, vous pouvez appeler cette carte de débit pour empêcher l'application d'offrir plus d'énergie."
+        },
+        "args": [
+          {
+            "name": "device",
+            "type": "device",
+            "filter": "driver_id=piggy-charger"
+          }
+        ],
+        "id": "charger-stop-charging-cycle"
+      },
+      {
         "title": {
           "en": "Override device",
           "no": "Overstyr enhet",
@@ -1131,23 +1562,24 @@
         "id": "override-device"
       },
       {
+        "deprecated": true,
         "title": {
-          "en": "Start charging cycle (kWh)",
-          "no": "Start ladesyklus (kWh)",
-          "nl": "Start laadcyclus (kWh)",
-          "fr": "Démarrer le cycle de charge (kWh)"
+          "en": "Deprecated flow: Please install the charger controller device instead",
+          "no": "Utdatert flyt: Installer laderkontrollenheten i stedet",
+          "nl": "Verouderde stroom: installeer in plaats daarvan het ladercontrollerapparaat",
+          "fr": "Flux obsolète: veuillez installer le dispositif de contrôleur de chargeur à la place"
         },
         "titleFormatted": {
-          "en": "Start charging cheapest [[offerEnergy]] kWh before [[endTime]]",
-          "no": "Start lading av billigste [[offerEnergy]] kWh før kl. [[endTime]]",
-          "nl": "Begin met het opladen met de goedkoopste [[offerEnergy]] kWh vóór [[endTime]]",
-          "fr": "Commencez à charger le [[offerEnergy]] kWh le moins cher avant le [[endTime]]"
+          "en": "Deprecated flow: Please install the charger controller device instead! Charge [[offerEnergy]] kWh before [[endTime]]",
+          "no": "Utdatert flyt: Installer laderkontrollenheten i stedet! Lad [[offerEnergy]] kWh før kl. [[endTime]]",
+          "nl": "Verouderde stroom: installeer in plaats daarvan het ladercontrollerapparaat! Laad [[offerEnergy]] kWh vóór [[endTime]]",
+          "fr": "Flux obsolète: veuillez installer le dispositif de contrôleur de chargeur à la place! Chargez [[offerEnergy]] kWh avant le [[endTime]]"
         },
         "hint": {
-          "en": "Tell Piggy Bank to start a charging cycle. The offered energy (kWh) will be distributed on the cheapest hours before the time runs out. When the given amount of energy has been offered to the car the charging cycle will stop.\n\nNote that for supported car chargers the offered energy and used energy will be the same. For unsupported car chargers this may not be the case.",
-          "no": "Be Sparegris om å starte en ladesyklus. Den tilbydde energien (kWh) vil bli distribuert på de billigste timene før tiden går ut. Når den gitte mengden energi har blitt tilbydd bilen, vil ladesyklusen stoppe. Det samme skjer når tiden går ut\n\nMerk at for støttede billadere vil tilbudt energi og brukt energi være den samme. For billadere som ikke støttes, er dette kanskje ikke tilfelle.",
-          "nl": "Vraag Spaarpot om een laadcyclus te starten. De aangeboden energie (kWh) wordt verdeeld in de goedkoopste uren voordat de tijd om is. Wanneer de opgegeven hoeveelheid energie aan de auto is aangeboden, stopt de laadcyclus . Hetzelfde gebeurt wanneer de tijd verstrijkt\n\nLet op: voor ondersteunde autoladers is de aangeboden energie en gebruikte energie hetzelfde. Voor niet-ondersteunde autoladers is dit mogelijk niet het geval.",
-          "fr": "Demandez à Tirelire de démarrer un cycle de charge. L'énergie offerte (kWh) sera distribuée dans les heures les moins chères avant la fin du temps imparti. Lorsque la quantité d'énergie donnée a été offerte à la voiture, le cycle de charge s'arrêtera . La même chose se produit lorsque le délai expire\n\nNotez que pour les chargeurs de voiture pris en charge, l'énergie offerte et l'énergie utilisée seront les mêmes. Pour les chargeurs de voiture non pris en charge, cela peut ne pas être le cas."
+          "en": "This flow has been deprecated. It will still work for a limited time, but you're reccommended to install the new charger controller device as soon as possible and use the same flow from there instead.",
+          "no": "Denne flyten er avviklet. Den vil fortsatt fungere i en begrenset tid, men du anbefales å installere den nye laderkontrollenheten så snart som mulig og bruke samme flyt derfra istedenfor.",
+          "nl": "Deze stroom is beëindigd. Het zal nog een beperkte tijd werken, maar u wordt aangeraden de nieuwe opladercontroller zo snel mogelijk te installeren en van daaruit dezelfde stroom te gebruiken.",
+          "fr": "Ce flux est obsolète. Cela fonctionnera toujours pendant une durée limitée, mais il est recommandé d'installer le nouveau contrôleur de chargeur dès que possible et d'utiliser le même flux à partir de là."
         },
         "args": [
           {
@@ -1188,23 +1620,24 @@
         "id": "start-charging-cycle"
       },
       {
+        "deprecated": true,
         "title": {
-          "en": "Start charging cycle (hours)",
-          "no": "Start ladesyklus (timer)",
-          "nl": "Start laadcyclus (uren)",
-          "fr": "Démarrer le cycle de charge (heures)"
+          "en": "Deprecated flow: Please install the charger controller device instead",
+          "no": "Utdatert flyt: Installer laderkontrollenheten i stedet",
+          "nl": "Verouderde stroom: installeer in plaats daarvan het ladercontrollerapparaat",
+          "fr": "Flux obsolète: veuillez installer le dispositif de contrôleur de chargeur à la place"
         },
         "titleFormatted": {
-          "en": "Start charging [[offerHours]] cheapest hours before [[endTime]]",
-          "no": "Start lading [[offerHours]] billigste timer før kl. [[endTime]]",
-          "nl": "Begin met opladen met de [[offerHours]] goedkoopste uren vóór [[endTime]]",
-          "fr": "Commencez à facturer [[offerHours]] les heures les moins chères avant [[endTime]]"
+          "en": "Deprecated flow: Please install the charger controller device instead [[offerHours]] cheapest hours before [[endTime]]",
+          "no": "Utdatert flyt: Installer laderkontrollenheten i stedet [[offerHours]] billigste timer før kl. [[endTime]]",
+          "nl": "Verouderde stroom: installeer in plaats daarvan het ladercontrollerapparaat [[offerHours]] goedkoopste uren vóór [[endTime]]",
+          "fr": "Flux obsolète: veuillez installer le dispositif de contrôleur de chargeur à la place [[offerHours]] les heures les moins chères avant [[endTime]]"
         },
         "hint": {
-          "en": "Tell Piggy Bank to start a charging cycle. It will only charge in the X cheapest hours before the time runs out. (Note that if the current hour is one of them then the charging time will be shorter)\n\nFor unsupported car chargers this may be the most deterministic starting function as they do not report used energy.",
-          "no": "Be Sparegris om å starte en ladesyklus. Ladingen vil kun bli tilbydt i de X billigste timene før tiden går ut. (NB! Dersom inneværende time er blant de billigste så vil ladetiden være kortere)\n\nDette er den mest deterministiske startfunsjonen for billadere som ikke støttes, ettersom appen ikke får rapportert energiforbruk.",
-          "nl": "Vraag Spaarpot om een laadcyclus te starten. Laden wordt alleen aangeboden in de X goedkoopste uren voordat de tijd om is. (NB! Als het huidige uur tot de goedkoopste behoort, zal de laadtijd korter zijn)\n \nDit is de meest effectieve startfunctie voor niet-ondersteunde autoladers, aangezien de app geen gerapporteerd energieverbruik krijgt.",
-          "fr": "Demandez à Tirelire de démarrer un cycle de charge. La charge ne sera proposée que dans les X heures les moins chères avant la fin du délai. (NB! Si l'heure actuelle est parmi les moins chères, le temps de charge sera plus court)\n \nIl s'agit de la fonction de démarrage la plus déterministe pour les chargeurs de voiture non pris en charge, car l'application n'obtient pas de consommation d'énergie signalée."
+          "en": "This flow has been deprecated. It will still work for a limited time, but you're reccommended to install the new charger controller device as soon as possible and use the same flow from there instead.",
+          "no": "Denne flyten er avviklet. Den vil fortsatt fungere i en begrenset tid, men du anbefales å installere den nye laderkontrollenheten så snart som mulig og bruke samme flyt derfra istedenfor.",
+          "nl": "Deze stroom is beëindigd. Het zal nog een beperkte tijd werken, maar u wordt aangeraden de nieuwe opladercontroller zo snel mogelijk te installeren en van daaruit dezelfde stroom te gebruiken.",
+          "fr": "Ce flux est obsolète. Cela fonctionnera toujours pendant une durée limitée, mais il est recommandé d'installer le nouveau contrôleur de chargeur dès que possible et d'utiliser le même flux à partir de là."
         },
         "args": [
           {
@@ -1245,23 +1678,24 @@
         "id": "start-charging-cycle2"
       },
       {
+        "deprecated": true,
         "title": {
-          "en": "Stop charging cycle ahead of time",
-          "no": "Stopp ladesyklus før tiden",
-          "nl": "Stop de oplaadcyclus voortijdig",
-          "fr": "Arrêtez le cycle de charge à l'avance"
+          "en": "Deprecated flow: Please install the charger controller device instead",
+          "no": "Utdatert flyt: Installer laderkontrollenheten i stedet",
+          "nl": "Verouderde stroom: installeer in plaats daarvan het ladercontrollerapparaat",
+          "fr": "Flux obsolète: veuillez installer le dispositif de contrôleur de chargeur à la place"
         },
         "titleFormatted": {
-          "en": "Stop the charging cycle ahead of time",
-          "no": "Stopp ladesyklus før tiden",
-          "nl": "Stop de laadcyclus voortijdig",
-          "fr": "Arrêtez le cycle de charge à l'avance"
+          "en": "Deprecated flow: Please install the charger controller device instead : Stop charging",
+          "no": "Utdatert flyt: Installer laderkontrollenheten i stedet : Stopp ladesyklus",
+          "nl": "Verouderde stroom: installeer in plaats daarvan het ladercontrollerapparaat : Stop de laadcyclus",
+          "fr": "Flux obsolète: veuillez installer le dispositif de contrôleur de chargeur à la place : Arrêtez le cycle de charge"
         },
         "hint": {
-          "en": "In case you need to stop the charging cycle ahead of time you can call this flow card in order to prevent the app from offering more energy.",
-          "no": "Dersom du ønsker å avbryte ladesyklusen før tiden kan du kalle dette flytkortet for å hindre appen i å tilby mer energi.",
-          "nl": "Als je de laadcyclus voortijdig wilt onderbreken, kun je deze flowkaart aanroepen om te voorkomen dat de app meer energie aanbiedt.",
-          "fr": "Si vous souhaitez interrompre le cycle de charge avant l'heure, vous pouvez appeler cette carte de débit pour empêcher l'application d'offrir plus d'énergie."
+          "en": "This flow has been deprecated. It will still work for a limited time, but you're reccommended to install the new charger controller device as soon as possible and use the same flow from there instead.",
+          "no": "Denne flyten er avviklet. Den vil fortsatt fungere i en begrenset tid, men du anbefales å installere den nye laderkontrollenheten så snart som mulig og bruke samme flyt derfra istedenfor.",
+          "nl": "Deze stroom is beëindigd. Het zal nog een beperkte tijd werken, maar u wordt aangeraden de nieuwe opladercontroller zo snel mogelijk te installeren en van daaruit dezelfde stroom te gebruiken.",
+          "fr": "Ce flux est obsolète. Cela fonctionnera toujours pendant une durée limitée, mais il est recommandé d'installer le nouveau contrôleur de chargeur dès que possible et d'utiliser le même flux à partir de là."
         },
         "id": "stop-charging-cycle"
       },
@@ -1854,6 +2288,441 @@
           }
         }
       ]
+    },
+    {
+      "name": {
+        "en": "Piggy Charge Controller",
+        "no": "Sparegris Ladestyring",
+        "nl": "Piggy-laadcontroller",
+        "fr": "Contrôleur de charge cochon"
+      },
+      "class": "other",
+      "energy": {
+        "batteries": [
+          "OTHER",
+          "OTHER"
+        ]
+      },
+      "capabilities": [
+        "onoff",
+        "measure_power",
+        "measure_battery",
+        "measure_battery.charge_cycle",
+        "target_power",
+        "charge_status",
+        "alarm_generic.notValidated",
+        "button.reset"
+      ],
+      "capabilitiesOptions": {
+        "measure_battery": {
+          "title": {
+            "en": "Battery capacity",
+            "no": "Batterikapasitet",
+            "nl": "Batterij capaciteit",
+            "fr": "Capacité de la batterie"
+          }
+        },
+        "measure_battery.charge_cycle": {
+          "title": {
+            "en": "Charge cycle",
+            "no": "Ladesyklus",
+            "nl": "Laadcyclus",
+            "fr": "Cycle de charge"
+          }
+        },
+        "target_power": {
+          "preventTag": true
+        },
+        "alarm_generic.notValidated": {
+          "title": {
+            "en": "Alarm",
+            "no": "Alarm",
+            "nl": "Alarm",
+            "fr": "Alarme"
+          },
+          "insightsTitleTrue": {
+            "en": "Some flows are not set up correctly. New device validation is required.",
+            "no": "Noen flytkort er ikke satt opp riktig. Ny enhetsvalidering kreves.",
+            "nl": "Sommige stromen zijn niet correct ingesteld. Validatie van een nieuw apparaat is vereist.",
+            "fr": "Certains flux ne sont pas configurés correctement. La validation du nouveau périphérique est requise."
+          },
+          "insightsTitleFalse": {
+            "en": "The device has been validated.",
+            "no": "Enheten er validert.",
+            "nl": "Het apparaat is gevalideerd.",
+            "fr": "L'appareil a été validé."
+          },
+          "titleTrue": {
+            "en": "Validation required",
+            "no": "Validering kreves",
+            "nl": "Validatie vereist",
+            "fr": "Validation requise"
+          },
+          "titleFalse": {
+            "en": "Validated",
+            "no": "Validert",
+            "nl": "Gevalideerd",
+            "fr": "Validé"
+          }
+        },
+        "button.reset": {
+          "maintenanceAction": true,
+          "title": {
+            "en": "Reset controller",
+            "no": "Tilbakestill kontrolleren",
+            "nl": "Regelaar resetten",
+            "fr": "Réinitialiser le contrôleur"
+          },
+          "desc": {
+            "en": "Reset validation status and initiates a new validation procedure for the device.",
+            "no": "Tilbakestill valideringsstatus og starter en ny valideringsprosedyre for enheten.",
+            "nl": "Reset de validatiestatus en start een nieuwe validatieprocedure voor het apparaat.",
+            "fr": "Réinitialise l'état de validation et lance une nouvelle procédure de validation pour l'appareil."
+          }
+        }
+      },
+      "platforms": [
+        "local"
+      ],
+      "connectivity": [],
+      "images": {
+        "small": "/drivers/piggy-charger/assets/images/small.png",
+        "large": "/drivers/piggy-charger/assets/images/large.png",
+        "xlarge": "/drivers/piggy-charger/assets/images/xlarge.png"
+      },
+      "pair": [
+        {
+          "id": "info",
+          "navigation": {
+            "next": "list_devices"
+          }
+        },
+        {
+          "id": "list_devices",
+          "template": "list_devices",
+          "options": {
+            "singular": true
+          },
+          "navigation": {
+            "next": "select_image"
+          }
+        },
+        {
+          "id": "select_image",
+          "navigation": {
+            "next": "add_devices"
+          }
+        },
+        {
+          "id": "add_devices",
+          "template": "add_devices"
+        }
+      ],
+      "id": "piggy-charger",
+      "settings": [
+        {
+          "type": "group",
+          "label": {
+            "en": "Control settings",
+            "no": "Kontrollinnstillinger",
+            "nl": "Controle-instellingen",
+            "fr": "Paramètres de contrôle"
+          },
+          "children": [
+            {
+              "id": "startCurrent",
+              "type": "number",
+              "label": {
+                "en": "Start Current",
+                "no": "Startstrøm",
+                "nl": "Startstroom",
+                "fr": "Courant de démarrage"
+              },
+              "hint": {
+                "en": "This is the amount of Amps offered to the charger when starting charging.",
+                "no": "Dette er mengden Ampere som tilbys til laderen når du starter lading.",
+                "nl": "Dit is het aantal Ampère dat aan de oplader wordt aangeboden bij het starten met opladen.",
+                "fr": "Il s'agit de la quantité d'ampères offerte au chargeur lors du démarrage de la charge."
+              },
+              "value": 11,
+              "min": 0,
+              "max": 40,
+              "units": {
+                "en": "A",
+                "no": "A",
+                "nl": "A",
+                "fr": "A"
+              }
+            },
+            {
+              "id": "stopCurrent",
+              "type": "number",
+              "label": {
+                "en": "Stop-current",
+                "no": "Stoppstrøm",
+                "nl": "Stop-stroom",
+                "fr": "Arrêter le courant"
+              },
+              "hint": {
+                "en": "This is the amount of Amps offered to the charger when charging stops (normally 0A).",
+                "no": "Dette er mengden ampere som tilbys til laderen når ladingen stopper (normalt 0A).",
+                "nl": "Dit is de hoeveelheid Ampère die aan de lader wordt aangeboden wanneer het opladen stopt (normaal gesproken 0A).",
+                "fr": "Il s'agit de la quantité d'ampères offerte au chargeur lorsque la charge s'arrête (normalement 0A)."
+              },
+              "value": 0,
+              "min": 0,
+              "max": 40,
+              "units": {
+                "en": "A",
+                "no": "A",
+                "nl": "A",
+                "fr": "A"
+              }
+            },
+            {
+              "id": "pauseCurrent",
+              "type": "number",
+              "label": {
+                "en": "Pause-current",
+                "no": "Pause-strøm",
+                "nl": "Pauze-stroom",
+                "fr": "Pause-courant"
+              },
+              "hint": {
+                "en": "This is the amount of Amps offered to the charger when charging is paused - Some cars does not support pausing the charging, in this case set it to the lowest Amps the car support.",
+                "no": "Dette er mengden ampere som tilbys til laderen når ladingen er satt på pause - Noen biler støtter ikke pause i ladingen, i dette tilfellet sett den til den laveste amperen bilen støtter.",
+                "nl": "Dit is de hoeveelheid Ampère die aan de oplader wordt aangeboden wanneer het opladen wordt gepauzeerd. Sommige auto's ondersteunen het pauzeren van het opladen niet. Stel deze in dit geval in op de laagste Ampère die de auto ondersteunt.",
+                "fr": "Il s'agit de la quantité d'ampères offerte au chargeur lorsque la charge est en pause. Certaines voitures ne prennent pas en charge la pause de la charge, dans ce cas, réglez-la sur l'ampérage le plus bas pris en charge par la voiture."
+              },
+              "value": 4,
+              "min": 0,
+              "max": 40,
+              "units": {
+                "en": "A",
+                "no": "A",
+                "nl": "A",
+                "fr": "A"
+              }
+            },
+            {
+              "id": "minCurrent",
+              "type": "number",
+              "label": {
+                "en": "Minimum current",
+                "no": "Minimum strøm",
+                "nl": "Minimale stroom",
+                "fr": "Courant minimum"
+              },
+              "hint": {
+                "en": "The charging current offered to the car will never go below this value while charging. The pause and stop current must be less than or equal to this value.",
+                "no": "Ladestrømmen som tilbys til bilen vil aldri gå under denne verdien under lading. Pause- og stoppstrømmen må være mindre enn eller lik denne verdien.",
+                "nl": "De aan de auto aangeboden laadstroom zal tijdens het laden nooit onder deze waarde komen. De pauze- en stopstroom moeten kleiner of gelijk zijn aan deze waarde.",
+                "fr": "Le courant de charge offert à la voiture ne descendra jamais en dessous de cette valeur pendant la charge. Le courant de pause et d'arrêt doit être inférieur ou égal à cette valeur."
+              },
+              "value": 7,
+              "min": 0,
+              "max": 40,
+              "units": {
+                "en": "A",
+                "no": "A",
+                "nl": "A",
+                "fr": "A"
+              }
+            },
+            {
+              "id": "maxCurrent",
+              "type": "number",
+              "label": {
+                "en": "Maximum current",
+                "no": "Maksimal strøm",
+                "nl": "Maximale stroom",
+                "fr": "Courant maximal"
+              },
+              "hint": {
+                "en": "The charging current offered to the car will never go above this value.",
+                "no": "Ladestrømmen som tilbys til bilen vil aldri gå over denne verdien.",
+                "nl": "De aan de auto aangeboden laadstroom zal nooit boven deze waarde komen.",
+                "fr": "Le courant de charge offert à la voiture ne dépassera jamais cette valeur."
+              },
+              "value": 40,
+              "min": 0,
+              "max": 40,
+              "units": {
+                "en": "A",
+                "no": "A",
+                "nl": "A",
+                "fr": "A"
+              }
+            }
+          ]
+        },
+        {
+          "type": "group",
+          "label": {
+            "en": "Response settings",
+            "no": "Responsinnstillinger",
+            "nl": "Reactie-instellingen",
+            "fr": "Paramètres de réponse"
+          },
+          "children": [
+            {
+              "id": "toggleTime",
+              "type": "number",
+              "label": {
+                "en": "Minimum toggle time",
+                "no": "Minimum byttetid",
+                "nl": "Minimale schakeltijd",
+                "fr": "Temps de bascule minimum"
+              },
+              "hint": {
+                "en": "Please keep this reasonably higher than the measured toggle time to allow sufficient slack for reliable charging control.",
+                "no": "Vennligst hold denne litt høyere enn den målte vekslingstiden for å tillate tilstrekkelig slakk for pålitelig ladekontroll.",
+                "nl": "Houd deze redelijk hoger dan de gemeten schakeltijd, zodat er voldoende speling is voor een betrouwbare laadcontrole.",
+                "fr": "Veuillez maintenir ce temps raisonnablement supérieur au temps de bascule mesuré pour permettre un jeu suffisant pour un contrôle de charge fiable."
+              },
+              "value": 120,
+              "min": 5,
+              "max": 180,
+              "units": {
+                "en": "seconds",
+                "no": "sekunder",
+                "nl": "seconden",
+                "fr": "seconds"
+              }
+            },
+            {
+              "id": "toggleMeasureW",
+              "type": "label",
+              "label": {
+                "en": "Measured response time for W",
+                "no": "Målt responstid for W",
+                "nl": "Gemeten responstijd voor W",
+                "fr": "Temps de réponse mesuré pour W"
+              },
+              "hint": {
+                "en": "The time it took between the controller sending a target power change request and the used Watts was reported back to Piggy.",
+                "no": "Tiden det tok fra kontrolleren sendte en forespørsel om måleffektendring og de brukte wattene ble rapportert tilbake til Sparegris.",
+                "nl": "De tijd die verstreek tussen het verzenden van een verzoek tot wijziging van het doelvermogen en de gebruikte Watts werd teruggemeld aan Piggy.",
+                "fr": "Le temps écoulé entre l'envoi par le contrôleur d'une demande de changement de puissance cible et les watts utilisés a été signalé à Piggy."
+              },
+              "value": "-"
+            },
+            {
+              "id": "batteryFlowRequired",
+              "type": "checkbox",
+              "label": {
+                "en": "Battery level available",
+                "no": "Batterinivå tilgjengelig",
+                "nl": "Batterijniveau beschikbaar",
+                "fr": "Niveau de batterie disponible"
+              },
+              "hint": {
+                "en": "When the battery level is available, create a flow to signal the battery level to this app. If you do not have the battery level available, do not tick this checkbox.",
+                "no": "Når batterinivået er tilgjengelig, må du opprette en flyt for å signalere batterinivået til denne appen. Hvis du ikke har batterinivået tilgjengelig, bør du ikke krysse av i denne avkrysningsboksen.",
+                "nl": "Wanneer het batterijniveau beschikbaar is, maakt u een stroom om het batterijniveau aan deze app door te geven. Als u niet over het batterijniveau beschikt, vink dit selectievakje dan niet aan.",
+                "fr": "Lorsque le niveau de la batterie est disponible, créez un flux pour signaler le niveau de la batterie à cette application. Si vous ne disposez pas du niveau de batterie, ne cochez pas cette case."
+              },
+              "value": true
+            }
+          ]
+        },
+        {
+          "type": "group",
+          "label": {
+            "en": "Validation status",
+            "no": "Valideringsstatus",
+            "nl": "Validatiestatus",
+            "fr": "Statut de validation"
+          },
+          "children": [
+            {
+              "id": "GotSignalWatt",
+              "type": "label",
+              "label": {
+                "en": "Watt Usage Received",
+                "no": "Watt-bruk mottatt",
+                "nl": "Wattverbruik ontvangen",
+                "fr": "Utilisation en watts reçue"
+              },
+              "hint": {
+                "en": "Please make sure a flow updates this device with how many watts the charger is actually charging with whenever the value changes.",
+                "no": "Sørg for at en flyt oppdaterer denne enheten med hvor mange watt laderen faktisk lader med hver gang verdien endres.",
+                "nl": "Zorg ervoor dat een stroom dit apparaat bijwerkt met hoeveel watt de oplader daadwerkelijk oplaadt wanneer de waarde verandert.",
+                "fr": "Veuillez vous assurer qu'un flux met à jour cet appareil avec le nombre de watts avec lequel le chargeur charge réellement chaque fois que la valeur change."
+              },
+              "value": "False"
+            },
+            {
+              "id": "GotSignalBattery",
+              "type": "label",
+              "label": {
+                "en": "Battery Level Received",
+                "no": "Batterinivå mottatt",
+                "nl": "Batterijniveau ontvangen",
+                "fr": "Niveau de batterie reçu"
+              },
+              "hint": {
+                "en": "Please make sure a flow updates this device\nwith the battery level whenever the value\nchanges or enter the device setting and untick\nthe battery status requirement.",
+                "no": "Batterinivå mottatt",
+                "nl": "Batterijniveau ontvangen",
+                "fr": "Niveau de batterie reçu"
+              },
+              "value": "False"
+            },
+            {
+              "id": "GotSignalStatusCanCharge",
+              "type": "label",
+              "label": {
+                "en": "Status Can Charge Received",
+                "no": "Status kan lades mottatt",
+                "nl": "Status Kan opladen ontvangen",
+                "fr": "Le statut peut facturer reçu"
+              },
+              "hint": {
+                "en": "Please make sure a flow updates this device with the charger status whenever a car is disconnected.",
+                "no": "Sørg for at en flyt oppdaterer denne enheten med laderstatus når en bil kobles fra.",
+                "nl": "Zorg ervoor dat een stroom dit apparaat bijwerkt met de status van de oplader wanneer een auto wordt losgekoppeld.",
+                "fr": "Veuillez vous assurer qu'un flux met à jour cet appareil avec l'état du chargeur chaque fois qu'une voiture est déconnectée."
+              },
+              "value": "False"
+            },
+            {
+              "id": "GotSignalStatusCantCharge",
+              "type": "label",
+              "label": {
+                "en": "Status Standby Received",
+                "no": "Status Standby mottatt",
+                "nl": "Status Stand-by ontvangen",
+                "fr": "Statut Veille Reçu"
+              },
+              "hint": {
+                "en": "Please make sure a flow updates this device with the charger status whenever a car is connected.",
+                "no": "Sørg for at en flyt oppdaterer denne enheten med laderstatus når en bil er tilkoblet.",
+                "nl": "Zorg ervoor dat een stroom dit apparaat bijwerkt met de status van de oplader wanneer een auto is aangesloten.",
+                "fr": "Veuillez vous assurer qu'un flux met à jour cet appareil avec l'état du chargeur chaque fois qu'une voiture est connectée."
+              },
+              "value": "False"
+            },
+            {
+              "id": "GotSignalStatusError",
+              "type": "label",
+              "label": {
+                "en": "Status Error Received",
+                "no": "Statusfeil mottatt",
+                "nl": "Statusfout ontvangen",
+                "fr": "Erreur d'état reçue"
+              },
+              "hint": {
+                "en": "Please make sure a flow updates this device with the charger status whenever an error occurs.\nThis is not required for device validation but it will improve the app performance.",
+                "no": "Sørg for at en flyt oppdaterer denne enheten med laderstatus når det oppstår en feil.\nDette er ikke nødvendig for enhetsvalidering, men det vil forbedre appytelsen.",
+                "nl": "Zorg ervoor dat een stroom dit apparaat bijwerkt met de opladerstatus wanneer er een fout optreedt.\nDit is niet vereist voor apparaatvalidatie, maar het zal de app-prestaties verbeteren.",
+                "fr": "Veuillez vous assurer qu'un flux met à jour cet appareil avec l'état du chargeur chaque fois qu'une erreur se produit.\nCeci n'est pas requis pour la validation de l'appareil, mais cela améliorera les performances de l'application."
+              },
+              "value": "False"
+            }
+          ]
+        }
+      ]
     }
   ],
   "capabilities": {
@@ -1924,6 +2793,58 @@
         }
       ],
       "icon": "/assets/limit.svg",
+      "uiComponent": "sensor",
+      "uiQuickAction": false
+    },
+    "charge_status": {
+      "type": "enum",
+      "title": {
+        "en": "Charge-status",
+        "no": "Ladestatus",
+        "nl": "Laadstatus",
+        "fr": "Statut de charge"
+      },
+      "getable": true,
+      "setable": false,
+      "values": [
+        {
+          "id": "0",
+          "title": {
+            "en": "Unlimited",
+            "no": "Ubegrenset",
+            "nl": "Onbeperkt",
+            "fr": "Illimité"
+          }
+        },
+        {
+          "id": "1",
+          "title": {
+            "en": "Limited",
+            "no": "Begrenset",
+            "nl": "Beperkt",
+            "fr": "Limitée"
+          }
+        },
+        {
+          "id": "2",
+          "title": {
+            "en": "Blocked",
+            "no": "Blokkert",
+            "nl": "Geblokkeerd",
+            "fr": "Bloquée"
+          }
+        },
+        {
+          "id": "3",
+          "title": {
+            "en": "Failed",
+            "no": "Feilet",
+            "nl": "Mislukt",
+            "fr": "Échoué"
+          }
+        }
+      ],
+      "icon": "/drivers/piggy-charger/assets/icon1.svg",
       "uiComponent": "sensor",
       "uiQuickAction": false
     },
@@ -2464,6 +3385,29 @@
         "nl": "Prijsniveau is veranderd naar normaal",
         "fr": "Niveau de prix changé en normal"
       }
+    },
+    "target_power": {
+      "type": "number",
+      "min": 0,
+      "max": 20000,
+      "title": {
+        "en": "Desired effect",
+        "no": "Ønsket effekt",
+        "nl": "Gewenste effect",
+        "fr": "Effet recherché"
+      },
+      "units": {
+        "en": "W",
+        "no": "W",
+        "nl": "W",
+        "fr": "W"
+      },
+      "chartType": "stepLine",
+      "decimals": 0,
+      "insights": true,
+      "getable": true,
+      "setable": true,
+      "uiComponent": null
     }
   }
 }
