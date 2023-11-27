@@ -750,6 +750,22 @@ class PiggyBank extends Homey.App {
       }
       this.homey.settings.set('settingsVersion', 15);
     }
+
+    // Version 0.21.0 - Introduction of subsidies: Make sure subsidies are not enabled by default for old users
+    if (+settingsVersion < 16) {
+      if (!firstInstall) {
+        const futurePriceOptions = this.homey.settings.get('futurePriceOptions');
+        futurePriceOptions.govSubsidyEn = false; // Do not enable by default
+        this.homey.settings.set('futurePriceOptions', futurePriceOptions);
+        const alertText = '**Piggy Bank** - New feature: Government subsidies can now be enabled under '
+          + 'settings -> advanced -> cost to improve cost control. This also introduces a variable element '
+          + 'for fixed prices, so price control can be used there as well.';
+        this.homey.notifications.createNotification({ excerpt: alertText })
+          .catch(err => this.updateLog(alertText, c.LOG_ERROR));
+      }
+      this.homey.settings.set('settingsVersion', 16);
+    }
+
     // Internal state that preferably should be removed as it is in the archive
     // this.homey.settings.unset('stats_savings_all_time_use');
     // this.homey.settings.unset('stats_savings_all_time_power_part');
@@ -861,6 +877,9 @@ class PiggyBank extends Homey.App {
       || !(Number.isInteger(futurePriceOptions.peakStart))
       || !(Number.isInteger(futurePriceOptions.peakEnd))
       || !('weekendOffPeak' in futurePriceOptions)
+      || !('govSubsidyEn' in futurePriceOptions)
+      || !('govSubsidyThreshold' in futurePriceOptions)
+      || !('govSubsidyRate' in futurePriceOptions)
       || !('gridSteps' in futurePriceOptions)
       || !(Number.isFinite(futurePriceOptions.peakMin))
       || !(Number.isFinite(futurePriceOptions.peakTax))
@@ -886,6 +905,9 @@ class PiggyBank extends Homey.App {
       if (!(Number.isInteger(futurePriceOptions.peakStart))) futurePriceOptions.peakStart = timeToMinSinceMidnight(locale.SCHEMA[schema].peakStart);
       if (!(Number.isInteger(futurePriceOptions.peakEnd))) futurePriceOptions.peakEnd = timeToMinSinceMidnight(locale.SCHEMA[schema].peakEnd);
       if (!('weekendOffPeak' in futurePriceOptions)) futurePriceOptions.weekendOffPeak = locale.SCHEMA[schema].weekendOffPeak;
+      if (!('govSubsidyEn' in futurePriceOptions)) futurePriceOptions.govSubsidyEn = locale.SCHEMA[schema].govSubsidy;
+      if (!('govSubsidyThreshold' in futurePriceOptions)) futurePriceOptions.govSubsidyThreshold = 0.7;
+      if (!('govSubsidyRate' in futurePriceOptions)) futurePriceOptions.govSubsidyRate = 90;
       if (!('gridSteps' in futurePriceOptions)) futurePriceOptions.gridSteps = locale.SCHEMA[schema].gridSteps;
       if (!(Number.isFinite(futurePriceOptions.peakMin))) futurePriceOptions.peakMin = locale.SCHEMA[schema].peakMin;
       if (!(Number.isFinite(futurePriceOptions.peakTax))) futurePriceOptions.peakTax = locale.SCHEMA[schema].peakTax;
@@ -952,6 +974,7 @@ class PiggyBank extends Homey.App {
     this.__num_off_devices = 0;
     this.__all_prices = this.homey.settings.get('all_prices');
     this.__current_prices = [];
+    this.__current_subsidy = [];
     this.__current_price_index = undefined;
     this.mutexForPower = new Mutex();
     this.homeyApi = await HomeyAPI.createAppAPI({ homey: this.homey });
@@ -1131,12 +1154,11 @@ class PiggyBank extends Homey.App {
           // Prices might have changed, need to fetch them again
           this.__all_prices = undefined;
           this.__current_prices = [];
+          this.__current_subsidy = [];
           this.__current_price_index = undefined;
           this.homey.settings.set('all_prices', this.__all_prices);
           this.onRefreshInternals(false); // Just to refresh prices and reschedule charging.
           this.homey.settings.set('settingsSaved', '');
-          // The callback only returns on error so notify success with failure = 'OK'
-          throw (new Error('OK'));
         }
       }
     });
@@ -3624,6 +3646,7 @@ class PiggyBank extends Homey.App {
     }
     if (Array.isArray(this.__current_prices)) {
       data.price = this.__current_prices[this.__current_price_index]; // Per kWh
+      data.subsidy = this.__current_subsidy[this.__current_price_index];
       data.cost = (data.powUsage / 1000) * data.price;
     }
     await addToArchive(this.homey, data, slotStartUTC);
@@ -3814,6 +3837,7 @@ class PiggyBank extends Homey.App {
         case 'moneySavedTariff':
         case 'moneySavedUsage':
         case 'price':
+        case 'subsidy':
         case 'pricePoints':
         case 'overShootAvoided':
           this.log(`trying: ${part} ${period} ${timeId} granularity: ${granularity}`);
@@ -3822,8 +3846,8 @@ class PiggyBank extends Homey.App {
             const archiveData = ((part in archive) ? archive[part][period] : undefined) || {};
             searchData = combine(archiveData, futureData);
             data[part] = searchData[timeId];
-            if (searchData === undefined) throw new Error('No searchData');
-            if (data[part] === undefined) throw new Error('No data');
+            if (+partIdx === 0 && searchData === undefined) throw new Error('No searchData');
+            if (+partIdx === 0 && data[part] === undefined) throw new Error('No data');
           } catch (err) {
             if (searchData) {
               let closestTime = statsTimeLocal;
@@ -3841,6 +3865,7 @@ class PiggyBank extends Homey.App {
               dataGood = searchDataGood[closestItem];
               statsTimeLocal = closestTime;
               statsTimeUTC = fromLocalTime(statsTimeLocal, this.homey);
+              timeId = closestItem; // Update time so other data sets use the same timestamp
             } else {
               data = { error: err };
               dataGood = [];
@@ -4246,7 +4271,7 @@ class PiggyBank extends Homey.App {
         this.__all_prices = [];
       }
       for (let i = this.__all_prices.length - 1; i >= 0; i--) {
-        if (this.__all_prices[i].time < todayStartSec) {
+        if (this.__all_prices[i].time < todayStartSec || !Number.isFinite(this.__all_prices[i].price)) {
           this.__all_prices.splice(i, 1);
         } else if (this.__all_prices[i].time > newestPriceWeGot) {
           newestPriceWeGot = this.__all_prices[i].time;
@@ -4268,39 +4293,56 @@ class PiggyBank extends Homey.App {
           const futurePriceOptions = await this.homey.settings.get('futurePriceOptions');
           if (priceKind === c.PRICE_KIND_EXTERNAL) {
             futurePrices = await this.elPriceApi.get('/prices');
-          } else if (priceKind === c.PRICE_KIND_SPOT) {
+          } else {
             const biddingZone = (futurePriceOptions.priceCountry in c.ENTSOE_BIDDING_ZONES)
               && (futurePriceOptions.priceRegion in c.ENTSOE_BIDDING_ZONES[futurePriceOptions.priceCountry])
               ? c.ENTSOE_BIDDING_ZONES[futurePriceOptions.priceCountry][futurePriceOptions.priceRegion].id : undefined;
-            const priceData = await prices.entsoeGetData(todayStart, futurePriceOptions.currency, biddingZone, this.homey);
-            futurePrices = await prices.applyTaxesOnSpotprice(
-              priceData,
-              futurePriceOptions.surcharge,
-              futurePriceOptions.VAT / 100,
-              futurePriceOptions.gridTaxDay, // Between 6-22
-              futurePriceOptions.gridTaxNight, // Between 22-6
-              futurePriceOptions.peakStart,
-              futurePriceOptions.peakEnd,
-              futurePriceOptions.weekendOffPeak,
-              this.homey
-            );
-          } else { // priceKind === PRICE_KIND_FIXED
-            const priceData = [];
-            const intervalStart = todayStart.getTime() / 1000;
-            for (let i = 0; i < 48; i++) {
-              priceData.push({ time: intervalStart + (i * 60 * 60), price: 0 });
+            const spotData = (priceKind === c.PRICE_KIND_SPOT || futurePriceOptions.govSubsidyEn)
+              ? await prices.entsoeGetData(todayStart, futurePriceOptions.currency, biddingZone, this.homey) : undefined;
+            if (priceKind === c.PRICE_KIND_SPOT) {
+              futurePrices = await prices.applyTaxesOnSpotprice(
+                spotData,
+                futurePriceOptions.surcharge,
+                futurePriceOptions.VAT / 100,
+                futurePriceOptions.gridTaxDay, // Between 6-22
+                futurePriceOptions.gridTaxNight, // Between 22-6
+                futurePriceOptions.peakStart,
+                futurePriceOptions.peakEnd,
+                futurePriceOptions.weekendOffPeak,
+                this.homey
+              );
+            } else { // priceKind === PRICE_KIND_FIXED
+              const priceData = [];
+              const intervalStart = todayStart.getTime() / 1000;
+              for (let i = 0; i < 48; i++) {
+                priceData.push({ time: intervalStart + (i * 60 * 60), price: 0 });
+              }
+              futurePrices = await prices.applyTaxesOnSpotprice(
+                priceData,
+                futurePriceOptions.priceFixed,
+                0, // VAT is already included in the fixed price
+                futurePriceOptions.gridTaxDay, // Between 6-22
+                futurePriceOptions.gridTaxNight, // Between 22-6
+                futurePriceOptions.peakStart,
+                futurePriceOptions.peakEnd,
+                futurePriceOptions.weekendOffPeak,
+                this.homey
+              );
             }
-            futurePrices = await prices.applyTaxesOnSpotprice(
-              priceData,
-              futurePriceOptions.priceFixed,
-              0, // VAT is already included in the fixed price
-              futurePriceOptions.gridTaxDay, // Between 6-22
-              futurePriceOptions.gridTaxNight, // Between 22-6
-              futurePriceOptions.peakStart,
-              futurePriceOptions.peakEnd,
-              futurePriceOptions.weekendOffPeak,
-              this.homey
-            );
+            if (futurePriceOptions.govSubsidyEn) {
+              const subsidy = await prices.calculateSubsidy(
+                spotData,
+                futurePriceOptions.VAT / 100,
+                futurePriceOptions.govSubsidyEn,
+                futurePriceOptions.govSubsidyThreshold,
+                futurePriceOptions.govSubsidyRate / 100
+              );
+              // In case the spot prices are missing, then make sure the fixed prices doesn't expose too many prices
+              if (subsidy.length < futurePrices.length) {
+                futurePrices.length = subsidy.length;
+              }
+              futurePrices = futurePrices.map((valueA, indexInA) => { return { ...valueA, price: valueA.price - subsidy[indexInA], subsidy: subsidy[indexInA] }; });
+            }
           }
         } else {
           futurePrices = []; // No prices;
@@ -4325,15 +4367,17 @@ class PiggyBank extends Homey.App {
 
     // Analyze the prizes we got and return 24 values + (today and maybe tomorrow)
     const pricesOnly = [];
+    const subsidyOnly = [];
     let currentIndex = 0;
     const nPricesToAdd = Math.min(this.__all_prices.length, 48);
     for (let i = 0; i < nPricesToAdd; i++) {
       pricesOnly.push(this.__all_prices[i].price);
+      subsidyOnly.push(this.__all_prices[i].subsidy);
       if ((nowSeconds - 3600) >= this.__all_prices[i].time) {
         currentIndex++;
       }
     }
-    return { prices: pricesOnly, now: currentIndex };
+    return { prices: pricesOnly, subsidy: subsidyOnly, now: currentIndex };
   }
 
   /**
@@ -4348,16 +4392,20 @@ class PiggyBank extends Homey.App {
     futureData['price']['hourly'] = {};
     futureData['pricePoints'] = {};
     futureData['pricePoints']['hourly'] = {};
+    futureData['subsidy'] = {};
+    futureData['subsidy']['hourly'] = {};
     let floatingPrice = +this.homey.settings.get('averagePrice') || undefined;
     const todayArray = this.__current_prices.slice(0, todayHours);
     if (this.__current_prices.length > 0) {
       const todayIndex = `${nowLocal.getFullYear()}-${String(nowLocal.getMonth() + 1).padStart(2, '0')}-${String(nowLocal.getDate()).padStart(2, '0')}`;
       futureData['price']['hourly'][todayIndex] = [];
+      futureData['subsidy']['hourly'][todayIndex] = [];
       futureData['pricePoints']['hourly'][todayIndex] = [];
       for (let idx = this.__current_price_index; idx < todayHours; idx++) {
         const nextPP = await this.calculateNextPP(floatingPrice, todayArray, idx);
         floatingPrice = nextPP.averagePrice;
         futureData['price']['hourly'][todayIndex][idx] = this.__current_prices[idx];
+        futureData['subsidy']['hourly'][todayIndex][idx] = this.__current_subsidy[idx];
         futureData['pricePoints']['hourly'][todayIndex][idx] = nextPP.mode;
       }
     }
@@ -4366,11 +4414,13 @@ class PiggyBank extends Homey.App {
       tomorrowLocal.setDate(tomorrowLocal.getDate() + 1);
       const tomorrowIndex = `${tomorrowLocal.getFullYear()}-${String(tomorrowLocal.getMonth() + 1).padStart(2, '0')}-${String(tomorrowLocal.getDate()).padStart(2, '0')}`;
       futureData['price']['hourly'][tomorrowIndex] = [];
+      futureData['subsidy']['hourly'][tomorrowIndex] = [];
       futureData['pricePoints']['hourly'][tomorrowIndex] = [];
       for (let idx = todayHours; idx < this.__current_prices.length; idx++) {
         const nextPP = await this.calculateNextPP(floatingPrice, todayArray, idx);
         floatingPrice = nextPP.averagePrice;
         futureData['price']['hourly'][tomorrowIndex][idx - todayHours] = this.__current_prices[idx];
+        futureData['subsidy']['hourly'][tomorrowIndex][idx - todayHours] = this.__current_subsidy[idx];
         futureData['pricePoints']['hourly'][tomorrowIndex][idx] = nextPP.mode;
       }
     }
@@ -4433,7 +4483,7 @@ class PiggyBank extends Homey.App {
     }
 
     // Special case Fixed price
-    const isFixedPrice = priceKind === c.PRICE_KIND_FIXED;
+    const isFixedPrice = (priceKind === c.PRICE_KIND_FIXED) && (!futureData.govSubsidyEn);
     if (isFixedPrice) {
       outState.__low_price_limit = todayArray.reduce((a, b) => a + b, 0) / todayArray.length;
     }
@@ -4479,6 +4529,7 @@ class PiggyBank extends Homey.App {
     }
     const priceInfo = await this.currentPrices(priceMode, priceKind, now);
     this.__current_prices = priceInfo.prices;
+    this.__current_subsidy = priceInfo.subsidy;
     this.__current_price_index = priceInfo.now;
 
     this.statsSetLastHourPrice(this.__last_hour_price);

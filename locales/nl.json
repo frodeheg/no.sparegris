@@ -186,8 +186,11 @@
       "peakTax": "Kosten piek vermogen",
       "granularity": "Beperkende interval",
       "granularity15": "15 minuten.",
-      "granularity60": "60 minuten"
-    },
+      "granularity60": "60 minuten",
+      "govSubsidy": "Houd rekening met elektriciteitssubsidies",
+      "govSubsidyThreshold": "Stroomsubsidiedrempel",
+      "govSubsidyRate": "Stroomsubsidietarief",
+      "govSubsidyHint": "Als u elektriciteitsprijzen heeft gesubsidieerd, kunt u deze optie activeren om de subsidies van de elektriciteitsprijs af te trekken voordat de prijspuntbeoordeling wordt uitgevoerd. De subsidies worden uitsluitend berekend op basis van de spotprijs."    },
     "archive": {
       "settings": "Archief",
       "expireDaily": "Vervaltijd dagelijkse statistieken",
@@ -502,9 +505,11 @@
     "enabled": "Activa",
     "charging": "Opladen ingeschakeld",
     "nocharge": "Opladen uitgeschakeld",
+    "noPrice": "Nog geen prijsgegevens",
+    "withSubsidy": "Gesubsidieerd",
+    "withoutSubsidy": "Werkelijk",
     "noPlan": "Er is geen laadplan aangemaakt. U kunt een laadplan aanmaken door de flow \"Kostegoedkoopste x uur vóór uu:00 uur\" te starten.",
-    "cycleEnded": "De oplaadcyclus is voltooid.",
-    "noPrice": "Nog geen prijsgegevens"
+    "cycleEnded": "De oplaadcyclus is voltooid."
   },
   "month": {
     "jan": "januari",

@@ -1,3 +1,4 @@
+/* eslint-disable comma-dangle */
 /* eslint-disable max-len */
 
 'use strict';
@@ -257,9 +258,24 @@ async function applyTaxesOnSpotprice(spotprices, surcharge, VAT, gridTaxDay, gri
     const isWeekend = weekDay === 6 || weekDay === 0;
     const isPeak = (minSinceMidnight >= peakStart && minSinceMidnight < peakEnd) && !(isWeekend && weekendOffPeak);
     const gridTax = isPeak ? +gridTaxDay : +gridTaxNight;
-    taxedData.push({ time: spotprices[item].time, price: spotprices[item].price * (1 + +VAT) + gridTax + +surcharge });
+    const spotWithVAT = spotprices[item].price * (1 + +VAT);
+    taxedData.push({ time: spotprices[item].time, price: spotWithVAT + gridTax + +surcharge });
   }
   return taxedData;
+}
+
+/**
+ * Calculate subsidy from spot price
+ */
+async function calculateSubsidy(
+  spotprices,
+  VAT,
+  subsidyEn,
+  subsidyThreshold,
+  subsidyRate
+) {
+  if (!Array.isArray(spotprices)) return [];
+  return spotprices.map((val) => ((!subsidyEn || !('price' in val) || ((val.price * (1 + +VAT)) < +subsidyThreshold)) ? 0 : (((val.price * (1 + +VAT)) - +subsidyThreshold) * +subsidyRate)));
 }
 
 // =============================================================================
@@ -376,4 +392,5 @@ module.exports = {
   entsoeApiInit,
   entsoeGetData,
   applyTaxesOnSpotprice,
+  calculateSubsidy,
 };

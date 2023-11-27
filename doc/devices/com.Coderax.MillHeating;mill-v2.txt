@@ -1,0 +1,17 @@
+Log ID: 2023-11-26T06:52:38.059Z
+App version 0.21.2
+
++23:3:9.932: ----- ANALYZING DEVICE -----
++23:3:9.939: Report type: Experimental device is working
++23:3:9.971: Device name: Gang
++23:3:9.976: Driver Id: homey:app:com.Coderax.MillHeating:mill-v2
++23:3:9.980: Found onoff cap: onoff
++23:3:9.983: Found temp cap: true
++23:3:9.985: Device reliability: 0.9999999999999946
++23:3:9.989: Capabilities: onoff,measure_temperature,target_temperature,mill_onoff,measure_power
++23:3:9.994: Options for 'onoff': {"value":true,"lastUpdated":"2023-11-19T16:12:28.106Z","type":"boolean","getable":true,"setable":true,"title":"Slått på","desc":null,"units":null,"id":"onoff","options":{}}
++23:3:9.997: Options for 'measure_temperature': {"value":19.25,"lastUpdated":"2023-11-26T23:03:09.486Z","type":"number","getable":true,"setable":false,"title":"Temperatur","desc":"Temperatur i grader Celsius (°C)","units":"°C","decimals":2,"chartType":"spline","id":"measure_temperature","options":{}}
++23:3:10.002: Options for 'target_temperature': {"value":18,"lastUpdated":"2023-11-26T22:00:01.892Z","type":"number","getable":true,"setable":true,"title":"Ønsket temperatur","desc":null,"units":"°C","decimals":2,"min":4,"max":35,"chartType":"stepLine","id":"target_temperature","options":{}}
++23:3:10.005: Options for 'mill_onoff': {"value":false,"lastUpdated":"2023-11-26T21:50:18.402Z","type":"boolean","getable":true,"setable":false,"title":"Status","desc":"Termostatstatus","units":null,"iconObj":{"id":"0b60bbfe51938ae8b27a7070a56cbb76","url":"/icon/0b60bbfe51938ae8b27a7070a56cbb76/icon.svg"},"id":"mill_onoff","options":{}}
++23:3:10.007: Options for 'measure_power': {"value":0,"lastUpdated":"2023-11-26T21:50:18.402Z","type":"number","getable":true,"setable":false,"title":"Effekt","desc":"Effekt i watt (W)","units":"W","decimals":2,"chartType":"stepLine","id":"measure_power","options":{"approximated":true}}
++23:3:10.010: --- ANALYZING DEVICE DONE ---

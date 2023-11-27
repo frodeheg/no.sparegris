@@ -32,6 +32,9 @@ class FakeHomey {
         gridTaxNight: 0.2839, // Tensio default
         VAT: 25,
         currency: 'NOK',
+        govSubsidyEn: true,
+        govSubsidyThreshold: 0.7,
+        govSubsidyRate: 90,
         gridCosts: [{ limit: 2000, price: 73 }, { limit: 5000, price: 128 }, { limit: 10000, price: 219 }]
       },
       maxPower: [null, 5000, null, 50000],
@@ -162,6 +165,7 @@ class FakeHomey {
           chargeShedule: [4000, 4000, 0, 0, 4000],
           elPrices: [0.5, 0.43, 0.33, 0.64, 0.93, 0.45, 0.22],
           currentHour: 2,
+          subsidy: [0.1,null,2,3,0,0.4,4,2,1,3,0.2],
           price: [1,null,3,4,0.5,1.4,5.2,3.2,2.2,4.2,1.1],
           pricePoints: pp,
           powUsage: [4704, 4938, 4021, 4297],

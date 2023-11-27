@@ -186,7 +186,11 @@
       "peakTax": "Kostnad makseffekt",
       "granularity": "Begrensningsintervall",
       "granularity15": "15 min",
-      "granularity60": "60 min"
+      "granularity60": "60 min",
+      "govSubsidy": "Ta hensyn til strømstøtte",
+      "govSubsidyThreshold": "Strømstøtte innslagspunkt",
+      "govSubsidyRate": "Strømstøtte andel",
+      "govSubsidyHint": "Hvis du har subsidierte strømpriser, kan du aktivere denne opsjonen for å trekke tilskuddene fra strømprisen før vurdering av prispunkt gjennomføres. Subsidiene regnes utelukkende fra spotprisen."
     },
     "archive": {
       "settings": "Arkiv",
@@ -502,9 +506,11 @@
     "enabled": "Påslått",
     "charging": "Lading aktivert",
     "nocharge": "Lading deaktivert",
+    "noPrice": "Ingen prisdata tilgjengelig",
+    "withSubsidy": "Subsidiert",
+    "withoutSubsidy": "Faktisk",
     "noPlan": "Ingen ladeplan opprettet. Du kan opprette en ladeplan ved å starte flyten \"Lad billigste x timer før klokken tt:00\".",
-    "cycleEnded": "Ladesyklusen er fullført.",
-    "noPrice": "Ingen prisdata tilgjengelig"
+    "cycleEnded": "Ladesyklusen er fullført."
   },
   "month": {
     "jan": "Januar",

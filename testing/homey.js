@@ -236,6 +236,7 @@ class FakeNotificationsClass {
 
   createNotification(message) {
     this.homey.app.log(`NOTIFICATION: ${message.excerpt}`);
+    return Promise.resolve();
   }
 
 }

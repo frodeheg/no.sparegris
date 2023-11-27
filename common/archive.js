@@ -24,6 +24,7 @@ const c = require('./constants');
  *     - "pricePoints"        : array : The price point per hour, for period day/month/year then array [0..4] with number of occurances of the price point
  *     - "overShootAvoided"   : bool  : Indicating if the maxPower was indeed saved within the power tariff within the timeframe
  *     - "cost"               : value : The total cost per hour
+ *     - "subsidy"            : value : The subsidized electricity price per hour, for period day/month/year = averages
  *   period:
  *     - "yearly" : One item stored per year (never expires)
  *     - "monthly": One item stored per month (never expires)
@@ -70,6 +71,7 @@ const validTypes = {
   pricePoints: { minUnit: c.GRANULARITY.HOUR, slots: SCHEMA.SET, daily: SCHEMA.COUNT, monthly: SCHEMA.COUNT, yearly: SCHEMA.COUNT },
   overShootAvoided: { minUnit: c.GRANULARITY.QUARTER, slots: SCHEMA.SET, daily: SCHEMA.OR, monthly: SCHEMA.OR, yearly: SCHEMA.OR },
   cost: { minUnit: c.GRANULARITY.HOUR, slots: SCHEMA.SET, daily: SCHEMA.ADD, monthly: SCHEMA.ADD, yearly: SCHEMA.ADD },
+  subsidy: { minUnit: c.GRANULARITY.HOUR, slots: SCHEMA.SET, daily: SCHEMA.AVG, monthly: SCHEMA.AVG, yearly: SCHEMA.AVG },
 };
 
 const MODE = {

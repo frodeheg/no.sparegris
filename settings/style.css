@@ -350,33 +350,9 @@ p {
   display: none;
 }
 
-
-.⚠ {
-  position: relative; /* So we can position the content as absolute */
-  /* Using the borders to create a triangle  */
-  border-left: 0.80em solid transparent;
-  border-right: 0.85em solid transparent;
-  top: -1em;          /* Correction because of the CSS Triangle trick*/
-  vertical-align: text-top;
-}
-.err {
-  border-bottom: 1.35em solid red;
-}
-.warn {
-  border-bottom: 1.35em solid yellow;
-}
-.info {
-  border-bottom: 1.35em solid cornflowerblue;
-}
-.⚠::before {
-  content: "⚠";
-  /* Position the character over the triangle */
-  top: 0.47em;
-  left: -0.47em;
-  position: absolute;
-  color: black;
-  font-size: 2em;
-  line-height: 1em;
+.alert {
+  width: 25px;
+  height: 25px;
 }
 
 /* --- Collapsible --- */

@@ -186,7 +186,11 @@
       "peakTax": "Cost max power",
       "granularity": "Limiting interval",
       "granularity15": "15 min",
-      "granularity60": "60 min"
+      "granularity60": "60 min",
+      "govSubsidy": "Enable government subsidy",
+      "govSubsidyThreshold": "Subsidy entry point",
+      "govSubsidyRate": "Subsidy rate",
+      "govSubsidyHint": "If you have subsidized electricity prices, you can activate this option to deduct the subsidies from the electricity price before the price point assessment is carried out. The subsidies are calculated exclusively from the spot price."
     },
     "archive": {
       "settings": "Archive",
@@ -502,9 +506,11 @@
     "enabled": "Enabled",
     "charging": "Charging enabled",
     "nocharge": "Charging disabled",
+    "noPrice": "No price data yet",
+    "withSubsidy": "Subsidized",
+    "withoutSubsidy": "Actual",
     "noPlan": "No charge plan created. You can create a charge plan by starting the flow \"Charge cheapest x hours before hh:00 o'clock\".",
-    "cycleEnded": "The chargeing cycle has completed.",
-    "noPrice": "No price data yet"
+    "cycleEnded": "The chargeing cycle has completed."
   },
   "month": {
     "jan": "January",

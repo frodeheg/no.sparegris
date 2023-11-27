@@ -30,6 +30,7 @@ const SCHEMA = {
     gridSteps: true,
     peakMin: 0,
     peakTax: 0,
+    govSubsidy: true,
     limits: {
       quarter: Infinity,
       hour: 5000,
@@ -58,6 +59,7 @@ const SCHEMA = {
     gridSteps: false,
     peakMin: 2500,
     peakTax: 57.0831,
+    govSubsidy: false,
     limits: {
       quarter: 1500,
       hour: Infinity,
@@ -85,6 +87,7 @@ const SCHEMA = {
     gridSteps: true,
     peakMin: 0,
     peakTax: 0,
+    govSubsidy: false,
     limits: {
       quarter: Infinity,
       hour: 5000,
@@ -225,6 +228,8 @@ async function changeSchema(newCountry, newSchema) {
     document.getElementById('maxPowerHour').value = Math.min(SCHEMA[newSchema].limits.hour, 100000);
     document.getElementById('maxPowerDay').value = Math.min(SCHEMA[newSchema].limits.day, 1000);
     document.getElementById('maxPowerMonth').value = Math.min(SCHEMA[newSchema].limits.month, 50000);
+    document.getElementById('govSubsidy').checked = SCHEMA[newSchema].govSubsidy;
+
     await refreshSchema();
   }
 }
@@ -248,6 +253,8 @@ async function refreshSchema() {
   document.getElementById('maxPowerDay').disabled = !document.getElementById('enLimitDay').checked;
   document.getElementById('maxPowerMonth').disabled = !document.getElementById('enLimitMonth').checked;
   document.getElementById('maxAlarmRate').disabled = !document.getElementById('enLimitMissing').checked;
+  document.getElementById('subsidyThreshold').style.display = document.getElementById('govSubsidy').checked ? 'table-row' : 'none';
+  document.getElementById('subsidyRate').style.display = document.getElementById('govSubsidy').checked ? 'table-row' : 'none';
 }
 
 module.exports = {

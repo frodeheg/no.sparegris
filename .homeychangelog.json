@@ -883,5 +883,17 @@
   },
   "0.20.49": {
     "en": "Fixed minor bug in the css file for settings layout."
+  },
+  "0.21.0": {
+    "en": "Added option to enable governemnt subsidies. + fixed info icon on iphone"
+  },
+  "0.21.1": {
+    "en": "Fixed incorrect price graph in version 0.21.0 + Fixed prices with subsidy did not last more than a day."
+  },
+  "0.21.2": {
+    "en": "Added support for new devices: climate.onecta.daikin:comfora_ftxp + net.filllip-namron:4512757 + no.futurehome:puck_relay + no.thermofloor:Z-TRM6"
+  },
+  "0.21.3": {
+    "en": "Added support for com.Coderax.MillHeating:mill-v2"
   }
 }

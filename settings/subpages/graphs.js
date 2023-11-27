@@ -335,6 +335,8 @@ function generatePriceData(stats) {
   chartDataOk = (chartSlotLength === 15) ? chartDataOk15 : chartDataOk60;
   const perHour = (chartPeriod === GRANULARITY.HOUR);
   const dataset = stats.data.price || [];
+  const subsidy = stats.data.subsidy || [];
+  const showSubsidy = Array.isArray(stats.data.subsidy);
   chartAux = Array.isArray(stats.data.pricePoints) ? stats.data.pricePoints : []; // 0: PP_LOW, 1: PP_NORM, 2: PP_HIGH, 3: PP_EXTREME, 4: PP_DIRTCHEAP
   const perDayCount = [];
   for (let i = 0; i < stats.daysInMonth; i++) {
@@ -366,6 +368,8 @@ function generatePriceData(stats) {
   const colExtreme = 'rgba(255,0,0,0.2)';
   const skipped = (ctx, value) => (ctx.p0.skip || ctx.p1.skip ? value : undefined);
   const future = (ctx, value) => (chartDataOk[ctx.p0DataIndex] === undefined ? value : undefined);
+  const priceText = showSubsidy ? `${chargePlanGraphPrice} (${withSubsidyText})` : chargePlanGraphPrice;
+  const fullPriceText = `${chargePlanGraphPrice} (${withoutSubsidyText})`;
   const chartData = [{
     type: 'line',
     stepped: perHour,
@@ -457,7 +461,7 @@ function generatePriceData(stats) {
     spanGaps: true,
     tension: 0.4,
     fill: true,
-    label: chargePlanGraphPrice,
+    label: priceText,
     visible: true,
     borderColor: 'black',
     backgroundColor: 'rgb(0,0,0,0)',
@@ -466,8 +470,28 @@ function generatePriceData(stats) {
     borderWidth: 1,
     pointRadius: 0,
     segment: {
-      borderColor: ctx => skipped(ctx, 'rgb(0,0,0,0.6)') || future(ctx, 'rgb(0,0,0,0)'),
-      backgroundColor: ctx => skipped(ctx, 'rgb(0,0,0,0.2') || future(ctx, 'rgb(0,0,0,0)'),
+      borderColor: ctx => skipped(ctx, 'rgba(0,0,0,0.6)') || future(ctx, 'rgba(0,0,0,0.2)'),
+      backgroundColor: ctx => skipped(ctx, 'rgba(0,0,0,0.2') || future(ctx, 'rgba(0,0,0,0)'),
+      borderDash: ctx => skipped(ctx, [6, 6]),
+    },
+  },
+  {
+    type: 'line',
+    stepped: perHour,
+    spanGaps: showSubsidy,
+    tension: 0.4,
+    fill: showSubsidy,
+    label: fullPriceText,
+    visible: showSubsidy,
+    borderColor: 'rgba(0,0,0,0.4)',
+    backgroundColor: 'rgba(0,0,0,0.2)',
+    pointBackgroundColor: 'rgb(128,128,128)',
+    data: dataset.map((x, idx) => (Number.isFinite(subsidy[idx]) ? (x + subsidy[idx]) : undefined)),
+    borderWidth: 1,
+    pointRadius: 0,
+    segment: {
+      borderColor: ctx => skipped(ctx, 'rgba(0,0,0,0.6)') || future(ctx, 'rgba(0,0,0,0.2)'),
+      backgroundColor: ctx => skipped(ctx, 'rgba(0,0,0,0.2') || future(ctx, 'rgba(0,0,0,0.05)'),
       borderDash: ctx => skipped(ctx, [6, 6]),
     },
   }];
@@ -575,7 +599,7 @@ function updateGraph(Homey) {
       break;
     case GRAPH_DATA_PRICES:
       chartHeader = textPrices;
-      graphTypeRequest = ['price', 'pricePoints']; // pricePoints
+      graphTypeRequest = ['price', 'subsidy', 'pricePoints'];
       break;
     case GRAPH_DATA_SAVINGS:
       chartHeader = textSavings;
