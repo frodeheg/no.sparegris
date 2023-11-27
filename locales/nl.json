@@ -220,7 +220,8 @@
       "govSubsidy": "Houd rekening met elektriciteitssubsidies",
       "govSubsidyThreshold": "Stroomsubsidiedrempel",
       "govSubsidyRate": "Stroomsubsidietarief",
-      "govSubsidyHint": "Als u elektriciteitsprijzen heeft gesubsidieerd, kunt u deze optie activeren om de subsidies van de elektriciteitsprijs af te trekken voordat de prijspuntbeoordeling wordt uitgevoerd. De subsidies worden uitsluitend berekend op basis van de spotprijs."    },
+      "govSubsidyHint": "Als u elektriciteitsprijzen heeft gesubsidieerd, kunt u deze optie activeren om de subsidies van de elektriciteitsprijs af te trekken voordat de prijspuntbeoordeling wordt uitgevoerd. De subsidies worden uitsluitend berekend op basis van de spotprijs."
+    },
     "archive": {
       "settings": "Archief",
       "expireDaily": "Vervaltijd dagelijkse statistieken",
