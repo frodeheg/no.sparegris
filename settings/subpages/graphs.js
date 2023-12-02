@@ -368,7 +368,7 @@ function generatePriceData(stats) {
   const colExtreme = 'rgba(255,0,0,0.2)';
   const skipped = (ctx, value) => (ctx.p0.skip || ctx.p1.skip ? value : undefined);
   const future = (ctx, value) => (chartDataOk[ctx.p0DataIndex] === undefined ? value : undefined);
-  const priceText = showSubsidy ? `${chargePlanGraphPrice} (${withSubsidyText})` : chargePlanGraphPrice;
+  const subsidyPriceText = `${chargePlanGraphPrice} (${withSubsidyText})`;
   const fullPriceText = `${chargePlanGraphPrice} (${withoutSubsidyText})`;
   const chartData = [{
     type: 'line',
@@ -455,18 +455,18 @@ function generatePriceData(stats) {
       backgroundColor: ctx => future(ctx, 'rgba(255,0,0,0.1)'),
     },
   },
-  {
+  { // Graph to show for days subsidies was disabled
     type: 'line',
     stepped: perHour,
     spanGaps: true,
     tension: 0.4,
     fill: true,
-    label: priceText,
+    label: chargePlanGraphPrice,
     visible: true,
     borderColor: 'black',
     backgroundColor: 'rgb(0,0,0,0)',
     pointBackgroundColor: 'black',
-    data: dataset.map(x => x),
+    data: dataset.map((x, idx) => (Number.isFinite(subsidy[idx]) ? undefined : x)),
     borderWidth: 1,
     pointRadius: 0,
     segment: {
@@ -475,14 +475,34 @@ function generatePriceData(stats) {
       borderDash: ctx => skipped(ctx, [6, 6]),
     },
   },
-  {
+  { // Subsidized graph to show when subsidies are enabled
     type: 'line',
     stepped: perHour,
-    spanGaps: showSubsidy,
+    spanGaps: true,
     tension: 0.4,
-    fill: showSubsidy,
+    fill: true,
+    label: subsidyPriceText,
+    visible: true,
+    borderColor: 'black',
+    backgroundColor: 'rgb(0,0,0,0)',
+    pointBackgroundColor: 'black',
+    data: dataset.map((x, idx) => (Number.isFinite(subsidy[idx]) ? x : undefined)),
+    borderWidth: 1,
+    pointRadius: 0,
+    segment: {
+      borderColor: ctx => skipped(ctx, 'rgba(0,0,0,0.6)') || future(ctx, 'rgba(0,0,0,0.2)'),
+      backgroundColor: ctx => skipped(ctx, 'rgba(0,0,0,0.2') || future(ctx, 'rgba(0,0,0,0)'),
+      borderDash: ctx => skipped(ctx, [6, 6]),
+    },
+  },
+  { // Full price graph to show when subsidies are enabled
+    type: 'line',
+    stepped: perHour,
+    spanGaps: true,
+    tension: 0.4,
+    fill: true,
     label: fullPriceText,
-    visible: showSubsidy,
+    visible: true,
     borderColor: 'rgba(0,0,0,0.4)',
     backgroundColor: 'rgba(0,0,0,0.2)',
     pointBackgroundColor: 'rgb(128,128,128)',
