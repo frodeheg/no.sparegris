@@ -332,10 +332,6 @@
       "action": "Actie",
       "delta": "Delta",
       "deltaTemp": "Verander temp",
-      "turnOn": "Aanzetten",
-      "turnOff": "Uitschakelen",
-      "emergencyOff": "Uit indien nodig",
-      "ignore": "Negeren",
       "internal": {
         "minCheapTime": "Minimale hoeveelheid goedkope uren",
         "minCheapTimeHint": "Ongeacht de werkelijke prijs, kun je afdwingen dat de x goedkoopste uren van de dag altijd de prijspunt op Goedkoop instelt.",

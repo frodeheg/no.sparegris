@@ -192,6 +192,7 @@ p {
   font-weight: bold;
   font-size: 10px;
   width: 70px;
+  padding: 2px 5px;
   border: 1px solid black;
   border-radius: 15px;
   background-image: radial-gradient(white, rgb(150, 255, 150), green);

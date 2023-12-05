@@ -32,7 +32,7 @@
         "alwaysOff": "Alltid av",
         "controlledOn": "Foretrukket på",
         "controlledOnCheapest": "Billigste X timer",
-        "controlledOff": "På til Av",
+        "controlledOff": "På inntil Av",
         "ignore": "Ignorer"
       },
       "opHelp": {
@@ -332,10 +332,6 @@
       "action": "Handling",
       "delta": "Delta",
       "deltaTemp": "Endre temp",
-      "turnOn": "Slå på",
-      "turnOff": "Slå av",
-      "emergencyOff": "Av hvis krise",
-      "ignore": "Ignorer",
       "internal": {
         "minCheapTime": "Minimum antall billige timer",
         "minCheapTimeHint": "Uavhengig av faktisk pris kan du kreve at de x billigste timene i døgnet alltid skal sette prispunkt til billig.",
