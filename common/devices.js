@@ -192,15 +192,15 @@ const DEVICE_CMD = {
   'com.arjankranenburg.virtual:mode': DEFAULT_SWITCH,
   'com.arjankranenburg.virtual:virtual_switch': { // Similar to Vthermo
     ...DEFAULT_AC,
-    note: 'This device has no onOff capability and will have to emulate On by turning the mode into heat. '
-      + 'For cool mode please wait until the app supports cooling (after winter).',
+    note: 'This device has no onOff capability and will have to emulate On by turning the mode into heat (for now). '
+      + 'For this reason, please set temperature control to preferred to avoid mode switches when using cooling.',
     setOnOffCap: 'thermostat_mode',
     setOnValue: 'heat', // This is unfortunate
     setOffValue: 'off',
     tempMin: undefined, // This depends on what is connected
     tempMax: undefined, // --- " ---
-    beta: true, // Need to be in beta until fan modes is supported otherwise it's heating only
     tempStep: 0.5,
+    beta: true, // Need to be in beta until fan modes is supported otherwise it's heating only
     default: false
   },
   'com.balboa:Balboa': {
@@ -343,6 +343,24 @@ const DEVICE_CMD = {
     default: false
   },
   'com.swttt.devicegroups:light': DEFAULT_SWITCH,
+  'com.tado2:airconditioning': {
+    ...DEFAULT_AC,
+    note: 'This device has no onOff capability and will have to emulate On by turning the mode into heat (for now). '
+      + 'For this reason, please set temperature control to preferred to avoid mode switches when using cooling.',
+    setOnOffCap: 'ac_mode',
+    setOnValue: 'HEAT',
+    setOffValue: 'OFF',
+    tempMin: 16,
+    tempMax: 31,
+    setModeCap: 'ac_mode',
+    setModeHeatValue: 'HEAT',
+    setModeCoolValue: 'COOL',
+    setModeAutoValue: 'AUTO',
+    setModeDryValue: 'DRY',
+    setModeFanValue: 'FAN',
+    beta: true, // Need to be in beta until fan modes is supported otherwise it's heating only
+    default: false
+  },
   'com.tado2:valve': {
     ...DEFAULT_HEATER,
     type: DEVICE_TYPE.HEATER,
@@ -449,8 +467,8 @@ const DEVICE_CMD = {
   },
   'nl.climate.daikin:airairhp': {
     ...DEFAULT_AC,
-    note: 'This device has no onOff capability and will have to emulate On by turning the mode into heat. '
-      + 'Please contact the developer of the Daikin app and request that the onOff capability is added and report back when done. This will fix the Piggy Bank integration.',
+    note: 'This device has no onOff capability and will have to emulate On by turning the mode into heat (for now). '
+      + 'For this reason, please set temperature control to preferred to avoid mode switches when using cooling.',
     setOnOffCap: 'thermostat_mode_std',
     setOnValue: 'heat', // This is unfortunate
     setOffValue: 'off',
@@ -609,6 +627,7 @@ const DEVICE_CMD = {
     setModeHeatValue: 'heat',
     setModeCoolValue: 'cool',
     setModeAutoValue: 'auto',
+    beta: true, // Need to be in beta until fan modes is supported otherwise it's heating only
     default: false
   },
   'org.knx:knx_dimmer': DEFAULT_SWITCH,
