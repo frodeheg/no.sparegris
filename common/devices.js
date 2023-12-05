@@ -27,8 +27,9 @@
 //   setModeHeatValue   - Value for setModeCap to enter heat mode
 //   setModeCoolValue   - Value for setModeCap to enter cool mode
 //   setModeAutoValue   - Value for setModeCap to enter auto mode
-//   setModeDryValue    - undefined if unavailable value for setModeCap to enter dry mode else
-//   setModeFanValue    - undefined if unavailable value for setModeCap to enter fan mode else
+//   setModeDryValue    - undefined if unavailable value for setModeCap, value to enter dry mode else
+//   setModeFanValue    - undefined if unavailable value for setModeCap, value to enter fan mode else
+//   setModeOffValue    - undefined if unavailable value for setModeCap, value to enter off mode else
 //   +all HEATER parameters
 // CHARGER : Additional parameters
 //   setCurrentCap     - Capability for changing the offered current (in Amps)
@@ -192,15 +193,12 @@ const DEVICE_CMD = {
   'com.arjankranenburg.virtual:mode': DEFAULT_SWITCH,
   'com.arjankranenburg.virtual:virtual_switch': { // Similar to Vthermo
     ...DEFAULT_AC,
-    note: 'This device has no onOff capability and will have to emulate On by turning the mode into heat (for now). '
-      + 'For this reason, please set temperature control to preferred to avoid mode switches when using cooling.',
-    setOnOffCap: 'thermostat_mode',
-    setOnValue: 'heat', // This is unfortunate
-    setOffValue: 'off',
+    note: 'This device has no onOff capability and will emulate On/Off by adjusting the temperature.',
+    setOnOffCap: null,
     tempMin: undefined, // This depends on what is connected
     tempMax: undefined, // --- " ---
     tempStep: 0.5,
-    beta: true, // Need to be in beta until fan modes is supported otherwise it's heating only
+    setModeOffValue: 'off',
     default: false
   },
   'com.balboa:Balboa': {
@@ -345,11 +343,8 @@ const DEVICE_CMD = {
   'com.swttt.devicegroups:light': DEFAULT_SWITCH,
   'com.tado2:airconditioning': {
     ...DEFAULT_AC,
-    note: 'This device has no onOff capability and will have to emulate On by turning the mode into heat (for now). '
-      + 'For this reason, please set temperature control to preferred to avoid mode switches when using cooling.',
-    setOnOffCap: 'ac_mode',
-    setOnValue: 'HEAT',
-    setOffValue: 'OFF',
+    note: 'This device has no onOff capability and will emulate On/Off by adjusting the temperature.',
+    setOnOffCap: null,
     tempMin: 16,
     tempMax: 31,
     setModeCap: 'ac_mode',
@@ -358,7 +353,7 @@ const DEVICE_CMD = {
     setModeAutoValue: 'AUTO',
     setModeDryValue: 'DRY',
     setModeFanValue: 'FAN',
-    beta: true, // Need to be in beta until fan modes is supported otherwise it's heating only
+    setModeOffValue: 'OFF',
     default: false
   },
   'com.tado2:valve': {
@@ -467,16 +462,13 @@ const DEVICE_CMD = {
   },
   'nl.climate.daikin:airairhp': {
     ...DEFAULT_AC,
-    note: 'This device has no onOff capability and will have to emulate On by turning the mode into heat (for now). '
-      + 'For this reason, please set temperature control to preferred to avoid mode switches when using cooling.',
-    setOnOffCap: 'thermostat_mode_std',
-    setOnValue: 'heat', // This is unfortunate
-    setOffValue: 'off',
+    note: 'This device has no onOff capability and will emulate On/Off by adjusting the temperature.',
+    setOnOffCap: null,
     tempMax: 32,
     setModeCap: 'thermostat_mode_std',
     setModeDryValue: 'dehumid',
     setModeFanValue: 'fan',
-    beta: true, // Need to be in beta until fan modes is supported otherwise it's heating only
+    setModeOffValue: 'off',
     default: false
   },
   'nl.hdg.mqtt:device': {
@@ -613,11 +605,8 @@ const DEVICE_CMD = {
   },
   'no.thermofloor:Z-TRM6': {
     type: DEVICE_TYPE.AC,
-    note: 'This device has no onOff capability and will have to emulate On by turning the mode into heat (for now). '
-      + 'For this reason, please set temperature control to preferred to avoid mode switches when using cooling.',
-    setOnOffCap: 'thermostat_mode',
-    setOnValue: 'heat',
-    setOffValue: 'off',
+    note: 'This device has no onOff capability and will emulate On/Off by adjusting the temperature.',
+    setOnOffCap: null,
     readTempCap: 'measure_temperature',
     setTempCap: 'target_temperature',
     tempMin: 4,
@@ -627,7 +616,7 @@ const DEVICE_CMD = {
     setModeHeatValue: 'heat',
     setModeCoolValue: 'cool',
     setModeAutoValue: 'auto',
-    beta: true, // Need to be in beta until fan modes is supported otherwise it's heating only
+    setModeOffValue: 'off',
     default: false
   },
   'org.knx:knx_dimmer': DEFAULT_SWITCH,
