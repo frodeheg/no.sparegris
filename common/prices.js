@@ -70,8 +70,20 @@ const defaultCurrency = {
   pl: 'PLN',
 };
 
+const unitCodes = {
+  NOK: 'Kr',
+  SEK: 'Kr',
+  DKK: 'Kr',
+  USD: '$'
+};
+
 async function isValidCurrency(currency) {
   return (currency in currencyTable);
+}
+
+async function getUnit(currency) {
+  if (currency in unitCodes) return unitCodes[currency];
+  return currency;
 }
 
 async function getDecimals(currency) {
@@ -387,6 +399,7 @@ module.exports = {
   currencyApiInit,
   defaultCurrency,
   isValidCurrency,
+  getUnit,
   getDecimals,
   fetchCurrencyTable,
   entsoeApiInit,

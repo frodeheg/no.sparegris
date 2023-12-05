@@ -3,10 +3,10 @@
   "min": 0,
   "max": 20000,
   "title": {
-    "en": "Desired effect",
-    "no": "Ønsket effekt",
-    "nl": "Gewenste effect",
-    "fr": "Effet recherché"
+    "en": "Offered power",
+    "no": "Tilbydd effekt",
+    "nl": "Aangeboden vermogen",
+    "fr": "Puissance offerte"
   },
   "units": {
     "en": "W",
@@ -19,5 +19,6 @@
   "insights": true,
   "getable": true,
   "setable": true,
-  "uiComponent": null
+  "icon": "/assets/effect.svg",
+  "uiComponent": "sensor"
 }

@@ -4103,6 +4103,18 @@ class PiggyBank extends Homey.App {
   }
 
   /** ****************************************************************************************************
+   *  DRIVERS ACCESS POINTS
+   ** **************************************************************************************************** */
+  async getCurrencyInfo() {
+    const futureData = await this.homey.settings.get('futurePriceOptions');
+    return {
+      currency: futureData.currency,
+      decimals: await prices.getDecimals(futureData.currency),
+      unit: await prices.getUnit(futureData.currency)
+    };
+  }
+
+  /** ****************************************************************************************************
    *  DEVICE API's
    ** **************************************************************************************************** */
   async getState() {
@@ -4146,6 +4158,7 @@ class PiggyBank extends Homey.App {
     const remainingTime = timeToNextSlot(this.__current_power_time, this.granularity);
     const slotSize = (this.granularity === 15) ? TIMESPAN.QUARTER : TIMESPAN.HOUR;
     const powerEstimated = (this.__accum_energy[slotSize] + this.__pendingEnergy[slotSize] + (this.__current_power * remainingTime) / (1000 * 60 * this.granularity)) * (60 / this.granularity);
+    const currencyInfo = await this.getCurrencyInfo();
 
     return {
       power_last_hour: parseInt(this.__energy_last_slot, 10), // Actually NaN the first hour of operation
@@ -4171,8 +4184,8 @@ class PiggyBank extends Homey.App {
       num_restarts: this.__stats_app_restarts,
       activeLimit: this.__activeLimit,
 
-      currency: futureData.currency,
-      decimals: await prices.getDecimals(futureData.currency),
+      currency: currencyInfo.unit,
+      decimals: currencyInfo.decimals,
       average_price: +await this.homey.settings.get('averagePrice') || undefined,
       current_price: this.__current_prices[this.__current_price_index],
       dirtcheap_price_limit: this.__dirtcheap_price_limit,

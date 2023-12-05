@@ -20,6 +20,8 @@
     "target_power",
     "charge_status",
     "alarm_generic.notValidated",
+    "piggy_money",
+    "piggy_moneypile",
     "button.reset"
   ],
   "capabilitiesOptions": {
@@ -72,6 +74,22 @@
         "no": "Validert",
         "nl": "Gevalideerd",
         "fr": "Validé"
+      }
+    },
+    "piggy_money": {
+      "title": {
+        "en": "Charge cycle cost",
+        "no": "Ladesykluskostnad",
+        "nl": "Laadcycluskosten",
+        "fr": "Coût du cycle de charge"
+      }
+    },
+    "piggy_moneypile": {
+      "title": {
+        "en": "Total cost",
+        "no": "Totalkostnad",
+        "nl": "Totale prijs",
+        "fr": "Coût total"
       }
     },
     "button.reset": {

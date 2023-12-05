@@ -2311,6 +2311,8 @@
         "target_power",
         "charge_status",
         "alarm_generic.notValidated",
+        "piggy_money",
+        "piggy_moneypile",
         "button.reset"
       ],
       "capabilitiesOptions": {
@@ -2363,6 +2365,22 @@
             "no": "Validert",
             "nl": "Gevalideerd",
             "fr": "Validé"
+          }
+        },
+        "piggy_money": {
+          "title": {
+            "en": "Charge cycle cost",
+            "no": "Ladesykluskostnad",
+            "nl": "Laadcycluskosten",
+            "fr": "Coût du cycle de charge"
+          }
+        },
+        "piggy_moneypile": {
+          "title": {
+            "en": "Total cost",
+            "no": "Totalkostnad",
+            "nl": "Totale prijs",
+            "fr": "Coût total"
           }
         },
         "button.reset": {
@@ -3145,6 +3163,28 @@
       "uiComponent": "sensor",
       "icon": "/assets/money.svg"
     },
+    "piggy_moneypile": {
+      "type": "number",
+      "title": {
+        "en": "Money",
+        "no": "Penger",
+        "nl": "Geld",
+        "fr": "argent"
+      },
+      "units": {
+        "en": "GBP",
+        "no": "kr",
+        "nl": "EUR",
+        "fr": "EUR"
+      },
+      "insights": true,
+      "chartType": "spline",
+      "decimals": 2,
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor",
+      "icon": "/assets/moneypile.svg"
+    },
     "piggy_num_failures": {
       "type": "number",
       "title": {
@@ -3391,10 +3431,10 @@
       "min": 0,
       "max": 20000,
       "title": {
-        "en": "Desired effect",
-        "no": "Ønsket effekt",
-        "nl": "Gewenste effect",
-        "fr": "Effet recherché"
+        "en": "Offered power",
+        "no": "Tilbydd effekt",
+        "nl": "Aangeboden vermogen",
+        "fr": "Puissance offerte"
       },
       "units": {
         "en": "W",
@@ -3407,7 +3447,8 @@
       "insights": true,
       "getable": true,
       "setable": true,
-      "uiComponent": null
+      "icon": "/assets/effect.svg",
+      "uiComponent": "sensor"
     }
   }
 }

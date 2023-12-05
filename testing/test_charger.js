@@ -12,7 +12,7 @@ global.testing = true;
 // eslint-disable-next-line import/no-extraneous-dependencies
 // const seedrandom = require('seedrandom');
 // const fs = require('fs');
-// const c = require('../common/constants');
+const c = require('../common/constants');
 // const prices = require('../common/prices');
 // const { addToArchive, cleanArchive, getArchive, changeArchiveMode, clearArchive } = require('../common/archive');
 // const Homey = require('./homey');
@@ -21,7 +21,7 @@ const ChargeDevice = require('../drivers/piggy-charger/device');
 const ChargeDriver = require('../drivers/piggy-charger/driver');
 // const { TIMESPAN, roundToStartOfDay, timeToNextHour, toLocalTime, fromLocalTime, timeToNextSlot, timeSinceLastSlot, timeSinceLastLimiter, hoursInDay } = require('../common/homeytime');
 // const { disableTimers, applyStateFromFile, getAllDeviceId, writePowerStatus, setAllDeviceState, validateModeList, compareJSON, checkForTranslations } = require('./test-helpers');
-const { applyBasicConfig } = require('./test-helpers');
+const { applyBasicConfig, applyEmptyConfig, addDevice, applyBasicPrices } = require('./test-helpers');
 
 // Test Device initialization
 async function testDeviceInit() {
@@ -87,32 +87,68 @@ async function testChargeControl() {
   try {
     await app.disableLog();
     await app.onInit();
-    await applyBasicConfig(app);
+    await chargeDevice.onInit();
 
-/*    app.__current_prices = [
+    await applyEmptyConfig(app);
+    const zoneHomeId = app.homeyApi.zones.addZone('Home');
+    await addDevice(app, chargeDevice, 'device_a', zoneHomeId);
+    app.homey.settings.set('frostList', { device_a: { minTemp: 3 } });
+    app.homey.settings.set('modeList', [
+      [{ id: 'device_a', operation: c.CONTROLLED, targetTemp: 24 }], // Normal
+      [{ id: 'device_a', operation: c.CONTROLLED, targetTemp: 24 }], // Night
+      [{ id: 'device_a', operation: c.CONTROLLED, targetTemp: 24 }], // Away
+    ]);
+    app.homey.settings.set('priceActionList', [
+      { device_a: { operation: c.TURN_ON } },
+      { device_a: { operation: c.TURN_ON } },
+      { device_a: { operation: c.TURN_ON } },
+      { device_a: { operation: c.TURN_ON } },
+      { device_a: { operation: c.TURN_ON } }]);
+
+    await app.createDeviceList();
+
+    app.app_is_configured = app.validateSettings();
+
+    // await applyBasicPrices(app);
+
+    app.__current_prices = [
       0.2, 0.3, 0.5, 0.3, 0.2, 0.5, 0.9, 0.8, 0.1, 0.2,
       0.2, 0.3, 0.5, 0.3, 0.2, 0.5, 0.9, 0.8, 0.1, 0.2,
       0.2, 0.3, 0.5, 0.3];
     app.__current_price_index = 3;
     const resultTable = [undefined, 3750, undefined, undefined, undefined, 3750, 3750];
-*/
-    await chargeDevice.onInit();
 
     // 1) Set charger power when the plan is off, check that power is not given
     chargeDevice.setTargetPower(1000);
 
     // 2) Start the plan, check that power is given at the right time
-    
-/*
-    // app.onChargingCycleStart(10, '08:00');
     const callTime = new Date();
     callTime.setHours(3, 0, 0, 0);
-    chargeDevice.onChargingCycleStart(undefined, '10:00', 3, callTime);
+    await chargeDevice.onChargingCycleStart(undefined, '10:00', 3, callTime);
     for (let i = 0; i < resultTable.length; i++) {
       if (chargeDevice.__charge_plan[i] !== resultTable[i]) {
         throw new Error(`Charging schedule failed, Hour +${i} observed ${chargeDevice.__charge_plan[i]}, wanted: ${resultTable[i]}`);
       }
-    }*/
+    }
+
+    // 3) Pass on time and check that the charger is signalled correctly
+    const numTicks = 10; // Number of ticks for the next 7 hours
+    const intervalLength = resultTable.length * 60 * 60 * 1000;
+    const tickLength = intervalLength / numTicks; // usec per tick
+    const lastTime = new Date();
+    const meterTime = new Date(callTime.getTime());
+    const meterPower = 4000;
+    let meterValue = (meterPower / 1000) * ((meterTime - callTime) / 3600000);
+
+    await app.onMeterUpdate(meterValue, meterTime);
+    await app.onProcessPower(meterTime);
+    for (let tick = 1; tick <= numTicks; tick++) {
+      lastTime.setTime(meterTime.getTime());
+      meterTime.setTime(callTime.getTime() + tickLength * tick);
+      meterValue += (meterPower / 1000) * ((meterTime - lastTime) / 3600000);
+      await app.onMeterUpdate(meterValue, meterTime);
+      await app.onProcessPower(new Date(meterTime.getTime()));
+    }
   } finally {
     chargeDevice.onUninit();
     app.onUninit();

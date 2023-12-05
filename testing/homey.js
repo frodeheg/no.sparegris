@@ -203,6 +203,10 @@ class FakeFlowClass {
     return new FakeConditionCardClass(this.homey, name);
   }
 
+  getDeviceTriggerCard(name) {
+    return new FakeTriggerCardClass(this.homey, name);
+  }
+
 }
 
 /**
@@ -372,6 +376,7 @@ class Device {
     this.homey = driver.homey;
     this.driver = driver;
     this.store = {};
+    this.capOptions = {};
     this.caps = {};
     this.camera = {};
     this.data = {};
@@ -392,6 +397,10 @@ class Device {
 
   setStoreValue(index, value) {
     this.store[index] = value;
+  }
+
+  setCapabilityOptions(cap, options) {
+    this.capOptions[cap] = options;
   }
 
   setCapabilityValue(cap, value) {

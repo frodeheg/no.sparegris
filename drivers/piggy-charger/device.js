@@ -100,6 +100,7 @@ class ChargeDevice extends Device {
     this.__past_plan = [];
     this.__plan_prices = [];
     this.limited = false;
+    this.moneySpentTotal = this.getStoreValue('moneySpentTotal') || 0;
     await this.rescheduleCharging(false);
 
     // Link on-off button with the "controllable-device" setting in piggy
@@ -144,7 +145,7 @@ class ChargeDevice extends Device {
       .catch((err) => {
         this.homey.app.updateLog(`Camera image1 failed ${err}`, c.LOG_ERROR);
       });
-    await this.homey.images.createImage()
+    /* await this.homey.images.createImage()
       .then((image) => {
         image.setPath('../assets/images/Codepage-437.png');
         return image.update()
@@ -152,7 +153,7 @@ class ChargeDevice extends Device {
       })
       .catch((err) => {
         this.homey.app.updateLog(`Camera image2 failed ${err}`, c.LOG_ERROR);
-      });
+      }) */
 
     this.homey.app.updateLog('charger init done....', c.LOG_INFO);
   }
@@ -326,7 +327,7 @@ class ChargeDevice extends Device {
     for (let i = 0; i < 24; i++) {
       xAxisText[i] = `${String((i + startHour) % 24).padStart(2, ' ')}:00`;
     }
-    return dst.loadFile('assets/images/valid.png')
+    return dst.loadFile('../drivers/piggy-charger/assets/images/valid.png')
       .then(() => dst.setTextSize(2))
       .then(() => dst.addText(title, 250 - (dst.getWidth(title) / 2), 25))
       .then(() => dst.setTextSize(1))
@@ -358,7 +359,7 @@ class ChargeDevice extends Device {
   async displayNoPlan(dst) {
     const title = this.homey.__('chargePlanGraph.title');
     const noPlanText = this.homey.__('chargePlanGraph.noPlan');
-    return dst.loadFile('assets/images/large.png')
+    return dst.loadFile('../drivers/piggy-charger/assets/images/large.png')
       .then(() => dst.setTextSize(2))
       .then(() => dst.addText(`\x1B[4;30m${title}\x1B[24m`, 250 - (dst.getWidth(title) / 2), 25))
       .then(() => dst.setTextSize(1))
@@ -587,6 +588,13 @@ class ChargeDevice extends Device {
       this.__powerProcessID = setTimeout(() => this.onProcessPowerWrapper(), 1000 * 10);
     }
 
+    // Reset the charge process
+    this.setCapabilityValue('measure_battery.charge_cycle', 0);
+    this.setCapabilityValue('piggy_money', 0);
+    this.moneySpentThisCycle = 0;
+
+    await this.refreshCapabilities();
+
     return Promise.resolve();
   }
 
@@ -606,6 +614,32 @@ class ChargeDevice extends Device {
   }
 
   /**
+   * Sets the capabilities options
+   */
+  async updateCapability(capabilityId, baseOptions) {
+    const options = { ...this.homey.app.manifest.drivers[0].capabilitiesOptions[capabilityId], ...baseOptions };
+    await this.setCapabilityOptions(capabilityId, options);
+  }
+
+  /**
+   * Refresh the capabilities
+   */
+  async refreshCapabilities() {
+    // Change currencies
+    const currencyInfo = await this.homey.app.getCurrencyInfo();
+    if (this.currency !== currencyInfo.currency) {
+      // Currency
+      const currencyOptions = {
+        units: { en: currencyInfo.unit },
+        decimals: currencyInfo.decimals,
+      };
+      await this.updateCapability('piggy_money', currencyOptions);
+      await this.updateCapability('piggy_moneypile', currencyOptions);
+      this.currency = currencyInfo.currency;
+    }
+  }
+
+  /**
    * Called every hour to make sure the Charging is rescheduled most optimal.
    * Whenever a new hour passes, must be called _after_ doPriceCalculations to get correct current_price_index
    */
@@ -614,6 +648,14 @@ class ChargeDevice extends Device {
     const priceArray = this.homey.app.getPricePrediction(now, end);
 
     if (isNewHour) {
+      // Calculate cost of previous hour
+      const currentHour = this.homey.app.__current_price_index;
+      const currentPrices = this.homey.app.__current_prices;
+      const currentCost = (currentHour in currentPrices) ? currentPrices[currentHour] : 0;
+      this.moneySpentTotal += this.__offeredEnergy * currentCost;
+      this.setStoreValue('moneySpentTotal', this.moneySpentTotal);
+      this.setCapabilityValue('piggy_moneypile', this.moneySpentTotal);
+
       const oldRemaining = this.cycleRemaining;
       if (this.cycleType === c.OFFER_ENERGY) {
         this.cycleRemaining -= this.__offeredEnergy;
@@ -872,6 +914,16 @@ class ChargeDevice extends Device {
         return Promise.resolve([false, false]);
       });
 */
+
+    // Update money spent
+    const currentHour = this.homey.app.__current_price_index;
+    const currentPrices = this.homey.app.__current_prices;
+    const currentCost = (currentHour in currentPrices) ? currentPrices[currentHour] : 0;
+    const deltaEnergy = 0; // TODO TODO TODO TODO TODO
+    this.moneySpentThisCycle += deltaEnergy * currentCost;
+    this.setCapabilityValue('piggy_money', this.moneySpentThisCycle);
+    this.setCapabilityValue('piggy_moneypile', this.moneySpentTotal + this.moneySpentThisCycle);
+
     return Promise.resolve();
   }
 
