@@ -2844,7 +2844,7 @@
               if (!deviceList[key].thermostat_cap) {
                 switch (tabPage) {
                   case PP_DIRTCHEAP:
-                  case PP_LOW:
+                  case PP_LOW: new_op = TURN_ON; break;
                   case PP_NORM: new_op = EMERGENCY_OFF; break;
                   case PP_HIGH:
                   case PP_EXTREME: new_op = TURN_OFF; break;
