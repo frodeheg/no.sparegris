@@ -898,5 +898,8 @@
   },
   "0.21.4": {
     "en": "Distinguish between graph logs before and after subsidizes was introduced."
+  },
+  "0.21.5": {
+    "en": "Allow negative surcharge + Renamed Always on to preferred on and Emergency off to On until Off + Added support for com.tado2:airconditioning + Made sure A/C without onoff capability use temperature only control + Changed the default mode for switches to be always on for cheap prices"
   }
 }
