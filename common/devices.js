@@ -191,9 +191,9 @@ const DEVICE_CMD = {
   'cloud.shelly:shelly': DEFAULT_SWITCH,
   'com.aeotec:ZW078': DEFAULT_SWITCH,
   'com.arjankranenburg.virtual:mode': DEFAULT_SWITCH,
-  'com.arjankranenburg.virtual:virtual_switch': { // Similar to Vthermo
+  'com.arjankranenburg.virtual:virtual_switch': { // Similar to Vthermo but can be both switch and ac...
     ...DEFAULT_AC,
-    note: 'This device has no onOff capability and will emulate On/Off by adjusting the temperature.',
+    note: 'If this is configured as a switch, please use virtual mode instead. Only AC\'s are supported for this driver.',
     setOnOffCap: null,
     tempMin: undefined, // This depends on what is connected
     tempMax: undefined, // --- " ---
