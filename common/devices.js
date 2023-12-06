@@ -193,7 +193,8 @@ const DEVICE_CMD = {
   'com.arjankranenburg.virtual:mode': DEFAULT_SWITCH,
   'com.arjankranenburg.virtual:virtual_switch': { // Similar to Vthermo but can be both switch and ac...
     ...DEFAULT_AC,
-    note: 'If this is configured as a switch, please use virtual mode instead. Only AC\'s are supported for this driver.',
+    note: 'Please note that only AC\'s are supported for this driver. If this virtual device is configured as a switch then please use the virtual mode driver instead.',
+    workaround: 'Please note that only AC\'s are supported for this driver. If this virtual device is configured as a switch then please use the virtual mode driver instead.',
     setOnOffCap: null,
     tempMin: undefined, // This depends on what is connected
     tempMax: undefined, // --- " ---
