@@ -275,7 +275,7 @@ async function calculateSubsidy(
   subsidyRate
 ) {
   if (!Array.isArray(spotprices)) return [];
-  return spotprices.map((val) => ((!subsidyEn || !('price' in val) || ((val.price * (1 + +VAT)) < +subsidyThreshold)) ? 0 : (((val.price * (1 + +VAT)) - +subsidyThreshold) * +subsidyRate)));
+  return spotprices.map((val) => ((!subsidyEn || !('price' in val) || (val.price < +subsidyThreshold)) ? 0 : ((val.price - +subsidyThreshold) * +subsidyRate * (1 + +VAT))));
 }
 
 // =============================================================================
