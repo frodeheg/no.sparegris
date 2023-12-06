@@ -904,5 +904,8 @@
   },
   "0.21.6": {
     "en": "ACMODE.FAN was not detected properly."
+  },
+  "0.21.7": {
+    "en": "Fixed the MVA on the subsidies calculation."
   }
 }
