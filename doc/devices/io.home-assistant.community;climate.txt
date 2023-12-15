@@ -1,0 +1,16 @@
+Log ID: 2023-12-09T20:55:46.291Z
+App version 0.21.4
+
++20:55:46.291: ----- ANALYZING DEVICE -----
++20:55:46.326: Report type: Device is not listed
++20:55:46.475: Device name: Kjellerstue - Varmeovn
++20:55:46.477: Driver Id: homey:app:io.home-assistant.community:climate
++20:55:46.479: Error: TypeError: Cannot read properties of undefined (reading 'onoff_cap')
++20:55:46.481: Capabilities: measure_temperature,climate_mode,climate_action,target_temperature,button.reconnect,climate_on
++20:55:46.482: Options for 'measure_temperature': {"value":19.6,"lastUpdated":"2023-12-09T20:53:44.490Z","type":"number","getable":true,"setable":false,"title":"Temperatur","desc":"Temperatur i grader Celsius (°C)","units":"°C","decimals":2,"chartType":"spline","id":"measure_temperature","options":{}}
++20:55:46.483: Options for 'climate_mode': {"value":"heat","lastUpdated":"2023-12-09T20:53:44.438Z","type":"enum","getable":true,"setable":true,"title":"Mode","desc":"Thermostat mode","units":null,"iconObj":{"id":"403eaa123d602561628daee613f86a04","url":"/icon/403eaa123d602561628daee613f86a04/icon.svg"},"values":[{"id":"off","title":"Off"},{"id":"heat","title":"Heating"},{"id":"cool","title":"Cooling"},{"id":"heat_cool","title":"Heating/Cooling"},{"id":"auto","title":"Automatic"},{"id":"dry","title":"Dry"},{"id":"fan_only","title":"Fan only"}],"id":"climate_mode","options":{}}
++20:55:46.485: Options for 'climate_action': {"value":"idle","lastUpdated":"2023-12-09T20:53:44.586Z","type":"enum","getable":true,"setable":false,"title":"Activity","desc":null,"units":null,"iconObj":{"id":"9d4e190076bbc418b981751a703bea5d","url":"/icon/9d4e190076bbc418b981751a703bea5d/icon.svg"},"values":[{"id":"off","title":"Off"},{"id":"idle","title":"Idle"},{"id":"cooling","title":"Cooling"},{"id":"heating","title":"Heating"},{"id":"fan","title":"Fan"},{"id":"drying","title":"Drying"}],"id":"climate_action","options":{}}
++20:55:46.487: Options for 'target_temperature': {"value":15,"lastUpdated":"2023-12-09T20:53:44.512Z","type":"number","getable":true,"setable":true,"title":"Ønsket temperatur","desc":null,"units":"°C","decimals":1,"min":5,"max":35,"step":0.5,"chartType":"stepLine","id":"target_temperature","options":{"min":5,"max":35,"step":0.5,"decimals":1}}
++20:55:46.489: Options for 'button.reconnect': {"value":null,"lastUpdated":null,"type":"boolean","getable":false,"setable":true,"title":"Reconnect","desc":"Reconnect and reload entities.","units":null,"id":"button.reconnect","options":{"maintenanceAction":true,"title":{"en":"Reconnect","de":"Neu verbinden","nl":"Opnieuw verbinden"},"desc":{"en":"Reconnect and reload entities.","de":"Neu verbinden und Entitäten neu laden.","nl":"Maak opnieuw verbinding en laad entiteiten opnieuw."}}}
++20:55:46.490: Options for 'climate_on': {"value":true,"lastUpdated":"2023-12-09T20:53:44.454Z","type":"boolean","getable":true,"setable":false,"title":"Thermostat on","desc":null,"units":null,"id":"climate_on","options":{}}
++20:55:46.492: --- ANALYZING DEVICE DONE ---

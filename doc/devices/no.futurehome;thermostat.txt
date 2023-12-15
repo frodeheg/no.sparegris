@@ -1,0 +1,22 @@
+Log ID: 2023-12-14T09:10:49.613Z
+App version 0.21.7
+
++9:10:49.613: ----- ANALYZING DEVICE -----
++9:10:49.615: Report type: Experimental device is working
++9:10:49.625: Device name: Termostat
++9:10:49.626: Driver Id: homey:app:no.futurehome:thermostat
++9:10:49.627: Found onoff cap: onoff
++9:10:49.627: Found temp cap: true
++9:10:49.628: Device reliability: 1
++9:10:49.629: Capabilities: onoff,target_temperature,measure_temperature,measure_temperature.air,measure_temperature.floor,tuya_thermostat_load_status,measure_power,tuya_thermostat_mode,tuya_thermostat_sensor_type,tuya_child_lock
++9:10:49.630: Options for 'onoff': {"id":"onoff","type":"boolean","iconObj":null,"title":"Slått på","getable":true,"setable":true,"insights":true,"insightsTitleTrue":"Slått på","insightsTitleFalse":"Slått av","value":true,"lastUpdated":"2023-12-13T14:08:20.155Z"}
++9:10:49.631: Options for 'target_temperature': {"id":"target_temperature","type":"number","iconObj":null,"title":"Ønsket temperatur","getable":true,"setable":true,"insights":true,"insightsTitleTrue":null,"insightsTitleFalse":null,"min":5,"max":35,"units":"°C","decimals":0,"value":23,"lastUpdated":"2023-12-14T08:00:12.674Z"}
++9:10:49.632: Options for 'measure_temperature': {"id":"measure_temperature","type":"number","iconObj":null,"title":"Temperatur","getable":true,"setable":false,"insights":true,"insightsTitleTrue":null,"insightsTitleFalse":null,"units":"°C","decimals":0,"value":23,"lastUpdated":"2023-12-14T09:04:56.773Z"}
++9:10:49.632: Options for 'measure_temperature.air': {"id":"measure_temperature.air","type":"number","iconObj":null,"title":"Lufttemperatur ","getable":true,"setable":false,"insights":true,"insightsTitleTrue":null,"insightsTitleFalse":null,"units":"°C","decimals":0,"value":21,"lastUpdated":"2023-12-13T09:54:25.566Z"}
++9:10:49.634: Options for 'measure_temperature.floor': {"id":"measure_temperature.floor","type":"number","iconObj":null,"title":"Gulvtemperatur","getable":true,"setable":false,"insights":true,"insightsTitleTrue":null,"insightsTitleFalse":null,"units":"°C","decimals":0,"value":23,"lastUpdated":"2023-12-14T09:04:56.764Z"}
++9:10:49.634: Options for 'tuya_thermostat_load_status': {"id":"tuya_thermostat_load_status","type":"boolean","iconObj":{"id":"3e859b1dced81ecc8395a7e865eaf992","url":"/api/icon/d820bd6a-aef7-4a5f-a631-65a4ae836604"},"title":"Last aktiv","getable":true,"setable":false,"insightsTitleTrue":null,"insightsTitleFalse":null,"value":false,"lastUpdated":"2023-12-14T09:04:57.102Z"}
++9:10:49.636: Options for 'measure_power': {"id":"measure_power","type":"number","iconObj":null,"title":"Effekt","getable":true,"setable":false,"insights":true,"insightsTitleTrue":null,"insightsTitleFalse":null,"units":"W","decimals":2,"value":0,"lastUpdated":"2023-12-14T09:04:57.109Z"}
++9:10:49.636: Options for 'tuya_thermostat_mode': {"id":"tuya_thermostat_mode","type":"enum","iconObj":null,"title":"Termostat modus","getable":true,"setable":true,"insightsTitleTrue":null,"insightsTitleFalse":null,"values":[{"id":"0","title":"Manuell"},{"id":"1","title":"Hjemme"},{"id":"2","title":"Bortreist"}],"value":"0","lastUpdated":"2023-12-13T09:54:25.319Z"}
++9:10:49.637: Options for 'tuya_thermostat_sensor_type': {"id":"tuya_thermostat_sensor_type","type":"enum","iconObj":null,"title":"Sensor type","getable":true,"setable":true,"insightsTitleTrue":null,"insightsTitleFalse":null,"values":[{"id":"0","title":"Luftføler / Intern"},{"id":"1","title":"Gulvføler / Ekstern"},{"id":"2","title":"Maksvokter"}],"value":"1","lastUpdated":"2023-12-13T09:54:26.044Z"}
++9:10:49.639: Options for 'tuya_child_lock': {"id":"tuya_child_lock","type":"boolean","iconObj":{"id":"3247a8047e9221c1609a43617b3a0cb5","url":"/api/icon/96240896-4e7d-4f7e-ab90-b80eef603341"},"title":"Knappelås","getable":true,"setable":true,"insightsTitleTrue":null,"insightsTitleFalse":null,"value":false,"lastUpdated":"2023-12-13T09:54:25.797Z"}
++9:10:49.640: --- ANALYZING DEVICE DONE ---

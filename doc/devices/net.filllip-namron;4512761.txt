@@ -1,0 +1,15 @@
+Log ID: 2023-12-07T19:25:55.975Z
+App version 0.21.4
+
++21:53:2.867: ----- ANALYZING DEVICE -----
++21:53:2.872: Report type: Experimental device is working
++21:53:2.902: Device name: Varmtvann
++21:53:2.903: Driver Id: homey:app:net.filllip-namron:4512761
++21:53:2.906: Found onoff cap: onoff
++21:53:2.908: Found temp cap: false
++21:53:2.909: Device reliability: 1
++21:53:2.912: Capabilities: onoff,measure_power,meter_power
++21:53:2.916: Options for 'onoff': {"value":true,"lastUpdated":"2023-12-07T14:48:22.783Z","type":"boolean","getable":true,"setable":true,"title":"Turned on","desc":null,"units":null,"id":"onoff","options":{}}
++21:53:2.919: Options for 'measure_power': {"value":0,"lastUpdated":"2023-12-07T20:33:25.262Z","type":"number","getable":true,"setable":false,"title":"Power","desc":"Power in watt (W)","units":"W","decimals":2,"chartType":"stepLine","id":"measure_power","options":{}}
++21:53:2.922: Options for 'meter_power': {"value":3.74,"lastUpdated":"2023-12-07T20:21:25.852Z","type":"number","getable":true,"setable":false,"title":"Energy","desc":"Energy usage in kilowatt-hour (kWh)","units":"kWh","decimals":2,"chartType":"spline","id":"meter_power","options":{}}
++21:53:2.926: --- ANALYZING DEVICE DONE ---

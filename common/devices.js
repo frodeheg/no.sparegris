@@ -342,6 +342,18 @@ const DEVICE_CMD = {
     default: false
   },
   'com.swttt.devicegroups:light': DEFAULT_SWITCH,
+  'com.systemair:SystemairSaveConnect': {
+    type: DEVICE_TYPE.SWITCH, // TODO: add temperature control to this when there is a way to control it independent of price
+    note: 'This app is configured to only control the eco-mode on/off for this device. If you want it to be in constant'
+      + 'eco mode, then please don\'t mark it as controlled! Price controlled temperature has been disabled because it '
+      + 'works against the purpose of saving money for this device. If you want the temperature to be controlled as well, '
+      + 'get in touch with the developer.',
+    setOnOffCap: 'eco_mode',
+    setOnValue: false,
+    setOffValue: true,
+    default: false,
+    beta: true
+  },
   'com.tado2:airconditioning': {
     ...DEFAULT_AC,
     note: 'This device has no onOff capability and will emulate On/Off by adjusting the temperature.',
@@ -435,6 +447,20 @@ const DEVICE_CMD = {
     tempMax: 30,
     tempStep: 0.5
   },
+  'io.home-assistant.community:climate': {
+    ...DEFAULT_AC,
+    note: 'This device has no onOff capability and will emulate On/Off by adjusting the temperature.',
+    setOnOffCap: null,
+    tempMin: 5,
+    tempMax: 35,
+    tempStep: 0.5,
+    setModeCap: 'climate_mode',
+    setModeDryValue: 'dry',
+    setModeFanValue: 'fan_only',
+    setModeOffValue: 'off',
+    //setModeHeatCoolValue: 'heat_cool' TODO
+    default: false
+  },
   'it.diederik.solar:growatt': DEFAULT_SOLAR,
   'me.nanoleaf:shapes': DEFAULT_SWITCH,
   'net.filllip-namron:4512725': {
@@ -456,6 +482,7 @@ const DEVICE_CMD = {
     tempMin: 0,
     default: false
   },
+  'net.filllip-namron:4512761': DEFAULT_SWITCH,
   'net.filllip-namron:540139x': {
     ...DEFAULT_HEATER,
     tempMax: 35,
@@ -553,6 +580,12 @@ const DEVICE_CMD = {
     ...DEFAULT_HEATER
   },
   'no.futurehome:puck_relay': DEFAULT_SWITCH,
+  'no.futurehome:thermostat': {
+    ...DEFAULT_HEATER,
+    tempMax: 35,
+    tempStep: 1,
+    default: false
+  },
   'no.hoiax:hiax-connected-200': {
     type: DEVICE_TYPE.WATERHEATER,
     setOnOffCap: 'onoff',
