@@ -262,6 +262,7 @@
           appEn.value = 1;
           list.value = selectedMode;
         }
+        console.log(`updateOperatingModes(${selectedMode}) => mode ${list.value}`);
       }
 
       function updatePricePoints(selectedPoint) {
@@ -2473,6 +2474,7 @@
         });
         Homey.get("operatingMode", function (err, operatingMode) {
           if (err) return popUp(Homey, err);
+          console.log(`read operatingMode: '${operatingMode}'`);
           if (operatingMode !== null) {
             currentOperatingMode = +operatingMode;
           } else {
@@ -2947,6 +2949,9 @@
               `<option value="${modeId}"${selectedText}>${allModeNames[modeId-1]}</option>`;
           }
           currentModeElement.innerHTML = newOperationModeText;
+          console.log(newOperationModeText);
+          currentModeElement.value = prevOperatingMode;
+          console.log(`Mode selector set to ${currentModeElement.value}`);
           // Update Mode list selector
           const modeSelectorElement = document.getElementById('modeSelector');
           const numRows = (modeList.length === 3) ? 1 : 2;
