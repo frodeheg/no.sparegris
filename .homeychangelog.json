@@ -907,5 +907,8 @@
   },
   "0.21.7": {
     "en": "Fixed the MVA on the subsidies calculation."
+  },
+  "0.21.8": {
+    "en": "Added support for new devices: com.systemair:SystemairSaveConnect, io.home-assistant.community:climate, net.filllip-namron:4512761, no.futurehome:thermostat"
   }
 }
