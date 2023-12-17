@@ -251,18 +251,27 @@
         button.src = deviceList[device_id].use ? experimental ? "experimental.png" : "enabled.png" : "disabled.png";
       }
 
-      function updateOperatingModes(selectedMode) {
-        var list = document.getElementById("operatingMode");
-        var appEn = document.getElementById("appEnabled");
-        var options = '';
-        if (selectedMode === 0) {
+      function updateOperatingModes(selectedMode, modeNames = []) {
+        const list = document.getElementById("operatingMode");
+        const appEn = document.getElementById("appEnabled");
+        // Update options
+        let newOperationModeText = '';
+        for (let modeId = 1; modeId <= modeList.length; modeId++) {
+          const modeName = modeNames[modeId-1] ? modeNames[modeId-1] : `Mode ${modeId}`;
+          newOperationModeText += `<option value="${modeId}">${modeName}</option>`;
+        }
+        list.innerHTML = newOperationModeText;
+        // Select the right option
+        if (+selectedMode === 0) {
           appEn.value = 0;
           list.value = 1;
+        } else if (+selectedMode > modeList.length) {
+          appEn.value = 1;
+          list.value = modeList.length;
         } else {
           appEn.value = 1;
           list.value = selectedMode;
         }
-        console.log(`updateOperatingModes(${selectedMode}) => mode ${list.value}`);
       }
 
       function updatePricePoints(selectedPoint) {
@@ -2474,7 +2483,6 @@
         });
         Homey.get("operatingMode", function (err, operatingMode) {
           if (err) return popUp(Homey, err);
-          console.log(`read operatingMode: '${operatingMode}'`);
           if (operatingMode !== null) {
             currentOperatingMode = +operatingMode;
           } else {
@@ -2937,21 +2945,7 @@
             allModeNames.push('+');
           }
           // Update Current mode selector
-          const currentModeElement = document.getElementById('operatingMode');
-          let prevOperatingMode = +currentModeElement.value;
-          if (prevOperatingMode > modeList.length) {
-            prevOperatingMode = modeList.length;
-          }
-          let newOperationModeText = '';
-          for (let modeId = 1; modeId <= modeList.length; modeId++) {
-            let selectedText = (prevOperatingMode === modeId) ? " selected": "";
-            newOperationModeText +=
-              `<option value="${modeId}"${selectedText}>${allModeNames[modeId-1]}</option>`;
-          }
-          currentModeElement.innerHTML = newOperationModeText;
-          console.log(newOperationModeText);
-          currentModeElement.value = prevOperatingMode;
-          console.log(`Mode selector set to ${currentModeElement.value}`);
+          updateOperatingModes(document.getElementById('operatingMode').value, allModeNames)
           // Update Mode list selector
           const modeSelectorElement = document.getElementById('modeSelector');
           const numRows = (modeList.length === 3) ? 1 : 2;
