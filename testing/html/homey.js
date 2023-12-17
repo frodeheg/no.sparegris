@@ -277,6 +277,11 @@ Homey.loadLanguage('en')
  *                           DEBUG FUNCTIONALITY                                     *
  *********************************************************************************** */
 
+// Browser check:
+const isLocalhost = window.location.href.includes('localhost');
+const isChrome = navigator.userAgent.includes('Chrome');
+const browserWarning = isChrome && isLocalhost ? 'block' : 'none';
+
 // Show a debug window:
 document.write(`
 <style>
@@ -302,6 +307,7 @@ document.write(`
 
 <div id="mydiv">
   <div id="mydivheader">Debug Window</div>
+  <div id="browserWarning" style="color:#f00;display:${browserWarning}"><B>Do not use Chrome for localhost debug, it doesn't run included scripts...<br>Use 192.168.1.yourIP instead </B></div>
   <p><button onClick="reloadPage();">Reload page</button></p>
   <p><button onClick="showSettings();">Show settings</button></p>
   <p>
@@ -400,7 +406,6 @@ function reloadPage() {
   toggleTimeLoaded = false;
   graphLoaded = false;
   futurePriceOptionsLoaded = false;
-  chargerOptionsLoaded = false;
   appConfigProgressLoaded = false;
   currenciesLoaded = false;
   onHomeyReadyCompleted = false;
@@ -423,6 +428,6 @@ function selectLanguage(langId) {
       reloadPage();
     })
     .catch((err) => {
-      Homey.alert(`Language ${langId} could not be found.`);
+      Homey.alert(`Language ${langId} could not be found (${err}).`);
     });
 }

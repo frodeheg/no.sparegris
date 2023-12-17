@@ -1863,6 +1863,7 @@
         var loadElement = document.getElementById("loadingPage");
         /* loadElement.innerHTML =
           `maxPowerLoaded: ${maxPowerLoaded}<br>` +
+          `scriptsLoaded: ${scriptsLoaded} (${loadedCount}/${totalLoadCount})<br>` +
           `deviceListLoaded: ${deviceListLoaded}<br>` +
           `modeListLoaded: ${modeListLoaded}<br>` +
           `modeNamesLoaded: ${modeNamesLoaded}<br>` +
@@ -2181,6 +2182,7 @@
           Homey.api('GET', `/getStats?type=[elPrices,maxPower]&time=${instantly}&granularity=${GRANULARITY.DAY}`, null, function (err, res) {
             if (err) return alertUser(Homey, err);
             try {
+              // TODO: Move InitGraph to checkLoadingDone
               InitGraph(Homey, res, futurePriceOptions.granularity);
               noPrices = !Array.isArray(res.data.elPrices) || (res.data.elPrices.length == 0)
             } catch (err2) {
