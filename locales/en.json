@@ -303,10 +303,6 @@
       "action": "Action",
       "delta": "Delta",
       "deltaTemp": "Change temp",
-      "turnOn": "Turn on",
-      "turnOff": "Turn off",
-      "emergencyOff": "Off if needed",
-      "ignore": "Ignore",
       "internal": {
         "minCheapTime": "Minimum amount of cheap hours",
         "minCheapTimeHint": "Regardless of the actual price, you can demand that the x cheapest hours of the day always set the price point to cheap.",

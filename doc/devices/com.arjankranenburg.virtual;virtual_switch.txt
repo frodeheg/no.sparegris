@@ -10,3 +10,27 @@
 +19:36:0.946: Options for 'thermostat_mode': {"value":"auto","lastUpdated":"2021-02-20T17:11:41.246Z","type":"enum","getable":true,"setable":true,"title":"Termostatmodus","desc":"Modus for termostaten","units":null,"values":[{"id":"auto","title":"Automatisk"},{"id":"heat","title":"Varme"},{"id":"cool","title":"Avkjøle"},{"id":"off","title":"Av"}],"id":"thermostat_mode","options":{}}
 +19:36:0.950: Options for 'measure_temperature': {"value":22.9,"lastUpdated":"2023-01-22T19:10:51.102Z","type":"number","getable":true,"setable":false,"title":"Temperatur","desc":"Temperatur i grader Celsius (°C)","units":"°C","decimals":2,"chartType":"spline","id":"measure_temperature","options":{}}
 +19:36:0.953: --- ANALYZING DEVICE DONE ---
+
++23:58:23.984: ----- ANALYZING DEVICE -----
++23:58:23.986: Report type: Experimental device is working
++23:58:24.021: Device name: V Switch
++23:58:24.024: Driver Id: homey:app:com.arjankranenburg.virtual:virtual_switch
++23:58:24.033: Found onoff cap: onoff
++23:58:24.034: Found temp cap: false
++23:58:24.036: Device reliability: 1
++23:58:24.037: Capabilities: onoff
++23:58:24.039: Options for 'onoff': {"value":null,"lastUpdated":null,"type":"boolean","getable":true,"setable":true,"title":"Slått på","desc":null,"units":null,"id":"onoff","options":{}}
++23:58:24.041: --- ANALYZING DEVICE DONE ---
+
++23:58:59.015: ----- ANALYZING DEVICE -----
++23:58:59.017: Report type: Experimental device is working
++23:58:59.047: Device name: V thermo
++23:58:59.048: Driver Id: homey:app:com.arjankranenburg.virtual:virtual_switch
++23:58:59.050: Found onoff cap: thermostat_mode
++23:58:59.052: Found temp cap: true
++23:58:59.054: Device reliability: 1
++23:58:59.055: Capabilities: target_temperature,measure_temperature,thermostat_mode
++23:58:59.057: Options for 'target_temperature': {"value":null,"type":"number","getable":true,"setable":true,"title":"Ønsket temperatur","desc":null,"units":"°C","decimals":2,"min":12,"max":32,"step":0.5,"chartType":"stepLine","id":"target_temperature","options":{"min":12,"max":32,"step":0.5}}
++23:58:59.059: Options for 'measure_temperature': {"value":null,"type":"number","getable":true,"setable":false,"title":"Temperatur","desc":"Temperatur i grader Celsius (°C)","units":"°C","decimals":1,"chartType":"spline","id":"measure_temperature","options":{"decimals":1}}
++23:58:59.061: Options for 'thermostat_mode': {"value":null,"type":"enum","getable":true,"setable":true,"title":"Termostatmodus","desc":"Modus for termostaten","units":null,"values":[{"id":"auto","title":"Automatisk"},{"id":"heat","title":"Varme"},{"id":"cool","title":"Avkjøle"},{"id":"off","title":"Av"}],"id":"thermostat_mode","options":{}}
++23:58:59.063: --- ANALYZING DEVICE DONE ---

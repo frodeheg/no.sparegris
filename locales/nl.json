@@ -190,7 +190,8 @@
       "govSubsidy": "Houd rekening met elektriciteitssubsidies",
       "govSubsidyThreshold": "Stroomsubsidiedrempel",
       "govSubsidyRate": "Stroomsubsidietarief",
-      "govSubsidyHint": "Als u elektriciteitsprijzen heeft gesubsidieerd, kunt u deze optie activeren om de subsidies van de elektriciteitsprijs af te trekken voordat de prijspuntbeoordeling wordt uitgevoerd. De subsidies worden uitsluitend berekend op basis van de spotprijs."    },
+      "govSubsidyHint": "Als u elektriciteitsprijzen heeft gesubsidieerd, kunt u deze optie activeren om de subsidies van de elektriciteitsprijs af te trekken voordat de prijspuntbeoordeling wordt uitgevoerd. De subsidies worden uitsluitend berekend op basis van de spotprijs."
+    },
     "archive": {
       "settings": "Archief",
       "expireDaily": "Vervaltijd dagelijkse statistieken",
@@ -302,10 +303,6 @@
       "action": "Actie",
       "delta": "Delta",
       "deltaTemp": "Verander temp",
-      "turnOn": "Aanzetten",
-      "turnOff": "Uitschakelen",
-      "emergencyOff": "Uit indien nodig",
-      "ignore": "Negeren",
       "internal": {
         "minCheapTime": "Minimale hoeveelheid goedkope uren",
         "minCheapTimeHint": "Ongeacht de werkelijke prijs, kun je afdwingen dat de x goedkoopste uren van de dag altijd de prijspunt op Goedkoop instelt.",

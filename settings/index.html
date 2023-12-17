@@ -59,8 +59,8 @@
       var deltaText = "settings.price.delta";
       var actionText = "settings.price.action";
       var deviceText = "settings.mode.device";
-      var turnOnText = "settings.price.turnOn";
-      var turnOffText = "settings.price.turnOff";
+      var turnOnText = "settings.schedule.operations.controlledOn";
+      var turnOffText = "settings.schedule.operations.alwaysOff";
       var minTempText = "settings.frost.minTemp";
       var priorityText = "settings.mode.priority";
       var alwaysOnText = "settings.mode.alwaysOn";
@@ -70,8 +70,8 @@
       var priceHighText = "settings.price.actionHigh";
       var priceExtremeText = "settings.price.actionExtreme";
       var deltaTempText = "settings.price.deltaTemp";
-      var emergencyOffText = "settings.price.emergencyOff";
-      var ignoreText = "settings.price.ignore";
+      var emergencyOffText = "settings.schedule.operations.controlledOff";
+      var ignoreText = "settings.schedule.operations.ignore";
       var targetTempText = "settings.mode.targetTemp";
       var controlledText = "settings.mode.controlled";
       var priceNormalText = "settings.price.actionNormal";
@@ -274,13 +274,23 @@
         button.src = deprecated ? deprecatedImg : deviceList[device_id].use ? experimental ? "experimental.png" : "enabled.png" : "disabled.png";
       }
 
-      function updateOperatingModes(selectedMode) {
-        var list = document.getElementById("operatingMode");
-        var appEn = document.getElementById("appEnabled");
-        var options = '';
-        if (selectedMode === 0) {
+      function updateOperatingModes(selectedMode, modeNames = []) {
+        const list = document.getElementById("operatingMode");
+        const appEn = document.getElementById("appEnabled");
+        // Update options
+        let newOperationModeText = '';
+        for (let modeId = 1; modeId <= modeList.length; modeId++) {
+          const modeName = modeNames[modeId-1] ? modeNames[modeId-1] : `Mode ${modeId}`;
+          newOperationModeText += `<option value="${modeId}">${modeName}</option>`;
+        }
+        list.innerHTML = newOperationModeText;
+        // Select the right option
+        if (+selectedMode === 0) {
           appEn.value = 0;
           list.value = 1;
+        } else if (+selectedMode > modeList.length) {
+          appEn.value = 1;
+          list.value = modeList.length;
         } else {
           appEn.value = 1;
           list.value = selectedMode;
@@ -1244,7 +1254,7 @@
           <table class="settings_table">
             <tr>
               <td class="settings_row_name"><label for="surcharge" data-i18n="settings.cost.surcharge">cost.surcharge</label>:</td>
-              <td class="settings_row_input"><input id="surcharge" class="inputElem" type="number" min="0" value="0" onchange="displaySaveHint()">/kWh</td>
+              <td class="settings_row_input"><input id="surcharge" class="inputElem" type="number" value="0" step="0.01" onchange="displaySaveHint()">/kWh</td>
             </tr>
           </table>
         </span>
@@ -2621,7 +2631,7 @@
               if (!deviceList[key].thermostat_cap) {
                 switch (tabPage) {
                   case PP_DIRTCHEAP:
-                  case PP_LOW:
+                  case PP_LOW: new_op = TURN_ON; break;
                   case PP_NORM: new_op = EMERGENCY_OFF; break;
                   case PP_HIGH:
                   case PP_EXTREME: new_op = TURN_OFF; break;
@@ -2712,18 +2722,7 @@
             allModeNames.push('+');
           }
           // Update Current mode selector
-          const currentModeElement = document.getElementById('operatingMode');
-          let prevOperatingMode = +currentModeElement.value;
-          if (prevOperatingMode > modeList.length) {
-            prevOperatingMode = modeList.length;
-          }
-          let newOperationModeText = '';
-          for (let modeId = 1; modeId <= modeList.length; modeId++) {
-            let selectedText = (prevOperatingMode === modeId) ? " selected": "";
-            newOperationModeText +=
-              `<option value="${modeId}"${selectedText}>${allModeNames[modeId-1]}</option>`;
-          }
-          currentModeElement.innerHTML = newOperationModeText;
+          updateOperatingModes(document.getElementById('operatingMode').value, allModeNames)
           // Update Mode list selector
           const modeSelectorElement = document.getElementById('modeSelector');
           const numRows = (modeList.length === 3) ? 1 : 2;

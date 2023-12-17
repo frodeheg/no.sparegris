@@ -27,8 +27,9 @@
 //   setModeHeatValue   - Value for setModeCap to enter heat mode
 //   setModeCoolValue   - Value for setModeCap to enter cool mode
 //   setModeAutoValue   - Value for setModeCap to enter auto mode
-//   setModeDryValue    - undefined if unavailable value for setModeCap to enter dry mode else
-//   setModeFanValue    - undefined if unavailable value for setModeCap to enter fan mode else
+//   setModeDryValue    - undefined if unavailable value for setModeCap, value to enter dry mode else
+//   setModeFanValue    - undefined if unavailable value for setModeCap, value to enter fan mode else
+//   setModeOffValue    - undefined if unavailable value for setModeCap, value to enter off mode else
 //   +all HEATER parameters
 // CHARGER : Additional parameters
 //   getBatteryCap     - Capability to read battery level (if present)
@@ -195,17 +196,15 @@ const DEVICE_CMD = {
   'cloud.shelly:shelly': DEFAULT_SWITCH,
   'com.aeotec:ZW078': DEFAULT_SWITCH,
   'com.arjankranenburg.virtual:mode': DEFAULT_SWITCH,
-  'com.arjankranenburg.virtual:virtual_switch': { // Similar to Vthermo
+  'com.arjankranenburg.virtual:virtual_switch': { // Similar to Vthermo but can be both switch and ac...
     ...DEFAULT_AC,
-    note: 'This device has no onOff capability and will have to emulate On by turning the mode into heat. '
-      + 'For cool mode please wait until the app supports cooling (after winter).',
-    setOnOffCap: 'thermostat_mode',
-    setOnValue: 'heat', // This is unfortunate
-    setOffValue: 'off',
+    note: 'Please note that only AC\'s are supported for this driver. If this virtual device is configured as a switch then please use the virtual mode driver instead.',
+    workaround: 'Please note that only AC\'s are supported for this driver. If this virtual device is configured as a switch then please use the virtual mode driver instead.',
+    setOnOffCap: null,
     tempMin: undefined, // This depends on what is connected
     tempMax: undefined, // --- " ---
-    beta: true, // Need to be in beta until fan modes is supported otherwise it's heating only
     tempStep: 0.5,
+    setModeOffValue: 'off',
     default: false
   },
   'com.balboa:Balboa': {
@@ -348,6 +347,33 @@ const DEVICE_CMD = {
     default: false
   },
   'com.swttt.devicegroups:light': DEFAULT_SWITCH,
+  'com.systemair:SystemairSaveConnect': {
+    type: DEVICE_TYPE.SWITCH, // TODO: add temperature control to this when there is a way to control it independent of price
+    note: 'This app is configured to only control the eco-mode on/off for this device. If you want it to be in constant'
+      + 'eco mode, then please don\'t mark it as controlled! Price controlled temperature has been disabled because it '
+      + 'works against the purpose of saving money for this device. If you want the temperature to be controlled as well, '
+      + 'get in touch with the developer.',
+    setOnOffCap: 'eco_mode',
+    setOnValue: false,
+    setOffValue: true,
+    default: false,
+    beta: true
+  },
+  'com.tado2:airconditioning': {
+    ...DEFAULT_AC,
+    note: 'This device has no onOff capability and will emulate On/Off by adjusting the temperature.',
+    setOnOffCap: null,
+    tempMin: 16,
+    tempMax: 31,
+    setModeCap: 'ac_mode',
+    setModeHeatValue: 'HEAT',
+    setModeCoolValue: 'COOL',
+    setModeAutoValue: 'AUTO',
+    setModeDryValue: 'DRY',
+    setModeFanValue: 'FAN',
+    setModeOffValue: 'OFF',
+    default: false
+  },
   'com.tado2:valve': {
     ...DEFAULT_HEATER,
     type: DEVICE_TYPE.HEATER,
@@ -429,6 +455,20 @@ const DEVICE_CMD = {
     tempMax: 30,
     tempStep: 0.5
   },
+  'io.home-assistant.community:climate': {
+    ...DEFAULT_AC,
+    note: 'This device has no onOff capability and will emulate On/Off by adjusting the temperature.',
+    setOnOffCap: null,
+    tempMin: 5,
+    tempMax: 35,
+    tempStep: 0.5,
+    setModeCap: 'climate_mode',
+    setModeDryValue: 'dry',
+    setModeFanValue: 'fan_only',
+    setModeOffValue: 'off',
+    //setModeHeatCoolValue: 'heat_cool' TODO
+    default: false
+  },
   'it.diederik.solar:growatt': DEFAULT_SOLAR,
   'me.nanoleaf:shapes': DEFAULT_SWITCH,
   'net.filllip-namron:4512725': {
@@ -450,6 +490,7 @@ const DEVICE_CMD = {
     tempMin: 0,
     default: false
   },
+  'net.filllip-namron:4512761': DEFAULT_SWITCH,
   'net.filllip-namron:540139x': {
     ...DEFAULT_HEATER,
     tempMax: 35,
@@ -457,16 +498,13 @@ const DEVICE_CMD = {
   },
   'nl.climate.daikin:airairhp': {
     ...DEFAULT_AC,
-    note: 'This device has no onOff capability and will have to emulate On by turning the mode into heat. '
-      + 'Please contact the developer of the Daikin app and request that the onOff capability is added and report back when done. This will fix the Piggy Bank integration.',
-    setOnOffCap: 'thermostat_mode_std',
-    setOnValue: 'heat', // This is unfortunate
-    setOffValue: 'off',
+    note: 'This device has no onOff capability and will emulate On/Off by adjusting the temperature.',
+    setOnOffCap: null,
     tempMax: 32,
     setModeCap: 'thermostat_mode_std',
     setModeDryValue: 'dehumid',
     setModeFanValue: 'fan',
-    beta: true, // Need to be in beta until fan modes is supported otherwise it's heating only
+    setModeOffValue: 'off',
     default: false
   },
   'nl.hdg.mqtt:device': {
@@ -551,6 +589,12 @@ const DEVICE_CMD = {
     ...DEFAULT_HEATER
   },
   'no.futurehome:puck_relay': DEFAULT_SWITCH,
+  'no.futurehome:thermostat': {
+    ...DEFAULT_HEATER,
+    tempMax: 35,
+    tempStep: 1,
+    default: false
+  },
   'no.hoiax:hiax-connected-200': {
     type: DEVICE_TYPE.WATERHEATER,
     setOnOffCap: 'onoff',
@@ -608,11 +652,8 @@ const DEVICE_CMD = {
   },
   'no.thermofloor:Z-TRM6': {
     type: DEVICE_TYPE.AC,
-    note: 'This device has no onOff capability and will have to emulate On by turning the mode into heat (for now). '
-      + 'For this reason, please set temperature control to preferred to avoid mode switches when using cooling.',
-    setOnOffCap: 'thermostat_mode',
-    setOnValue: 'heat',
-    setOffValue: 'off',
+    note: 'This device has no onOff capability and will emulate On/Off by adjusting the temperature.',
+    setOnOffCap: null,
     readTempCap: 'measure_temperature',
     setTempCap: 'target_temperature',
     tempMin: 4,
@@ -622,6 +663,7 @@ const DEVICE_CMD = {
     setModeHeatValue: 'heat',
     setModeCoolValue: 'cool',
     setModeAutoValue: 'auto',
+    setModeOffValue: 'off',
     default: false
   },
   'org.knx:knx_dimmer': DEFAULT_SWITCH,

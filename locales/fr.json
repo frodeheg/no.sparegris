@@ -303,10 +303,6 @@
       "action": "Action",
       "delta": "Delta",
       "deltaTemp": "Changement de température",
-      "turnOn": "Tourne-toi.",
-      "turnOff": "Arrête.",
-      "emergencyOff": "Si nécessaire",
-      "ignore": "Ignore",
       "internal": {
         "minCheapTime": "Montant minimum d'heures",
         "minCheapTimeHint": "Quel que soit le prix réel, vous pouvez exiger que les heures les plus économiques de la journée fixent toujours le point de prix à bas prix.",

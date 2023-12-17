@@ -3321,7 +3321,7 @@ class PiggyBank extends Homey.App {
     if (ACModeValue === deviceDef.setModeCoolValue) return c.ACMODE.COOL;
     if (ACModeValue === deviceDef.setModeAutoValue) return c.ACMODE.AUTO;
     if (ACModeValue === deviceDef.setModeDryValue) return c.ACMODE.DRY;
-    if (ACModeValue === deviceDef.setModeFanValue) return c.ACMODE.FAǸ;
+    if (ACModeValue === deviceDef.setModeFanValue) return c.ACMODE.FAN;
     return undefined;
   }
 
