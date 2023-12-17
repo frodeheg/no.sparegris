@@ -25,6 +25,8 @@ class FakeHomey {
         extremePriceModifier: 100,
         priceKind: 1, // Spot
         priceCountry: 'no',
+        costSchema: 'no',
+        gridSteps: true,
         priceRegion: 0,
         surcharge: 0.0198, // Ramua kraft energi web
         priceFixed: 0.6,
@@ -312,7 +314,7 @@ document.write(`
   <p><button onClick="showSettings();">Show settings</button></p>
   <p>
     Language:
-    <select onChange="selectLanguage(this.value);">
+    <select id="langSelector" onChange="selectLanguage(this.value);">
       <option value="fr">French</option>
       <option value="nl">Dutch</option>
       <option value="en" selected>English</option>

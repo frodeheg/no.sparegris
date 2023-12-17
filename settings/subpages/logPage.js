@@ -20,7 +20,7 @@ const logPageText = `
     <option value="" selected>Please wait while populating</option>
   </select><br>
   <label for="email"><span data-i18n="settings.log.email">log.email</span>:</label>
-  <input id="email" type="text" value="optional.email@for.feedback" onfocus="if (this.value=='optional.email@for.feedback') this.value=''">
+  <input id="email" type="email" autocomplete="on" value="optional.email@for.feedback" onfocus="if (this.value=='optional.email@for.feedback') this.value=''">
   <label for="comment"><span data-i18n="settings.log.comment">log.comment</span>:</label>
   <input id="comment" type="text" value="Optional" onfocus="if (this.value=='Optional') this.value=''">
   <label for="showCaps"><span data-i18n="settings.deviceinfo.getinfo">deviceinfo.getinfo</span>:</label>
