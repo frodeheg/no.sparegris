@@ -910,5 +910,8 @@
   },
   "0.21.8": {
     "en": "Added support for new devices: com.systemair:SystemairSaveConnect, io.home-assistant.community:climate, net.filllip-namron:4512761, no.futurehome:thermostat"
+  },
+  "0.21.9": {
+    "en": "Fixed an issue where the mode was incorrectly displayed in the settings when using custom modes."
   }
 }
