@@ -3,8 +3,9 @@
 
 'use strict';
 
+const homeypath = ('testing' in global && testing) ? '../testing/' : '';
 const { XMLParser } = require('fast-xml-parser');
-const { request } = require('urllib'); // This adds 512kB (1.4MB debug) to the app
+const { request } = require(`${homeypath}urllib`); // This adds 512kB (1.4MB debug) to the app
 const { toLocalTime } = require('./homeytime');
 
 // =============================================================================
@@ -110,7 +111,7 @@ async function currencyApiInit(homey) {
 // @param from - Sets the reference currency
 async function fetchCurrencyTable(currencies = '', date, homey) {
   const now = (date === undefined) ? new Date() : new Date(date);
-  const someDaysAgo = new Date();
+  const someDaysAgo = new Date(now);
   someDaysAgo.setDate(now.getDate() - 4);
   const startDate = `${String(someDaysAgo.getUTCFullYear())}-${String(someDaysAgo.getUTCMonth() + 1).padStart(2, '0')}-${String(someDaysAgo.getUTCDate()).padStart(2, '0')}`;
   const endDate = `${String(now.getUTCFullYear())}-${String(now.getUTCMonth() + 1).padStart(2, '0')}-${String(now.getUTCDate()).padStart(2, '0')}`;

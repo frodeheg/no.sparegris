@@ -22,6 +22,7 @@ const ChargeDriver = require('../drivers/piggy-charger/driver');
 // const { TIMESPAN, roundToStartOfDay, timeToNextHour, toLocalTime, fromLocalTime, timeToNextSlot, timeSinceLastSlot, timeSinceLastLimiter, hoursInDay } = require('../common/homeytime');
 // const { disableTimers, applyStateFromFile, getAllDeviceId, writePowerStatus, setAllDeviceState, validateModeList, compareJSON, checkForTranslations } = require('./test-helpers');
 const { applyBasicConfig, applyEmptyConfig, addDevice, applyBasicPrices } = require('./test-helpers');
+const { useUrlOverride, setUrlData } = require('./urllib');
 
 // Test Device initialization
 async function testDeviceInit() {
@@ -81,12 +82,13 @@ async function testChargePlan() {
  */
 async function testChargeControl() {
   console.log('[......] Charge control');
+  const now = new Date('July 2, 2023, 03:00:00:000 GMT+2:00');
   const app = new PiggyBank();
   const chargeDriver = new ChargeDriver('piggy-charger', app);
   const chargeDevice = new ChargeDevice(chargeDriver);
   try {
     await app.disableLog();
-    await app.onInit();
+    await app.onInit(now);
     await chargeDevice.onInit();
 
     await applyEmptyConfig(app);
@@ -122,7 +124,7 @@ async function testChargeControl() {
     chargeDevice.setTargetPower(1000);
 
     // 2) Start the plan, check that power is given at the right time
-    const callTime = new Date();
+    const callTime = new Date(now);
     callTime.setHours(3, 0, 0, 0);
     await chargeDevice.onChargingCycleStart(undefined, '10:00', 3, callTime);
     for (let i = 0; i < resultTable.length; i++) {
@@ -149,6 +151,10 @@ async function testChargeControl() {
       await app.onMeterUpdate(meterValue, meterTime);
       await app.onProcessPower(new Date(meterTime.getTime()));
     }
+
+    // Check the archive how much charging happened
+    //const archive = app.homey.settings.get('archive');
+    //console.log(JSON.stringify(archive));
   } finally {
     chargeDevice.onUninit();
     app.onUninit();
@@ -226,6 +232,7 @@ async function testConnectHelp() {
 // Start all tests
 async function startAllTests() {
   try {
+    useUrlOverride(true);
     await testCharset();
     await testDeviceInit();
     await testChargePlan();

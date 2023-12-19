@@ -17,11 +17,14 @@ const Homey = require('./homey');
 const PiggyBank = require('../app');
 const { TIMESPAN, roundToStartOfDay, timeToNextHour, toLocalTime, fromLocalTime, timeToNextSlot, timeSinceLastSlot, timeSinceLastLimiter, hoursInDay } = require('../common/homeytime');
 const { disableTimers, applyBasicConfig, applyStateFromFile, getAllDeviceId, writePowerStatus, setAllDeviceState, validateModeList, compareJSON, checkForTranslations } = require('./test-helpers');
+const { useUrlOverride, setUrlData } = require('./urllib');
 
 // Test Currency Converter
 // * Test that the date for the last currency fetched is recent... otherwise the API could have changed
+// * This test is partially doing the same as testCurrencies, so it should be safe to deprecate
 async function testCurrencyConverter() {
   console.log('[......] Currency Converter');
+  useUrlOverride(false);
   const now = new Date();
   const app = new PiggyBank();
   try {
@@ -38,6 +41,7 @@ async function testCurrencyConverter() {
   } finally {
     await app.onUninit();
   }
+  useUrlOverride(true);
   console.log('\x1b[1A[\x1b[32mPASSED\x1b[0m]');
 }
 
@@ -57,6 +61,7 @@ async function testApp() {
 // Test Entsoe Integration
 async function testEntsoe() {
   console.log('[......] Entsoe - Test today prices');
+  useUrlOverride(false);
   const app = new PiggyBank();
   try {
     await app.disableLog();
@@ -83,6 +88,7 @@ async function testEntsoe() {
   } finally {
     await app.onUninit();
   }
+  useUrlOverride(true);
   console.log('\x1b[1A[\x1b[32mPASSED\x1b[0m]');
 }
 
@@ -633,15 +639,17 @@ async function testTicket115() {
   const myrng = seedrandom(`mySeed${seed}`);
   console.log('[......] Test Github ticket #115: Main fuse');
   const app = new PiggyBank();
+  const now = new Date('October 22, 2022, 00:30:00 GMT+2:00');
   try {
     await app.disableLog();
     await applyStateFromFile(app, 'states/Frode_0.19.4_bug87.txt');
     app.homey.settings.set('toggleTime', 1);
     app.__deviceList = undefined;
-    await app.onInit();
     const futurePriceOptions = app.homey.settings.get('futurePriceOptions');
     futurePriceOptions.priceKind = c.PRICE_KIND_FIXED; // Turn off entsoe API price fetching
+    futurePriceOptions.priceRegion = 0;
     app.homey.settings.set('futurePriceOptions', futurePriceOptions);
+    await app.onInit(now);
 
     // Just load some random devices
     app.setLogLevel(c.LOG_DEBUG);
@@ -809,6 +817,7 @@ async function testLocalTime() {
 // Test the currency api
 async function testCurrencies() {
   console.log('[......] Test Currencies');
+  useUrlOverride(false);
   const app = new PiggyBank();
   const cur = await app.getCurrencies();
   if (!('NOK' in cur)) {
@@ -832,6 +841,7 @@ async function testCurrencies() {
       throw new Error(`Currency ${name} (${currency}) is too old (${ageDays.toFixed(2)} days : ${date})`);
     }
   }
+  useUrlOverride(true);
   console.log('\x1b[1A[\x1b[32mPASSED\x1b[0m]');
 }
 
@@ -840,13 +850,14 @@ async function testCurrencies() {
  */
 async function testTicket158NotControllingOther() {
   console.log('[......] Test that no uncontrolled devices are being controlled');
+  const now = new Date('October 1, 2022, 00:30:00 GMT+2:00');
   const stateDump = 'states/Frode_0.19.26.txt';
   const app = new PiggyBank();
   try {
     await app.disableLog();
     await applyStateFromFile(app, stateDump);
     await validateModeList(app);
-    await app.onInit();
+    await app.onInit(now);
     app.setLogLevel(c.LOG_DEBUG);
     await disableTimers(app);
     const devices = await getAllDeviceId(app);
