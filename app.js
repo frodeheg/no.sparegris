@@ -1996,7 +1996,8 @@ class PiggyBank extends Homey.App {
   async onRefreshInternals(isNewHour = true, now = new Date()) {
     if (+this.homey.settings.get('operatingMode') !== c.MODE_DISABLED) {
       await this.doPriceCalculations(now)
-        .then(() => this.rescheduleCharging(isNewHour, now))
+        .then(() => this.newRescheduleCharging(isNewHour, now))
+        .then(() => this.oldRescheduleCharging(isNewHour, now))
         .catch(err => {
           // Either the app is not configured yet or the utility price API is not installed, just ignore
           return Promise.resolve();
@@ -3086,7 +3087,7 @@ class PiggyBank extends Homey.App {
       chargerOptions.chargeEnd = endTimeUTC;
       this.homey.settings.set('chargerOptions', chargerOptions);
     }
-    await this.rescheduleCharging(false, now);
+    await this.oldRescheduleCharging(false, now);
     return Promise.resolve();
   }
 
@@ -3099,7 +3100,7 @@ class PiggyBank extends Homey.App {
     if (chargerOptions) {
       chargerOptions.chargeRemaining = 0;
       this.homey.settings.set('chargerOptions', chargerOptions);
-      this.rescheduleCharging(false);
+      this.oldRescheduleCharging(false);
     } else {
       this.__charge_plan = [];
       throw new Error('No charging cycle was to stop');
@@ -3108,9 +3109,25 @@ class PiggyBank extends Homey.App {
 
   /**
    * Called every hour to make sure the Charging is rescheduled most optimal.
+   * The signal is forwarded to each device
    * Whenever a new hour passes, must be called _after_ doPriceCalculations to get correct current_price_index
    */
-  async rescheduleCharging(isNewHour, now = new Date()) {
+  async newRescheduleCharging(isNewHour, now = new Date()) {
+    const chargerDriver = this.homey.drivers.getDriver('piggy-charger');
+    if (chargerDriver) {
+      const devices = chargerDriver.getDevices();
+      for (const index in devices) {
+        devices[index].rescheduleCharging(isNewHour, now);
+      }
+    }
+    return Promise.resolve();
+  }
+
+  /**
+   * Called every hour to make sure the Charging is rescheduled most optimal.
+   * Whenever a new hour passes, must be called _after_ doPriceCalculations to get correct current_price_index
+   */
+  async oldRescheduleCharging(isNewHour, now = new Date()) {
     const chargerOptions = this.homey.settings.get('chargerOptions');
     if (isNewHour) {
       const oldRemaining = chargerOptions.chargeRemaining;

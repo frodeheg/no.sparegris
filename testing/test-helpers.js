@@ -70,6 +70,43 @@ async function applyBasicPrices(app) {
   await app.doPriceCalculations(new Date(1672095600));
 }
 
+async function applyPriceScheme2(app) {
+  app.__all_prices = [
+    { time: 1688248800, price: 0.2 },
+    { time: 1688252400, price: 0.3 },
+    { time: 1688256000, price: 0.5 },
+    { time: 1688259600, price: 0.3 },
+    { time: 1688263200, price: 0.2 },
+    { time: 1688266800, price: 0.5 },
+    { time: 1688270400, price: 0.9 },
+    { time: 1688274000, price: 0.8 },
+    { time: 1688277600, price: 0.1 },
+    { time: 1688281200, price: 0.2 },
+    { time: 1688284800, price: 0.2 },
+    { time: 1688288400, price: 0.3 },
+    { time: 1688292000, price: 0.5 },
+    { time: 1688295600, price: 0.3 },
+    { time: 1688299200, price: 0.2 },
+    { time: 1688302800, price: 0.5 },
+    { time: 1688306400, price: 0.9 },
+    { time: 1688310000, price: 0.8 },
+    { time: 1688313600, price: 0.1 },
+    { time: 1688317200, price: 0.2 },
+    { time: 1688320800, price: 0.2 },
+    { time: 1688324400, price: 0.3 },
+    { time: 1688328000, price: 0.5 },
+    { time: 1688331600, price: 0.3 }
+  ];
+  /*app.__current_prices = [
+    0.2, 0.3, 0.5, 0.3, 0.2, 0.5, 0.9, 0.8, 0.1, 0.2,
+    0.2, 0.3, 0.5, 0.3, 0.2, 0.5, 0.9, 0.8, 0.1, 0.2,
+    0.2, 0.3, 0.5, 0.3];
+  app.__current_price_index = 3;*/
+  app.homey.settings.set('all_prices', app.__all_prices);
+  app.__current_price_index = 0;
+  await app.doPriceCalculations(new Date(app.__free_power_trigger_time.getTime()));
+}
+
 async function applyEmptyConfig(app, devices = []) {
   app.homey.settings.set('operatingMode', c.MODE_NORMAL);
   app.homey.settings.set('maxPower', [Infinity, 5000, Infinity, Infinity]);
@@ -468,6 +505,7 @@ module.exports = {
   disableTimers,
   addDevice,
   applyBasicPrices,
+  applyPriceScheme2,
   applyEmptyConfig,
   applyBasicConfig,
   applyStateFromFile,

@@ -1,3 +1,4 @@
+/* eslint-disable comma-dangle */
 /* eslint-disable no-multi-spaces */
 /* eslint-disable guard-for-in */
 /* eslint-disable no-restricted-syntax */
@@ -21,7 +22,7 @@ const ChargeDevice = require('../drivers/piggy-charger/device');
 const ChargeDriver = require('../drivers/piggy-charger/driver');
 // const { TIMESPAN, roundToStartOfDay, timeToNextHour, toLocalTime, fromLocalTime, timeToNextSlot, timeSinceLastSlot, timeSinceLastLimiter, hoursInDay } = require('../common/homeytime');
 // const { disableTimers, applyStateFromFile, getAllDeviceId, writePowerStatus, setAllDeviceState, validateModeList, compareJSON, checkForTranslations } = require('./test-helpers');
-const { applyBasicConfig, applyEmptyConfig, addDevice, applyBasicPrices } = require('./test-helpers');
+const { applyBasicConfig, applyEmptyConfig, addDevice, applyPriceScheme2 } = require('./test-helpers');
 const { useUrlOverride, setUrlData } = require('./urllib');
 
 // Test Device initialization
@@ -86,6 +87,7 @@ async function testChargeControl() {
   const app = new PiggyBank();
   const chargeDriver = new ChargeDriver('piggy-charger', app);
   const chargeDevice = new ChargeDevice(chargeDriver);
+  now.setHours(3, 0, 0, 0);
   try {
     await app.disableLog();
     await app.onInit(now);
@@ -111,13 +113,7 @@ async function testChargeControl() {
 
     app.app_is_configured = app.validateSettings();
 
-    // await applyBasicPrices(app);
-
-    app.__current_prices = [
-      0.2, 0.3, 0.5, 0.3, 0.2, 0.5, 0.9, 0.8, 0.1, 0.2,
-      0.2, 0.3, 0.5, 0.3, 0.2, 0.5, 0.9, 0.8, 0.1, 0.2,
-      0.2, 0.3, 0.5, 0.3];
-    app.__current_price_index = 3;
+    await applyPriceScheme2(app);
     const resultTable = [undefined, 3750, undefined, undefined, undefined, 3750, 3750];
 
     // 1) Set charger power when the plan is off, check that power is not given
@@ -125,7 +121,6 @@ async function testChargeControl() {
 
     // 2) Start the plan, check that power is given at the right time
     const callTime = new Date(now);
-    callTime.setHours(3, 0, 0, 0);
     await chargeDevice.onChargingCycleStart(undefined, '10:00', 3, callTime);
     for (let i = 0; i < resultTable.length; i++) {
       if (chargeDevice.__charge_plan[i] !== resultTable[i]) {
@@ -134,7 +129,7 @@ async function testChargeControl() {
     }
 
     // 3) Pass on time and check that the charger is signalled correctly
-    const numTicks = 10; // Number of ticks for the next 7 hours
+    const numTicks = 1000; // Number of ticks for the next 7 hours
     const intervalLength = resultTable.length * 60 * 60 * 1000;
     const tickLength = intervalLength / numTicks; // usec per tick
     const lastTime = new Date();
@@ -153,8 +148,11 @@ async function testChargeControl() {
     }
 
     // Check the archive how much charging happened
-    //const archive = app.homey.settings.get('archive');
-    //console.log(JSON.stringify(archive));
+    // Check keys: ["powUsage","charged"]
+    const archive = app.homey.settings.get('archive');
+    const hourKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+    //console.log(JSON.stringify(archive.powUsage.hourly[hourKey]));
+    //console.log(JSON.stringify(archive.charged.hourly[hourKey]));
   } finally {
     chargeDevice.onUninit();
     app.onUninit();

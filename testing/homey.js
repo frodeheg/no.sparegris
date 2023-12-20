@@ -8,6 +8,8 @@ const { PNG } = require('pngjs/browser');
 const manifest = require('../app.json');
 const env = require('../env.json');
 
+const drivers = {};
+
 /**
  * Fake settings class
  */
@@ -311,6 +313,24 @@ class FakeImagesClass {
 }
 
 /**
+ * Fake Drivers class
+ */
+class FakeDriversClass {
+
+  constructor(homey) {
+    this.homey = homey;
+  }
+
+  getDriver(driverId) {
+    if (driverId in drivers) {
+      return drivers[driverId];
+    }
+    throw new Error(`Driver Not Initialized: ${driverId}`);
+  }
+
+}
+
+/**
  * Fake Homey class
  */
 class FakeHomeyClass {
@@ -318,6 +338,7 @@ class FakeHomeyClass {
   constructor(app) {
     this.app = app;
     this.settings = new FakeSettingsClass(this);
+    this.drivers = new FakeDriversClass(this);
     this.api = new FakeApiClass(this);
     this.flow = new FakeFlowClass(this);
     this.clock = new FakeClockClass(this);
@@ -381,6 +402,7 @@ class Device {
     this.camera = {};
     this.data = {};
     this.settings = {};
+    driver.__addDevice(this);
   }
 
   getData() {
@@ -427,12 +449,22 @@ class Device {
 class Driver {
 
   constructor(driverId, app) {
+    this.devices = [];
     this.homey = app.homey;
     for (let i = 0; i < manifest.drivers.length; i++) {
       if (manifest.drivers[i].id === driverId) {
         this.manifest = manifest.drivers[i];
       }
     }
+    drivers[driverId] = this;
+  }
+
+  __addDevice(device) {
+    this.devices.push(device);
+  }
+
+  getDevices() {
+    return this.devices;
   }
 
 }
