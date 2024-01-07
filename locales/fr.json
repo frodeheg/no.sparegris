@@ -426,7 +426,12 @@
       "infoHeader": "Informations sur le contrôleur de charge",
       "imageHeader": "Sélectionner l'icône",
       "info1": "Cet appareil vous permettra de contrôler un chargeur de voiture avec Piggy.",
-      "info2": "Si votre chargeur est directement pris en charge, il sera répertorié dans l'écran suivant. Sinon, vous devez sélectionner le contrôleur basé sur le débit."
+      "info2": "Si votre chargeur est directement pris en charge, il sera répertorié dans l'écran suivant. Sinon, vous devez sélectionner le contrôleur basé sur le débit.",
+      "configureHeader": "Détails du chargeur",
+      "voltage": "Tension de charge",
+      "phases": "Nombre de phases",
+      "phase1": "1 Phase",
+      "phase3": "3 Phases"
     },
     "validation": {
       "heading": "L'appareil ne peut être utilisé avant que la check-list ci-dessous n'ait été complétée",

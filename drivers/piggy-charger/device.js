@@ -8,7 +8,7 @@
 const homeypath = ('testing' in global && testing) ? '../../testing/' : '';
 const { Device } = require(`${homeypath}homey`);
 const { Mutex } = require('async-mutex');
-const { TIMESPAN, toLocalTime, timeDiff } = require('../../common/homeytime');
+const { TIMESPAN, timeSinceLastLimiter, toLocalTime, timeDiff } = require('../../common/homeytime');
 const c = require('../../common/constants');
 const d = require('../../common/devices');
 const Textify = require('../../lib/textify');
@@ -55,7 +55,7 @@ class ChargeDevice extends Device {
     // Make short access to device data
     const data = this.getData();
     this.targetDriver = data.targetDriver;
-    if (this.targetDriver) {
+    if (this.targetDriver) {
       console.log(`Controller will use direct access for ${this.targetDriver} (Device ID: ${data.id})`);
       this.targetId = data.id;
       this.targetDef = d.DEVICE_CMD[this.targetDriver];
@@ -251,6 +251,7 @@ class ChargeDevice extends Device {
   async setChargerPower(power, fromFlow = true) {
     return this.rejectSetterIfRedundant(fromFlow, 'measurePowerCap')
       .then(() => {
+        if (+power < 0) power = 0;
         this.setCapabilityValue('measure_power', +power);
         this.updateSettingsIfValidationCycle('GotSignalWatt', 'True');
         return Promise.resolve(+power);
@@ -261,11 +262,17 @@ class ChargeDevice extends Device {
    * Sets the target power (called internally when the target power capability changes)
    */
   async setTargetPower(power) {
+    // Filter the new target power with the charge plan
+    const allowPower = this.__charge_plan[0] > 0;
+    const filteredPower = allowPower ? +power : 0;
     // Report power to device trigger
-    const changeChargingPowerTrigger = this.homey.flow.getDeviceTriggerCard('charger-change-target-power');
-    const tokens = { offeredPower: +power };
-    changeChargingPowerTrigger.trigger(this, tokens);
-    return Promise.resolve(+power);
+    if (!this.targetDriver) {
+      // Only send trigger for flow devices
+      const changeChargingPowerTrigger = this.homey.flow.getDeviceTriggerCard('charger-change-target-power');
+      const tokens = { offeredPower: filteredPower };
+      changeChargingPowerTrigger.trigger(this, tokens);
+    }
+    return Promise.resolve(filteredPower);
   }
 
   /**
@@ -652,22 +659,19 @@ class ChargeDevice extends Device {
       const currentHour = this.homey.app.__current_price_index;
       const currentPrices = this.homey.app.__current_prices;
       const currentCost = (currentHour in currentPrices) ? currentPrices[currentHour] : 0;
-      this.moneySpentTotal += this.__offeredEnergy * currentCost;
+      const pastEnergy = (this.__past_plan.length === 0) ? 0 : this.__past_plan.slice(-1);
+      this.moneySpentTotal += pastEnergy * currentCost;
       this.setStoreValue('moneySpentTotal', this.moneySpentTotal);
       this.setCapabilityValue('piggy_moneypile', this.moneySpentTotal);
 
       const oldRemaining = this.cycleRemaining;
       if (this.cycleType === c.OFFER_ENERGY) {
-        this.cycleRemaining -= this.__offeredEnergy;
-        this.__offeredEnergy = 0;
-        this.__past_plan.push(this.__offeredEnergy);
+        this.cycleRemaining -= pastEnergy;
       } else if (this.__charge_plan[0] > 0) {
         // OFFER_HOURS - Only subtract for active hours
         this.cycleRemaining -= 1;
-        this.__past_plan.push(true);
       } else {
         // OFFER HOURS - Inactive hours
-        this.__past_plan.push(false);
       }
       const startIndex = (now.getHours() - this.cycleStart.getHours() + 24) % 24;
       for (let loop = 0; loop < 24; loop++) {
@@ -697,7 +701,45 @@ class ChargeDevice extends Device {
       scheduleRemaining -= this.cycleType === c.OFFER_ENERGY ? estimatedPower : 1;
     }
     this.setCapabilityValue('measure_battery.charge_cycle', 100 * (1 - ((this.cycleTotal - this.cycleRemaining) / this.cycleRemaining)));
+
+    if (isNewHour) {
+      // Re-apply the charge on/off since the plan is recalculated
+      const oldTargetPower = this.getCapabilityValue('target_power');
+      await this.setTargetPower(oldTargetPower);
+    }
+
     return Promise.resolve();
+  }
+
+  /**
+   * Return and reset the offered energy since last time called (called once per hour)
+   * Always called before rescheduleCharging
+   */
+  async getOfferedEnergy(now = new Date()) {
+    // Abort if the timestamp is from the past
+    if (this.__previousTime && now < this.__previousTime) return Promise.resolve(0);
+    // Find time spent before and after the timestamp
+    const lapsedTime = this.__previousTime ? (now - this.__previousTime) : 0;
+    const lapsedTimeWithinLimit = timeSinceLastLimiter(now, TIMESPAN.HOUR, this.homey);
+    const lapsedTimeAfter = (lapsedTime > lapsedTimeWithinLimit) ? lapsedTimeWithinLimit : lapsedTime;
+    const lapsedTimeBefore = lapsedTime - lapsedTimeAfter;
+
+    // Find energy used before the hour mark
+    const currentPower = await this.getPower();
+    const deltaEnergyBefore = currentPower * (lapsedTimeBefore / (1000 * 60 * 60));
+
+    // Store energy at hour mark
+    const pastEnergy = this.__offeredEnergy + deltaEnergyBefore;
+    this.__past_plan.push(pastEnergy);
+
+    // Find energy used after the hour mark
+    const deltaEnergyAfter = currentPower * (lapsedTimeAfter / (1000 * 60 * 60));
+
+    // Initiate offered energy for the next hour
+    this.__previousTime = now;
+    this.__offeredEnergy = deltaEnergyAfter;
+
+    return Promise.resolve(pastEnergy);
   }
 
   /**
@@ -725,7 +767,6 @@ class ChargeDevice extends Device {
    * Called whenever we can process the new power situation
    */
   async onProcessPower(now = new Date()) {
-    console.log('Processing power....');
     // 1) Update charger state for non-flow devices
     if (this.targetDriver) {
       await this.getState();
@@ -915,11 +956,18 @@ class ChargeDevice extends Device {
       });
 */
 
+    // Update energy used
+    const lapsedTime = this.__previousTime ? (now - this.__previousTime) : 0;
+    const timeDelta = lapsedTime / (1000 * 60 * 60);
+    const currentPower = await this.getPower();
+    const deltaEnergy = currentPower * timeDelta;
+    this.__previousTime = now;
+    this.__offeredEnergy += deltaEnergy;
+
     // Update money spent
     const currentHour = this.homey.app.__current_price_index;
     const currentPrices = this.homey.app.__current_prices;
     const currentCost = (currentHour in currentPrices) ? currentPrices[currentHour] : 0;
-    const deltaEnergy = 0; // TODO TODO TODO TODO TODO
     this.moneySpentThisCycle += deltaEnergy * currentCost;
     this.setCapabilityValue('piggy_money', this.moneySpentThisCycle);
     this.setCapabilityValue('piggy_moneypile', this.moneySpentTotal + this.moneySpentThisCycle);
@@ -979,10 +1027,33 @@ class ChargeDevice extends Device {
   }
 
   /**
-   * Changes the power
+   * Returns the power target
    */
-  async changePower(powerChange, now = new Date()) {
-    console.log(`Got Changepower ${powerChange}`);
+  getTargetPower() {
+    return this.getCapabilityValue('target_power');
+  }
+
+  /**
+   * Called by the app internally to changes the target power
+   */
+  async changePowerInternal(powerChange, now = new Date()) {
+    const oldTarget = this.getTargetPower() || 0;
+    let newTarget = oldTarget + powerChange;
+    const phases = +(await this.getSetting('phases'));
+    const voltage = +(await this.getSetting('voltage'));
+    const maxCurrent = await this.getSetting('maxCurrent');
+    const maxPower = maxCurrent * voltage * (phases === 3 ? 1.732 : 1);
+    if (newTarget > maxPower) {
+      newTarget = maxPower;
+    }
+    this.setCapabilityValue('target_power', newTarget);
+    await this.setTargetPower(newTarget);
+
+    //console.log(this.targetDriver);
+    //console.log(this.targetDef);
+    const noChange = (powerChange === 0) || ((oldTarget >= maxPower) && (newTarget >= maxPower));
+    const success = true;
+    return Promise.resolve([success, noChange]);
   }
 
 }

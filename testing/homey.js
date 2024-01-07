@@ -143,6 +143,29 @@ class FakeTriggerCardClass {
 }
 
 /**
+ * Fake Device Trigger card class
+ */
+class FakeDeviceTriggerCardClass {
+
+  constructor(homey, name) {
+    this.homey = homey;
+    this.name = name;
+    if (this.homey.__debug) console.log('TBD: Implement FakeTriggerCard');
+  }
+
+  registerRunListener(callback) {
+    if (this.homey.__debug) console.log('TBD: Implement registerRunListener');
+  }
+
+  trigger(device, tokens) {
+    if (device.triggers && (this.name in device.triggers)) {
+      device.triggers[this.name](device, tokens);
+    }
+  }
+
+}
+
+/**
  * Fake Action card class
  */
 class FakeActionCardClass {
@@ -150,15 +173,24 @@ class FakeActionCardClass {
   constructor(homey, name) {
     this.homey = homey;
     this.name = name;
-    if (this.homey.__debug) console.log('TBD: Implement FakeActionCard');
+    this.callback = null;
   }
 
   registerRunListener(callback) {
-    if (this.homey.__debug) console.log('TBD: Implement registerRunListener');
+    this.callback = callback;
   }
 
   registerArgumentAutocompleteListener(callback) {
     if (this.homey.__debug) console.log('TBD: Implement registerArgumentAutocompleteListener (action)');
+  }
+
+  // Internal function for triggering in test environment
+  triggerAction(args) {
+    if (this.callback) {
+      this.callback(args);
+    } else {
+      console.log('WARNING: Trying to trigger an action that has not been connected yet');
+    }
   }
 
 }
@@ -191,22 +223,38 @@ class FakeFlowClass {
 
   constructor(homey) {
     this.homey = homey;
+    this.triggerCards = {};
+    this.actionCards = {};
+    this.conditionCards = {};
+    this.deviceConditionCards = {};
   }
 
   getTriggerCard(name) {
-    return new FakeTriggerCardClass(this.homey, name);
+    if (!(name in this.triggerCards)) {
+      this.triggerCards[name] = new FakeTriggerCardClass(this.homey, name);
+    }
+    return this.triggerCards[name];
   }
 
   getActionCard(name) {
-    return new FakeActionCardClass(this.homey, name);
+    if (!(name in this.actionCards)) {
+      this.actionCards[name] = new FakeActionCardClass(this.homey, name)
+    }
+    return this.actionCards[name];
   }
 
   getConditionCard(name) {
-    return new FakeConditionCardClass(this.homey, name);
+    if (!(name in this.conditionCards)) {
+      this.conditionCards[name] = new FakeConditionCardClass(this.homey, name);
+    }
+    return this.conditionCards[name];
   }
 
   getDeviceTriggerCard(name) {
-    return new FakeTriggerCardClass(this.homey, name);
+    if (!(name in this.deviceConditionCards)) {
+      this.deviceConditionCards[name] = new FakeDeviceTriggerCardClass(this.homey, name);
+    }
+    return this.deviceConditionCards[name];
   }
 
 }
@@ -402,11 +450,48 @@ class Device {
     this.camera = {};
     this.data = {};
     this.settings = {};
+    this.triggers = {};
+    this.driverId = `homey:app:${manifest.id}:${driver.driverId}`;
+
+    // Create default settings
+    for (let i = 0; i < manifest.drivers.length; i++) {
+      if (manifest.drivers[i].id !== driver.driverId) continue;
+      this.setDefaultSettings(manifest.drivers[i].settings);
+    }
+
     driver.__addDevice(this);
   }
 
+  // Internal functions
+  setData(newData) {
+    this.data = { ...newData };
+  }
+
+  setDefaultSettings(settings) {
+    for (let i = 0; i < settings.length; i++) {
+      if (settings[i].type === 'group') {
+        this.setDefaultSettings(settings[i].children);
+      } else {
+        this.settings[settings[i].id] = settings[i].value;
+      }
+    }
+  }
+
+  setSettings(newSettings) {
+    this.settings = { ...this.settings, ...newSettings };
+  }
+
+  registerTrigger(name, func) {
+    this.triggers[name] = func;
+  }
+
+  // Public functions
   getData() {
     return this.data;
+  }
+
+  getSetting(setting) {
+    return this.settings[setting];
   }
 
   getSettings() {
@@ -451,6 +536,7 @@ class Driver {
   constructor(driverId, app) {
     this.devices = [];
     this.homey = app.homey;
+    this.driverId = driverId;
     for (let i = 0; i < manifest.drivers.length; i++) {
       if (manifest.drivers[i].id === driverId) {
         this.manifest = manifest.drivers[i];

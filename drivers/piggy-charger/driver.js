@@ -32,6 +32,12 @@ class ChargeDriver extends Driver {
     const randomId = `${randHex()}-${randHex()}-${randHex()}-${randHex()}`;
     const devicelist = [];
 
+    // Default setting-values, changed during pairing
+    const defaultSettings = {
+      voltage: 220,
+      phases: 1
+    };
+
     // First entry is a new flow based charge controller
     // There can be many of this, hence a random id
     const flowDevice = {
@@ -40,7 +46,8 @@ class ChargeDriver extends Driver {
       data: {
         id: randomId,
         targetDriver: null
-      }
+      },
+      settings: defaultSettings
       //   store: {
       //     address: '127.0.0.1',
       //   },
@@ -60,7 +67,8 @@ class ChargeDriver extends Driver {
           data: {
             id: deviceId,
             targetDriver: driverId
-          }
+          },
+          settings: defaultSettings
         };
         devicelist.push(deviceCharger);
       }

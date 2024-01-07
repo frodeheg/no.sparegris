@@ -1,3 +1,4 @@
+/* eslint-disable comma-dangle */
 /* eslint-disable max-classes-per-file */
 /* eslint-disable no-console */
 
@@ -128,6 +129,10 @@ class FakeDevicesClass {
     }
   }
 
+  clearFakeDevices() {
+    this.fakeDevices = {};
+  }
+
   addRealDevice(device, zoneId, deviceId = undefined) {
     device.capabilitiesObj = {};
     device.homey = this.homey;
@@ -136,7 +141,7 @@ class FakeDevicesClass {
     device.reliability = 1;
     device.manifest = null; // TODO
     // this.driverUri = 'homey:app:unknown';
-    device.driverId = 'homey:app:unknown:unknown';
+    if (!('driverId' in device)) device.driverId = 'homey:app:unknown:unknown';
     device.id = deviceId;
     device.capabilitiesObj = {}; // TODO
     device.capabilities = Object.keys(device.capabilitiesObj);
@@ -206,7 +211,7 @@ const HomeyAPI = {
   async createAppAPI({ homey }) {
     return new HomeyAPIApp(homey);
   }
-}
+};
 
 module.exports = {
   HomeyAPI

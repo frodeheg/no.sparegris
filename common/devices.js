@@ -609,6 +609,7 @@ const DEVICE_CMD = {
   'no.sparegris:piggy-bank-insights': DEFAULT_IGNORED,
   'no.sparegris:piggy-charger': {
     type: DEVICE_TYPE.CHARGE_CONTROLLER,
+    setOnOffCap: null,
     setPowerCap: 'target_power'
   },
   'no.thermofloor:TF_Thermostat': {

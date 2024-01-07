@@ -426,7 +426,12 @@
       "infoHeader": "Ladekontrollerinfo",
       "imageHeader": "Velg ikon",
       "info1": "Denne enheten lar deg kontrollere en billader med Sparegris.",
-      "info2": "Hvis laderen din støttes direkte, vil den bli oppført i neste steg. Hvis ikke må du velge den flytbaserte kontrolleren."
+      "info2": "Hvis laderen din støttes direkte, vil den bli oppført i neste steg. Hvis ikke må du velge den flytbaserte kontrolleren.",
+      "configureHeader": "Laderdetaljer",
+      "voltage": "Ladespenning",
+      "phases": "Antall faser",
+      "phase1": "1 fase",
+      "phase3": "3 faser"
     },
     "validation": {
       "heading": "Enheten kan ikke brukes før sjekklisten nedenfor er fullført",

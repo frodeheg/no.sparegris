@@ -852,6 +852,9 @@ class PiggyBank extends Homey.App {
     if (this.homey.settings.get('ACMode') === null) {
       this.homey.settings.set('ACMode', c.ACMODE.UNCHANGED);
     }
+    if (this.homey.settings.get('mainFuse') === null) {
+      this.homey.settings.set('mainFuse', 63);
+    }
     let futurePriceOptions = this.homey.settings.get('futurePriceOptions');
     if (!futurePriceOptions
       || !('minCheapTime' in futurePriceOptions)
@@ -1571,7 +1574,7 @@ class PiggyBank extends Homey.App {
   async replaceArchiveValueRelay(param, timespan, slot, item, value) {
     return replaceArchiveValue(this.homey, param, timespan, slot, item, value);
   }
-  
+
   /**
    * Adjusts the power usage for a charger controller
    * Note that this function is already throttled by onBelowPowerLimit such that it will not increase power
@@ -1594,16 +1597,7 @@ class PiggyBank extends Homey.App {
 
     if (this.logUnit === deviceId) this.updateLog(`attempt changeControllerPower(${powerChange}) for ${device.name}`, c.LOG_ALL);
 
-    if (device.capabilitiesObj === null) {
-      this.updateLog('Controller device capability list missing', c.LOG_ERROR);
-      this.__current_state[deviceId].nComError += 10; // This should not happen
-      this.updateReliability(deviceId, 0);
-      if (this.logUnit === deviceId) this.updateLog(`abort changeControllerPower() for ${device.name} due to Homey API issues (Homey busy?)`, c.LOG_ALL);
-      return Promise.resolve([false, false]);
-    }
-
-    device.changePower(powerChange, now);
-    console.log("XXXXX");
+    return device.changePowerInternal(powerChange, now);
   }
 
   /**
@@ -2198,7 +2192,7 @@ class PiggyBank extends Homey.App {
       }
     }
 
-    const mainFuse = +this.homey.settings.get('mainFuse'); // Amps
+    const mainFuse = +this.homey.settings.get('mainFuse') || 63; // Amps
     const maxDrain = Math.round(1.732050808 * 230 * mainFuse);
     const maxFreeDrain = ((isNumber(maxDrain) && (maxDrain > 0)) ? maxDrain : (trueMaxPower * 10)) - this.__current_power;
     if (minPowerDiff > maxFreeDrain) {
@@ -2451,7 +2445,7 @@ class PiggyBank extends Homey.App {
                 // console.log(`new (M) ${String(Math.floor(this.__energy_last_slot)).padStart(5,' ')} : ${prevSlotTime} : ${this.__accum_energy[limitIdx]} : ${newMissingPowerMinutes}`);
                 this.__pendingOnNewSlot.push({
                   accumEnergy: Math.round(this.__energy_last_slot),
-                  offeredEnergy: Math.round(this.__offeredEnergy),
+                  offeredEnergy: Math.round(this.__offeredEnergy) + await this.getOfferedEnergy(endPrevSlot),
                   missingMinutes: newMissingPowerMinutes,
                   time: prevSlotTime.getTime()
                 });
@@ -2586,7 +2580,7 @@ class PiggyBank extends Homey.App {
             // console.log(`new (P) ${String(Math.floor(this.__energy_last_slot)).padStart(5,' ')} : ${this.__current_power_time} : ${this.__accum_energy[limitIdx]} + ${this.__pendingEnergy[limitIdx]} + ${this.__fakeEnergy[limitIdx]}`);
             this.__pendingOnNewSlot.push({
               accumEnergy: Math.round(this.__energy_last_slot),
-              offeredEnergy: Math.round(this.__offeredEnergy + (fakePower ? energyOffered : 0)),
+              offeredEnergy: Math.round(this.__offeredEnergy + (fakePower ? energyOffered : 0)) + await this.getOfferedEnergy(now),
               missingMinutes: this.__missing_power_this_slot + (fakePower ? newMissingMinutes : 0),
               time: prevSlotTime.getTime()
             });
@@ -3121,6 +3115,21 @@ class PiggyBank extends Homey.App {
       }
     }
     return Promise.resolve();
+  }
+
+  /**
+   * Assembles the offered energy since last calling
+   */
+  async getOfferedEnergy(now = new Date()) {
+    let energyAccumulated = 0;
+    const chargerDriver = this.homey.drivers.getDriver('piggy-charger');
+    if (chargerDriver) {
+      const devices = chargerDriver.getDevices();
+      for (const index in devices) {
+        energyAccumulated += await devices[index].getOfferedEnergy(now);
+      }
+    }
+    return Promise.resolve(Math.round(energyAccumulated));
   }
 
   /**

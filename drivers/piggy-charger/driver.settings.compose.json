@@ -138,6 +138,51 @@
   {
     "type": "group",
     "label": {
+      "en": "Device configuration",
+      "no": "Enhetskonfigurasjon",
+      "nl": "Apparaat configuratie",
+      "fr": "Configuration de l'appareil"
+    },
+    "children": [
+      {
+        "id": "voltage",
+        "type": "label",
+        "label": {
+          "en": "Charging voltage",
+          "no": "Ladespenning",
+          "nl": "Laadspanning",
+          "fr": "Tension de charge"
+        },
+        "hint": {
+          "en": "The charging should be performed at this voltage.",
+          "no": "Ladingen skal utføres ved denne spenningen.",
+          "nl": "Het opladen moet bij deze spanning worden uitgevoerd.",
+          "fr": "La charge doit être effectuée à cette tension."
+        },
+        "value": "-"
+      },
+      {
+        "id": "phases",
+        "type": "label",
+        "label": {
+          "en": "Number of phases",
+          "no": "Antall faser",
+          "nl": "Aantal fasen",
+          "fr": "Nombre de phases"
+        },
+        "hint": {
+          "en": "Number of phases the charge must use.",
+          "no": "Antall faser ladingen skal bruke.",
+          "nl": "Aantal fasen dat de lading moet gebruiken.",
+          "fr": "Nombre de phases que la charge doit utiliser."
+        },
+        "value": "-"
+      }
+    ]
+  },
+  {
+    "type": "group",
+    "label": {
       "en": "Response settings",
       "no": "Responsinnstillinger",
       "nl": "Reactie-instellingen",

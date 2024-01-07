@@ -426,7 +426,12 @@
       "infoHeader": "Informatie over laadcontroller",
       "imageHeader": "Selecteer pictogram",
       "info1": "Met dit apparaat kunt u een autolader met varkentje bedienen.",
-      "info2": "Als uw lader direct wordt ondersteund, wordt deze in het volgende scherm weergegeven. Als dit niet het geval is, moet u de flowgebaseerde controller selecteren."
+      "info2": "Als uw lader direct wordt ondersteund, wordt deze in het volgende scherm weergegeven. Als dit niet het geval is, moet u de flowgebaseerde controller selecteren.",
+      "configureHeader": "Opladergegevens",
+      "voltage": "Laadspanning",
+      "phases": "Aantal fasen",
+      "phase1": "1 Fase",
+      "phase3": "3 Fasen"
     },
     "validation": {
       "heading": "Het apparaat kan pas worden gebruikt als onderstaande checklist is ingevuld",

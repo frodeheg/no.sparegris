@@ -137,6 +137,12 @@
     {
       "id": "select_image",
       "navigation": {
+        "next": "configure_device"
+      }
+    },
+    {
+      "id": "configure_device",
+      "navigation": {
         "next": "add_devices"
       }
     },

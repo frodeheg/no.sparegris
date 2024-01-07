@@ -91,68 +91,100 @@ async function testChargeControl() {
   try {
     await app.disableLog();
     await app.onInit(now);
+    await chargeDevice.setData({ targetDriver: null, id: 'FLOW' });
+    await chargeDevice.setSettings({ phases: 1, voltage: 220 });
+    // await chargeDevice.setData({ targetDriver: 'com.tesla.charger:Tesla', id: 'TESLA-DEVICEID' });
+    // await chargeDevice.setData({ targetDriver: 'com.zaptec:go', id: 'ZAPTEC-DEVICEID' });
+    // await chargeDevice.setData({ targetDriver: 'no.easee:charger', id: 'EASEE-DEVICEID' });
+    // await chargeDevice.setSettings({ startCurrent: 11, stopCurrent: 0, pauseCurrent: 4, minCurrent: 7, maxCurrent: 12 });
     await chargeDevice.onInit();
+    clearTimeout(chargeDevice.__powerProcessID);
+    chargeDevice.__powerProcessID = undefined;
 
     await applyEmptyConfig(app);
+    app.homey.settings.set('maxPower', [Infinity, 10000, Infinity, Infinity]);
     const zoneHomeId = app.homeyApi.zones.addZone('Home');
     await addDevice(app, chargeDevice, 'device_a', zoneHomeId);
     app.homey.settings.set('frostList', { device_a: { minTemp: 3 } });
     app.homey.settings.set('modeList', [
-      [{ id: 'device_a', operation: c.CONTROLLED, targetTemp: 24 }], // Normal
-      [{ id: 'device_a', operation: c.CONTROLLED, targetTemp: 24 }], // Night
-      [{ id: 'device_a', operation: c.CONTROLLED, targetTemp: 24 }], // Away
+      [{ id: 'device_a', operation: c.MAIN_OP.CONTROLLED, targetTemp: 24 }], // Normal
+      [{ id: 'device_a', operation: c.MAIN_OP.CONTROLLED, targetTemp: 24 }], // Night
+      [{ id: 'device_a', operation: c.MAIN_OP.CONTROLLED, targetTemp: 24 }], // Away
     ]);
     app.homey.settings.set('priceActionList', [
-      { device_a: { operation: c.TURN_ON } },
-      { device_a: { operation: c.TURN_ON } },
-      { device_a: { operation: c.TURN_ON } },
-      { device_a: { operation: c.TURN_ON } },
-      { device_a: { operation: c.TURN_ON } }]);
+      { device_a: { operation: c.TARGET_OP.TURN_ON } },
+      { device_a: { operation: c.TARGET_OP.TURN_ON } },
+      { device_a: { operation: c.TARGET_OP.TURN_ON } },
+      { device_a: { operation: c.TARGET_OP.TURN_ON } },
+      { device_a: { operation: c.TARGET_OP.TURN_ON } }]);
 
     await app.createDeviceList();
 
     app.app_is_configured = app.validateSettings();
 
     await applyPriceScheme2(app);
-    const resultTable = [undefined, 3750, undefined, undefined, undefined, 3750, 3750];
+    const correctPlan = [undefined, 7500, undefined, undefined, undefined, 7500, 7500];
 
     // 1) Set charger power when the plan is off, check that power is not given
-    chargeDevice.setTargetPower(1000);
+    let chargerPower = 1000;
+    await chargeDevice.registerTrigger('charger-change-target-power', (chargeDevice, tokens) => {
+      // This is where:
+      // 1) A flow would route the trigger to a charger
+      // 2) The charger would change the power as instructed
+      // 3) The change of charger power will be noticed and sent back to piggy
+      const powerFeedback = app.homey.flow.getActionCard('charger-change-power');
+      powerFeedback.triggerAction({ device: chargeDevice, power: tokens.offeredPower });
+    });
+    chargeDevice.setTargetPower(chargerPower);
 
     // 2) Start the plan, check that power is given at the right time
     const callTime = new Date(now);
     await chargeDevice.onChargingCycleStart(undefined, '10:00', 3, callTime);
-    for (let i = 0; i < resultTable.length; i++) {
-      if (chargeDevice.__charge_plan[i] !== resultTable[i]) {
-        throw new Error(`Charging schedule failed, Hour +${i} observed ${chargeDevice.__charge_plan[i]}, wanted: ${resultTable[i]}`);
+    for (let i = 0; i < correctPlan.length; i++) {
+      if (chargeDevice.__charge_plan[i] !== correctPlan[i]) {
+        throw new Error(`Charging schedule failed, Hour +${i} observed ${chargeDevice.__charge_plan[i]}, wanted: ${correctPlan[i]}`);
       }
     }
 
     // 3) Pass on time and check that the charger is signalled correctly
     const numTicks = 1000; // Number of ticks for the next 7 hours
-    const intervalLength = resultTable.length * 60 * 60 * 1000;
+    const intervalLength = correctPlan.length * 60 * 60 * 1000;
     const tickLength = intervalLength / numTicks; // usec per tick
     const lastTime = new Date();
     const meterTime = new Date(callTime.getTime());
-    const meterPower = 4000;
-    let meterValue = (meterPower / 1000) * ((meterTime - callTime) / 3600000);
+    const baseMeterPower = 4000;
+    let meterValue = ((baseMeterPower + chargerPower) / 1000) * ((meterTime - callTime) / 3600000);
 
     await app.onMeterUpdate(meterValue, meterTime);
     await app.onProcessPower(meterTime);
     for (let tick = 1; tick <= numTicks; tick++) {
       lastTime.setTime(meterTime.getTime());
       meterTime.setTime(callTime.getTime() + tickLength * tick);
-      meterValue += (meterPower / 1000) * ((meterTime - lastTime) / 3600000);
+      // console.log(`Tick ${tick}: ${meterTime}`);
+      chargerPower = chargeDevice.getCapabilityValue('measure_power');
+      // console.log(`chargepower: ${meterTime} : ${chargerPower} : ${baseMeterPower}`);
+      meterValue += ((baseMeterPower + chargerPower) / 1000) * ((meterTime - lastTime) / 3600000);
       await app.onMeterUpdate(meterValue, meterTime);
       await app.onProcessPower(new Date(meterTime.getTime()));
+      await chargeDevice.onProcessPower(new Date(meterTime.getTime()));
     }
 
     // Check the archive how much charging happened
     // Check keys: ["powUsage","charged"]
     const archive = app.homey.settings.get('archive');
     const hourKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
-    //console.log(JSON.stringify(archive.powUsage.hourly[hourKey]));
-    //console.log(JSON.stringify(archive.charged.hourly[hourKey]));
+    const correctTotal = [undefined, undefined, undefined, 3983, 9955, 3994, 3988, 3992, 9991, 9935];
+    const correctCharged = [undefined, undefined, undefined, 0, 5982, 0, 0, 0, 6018, 6001];
+    // console.log(JSON.stringify(archive.powUsage.hourly[hourKey]));
+    // console.log(JSON.stringify(archive.charged.hourly[hourKey]));
+    for (let i = 0; i < correctPlan.length; i++) {
+      if (archive.powUsage.hourly[hourKey][i] !== correctTotal[i]) {
+        throw new Error(`Measured total power failed, Hour +${i} observed ${archive.powUsage.hourly[hourKey][i]}, wanted: ${correctTotal[i]}`);
+      }
+      if (archive.charged.hourly[hourKey][i] !== correctCharged[i]) {
+        throw new Error(`Measured charged energy failed, Hour +${i} observed ${archive.charged.hourly[hourKey][i]}, wanted: ${correctCharged[i]}`);
+      }
+    }
   } finally {
     chargeDevice.onUninit();
     app.onUninit();
@@ -179,10 +211,10 @@ async function testCharset() {
   // Find languages
   const files = fs.readdirSync('../locales/');
   const validLetters = {
-    'en.json': 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ .,-+/*"\'',
-    'no.json': 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ .,-+/*"\'øæåØÆÅ',
-    'nl.json': 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ .,-+/*"\'',
-    'fr.json': 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ .,-+/*"\'éàèùçâêîôûëïüÉÀÈÙÇÂÊÎÔÛËÏÜ',
+    'en.json': '1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ .,-+/*"\'',
+    'no.json': '1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ .,-+/*"\'øæåØÆÅ',
+    'nl.json': '1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ .,-+/*"\'',
+    'fr.json': '1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ .,-+/*"\'éàèùçâêîôûëïüÉÀÈÙÇÂÊÎÔÛËÏÜ',
   };
   for (const idx in files) {
     const fileName = `../locales/${files[idx]}`;

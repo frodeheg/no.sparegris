@@ -125,6 +125,7 @@ async function applyEmptyConfig(app, devices = []) {
   const fakeDevices = devices;
   const zoneHomeId = app.homeyApi.zones.addZone('Home');
   const zoneHereId = app.homeyApi.zones.addZone('Here', null, zoneHomeId);
+  await app.homeyApi.devices.clearFakeDevices();
   await app.homeyApi.devices.addFakeDevices(fakeDevices, zoneHereId);
 
   app.homey.settings.set('frostList', {});
@@ -207,6 +208,7 @@ async function applyBasicConfig(app) {
   ];
   const zoneHomeId = app.homeyApi.zones.addZone('Home');
   const zoneGangId = app.homeyApi.zones.addZone('Gang', null, zoneHomeId);
+  await app.homeyApi.devices.clearFakeDevices();
   await app.homeyApi.devices.addFakeDevices(fakeDevices, zoneGangId);
   await app.createDeviceList(); // To initialize app.__current_state[...]
   app.app_is_configured = app.validateSettings();
