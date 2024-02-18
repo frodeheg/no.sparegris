@@ -251,6 +251,8 @@ const DEVICE_CMD = {
   'com.fibaro:FGS-213': DEFAULT_SWITCH,
   'com.fibaro:FGWPE-101': DEFAULT_SWITCH,
   'com.fibaro:FGWPx-102-PLUS': DEFAULT_SWITCH,
+  'com.frient:EMIZB-132': DEFAULT_METER,
+  'com.frient:SPLZB-13x': DEFAULT_SWITCH,
   'com.gardena:water-control': DEFAULT_IGNORED,
   'com.gree:gree_cooper_hunter_hvac': {
     ...DEFAULT_AC,
@@ -469,6 +471,13 @@ const DEVICE_CMD = {
     tempMax: 35,
     default: false
   },
+  'net.filllip-namron:4512737': {
+    ...DEFAULT_HEATER,
+    tempMin: 4,
+    tempMax: 35,
+    tempStep: 0.5,
+    default: false
+  },
   'net.filllip-namron:4512744': {
     ...DEFAULT_HEATER,
     tempMin: 4,
@@ -597,6 +606,18 @@ const DEVICE_CMD = {
     tempMax: 85,
     tempStep: 0.5
   },
+  /* 'no.osoincharge:water-heater': {  // ADD ONCE onoff and target_temperature is added
+    type: DEVICE_TYPE.WATERHEATER,
+
+    setOnOffCap: 'onoff',
+    setOnValue: true,
+    setOffValue: false,
+    readTempCap: 'measure_temperature',
+    setTempCap: 'target_temperature',
+    tempMin: 20,
+    tempMax: 85,
+    tempStep: 0.5
+  }, */
   'no.sparegris:piggy-bank-insights': DEFAULT_IGNORED,
   'no.thermofloor:TF_Thermostat': {
     type: DEVICE_TYPE.HEATER,
