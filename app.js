@@ -2879,7 +2879,8 @@ class PiggyBank extends Homey.App {
         order = this.__current_state[a.id].nComError
         - this.__current_state[b.id].nComError;
       } catch (err) {
-        console.log('Test environment error: Most likely you forgot to set app.__deviceList');
+        this.updateLog('A controllable device does not exist anymore... please enter the app settings and save to fix the problem.', c.LOG_ERROR);
+        console.log('(if using the test environment: Most likely you forgot to set app.__deviceList');
         order = 0; // Should only happen when loading old states from files
       }
       return order;
