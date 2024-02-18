@@ -380,6 +380,9 @@ function compareJSON(ref, obj, base = '') {
     if (typeof ref[key] !== typeof obj[key]) {
       throw new Error(`Object type of key ${base}.${key} is invalid`);
     }
+    if (Array.isArray(ref[key]) || Array.isArray(obj[key])) {
+      throw new Error(`Cannot have array objects in json for key ${base}.${key} (HP2023 displays this incorrectly)`);
+    }
     if (typeof ref[key] === 'object' && typeof obj[key] === 'object') {
       compareJSON(ref[key], obj[key], `${base}.${key}`);
     }
