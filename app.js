@@ -948,6 +948,7 @@ class PiggyBank extends Homey.App {
     changeArchiveMode(futurePriceOptions.priceCountry);
 
     // Initialize current state
+    this.__prevOnValues = {};
     this.__missing_power_this_slot_accum = 0;
     this.__missing_rate_this_slot = 0;
     this.__activeLimit = undefined;
@@ -3401,31 +3402,59 @@ class PiggyBank extends Homey.App {
 
   getOnOffCap(deviceId) {
     try {
-      if ((+this.homey.settings.get('controlTemp') === 2)
+      if ((+this.homey.settings.get('controlTemp') === 2) // Preferred
         && (this.__deviceList[deviceId].thermostat_cap)) {
+        // If temperature control is preferred, then revert to on/off when overridden by
+        // - Manual temperature or
+        // - Off until manual on
         const override = this.homey.settings.get('override') || {};
         if ((override[deviceId] !== c.OVERRIDE.MANUAL_TEMP)
           && (override[deviceId] !== c.OVERRIDE.OFF_UNTIL_MANUAL_ON)) {
           return null;
         }
       }
-      return d.DEVICE_CMD[this.__deviceList[deviceId].driverId].setOnOffCap;
+      const { setOnOffCap, setModeCap, setModeOffValue } = d.DEVICE_CMD[this.__deviceList[deviceId].driverId];
+      if (setOnOffCap === null && setModeOffValue) {
+        // If the onoff cap is null, there may still be an off mode, if so return mode cap
+        return setModeCap;
+      }
+      return setOnOffCap;
     } catch (err) {
       return this.__deviceList[deviceId].onoff_cap;
     }
   }
 
-  getOnOffTrue(deviceId) {
+  getOnOffTrue(deviceId, actual = undefined) {
     try {
-      return d.DEVICE_CMD[this.__deviceList[deviceId].driverId].setOnValue;
+      const { setOnOffCap, setOnValue } = d.DEVICE_CMD[this.__deviceList[deviceId].driverId];
+      if (setOnOffCap === null) {
+        // No onOff cap => use mode cap instead
+        const { setModeOffValue, setModeHeatValue } = d.DEVICE_CMD[this.__deviceList[deviceId].driverId];
+        if (actual === undefined) {
+          // Returned value is used to set capability
+          return this.__prevOnValues[deviceId] || setModeHeatValue; // Fall back to heat when previous on is unknown
+        }
+        // Returned value is used to read capability
+        if (actual === setModeOffValue) return `not${actual}`;
+        return actual;
+      }
+      return setOnValue;
     } catch (err) {
       return true;
     }
   }
 
-  getOnOffFalse(deviceId) {
+  getOnOffFalse(device, deviceId) {
     try {
-      return d.DEVICE_CMD[this.__deviceList[deviceId].driverId].setOffValue;
+      const { setOnOffCap, setOffValue } = d.DEVICE_CMD[this.__deviceList[deviceId].driverId];
+      // No onOff cap => use mode cap instead (setModeOffValue always exist because it's validated in getOnOffCap)
+      if (setOnOffCap === null) {
+        const { setModeCap, setModeOffValue } = d.DEVICE_CMD[this.__deviceList[deviceId].driverId];
+        const currentValue = device.capabilitiesObj[setModeCap].value;
+        if (currentValue !== setModeOffValue) this.__prevOnValues[deviceId] = currentValue;
+        return setModeOffValue;
+      }
+      return setOffValue;
     } catch (err) {
       return false;
     }
@@ -3445,8 +3474,8 @@ class PiggyBank extends Homey.App {
     }
     if (!(onOffCap in device.capabilitiesObj)) return undefined;
     const onValue = device.capabilitiesObj[onOffCap].value;
-    if (onValue === this.getOnOffTrue(deviceId)) return true;
-    if (onValue === this.getOnOffFalse(deviceId)) return false;
+    if (onValue === this.getOnOffTrue(deviceId, onValue)) return true;
+    if (onValue === this.getOnOffFalse(device, deviceId)) return false;
     return undefined;
   }
 
@@ -3466,7 +3495,7 @@ class PiggyBank extends Homey.App {
         onOffValue = isCooling ? this.getTempCapMax(device, deviceId) : this.getTempCapMin(device, deviceId);
       }
     } else {
-      onOffValue = onOff ? this.getOnOffTrue(deviceId) : this.getOnOffFalse(deviceId);
+      onOffValue = onOff ? this.getOnOffTrue(deviceId) : this.getOnOffFalse(device, deviceId);
     }
     if (this.logUnit === deviceId) this.updateLog(`Setting Device ${device.name}.${onOffCap} = ${onOffValue} | Origin setOnOff(${onOff})`, c.LOG_ALL);
     return device.setCapabilityValue({ capabilityId: onOffCap, value: onOffValue })
