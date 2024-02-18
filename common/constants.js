@@ -19,6 +19,7 @@ var ACMODE = {
   DRY: 4,
   FAN: 5,
   PIGGY: 6,
+  OFF: 7,
 };
 
 // Granularity for archive

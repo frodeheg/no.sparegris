@@ -214,11 +214,11 @@ async function applyStateFromFile(app, file, poweredOn = true) {
         }
         if (poweredOn) {
           // app.__current_state is only available when the app is running
-          const onOffCap = (deviceId in app.__deviceList) ? app.getOnOffCap(deviceId) : null;
+          const onOffCap = (deviceId in app.__deviceList) ? app.getOnOffCap(fakeDev, deviceId) : null;
           if (onOffCap) {
             const { lastCmd } = app.__current_state[deviceId];
             const isOn = (lastCmd === TARGET_OP.TURN_ON) || (lastCmd === TARGET_OP.DELTA_TEMP);
-            const setValue = isOn ? app.getOnOffTrue(deviceId) : app.getOnOffFalse(deviceId);
+            const setValue = isOn ? app.getOnOffTrue(deviceId) : app.getOnOffFalse(fakeDev, deviceId);
             fakeDev.capabilitiesObj[onOffCap].value = setValue;
           }
         }
@@ -280,14 +280,14 @@ async function setAllDeviceState(app, devices, wantOn) {
   for (let i = 0; i < devices.length; i++) {
     const deviceId = devices[i];
     const device = await app.getDevice(deviceId);
-    const onOffCap = await app.getOnOffCap(deviceId);
+    const onOffCap = await app.getOnOffCap(device, deviceId);
     if (onOffCap === null) {
       // Using heating as onoff
     } else if (onOffCap === undefined) {
       // There is no onoff capability
     } else {
       const onValue = await app.getOnOffTrue(deviceId);
-      const offValue = await app.getOnOffFalse(deviceId);
+      const offValue = await app.getOnOffFalse(device, deviceId);
       const newState = { capabilityId: onOffCap, value: wantOn ? onValue : offValue };
       await device.overrideDeviceState(newState);
     }
