@@ -19,12 +19,13 @@ let devices;
  */
 class FakeDeviceClass {
 
-  constructor(homey, definition, zoneId) {
+  constructor(homey, definition, zoneId, handles) {
     this.capabilitiesObj = {};
     this.homey = homey;
     this.zone = zoneId;
     this.zoneName = homey.zones.getZones()[zoneId].name;
     this.reliability = 1;
+    this.handles = handles;
     if (typeof (definition) === 'string') {
       // File name
       const numDevices = Object.keys(this.homey.devices.fakeDevices).length;
@@ -66,6 +67,9 @@ class FakeDeviceClass {
   async setCapabilityValue(data) {
     if (Math.random() < this.reliability) {
       this.capabilitiesObj[data.capabilityId].value = data.value;
+      if (data.capabilityId in this.handles) {
+        return this.handles[data.capabilityId];
+      }
       return Promise.resolve();
     }
     return new Promise((resolve, reject) => {
@@ -116,8 +120,8 @@ class FakeDevicesClass {
     return this.fakeDevices[deviceId.id];
   }
 
-  addFakeDevice(device, zoneId, deviceId = undefined) {
-    const fakeDevice = new FakeDeviceClass(this.homey, device, zoneId);
+  addFakeDevice(device, zoneId, deviceId = undefined, handles = {}) {
+    const fakeDevice = new FakeDeviceClass(this.homey, device, zoneId, handles);
     if (deviceId) fakeDevice.id = deviceId;
     this.fakeDevices[fakeDevice.id] = fakeDevice;
     return fakeDevice;

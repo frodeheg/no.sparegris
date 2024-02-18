@@ -22,6 +22,7 @@ const ChargeDevice = require('../drivers/piggy-charger/device');
 const ChargeDriver = require('../drivers/piggy-charger/driver');
 // const { TIMESPAN, roundToStartOfDay, timeToNextHour, toLocalTime, fromLocalTime, timeToNextSlot, timeSinceLastSlot, timeSinceLastLimiter, hoursInDay } = require('../common/homeytime');
 // const { disableTimers, applyStateFromFile, getAllDeviceId, writePowerStatus, setAllDeviceState, validateModeList, compareJSON, checkForTranslations } = require('./test-helpers');
+const { HomeyAPI } = require('./homey-api');
 const { applyBasicConfig, applyEmptyConfig, addDevice, applyPriceScheme2 } = require('./test-helpers');
 const { useUrlOverride, setUrlData } = require('./urllib');
 
@@ -85,18 +86,29 @@ async function testChargeControl() {
   console.log('[......] Charge control');
   const now = new Date('July 2, 2023, 03:00:00:000 GMT+2:00');
   const app = new PiggyBank();
+  const homeyApi = await HomeyAPI.createAppAPI({ homey: app.homey });
   const chargeDriver = new ChargeDriver('piggy-charger', app);
   const chargeDevice = new ChargeDevice(chargeDriver);
+
+  const chargeZoneId = '1';
+  homeyApi.zones.addZone('ChargeZone', chargeZoneId, null);
+
+  const teslaDevice = await homeyApi.devices.addFakeDevice('com.tesla.charger;Tesla.txt', chargeZoneId, 'TESLA-DEVICEID',
+    { capname: () => { console.log('tesla capname changed value'); return Promise.resolve(); },
+      capname2: () => { console.log('tesla cap2name changed'); return Promise.resolve(); }
+    });
+
   now.setHours(3, 0, 0, 0);
   try {
     await app.disableLog();
     await app.onInit(now);
+
     await chargeDevice.setData({ targetDriver: null, id: 'FLOW' });
-    await chargeDevice.setSettings({ phases: 1, voltage: 220 });
     // await chargeDevice.setData({ targetDriver: 'com.tesla.charger:Tesla', id: 'TESLA-DEVICEID' });
     // await chargeDevice.setData({ targetDriver: 'com.zaptec:go', id: 'ZAPTEC-DEVICEID' });
     // await chargeDevice.setData({ targetDriver: 'no.easee:charger', id: 'EASEE-DEVICEID' });
     // await chargeDevice.setSettings({ startCurrent: 11, stopCurrent: 0, pauseCurrent: 4, minCurrent: 7, maxCurrent: 12 });
+    await chargeDevice.setSettings({ phases: 1, voltage: 220 });
     await chargeDevice.onInit();
     clearTimeout(chargeDevice.__powerProcessID);
     chargeDevice.__powerProcessID = undefined;
