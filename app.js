@@ -3192,11 +3192,12 @@ class PiggyBank extends Homey.App {
     const deltaTemp = ((currentPriceMode !== c.PRICE_MODE_DISABLED) && (currentAction.operation === TARGET_OP.DELTA_TEMP)) ? +currentAction.delta : 0;
 
     // In case AC Mode is cool, invert the temperature deltas
-    const currentACMode = this.getACMode(device);
-    const invertDelta = currentACMode === c.ACMODE.COOL;
+    const currentACMode = this.getACMode(device); // Undefined for non-AC, null for homey busy
+    const invertDelta = currentACMode === c.ACMODE.COOL; // Default to heating for non-AC
+    const finalDeltaTemp = (currentACMode === null) ? 0 : deltaTemp; // In case homey is overloaded, disregard pricepoint and set delta to 0
     let newTemp = invertDelta
-      ? (modeTemp - deltaTemp)
-      : (modeTemp + deltaTemp);
+      ? (modeTemp - finalDeltaTemp)
+      : (modeTemp + finalDeltaTemp);
     const minTemp = this.getTempCapMin(device, deviceId) + (invertDelta ? 0 : 1); // Minimum reserved for on/off
     const maxTemp = this.getTempCapMax(device, deviceId) - (invertDelta ? 1 : 0); // Maximum reserved for on/off
     if (newTemp < minTemp) newTemp = minTemp;
@@ -3325,10 +3326,16 @@ class PiggyBank extends Homey.App {
    * Device handling
    ** ****************************************************************************************************
    */
+
+  /**
+    * Returns AC mode for AC-devices or null if device is not properly set up
+    * Returns undefined for non AC-devices and experimental devices
+    */
   getACMode(device) {
     const driverId = d.generateDriverId(device);
     const deviceDef = d.DEVICE_CMD[driverId];
     if (!deviceDef || (deviceDef.type !== d.DEVICE_TYPE.AC)) return undefined;
+    if (!device.capabilitiesObj) return null;
     const { setModeCap } = deviceDef;
     const ACModeValue = device.capabilitiesObj[setModeCap].value;
     if (ACModeValue === deviceDef.setModeHeatValue) return c.ACMODE.HEAT;
@@ -3412,8 +3419,8 @@ class PiggyBank extends Homey.App {
         const override = this.homey.settings.get('override') || {};
         if ((override[deviceId] !== c.OVERRIDE.MANUAL_TEMP)
           && (override[deviceId] !== c.OVERRIDE.OFF_UNTIL_MANUAL_ON)) {
-          const acMode = this.getACMode(device); // returns undefined for non-AC
-          if (acMode === c.ACMODE.HEAT || acMode === c.ACMODE.COOL || acMode === undefined) return null;
+          const acMode = this.getACMode(device); // returns undefined for non-AC, null when homey is struggling
+          if (acMode === c.ACMODE.HEAT || acMode === c.ACMODE.COOL || acMode === undefined || acMode === null) return null;
         }
       }
       const { setOnOffCap, setModeCap, setModeOffValue } = d.DEVICE_CMD[this.__deviceList[deviceId].driverId];
@@ -3470,8 +3477,8 @@ class PiggyBank extends Homey.App {
       // Heater without off option, treat off as min/max temperature
       const targetTempCap = this.getTempSetCap(deviceId);
       if (!(targetTempCap in device.capabilitiesObj)) return undefined;
-      const currentACMode = this.getACMode(device);
-      const isCooling = currentACMode === c.ACMODE.COOL;
+      const currentACMode = this.getACMode(device); // undefined only for non-AC (null cases is already filtered)
+      const isCooling = currentACMode === c.ACMODE.COOL; // Default to heating for non-AC
       const offTemp = isCooling ? this.getTempCapMax(device, deviceId) : this.getTempCapMin(device, deviceId);
       return device.capabilitiesObj[targetTempCap].value !== offTemp;
     }
@@ -3493,8 +3500,9 @@ class PiggyBank extends Homey.App {
       if (onOff) {
         onOffValue = this.getWantedTemp(device, deviceId);
       } else {
-        const currentACMode = this.getACMode(device);
-        const isCooling = currentACMode === c.ACMODE.COOL;
+        const currentACMode = this.getACMode(device); // Undefined for non-AC, null when homey is overloaded
+        const isCooling = currentACMode === c.ACMODE.COOL; // Default to heating for non-AC
+        if (currentACMode === null) return Promise.reject(new Error('Homey is overloaded, please try again later'));
         onOffValue = isCooling ? this.getTempCapMax(device, deviceId) : this.getTempCapMin(device, deviceId);
       }
     } else {
