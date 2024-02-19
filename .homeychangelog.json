@@ -919,5 +919,8 @@
   },
   "0.21.11": {
     "en": "Fixed settings interface on HP2023 where it showed [object Object] several places (did not affect HP2019)"
+  },
+  "0.21.12": {
+    "en": "Fixed (invisible) crash bug when homey was overloaded + Improved error reporting"
   }
 }
