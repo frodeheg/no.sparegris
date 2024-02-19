@@ -839,6 +839,7 @@
         haveTasks |= changeTaskVisibility('taskSpookey', !appIsDisabled && (+appConfigProgress.numSpookeyChanges > 0));
         haveTasks |= changeTaskVisibility('errorDevices', !appIsDisabled && numErrorDevices > 0);
         haveTasks |= changeTaskVisibility('taskAddCarCharger', !appIsDisabled && foundCharger && !chargerUsed);
+        haveTasks |= changeTaskVisibility('taskCustomError', !appIsDisabled && appConfigProgress.customError);
         changeTaskVisibility('taskNone', !haveTasks);
       }
 
@@ -877,6 +878,13 @@
           <span class="anim-text" data-i18n="warnings.savingWait"></span>
         </b>
       </div>
+    </div>
+
+    <!-- Popup overlay -->
+    <div id="popupBox">
+      <div id="popupHeader">ALERT!</div>
+      <a class="close" href="#" onclick="document.getElementById('popupBox').style.display='none';">&times;</a>
+      <div id="popupMessage"></div>
     </div>
 
     <!-- Menu -->
@@ -1002,6 +1010,7 @@
           <tr id="taskSpookey"><td style="vertical-align:top;"><img class="alert" src="warning.png"></td><td><span id="spookeyText">taskSpookey</span></td></tr>
           <tr id="errorDevices"><td style="vertical-align:top;"><img class="alert" src="warning.png"></td><td><span data-i18n="settings.welcome.errorDevices">errorDevices</span><div id="errorDeviceList"></div></td></tr>
           <tr id="taskAddCarCharger"><td style="vertical-align:top;"><img class="alert" src="warning.png"></td><td><span data-i18n="settings.charge.carChargerNotAddedHint">charge.carChargerNotAddedHint</span></td></tr>
+          <tr id="taskCustomError"><td style="vertical-align:top;"><img class="alert" src="error.png"></td><td><span id="customErrorText"></span></td></tr>
           <tr id="taskNoPriceEnabled"><td style="vertical-align:top;"><img class="alert" src="info.png"></td><td><span data-i18n="settings.welcome.taskNoPriceEnabled">taskNoPriceEnabled</span></td></tr>
           <tr id="taskNone"><td style="vertical-align:top;"><img class="alert" src="info.png"></td><td><span data-i18n="settings.welcome.taskNone">taskNone</span></td></tr>
         </table>
@@ -2182,7 +2191,9 @@
       function popUp(Homey, message) {
         if (popUpOk) {
           try {
-            Homey.alert(message);
+            // Homey.alert(message);
+            document.getElementById('popupBox').style.display = 'block';
+            document.getElementById('popupMessage').innerHTML = message;
           } catch(err) {}; // Ignore popup blockers
           popUpOk = false;
           setTimeout(() => { popUpOk = true; }, 1000);
@@ -2315,6 +2326,15 @@
           }
         });
 
+        // React to settings
+        Homey.on("settings.set", setting => {
+          if (setting === "customError") {
+            Homey.get("customError", function (err, message) {
+              popUp(Homey, message);
+            })
+          }
+        });
+
         // Refresh price data
         Homey.get("futurePriceOptions", function (err, options) {
           if (err) return popUp(Homey, err);
@@ -2417,6 +2437,7 @@
           if (!appConfigProgress.hasOwnProperty("timeSinceEnergyMeter")) appConfigProgress.timeSinceEnergyMeter = Infinity;
           if (!appConfigProgress.hasOwnProperty("energyMeterNotConnected")) appConfigProgress.energyMeterNotConnected = true;
           if (!appConfigProgress.hasOwnProperty("ApiStatus")) appConfigProgress.ApiStatus = 0;
+          document.getElementById('customErrorText').innerHTML = appConfigProgress.customError;
           appConfigProgressLoaded = true;
           checkLoadingDone();
         });

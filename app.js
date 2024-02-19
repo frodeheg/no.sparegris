@@ -133,9 +133,9 @@ class PiggyBank extends Homey.App {
     let stateChanged = false;
     for (const capName in list) {
       if (device.capabilitiesObj && !(capName in device.capabilitiesObj)) {
-        const newErr = new Error(`Could not find the capability ${capName} for ${device.name}. Please install the most recent driver.`);
-        this.updateLog(newErr, c.LOG_ALL);
-        return Promise.reject(newErr);
+        this.customError = `Could not find the capability ${capName} for ${device.name}. Please install the most recent driver.`;
+        this.updateLog(new Error(this.customError), c.LOG_ALL);
+        return Promise.reject(new Error(this.customError));
       }
       const maxVal = (device.capabilitiesObj === null) ? 32 : await device.capabilitiesObj[capName].max;
       const chargerOptions = this.homey.settings.get('chargerOptions');
@@ -158,6 +158,7 @@ class PiggyBank extends Homey.App {
       }
     }
     if (this.logUnit === deviceId) this.updateLog(`finished runDeviceCommands(${listRef}) for ${device.name}`, c.LOG_ALL);
+    this.customError = undefined;
     return Promise.resolve(stateChanged);
   }
 
@@ -817,6 +818,7 @@ class PiggyBank extends Homey.App {
     // Initialize missing settings
     const operatingMode = this.homey.settings.get('operatingMode');
     const modeList = this.homey.settings.get('modeList');
+    this.homey.settings.unset('customError');
     if (operatingMode === null || !Array.isArray(modeList)) {
       this.homey.settings.set('operatingMode', c.MODE_DISABLED);
     } else if (Array.isArray(modeList) && operatingMode > modeList.length) {
@@ -1176,9 +1178,11 @@ class PiggyBank extends Homey.App {
         this.__deviceList = this.homey.settings.get('deviceList');
         for (const deviceId in this.__deviceList) {
           if (this.__deviceList[deviceId].use && !((deviceId in this.__oldDeviceList) && this.__oldDeviceList[deviceId].use)) {
-            this.runDeviceCommands(deviceId, 'onAdd');
+            this.runDeviceCommands(deviceId, 'onAdd')
+              .catch(err => this.homey.settings.set('customError', err.message));
           } else if (!this.__deviceList[deviceId].use && (deviceId in this.__oldDeviceList) && this.__oldDeviceList[deviceId].use) {
-            this.runDeviceCommands(deviceId, 'onRemove');
+            this.runDeviceCommands(deviceId, 'onRemove')
+              .catch(err => this.homey.settings.set('customError', err.message));
           }
         }
         this.__oldDeviceList = this.__deviceList;
@@ -1556,6 +1560,7 @@ class PiggyBank extends Homey.App {
     appConfigProgress.gotPPFromFlow = this.homey.settings.get('gotPPFromFlow');
     appConfigProgress.ApiStatus = this.apiState;
     appConfigProgress.activeLimit = this.__activeLimit;
+    appConfigProgress.customError = this.customError;
     return appConfigProgress;
   }
 
