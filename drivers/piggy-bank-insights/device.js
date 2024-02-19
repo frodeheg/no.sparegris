@@ -343,7 +343,8 @@ class MyDevice extends Device {
         this.mySetCapabilityValue('piggy_price', String(piggyState.price_point));
       }
       if (+piggyState.price_point !== +prevPricePoint) {
-        this.setStoreValue('piggy_price', piggyState.price_point);
+        this.setStoreValue('piggy_price', piggyState.price_point)
+          .catch((err) => this.setUnavailable(err));
         switch (+piggyState.price_point) {
           case c.PP.LOW: this.toggleCapability('piggy_price_low'); break;
           case c.PP.NORM: this.toggleCapability('piggy_price_normal'); break;
@@ -374,7 +375,8 @@ class MyDevice extends Device {
       }
 
       if (+piggyState.operating_mode !== +prevMode) {
-        this.setStoreValue('piggy_mode', +piggyState.operating_mode);
+        this.setStoreValue('piggy_mode', +piggyState.operating_mode)
+          .catch((err) => this.setUnavailable(err));
         switch (+piggyState.operating_mode) {
           case 0: this.toggleCapability('piggy_mode_disabled'); break;
           case 1: this.toggleCapability('piggy_mode_normal'); break;
@@ -552,7 +554,8 @@ class MyDevice extends Device {
       capValue = false;
     }
     capValue = !capValue;
-    this.setStoreValue(capabilityName, capValue);
+    this.setStoreValue(capabilityName, capValue)
+      .catch((err) => this.setUnavailable(err));
     this.mySetCapabilityValue(capabilityName, capValue);
   }
 

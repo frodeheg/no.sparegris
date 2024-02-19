@@ -558,3 +558,45 @@ iframe {
     }
   }
 }
+
+#popupBox {
+  display:none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1000;
+  background-color: #f1f1f1;
+  width: 50%;
+  text-align: center;
+  border: 1px solid #d3d3d3;
+  box-shadow: 10px 10px 10px #000A;
+  border-radius: 7px;
+}
+
+#popupHeader {
+  padding: 10px;
+  cursor: move;
+  z-index: 10;
+  background-color: #FF2146; /* #2196F3; */
+  color: #fff;
+  border-radius: 7px 7px 0 0;
+}
+
+#popupMessage {
+  padding: 10px;
+}
+
+#popupBox .close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  transition: all 200ms;
+  font-size: 30px;
+  font-weight: bold;
+  text-decoration: none;
+  color: #DDD;
+}
+#popupBox .close:hover {
+  color: #333;
+}

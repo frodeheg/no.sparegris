@@ -1,0 +1,17 @@
+Log ID: 2024-01-15T10:51:26.604Z
+App version 0.21.9
+
++10:51:26.604: ----- ANALYZING DEVICE -----
++10:51:26.609: Report type: Experimental device is working
++10:51:26.645: Device name: Smart Plug Mini - 101 - Varmeovn - Frient Smart Plug Mini
++10:51:26.647: Driver Id: homey:app:com.frient:SPLZB-13x
++10:51:26.648: Found onoff cap: onoff
++10:51:26.651: Found temp cap: false
++10:51:26.653: Device reliability: 0.9999999999999946
++10:51:26.656: Capabilities: onoff,meter_power,measure_power,measure_voltage,measure_current
++10:51:26.659: Options for 'onoff': {"value":false,"lastUpdated":"2024-01-15T04:00:07.090Z","type":"boolean","getable":true,"setable":true,"title":"Slått på","desc":null,"units":null,"id":"onoff","options":{}}
++10:51:26.661: Options for 'meter_power': {"value":9.1,"lastUpdated":"2024-01-15T04:55:39.715Z","type":"number","getable":true,"setable":false,"title":"Energi","desc":"Energiforbruk i kilowattimer (kWh)","units":"kWh","decimals":2,"chartType":"spline","id":"meter_power","options":{}}
++10:51:26.665: Options for 'measure_power': {"value":0,"lastUpdated":"2024-01-15T04:00:31.704Z","type":"number","getable":true,"setable":false,"title":"Effekt","desc":"Effekt i watt (W)","units":"W","decimals":2,"chartType":"stepLine","id":"measure_power","options":{"approximated":true}}
++10:51:26.666: Options for 'measure_voltage': {"value":236.09,"lastUpdated":"2024-01-15T10:28:02.526Z","type":"number","getable":true,"setable":false,"title":"Spenning","desc":"Spenning (V)","units":"V","decimals":2,"chartType":"stepLine","id":"measure_voltage","options":{}}
++10:51:26.669: Options for 'measure_current': {"value":0,"lastUpdated":"2024-01-15T04:00:31.703Z","type":"number","getable":true,"setable":false,"title":"Strøm","desc":"Elektrisk strøm (A)","units":"A","decimals":2,"chartType":"stepLine","id":"measure_current","options":{}}
++10:51:26.671: --- ANALYZING DEVICE DONE ---

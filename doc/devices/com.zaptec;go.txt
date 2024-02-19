@@ -1,3 +1,28 @@
+Log ID: 2024-01-09T00:10:18.502Z
+App version 0.21.9
+
++0:10:18.502: ----- ANALYZING DEVICE -----
++0:10:18.510: Report type: Device is not listed
++0:10:18.562: Device name: Grimstad
++0:10:18.568: Driver Id: homey:app:com.zaptec:go
++0:10:18.578: Error: TypeError: Cannot read properties of undefined (reading 'onoff_cap')
++0:10:18.583: Capabilities: meter_power.current_session,meter_power.this_year,meter_power.last_session,measure_power,charging_button,charge_mode,alarm_generic.car_connected,available_installation_current,measure_current.phase1,measure_current.phase2,measure_current.phase3,measure_voltage.phase1,measure_voltage.phase2,measure_voltage.phase3
++0:10:18.594: Options for 'meter_power.current_session': {"value":0,"lastUpdated":"2024-01-07T16:19:25.804Z","type":"number","getable":true,"setable":false,"title":"Energy current session","desc":"Energiforbruk i kilowattimer (kWh)","units":"kWh","decimals":2,"chartType":"spline","id":"meter_power.current_session","options":{"title":{"en":"Energy current session"}}}
++0:10:18.599: Options for 'meter_power.this_year': {"value":0,"lastUpdated":"2024-01-07T16:19:25.519Z","type":"number","getable":true,"setable":false,"title":"Energy this year","desc":"Energiforbruk i kilowattimer (kWh)","units":"kWh","decimals":2,"chartType":"spline","id":"meter_power.this_year","options":{"title":{"en":"Energy this year"}}}
++0:10:18.604: Options for 'meter_power.last_session': {"value":24,"lastUpdated":"2024-01-07T16:19:25.887Z","type":"number","getable":true,"setable":false,"title":"Energy previous session","desc":"Energiforbruk i kilowattimer (kWh)","units":"kWh","decimals":2,"chartType":"spline","id":"meter_power.last_session","options":{"title":{"en":"Energy previous session"}}}
++0:10:18.611: Options for 'measure_power': {"value":0,"lastUpdated":"2024-01-07T16:19:25.764Z","type":"number","getable":true,"setable":false,"title":"Effekt","desc":"Effekt i watt (W)","units":"W","decimals":2,"chartType":"stepLine","id":"measure_power","options":{}}
++0:10:18.617: Options for 'charging_button': {"value":false,"lastUpdated":"2024-01-07T16:19:25.819Z","type":"boolean","getable":true,"setable":true,"title":"Charging","desc":null,"units":null,"id":"charging_button","options":{}}
++0:10:18.627: Options for 'charge_mode': {"value":"Disconnected","lastUpdated":"2024-01-07T16:19:25.832Z","type":"enum","getable":true,"setable":false,"title":"Charge mode","desc":null,"units":null,"values":[{"id":"Unknown","title":"Unknown"},{"id":"Disconnected","title":"Disconnected"},{"id":"Connecting to car","title":"Connecting to car"},{"id":"Charging","title":"Charging"},{"id":"Charging finished","title":"Charging finished"}],"id":"charge_mode","options":{}}
++0:10:18.632: Options for 'alarm_generic.car_connected': {"value":false,"lastUpdated":"2024-01-07T16:19:25.850Z","type":"boolean","getable":true,"setable":false,"title":"Car connected","desc":"Generell alarm","units":null,"id":"alarm_generic.car_connected","options":{"title":{"en":"Car connected"}}}
++0:10:18.636: Options for 'available_installation_current': {"value":11,"lastUpdated":"2024-01-07T16:19:25.685Z","type":"number","getable":true,"setable":false,"title":"Current limit","desc":"Set the amount of current available for an installation of chargers.","units":"A","decimals":0,"min":0,"max":40,"step":1,"iconObj":{"id":"90dc388b015d75b858870078c06f8936","url":"/icon/90dc388b015d75b858870078c06f8936/icon.svg"},"chartType":"stepLine","id":"available_installation_current","options":{"title":{"en":"Current limit"}}}
++0:10:18.647: Options for 'measure_current.phase1': {"value":0,"lastUpdated":"2024-01-07T16:19:25.714Z","type":"number","getable":true,"setable":false,"title":"Current L1","desc":"Elektrisk strøm (A)","units":"A","decimals":2,"chartType":"stepLine","id":"measure_current.phase1","options":{"title":{"en":"Current L1"}}}
++0:10:18.658: Options for 'measure_current.phase2': {"value":0.02,"lastUpdated":"2024-01-07T16:19:25.737Z","type":"number","getable":true,"setable":false,"title":"Current L2","desc":"Elektrisk strøm (A)","units":"A","decimals":2,"chartType":"stepLine","id":"measure_current.phase2","options":{"title":{"en":"Current L2"}}}
++0:10:18.669: Options for 'measure_current.phase3': {"value":0,"lastUpdated":"2024-01-07T16:19:25.751Z","type":"number","getable":true,"setable":false,"title":"Current L3","desc":"Elektrisk strøm (A)","units":"A","decimals":2,"chartType":"stepLine","id":"measure_current.phase3","options":{"title":{"en":"Current L3"}}}
++0:10:18.684: Options for 'measure_voltage.phase1': {"value":0.09,"lastUpdated":"2024-01-07T16:19:25.557Z","type":"number","getable":true,"setable":false,"title":"Voltage L1","desc":"Spenning (V)","units":"V","decimals":2,"chartType":"stepLine","id":"measure_voltage.phase1","options":{"title":{"en":"Voltage L1"}}}
++0:10:18.693: Options for 'measure_voltage.phase2': {"value":1.88,"lastUpdated":"2024-01-07T16:19:25.575Z","type":"number","getable":true,"setable":false,"title":"Voltage L2","desc":"Spenning (V)","units":"V","decimals":2,"chartType":"stepLine","id":"measure_voltage.phase2","options":{"title":{"en":"Voltage L2"}}}
++0:10:18.704: Options for 'measure_voltage.phase3': {"value":1.88,"lastUpdated":"2024-01-07T16:19:25.594Z","type":"number","getable":true,"setable":false,"title":"Voltage L3","desc":"Spenning (V)","units":"V","decimals":2,"chartType":"stepLine","id":"measure_voltage.phase3","options":{"title":{"en":"Voltage L3"}}}
++0:10:18.712: --- ANALYZING DEVICE DONE ---
+
 Log ID: 2023-10-16T01:38:14.261Z
 App version 0.20.45
 +7:52:59.081: ----- ANALYZING DEVICE -----

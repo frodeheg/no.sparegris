@@ -913,5 +913,14 @@
   },
   "0.21.9": {
     "en": "Fixed an issue where the mode was incorrectly displayed in the settings when using custom modes."
+  },
+  "0.21.10": {
+    "en": "Added support for com.frient:EMIZB-132, com.frient:SPLZB-13x, net.filllip-namron:4512737 + Fix for Z-TRM6 on/off mode + Made sure that DRY, FAN, AUTO and OFF AC modes use on/off for control instead of temperature."
+  },
+  "0.21.11": {
+    "en": "Fixed settings interface on HP2023 where it showed [object Object] several places (did not affect HP2019)"
+  },
+  "0.21.12": {
+    "en": "Fixed (invisible) crash bug when homey was overloaded + Improved error reporting"
   }
 }

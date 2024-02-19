@@ -45,25 +45,14 @@
       },
       "hint": {
         "onOffOperation": "<p>Les opérations marche/arrêt sont les suivantes:</p>",
-        "tempOp": ["<p>Lorsque le contrôle de la température est activé, les températures sont préférées pour contrôler le tarif de l'électricité plutôt que marche/arrêt. Si le contrôle de la température est désactivé, seules les opérations marche/arrêt seront utilisées pour contrôler le tarif de l'électricité.</p><!-- ",
-            "--><p>Les températures fixes sont bonnes lorsque vous avez des prix d'électricité fixes tandis que les températures contrôlées par les prix vous permettent de définir une plage de températures en fonction des prix.</p>"],
-        "ACMode": ["<p>Ceci ne s'applique qu'aux appareils AC. Si l'appareil contrôlé est un appareil AC, le mode changera comme défini ici (tant que l'appareil prend en charge le mode disponible).</p><!--",
-            "--><p><b>Chauffage</b> : utilise la plage de température définie pour le chauffage. Lorsque la puissance est insuffisante, la température minimale est définie.</p><!--",
-            "--><p><b>Refroidissement</b> : utilisera la plage de température définie pour le refroidissement. Lorsque la puissance est insuffisante, la température maximale est définie.</p><!--",
-            "--><p><b>Auto</b> : définit une seule température. Utilisera Marche/Arrêt pour respecter le tarif électrique</p><!--",
-            "--><p><b>Ventilation / Déshumidification</b> : Aucune température. Utilisera Marche/Arrêt pour respecter le tarif électrique</p><!--",
-            "--><p><b>Piggy</b> : cela basculera entre le chauffage et le refroidissement en fonction de la température réelle. Les déclencheurs de température pour le mode de commutation sont ceux définis pour les 'prix normaux'.</p><!--" ,
-            "--><p><b>Inchangé</b> : ce mode ne changera pas du tout votre mode AC. Il détectera le mode actuel et agira en conséquence.</p>"],
-        "myThermo": ["<p>La roue des températures vous permet de régler jusqu'à 12 températures différentes. Seules celles applicables aux réglages que vous avez choisis seront visibles.</p><!--",
-            "--><p>'Température d'arrêt' est la température utilisée lors de la tentative de maintien du tarif de l'électricité. Il y a une température d'arrêt lorsque le chauffage est activé et une autre lorsque le refroidissement est activé.</p><!--",
-            "--><p>'Plage de température de chauffage' Il y a jusqu'à 5 températures qui peuvent être réglées pour le chauffage. La plus basse est utilisée lorsque les prix sont élevés tandis que la plus élevée est utilisée lorsque les prix sont bas.</p><!--",
-            "--><p>'Plage de température de refroidissement' Il y a jusqu'à 5 températures qui peuvent être réglées pour le refroidissement. La plus basse est utilisée lorsque les prix sont bas tandis que la plus élevée est utilisée lorsque les prix sont élevés.</p>" ]
+        "tempOp": "<p>Lorsque le contrôle de la température est activé, les températures sont préférées pour contrôler le tarif de l'électricité plutôt que marche/arrêt. Si le contrôle de la température est désactivé, seules les opérations marche/arrêt seront utilisées pour contrôler le tarif de l'électricité.</p><p>Les températures fixes sont bonnes lorsque vous avez des prix d'électricité fixes tandis que les températures contrôlées par les prix vous permettent de définir une plage de températures en fonction des prix.</p>",
+        "ACMode": "<p>Ceci ne s'applique qu'aux appareils AC. Si l'appareil contrôlé est un appareil AC, le mode changera comme défini ici (tant que l'appareil prend en charge le mode disponible).</p><p><b>Chauffage</b> : utilise la plage de température définie pour le chauffage. Lorsque la puissance est insuffisante, la température minimale est définie.</p><p><b>Refroidissement</b> : utilisera la plage de température définie pour le refroidissement. Lorsque la puissance est insuffisante, la température maximale est définie.</p><p><b>Auto</b> : définit une seule température. Utilisera Marche/Arrêt pour respecter le tarif électrique</p><p><b>Ventilation / Déshumidification</b> : Aucune température. Utilisera Marche/Arrêt pour respecter le tarif électrique</p><p><b>Piggy</b> : cela basculera entre le chauffage et le refroidissement en fonction de la température réelle. Les déclencheurs de température pour le mode de commutation sont ceux définis pour les 'prix normaux'.</p><p><b>Inchangé</b> : ce mode ne changera pas du tout votre mode AC. Il détectera le mode actuel et agira en conséquence.</p>",
+        "myThermo": "<p>La roue des températures vous permet de régler jusqu'à 12 températures différentes. Seules celles applicables aux réglages que vous avez choisis seront visibles.</p><p>'Température d'arrêt' est la température utilisée lors de la tentative de maintien du tarif de l'électricité. Il y a une température d'arrêt lorsque le chauffage est activé et une autre lorsque le refroidissement est activé.</p><p>'Plage de température de chauffage' Il y a jusqu'à 5 températures qui peuvent être réglées pour le chauffage. La plus basse est utilisée lorsque les prix sont élevés tandis que la plus élevée est utilisée lorsque les prix sont bas.</p><p>'Plage de température de refroidissement' Il y a jusqu'à 5 températures qui peuvent être réglées pour le refroidissement. La plus basse est utilisée lorsque les prix sont bas tandis que la plus élevée est utilisée lorsque les prix sont élevés.</p>"
       }
     },
     "charge": {
       "header": "Chargeurs de voiture",
-      "carChargerMissingHint": ["Aucun chargeur pris en charge trouvé. Vous pouvez toujours installer un contrôleur basé sur le flux, mais si vous soumettez un <!--",
-      "--><a href=\"ShowLog\" onclick=\"changeTab(event, 'logPage');return false;\">rapport de périphérique</a> pour votre chargeur, puis une assistance directe sera ajoutée ultérieurement version."],
+      "carChargerMissingHint": "Aucun chargeur pris en charge trouvé. Vous pouvez toujours installer un contrôleur basé sur le flux, mais si vous soumettez un <a href=\"ShowLog\" onclick=\"changeTab(event, 'logPage');return false;\">rapport de périphérique</a> pour votre chargeur, puis une assistance directe sera ajoutée ultérieurement version.",
       "carChargerDeprecatedHint": "La façon dont vous contrôlez votre chargeur de voiture cessera bientôt de fonctionner. Afin de continuer à contrôler le chargeur, veuillez le désélectionner dans la liste des appareils contrôlables et l'enregistrer, puis supprimer tous les anciens flux contrôlant le chargeur et installer le dispositif de contrôleur de charge pour cette application.",
       "controllerNotAddedHint": "Un chargeur pris en charge a été trouvé, veuillez installer le contrôleur de charge afin de le contrôler.",
       "controllerNotEnabledHint": "Un contrôleur de chargeur a été trouvé, mais il n'est pas activé."
@@ -125,17 +114,12 @@
       "taskNoPrices": "Aucun prix futur n'est disponible. Forces point de prix vers le prix normal jusqu'à ce que la situation soit réglée.",
       "taskYesPrices": "Les prix futurs sont à nouveau disponibles.",
       "taskDisableLogging": "Vous avez permis de prolonger la connexion, ce qui ralentit considérablement l'application. S'il vous plaît désactiver la connexion prolongée pour une meilleure performance.",
-      "taskExperimental": ["Vous avez choisi de contrôler une unité que l'application n'a pas été vérifiée pour gérer. <!--",
-          "-->Répondre à un problème et <a href=\"ShowLog\" onclick=\"changeTab(event, 'logPage');return false;\">envoyer un rapport le statut</a> sur le sujet <!--",
-        "-->pour cet appareil au développeur, afin d'obtenir les problèmes corrigés et ce message supprimé."],
+      "taskExperimental": "Vous avez choisi de contrôler une unité que l'application n'a pas été vérifiée pour gérer. Répondre à un problème et <a href=\"ShowLog\" onclick=\"changeTab(event, 'logPage');return false;\">envoyer un rapport le statut</a> sur le sujet pour cet appareil au développeur, afin d'obtenir les problèmes corrigés et ce message supprimé.",
       "taskSpookey": "Votre chargeur a mystérieusement changé de statut ${times} fois depuis le début du dernier cycle de charge. Veuillez désactiver toutes les autres sources qui tentent de contrôler le chargeur.",
       "taskNone": "Bien fait, l'application est correctement configurée.",
       "errorDevices": "Les appareils suivants sont très peu fiables, veuillez suivre les instructions en cliquant sur eux pour améliorer la fiabilité.",
       "reliability": "Fiabilité",
-      "reliabilityHelp": ["Les signaux sans fil peuvent être faibles. S'il vous plaît essayez d'améliorer la ligne de vue pour homey, <!--",
-        "-->rayer le signal ou s'assurer qu'il y a suffisamment de répéteurs dans la grille de signal. Cela pourrait améliorer sa fiabilité. <!--",
-        "-->Physique Si vous croyez que l'appareil est déjà fiable et que les problèmes se trouvent dans cette application <!--",
-        "-->rayapase soumettre un équia <a href=\"ShowLog\" onclick=\"changeTab(event, 'logPage');return false;\">rapport de l'appareil. Merci bien.</a>"]
+      "reliabilityHelp": "Les signaux sans fil peuvent être faibles. S'il vous plaît essayez d'améliorer la ligne de vue pour homey, rayer le signal ou s'assurer qu'il y a suffisamment de répéteurs dans la grille de signal. Cela pourrait améliorer sa fiabilité. Physique Si vous croyez que l'appareil est déjà fiable et que les problèmes se trouvent dans cette application rayapase soumettre un équia <a href=\"ShowLog\" onclick=\"changeTab(event, 'logPage');return false;\">rapport de l'appareil. Merci bien.</a>"
     },
     "global": {
       "controlTemp": "Réglage de la température",
@@ -243,17 +227,7 @@
       "deviceTypeController": "Contrôleurs de puissance",
       "ongoing": "En attente des retours des utilisateurs",
       "aboutInfo": "À propos de Tirelire",
-      "aboutInfoHint": ["<p>Cette application a été créée pour permettre à chacun de gérer facilement sa consommation d'énergie, tout en économisant le plus d'argent possible.</p><!--",
-          "--><p>Beaucoup de temps libre a été consacré au développement de cette application. Si vous êtes satisfait de ce que vous économisez, vous pouvez soutenir le développement de l'application des manières suivantes (complètement facultatif):</p><!--",
-          "--><ol><!--",
-          "-->  <li><b>Pour les particuliers</b><!--",
-          "-->      <p>Vous pouvez parrainer le développement de cette application de l'une des manières suivantes: (entièrement facultatif) <a href='https://github.com/sponsors/frodeheg'>https://github.com/sponsors/frodeheg</a></p><!--",
-          "-->  </li><!--",
-          "-->  <li><b>Commercial</b><!--",
-          "-->      <p>Cette page prend quelques secondes à charger, donc un écran de chargement a été ajouté pour fournir des informations sur le temps d'attente. Cela pourrait être un bon espace publicitaire, car il y a un temps d'attente que nous ne pouvons pas éviter. </p><!--",
-          "-->      <p>Si votre entreprise souhaite profiter de cette merveilleuse opportunité, veuillez contacter le développeur de l'application.</p><!--",
-          "-->  </li><!--",
-          "--></ol>"]
+      "aboutInfoHint": "<p>Cette application a été créée pour permettre à chacun de gérer facilement sa consommation d'énergie, tout en économisant le plus d'argent possible.</p><p>Beaucoup de temps libre a été consacré au développement de cette application. Si vous êtes satisfait de ce que vous économisez, vous pouvez soutenir le développement de l'application des manières suivantes (complètement facultatif):</p><ol><li><b>Pour les particuliers</b><p>Vous pouvez parrainer le développement de cette application de l'une des manières suivantes: (entièrement facultatif) <a href='https://github.com/sponsors/frodeheg'>https://github.com/sponsors/frodeheg</a></p></li><li><b>Commercial</b><p>Cette page prend quelques secondes à charger, donc un écran de chargement a été ajouté pour fournir des informations sur le temps d'attente. Cela pourrait être un bon espace publicitaire, car il y a un temps d'attente que nous ne pouvons pas éviter. </p><p>Si votre entreprise souhaite profiter de cette merveilleuse opportunité, veuillez contacter le développeur de l'application.</p></li></ol>"
     },
     "wizzard": {
       "welcome": "Bienvenue.",
@@ -293,9 +267,7 @@
       "actionHigh": "Actions lorsque l'énergie est chère",
       "actionExtreme": "Actions lorsque l'énergie est extrêmement chère",
       "actionNormal": "Actions lorsque le prix est normal",
-      "priceHint1": ["<p> Le Mode vous permet de choisir si vous souhaitez alimenter l'application avec des points de prix manuellement ou si les points de prix doivent être réglés automatiquement. Si aucun n'est utilisé (désactivé) alors l'application ne contrôlera que max power.</p> <!-",
-        "-> <p> Le contrôle manuel des cartes de flux vous donne la plus grande flexibilité, mais laissez toute la responsabilité d'interpréter le prix de l'électricité à vous. </p> <!-",
-        "-> <p> Automatic interprète les prix selon les préférences définies dans l'application. </p>"],
+      "priceHint1": "<p> Le Mode vous permet de choisir si vous souhaitez alimenter l'application avec des points de prix manuellement ou si les points de prix doivent être réglés automatiquement. Si aucun n'est utilisé (désactivé) alors l'application ne contrôlera que max power.</p> <p> Le contrôle manuel des cartes de flux vous donne la plus grande flexibilité, mais laissez toute la responsabilité d'interpréter le prix de l'électricité à vous. </p> <p> Automatic interprète les prix selon les préférences définies dans l'application. </p>",
       "priceErr1": "Note ! Vous devez installer l'application 'Norwegian Electricity Bill' et un dispositif d'accompagnement pour les prix externes à frayer. Les prix sont inébranlables, les cartes de flux ne sont pas nécessaires.",
       "pricePointAdvanced": "Point de prix magique",
       "pricePoint": "Point de prix",

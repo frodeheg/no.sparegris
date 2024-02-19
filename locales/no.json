@@ -45,25 +45,14 @@
       },
       "hint": {
         "onOffOperation": "<p>På/av-operasjonene er som følger:</p>",
-        "tempOp": ["<p>Når temperaturkontroll er aktivert foretrekkes temperaturer for å kontrollere strømtariffen i stedet for på/av. Hvis temperaturkontroll er deaktivert, vil bare på/av-operasjoner bli brukt til å kontrollere strømtariffen.</p><!-- ",
-            "--><p>Konstant temperatur er en innstilling for faste strømpriser, mens priskontrollerte temperaturer lar deg stille inn en rekke temperaturer avhengig av prisen på strømmen.</p>"],
-        "ACMode": ["<p>Dette gjelder kun for AC-enheter. Hvis enheten som kontrolleres er en AC-enhet, vil modusen endres som angitt her (så lenge enheten støtter den tilgjengelige modusen).</p><!--",
-            "--><p><b>Oppvarming</b>: Vil bruke temperaturområdet som er innstilt for oppvarming. Når effekt-taket nås vil temperaturen settes til minimum.</p><!--",
-            "--><p><b>Kjøling</b>: Vil bruke temperaturområdet som er angitt for kjøling. Når effekt-taket nås vil temperaturen settes til maks.</p><!--",
-            "--><p><b>Auto</b>: Stiller inn en enkelt temperatur. Bruker På/Av for å møte strømtariffen</p><!--",
-            "--><p><b>Vifte / tørking</b>: Ingen temperaturer. Vil bruke På/Av for å møte strømtariffen</p><!--",
-            "--><p><b>Piggy</b>: Dette vil bytte mellom oppvarming og kjøling avhengig av den faktiske temperaturen. Temperaturutløserne for byttemodus er den som er angitt for 'normale priser'.</p><!--" ,
-            "--><p><b>Uendret</b>: Denne modusen vil ikke endre AC-modusen din i det hele tatt. Den vil oppdage gjeldende modus og handle deretter.</p>"],
-        "myThermo": ["<p>Temperaturhjulet lar deg stille inn opptil 12 forskjellige temperaturer. Bare de som gjelder for innstillingene du har valgt vil være synlige.</p><!--",
-            "--><p>'Av temperatur' er temperaturen som brukes når man prøver å holde strømtariffen. Det er én  temperatur for av når oppvarming er aktivert og en annen når kjøling er aktivert.</p><!--",
-            "--><p>'Oppvarmingstemperaturområde' Det er opptil 5 temperaturer som kan stilles inn for oppvarming. Den laveste brukes når prisene er høye mens den høyeste brukes når prisene er lave.</p><!--",
-            "--><p>'Kjølingstemperaturområde' Det er opptil 5 temperaturer som kan stilles inn for kjøling. Den laveste brukes når prisene er lave mens den høyeste brukes når prisene er høye.</p>" ]
+        "tempOp": "<p>Når temperaturkontroll er aktivert foretrekkes temperaturer for å kontrollere strømtariffen i stedet for på/av. Hvis temperaturkontroll er deaktivert, vil bare på/av-operasjoner bli brukt til å kontrollere strømtariffen.</p><p>Konstant temperatur er en innstilling for faste strømpriser, mens priskontrollerte temperaturer lar deg stille inn en rekke temperaturer avhengig av prisen på strømmen.</p>",
+        "ACMode": "<p>Dette gjelder kun for AC-enheter. Hvis enheten som kontrolleres er en AC-enhet, vil modusen endres som angitt her (så lenge enheten støtter den tilgjengelige modusen).</p><p><b>Oppvarming</b>: Vil bruke temperaturområdet som er innstilt for oppvarming. Når effekt-taket nås vil temperaturen settes til minimum.</p><p><b>Kjøling</b>: Vil bruke temperaturområdet som er angitt for kjøling. Når effekt-taket nås vil temperaturen settes til maks.</p><p><b>Auto</b>: Stiller inn en enkelt temperatur. Bruker På/Av for å møte strømtariffen</p><p><b>Vifte / tørking</b>: Ingen temperaturer. Vil bruke På/Av for å møte strømtariffen</p><p><b>Piggy</b>: Dette vil bytte mellom oppvarming og kjøling avhengig av den faktiske temperaturen. Temperaturutløserne for byttemodus er den som er angitt for 'normale priser'.</p><p><b>Uendret</b>: Denne modusen vil ikke endre AC-modusen din i det hele tatt. Den vil oppdage gjeldende modus og handle deretter.</p>",
+        "myThermo": "<p>Temperaturhjulet lar deg stille inn opptil 12 forskjellige temperaturer. Bare de som gjelder for innstillingene du har valgt vil være synlige.</p><p>'Av temperatur' er temperaturen som brukes når man prøver å holde strømtariffen. Det er én  temperatur for av når oppvarming er aktivert og en annen når kjøling er aktivert.</p><p>'Oppvarmingstemperaturområde' Det er opptil 5 temperaturer som kan stilles inn for oppvarming. Den laveste brukes når prisene er høye mens den høyeste brukes når prisene er lave.</p><p>'Kjølingstemperaturområde' Det er opptil 5 temperaturer som kan stilles inn for kjøling. Den laveste brukes når prisene er lave mens den høyeste brukes når prisene er høye.</p>"
       }
     },
     "charge": {
       "header": "Lading av Elbil",
-      "carChargerMissingHint": ["Ingen støttet lader funnet. Du kan fortsatt installere en flytbasert kontroller, men hvis du sender inn en <!--",
-      "--><a href=\"ShowLog\" onclick=\"changeTab(event, 'logPage');return false;\">enhetsrapport</a> for laderen din, så vil direkte støtte bli lagt til i en senere versjon."],
+      "carChargerMissingHint": "Ingen støttet lader funnet. Du kan fortsatt installere en flytbasert kontroller, men hvis du sender inn en <a href=\"ShowLog\" onclick=\"changeTab(event, 'logPage');return false;\">enhetsrapport</a> for laderen din, så vil direkte støtte bli lagt til i en senere versjon.",
       "carChargerDeprecatedHint": "Måten du kontrollerer billaderen din på vil snart slutte å fungere. For å fortsette å kontrollere laderen, må du velge den bort i listen over kontrollerbare enheter og lagre, deretter slette alle gamle flytkort som kontrollerer laderen og installere enheten for ladestyrings til denne appen.",
       "controllerNotAddedHint": "En støttet lader ble funnet, installer enheten for ladestyring for å kontrollere den.",
       "controllerNotEnabledHint": "En laderkontroller ble funnet, men den er ikke aktivert."
@@ -125,17 +114,12 @@
       "taskNoPrices": "Ingen fremtidige priser er tilgjengelig. Tvinger prispunkt til Normalpris inntil situasjonen har løst seg.",
       "taskYesPrices": "Fremtidige priser er tilgjengelig igjen.",
       "taskDisableLogging": "Du har slått på utvidet logging, noe som sinker appen betydelig. Vennligst slå av utvidet logging for bedre ytelse.",
-      "taskExperimental" : ["Du har valgt å styre en enhet som ikke er verifisert at appen håndterer enda. <!--",
-          "-->Dersom du <a href=\"ShowLog\" onclick=\"changeTab(event, 'logPage');return false;\">rapporterer</a> <!--",
-          "-->status for denne enheten til utvikleren kan eventuelle feil fikses og denne meldingen fjernes."],
+      "taskExperimental" : "Du har valgt å styre en enhet som ikke er verifisert at appen håndterer enda. Dersom du <a href=\"ShowLog\" onclick=\"changeTab(event, 'logPage');return false;\">rapporterer</a> status for denne enheten til utvikleren kan eventuelle feil fikses og denne meldingen fjernes.",
       "taskSpookey": "Laderen din endret status ${times} ganger på mystisk vis siden start av siste ladesyklus. Vennligst deaktiver alle andre kilder som forsøker å styre laderen.",
       "taskNone": "Supert, appen er riktig konfigurert.",
       "errorDevices": "Følgende enheter er svært upålitelige, vennligst følg innstruksjonene som kommer når du klikker på dem for å øke påliteligheten.",
       "reliability": "Pålitelighet",
-      "reliabilityHelp": ["Signalforholdet til denne enheten kan være svakt. Vennligst prøv å fjerne eventuelle hindringer for signalet <!--",
-          "-->eller sørg for at det er tilstrekkelig med rekkeviddeforlengere. Dette kan forbedre påliteligheten. <!--",
-          "-->Dersom du mener problemet ligger i denne appen og ikke i påliteligheten til enheten <!--",
-          "-->vennligst send en <a href=\"ShowLog\" onclick=\"changeTab(event, 'logPage');return false;\">enhetsrapport.</a>"]
+      "reliabilityHelp": "Signalforholdet til denne enheten kan være svakt. Vennligst prøv å fjerne eventuelle hindringer for signalet eller sørg for at det er tilstrekkelig med rekkeviddeforlengere. Dette kan forbedre påliteligheten. Dersom du mener problemet ligger i denne appen og ikke i påliteligheten til enheten vennligst send en <a href=\"ShowLog\" onclick=\"changeTab(event, 'logPage');return false;\">enhetsrapport.</a>"
     },
     "global": {
       "controlTemp": "Tillat temperatursyring",
@@ -243,17 +227,7 @@
       "deviceTypeController": "Effektkontrollere",
       "ongoing": "Venter på tilbakemelding fra brukere",
       "aboutInfo": "Om Sparegris",
-      "aboutInfoHint": ["<p>Denne appen er laget for at alle skal kunne styre strømmen sin på en enkel måte og samtidig spare så mye penger som mulig på det.</p><!--",
-          "--><p>Det har gått fryktelig mye fritid med for å fullføre dette prosjektet, så dersom du er fornøyd med det du sparer kan du gjerne støtte prosjektet på følgende måter: (helt frivillig)</p><!--",
-          "--><ol><!--",
-          "-->  <li><b>For privatpersoner</b><!--",
-          "-->      <p>Man kan sponse utviklingen av appen ved å donere penger på <a href='https://github.com/sponsors/frodeheg'>https://github.com/sponsors/frodeheg</a></p><!--",
-          "-->  </li><!--",
-          "-->  <li><b>For bedrifter</b><!--",
-          "-->      <p>Denne siden tar noen sekunder å laste, derfor er det lagt til en loading-skjerm for å informere om ventetiden. Dette kan være en fin reklameplass ettersom det er ventetid man ikke kommer foruten.</p><!--",
-          "-->      <p>Dersom din bedrift ønsker å utnytte denne fine muligheten kan dere ta kontakt med utvikleren av appen.</p><!--",
-          "-->  </li><!--",
-          "--></ol>"]
+      "aboutInfoHint": "<p>Denne appen er laget for at alle skal kunne styre strømmen sin på en enkel måte og samtidig spare så mye penger som mulig på det.</p><p>Det har gått fryktelig mye fritid med for å fullføre dette prosjektet, så dersom du er fornøyd med det du sparer kan du gjerne støtte prosjektet på følgende måter: (helt frivillig)</p><ol><li><b>For privatpersoner</b><p>Man kan sponse utviklingen av appen ved å donere penger på <a href='https://github.com/sponsors/frodeheg'>https://github.com/sponsors/frodeheg</a></p></li><li><b>For bedrifter</b><p>Denne siden tar noen sekunder å laste, derfor er det lagt til en loading-skjerm for å informere om ventetiden. Dette kan være en fin reklameplass ettersom det er ventetid man ikke kommer foruten.</p><p>Dersom din bedrift ønsker å utnytte denne fine muligheten kan dere ta kontakt med utvikleren av appen.</p></li></ol>"
     },
     "wizzard": {
       "welcome": "Velkommen",
@@ -293,9 +267,7 @@
       "actionHigh": "Handling når strømmen blir dyr",
       "actionExtreme": "Handling når strømmen blir ekstremt dyr",
       "actionNormal": "Handling når strømprisen blir normal",
-      "priceHint1": ["<p>Modus lar deg velge om du skal fore appen med prispunkt manuelt via flytkort eller om det skal gjøres automatisk. Dersom ingen av delene benyttes (deaktivert) vil appen bare styre maks effekt.</p><!--",
-           "--><p>Manuell styring fra flytkort gir deg størst fleksibilitet men overlater alt ansvaret for å tolke strømprisen til deg.</p><!--",
-           "--><p>Automatisk tolker strømprisen etter preferansene i appen.</p>"],
+      "priceHint1": "<p>Modus lar deg velge om du skal fore appen med prispunkt manuelt via flytkort eller om det skal gjøres automatisk. Dersom ingen av delene benyttes (deaktivert) vil appen bare styre maks effekt.</p><p>Manuell styring fra flytkort gir deg størst fleksibilitet men overlater alt ansvaret for å tolke strømprisen til deg.</p><p>Automatisk tolker strømprisen etter preferansene i appen.</p>",
       "priceErr1": "NB! Du må installere appen 'Strømregning' og tilhørende enhet for å velge eksterne priser. Strømprisen hentes sømløst uten å benytte flytkort.",
       "pricePointAdvanced": "Prisstyringsmagi",
       "pricePoint": "Prispunkt",

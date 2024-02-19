@@ -240,7 +240,7 @@ class FakeHomey {
     }
     if (settingName === 'settingsSaved' && value === 'true') {
       setTimeout(() => {
-        callback(new Error('OK'));
+        callback(new Error('Cannot save in this view'));
       }, 1000);
     }
   }

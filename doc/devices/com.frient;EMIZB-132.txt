@@ -1,0 +1,22 @@
++9:27:50.520: ----- ANALYZING DEVICE -----
++9:27:50.521: Report type: Device is not listed
++9:27:50.533: Device name: EMI Norwegian HAN
++9:27:50.534: Driver Id: homey:app:com.frient:EMIZB-132
++9:27:50.535: Error: TypeError: Cannot read properties of undefined (reading 'onoff_cap')
++9:27:50.535: Capabilities: meter_power,measure_power,alarm_generic
++9:27:50.536: Options for 'meter_power': {"id":"meter_power","type":"number","iconObj":null,"title":"Energi","getable":true,"setable":false,"insights":true,"insightsTitleTrue":null,"insightsTitleFalse":null,"units":"kWh","decimals":2,"value":173277.13,"lastUpdated":"2024-02-02T09:00:12.986Z"}
++9:27:50.537: Options for 'measure_power': {"id":"measure_power","type":"number","iconObj":null,"title":"Effekt","getable":true,"setable":false,"insights":true,"insightsTitleTrue":null,"insightsTitleFalse":null,"units":"W","decimals":2,"value":4276,"lastUpdated":"2024-02-02T09:27:48.621Z"}
++9:27:50.538: Options for 'alarm_generic': {"id":"alarm_generic","type":"boolean","iconObj":null,"title":"Check Meter","getable":true,"setable":false,"insights":true,"insightsTitleTrue":"Generell alarm aktivert","insightsTitleFalse":"Generell alarm deaktivert","value":false,"lastUpdated":"2024-01-25T23:03:03.255Z"}
++9:27:50.539: --- ANALYZING DEVICE DONE ---
+
+
++23:48:14.467: ----- ANALYZING DEVICE -----
++23:48:14.468: Report type: Device is not listed
++23:48:14.478: Device name: EMI Norwegian HAN
++23:48:14.479: Driver Id: homey:app:com.frient:EMIZB-132
++23:48:14.480: Error: TypeError: Cannot read properties of undefined (reading 'onoff_cap')
++23:48:14.481: Capabilities: meter_power,measure_power,alarm_generic
++23:48:14.482: Options for 'meter_power': {"id":"meter_power","type":"number","iconObj":null,"title":"Energi","getable":true,"setable":false,"insights":true,"insightsTitleTrue":null,"insightsTitleFalse":null,"units":"kWh","decimals":2,"value":59763.53,"lastUpdated":"2023-12-17T23:00:17.761Z"}
++23:48:14.482: Options for 'measure_power': {"id":"measure_power","type":"number","iconObj":null,"title":"Effekt","getable":true,"setable":false,"insights":true,"insightsTitleTrue":null,"insightsTitleFalse":null,"units":"W","decimals":2,"value":2941,"lastUpdated":"2023-12-17T23:48:13.263Z"}
++23:48:14.483: Options for 'alarm_generic': {"id":"alarm_generic","type":"boolean","iconObj":null,"title":"Check Meter","getable":true,"setable":false,"insights":true,"insightsTitleTrue":"Generell alarm aktivert","insightsTitleFalse":"Generell alarm deaktivert","value":false,"lastUpdated":"2023-11-09T15:47:32.376Z"}
++23:48:14.484: --- ANALYZING DEVICE DONE ---
