@@ -1,21 +1,22 @@
 {
+  "deprecated": true,
   "title": {
-    "en": "Start charging cycle (kWh)",
-    "no": "Start ladesyklus (kWh)",
-    "nl": "Start laadcyclus (kWh)",
-    "fr": "Démarrer le cycle de charge (kWh)"
+    "en": "Deprecated flow: Please install the charger controller device instead",
+    "no": "Utdatert flyt: Installer laderkontrollenheten i stedet",
+    "nl": "Verouderde stroom: installeer in plaats daarvan het ladercontrollerapparaat",
+    "fr": "Flux obsolète: veuillez installer le dispositif de contrôleur de chargeur à la place"
   },
   "titleFormatted": {
-    "en": "Start charging cheapest [[offerEnergy]] kWh before [[endTime]]",
-    "no": "Start lading av billigste [[offerEnergy]] kWh før kl. [[endTime]]",
-    "nl": "Begin met het opladen met de goedkoopste [[offerEnergy]] kWh vóór [[endTime]]",
-    "fr": "Commencez à charger le [[offerEnergy]] kWh le moins cher avant le [[endTime]]"
+    "en": "Deprecated flow: Please install the charger controller device instead! Charge [[offerEnergy]] kWh before [[endTime]]",
+    "no": "Utdatert flyt: Installer laderkontrollenheten i stedet! Lad [[offerEnergy]] kWh før kl. [[endTime]]",
+    "nl": "Verouderde stroom: installeer in plaats daarvan het ladercontrollerapparaat! Laad [[offerEnergy]] kWh vóór [[endTime]]",
+    "fr": "Flux obsolète: veuillez installer le dispositif de contrôleur de chargeur à la place! Chargez [[offerEnergy]] kWh avant le [[endTime]]"
   },
   "hint": {
-    "en": "Tell Piggy Bank to start a charging cycle. The offered energy (kWh) will be distributed on the cheapest hours before the time runs out. When the given amount of energy has been offered to the car the charging cycle will stop.\n\nNote that for supported car chargers the offered energy and used energy will be the same. For unsupported car chargers this may not be the case.",
-    "no": "Be Sparegris om å starte en ladesyklus. Den tilbydde energien (kWh) vil bli distribuert på de billigste timene før tiden går ut. Når den gitte mengden energi har blitt tilbydd bilen, vil ladesyklusen stoppe. Det samme skjer når tiden går ut\n\nMerk at for støttede billadere vil tilbudt energi og brukt energi være den samme. For billadere som ikke støttes, er dette kanskje ikke tilfelle.",
-    "nl": "Vraag Spaarpot om een laadcyclus te starten. De aangeboden energie (kWh) wordt verdeeld in de goedkoopste uren voordat de tijd om is. Wanneer de opgegeven hoeveelheid energie aan de auto is aangeboden, stopt de laadcyclus . Hetzelfde gebeurt wanneer de tijd verstrijkt\n\nLet op: voor ondersteunde autoladers is de aangeboden energie en gebruikte energie hetzelfde. Voor niet-ondersteunde autoladers is dit mogelijk niet het geval.",
-    "fr": "Demandez à Tirelire de démarrer un cycle de charge. L'énergie offerte (kWh) sera distribuée dans les heures les moins chères avant la fin du temps imparti. Lorsque la quantité d'énergie donnée a été offerte à la voiture, le cycle de charge s'arrêtera . La même chose se produit lorsque le délai expire\n\nNotez que pour les chargeurs de voiture pris en charge, l'énergie offerte et l'énergie utilisée seront les mêmes. Pour les chargeurs de voiture non pris en charge, cela peut ne pas être le cas."
+    "en": "This flow has been deprecated. It will still work for a limited time, but you're reccommended to install the new charger controller device as soon as possible and use the same flow from there instead.",
+    "no": "Denne flyten er avviklet. Den vil fortsatt fungere i en begrenset tid, men du anbefales å installere den nye laderkontrollenheten så snart som mulig og bruke samme flyt derfra istedenfor.",
+    "nl": "Deze stroom is beëindigd. Het zal nog een beperkte tijd werken, maar u wordt aangeraden de nieuwe opladercontroller zo snel mogelijk te installeren en van daaruit dezelfde stroom te gebruiken.",
+    "fr": "Ce flux est obsolète. Cela fonctionnera toujours pendant une durée limitée, mais il est recommandé d'installer le nouveau contrôleur de chargeur dès que possible et d'utiliser le même flux à partir de là."
   },
   "args": [
     {

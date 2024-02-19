@@ -25,6 +25,8 @@ class FakeHomey {
         extremePriceModifier: 100,
         priceKind: 1, // Spot
         priceCountry: 'no',
+        costSchema: 'no',
+        gridSteps: true,
         priceRegion: 0,
         surcharge: 0.0198, // Ramua kraft energi web
         priceFixed: 0.6,
@@ -193,7 +195,7 @@ class FakeHomey {
         id_c: { memberOf: ['zone2'], name:"DeviceName 3", room: "Bad",     image: "https://as2.ftcdn.net/v2/jpg/02/49/76/93/1000_F_249769389_7su5tYXOvcjcehNCcWTwcjnHvSMkLocJ.jpg", use: true, priority: 0, thermostat_cap: false, reliability: 0.6, driverId: 'no.thermofloor:Z-TRM3' },
         id_d: { memberOf: ['zone3'], name:"DeviceName 4", room: "Bad",     image: "https://as2.ftcdn.net/v2/jpg/02/49/76/93/1000_F_249769389_7su5tYXOvcjcehNCcWTwcjnHvSMkLocJ.jpg", use: false, priority: 1, thermostat_cap: true, reliability: 0.7, driverId: 'se.husdata:H60' },
         id_e: { memberOf: ['zone4'], name:"DeviceName 3", room: "Bad",     image: "https://as2.ftcdn.net/v2/jpg/02/49/76/93/1000_F_249769389_7su5tYXOvcjcehNCcWTwcjnHvSMkLocJ.jpg", use: true, priority: 0, thermostat_cap: false, reliability: 0.6, driverId: 'com.everspring:AN179' },
-        id_e: { memberOf: ['zone5'], name:"Lader", room: "Ute",     image: "https://as2.ftcdn.net/v2/jpg/02/49/76/93/1000_F_249769389_7su5tYXOvcjcehNCcWTwcjnHvSMkLocJ.jpg", use: false, priority: 1, thermostat_cap: false, reliability: 1.0, driverId: 'no.easee:charger' }
+        id_e: { memberOf: ['zone5'], name:"Lader", room: "Ute",     image: "https://as2.ftcdn.net/v2/jpg/02/49/76/93/1000_F_249769389_7su5tYXOvcjcehNCcWTwcjnHvSMkLocJ.jpg", use: true, priority: 1, thermostat_cap: false, reliability: 1.0, driverId: 'no.easee:charger' }
       };
     } else if (command.includes('/apiCommand?cmd=getCurrencies')) {
       response = { NOK: 'Norsk krone', SEK: 'Svensk Krone', DKK: 'Dansk Krone' };
@@ -277,6 +279,11 @@ Homey.loadLanguage('en')
  *                           DEBUG FUNCTIONALITY                                     *
  *********************************************************************************** */
 
+// Browser check:
+const isLocalhost = window.location.href.includes('localhost');
+const isChrome = navigator.userAgent.includes('Chrome');
+const browserWarning = isChrome && isLocalhost ? 'block' : 'none';
+
 // Show a debug window:
 document.write(`
 <style>
@@ -302,11 +309,12 @@ document.write(`
 
 <div id="mydiv">
   <div id="mydivheader">Debug Window</div>
+  <div id="browserWarning" style="color:#f00;display:${browserWarning}"><B>Do not use Chrome for localhost debug, it doesn't run included scripts...<br>Use 192.168.1.yourIP instead </B></div>
   <p><button onClick="reloadPage();">Reload page</button></p>
   <p><button onClick="showSettings();">Show settings</button></p>
   <p>
     Language:
-    <select onChange="selectLanguage(this.value);">
+    <select id="langSelector" onChange="selectLanguage(this.value);">
       <option value="fr">French</option>
       <option value="nl">Dutch</option>
       <option value="en" selected>English</option>
@@ -400,7 +408,6 @@ function reloadPage() {
   toggleTimeLoaded = false;
   graphLoaded = false;
   futurePriceOptionsLoaded = false;
-  chargerOptionsLoaded = false;
   appConfigProgressLoaded = false;
   currenciesLoaded = false;
   onHomeyReadyCompleted = false;
@@ -423,6 +430,6 @@ function selectLanguage(langId) {
       reloadPage();
     })
     .catch((err) => {
-      Homey.alert(`Language ${langId} could not be found.`);
+      Homey.alert(`Language ${langId} could not be found (${err}).`);
     });
 }

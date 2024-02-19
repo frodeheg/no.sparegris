@@ -149,6 +149,7 @@ p {
 
   .settings_row_input {
     width: 60%;
+    text-align: left;
   }
 
 .device-list {
