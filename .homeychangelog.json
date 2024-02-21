@@ -922,5 +922,8 @@
   },
   "0.21.12": {
     "en": "Fixed (invisible) crash bug when homey was overloaded + Improved error reporting"
+  },
+  "0.21.13": {
+    "en": "Added support for myuplink devices from H�iax and CTC"
   }
 }
