@@ -925,5 +925,8 @@
   },
   "0.21.13": {
     "en": "Added support for myuplink devices from H�iax and CTC"
+  },
+  "0.21.14": {
+    "en": "Made the app more visible in the app store by adding tags for all the brands for devices the app is capable of natively controlling"
   }
 }
