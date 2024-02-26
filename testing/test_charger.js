@@ -68,7 +68,7 @@ async function testChargePlan() {
     callTime.setHours(3, 0, 0, 0);
     chargeDevice.onChargingCycleStart(undefined, '10:00', 3, callTime);
     for (let i = 0; i < resultTable.length; i++) {
-      if (chargeDevice.__charge_plan[i] !== resultTable[i]) {
+      if (chargeDevice.chargePlan.currentPlan[i] !== resultTable[i]) {
         throw new Error(`Charging schedule failed, Hour +${i} observed ${chargeDevice.__charge_plan[i]}, wanted: ${resultTable[i]}`);
       }
     }
@@ -153,7 +153,7 @@ async function testChargeControl() {
     const callTime = new Date(now);
     await chargeDevice.onChargingCycleStart(undefined, '10:00', 3, callTime);
     for (let i = 0; i < correctPlan.length; i++) {
-      if (chargeDevice.__charge_plan[i] !== correctPlan[i]) {
+      if (chargeDevice.chargePlan.currentPlan[i] !== correctPlan[i]) {
         throw new Error(`Charging schedule failed, Hour +${i} observed ${chargeDevice.__charge_plan[i]}, wanted: ${correctPlan[i]}`);
       }
     }
@@ -200,6 +200,42 @@ async function testChargeControl() {
   } finally {
     chargeDevice.onUninit();
     app.onUninit();
+  }
+  console.log('\x1b[1A[\x1b[32mPASSED\x1b[0m]');
+}
+
+// Test the charge tokens
+async function testChargeToken() {
+  console.log('[......] Charge Token');
+  const now = new Date('July 2, 2023, 03:00:00:000 GMT+2:00');
+  const app = new PiggyBank();
+  const chargeDriver = new ChargeDriver('piggy-charger', app);
+  const chargeDevice = new ChargeDevice(chargeDriver);
+
+  now.setHours(3, 0, 0, 0);
+  try {
+    await app.disableLog();
+    await app.onInit(now);
+    await chargeDevice.setData({ targetDriver: null, id: 'TestDeviceID' });
+    await chargeDevice.setSettings({ phases: 1, voltage: 220 });
+    await chargeDevice.onInit();
+    clearTimeout(chargeDevice.__powerProcessID);
+    chargeDevice.__powerProcessID = undefined;
+    await applyBasicConfig(app);
+    await applyPriceScheme2(app);
+
+    const callTime = new Date(now);
+    await chargeDevice.onChargingCycleStart(undefined, '10:00', 3, callTime);
+  } finally {
+    chargeDevice.onUninit();
+    app.onUninit();
+  }
+
+  const correctToken = '{"cycleStart":"2023-07-02T01:00:00.000Z","cycleEnd":"2023-07-02T08:00:00.000Z","cycleType":2,"cycleRemaining":3,"cycleTotal":3,"currentPlan":[null,3750,null,null,null,3750,3750],"originalPlan":[null,3750,null,null,null,3750,3750],"actualCharge":[null,null,null,null,null,null,null],"actualPrices":[0.3,0.2,0.5,0.9,0.8,0.1,0.2],"currentIndex":0}';
+  const chargeToken = chargeDevice.homey.flow.getToken('chargeToken-TestDeviceID').value;
+
+  if (chargeToken !== correctToken) {
+    throw new Error(`Incorrect charge Token '${chargeToken}'`);
   }
   console.log('\x1b[1A[\x1b[32mPASSED\x1b[0m]');
 }
@@ -279,6 +315,7 @@ async function startAllTests() {
     await testDeviceInit();
     await testChargePlan();
     await testChargeControl();
+    await testChargeToken();
     // await testConnectHelp();
   } catch (err) {
     console.log('\x1b[1A[\x1b[31mFAILED\x1b[0m]');

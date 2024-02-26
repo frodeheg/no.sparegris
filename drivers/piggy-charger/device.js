@@ -85,22 +85,31 @@ class ChargeDevice extends Device {
     });
 
     // Register current charging setting
-    this.cycleStart = this.getStoreValue('cycleStart');
-    this.cycleStart = this.cycleStart ? new Date(this.cycleStart) : undefined;
-    this.cycleEnd = this.getStoreValue('cycleEnd');
-    this.cycleEnd = this.cycleEnd ? new Date(this.cycleEnd) : undefined;
-    this.cycleType = this.getStoreValue('cycleType');
-    this.cycleTotal = +this.getStoreValue('cycleTotal');
-    this.cycleRemaining = +this.getStoreValue('cycleRemaining');
+    this.chargePlan = this.getStoreValue('chargePlan') || {};
+    this.chargePlan.cycleStart = this.chargePlan.cycleStart ? new Date(this.chargePlan.cycleStart) : undefined;
+    this.chargePlan.cycleEnd = this.chargePlan.cycleEnd ? new Date(this.chargePlan.cycleEnd) : undefined;
+    this.chargePlan.cycleType = +this.chargePlan.cycleType || c.OFFER_HOURS;
+    this.chargePlan.cycleTotal = +this.chargePlan.cycleTotal || 0; // Total number of Wh or hours to charge
+    this.chargePlan.cycleRemaining = +this.chargePlan.cycleRemaining || 0; // Remaining number of Wh or hours to charge
+    this.chargePlan.currentPlan = Array.isArray(this.chargePlan.currentPlan) ? this.chargePlan.currentPlan : [];
+    this.chargePlan.originalPlan = Array.isArray(this.chargePlan.originalPlan) ? this.chargePlan.originalPlan : [];
+    this.chargePlan.actualCharge = Array.isArray(this.chargePlan.actualCharge) ? this.chargePlan.actualCharge : []; // Updated at the end of every hour
+    this.chargePlan.actualPrices = Array.isArray(this.chargePlan.actualPrices) ? this.chargePlan.actualPrices : []; // Updated at the beginning of every hour
+    this.chargePlan.currentIndex = +this.chargePlan.currentIndex || 0;
+
     this.mutexForPower = new Mutex();
     this.__spookey_check_activated = undefined;
     this.__spookey_changes = 0;
     this.__offeredEnergy = 0;
-    this.__charge_plan = [];
-    this.__past_plan = [];
-    this.__plan_prices = [];
     this.limited = false;
     this.moneySpentTotal = this.getStoreValue('moneySpentTotal') || 0;
+
+    // Create charging token
+    this.chargeToken = await this.homey.flow.createToken(`chargeToken-${data.id}`, {
+      type: 'string',
+      title: `Charge Plan ${this.getName()}`
+    });
+    await this.updateChargePlan([]);
     await this.rescheduleCharging(false);
 
     // Link on-off button with the "controllable-device" setting in piggy
@@ -169,6 +178,26 @@ class ChargeDevice extends Device {
       newSetting[setting] = newVal;
       if (changed) this.setSettings(newSetting);
     }
+  }
+
+  /**
+   * Update the Charge plan JSON
+   * The structure to set up is as follows:
+   * {
+   *   schedule: [
+   *     // one item per hour in the charge plan. Anything before/after the plan is deleted.
+   *     { startTime: xxxx, plannedPower: xxxx, actualPower: xxxx },
+   *   ],
+   *   currentIdx: number // Points to the element in the schedule array which is current
+   */
+  async updateChargePlan(newPlan) {
+    for (let i = 0; i < newPlan.length; i++) {
+      this.chargePlan.currentPlan[this.chargePlan.currentIndex + i] = newPlan[i];
+    }
+    if (this.chargePlan.currentIndex === 0) {
+      this.chargePlan.originalPlan = [...newPlan];
+    }
+    return this.chargeToken.setValue(JSON.stringify(this.chargePlan));
   }
 
   async onUninit() {
@@ -263,7 +292,7 @@ class ChargeDevice extends Device {
    */
   async setTargetPower(power) {
     // Filter the new target power with the charge plan
-    const allowPower = this.__charge_plan[0] > 0;
+    const allowPower = this.chargePlan.currentPlan[this.chargePlan.currentIndex] > 0;
     const filteredPower = allowPower ? +power : 0;
     // Report power to device trigger
     if (!this.targetDriver) {
@@ -321,16 +350,15 @@ class ChargeDevice extends Device {
     const yAxisText = this.homey.__('chargePlanGraph.price');
     const groupText = this.homey.__('chargePlanGraph.enabled');
     const endedText = this.homey.__('chargePlanGraph.cycleEnded');
-    const startHour = this.cycleStart ? this.cycleStart.getHours() : 0;
-    const cycleEnded = this.cycleEnd < now;
+    const startHour = this.chargePlan.cycleStart ? this.chargePlan.cycleStart.getHours() : 0;
+    const cycleEnded = this.chargePlan.cycleEnd < now;
     const xAxisText = [];
     // TBD: Values && group (CHARGEGROUP)
     const group = [
-      ...this.__past_plan.map((charge) => (charge ? CHARGEGROUP.PAST_ON : CHARGEGROUP.PAST_OFF)),
-      ...this.__charge_plan.map((charge) => (charge ? CHARGEGROUP.PLANNED_ON : CHARGEGROUP.PLANNED_OFF))
+      ...this.chargePlan.actualCharge.slice(0, this.chargePlan.currentIndex).map((charge) => (charge ? CHARGEGROUP.PAST_ON : CHARGEGROUP.PAST_OFF)),
+      ...this.chargePlan.currentPlan.slice(this.chargePlan.currentIndex, 24).map((charge) => (charge ? CHARGEGROUP.PLANNED_ON : CHARGEGROUP.PLANNED_OFF))
     ].slice(0, 24);
-    const indices = Array.from(Array(24).keys());
-    const values = indices.map((i) => this.__plan_prices[i]); // to make the index undefined instead of too short array
+    const values = this.chargePlan.actualPrices;
     for (let i = 0; i < 24; i++) {
       xAxisText[i] = `${String((i + startHour) % 24).padStart(2, ' ')}:00`;
     }
@@ -383,7 +411,7 @@ class ChargeDevice extends Device {
     return Promise.resolve(this.getCapabilityValue('alarm_generic.notValidated'))
       .then((notValidated) => {
         if (notValidated) return this.validationProcedure(dst);
-        if (this.cycleStart < now) return this.displayPlan(dst, now);
+        if (this.chargePlan.cycleStart < now) return this.displayPlan(dst, now);
         return this.displayNoPlan(dst);
       })
       .then(() => dst.pack().pipe(stream));
@@ -577,16 +605,26 @@ class ChargeDevice extends Device {
     const minutesDiff = timeDiff(nowLocal.getHours(), nowLocal.getMinutes(), hoursEnd, minutesEnd);
     const endTimeUTC = new Date(now.getTime());
     endTimeUTC.setUTCMinutes(endTimeUTC.getUTCMinutes() + minutesDiff, 0, 0);
-    this.cycleRemaining = offerEnergy ? (offerEnergy * 1000) : +offerHours;
-    this.cycleTotal = this.cycleRemaining;
-    this.cycleType = offerEnergy ? c.OFFER_ENERGY : c.OFFER_HOURS;
-    this.cycleStart = now;
-    this.cycleEnd = endTimeUTC;
-    this.setStoreValue('cycleStart', this.cycleStart);
-    this.setStoreValue('cycleEnd', this.cycleEnd);
-    this.setStoreValue('cycleType', this.cycleType);
-    this.setStoreValue('cycleTotal', this.cycleTotal);
-    this.setStoreValue('cycleRemaining', this.cycleRemaining);
+
+    // Calculate length of plan in hours
+    const startOfHour = new Date(now.getTime());
+    startOfHour.setUTCMinutes(0, 0, 0);
+    const cycleLength = Math.ceil(Math.min((endTimeUTC - startOfHour) / (60 * 60 * 1000), 24)); // timespan to plan in hours
+
+    // Set up the charge plan
+    this.chargePlan = {};
+    this.chargePlan.cycleStart = now;
+    this.chargePlan.cycleEnd = endTimeUTC;
+    this.chargePlan.cycleType = offerEnergy ? c.OFFER_ENERGY : c.OFFER_HOURS;
+    this.chargePlan.cycleRemaining = offerEnergy ? (offerEnergy * 1000) : +offerHours;
+    this.chargePlan.cycleTotal = this.chargePlan.cycleRemaining;
+    this.chargePlan.currentPlan = new Array(cycleLength);
+    this.chargePlan.originalPlan = new Array(cycleLength);
+    this.chargePlan.actualCharge = new Array(cycleLength);
+    this.chargePlan.actualPrices = [...this.homey.app.getPricePrediction(now, endTimeUTC)];
+    this.chargePlan.currentIndex = 0;
+
+    this.setStoreValue('chargePlan', this.chargePlan);
 
     await this.rescheduleCharging(false, now);
 
@@ -610,12 +648,12 @@ class ChargeDevice extends Device {
    */
   async onChargingCycleStop() {
     this.updateLog('Charging cycle abruptly ended', c.LOG_INFO);
-    if (this.cycleEnd > new Date()) {
-      this.cycleRemaining = 0;
-      this.setStoreValue('cycleRemaining', this.cycleRemaining);
+    if (this.chargePlan.cycleEnd > new Date()) {
+      this.chargePlan.cycleRemaining = 0;
+      this.setStoreValue('chargePlan', this.chargePlan);
       this.rescheduleCharging(false);
     } else {
-      this.__charge_plan = [];
+      this.updateChargePlan([]);
       throw new Error('No charging cycle could be stopped');
     }
   }
@@ -651,7 +689,7 @@ class ChargeDevice extends Device {
    * Whenever a new hour passes, must be called _after_ doPriceCalculations to get correct current_price_index
    */
   async rescheduleCharging(isNewHour, now = new Date()) {
-    const end = new Date(this.cycleEnd);
+    const end = new Date(this.chargePlan.cycleEnd);
     const priceArray = this.homey.app.getPricePrediction(now, end);
 
     if (isNewHour) {
@@ -659,48 +697,52 @@ class ChargeDevice extends Device {
       const currentHour = this.homey.app.__current_price_index;
       const currentPrices = this.homey.app.__current_prices;
       const currentCost = (currentHour in currentPrices) ? currentPrices[currentHour] : 0;
-      const pastEnergy = (this.__past_plan.length === 0) ? 0 : this.__past_plan.slice(-1);
+      const pastEnergy = this.chargePlan.actualCharge[this.chargePlan.currentIndex] || 0;
       this.moneySpentTotal += pastEnergy * currentCost;
       this.setStoreValue('moneySpentTotal', this.moneySpentTotal);
       this.setCapabilityValue('piggy_moneypile', this.moneySpentTotal);
 
-      const oldRemaining = this.cycleRemaining;
-      if (this.cycleType === c.OFFER_ENERGY) {
-        this.cycleRemaining -= pastEnergy;
-      } else if (this.__charge_plan[0] > 0) {
+      const oldRemaining = this.chargePlan.cycleRemaining;
+      if (this.chargePlan.cycleType === c.OFFER_ENERGY) {
+        this.chargePlan.cycleRemaining -= pastEnergy;
+      } else if (this.chargePlan.currentPlan[this.chargePlan.currentIndex] > 0) {
         // OFFER_HOURS - Only subtract for active hours
-        this.cycleRemaining -= 1;
+        this.chargePlan.cycleRemaining -= 1;
       } else {
         // OFFER HOURS - Inactive hours
       }
-      const startIndex = (now.getHours() - this.cycleStart.getHours() + 24) % 24;
-      for (let loop = 0; loop < 24; loop++) {
-        this.__plan_prices[startIndex + loop] = priceArray[loop];
+      // Update prices (they may have been unavailable earlier)
+      const startIndex = (now.getHours() - this.chargePlan.cycleStart.getHours() + 24) % 24;
+      const cycleLength = this.chargePlan.actualPrices.length;
+      for (let loop = startIndex; loop < cycleLength; loop++) {
+        this.chargePlan.actualPrices[loop] = priceArray[loop - startIndex];
       }
-      if (this.cycleRemaining < 0) this.cycleRemaining = 0;
+      if (this.chargePlan.cycleRemaining < 0) this.chargePlan.cycleRemaining = 0;
+      this.chargePlan.currentIndex++;
       if (oldRemaining !== 0) {
-        this.setStoreValue('cycleRemaining', this.cycleRemaining);
+        this.setStoreValue('chargePlan', this.chargePlan);
       }
     }
 
     // Reset charge plan
-    this.__charge_plan = [];
+    const tempChargePlan = [];
 
     // Ignore rescheduling if there is nothing left to schedule
-    if (this.cycleRemaining === 0) return Promise.resolve();
+    if (this.chargePlan.cycleRemaining === 0) return Promise.resolve();
 
     // Calculate new charging plan
     const maxLimits = this.homey.app.readMaxPower();
     const maxPower = Math.min(+maxLimits[TIMESPAN.QUARTER] * 4, +maxLimits[TIMESPAN.HOUR]);
     const priceSorted = Array.from(priceArray.keys()).sort((a, b) => ((priceArray[a] === priceArray[b]) ? (a - b) : (priceArray[a] - priceArray[b])));
-    let scheduleRemaining = this.cycleRemaining;
+    let scheduleRemaining = this.chargePlan.cycleRemaining;
     for (let i = 0; (i < priceSorted.length) && (scheduleRemaining > 0); i++) {
       const idx = priceSorted[i];
       const estimatedPower = maxPower * 0.75; // Assume 75% available to the charger TODO: replace with historic average
-      this.__charge_plan[idx] = estimatedPower;
-      scheduleRemaining -= this.cycleType === c.OFFER_ENERGY ? estimatedPower : 1;
+      tempChargePlan[idx] = estimatedPower;
+      scheduleRemaining -= this.chargePlan.cycleType === c.OFFER_ENERGY ? estimatedPower : 1;
     }
-    this.setCapabilityValue('measure_battery.charge_cycle', 100 * (1 - ((this.cycleTotal - this.cycleRemaining) / this.cycleRemaining)));
+    this.setCapabilityValue('measure_battery.charge_cycle', 100 * (1 - ((this.chargePlan.cycleTotal - this.chargePlan.cycleRemaining) / this.chargePlan.cycleRemaining)));
+    this.updateChargePlan(tempChargePlan);
 
     if (isNewHour) {
       // Re-apply the charge on/off since the plan is recalculated
@@ -713,7 +755,7 @@ class ChargeDevice extends Device {
 
   /**
    * Return and reset the offered energy since last time called (called once per hour)
-   * Always called before rescheduleCharging
+   * Always called before rescheduleCharging (from app.json)
    */
   async getOfferedEnergy(now = new Date()) {
     // Abort if the timestamp is from the past
@@ -730,7 +772,8 @@ class ChargeDevice extends Device {
 
     // Store energy at hour mark
     const pastEnergy = this.__offeredEnergy + deltaEnergyBefore;
-    this.__past_plan.push(pastEnergy);
+    const previousIndex = (this.__previousTime.getHours() - this.chargePlan.cycleStart.getHours() + 24) % 24;
+    this.chargePlan.actualCharge[previousIndex] = pastEnergy;
 
     // Find energy used after the hour mark
     const deltaEnergyAfter = currentPower * (lapsedTimeAfter / (1000 * 60 * 60));
@@ -753,7 +796,7 @@ class ChargeDevice extends Device {
     return this.mutexForPower.runExclusive(async () => this.onProcessPower())
       .finally(() => {
         // Schedule new event if and only if charging is active
-        if (this.cycleRemaining > 0) {
+        if (this.chargePlan.cycleRemaining > 0) {
           const timeToNextTrigger = 1000 * 10;
           this.__powerProcessID = setTimeout(() => this.onProcessPowerWrapper(), timeToNextTrigger);
         } else {
@@ -867,7 +910,7 @@ class ChargeDevice extends Device {
     }
 
     const withinChargingCycle = (+chargerOptions.chargeRemaining > 0);
-    const withinChargingPlan = (this.__charge_plan[0] > 0) && withinChargingCycle;
+    const withinChargingPlan = (this.chargePlan.currentPlan[this.chargePlan.currentIndex] > 0) && withinChargingCycle;
     const { lastCurrent, lastPower } = this.__current_state[deviceId];
     const ampsActualOffer = +await device.capabilitiesObj[d.DEVICE_CMD[driverId].getOfferedCap].value;
     if ((lastCurrent === ampsActualOffer) && (lastPower !== powerUsed)) {

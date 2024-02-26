@@ -217,6 +217,24 @@ class FakeConditionCardClass {
 }
 
 /**
+ * Fake token class
+ */
+class FakeTokenClass {
+
+  constructor(homey, name) {
+    this.homey = homey;
+    this.name = name;
+    this.value = undefined;
+    if (this.homey.__debug) console.log('TBD: Implement FakeTokenClass');
+  }
+
+  setValue(value) {
+    this.value = value;
+  }
+
+}
+
+/**
  * Fake Flow class
  */
 class FakeFlowClass {
@@ -227,6 +245,7 @@ class FakeFlowClass {
     this.actionCards = {};
     this.conditionCards = {};
     this.deviceConditionCards = {};
+    this.tokens = {};
   }
 
   getTriggerCard(name) {
@@ -238,7 +257,7 @@ class FakeFlowClass {
 
   getActionCard(name) {
     if (!(name in this.actionCards)) {
-      this.actionCards[name] = new FakeActionCardClass(this.homey, name)
+      this.actionCards[name] = new FakeActionCardClass(this.homey, name);
     }
     return this.actionCards[name];
   }
@@ -255,6 +274,15 @@ class FakeFlowClass {
       this.deviceConditionCards[name] = new FakeDeviceTriggerCardClass(this.homey, name);
     }
     return this.deviceConditionCards[name];
+  }
+
+  createToken(name) {
+    this.tokens[name] = new FakeTokenClass(this.homey, name);
+    return this.tokens[name];
+  }
+
+  getToken(name) {
+    return this.tokens[name];
   }
 
 }
@@ -444,6 +472,7 @@ class Device {
   constructor(driver) {
     this.homey = driver.homey;
     this.driver = driver;
+    this.name = 'Noname';
     this.store = {};
     this.capOptions = {};
     this.caps = {};
@@ -488,6 +517,10 @@ class Device {
   // Public functions
   getData() {
     return this.data;
+  }
+
+  getName() {
+    return this.name;
   }
 
   getSetting(setting) {
