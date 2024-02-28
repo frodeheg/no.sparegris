@@ -1,0 +1,27 @@
+Log ID: 2024-02-21T03:41:18.449Z
+App version 0.21.12
+
++3:41:18.449: ----- ANALYZING DEVICE -----
++3:41:18.449: Report type: Experimental device is working
++3:41:18.461: Device name: CTC Connected 200
++3:41:18.462: Driver Id: homey:app:com.myuplink:ctc
++3:41:18.462: Found onoff cap: onoff
++3:41:18.463: Found temp cap: true
++3:41:18.463: Device reliability: 1
++3:41:18.464: Capabilities: max_power_2000,measure_humidity.fill_level,measure_humidity.leak_relation,measure_power,measure_power.leak,measure_temperature,meter_power,meter_power.in_tank,meter_power.leak_accum,onoff,onoff.hwBoost,target_temperature
++3:41:18.465: Options for 'max_power_2000': {"id":"max_power_2000","type":"enum","iconObj":null,"title":"Max effekt","getable":true,"setable":true,"insightsTitleTrue":null,"insightsTitleFalse":null,"values":[{"id":"1","title":"Lav effekt - 700 W"},{"id":"2","title":"Middels effekt - 1300 W"},{"id":"3","title":"Maks effekt - 2000 W"}],"value":null,"lastUpdated":null}
++3:41:18.466: Options for 'measure_humidity.fill_level': {"id":"measure_humidity.fill_level","type":"number","iconObj":null,"title":"Fyllingsgrad","getable":true,"setable":false,"insights":true,"insightsTitleTrue":null,"insightsTitleFalse":null,"units":"%","decimals":2,"value":20,"lastUpdated":"2024-02-21T03:34:53.637Z"}
++3:41:18.466: Options for 'measure_humidity.leak_relation': {"id":"measure_humidity.leak_relation","type":"number","iconObj":null,"title":"Andel strømbruk tapt i går","getable":true,"setable":false,"insights":true,"insightsTitleTrue":null,"insightsTitleFalse":null,"units":"%","decimals":2,"value":0,"lastUpdated":"2024-02-21T03:34:53.819Z"}
++3:41:18.467: Options for 'measure_power': {"id":"measure_power","type":"number","iconObj":null,"title":"Antatt effekt","getable":true,"setable":false,"insights":true,"insightsTitleTrue":null,"insightsTitleFalse":null,"units":"W","decimals":2,"value":1910,"lastUpdated":"2024-02-21T03:34:53.613Z"}
++3:41:18.468: Options for 'measure_power.leak': {"id":"measure_power.leak","type":"number","iconObj":null,"title":"Passivt varmetap","getable":true,"setable":false,"insights":true,"insightsTitleTrue":null,"insightsTitleFalse":null,"units":"W","decimals":2,"value":15.33,"lastUpdated":"2024-02-21T03:34:53.758Z"}
++3:41:18.469: Options for 'measure_temperature': {"id":"measure_temperature","type":"number","iconObj":null,"title":"Temperatur","getable":true,"setable":false,"insights":true,"insightsTitleTrue":null,"insightsTitleFalse":null,"units":"°C","decimals":2,"value":19.7,"lastUpdated":"2024-02-21T03:34:53.731Z"}
++3:41:18.470: Options for 'meter_power': {"id":"meter_power","type":"number","iconObj":null,"title":"Energi brukt totalt","getable":true,"setable":false,"insights":true,"insightsTitleTrue":null,"insightsTitleFalse":null,"units":"kWh","decimals":2,"value":8388,"lastUpdated":"2024-02-21T03:39:54.229Z"}
++3:41:18.472: Options for 'meter_power.in_tank': {"id":"meter_power.in_tank","type":"number","iconObj":null,"title":"Energi i tanken","getable":true,"setable":false,"insights":true,"insightsTitleTrue":null,"insightsTitleFalse":null,"units":"kWh","decimals":2,"value":3.26,"lastUpdated":"2024-02-21T03:34:53.578Z"}
++3:41:18.473: Options for 'meter_power.leak_accum': {"id":"meter_power.leak_accum","type":"number","iconObj":null,"title":"Akkumulert varmetap","getable":true,"setable":false,"insights":true,"insightsTitleTrue":null,"insightsTitleFalse":null,"units":"kWh","decimals":2,"value":0,"lastUpdated":"2024-02-21T03:39:54.252Z"}
++3:41:18.474: Options for 'onoff': {"id":"onoff","type":"boolean","iconObj":null,"title":"Slått på","getable":true,"setable":true,"insights":true,"insightsTitleTrue":"Slått på","insightsTitleFalse":"Slått av","value":true,"lastUpdated":"2024-02-21T03:34:53.666Z"}
++3:41:18.475: Options for 'onoff.hwBoost': {"id":"onoff.hwBoost","type":"boolean","iconObj":null,"title":"Boost funksjon aktiv","getable":true,"setable":true,"insights":true,"insightsTitleTrue":"Boost Slått på","insightsTitleFalse":"Boost Slått av","value":false,"lastUpdated":"2024-02-21T03:34:53.753Z"}
++3:41:18.476: Options for 'target_temperature': {"id":"target_temperature","type":"number","iconObj":null,"title":"Ønsket temperatur","getable":true,"setable":true,"insights":true,"insightsTitleTrue":null,"insightsTitleFalse":null,"min":20,"max":85,"step":1,"units":"°C","decimals":2,"value":66,"lastUpdated":"2024-02-21T03:34:53.714Z"}
++3:41:18.477: --- ANALYZING DEVICE DONE ---
++3:41:22.596: Email: optional.email@for.feedback
+Comment:Optional
++3:41:22.648: Sending log
