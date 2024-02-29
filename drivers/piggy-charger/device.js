@@ -49,7 +49,7 @@ class ChargeDevice extends Device {
   async onInit() {
     this.homey.app.updateLog('Charger init', c.LOG_INFO);
     this.homey.app.updateLog('Piggy Charger has been initialized', 1);
-    this.settingsManifest = this.driver.manifest.settings[VALIDATION_SETTINGS].children;
+    this.settingsManifest = await this.driver.ready().then(() => this.driver.manifest.settings[VALIDATION_SETTINGS].children);
     this.killed = false;
 
     // Make short access to device data
@@ -86,8 +86,8 @@ class ChargeDevice extends Device {
 
     // Register current charging setting
     this.chargePlan = this.getStoreValue('chargePlan') || {};
-    this.chargePlan.cycleStart = this.chargePlan.cycleStart ? new Date(this.chargePlan.cycleStart) : undefined;
-    this.chargePlan.cycleEnd = this.chargePlan.cycleEnd ? new Date(this.chargePlan.cycleEnd) : undefined;
+    this.chargePlan.cycleStart = this.chargePlan.cycleStart ? new Date(this.chargePlan.cycleStart) : new Date();
+    this.chargePlan.cycleEnd = this.chargePlan.cycleEnd ? new Date(this.chargePlan.cycleEnd) : new Date();
     this.chargePlan.cycleType = +this.chargePlan.cycleType || c.OFFER_HOURS;
     this.chargePlan.cycleTotal = +this.chargePlan.cycleTotal || 0; // Total number of Wh or hours to charge
     this.chargePlan.cycleRemaining = +this.chargePlan.cycleRemaining || 0; // Remaining number of Wh or hours to charge

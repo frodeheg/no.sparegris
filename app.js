@@ -3114,29 +3114,48 @@ class PiggyBank extends Homey.App {
    * Whenever a new hour passes, must be called _after_ doPriceCalculations to get correct current_price_index
    */
   async newRescheduleCharging(isNewHour, now = new Date()) {
-    const chargerDriver = this.homey.drivers.getDriver('piggy-charger');
-    if (chargerDriver) {
-      const devices = chargerDriver.getDevices();
-      for (const index in devices) {
-        devices[index].rescheduleCharging(isNewHour, now);
-      }
+    let chargerDriver;
+    try {
+      chargerDriver = this.homey.drivers.getDriver('piggy-charger');
+    } catch (err) {
+      // Driver not initialized yet
+      return Promise.resolve();
     }
-    return Promise.resolve();
+    if (!chargerDriver) return Promise.resolve();
+    return chargerDriver.ready()
+      .then(() => {
+        const promises = [];
+        const devices = chargerDriver.getDevices();
+        for (const index in devices) {
+          promises.push(devices[index].ready().then(() => devices[index].rescheduleCharging(isNewHour, now)));
+        }
+        return Promise.all(promises);
+      });
   }
 
   /**
    * Assembles the offered energy since last calling
    */
   async getOfferedEnergy(now = new Date()) {
-    let energyAccumulated = 0;
-    const chargerDriver = this.homey.drivers.getDriver('piggy-charger');
-    if (chargerDriver) {
-      const devices = chargerDriver.getDevices();
-      for (const index in devices) {
-        energyAccumulated += await devices[index].getOfferedEnergy(now);
-      }
+    let chargerDriver;
+    try {
+      chargerDriver = this.homey.drivers.getDriver('piggy-charger');
+    } catch (err) {
+      // Driver not initialized yet
+      return Promise.resolve();
     }
-    return Promise.resolve(Math.round(energyAccumulated));
+    if (!chargerDriver) return Promise.resolve();
+    return chargerDriver.ready()
+      .then(() => {
+        const promises = [];
+        const devices = chargerDriver.getDevices();
+        for (const index in devices) {
+          promises.push(devices[index].ready().then(() => devices[index].getOfferedEnergy(now)));
+        }
+        // Accumulate energy for all the devices
+        return Promise.all(promises)
+          .then(values => Math.round(values.reduce((a, b) => a + b, 0)));
+      });
   }
 
   /**
