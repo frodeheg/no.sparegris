@@ -98,6 +98,7 @@ class ChargeDevice extends Device {
     this.chargePlan.currentIndex = +this.chargePlan.currentIndex || 0;
 
     this.mutexForPower = new Mutex();
+    this.__previousTime = new Date();
     this.__spookey_check_activated = undefined;
     this.__spookey_changes = 0;
     this.__offeredEnergy = 0;
@@ -756,6 +757,7 @@ class ChargeDevice extends Device {
   /**
    * Return and reset the offered energy since last time called (called once per hour)
    * Always called before rescheduleCharging (from app.json)
+   * NOTE! This also return energy offered when there is no charge plan active...
    */
   async getOfferedEnergy(now = new Date()) {
     // Abort if the timestamp is from the past
