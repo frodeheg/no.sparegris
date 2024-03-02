@@ -241,7 +241,9 @@ p {
 #safetyPower,
 #crossSlotSmooth,
 #errorMargin,
+#phases,
 #mainFuse,
+#voltage,
 #expireDaily,
 #expireHourly,
 #freeThreshold {

@@ -857,6 +857,12 @@ class PiggyBank extends Homey.App {
     if (this.homey.settings.get('mainFuse') === null) {
       this.homey.settings.set('mainFuse', 63);
     }
+    if (this.homey.settings.get('phases') === null) {
+      this.homey.settings.set('phases', 1);
+    }
+    if (this.homey.settings.get('voltage') === null) {
+      this.homey.settings.set('voltage', 230);
+    }
     let futurePriceOptions = this.homey.settings.get('futurePriceOptions');
     if (!futurePriceOptions
       || !('minCheapTime' in futurePriceOptions)
@@ -2199,7 +2205,9 @@ class PiggyBank extends Homey.App {
     }
 
     const mainFuse = +this.homey.settings.get('mainFuse') || 63; // Amps
-    const maxDrain = Math.round(1.732050808 * 230 * mainFuse);
+    const phases = +this.homey.settings.get('phases') || 1;
+    const voltage = +this.homey.settings.get('voltage') || 230;
+    const maxDrain = Math.round((phases === 3 ? 1.732 : 1) * voltage * mainFuse);
     const maxFreeDrain = ((isNumber(maxDrain) && (maxDrain > 0)) ? maxDrain : (trueMaxPower * 10)) - this.__current_power;
     if (minPowerDiff > maxFreeDrain) {
       minPowerDiff = maxFreeDrain; // Cannot use more than the main fuse

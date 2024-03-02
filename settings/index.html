@@ -1426,11 +1426,18 @@
         <table class="settings_table">
           <tr>
             <td class="settings_row_name"><label for="mainFuse" data-i18n="settings.global.mainFuse">global.mainFuse</label>:</td>
-            <td class="settings_row_input"><input id="mainFuse" type="number" min="0" max="100000" value="63" onchange="displaySaveHint()">A 
+            <td class="settings_row_input">
+              <select class="homey-form-select" name="phases" id="phases" onchange="displaySaveHint()">
+                <option value="1" data-i18n="charger.new.phase1" selected>1 Phase</option>
+                <option value="3" data-i18n="charger.new.phase3">3 Phases</option>
+              </select><br>
+              <input id="mainFuse" type="number" min="0" max="100000" value="63" onchange="displaySaveHint()">A<br>
+              <input id="voltage" type="number" min="0" max="500" value="230" onchange="displaySaveHint()">V
               <div class="hintButton" onclick="toggle(this,'mainFuseHint');return false;">i</div>
             </td>
           </tr>
         </table>
+
         <p id="mainFuseHint" class="hint" data-i18n="settings.global.mainFuseHint">global.mainFuseHint</p>
 
         <table class="settings_table">
@@ -1858,6 +1865,8 @@
       var zoneListLoaded = false;
       var overrideListLoaded = false;
       var mainFuseLoaded = false;
+      var phasesLoaded = false;
+      var voltageLoaded = false;
       var meterReaderLoaded = false;
       var meterFrequencyLoaded = false;
       var toggleTimeLoaded = false;
@@ -1893,6 +1902,8 @@
           `zoneListLoaded: ${zoneListLoaded}<br>` +
           `overrideListLoaded: ${overrideListLoaded}<br>` +
           `mainFuseLoaded: ${mainFuseLoaded}<br>` +
+          `phasesLoaded: ${phasesLoaded}<br>` +
+          `voltageLoaded: ${voltageLoaded}<br>` +
           `meterReaderLoaded: ${meterReaderLoaded}<br>` +
           `meterFrequencyLoaded: ${meterFrequencyLoaded}<br>` +
           `toggleTimeLoaded: ${toggleTimeLoaded}<br>` +
@@ -1923,6 +1934,8 @@
           && zoneListLoaded
           && overrideListLoaded
           && mainFuseLoaded
+          && phasesLoaded
+          && voltageLoaded
           && meterReaderLoaded
           && meterFrequencyLoaded
           && toggleTimeLoaded
@@ -2077,6 +2090,8 @@
         var priceModeElement = document.getElementById("priceMode");
         var pricePointElement = document.getElementById("pricePoint");
         var mainFuseElement = document.getElementById("mainFuse");
+        var phasesElement = document.getElementById("phases");
+        var voltageElement = document.getElementById("voltage");
         var rememberToSaveElement = document.getElementById("rememberToSave");
         var currencyElement = document.getElementById("currency");
 
@@ -2444,6 +2459,18 @@
           mainFuseLoaded = true;
           checkLoadingDone();
         });
+        Homey.get("phases", function (err, phases) {
+          if (err) return popUp(Homey, err);
+          phasesElement.value = (phases || 1);
+          phasesLoaded = true;
+          checkLoadingDone();
+        });
+        Homey.get("voltage", function (err, voltage) {
+          if (err) return popUp(Homey, err);
+          voltageElement.value = (voltage || 230);
+          voltageLoaded = true;
+          checkLoadingDone();
+        });
         Homey.get("meterFrequency", function (err, meterFrequency) {
           if (err) return popUp(Homey, err);
           document.getElementById('meterFrequency').value = meterFrequency;
@@ -2574,6 +2601,8 @@
               Homey.set("crossSlotSmooth", crossSlotSmoothElement.value, errFunc);
               Homey.set("maxAlarmRate", maxAlarmRateElement.value, errFunc);
               Homey.set("mainFuse", mainFuseElement.value, errFunc);
+              Homey.set("phases", phasesElement.value, errFunc);
+              Homey.set("voltage", voltageElement.value, errFunc);
               Homey.set("meterReader", document.getElementById("meterReader").value, errFunc);
               Homey.set("meterFrequency", document.getElementById("meterFrequency").value, errFunc);
               Homey.set("toggleTime", document.getElementById("toggleTime").value, errFunc);
