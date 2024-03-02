@@ -5,6 +5,8 @@
 
 'use strict';
 
+global.testing = true;
+
 // eslint-disable-next-line import/no-extraneous-dependencies
 const seedrandom = require('seedrandom');
 const fs = require('fs');
@@ -15,11 +17,14 @@ const Homey = require('./homey');
 const PiggyBank = require('../app');
 const { TIMESPAN, roundToStartOfDay, timeToNextHour, toLocalTime, fromLocalTime, timeToNextSlot, timeSinceLastSlot, timeSinceLastLimiter, hoursInDay } = require('../common/homeytime');
 const { disableTimers, applyBasicConfig, applyStateFromFile, getAllDeviceId, writePowerStatus, setAllDeviceState, validateModeList, compareJSON, checkForTranslations } = require('./test-helpers');
+const { useUrlOverride, setUrlData } = require('./urllib');
 
 // Test Currency Converter
 // * Test that the date for the last currency fetched is recent... otherwise the API could have changed
+// * This test is partially doing the same as testCurrencies, so it should be safe to deprecate
 async function testCurrencyConverter() {
   console.log('[......] Currency Converter');
+  useUrlOverride(false);
   const now = new Date();
   const app = new PiggyBank();
   try {
@@ -36,6 +41,7 @@ async function testCurrencyConverter() {
   } finally {
     await app.onUninit();
   }
+  useUrlOverride(true);
   console.log('\x1b[1A[\x1b[32mPASSED\x1b[0m]');
 }
 
@@ -55,6 +61,7 @@ async function testApp() {
 // Test Entsoe Integration
 async function testEntsoe() {
   console.log('[......] Entsoe - Test today prices');
+  useUrlOverride(false);
   const app = new PiggyBank();
   try {
     await app.disableLog();
@@ -81,6 +88,7 @@ async function testEntsoe() {
   } finally {
     await app.onUninit();
   }
+  useUrlOverride(true);
   console.log('\x1b[1A[\x1b[32mPASSED\x1b[0m]');
 }
 
@@ -436,7 +444,7 @@ async function testIssue63() {
  */
 async function testPowerOnAll() {
   console.log('[......] Test Power On after Failure');
-  const stateDump = 'testing/states/Anders_0.18.31_err.txt';
+  const stateDump = 'states/Anders_0.18.31_err.txt';
   const app = new PiggyBank();
   try {
     await app.disableLog();
@@ -487,7 +495,7 @@ async function testIssue84() {
  */
 async function testIssue83And87() {
   console.log('[......] Test Github issue #83 and #87: Incorrect temperature');
-  const stateDump = 'testing/states/Frode_0.19.4_bug87.txt';
+  const stateDump = 'states/Frode_0.19.4_bug87.txt';
   const app = new PiggyBank();
   try {
     await app.disableLog();
@@ -543,7 +551,7 @@ async function testIssue83And87() {
 async function testTicket88() {
   console.log('[......] Test Github ticket #88: Override controlled');
   const curTime = new Date('October 1, 2022, 00:59:50 GMT+2:00');
-  const stateDump = 'testing/states/Frode_0.19.7_ticket88.txt';
+  const stateDump = 'states/Frode_0.19.7_ticket88.txt';
   const app = new PiggyBank();
   try {
     await app.disableLog();
@@ -631,15 +639,17 @@ async function testTicket115() {
   const myrng = seedrandom(`mySeed${seed}`);
   console.log('[......] Test Github ticket #115: Main fuse');
   const app = new PiggyBank();
+  const now = new Date('October 22, 2022, 00:30:00 GMT+2:00');
   try {
     await app.disableLog();
-    await applyStateFromFile(app, 'testing/states/Frode_0.19.4_bug87.txt');
+    await applyStateFromFile(app, 'states/Frode_0.19.4_bug87.txt');
     app.homey.settings.set('toggleTime', 1);
     app.__deviceList = undefined;
-    await app.onInit();
     const futurePriceOptions = app.homey.settings.get('futurePriceOptions');
     futurePriceOptions.priceKind = c.PRICE_KIND_FIXED; // Turn off entsoe API price fetching
+    futurePriceOptions.priceRegion = 0;
     app.homey.settings.set('futurePriceOptions', futurePriceOptions);
+    await app.onInit(now);
 
     // Just load some random devices
     app.setLogLevel(c.LOG_DEBUG);
@@ -706,7 +716,7 @@ async function testAppRestart() {
     await app.disableLog();
 
     // Load initial state from a file
-    await applyStateFromFile(app, 'testing/states/Frode_0.19.26.txt', false);
+    await applyStateFromFile(app, 'states/Frode_0.19.26.txt', false);
     // Set up some state for safe shutdown
     app.homey.settings.set('safeShutdown__accum_energy', [0, 10, 0, 0]);
     app.homey.settings.set('safeShutdown__current_power', 360000);
@@ -740,7 +750,7 @@ async function testMissingPulse() {
     await app.disableLog();
 
     // Load initial state from a file
-    await applyStateFromFile(app, 'testing/states/Frode_0.19.26.txt', false);
+    await applyStateFromFile(app, 'states/Frode_0.19.26.txt', false);
     // Clear the archive
     app.homey.settings.set('archive', null);
     app.homey.settings.set('stats_daily_max', null);
@@ -807,6 +817,7 @@ async function testLocalTime() {
 // Test the currency api
 async function testCurrencies() {
   console.log('[......] Test Currencies');
+  useUrlOverride(false);
   const app = new PiggyBank();
   const cur = await app.getCurrencies();
   if (!('NOK' in cur)) {
@@ -830,6 +841,7 @@ async function testCurrencies() {
       throw new Error(`Currency ${name} (${currency}) is too old (${ageDays.toFixed(2)} days : ${date})`);
     }
   }
+  useUrlOverride(true);
   console.log('\x1b[1A[\x1b[32mPASSED\x1b[0m]');
 }
 
@@ -838,13 +850,14 @@ async function testCurrencies() {
  */
 async function testTicket158NotControllingOther() {
   console.log('[......] Test that no uncontrolled devices are being controlled');
-  const stateDump = 'testing/states/Frode_0.19.26.txt';
+  const now = new Date('October 1, 2022, 00:30:00 GMT+2:00');
+  const stateDump = 'states/Frode_0.19.26.txt';
   const app = new PiggyBank();
   try {
     await app.disableLog();
     await applyStateFromFile(app, stateDump);
     await validateModeList(app);
-    await app.onInit();
+    await app.onInit(now);
     app.setLogLevel(c.LOG_DEBUG);
     await disableTimers(app);
     const devices = await getAllDeviceId(app);
@@ -892,7 +905,7 @@ async function testTicket158NotControllingOther() {
 // Testing bad devices:
 async function testTicket149BadDevices() {
   console.log('[......] Test Bad behaving devices');
-  const stateDump = 'testing/states/Frode_0.19.26.txt';
+  const stateDump = 'states/Frode_0.19.26.txt';
   const app = new PiggyBank();
   try {
     await app.disableLog();
@@ -959,7 +972,7 @@ async function testBelgiumPowerTariff(numTests) {
     seedrandom('mySeed', { global: true });
 
     // Load initial state from a file
-    await applyStateFromFile(app, 'testing/states/Belgium_test_0.19.47.txt');
+    await applyStateFromFile(app, 'states/Belgium_test_0.19.47.txt');
     app.__deviceList = undefined; // Recreate it in onInit
     const startTime = new Date(app.__current_power_time.getTime() - 1000 * 60 * 60 * 24 * 5);
     app.__current_power_time = new Date(startTime.getTime());
@@ -1041,7 +1054,7 @@ async function testLimiters() {
     seedrandom('mySeed', { global: true });
 
     // Load initial state from a file
-    await applyStateFromFile(app, 'testing/states/Belgium_test_0.19.47.txt');
+    await applyStateFromFile(app, 'states/Belgium_test_0.19.47.txt');
     app.__deviceList = undefined; // Recreate it in onInit
     const startTime = new Date(app.__current_power_time.getTime() - 1000 * 60 * 60 * 24 * 5);
     app.__current_power_time = new Date(startTime.getTime());
@@ -1130,7 +1143,7 @@ async function testMeter() {
     await app.disableLog();
 
     // Load initial state from a file
-    await applyStateFromFile(app, 'testing/states/Frode_0.19.26.txt', false);
+    await applyStateFromFile(app, 'states/Frode_0.19.26.txt', false);
     // Clear the archive
     app.homey.settings.set('archive', null);
     app.homey.settings.set('stats_daily_max', null);
@@ -1200,7 +1213,7 @@ async function testMeterWithReset() {
     await app.disableLog();
 
     // Load initial state from a file
-    await applyStateFromFile(app, 'testing/states/Frode_0.19.26.txt', false);
+    await applyStateFromFile(app, 'states/Frode_0.19.26.txt', false);
     // Clear the archive
     app.homey.settings.set('archive', null);
     app.homey.settings.set('stats_daily_max', null);
@@ -1276,7 +1289,7 @@ async function testMeterAndPower() {
     seedrandom('testMeterAndPowerSeed', { global: true });
 
     // Load initial state from a file
-    await applyStateFromFile(app, 'testing/states/Frode_0.19.26.txt', false);
+    await applyStateFromFile(app, 'states/Frode_0.19.26.txt', false);
     // Clear the archive
     app.homey.settings.set('archive', null);
     app.homey.settings.set('stats_daily_max', null);
@@ -1493,13 +1506,13 @@ async function testLanguages() {
     console.log(`[......] Test Translations for locales/${languages[langIdx]}.json && README.${languages[langIdx]}.txt`);
 
     // Check if all files are present:
-    const fileReadme = `README.${languages[langIdx]}.txt`;
-    const fileLocale = `locales/${languages[langIdx]}.json`;
+    const fileReadme = `../README.${languages[langIdx]}.txt`;
+    const fileLocale = `../locales/${languages[langIdx]}.json`;
     if (!fs.existsSync(fileReadme)) throw new Error(`Could not find file ${fileReadme}`);
     if (!fs.existsSync(fileLocale)) throw new Error(`Could not find file ${fileLocale}`);
 
     // Check if the locale file is out of sync with english
-    const localeDataEn = JSON.parse(fs.readFileSync('locales/en.json', { encoding: 'utf8', flag: 'r' }));
+    const localeDataEn = JSON.parse(fs.readFileSync('../locales/en.json', { encoding: 'utf8', flag: 'r' }));
     const localeData = JSON.parse(fs.readFileSync(fileLocale, { encoding: 'utf8', flag: 'r' }));
     compareJSON(localeDataEn, localeData);
 
@@ -1509,16 +1522,17 @@ async function testLanguages() {
   // Test capabilities
   const dirs = [
     'drivers/piggy-bank-insights',
+    'drivers/piggy-charger',
     '.homeycompose',
     '.homeycompose/capabilities',
     '.homeycompose/flow/actions',
     '.homeycompose/flow/conditions',
-    '.homeycompose/flow/triggers']
+    '.homeycompose/flow/triggers'];
   for (let i = 0; i < dirs.length; i++) {
     const dir = dirs[i];
-    const files = fs.readdirSync(dir);
+    const files = fs.readdirSync(`../${dir}`);
     for (let fileIdx = 0; fileIdx < files.length; fileIdx++) {
-      const fileName = `${dir}/${files[fileIdx]}`;
+      const fileName = `../${dir}/${files[fileIdx]}`;
       if (!fileName.includes('.json')) continue;
       if (fileName.includes('homeychangelog')) continue;
       console.log(`[......] Test Translations for ${fileName}`);
@@ -1539,7 +1553,7 @@ async function testACModes() {
     await app.disableLog();
 
     // Load initial state from a file
-    await applyStateFromFile(app, 'testing/states/Frode_0.19.26.txt', false);
+    await applyStateFromFile(app, 'states/Frode_0.19.26.txt', false);
     // Clear the archive
     app.homey.settings.set('archive', null);
     app.homey.settings.set('stats_daily_max', null);
@@ -1607,7 +1621,7 @@ async function testACModes() {
 async function testTicket223PowerAtLoad() {
   console.log('[......] Test Github ticket #223: Energy at load was wrong');
   const curTime = new Date('March 31, 2023, 13:48:11:398 GMT+2:00');
-  const stateDump = 'testing/states/Frode_0.20.14.txt';
+  const stateDump = 'states/Frode_0.20.14.txt';
   const app = new PiggyBank();
   try {
     await app.disableLog();
@@ -1627,7 +1641,7 @@ async function testTicket223PowerAtLoad() {
 async function testGridPeak() {
   console.log('[......] Test grid Peak times');
   const curTime = new Date('March 31, 2023, 13:48:11:398 GMT+2:00');
-  const stateDump = 'testing/states/Frode_0.20.14.txt';
+  const stateDump = 'states/Frode_0.20.14.txt';
   const app = new PiggyBank();
   try {
     await app.disableLog();
@@ -1686,4 +1700,4 @@ async function startAllTests() {
 
 // Run all the testing
 startAllTests();
-// testState('testing/states/Anders_0.18.31_err.txt', 100);
+// testState('states/Anders_0.18.31_err.txt', 100);

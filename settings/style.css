@@ -149,6 +149,7 @@ p {
 
   .settings_row_input {
     width: 60%;
+    text-align: left;
   }
 
 .device-list {
@@ -232,11 +233,6 @@ p {
 #maxPowerDay,
 #maxPowerMonth,
 #maxAlarmRate,
-#overrideStart,
-#overrideStop,
-#overridePause,
-#overrideMinCurrent,
-#overrideMaxCurrent,
 #meterReader,
 #meterFrequency,
 #toggleTime,
@@ -245,7 +241,9 @@ p {
 #safetyPower,
 #crossSlotSmooth,
 #errorMargin,
+#phases,
 #mainFuse,
+#voltage,
 #expireDaily,
 #expireHourly,
 #freeThreshold {

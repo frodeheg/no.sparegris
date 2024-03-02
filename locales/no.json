@@ -38,7 +38,7 @@
       "opHelp": {
         "alwaysOn": "Berørte enheter slås aldri av. Strømtariffen oppfylles ved å kontrollere temperaturer. Vennligst ikke bruk denne til å styre releer da strømtariffen ikke kan oppfylles når de ikke kan slås av.",
         "alwaysOff": "Berørte enheter holdes av uansett hva.",
-        "controlledOn": "Berørte enheter er på så mye som mulig. De kan slås av for å beholde strømtariffen. Hvis enheter blir slått av, vil de slå seg på igjen når tilstrekkelig strøm er tilgjengelig. Termostatenheter vil endre temperatur i stedet for å slå seg på på av.",
+        "controlledOn": "Berørte enheter er på så mye som mulig. De kan slås av for å beholde strømtariffen. Hvis enheter blir slått av, vil de slå seg på igjen når tilstrekkelig strøm er tilgjengelig. Termostatenheter vil endre temperatur i stedet for å slås på og av.",
         "controlledOnCheapest": "Samme som 'Foretrukket på' bortsett fra at enhetene kun er på i de billigste X timene.",
         "controlledOff": "Samme som 'Foretrukket på', bortsett fra at enheter som er slått av ikke vil bli slått på igjen. Termostatenheter vil fungere som 'Foretrukket på'",
         "ignore": "Berørte enheter vil ikke slå seg på eller av. Hvis de er på, vil temperaturen bli kontrollert, hvis de er av vil ingenting skje."
@@ -52,37 +52,10 @@
     },
     "charge": {
       "header": "Lading av Elbil",
-      "chargeTarget": "Ladestyring",
-      "chargeMin": "Minste ladeeffekt",
-      "chargeThreshold": "Terskel for ladestart",
-      "minToggleTime": "Minste endringstid",
-      "chargeRemaining": "Gjenværende ladestrøm",
-      "chargeEnd": "Slutt på ladesyklus",
-      "chargeTargetAuto": "Helautomatisk",
-      "chargeTargetFlow": "Flytkort",
-      "carChargerMissingHint": "Ingen støttet lader ble funnet. Du må benytte flytkort for å lade.",
-      "carChargerNotAddedHint": "Det ble funnet en støttet lader, men den er ikke lagt til som en kontrollerbar enhet.",
-      "chargeTargetHint": "Støttede ladere styres av appen automatisk forutsatt at de er lagt til som en kontrollerbar enhet. For ladere som ikke er støttet kan du enten bruke flytkort eller sende en <a href=\"ShowLog\" onclick=\"changeTab(event, 'logPage');return false;\">enhetsrapport</a>. <p>Det gjøres oppmerksom på at ladere som blir listet opp under <a href=\"ShowDevices\" onclick=\"changeTab(event, 'helpSupportedPage');return false;\">ignorerte enheter</a> må styres via flytkort.</p><p>For å styre via flytkort må du koble til følgende triggere i appen: 'Start lading' og 'Stopp lading', mens 'Endre ladestyrke' er valgfri men anbefalt.</p><p>Ladeprosessen starter når du starter flytkortet for 'Start ladesyklus'.</p>",
-      "chargeMinHint": "Den minste ladestrømmen indikerer hvilken ladeeffekt laderen din bruker når du slår den på. Dersom laderen bare har en innstilling legger du den inn her. Hvis laderen kan styre strømmen legger du inn minste effekten den kan trekke. For å øke verdien må om mulig terskel for ladestart økes først ettersom denne ikke kan overskrides for å beskytte laderen.",
-      "chargeThresholdHint": "En ny ladesyklus starter kun når ledig effekt overstiger terskelverdien satt her. Denne må være større enn minste ladestrøm for å unngå at laderen slår seg av igjen med en gang.",
-      "minToggleTimeHint": "Denne verdien angir i sekunder hvor lenge det går mellom hver gang et signal sendes til laderen. Dersom responstiden til laderen overstiger denne verdien bør denne verdien økes tilsvarende.",
-      "chargeRemainingHint": "Denne verdien viser hvor mye energi som vil bli tilbydt til laderen før appen slutter å lade. Denne strømmen vil fordeles over all gjenværende tid frem til slutten på ladesyklusen. Du kan ikke sette denne verdien her, den må settes fra flytkortet for 'Start ladesyklus'.",
-      "chargeEndHint": "Dette feltet viser når nåværende ladesyklus vil slutte. Du kan ikke sette denne verdien her, den må settes fra flytkortet for 'Start ladesyklus'.",
-      "override": "Overstyring",
-      "overrideHint": "I utganspunktet skal ladingen virke uten overstyring. I noen situasjoner kan det likevel være ønskelig å endre dette.",
-      "overrideHintStart": "Startstrømmen er strømmen som tilbys når laderen brukte 0W fra før og er i en ladesyklus. (For å få 3-fase lading må minste startstrøm være 11A)",
-      "overrideHintStop": "Stoppstrømmen er strømmen som tilbys når det ikke er noen ladesyklus. (NB! Denne vil ikke forsøkes justeres)",
-      "overrideHintPause": "Pausestrømmen er strømmen som tilbys når det er en ladesyklus og strømprisen er for høy.",
-      "overrideHintMin": "Minste ladestrøm sørger for at du aldri lader med mindre strøm enn dette. (Forskjellig fra bil til bil. Kan fint være mindre enn 11A for 3-fase lading)",
-      "overrideHintMax": "Største ladestrøm sørger for at du aldri lader med mer strøm enn dette. (En tilleggssikring mot overforbruk når Homey eller Easee-api'et ikke oppfører seg)",
-      "overrideEnable": "Overstyring",
-      "overrideEnableNo": "Deaktivert",
-      "overrideEnableYes": "Aktivert",
-      "overrideStart": "Startstrøm",
-      "overrideStop": "Stoppstrøm",
-      "overridePause": "Pausestrøm",
-      "overrideMinCurrent": "Minste ladestrøm",
-      "overrideMaxCurrent": "Største ladestrøm"
+      "carChargerMissingHint": "Ingen støttet lader funnet. Du kan fortsatt installere en flytbasert kontroller, men hvis du sender inn en <a href=\"ShowLog\" onclick=\"changeTab(event, 'logPage');return false;\">enhetsrapport</a> for laderen din, så vil direkte støtte bli lagt til i en senere versjon.",
+      "carChargerDeprecatedHint": "Måten du kontrollerer billaderen din på vil snart slutte å fungere. For å fortsette å kontrollere laderen, må du velge den bort i listen over kontrollerbare enheter og lagre, deretter slette alle gamle flytkort som kontrollerer laderen og installere enheten for ladestyrings til denne appen.",
+      "controllerNotAddedHint": "En støttet lader ble funnet, installer enheten for ladestyring for å kontrollere den.",
+      "controllerNotEnabledHint": "En laderkontroller ble funnet, men den er ikke aktivert."
     },
     "menu": {
       "home": {
@@ -133,7 +106,6 @@
       "taskEnableApp": "Appen må slås på for at du skal spare penger.",
       "taskCreateEnergyFlow": "Vennligst koble strømmålerens effektutgang inn til denne appens effektinngang. <a href=\"meterPage\" onclick=\"changeTab(event, 'meterPage');return false;\">Se her for detaljer</a>.",
       "taskEnergyFlowRate": "Hyppigheten strømmålerens effekt oppdateres med virker å være for lav (forrige signal mottatt for ${interval} minutter siden). Vennligst øk hyppigheten om mulig.",
-      "taskChargerNotEnabled": "Du har startet en ladesyklus uten at en støttet lader er satt som kontrollerbar i appen. Enten må du velge laderen som kontrollerbar eller så må du sette ladestyringen til flytkort.",
       "taskNoPriceFlow": "Du har valgt prispunkt fra flytkort, men ingen slike signaler har blitt mottatt.",
       "taskNoPriceAPI": "Du har valgt å hente priser fra ekstern app, noe som krever at appen Strømregning er installert, men appen kan ikke finnes eller har en utdatert versjon. Kanskje valget spotpris er bedre for deg.",
       "taskNoPriceAPIDevice": "Du har valgt å hente priser fra ekstern app. Da hentes prisene fra Strømregning-appen, men for at dette skal virke må du også installere appens koresponderende enhet (Også kalt 'Strømregning').",
@@ -252,7 +224,8 @@
       "deviceTypeCharger": "Ladere",
       "deviceTypeIgnore": "Ignorerte enheter",
       "deviceTypeMeter": "Strømmålere",
-      "ongoing": "Pågående arbeid",
+      "deviceTypeController": "Effektkontrollere",
+      "ongoing": "Venter på tilbakemelding fra brukere",
       "aboutInfo": "Om Sparegris",
       "aboutInfoHint": "<p>Denne appen er laget for at alle skal kunne styre strømmen sin på en enkel måte og samtidig spare så mye penger som mulig på det.</p><p>Det har gått fryktelig mye fritid med for å fullføre dette prosjektet, så dersom du er fornøyd med det du sparer kan du gjerne støtte prosjektet på følgende måter: (helt frivillig)</p><ol><li><b>For privatpersoner</b><p>Man kan sponse utviklingen av appen ved å donere penger på <a href='https://github.com/sponsors/frodeheg'>https://github.com/sponsors/frodeheg</a></p></li><li><b>For bedrifter</b><p>Denne siden tar noen sekunder å laste, derfor er det lagt til en loading-skjerm for å informere om ventetiden. Dette kan være en fin reklameplass ettersom det er ventetid man ikke kommer foruten.</p><p>Dersom din bedrift ønsker å utnytte denne fine muligheten kan dere ta kontakt med utvikleren av appen.</p></li></ol>"
     },
@@ -417,6 +390,43 @@
       "hint": "AC Modus påvirker alle AC-enheter (men vil komme per enhet ved en senere oppdatering). Om ACMode='Uendret' vil appen ikke sette AC modus. Alle andre valg vil sette AC-modus. NB: Dersom AC-modus er satt til kjøling så vil delta-temperaturer for prispunkt bli invertert slik at du sømløst kan bytte mellom oppvarming og kjøling uten at det vil påvirke appens evne til å spare penger."
     }
   },
+  "charger": {
+    "new": {
+      "deviceName": "Ladekontroller",
+      "flowBased": "Flytbasert kontroller",
+      "controlFor": "Kontroller for",
+      "infoHeader": "Ladekontrollerinfo",
+      "imageHeader": "Velg ikon",
+      "info1": "Denne enheten lar deg kontrollere en billader med Sparegris.",
+      "info2": "Hvis laderen din støttes direkte, vil den bli oppført i neste steg. Hvis ikke må du velge den flytbaserte kontrolleren.",
+      "configureHeader": "Laderdetaljer",
+      "voltage": "Ladespenning",
+      "phases": "Antall faser",
+      "phase1": "1 fase",
+      "phase3": "3 faser"
+    },
+    "validation": {
+      "heading": "Enheten kan ikke brukes før sjekklisten nedenfor er fullført",
+      "reset": "Vedlikeholdshandlingen \"reset\" starter på nytt",
+      "stateLabel": "Ladetilstand mottatt",
+      "stateHint": "Vennligst opprett en flyt for å informere kontrolleren om ladetilstanden.",
+      "batterySkipped": "Batteritest hoppet over.",
+      "turnedOnLabel": "Kontrolleren må være aktivert.",
+      "turnedOnHint": "Vennligst slå på ladekontrolleren.",
+      "turnaroundLabel": "Respons-test",
+      "turnaroundOngoing": "pågående",
+      "wait": "Trykk på oppdater-knappen for oppdateringer"
+    },
+    "error": {
+      "notReady": "Kan ikke slå på ladekontrolleren før den er riktig tilkoblet og testet. Se kamerafunksjonen til denne enheten for instruksjoner."
+    },
+    "warnings": {
+      "noSignalAmps": "Ingen Ampere-signal mottatt fra laderen",
+      "noSignalWatts": "Ingen Watt-signal mottatt fra laderen",
+      "noSignalBattery": "Ingen batterinivå mottatt fra laderen",
+      "redundantFlow": "Flytsignal ignorert, dette hentes direkte fra den kontrollerte enheten."
+    }
+  },
   "newdevice" : {
     "info": "Denne enheten vil gi deg innblikk i hva som skjer når appen styrer strømmen. Det er ikke nødvendig å installere denne enheten for å få appen til å fungere.",
     "info2": "Ettersom enheten bare fungerer som et vindu inn i appen kan du derfor ikke konfigurere hva som skjer gjennom denne enhetens innstillinger. Du kan bare konfigurere hva som skjer gjennom appens innstillinger."
@@ -466,11 +476,14 @@
     "title": "Ladesyklus",
     "yaxis": "Pris per kWh",
     "price": "Pris",
+    "enabled": "Påslått",
     "charging": "Lading aktivert",
     "nocharge": "Lading deaktivert",
     "noPrice": "Ingen prisdata tilgjengelig",
     "withSubsidy": "Subsidiert",
-    "withoutSubsidy": "Faktisk"
+    "withoutSubsidy": "Faktisk",
+    "noPlan": "Ingen ladeplan opprettet. Du kan opprette en ladeplan ved å starte flyten \"Lad billigste x timer før klokken tt:00\".",
+    "cycleEnded": "Ladesyklusen er fullført."
   },
   "month": {
     "jan": "Januar",

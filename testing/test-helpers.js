@@ -30,6 +30,117 @@ async function disableTimers(app) {
   }
 }
 
+async function addDevice(app, newDevice, deviceId, zone = null, enable = true) {
+  // NB! A new instance of HomeyAPIApp here will not create a duplicate version
+  //     of the zone and device list because it's unique and global to all instances
+  const homeyApi = await HomeyAPI.createAppAPI({ homey: app.homey });
+  homeyApi.devices.addRealDevice(newDevice, zone, deviceId);
+  newDevice.homey = app.homey;
+}
+
+async function applyBasicPrices(app) {
+  app.__all_prices = [
+    { time: 1672095600, price: 1.6749716800000003 },
+    { time: 1672099200, price: 1.7764168000000002 },
+    { time: 1672102800, price: 1.7714555200000002 },
+    { time: 1672106400, price: 1.759444 },
+    { time: 1672110000, price: 1.8159764800000002 },
+    { time: 1672113600, price: 1.9013627200000003 },
+    { time: 1672117200, price: 2.10305024 },
+    { time: 1672120800, price: 2.20945664 },
+    { time: 1672124400, price: 2.21376512 },
+    { time: 1672128000, price: 2.22642944 },
+    { time: 1672131600, price: 2.2409216 },
+    { time: 1672135200, price: 2.24562176 },
+    { time: 1672138800, price: 2.2705587200000004 },
+    { time: 1672142400, price: 2.23400192 },
+    { time: 1672146000, price: 2.25632768 },
+    { time: 1672149600, price: 2.31351296 },
+    { time: 1672153200, price: 2.37056768 },
+    { time: 1672156800, price: 2.50804736 },
+    { time: 1672160400, price: 2.5846860800000004 },
+    { time: 1672164000, price: 2.4968192 },
+    { time: 1672167600, price: 2.34458624 },
+    { time: 1672171200, price: 2.14378496 },
+    { time: 1672174800, price: 1.78516432 },
+    { time: 1672178400, price: 1.60916944 },
+  ];
+  app.homey.settings.set('all_prices', app.__all_prices);
+  app.__current_price_index = 0;
+  await app.doPriceCalculations(new Date(1672095600));
+}
+
+async function applyPriceScheme2(app) {
+  app.__all_prices = [
+    { time: 1688248800, price: 0.2 },
+    { time: 1688252400, price: 0.3 },
+    { time: 1688256000, price: 0.5 },
+    { time: 1688259600, price: 0.3 },
+    { time: 1688263200, price: 0.2 },
+    { time: 1688266800, price: 0.5 },
+    { time: 1688270400, price: 0.9 },
+    { time: 1688274000, price: 0.8 },
+    { time: 1688277600, price: 0.1 },
+    { time: 1688281200, price: 0.2 },
+    { time: 1688284800, price: 0.2 },
+    { time: 1688288400, price: 0.3 },
+    { time: 1688292000, price: 0.5 },
+    { time: 1688295600, price: 0.3 },
+    { time: 1688299200, price: 0.2 },
+    { time: 1688302800, price: 0.5 },
+    { time: 1688306400, price: 0.9 },
+    { time: 1688310000, price: 0.8 },
+    { time: 1688313600, price: 0.1 },
+    { time: 1688317200, price: 0.2 },
+    { time: 1688320800, price: 0.2 },
+    { time: 1688324400, price: 0.3 },
+    { time: 1688328000, price: 0.5 },
+    { time: 1688331600, price: 0.3 }
+  ];
+  /*app.__current_prices = [
+    0.2, 0.3, 0.5, 0.3, 0.2, 0.5, 0.9, 0.8, 0.1, 0.2,
+    0.2, 0.3, 0.5, 0.3, 0.2, 0.5, 0.9, 0.8, 0.1, 0.2,
+    0.2, 0.3, 0.5, 0.3];
+  app.__current_price_index = 3;*/
+  app.homey.settings.set('all_prices', app.__all_prices);
+  app.__current_price_index = 0;
+  await app.doPriceCalculations(new Date(app.__free_power_trigger_time.getTime()));
+}
+
+async function applyEmptyConfig(app, devices = []) {
+  app.homey.settings.set('operatingMode', c.MODE_NORMAL);
+  app.homey.settings.set('maxPower', [Infinity, 5000, Infinity, Infinity]);
+  app.homey.settings.set('zones', {});
+  app.homey.settings.set('priceMode', c.PRICE_MODE_INTERNAL);
+  const futureData = app.homey.settings.get('futurePriceOptions');
+  futureData.priceKind = c.PRICE_KIND_SPOT;
+  futureData.averageTime = 2;
+  futureData.averageTimeFuture = 12;
+  futureData.averageTimePast = 24;
+  futureData.dirtCheapPriceModifier = -50;
+  futureData.lowPriceModifier = -10;
+  futureData.highPriceModifier = 10;
+  futureData.extremePriceModifier = 100;
+  app.homey.settings.set('futurePriceOptions', futureData);
+  const fakeDevices = devices;
+  const zoneHomeId = app.homeyApi.zones.addZone('Home');
+  const zoneHereId = app.homeyApi.zones.addZone('Here', null, zoneHomeId);
+  await app.homeyApi.devices.clearFakeDevices();
+  await app.homeyApi.devices.addFakeDevices(fakeDevices, zoneHereId);
+
+  app.homey.settings.set('frostList', {});
+  app.homey.settings.set('modeList', [
+    [], // Normal
+    [], // Night
+    [], // Away
+  ]);
+  app.homey.settings.set('priceActionList', [{}, {}, {}, {}, {}]);
+  app.__deviceList = {};
+
+  await app.createDeviceList(); // To initialize app.__current_state[...]
+  app.app_is_configured = app.validateSettings();
+}
+
 async function applyBasicConfig(app) {
   app.homey.settings.set('operatingMode', c.MODE_NORMAL);
   app.homey.settings.set('maxPower', [Infinity, 5000, Infinity, Infinity]);
@@ -97,39 +208,12 @@ async function applyBasicConfig(app) {
   ];
   const zoneHomeId = app.homeyApi.zones.addZone('Home');
   const zoneGangId = app.homeyApi.zones.addZone('Gang', null, zoneHomeId);
+  await app.homeyApi.devices.clearFakeDevices();
   await app.homeyApi.devices.addFakeDevices(fakeDevices, zoneGangId);
   await app.createDeviceList(); // To initialize app.__current_state[...]
   app.app_is_configured = app.validateSettings();
 
-  app.__all_prices = [
-    { time: 1672095600, price: 1.6749716800000003 },
-    { time: 1672099200, price: 1.7764168000000002 },
-    { time: 1672102800, price: 1.7714555200000002 },
-    { time: 1672106400, price: 1.759444 },
-    { time: 1672110000, price: 1.8159764800000002 },
-    { time: 1672113600, price: 1.9013627200000003 },
-    { time: 1672117200, price: 2.10305024 },
-    { time: 1672120800, price: 2.20945664 },
-    { time: 1672124400, price: 2.21376512 },
-    { time: 1672128000, price: 2.22642944 },
-    { time: 1672131600, price: 2.2409216 },
-    { time: 1672135200, price: 2.24562176 },
-    { time: 1672138800, price: 2.2705587200000004 },
-    { time: 1672142400, price: 2.23400192 },
-    { time: 1672146000, price: 2.25632768 },
-    { time: 1672149600, price: 2.31351296 },
-    { time: 1672153200, price: 2.37056768 },
-    { time: 1672156800, price: 2.50804736 },
-    { time: 1672160400, price: 2.5846860800000004 },
-    { time: 1672164000, price: 2.4968192 },
-    { time: 1672167600, price: 2.34458624 },
-    { time: 1672171200, price: 2.14378496 },
-    { time: 1672174800, price: 1.78516432 },
-    { time: 1672178400, price: 1.60916944 },
-  ];
-  app.homey.settings.set('all_prices', app.__all_prices);
-  app.__current_price_index = 0;
-  await app.doPriceCalculations(new Date(1672095600));
+  await applyBasicPrices(app);
 }
 
 /**
@@ -242,10 +326,10 @@ async function applyStateFromFile(app, file, poweredOn = true) {
  */
 async function dumpStateToFile(app, outFile) {
   return app.getFullState()
-    .then(state => {
+    .then((state) => {
       fs.writeFile(outFile, JSON.stringify(state, (key, value) => {
         return value === Infinity ? 'Infinity' : value;
-      }, 2), err => {
+      }, 2), (err) => {
         if (err) {
           return Promise.reject(err);
         }
@@ -401,7 +485,7 @@ function checkForTranslations(obj, languages, base = '') {
   const foundLanguages = [];
   for (const key in obj) {
     if (typeof obj[key] === 'object') {
-      checkForTranslations(obj[key], languages, `${base}.${key}`)
+      checkForTranslations(obj[key], languages, `${base}.${key}`);
     } else if (languages.includes(key)) {
       isTranslationString = true;
       foundLanguages.push(key);
@@ -424,6 +508,10 @@ function checkForTranslations(obj, languages, base = '') {
 
 module.exports = {
   disableTimers,
+  addDevice,
+  applyBasicPrices,
+  applyPriceScheme2,
+  applyEmptyConfig,
   applyBasicConfig,
   applyStateFromFile,
   dumpStateToFile,
