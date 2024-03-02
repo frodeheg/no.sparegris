@@ -89,6 +89,19 @@ const DEFAULT_HEATER = {
   default: true
 };
 
+// Default water heater:
+const DEFAULT_WATERHEATER = {
+  type: DEVICE_TYPE.WATERHEATER,
+  setOnOffCap: 'onoff',
+  setOnValue: true,
+  setOffValue: false,
+  readTempCap: 'measure_temperature',
+  setTempCap: 'target_temperature',
+  tempMin: 20,
+  tempMax: 85,
+  tempStep: 1
+};
+
 // Default AC
 const DEFAULT_AC = {
   type: DEVICE_TYPE.AC,
@@ -307,6 +320,8 @@ const DEVICE_CMD = {
     tempMax: 35,
     tempStep: 0.5
   },
+  'com.myuplink:ctc': DEFAULT_WATERHEATER,
+  'com.myuplink:hoiax': DEFAULT_WATERHEATER,
   'com.neo:NAS-WR02ZE': DEFAULT_SWITCH,
   'com.nibeuplink:com.nibeuplink.system': {
     ...DEFAULT_SWITCH,
@@ -604,17 +619,7 @@ const DEVICE_CMD = {
     tempStep: 1,
     default: false
   },
-  'no.hoiax:hiax-connected-200': {
-    type: DEVICE_TYPE.WATERHEATER,
-    setOnOffCap: 'onoff',
-    setOnValue: true,
-    setOffValue: false,
-    readTempCap: 'measure_temperature',
-    setTempCap: 'target_temperature',
-    tempMin: 20,
-    tempMax: 85,
-    tempStep: 0.5
-  },
+  'no.hoiax:hiax-connected-200': DEFAULT_WATERHEATER,
   /* 'no.osoincharge:water-heater': {  // ADD ONCE onoff and target_temperature is added
     type: DEVICE_TYPE.WATERHEATER,
 
