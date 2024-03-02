@@ -9,6 +9,7 @@ const homeypath = ('testing' in global && testing) ? '../../testing/' : '';
 const { Device } = require(`${homeypath}homey`);
 const { Mutex } = require('async-mutex');
 const { TIMESPAN, timeSinceLastLimiter, toLocalTime, timeDiff } = require('../../common/homeytime');
+const { findFile } = require('../../common/homeyfile');
 const c = require('../../common/constants');
 const d = require('../../common/devices');
 const Textify = require('../../lib/textify');
@@ -322,7 +323,9 @@ class ChargeDevice extends Device {
    * Returns the validation image
    */
   async validationProcedure(dst) {
-    return dst.loadFile('../drivers/piggy-charger/assets/images/notValid.png')
+    return findFile('drivers/piggy-charger/assets/images/notValid.png')
+      .catch((err) => this.setUnavailable(err.message))
+      .then((file) => dst.loadFile(file))
       .then(() => dst.setCursorWindow(190, 80, 460, 170))
       .then(() => dst.setTextColor([255, 128, 128, 255]))
       .then(() => dst.addText(this.homey.__('charger.validation.heading')))
@@ -363,7 +366,9 @@ class ChargeDevice extends Device {
     for (let i = 0; i < 24; i++) {
       xAxisText[i] = `${String((i + startHour) % 24).padStart(2, ' ')}:00`;
     }
-    return dst.loadFile('../drivers/piggy-charger/assets/images/valid.png')
+    return findFile('drivers/piggy-charger/assets/images/valid.png')
+      .catch((err) => this.setUnavailable(err.message))
+      .then((file) => dst.loadFile(file))
       .then(() => dst.setTextSize(2))
       .then(() => dst.addText(title, 250 - (dst.getWidth(title) / 2), 25))
       .then(() => dst.setTextSize(1))
@@ -395,7 +400,9 @@ class ChargeDevice extends Device {
   async displayNoPlan(dst) {
     const title = this.homey.__('chargePlanGraph.title');
     const noPlanText = this.homey.__('chargePlanGraph.noPlan');
-    return dst.loadFile('../drivers/piggy-charger/assets/images/large.png')
+    return findFile('drivers/piggy-charger/assets/images/large.png')
+      .catch((err) => this.setUnavailable(err.message))
+      .then((file) => dst.loadFile(file))
       .then(() => dst.setTextSize(2))
       .then(() => dst.addText(`\x1B[4;30m${title}\x1B[24m`, 250 - (dst.getWidth(title) / 2), 25))
       .then(() => dst.setTextSize(1))
