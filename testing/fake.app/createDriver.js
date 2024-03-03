@@ -95,8 +95,8 @@ parseArgs()
   .then(args => {
     if (args.clear) {
       return exec(`sed -i 's/"id": ".\\+"/"id": "fake.app"/g' .homeycompose/app.json`)
-      .then(() => exec(`sed -i 's/"id": ".\\+"/"id": "fake.app"/g' ./app.json`))
       .then(() => exec(`sed -i 's/"en": "Fake .\\+"/"en": "Fake App"/g' .homeycompose/app.json`))
+      .then(() => exec(`git checkout ./app.json`))
       .then(() => exec('find drivers -maxdepth 1 -mindepth 1 ! -name \'*basedriver*\' | xargs rm -rf'))
       .then(() => exec('rm -rf .homeycompose/capabilities/*'))
       .finally(() => Promise.reject(new Error("Cleared driver cache")));
