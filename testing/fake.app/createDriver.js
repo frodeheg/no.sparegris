@@ -70,7 +70,8 @@ async function createCaps(capabilitiesObj) {
     if (capName in handledCaps) continue;
     handledCaps[capName] = true;
     const capFileName = `.homeycompose/capabilities/${capName}.json`;
-    let { type, title, units, insights, getable, setable, values, insightsTitleTrue, insightsTitleFalse, titleTrue, titleFalse, decimals } = capabilitiesObj[capName];
+    let { type, title, units, insights, getable, setable, values, insightsTitleTrue, insightsTitleFalse, titleTrue, titleFalse, decimals } = capabilitiesObj[fullCapName];
+    if (units === null) units = undefined;
     if (insightsTitleTrue === null) insightsTitleTrue = undefined;
     if (insightsTitleFalse === null) insightsTitleFalse = undefined;
     const uiComponent = !setable ? 'sensor'
