@@ -8,14 +8,17 @@ class MyDevice extends Device {
    * onInit is called when the device is initialized.
    */
   async onInit() {
-    this.log('MyDevice has been initialized');
+    this.log(`${this.driver.manifest.id} has been initialized`);
+    this.registerMultipleCapabilityListener(this.driver.manifest.capabilities, async (newVal) => {
+      console.log(`New value is: ${JSON.stringify(newVal)}`);
+    });
   }
 
   /**
    * onAdded is called when the user adds the device, called just after pairing.
    */
   async onAdded() {
-    this.log('MyDevice has been added');
+    this.log(`${this.driver.manifest.id} has been added`);
   }
 
   /**
@@ -27,7 +30,7 @@ class MyDevice extends Device {
    * @returns {Promise<string|void>} return a custom message that will be displayed
    */
   async onSettings({ oldSettings, newSettings, changedKeys }) {
-    this.log('MyDevice settings where changed');
+    this.log(`${this.driver.manifest.id} settings where changed`);
   }
 
   /**
@@ -36,14 +39,14 @@ class MyDevice extends Device {
    * @param {string} name The new name
    */
   async onRenamed(name) {
-    this.log('MyDevice was renamed');
+    this.log(`${this.driver.manifest.id} was renamed`);
   }
 
   /**
    * onDeleted is called when the user deleted the device.
    */
   async onDeleted() {
-    this.log('MyDevice has been deleted');
+    this.log(`${this.driver.manifest.id} has been deleted`);
   }
 
 }

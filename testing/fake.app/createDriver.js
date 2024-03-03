@@ -96,7 +96,7 @@ parseArgs()
     if (args.clear) {
       return exec(`sed -i 's/"id": ".\\+"/"id": "fake.app"/g' .homeycompose/app.json`)
       .then(() => exec(`sed -i 's/"en": "Fake .\\+"/"en": "Fake App"/g' .homeycompose/app.json`))
-      .then(() => exec(`git checkout ./app.json`))
+      .then(() => exec(`git checkout ./app.json ./homeycompose`))
       .then(() => exec('find drivers -maxdepth 1 -mindepth 1 ! -name \'*basedriver*\' | xargs rm -rf'))
       .then(() => exec('rm -rf .homeycompose/capabilities/*'))
       .finally(() => Promise.reject(new Error("Cleared driver cache")));
@@ -108,9 +108,9 @@ parseArgs()
       console.log(`Creating driver: ${newDriverName}`);
       exec(`mkdir -p ${newDriverName}`)
       .then(() => exec(`cp -r basedriver/* ${newDriverName}`))
-      .then(() => exec(`sed -i 's/"baseDriver"/"${data.driverId[3]}"/g' ${newDriverName}/driver.compose.json`))
-      .then(() => exec(`sed -i 's/DEVICENAME/"${data.driverId[3]}"/g' ${newDriverName}/driver.js`))
+      .then(() => exec(`sed -i 's/"baseDriver"/"Fake ${data.driverId[3]}"/g' ${newDriverName}/driver.compose.json`))
       .then(() => exec(`sed -i 's/"capabilities": \\[\\]/"capabilities": \\[\\n    "${data.capabilities.join('",\\n    "')}"\\n  \\]/g' ${newDriverName}/driver.compose.json`))
+      .then(() => exec(`sed -i 's/"filter": "driver_id=.\\+"/"filter": "driver_id=${data.driverId[2]}"/g' .homeycompose/flow/actions/set_capability_string.json`))
       .then(() => createCaps(data.capabilitiesObj)
       .then(() => {
         if (args.replace) {
