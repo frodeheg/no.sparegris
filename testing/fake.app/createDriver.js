@@ -96,6 +96,7 @@ parseArgs()
     if (args.clear) {
       return exec(`sed -i 's/"id": ".\\+"/"id": "fake.app"/g' .homeycompose/app.json`)
       .then(() => exec(`sed -i 's/"id": ".\\+"/"id": "fake.app"/g' ./app.json`))
+      .then(() => exec(`sed -i 's/"en": "Fake .\\+"/"en": "Fake App"/g' .homeycompose/app.json`))
       .then(() => exec('find drivers -maxdepth 1 -mindepth 1 ! -name \'*basedriver*\' | xargs rm -rf'))
       .then(() => exec('rm -rf .homeycompose/capabilities/*'))
       .finally(() => Promise.reject(new Error("Cleared driver cache")));
@@ -114,7 +115,8 @@ parseArgs()
       .then(() => {
         if (args.replace) {
           console.log(`Replaced App ID with: ${data.driverId[2]}`);
-          exec(`sed -i 's/"id": ".\\+"/"id": "${data.driverId[2]}"/g' .homeycompose/app.json`);
+          exec(`sed -i 's/"id": ".\\+"/"id": "${data.driverId[2]}"/g' .homeycompose/app.json`)
+          .then(() => exec(`sed -i 's/"en": "Fake .\\+"/"en": "Fake ${data.driverId[2]}"/g' .homeycompose/app.json`));
         }
       }));
     })

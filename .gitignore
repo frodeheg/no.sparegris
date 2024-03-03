@@ -8,6 +8,7 @@
 /testing/fake.app/node_modules/
 /testing/fake.app/.homeybuild/
 /testing/fake.app/.homeycompose/app.json.bak
+/testing/fake.app/app.json
 /testing/debug/
 /testing/out.png
 /.git-credentials
