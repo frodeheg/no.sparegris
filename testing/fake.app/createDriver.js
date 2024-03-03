@@ -39,23 +39,31 @@ async function readDefinition(filename) {
   let startFound = false;
   let driverUri;
   let driverId;
+  let parseMethod;
   for (let i = 0; i < lines.length; i++) {
-    const line = lines[i].slice(lines[i].indexOf(': ') + 2);
+    const reducedLine1 = lines[i].slice(lines[i].indexOf(': ') + 2);
+    const reducedLine2 = lines[i].slice(lines[i].indexOf('\] ', 6) + 2);
     if (!startFound) {
-      if (line.includes('----- ANALYZING DEVICE -----')) startFound = true;
+      if (lines[i].includes('----- ANALYZING DEVICE -----')) startFound = true;
+      if (startFound && reducedLine1 === '----- ANALYZING DEVICE -----') parseMethod = 1;
+      else if (startFound && reducedLine2 === '----- ANALYZING DEVICE -----') parseMethod = 2;
+      else throw new Error('Unknown parse method');
       continue;
     }
+    const line = (parseMethod === 1 ? reducedLine1 : reducedLine2);
     if (line.includes('--- ANALYZING DEVICE DONE ---')) break;
     let parsed = line.slice(line.indexOf(':') + 1);
     parsed = parsed.replace(/^\s+/, '');
     let capName = line.slice(line.indexOf('\'') + 1);
     capName = capName.slice(0, capName.indexOf('\''));
     if (line.includes('Device ID:')) definition.id = parsed;
+    else if (line.includes('Device name:')) definition.name = parsed;
     else if (line.includes('Device Name:')) definition.name = parsed;
     else if (line.includes('Driver Uri:')) driverUri = parsed;
     else if (line.includes('Driver Id:')) driverId = parsed;
     else if (line.includes('Options for')) definition.capabilitiesObj[capName] = JSON.parse(parsed);
     else if (line.includes('Capabilities:')) definition.capabilities = parsed.split(',');
+    else console.log(`Unknown line: ${line}`);
   }
   definition.driverId = (driverUri ? `${driverUri}:${driverId}` : driverId).split(":");
   return Promise.resolve(definition);
