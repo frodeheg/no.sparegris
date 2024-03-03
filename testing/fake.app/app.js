@@ -14,12 +14,12 @@ class MyApp extends Homey.App {
     // Register action cards
     const cardActionSetDevicePointNumeric = this.homey.flow.getActionCard('set_capability_string');
     cardActionSetDevicePointNumeric.registerRunListener(async (args) => {
-      return args.device.onSetDevicePoint(args.devicePoint.id, args.newValue);
+      return args.device.onSetDevicePoint(args.capName.id, args.newValue);
     });
     cardActionSetDevicePointNumeric.registerArgumentAutocompleteListener(
-      'capability',
+      'capName',
       async (query, args) => {
-        return this.generateCapabilityList(query, args, true);
+        return this.generateCapabilityList(query, args);
       }
     );
   }
@@ -28,11 +28,13 @@ class MyApp extends Homey.App {
    * Generates a list of values that are legal for a specific device point
    */
   async generateCapabilityList(query, args) {
-    args.device.log(`generate args for capabilities: ${JSON.stringify(Object.keys(args))}`);
+    // Reset old parameter as it becomes invalid
+    args.newValue = undefined;
 
-    if (args.capability === 'undefined') return [];
+    args.device.log(`generate args capability list: ${JSON.stringify(Object.keys(args))}`);
 
-    const results = await args.device.oAuth2Client.getDevicePointValues(args.device.instanceId, args.devicePoint.id);
+    const results = args.device.driver.manifest.capabilities
+      .map((x) => ({ name: x, id: String(x) }));
 
     return results.filter((result) => {
       return result.name.toLowerCase().includes(query.toLowerCase());

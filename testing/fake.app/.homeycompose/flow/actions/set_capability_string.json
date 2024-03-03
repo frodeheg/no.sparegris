@@ -20,7 +20,7 @@
       },
       {
         "type": "autocomplete",
-        "name": "capability",
+        "name": "capName",
         "title": {
           "en": "capability"
         },
@@ -29,7 +29,7 @@
         }
       },
       {
-        "type": "string",
+        "type": "text",
         "name": "newValue",
         "title": {
           "en": "Any value"
