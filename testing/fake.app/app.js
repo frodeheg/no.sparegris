@@ -14,7 +14,19 @@ class MyApp extends Homey.App {
     // Register action cards
     const cardActionSetDevicePointNumeric = this.homey.flow.getActionCard('set_capability_string');
     cardActionSetDevicePointNumeric.registerRunListener(async (args) => {
-      return args.device.onSetDevicePoint(args.capName.id, args.newValue);
+      const capDef = args.device.homey.manifest.capabilities[args.capName.id];
+      let setValue;
+      switch (capDef.type) {
+        case 'number':
+          setValue = +args.newValue;
+          break;
+        default:
+          console.log('Unknown capability type;');
+          console.log(capDef);
+          setValue = args.newValue;
+          break;
+      }
+      return args.device.setCapabilityValue(args.capName.id, setValue);
     });
     cardActionSetDevicePointNumeric.registerArgumentAutocompleteListener(
       'capName',
