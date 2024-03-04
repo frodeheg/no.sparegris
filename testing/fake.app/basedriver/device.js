@@ -10,7 +10,13 @@ class MyDevice extends Device {
   async onInit() {
     this.log(`${this.driver.manifest.id} has been initialized`);
     this.registerMultipleCapabilityListener(this.driver.manifest.capabilities, async (newVal) => {
-      console.log(`New value is: ${JSON.stringify(newVal)}`);
+      const key = Object.keys(newVal)[0];
+      const val = newVal[key];
+      console.log(`key '${key}' set = ${val}`);
+      const cardTriggerDevicePointChanged = this.homey.flow.getDeviceTriggerCard('capability_changed');
+      const tokens = { value: +val, strVal: `${val}` };
+      const state = { capName: key };
+      return cardTriggerDevicePointChanged.trigger(this, tokens, state);
     });
   }
 

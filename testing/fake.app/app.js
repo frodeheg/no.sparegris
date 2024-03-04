@@ -31,7 +31,7 @@ class MyApp extends Homey.App {
           const cardTriggerDevicePointChanged = this.homey.flow.getDeviceTriggerCard('capability_changed');
           const tokens = { value: +setValue, strVal: `${setValue}` };
           const state = { capName: args.capName.id };
-          return cardTriggerDevicePointChanged.trigger(this, tokens, state);
+          return cardTriggerDevicePointChanged.trigger(args.device, tokens, state);
         });
     });
     cardActionSetDevicePointNumeric.registerArgumentAutocompleteListener(
@@ -44,7 +44,7 @@ class MyApp extends Homey.App {
     // Register trigger cards
     const cardTriggerDevicePointChanged = this.homey.flow.getDeviceTriggerCard('capability_changed');
     cardTriggerDevicePointChanged.registerRunListener(async (args, state) => {
-      return Promise.resolve(+state.capName === +args.capName.id);
+      return Promise.resolve(state.capName === args.capName.id);
     });
     cardTriggerDevicePointChanged.registerArgumentAutocompleteListener(
       'capName',
