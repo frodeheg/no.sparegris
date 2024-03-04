@@ -30,7 +30,7 @@
       function setParam(param, newValue) {
         Homey.getViewStoreValue("add_devices", "devices")
           .then((devices) => {
-            devices[0].settings[param] = +newValue;
+            devices[0].settings[param] = `${newValue}`;
             return Promise.resolve(devices);
           })
           .then((devices) => Homey.setViewStoreValue("add_devices", "devices", devices));

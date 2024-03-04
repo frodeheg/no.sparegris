@@ -34,8 +34,8 @@ class ChargeDriver extends Driver {
 
     // Default setting-values, changed during pairing
     const defaultSettings = {
-      voltage: 220,
-      phases: 1
+      voltage: '230',
+      phases: '1'
     };
 
     // First entry is a new flow based charge controller
