@@ -26,9 +26,27 @@ class MyApp extends Homey.App {
           setValue = args.newValue;
           break;
       }
-      return args.device.setCapabilityValue(args.capName.id, setValue);
+      return args.device.setCapabilityValue(args.capName.id, setValue)
+        .then(() => {
+          const cardTriggerDevicePointChanged = this.homey.flow.getDeviceTriggerCard('capability_changed');
+          const tokens = { value: +setValue, strVal: `${setValue}` };
+          const state = { capName: args.capName.id };
+          return cardTriggerDevicePointChanged.trigger(this, tokens, state);
+        });
     });
     cardActionSetDevicePointNumeric.registerArgumentAutocompleteListener(
+      'capName',
+      async (query, args) => {
+        return this.generateCapabilityList(query, args);
+      }
+    );
+
+    // Register trigger cards
+    const cardTriggerDevicePointChanged = this.homey.flow.getDeviceTriggerCard('capability_changed');
+    cardTriggerDevicePointChanged.registerRunListener(async (args, state) => {
+      return Promise.resolve(+state.capName === +args.capName.id);
+    });
+    cardTriggerDevicePointChanged.registerArgumentAutocompleteListener(
       'capName',
       async (query, args) => {
         return this.generateCapabilityList(query, args);

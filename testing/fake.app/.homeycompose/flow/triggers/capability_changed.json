@@ -1,0 +1,54 @@
+{
+  "highlight": true,
+  "platforms": [
+    "local"
+  ],
+  "title": {
+    "en": "Capability changed"
+  },
+  "titleFormatted": {
+    "en": "The parameter [[capName]] changed."
+  },
+  "hint": {
+    "en": "Use this card to trigger whenever a capability changed."
+  },
+  "args": [
+    {
+      "name": "device",
+      "type": "device",
+      "filter": "driver_id=basedriver"
+    },
+    {
+      "type": "autocomplete",
+      "name": "capName",
+      "title": {
+        "en": "Capability name"
+      },
+      "placeholder": {
+        "en": "Capability name"
+      }
+    }
+  ],
+  "tokens": [
+    {
+      "type": "number",
+      "name": "value",
+      "title": {
+        "en": "Parameter value"
+      },
+      "example": {
+        "en": "number"
+      }
+    },
+    {
+      "type": "string",
+      "name": "strVal",
+      "title": {
+        "en": "Parameter string value"
+      },
+      "example": {
+        "en": "number with unit"
+      }
+    }
+  ]
+}
