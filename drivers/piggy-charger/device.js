@@ -15,7 +15,7 @@ const d = require('../../common/devices');
 const Textify = require('../../lib/textify');
 
 // Driver Manifest references
-const VALIDATION_SETTINGS = 2;
+const VALIDATION_SETTINGS = 3; // Entry number for validation settings in driver.settings.compose.json
 const STATUS_GOTWATT = 0;
 const STATUS_GOTBATTERY = 1;
 const STATUS_GOTCANCHARGE = 2;
@@ -41,6 +41,7 @@ const CHARGEGROUP = {
 const okText = '[\u001b[32;1m OK \u001b[37m]';
 const errText = '[\u001b[31;1mFAIL\u001b[37m]';
 const progressText = '[\u001b[37;0m....\u001b[37;1m]';
+const YELLOW = '\u001b[1;33;m';
 
 class ChargeDevice extends Device {
 
@@ -340,7 +341,7 @@ class ChargeDevice extends Device {
       .then(() => this.setAllPassed())
       .catch((err) => {
         this.setCapabilityValue('alarm_generic.notValidated', true);
-        if (err) return dst.addText(`\u001b[35;m${err.message}\n`);
+        if (err) return dst.addText(`${YELLOW}${err.message}\n`);
         return dst.addText(`${progressText} ${this.homey.__('charger.validation.wait')}\n`);
       })
       .finally(() => dst.addText(`\u001b[0m(${this.homey.__('charger.validation.reset')})\u001b[1m\n`));

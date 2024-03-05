@@ -286,10 +286,10 @@
           "fr": "Niveau de batterie reçu"
         },
         "hint": {
-          "en": "Please make sure a flow updates this device\nwith the battery level whenever the value\nchanges or enter the device setting and untick\nthe battery status requirement.",
-          "no": "Batterinivå mottatt",
-          "nl": "Batterijniveau ontvangen",
-          "fr": "Niveau de batterie reçu"
+          "en": "Please ensure that a flow updates this device with the battery level every time the value changes, or go into the device settings and uncheck the required battery status.",
+          "no": "Vennligst sørg for at en flyt oppdaterer denne enheten med batterinivået hver gang verdien endres, eller gå inn i enhetsinnstillingene og fjern avkrysningen for påkrevd batteristatus.",
+          "nl": "Zorg ervoor dat een stroom dit apparaat bijwerkt met het batterijniveau elke keer dat de waarde verandert, of ga naar de apparaatinstellingen en schakel de vereiste batterijstatus uit.",
+          "fr": "Veuillez vous assurer qu'un flux met à jour cet appareil avec le niveau de la batterie à chaque fois que la valeur change, ou accédez aux paramètres de l'appareil et décochez l'état de la batterie requis."
         },
         "value": "False"
       },
