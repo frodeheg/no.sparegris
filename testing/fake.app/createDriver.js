@@ -78,10 +78,12 @@ async function createCaps(capabilitiesObj) {
     if (capName in handledCaps) continue;
     handledCaps[capName] = true;
     const capFileName = `.homeycompose/capabilities/${capName}.json`;
-    let { type, title, units, insights, getable, setable, values, insightsTitleTrue, insightsTitleFalse, titleTrue, titleFalse, decimals } = capabilitiesObj[fullCapName];
+    let { type, title, units, insights, getable, setable, values, insightsTitleTrue, insightsTitleFalse, titleTrue, titleFalse, decimals,
+          min, max, step, chartType, options, desc } = capabilitiesObj[fullCapName];
     if (units === null) units = undefined;
     if (insightsTitleTrue === null) insightsTitleTrue = undefined;
     if (insightsTitleFalse === null) insightsTitleFalse = undefined;
+    if (desc === null) desc = undefined;
     const uiComponent = !setable ? 'sensor'
       : type === 'boolean' ? 'toggle'
       : type === 'string' ? null
@@ -89,7 +91,8 @@ async function createCaps(capabilitiesObj) {
       : type === 'number' ? 'slider' //thermostat color battery
       : null;
     const capData = {
-      type, title, units, insights, getable, setable, uiComponent, values, insightsTitleTrue, insightsTitleFalse, titleTrue, titleFalse, decimals
+      type, title, units, insights, getable, setable, uiComponent, values, insightsTitleTrue, insightsTitleFalse, titleTrue, titleFalse, decimals,
+      min, max, step, chartType, options, desc
     };
     console.log(`Creating capability '${capName}'`);// console.log(capabilitiesObj[capName]);
     fs.writeFileSync(capFileName, JSON.stringify(capData));

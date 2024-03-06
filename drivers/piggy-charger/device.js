@@ -477,9 +477,17 @@ class ChargeDevice extends Device {
     const newPower = this.getCapabilityValue('measure_power');
     if ((!testStarted) && (+newPower === 0)) {
       console.log(`Starting Trigger test at time ${secleft}`);
-      const changeChargingPowerTrigger = this.homey.flow.getDeviceTriggerCard('charger-change-target-power');
-      const tokens = { offeredPower: 2000 };
-      changeChargingPowerTrigger.trigger(this, tokens);
+      if (this.targetDriver
+        && (this.targetDriver in d.DEVICE_CMD)
+        && (d.DEVICE_CMD[this.targetDriver].setCurrentCap)) {
+        const device = await this.homey.app.getDevice(this.targetId);
+        device.setCapabilityValue(d.DEVICE_CMD[this.targetDriver].setCurrentCap, 10);
+      } else {
+        // Call flow when power cannot be changed by automation
+        const changeChargingPowerTrigger = this.homey.flow.getDeviceTriggerCard('charger-change-target-power');
+        const tokens = { offeredPower: 2000 };
+        changeChargingPowerTrigger.trigger(this, tokens);
+      }
       this.triggerTestStart = new Date();
       testStarted = true;
     } else if (testStarted && (+newPower > 0)) {
