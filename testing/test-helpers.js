@@ -7,6 +7,7 @@ const fs = require('fs');
 const d = require('../common/devices');
 const c = require('../common/constants');
 const { HomeyAPI } = require('./homey-api');
+const Textify = require('../lib/textify');
 
 const { MAIN_OP, TARGET_OP } = c;
 
@@ -33,6 +34,7 @@ async function disableTimers(app) {
 async function addDevice(app, newDevice, deviceId, zone = null, enable = true) {
   // NB! A new instance of HomeyAPIApp here will not create a duplicate version
   //     of the zone and device list because it's unique and global to all instances
+  newDevice.deviceId = deviceId;
   const homeyApi = await HomeyAPI.createAppAPI({ homey: app.homey });
   homeyApi.devices.addRealDevice(newDevice, zone, deviceId);
   newDevice.homey = app.homey;
@@ -506,6 +508,94 @@ function checkForTranslations(obj, languages, base = '') {
   }
 }
 
+function sleep(ms) {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve();
+    }, ms);
+  });
+}
+
+/**
+ * Run through the charge validation procedure and respond as if a user was to follow the proceudre
+ * Throws errors when the response is not as anticipated.
+ */
+async function validateCharger(app, chargeDevice) {
+  // Check result of the validation test - should be invalid
+  let notValidated = await chargeDevice.getCapabilityValue('alarm_generic.notValidated');
+  if (!notValidated) {
+    throw new Error('Device should not be marked as validated on init');
+  }
+
+  // Get hold of controlled device (if present)
+  const controlledDevice = chargeDevice.targetId
+    ? await app.getDevice(chargeDevice.targetId) : null;
+
+  // Send validation commands: State
+  const stateFeedback = app.homey.flow.getActionCard('charger-change-state');
+  if (!chargeDevice.targetDriver || chargeDevice.targetDef.statusCap === null) {
+    // Pretend to be a flow
+    await stateFeedback.triggerAction({ device: chargeDevice, state: 0 /* STATE_FULL_CHARGE */ });
+  } else {
+    // Pretend to be a driver
+    await controlledDevice.setCapabilityValue({ capabilityId: chargeDevice.targetDef.statusCap, value: 'Connected' });
+  }
+
+  // Send validation commands: Battery level
+  const batteryFeedback = app.homey.flow.getActionCard('charger-change-batterylevel');
+  if (!chargeDevice.targetDriver || chargeDevice.targetDef.getBatteryCap === null) {
+    // Pretend to be a flow
+    await batteryFeedback.triggerAction({ device: chargeDevice, level: 0 });
+  } else {
+    // Pretend to be a driver
+  }
+
+  // Register validation command: Watt trigger response
+  await chargeDevice.registerTrigger('charger-change-target-power', (chargeDevice, tokens) => {
+    // This is where:
+    // 1) A flow would route the trigger to a charger
+    // 2) The charger would change the power as instructed
+    if (controlledDevice && chargeDevice.targetDef.measurePowerCap) {
+      controlledDevice.setCapabilityValue({
+        capabilityId: chargeDevice.targetDef.measurePowerCap,
+        value: tokens.offeredPower
+      });
+    } else {
+      // 3) The change of charger power will be noticed and sent back to piggy
+      const powerFeedback = app.homey.flow.getActionCard('charger-change-power');
+      powerFeedback.triggerAction({ device: chargeDevice, power: tokens.offeredPower });
+    }
+  });
+  // Send validation command: Watt response
+  if (!chargeDevice.targetDriver || chargeDevice.targetDef.measurePowerCap === null) {
+    chargeDevice.setTargetPower(1000);
+  }
+
+  // Restart validation procedure
+  // Note that the procedure is working in the background and need to be called over and over
+  let count = 4;
+  while (count > 0 && notValidated) {
+    const tempImg = new Textify({ width: 500, height: 500, colorType: 2, bgColor: { red: 80, green: 80, blue: 80 }});
+    await chargeDevice.validationProcedure(tempImg);
+    await sleep(1000);
+    if (count === 3) {
+      await chargeDevice.setCapabilityValueUser('onoff', true);
+    }
+    count--;
+    notValidated = await chargeDevice.getCapabilityValue('alarm_generic.notValidated');
+    // console.log(`Not Valid: ${notValidated}`);
+  }
+
+  // Check result of the validation test - should be valid
+  if (notValidated) {
+    throw new Error('Device should be marked as valid now');
+  }
+  const isOn = await chargeDevice.getCapabilityValue('onoff');
+  if (!isOn) {
+    throw new Error('Device should be turned on now');
+  }
+}
+
 module.exports = {
   disableTimers,
   addDevice,
@@ -522,4 +612,6 @@ module.exports = {
   applyUnInit,
   compareJSON,
   checkForTranslations,
+  sleep,
+  validateCharger,
 };

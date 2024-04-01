@@ -116,7 +116,7 @@ class FakeApiClass {
   }
 
   realtime(event, parameter) {
-    if (this.homey.__debug) console.log('TBD: Implement realtime(...)');
+    if (this.homey.__debug) console.log('testing/homey.js:: TBD: Implement realtime(...)');
   }
 
 }
@@ -129,15 +129,15 @@ class FakeTriggerCardClass {
   constructor(homey, name) {
     this.homey = homey;
     this.name = name;
-    if (this.homey.__debug) console.log('TBD: Implement FakeTriggerCard');
+    if (this.homey.__debug) console.log('testing/homey.js:: TBD: Implement FakeTriggerCard');
   }
 
   registerRunListener(callback) {
-    if (this.homey.__debug) console.log('TBD: Implement registerRunListener');
+    if (this.homey.__debug) console.log('testing/homey.js:: TBD: Implement registerRunListener');
   }
 
   trigger(tokens) {
-    if (this.homey.__debug) console.log('TBD: Implement tokens');
+    if (this.homey.__debug) console.log('testing/homey.js:: TBD: Implement tokens');
   }
 
 }
@@ -150,11 +150,11 @@ class FakeDeviceTriggerCardClass {
   constructor(homey, name) {
     this.homey = homey;
     this.name = name;
-    if (this.homey.__debug) console.log('TBD: Implement FakeTriggerCard');
+    if (this.homey.__debug) console.log('testing/homey.js:: TBD: Implement FakeTriggerCard');
   }
 
   registerRunListener(callback) {
-    if (this.homey.__debug) console.log('TBD: Implement registerRunListener');
+    if (this.homey.__debug) console.log('testing/homey.js:: TBD: Implement registerRunListener');
   }
 
   trigger(device, tokens) {
@@ -181,7 +181,7 @@ class FakeActionCardClass {
   }
 
   registerArgumentAutocompleteListener(callback) {
-    if (this.homey.__debug) console.log('TBD: Implement registerArgumentAutocompleteListener (action)');
+    if (this.homey.__debug) console.log('testing/homey.js:: TBD: Implement registerArgumentAutocompleteListener (action)');
   }
 
   // Internal function for triggering in test environment
@@ -189,7 +189,7 @@ class FakeActionCardClass {
     if (this.callback) {
       this.callback(args);
     } else {
-      console.log('WARNING: Trying to trigger an action that has not been connected yet');
+      console.log('testing/homey.js:: WARNING: Trying to trigger an action that has not been connected yet');
     }
   }
 
@@ -203,15 +203,15 @@ class FakeConditionCardClass {
   constructor(homey, name) {
     this.homey = homey;
     this.name = name;
-    if (this.homey.__debug) console.log('TBD: Implement FakeConditionCard');
+    if (this.homey.__debug) console.log('testing/homey.js:: TBD: Implement FakeConditionCard');
   }
 
   registerRunListener(callback) {
-    if (this.homey.__debug) console.log('TBD: Implement registerRunListener');
+    if (this.homey.__debug) console.log('testing/homey.js:: TBD: Implement registerRunListener');
   }
 
   registerArgumentAutocompleteListener(callback) {
-    if (this.homey.__debug) console.log('TBD: Implement registerArgumentAutocompleteListener (condition)');
+    if (this.homey.__debug) console.log('testing/homey.js:: TBD: Implement registerArgumentAutocompleteListener (condition)');
   }
 
 }
@@ -225,7 +225,7 @@ class FakeTokenClass {
     this.homey = homey;
     this.name = name;
     this.value = undefined;
-    if (this.homey.__debug) console.log('TBD: Implement FakeTokenClass');
+    if (this.homey.__debug) console.log('testing/homey.js:: TBD: Implement FakeTokenClass');
   }
 
   setValue(value) {
@@ -363,7 +363,7 @@ class FakeImageClass extends PNG {
 
   setPath(path) {
     this.path = path;
-    if (this.__debug) console.log('TBD load image at path : image.setPath');
+    if (this.__debug) console.log('testing/homey.js:: TBD load image at path : image.setPath');
   }
 
   async update() {
@@ -423,6 +423,7 @@ class FakeHomeyClass {
     this.images = new FakeImagesClass(this);
     this.env = env;
     this.__debug = false;
+    this.uniqueId = 1;
   }
 
   __(languagestring) {
@@ -430,11 +431,19 @@ class FakeHomeyClass {
   }
 
   on(event, callback) {
-    if (this.__debug) console.log('TBD implement on(event,callback)');
+    if (this.__debug) console.log('testing/homey.js:: TBD implement on(event,callback)');
   }
 
   enableDebug() {
     this.__debug = true;
+  }
+
+  getUniqueId() {
+    return `Unset${this.uniqueId++} use addDevice(...) to set`;
+  }
+
+  log(text) {
+    this.app.log(text);
   }
 
 }
@@ -480,7 +489,9 @@ class Device {
     this.data = {};
     this.settings = {};
     this.triggers = {};
+    this.capListeners = {};
     this.driverId = `homey:app:${manifest.id}:${driver.driverId}`;
+    this.deviceId = driver.homey.getUniqueId();
 
     // Create default settings
     for (let i = 0; i < manifest.drivers.length; i++) {
@@ -514,7 +525,25 @@ class Device {
     this.triggers[name] = func;
   }
 
+  setCapabilityValueUser(cap, value) {
+    if (this.capListeners[cap]) {
+      this.capListeners[cap](value)
+        .then(() => {
+          if (this.homey.__debug) console.log(`testing/homey.js:: Cap '${cap}' was set to ${value}`);
+        })
+        .catch((err) => {
+          console.log(`testing/homey.js:: Cap listener '${cap}' for deviceId '${this.deviceId}' returned error:`);
+          console.log(err);
+        });
+    }
+    this.setCapabilityValue(cap, value);
+  }
+
   // Public functions
+  getId() {
+    return this.deviceId;
+  }
+
   getData() {
     return this.data;
   }
@@ -552,11 +581,19 @@ class Device {
   }
 
   registerCapabilityListener(cap, callback) {
-    if (this.homey.__debug) console.log('TBD: Implement registerCapabilityListener');
+    this.capListeners[cap] = callback;
   }
 
   setCameraImage(id, name, image) {
     this.camera[id] = { name, image };
+  }
+
+  log(text) {
+    this.homey.log(`Device ${this.deviceId} log: ${text}`);
+  }
+
+  async ready() {
+    return Promise.resolve();
   }
 
 }
@@ -584,6 +621,10 @@ class Driver {
 
   getDevices() {
     return this.devices;
+  }
+
+  async ready() {
+    return Promise.resolve();
   }
 
 }

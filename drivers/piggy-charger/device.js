@@ -58,7 +58,7 @@ class ChargeDevice extends Device {
     const data = this.getData();
     this.targetDriver = data.targetDriver;
     if (this.targetDriver) {
-      console.log(`Controller will use direct access for ${this.targetDriver} (Device ID: ${data.id})`);
+      this.homey.app.updateLog(`Controller will use direct access for ${this.targetDriver} (Device ID: ${data.id})`, c.LOG_INFO);
       this.targetId = data.id;
       this.targetDef = d.DEVICE_CMD[this.targetDriver];
     }
@@ -341,6 +341,7 @@ class ChargeDevice extends Device {
       .then(() => this.setAllPassed())
       .catch((err) => {
         this.setCapabilityValue('alarm_generic.notValidated', true);
+        this.homey.app.updateLog(err, c.LOG_INFO);
         if (err) return dst.addText(`${YELLOW}${err.message}\n`);
         return dst.addText(`${progressText} ${this.homey.__('charger.validation.wait')}\n`);
       })
@@ -446,9 +447,20 @@ class ChargeDevice extends Device {
   async runStateTest(dst) {
     return this.getState()
       .then((state) => {
-        if (state === null || state === undefined) {
-          dst.addText(`${errText} ${this.homey.__('charger.validation.stateLabel')}\n`);
-          return Promise.reject(new Error(`${this.homey.__('charger.validation.stateHint')}`));
+        switch (state) {
+          case STATE_FULL_CHARGE:
+          case STATE_PARTIAL_CHARGE:
+            // The state is ok to go for charging
+            break;
+          case STATE_CANT_CHARGE:
+            dst.addText(`${errText} ${this.homey.__('charger.validation.stateLabel')}\n`);
+            return Promise.reject(new Error(`${this.homey.__('charger.validation.stateHint')}`));
+          case STATE_ERROR:
+            dst.addText(`${errText} ${this.homey.__('charger.validation.stateLabel')}\n`);
+            return Promise.reject(new Error(`${this.homey.__('charger.validation.stateHint')}`));
+          default: // null and undefined
+            dst.addText(`${errText} ${this.homey.__('charger.validation.stateLabel')}\n`);
+            return Promise.reject(new Error(`${this.homey.__('charger.validation.stateHint')}`));
         }
         dst.addText(`${okText} ${this.homey.__('charger.validation.stateLabel')}\n`);
         return Promise.resolve();
@@ -460,7 +472,8 @@ class ChargeDevice extends Device {
       dst.addText(`${okText} ${this.homey.__('charger.validation.batterySkipped')}\n`);
       return Promise.resolve();
     }
-    return this.runTest(dst, STATUS_GOTBATTERY, this.settings.GotSignalBattery);
+    return this.getBattery()
+      .then(() => this.runTest(dst, STATUS_GOTBATTERY, this.settings.GotSignalBattery));
   }
 
   async runWattTest(dst) {
@@ -473,15 +486,13 @@ class ChargeDevice extends Device {
    */
   async checkForTriggerReply(secleft, testStarted) {
     if (this.killed) return Promise.resolve();
-    console.log(`Sec left ${secleft}`);
+    this.homey.app.updateLog(`Sec left ${secleft}`, c.LOG_INFO);
     const newPower = this.getCapabilityValue('measure_power');
     if ((!testStarted) && (+newPower === 0)) {
-      console.log(`Starting Trigger test at time ${secleft}`);
-      if (this.targetDriver
-        && (this.targetDriver in d.DEVICE_CMD)
-        && (d.DEVICE_CMD[this.targetDriver].setCurrentCap)) {
+      this.homey.app.updateLog(`Starting Trigger test at time ${secleft}`, c.LOG_INFO);
+      if (this.targetDriver && this.targetDef.setCurrentCap) {
         const device = await this.homey.app.getDevice(this.targetId);
-        device.setCapabilityValue(d.DEVICE_CMD[this.targetDriver].setCurrentCap, 10);
+        device.setCapabilityValue(this.targetDef.setCurrentCap, 10);
       } else {
         // Call flow when power cannot be changed by automation
         const changeChargingPowerTrigger = this.homey.flow.getDeviceTriggerCard('charger-change-target-power');
@@ -495,7 +506,7 @@ class ChargeDevice extends Device {
       const lastedTime = Math.round((now - this.triggerTestStart) / 1000);
       const settings = { toggleMeasureW: `${lastedTime} s` };
       this.setSettings(settings);
-      console.log(`Ended Trigger test at time ${secleft}, got Power ${newPower}`);
+      this.homey.app.updateLog(`Ended Trigger test at time ${secleft}, got Power ${newPower}`, c.LOG_INFO);
       this.triggerThread = undefined;
       return this.onTurnedOff();
     }
@@ -513,16 +524,14 @@ class ChargeDevice extends Device {
   async runTriggerTest(dst) {
     const now = new Date();
     const gotResult = this.settings.toggleMeasureW !== '-';
-    console.log('Run trigger test');
-    console.log(this.settings.toggleMeasureW);
 
     if (gotResult) {
       dst.addText(`${okText} ${this.homey.__('charger.validation.turnaroundLabel')} (${this.settings.toggleMeasureW})\n`);
-      console.log('has result....');
+      this.homey.app.updateLog('has result....', c.LOG_INFO);
       return Promise.resolve();
     }
     if (!this.triggerThreadStart) {
-      console.log('Started new trigger test');
+      this.homey.app.updateLog('Started new trigger test', c.LOG_INFO);
       await this.onTurnedOn();
       this.triggerThreadStart = now;
       this.triggerThread = setTimeout(() => this.checkForTriggerReply(300, false), 1000);
@@ -532,11 +541,11 @@ class ChargeDevice extends Device {
     if (secLasted > 60 * 5) {
       dst.addText(`${errText} ${this.homey.__('charger.validation.turnaroundLabel')} (${this.homey.__('charger.validation.turnaroundTimeout')} > 300 s)\n`);
       this.triggerThreadStart = undefined;
-      console.log('Test timed out');
+      this.homey.app.updateLog('Test timed out', c.LOG_INFO);
       return Promise.reject();
     }
     dst.addText(`${progressText} ${this.homey.__('charger.validation.turnaroundLabel')} (${this.homey.__('charger.validation.turnaroundOngoing')} > ${secLasted} s)\n`);
-    console.log('waiting....');
+    this.homey.app.updateLog('waiting....', c.LOG_INFO);
     return Promise.reject();
   }
 
@@ -558,7 +567,7 @@ class ChargeDevice extends Device {
    * Mark the device that all tests passed
    */
   async setAllPassed() {
-    this.setCapabilityValue('alarm_generic.notValidated', false);
+    return this.setCapabilityValue('alarm_generic.notValidated', false);
   }
 
   /**
@@ -1072,7 +1081,19 @@ class ChargeDevice extends Device {
           return this.setChargerState(translatedState, false);
         });
     }
-    return Promise.resolve(this.getCapabilityValue('charge_status'));
+    return Promise.resolve(+this.getCapabilityValue('charge_status'));
+  }
+
+  /**
+   * Returns battery level from battery cap
+   * If it's a non-flow device then the power cap is updated first with the value from the charger
+   */
+  async getBattery() {
+    if (this.targetDriver && this.targetDef.getBatteryCap) {
+      return this.getCapValue(this.targetDef.getBatteryCap)
+        .then((batteryLevel) => this.setBatteryLevel(batteryLevel, false));
+    }
+    return Promise.resolve(this.getCapabilityValue('measure_battery'));
   }
 
   /**

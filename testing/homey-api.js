@@ -117,6 +117,11 @@ class FakeDevicesClass {
   }
 
   getDevice(deviceId) {
+    if (!(deviceId.id in this.fakeDevices)) {
+      const errText = `homey-api::getDevice: Request for non-existing deviceId '${deviceId.id}'. Please add it with test-helpers::addDevice() first`;
+      console.log(errText);
+      throw new Error(errText);
+    }
     return this.fakeDevices[deviceId.id];
   }
 

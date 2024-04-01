@@ -411,26 +411,24 @@ const DEVICE_CMD = {
     statusUnavailable: ['Complete', 'Disconnected', 'Error????'], // Other observed: Charging, Stopped
     statusProblem: ['Error????'],
     note: 'In order to control this device, please install and enable the Charge controller device',
-
     onChargeStart: {
-      target_circuit_current: Infinity
+      charge_mode: 'charge_now'
     },
     onChargeEnd: {
-      target_circuit_current: 0
+      charge_mode: 'off'
     },
     onAdd: {
-      target_charger_current: 0,
-      target_circuit_current: 0
+      charge_mode: 'off'
     },
     onRemove: {
-      target_charger_current: Infinity,
-      target_circuit_current: Infinity
+      charge_mode: 'automatic',
     },
-    setCurrentCap: 'target_charger_current',
-    getOfferedCap: 'measure_current.offered',
+    setCurrentCap: null,
+    getOfferedCap: null, // 'charging_rate' available but ignore when not setable
     startCurrent: 11,
     minCurrent: 7,
-    pauseCurrent: 4
+    pauseCurrent: 4,
+    default: false
   },
   'com.tibber:home': DEFAULT_IGNORED,
   'com.tibber:pulse': DEFAULT_METER,
@@ -455,11 +453,26 @@ const DEVICE_CMD = {
     setOffValue: false,
     measurePowerCap: 'measure_power',
     statusCap: 'charge_mode',
-    statusUnavailable: ['Charging finished', 'Disconnected', 'Unknown'],
+    statusUnavailable: ['Charging finished', 'Disconnected', 'Unknown'], // Valid for charging: 'Connecting to car', 'Charging'
     statusProblem: ['Unknown'],
     note: 'In order to control this device, please install and enable the Charge controller device',
-    // setCurrentCap: 'target_charger_current',  // Not available
-    // getOfferedCap: 'measure_current.offered', // Available, but ignore when not setable
+    onChargeStart: {
+      charging_button: true
+    },
+    onChargeEnd: {
+      charging_button: false
+    },
+    onAdd: {
+      charging_button: false
+    },
+    onRemove: {
+      charging_button: true,
+    },
+    setCurrentCap: null, // Not available
+    getOfferedCap: null, // 'measure_current.phaseX' available, but ignore when not setable
+    startCurrent: 11,
+    minCurrent: 7,
+    pauseCurrent: 4,
     default: false
   },
   'fi.taelek.ecocontrol:oled': {

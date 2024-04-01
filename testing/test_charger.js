@@ -23,7 +23,7 @@ const ChargeDriver = require('../drivers/piggy-charger/driver');
 // const { TIMESPAN, roundToStartOfDay, timeToNextHour, toLocalTime, fromLocalTime, timeToNextSlot, timeSinceLastSlot, timeSinceLastLimiter, hoursInDay } = require('../common/homeytime');
 // const { disableTimers, applyStateFromFile, getAllDeviceId, writePowerStatus, setAllDeviceState, validateModeList, compareJSON, checkForTranslations } = require('./test-helpers');
 const { HomeyAPI } = require('./homey-api');
-const { applyBasicConfig, applyEmptyConfig, addDevice, applyPriceScheme2 } = require('./test-helpers');
+const { applyBasicConfig, applyEmptyConfig, addDevice, applyPriceScheme2, sleep, validateCharger } = require('./test-helpers');
 const { useUrlOverride, setUrlData } = require('./urllib');
 
 // Test Device initialization
@@ -79,8 +79,63 @@ async function testChargePlan() {
   console.log('\x1b[1A[\x1b[32mPASSED\x1b[0m]');
 }
 
+async function testChargeValidation() {
+  console.log('[......] Charge Validation');
+  const app = new PiggyBank();
+  const homeyApi = await HomeyAPI.createAppAPI({ homey: app.homey });
+  const chargeDriver = new ChargeDriver('piggy-charger', app);
+  const flowDeviceController = new ChargeDevice(chargeDriver);
+  const teslaDeviceController = new ChargeDevice(chargeDriver);
+  const zaptecDeviceController = new ChargeDevice(chargeDriver);
+  const easeeDeviceController = new ChargeDevice(chargeDriver);
+
+  try {
+    await app.disableLog();
+    await app.onInit();
+    await applyBasicConfig(app);
+
+    const zoneHomeId = app.homeyApi.zones.addZone('Home');
+    const chargeZoneId = app.homeyApi.zones.addZone('ChargeZone');
+
+    await addDevice(app, flowDeviceController, 'flowCharger', zoneHomeId);
+    await addDevice(app, teslaDeviceController, 'teslaCharger', zoneHomeId);
+    await addDevice(app, zaptecDeviceController, 'zaptecCharger', zoneHomeId);
+    await addDevice(app, easeeDeviceController, 'easeeCharger', zoneHomeId);
+
+    const teslaDevice = await homeyApi.devices.addFakeDevice('com.tesla.charger;Tesla.txt', chargeZoneId, 'TESLA-DEVICEID', {
+      capname: () => { console.log('tesla capname changed value'); return Promise.resolve(); },
+      capname2: () => { console.log('tesla cap2name changed'); return Promise.resolve(); }
+    });
+    const zaptecDevice = null;
+    const easeeDevice = null;
+
+    const testDevices = [
+      { chargeDevice: flowDeviceController, fakeDevice: null, id: 'FLOW', name: 'Flow' },
+      { chargeDevice: teslaDeviceController, fakeDevice: teslaDevice, id: 'TESLA-DEVICEID', name: 'Tesla' },
+      { chargeDevice: zaptecDeviceController, fakeDevice: zaptecDevice, id: 'ZAPTEC-DEVICEID', name: 'Zaptec' },
+      { chargeDevice: easeeDeviceController, fakeDevice: easeeDevice, id: 'EASEE-DEVICEID', name: 'Easee' }
+    ];
+    for (let deviceTest = 0; deviceTest < testDevices.length; deviceTest++) {
+      const { chargeDevice, name, fakeDevice, id } = testDevices[deviceTest];
+      const targetDriver = fakeDevice ? fakeDevice.driverId.substring(10) : null;
+      console.log(`${(deviceTest === 0) ? '\x1b[1A' : ''}[......] Charge Validation - ${name}`);
+      // Validation test is run on init (and on image refresh):
+      await chargeDevice.setData({ targetDriver, id });
+      await chargeDevice.setSettings({ startCurrent: 11, stopCurrent: 0, pauseCurrent: 4, minCurrent: 7, maxCurrent: 12 });
+      await chargeDevice.setSettings({ phases: 1, voltage: 220 });
+      await chargeDevice.onInit();
+      await validateCharger(app, chargeDevice);
+      chargeDevice.onUninit();
+      console.log('\x1b[1A[\x1b[32mPASSED\x1b[0m]');
+    }
+  } finally {
+    app.onUninit();
+  }
+}
+
 /**
  * Give the charger power and make sure that it responds
+ * This works even without validation
  */
 async function testChargeControl() {
   console.log('[......] Charge control');
@@ -314,6 +369,7 @@ async function startAllTests() {
     await testCharset();
     await testDeviceInit();
     await testChargePlan();
+    await testChargeValidation();
     await testChargeControl();
     await testChargeToken();
     // await testConnectHelp();
