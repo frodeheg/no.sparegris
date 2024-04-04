@@ -928,5 +928,8 @@
   },
   "0.21.14": {
     "en": "Made the app more visible in the app store by adding tags for all the brands for devices the app is capable of natively controlling"
+  },
+  "0.22.0": {
+    "en": "Added warning about the coming update."
   }
 }
