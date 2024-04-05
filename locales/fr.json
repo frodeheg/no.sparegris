@@ -420,7 +420,7 @@
       "turnedOnHint": "Veuillez allumer le contrôleur de charge.",
       "turnaroundLabel": "Test de réponse",
       "turnaroundOngoing": "en cours",
-      "wait": "Appuyez sur Actualiser pour les mises à jour"
+      "wait": "Appuyez sur Actualiser pour continuer la validation"
     },
     "error": {
       "notReady": "Impossible d'allumer le contrôleur de charge avant qu'il n'ait été correctement connecté et testé. Consultez la capacité de la caméra de cet appareil pour obtenir des instructions."

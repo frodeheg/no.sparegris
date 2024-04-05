@@ -420,7 +420,7 @@
       "turnedOnHint": "Vennligst slå på ladekontrolleren.",
       "turnaroundLabel": "Respons-test",
       "turnaroundOngoing": "pågående",
-      "wait": "Trykk på oppdater-knappen for oppdateringer"
+      "wait": "Trykk på oppdater-knappen for å fortsette valideringen"
     },
     "error": {
       "notReady": "Kan ikke slå på ladekontrolleren før den er riktig tilkoblet og testet. Se kamerafunksjonen til denne enheten for instruksjoner."

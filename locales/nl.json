@@ -420,7 +420,7 @@
       "turnedOnHint": "Schakel de laadcontroller in.",
       "turnaroundLabel": "Responstest",
       "turnaroundOngoing": "lopend",
-      "wait": "Druk op vernieuwen voor updates"
+      "wait": "Druk op vernieuwen om door te gaan met valideren"
     },
     "error": {
       "notReady": "Kan de laadcontroller niet inschakelen voordat deze correct is aangesloten en getest. Zie de cameramogelijkheden van dit apparaat voor instructies."

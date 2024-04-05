@@ -42,6 +42,7 @@ const okText = '[\u001b[32;1m OK \u001b[37m]';
 const errText = '[\u001b[31;1mFAIL\u001b[37m]';
 const progressText = '[\u001b[37;0m....\u001b[37;1m]';
 const YELLOW = '\u001b[1;33;m';
+const WHITE = '\u001b[37;1m';
 
 class ChargeDevice extends Device {
 
@@ -342,8 +343,10 @@ class ChargeDevice extends Device {
       .catch((err) => {
         this.setCapabilityValue('alarm_generic.notValidated', true);
         this.homey.app.updateLog(err, c.LOG_INFO);
-        if (err) return dst.addText(`${YELLOW}${err.message}\n`);
-        return dst.addText(`${progressText} ${this.homey.__('charger.validation.wait')}\n`);
+        let errText = '';
+        if (err) errText += `${YELLOW}${err.message}\n`;
+        errText += `${WHITE}${this.homey.__('charger.validation.wait')}\n`;
+        return dst.addText(errText);
       })
       .finally(() => dst.addText(`\u001b[0m(${this.homey.__('charger.validation.reset')})\u001b[1m\n`));
   }

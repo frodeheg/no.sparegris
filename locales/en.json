@@ -420,7 +420,7 @@
       "turnedOnHint": "Please turn on the charge controller.",
       "turnaroundLabel": "Response test",
       "turnaroundOngoing": "ongoing",
-      "wait": "Press refresh for updates"
+      "wait": "Press refresh to continue validation"
     },
     "error": {
       "notReady": "Can not turn on the charge controller before it has been properly connected and tested. See the camera capability of this device for instructions."
