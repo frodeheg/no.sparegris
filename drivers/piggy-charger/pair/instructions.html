@@ -1,0 +1,41 @@
+<html>
+  <head>
+
+  </head>
+
+  <body>
+    <legend class="homey-form-legend" data-i18n="charger.new.instructions">Instructions</legend>
+    <p data-i18n="charger.new.flowInfo" id="flowinfo" style="display:none">Note! You will have to manually set up some flows to communicate with the charger device.</p>
+    <p data-i18n="charger.new.teslaInfo" id="teslainfo" style="display:none">Note! Due to limitations in the Tesla app you will have to manually set up some flows to communicate with the Tesla app.</p>
+    <p data-i18n="charger.new.zaptecInfo" id="zaptecinfo" style="display:none">Note! Due to limitations in the Zaptec app you will have to manually set up some flows to communicate with the Zaptec app.</p>
+    <p data-i18n="charger.new.cameraInfo">For future instructions, please refer to the camera capability on the device.</p>
+
+    <script type="application/javascript">
+      Homey.showLoadingOverlay();
+    
+      Homey.getViewStoreValue("add_devices", "devices")
+        .then((devices) => {
+          switch (devices[0].data.targetDriver) {
+            default:
+              document.getElementById('flowinfo').style.display='block';
+              break;
+            case 'no.easee:charger':
+              break;
+            case 'com.tesla.charger:Tesla':
+              document.getElementById('teslainfo').style.display='block';
+              break;
+            case 'com.zaptec:go':
+              document.getElementById('zaptecinfo').style.display='block';
+              break;
+          };
+          return Promise.resolve(devices);
+        })
+        .then((devices) => Homey.setViewStoreValue("add_devices", "devices", devices));
+
+      setParam('voltage', 230);
+      setParam('phases', 1);
+
+      Homey.hideLoadingOverlay();
+    </script>
+  </body>
+</html>

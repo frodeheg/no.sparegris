@@ -403,7 +403,12 @@
       "voltage": "Laadspanning",
       "phases": "Aantal fasen",
       "phase1": "1 Fase",
-      "phase3": "3 Fasen"
+      "phase3": "3 Fasen",
+      "instructies": "Instructies",
+      "flowInfo": "<b>Opmerking!</b> U zult enkele stromen handmatig moeten instellen om met het opladerapparaat te communiceren.",
+      "teslaInfo": "<b>Opmerking!</b> Vanwege beperkingen in de Tesla-app zult u sommige stromen handmatig moeten instellen om te communiceren met de Tesla-oplader. (de ontwikkelaar van de Tesla-app kan dit oplossen door stroomcontrole toe te voegen als een mogelijkheid)",
+      "zatptecInfo": "<b>Opmerking!</b> Vanwege beperkingen in de Zaptec-app zult u sommige stromen handmatig moeten instellen om te communiceren met de Zaptec-oplader. (de Zaptec-app-ontwikkelaar kan dit oplossen door stroomcontrole toe te voegen als een mogelijkheid)",
+      "cameraInfo": "Raadpleeg voor toekomstige instructies de cameramogelijkheden van het laadregelaarapparaat."
     },
     "validation": {
       "heading": "Het apparaat kan pas worden gebruikt als onderstaande checklist is ingevuld",

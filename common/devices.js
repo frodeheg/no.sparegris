@@ -408,8 +408,8 @@ const DEVICE_CMD = {
     getBatteryCap: 'measure_battery',
     measurePowerCap: 'measure_power',
     statusCap: 'charging_state',
-    statusUnavailable: ['Complete', 'Disconnected', 'Error????'], // Other observed: Charging, Stopped
-    statusProblem: ['Error????'],
+    statusUnavailable: ['Complete', 'Disconnected', 'Error'], // Other observed: Charging, Stopped
+    statusProblem: ['Error'], // State Error not reported, not sure if it exists
     note: 'In order to control this device, please install and enable the Charge controller device',
     onChargeStart: {
       charge_mode: 'charge_now'

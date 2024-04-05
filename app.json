@@ -2590,6 +2590,12 @@
         {
           "id": "configure_device",
           "navigation": {
+            "next": "instructions"
+          }
+        },
+        {
+          "id": "instructions",
+          "navigation": {
             "next": "add_devices"
           }
         },

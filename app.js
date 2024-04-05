@@ -768,12 +768,13 @@ class PiggyBank extends Homey.App {
     }
 
     // Version 0.22.0 - Introduced the charge controller
-    if (+settingsVersion < 17) {
-      const alertText = '**Piggy Bank** - Warning: On night to April 6th. a significant update is being installed. '
-      + 'Please read the notes in the forum before the update and make sure you keep an eye on the charging in case something went wrong.';
+    // settingsVersion = 17 reserved for feedback during testing
+
+    if (+settingsVersion < 18) {
+      const alertText = '**Piggy Bank** - New device available: Piggy Charger. Please replace all charging flows with this new device if present.';
       this.homey.notifications.createNotification({ excerpt: alertText })
         .catch(err => this.updateLog(alertText, c.LOG_ERROR));
-      this.homey.settings.set('settingsVersion', 17);
+      this.homey.settings.set('settingsVersion', 18);
     }
     // Internal state that preferably should be removed as it is in the archive
     // this.homey.settings.unset('stats_savings_all_time_use');

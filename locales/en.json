@@ -403,7 +403,12 @@
       "voltage": "Charging voltage",
       "phases": "Number of phases",
       "phase1": "1 Phase",
-      "phase3": "3 Phases"
+      "phase3": "3 Phases",
+      "instructions": "Instructions",
+      "flowInfo": "<b>Note!</b> You will have to manually set up some flows to communicate with the charger device.",
+      "teslaInfo": "<b>Note!</b> Due to limitations in the Tesla app you will have to manually set up some flows to communicate with the Tesla charger. (the Tesla app developer may fix this by adding current-control as a capability)",
+      "zatptecInfo": "<b>Note!</b> Due to limitations in the Zaptec app you will have to manually set up some flows to communicate with the Zaptec charger. (the Zaptec app developer may fix this by adding current-control as a capability)",
+      "cameraInfo": "For future instructions, please refer to the camera capability of the charge controller device."
     },
     "validation": {
       "heading": "The device can not be used before the check-list below has been completed",
