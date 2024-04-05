@@ -931,5 +931,8 @@
   },
   "0.22.0": {
     "en": "Added warning about the coming update."
+  },
+  "0.22.1": {
+    "en": "Added the charge controller device"
   }
 }
