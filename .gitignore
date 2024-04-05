@@ -1,7 +1,14 @@
 /env.json
 /app.js.bak
 /node_modules/
-/testing/debug/
 /.homeybuild/
 /.homeycompose/app.json.bak
+/testing/fake.app/env.json
+/testing/fake.app/app.js.bak
+/testing/fake.app/node_modules/
+/testing/fake.app/.homeybuild/
+/testing/fake.app/.homeycompose/app.json.bak
+/testing/fake.app/app.json
+/testing/debug/
+/testing/out.png
 /.git-credentials

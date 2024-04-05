@@ -1,0 +1,129 @@
+<html>
+<head>
+<style>
+/* HIDE RADIO */
+[type=radio] { 
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* IMAGE STYLES */
+[type=radio] + div {
+  cursor: pointer;
+  padding: 10px;
+  margin: 5px;
+  border-radius: 10px;
+  background-color: white;
+  box-shadow: 0px 0px 15px 0px #ccc;
+}
+
+/* CHECKED STYLES */
+[type=radio]:checked + div {
+  outline: 2px solid #0283fa;
+  background-color: #f0f7fd;
+  box-shadow: 0px 0px 30px 0px #eee;
+}
+
+label {
+  position: relative;
+  display: inline-block;
+}
+
+.checker {
+  display: none;
+  position: absolute;
+  top: 25px;
+  left: 95px;
+}
+
+.checker::after {
+  content: '✔';    
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 20px; height: 20px;
+  transform: translate(-50%,-50%);
+  color: white;
+  background-color: #0283fa;
+  font-size: 15px;
+  line-height: 20px;
+  text-align: center;
+  border: 2px solid #f0f7fd;
+  border-radius: 50%;
+}
+
+[type=radio]:checked + div .checker {
+  display: inline-block;
+  width: 0;
+  padding: 0;
+  margin: 0;
+}
+
+</style>
+</head>
+
+<body>
+
+<form class="homey-form">
+  <legend class="homey-form-legend" data-i18n="charger.new.imageHeader">Select Icon</legend>
+
+  <div class="homey-form-group">
+    <label width="120" height="120">
+      <input type="radio" name="imageID" value="icon4" onchange="updateImage(this.value)" checked>
+      <div>
+        <img width=90 height=90 src="../assets/icon4.svg" alt="Option 4">
+        <div class="checker"></div>
+      </div>
+    </label>
+
+    <label width="120" height="120">
+      <input type="radio" name="imageID" value="icon1" onchange="updateImage(this.value)">
+      <div>
+        <img width=90 height=90 src="../assets/icon1.svg" alt="Option 1">
+        <div class="checker"></div>
+      </div>
+    </label>
+    
+    <label width="120" height="120">
+      <input type="radio" name="imageID" value="icon2" onchange="updateImage(this.value)">
+      <div>
+        <img width=90 height=90 src="../assets/icon2.svg" alt="Option 2">
+        <div class="checker"></div>
+      </div>
+    </label>
+
+    <label width="120" height="120">
+      <input type="radio" name="imageID" value="icon3" onchange="updateImage(this.value)">
+      <div>
+        <img width=90 height=90 src="../assets/icon3.svg" alt="Option 3">
+        <div class="checker"></div>
+      </div>
+    </label>
+
+    <label width="120" height="120">
+      <input type="radio" name="imageID" value="icon5" onchange="updateImage(this.value)">
+      <div>
+        <img width=90 height=90 src="../assets/icon5.svg" alt="Option 5">
+        <div class="checker"></div>
+      </div>
+    </label>
+  </div>
+</form>
+
+<script type="application/javascript">
+  Homey.showLoadingOverlay();
+
+  function updateImage(newValue) {
+    Homey.getViewStoreValue("add_devices", "devices")
+      .then((devices) => {
+        devices[0].icon = `${newValue}.svg`;
+        return Promise.resolve(devices);
+      })
+      .then((devices) => Homey.setViewStoreValue("add_devices", "devices", devices));
+  }
+  updateImage('icon4');
+  Homey.hideLoadingOverlay();
+</script>
+</body>
+</html>

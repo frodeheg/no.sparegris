@@ -1,21 +1,22 @@
 {
+  "deprecated": true,
   "title": {
-    "en": "The charging power should be changed",
-    "no": "Ladeeffekten bør endres",
-    "nl": "Het laadvermogen moet worden gewijzigd",
-    "fr": "La puissance de charge doit être modifiée"
+    "en": "Deprecated flow: Please install the charger controller device instead",
+    "no": "Utdatert flyt: Installer laderkontrollenheten i stedet",
+    "nl": "Verouderde stroom: installeer in plaats daarvan het ladercontrollerapparaat",
+    "fr": "Flux obsolète: veuillez installer le dispositif de contrôleur de chargeur à la place"
   },
   "titleFormatted": {
-    "en": "The charging power should be changed to the supplied token (Offered power) W",
-    "no": "Ladeeffekten bør endres til den medfølgende token (Tilbudt effekt) W",
-    "nl": "Het laadvermogen moet worden gewijzigd in het meegeleverde token (Aangeboden vermogen) W",
-    "fr": "La puissance de charge doit être changée pour le jeton fourni (Puissance offerte) W"
+    "en": "Deprecated flow: Please install the charger controller device instead",
+    "no": "Utdatert flyt: Installer laderkontrollenheten i stedet",
+    "nl": "Verouderde stroom: installeer in plaats daarvan het ladercontrollerapparaat",
+    "fr": "Flux obsolète: veuillez installer le dispositif de contrôleur de chargeur à la place"
   },
   "hint": {
-    "en": "This trigger should be used to change the charging power. It will be called on the best schedule after the action 'Start Charging Cycle' has been initiated.",
-    "no": "Denne triggeren skal brukes for å endre ladestyrken. Den blir trigget på optimale tidspunkt etter at handlingen 'Start ladesyklus' har blitt utført.",
-    "nl": "Deze trigger moet worden gebruikt om het laadvermogen te wijzigen. Het zal volgens het beste schema worden aangeroepen, nadat de actie 'Start oplaadcyclus' is gestart.",
-    "fr": "Ce déclencheur doit être utilisé pour modifier la puissance de charge. Il sera appelé au meilleur moment après le lancement de l'action 'Démarrer le cycle de charge'."
+    "en": "This flow has been deprecated. It will still work for a limited time, but you're reccommended to install the new charger controller device as soon as possible and use the same flow from there instead.",
+    "no": "Denne flyten er avviklet. Den vil fortsatt fungere i en begrenset tid, men du anbefales å installere den nye laderkontrollenheten så snart som mulig og bruke samme flyt derfra istedenfor.",
+    "nl": "Deze stroom is beëindigd. Het zal nog een beperkte tijd werken, maar u wordt aangeraden de nieuwe opladercontroller zo snel mogelijk te installeren en van daaruit dezelfde stroom te gebruiken.",
+    "fr": "Ce flux est obsolète. Cela fonctionnera toujours pendant une durée limitée, mais il est recommandé d'installer le nouveau contrôleur de chargeur dès que possible et d'utiliser le même flux à partir de là."
   },
   "tokens": [
     {

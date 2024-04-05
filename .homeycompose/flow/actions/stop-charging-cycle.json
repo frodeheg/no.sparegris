@@ -1,20 +1,21 @@
 {
+  "deprecated": true,
   "title": {
-    "en": "Stop charging cycle ahead of time",
-    "no": "Stopp ladesyklus før tiden",
-    "nl": "Stop de oplaadcyclus voortijdig",
-    "fr": "Arrêtez le cycle de charge à l'avance"
+    "en": "Deprecated flow: Please install the charger controller device instead",
+    "no": "Utdatert flyt: Installer laderkontrollenheten i stedet",
+    "nl": "Verouderde stroom: installeer in plaats daarvan het ladercontrollerapparaat",
+    "fr": "Flux obsolète: veuillez installer le dispositif de contrôleur de chargeur à la place"
   },
   "titleFormatted": {
-    "en": "Stop the charging cycle ahead of time",
-    "no": "Stopp ladesyklus før tiden",
-    "nl": "Stop de laadcyclus voortijdig",
-    "fr": "Arrêtez le cycle de charge à l'avance"
+    "en": "Deprecated flow: Please install the charger controller device instead : Stop charging",
+    "no": "Utdatert flyt: Installer laderkontrollenheten i stedet : Stopp ladesyklus",
+    "nl": "Verouderde stroom: installeer in plaats daarvan het ladercontrollerapparaat : Stop de laadcyclus",
+    "fr": "Flux obsolète: veuillez installer le dispositif de contrôleur de chargeur à la place : Arrêtez le cycle de charge"
   },
   "hint": {
-    "en": "In case you need to stop the charging cycle ahead of time you can call this flow card in order to prevent the app from offering more energy.",
-    "no": "Dersom du ønsker å avbryte ladesyklusen før tiden kan du kalle dette flytkortet for å hindre appen i å tilby mer energi.",
-    "nl": "Als je de laadcyclus voortijdig wilt onderbreken, kun je deze flowkaart aanroepen om te voorkomen dat de app meer energie aanbiedt.",
-    "fr": "Si vous souhaitez interrompre le cycle de charge avant l'heure, vous pouvez appeler cette carte de débit pour empêcher l'application d'offrir plus d'énergie."
+    "en": "This flow has been deprecated. It will still work for a limited time, but you're reccommended to install the new charger controller device as soon as possible and use the same flow from there instead.",
+    "no": "Denne flyten er avviklet. Den vil fortsatt fungere i en begrenset tid, men du anbefales å installere den nye laderkontrollenheten så snart som mulig og bruke samme flyt derfra istedenfor.",
+    "nl": "Deze stroom is beëindigd. Het zal nog een beperkte tijd werken, maar u wordt aangeraden de nieuwe opladercontroller zo snel mogelijk te installeren en van daaruit dezelfde stroom te gebruiken.",
+    "fr": "Ce flux est obsolète. Cela fonctionnera toujours pendant une durée limitée, mais il est recommandé d'installer le nouveau contrôleur de chargeur dès que possible et d'utiliser le même flux à partir de là."
   }
 }

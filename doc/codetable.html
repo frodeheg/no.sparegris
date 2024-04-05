@@ -1,0 +1,72 @@
+<html>
+<header>
+<style>
+body {
+font-family: monospace, "Courier New";
+color: #0F0;
+}
+
+.outer {
+  inline-size: 9px;
+  overflow: hidden;
+  font-size: 15px;
+}
+</style>
+<!---
+  Font size for green only (r and b has offsets)
+  Font size 14px = 8x17
+  Font size 15px = 9x18
+  Font size 28px = 17x33
+-->
+
+</header>
+<body style="background-color:aquamarine;">
+
+<!-- FRAME -->
+<div id="frame" style="position: absolute; top: 11px; left: 11px; z-index: -1; background-color: black; width: 10px; height: 10px;">
+</div>
+
+<!-- CHARACTER TABLE -->
+  <script language="javascript">
+  const charwidth = 9;
+  const charheight = 18;
+  document.getElementById("frame").style.width = `${charwidth*32}px`;
+  document.getElementById("frame").style.height = `${charheight*8*8}px`;
+  document.open();
+  for (let line = 0; line < 8*8; line++) {
+    let myString = '';
+    for (let x = 0; x < 32; x++) {
+      const letter = line*32 + x;
+      let code;
+      if ((letter >= 0 && letter < 32)
+        || (letter >=127 && letter < 152)) {
+        code = ' ';
+      } else {
+        code = String.fromCharCode(letter);
+      }
+      myString += code;
+      document.write(`<div style="position: absolute; top:${11+line*charheight}px; left: ${11+x*charwidth}px; width:${charwidth}px height:${charheight}px" class="outer">${code}</div>`);
+    }
+  }
+  document.close();
+  </script>
+
+<!-- SIZE TABLE -->
+<div style="top: 10px; margin-left: auto; margin-right: 0; width: 400px;">
+  <canvas id="myCanvas" style="border: none;" width="1" height="1"></canvas>
+  <script language="javascript">
+    const canvas = document.getElementById("myCanvas");
+    const ctx = canvas.getContext("2d");
+    ctx.font = "15px monospace";
+    let txt = "H"
+    //ctx.fillText("width:" + ctx.measureText(txt).width, 10, 50)
+    //ctx.fillText(txt, 10, 100);
+    let metrics = ctx.measureText(txt);
+    let fontHeight = metrics.fontBoundingBoxAscent + metrics.fontBoundingBoxDescent;
+    let actualHeight = metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
+    document.write(`Size: ${ctx.measureText(txt).width} x ${fontHeight} (${actualHeight})`);
+  </script>
+</div>
+
+</body>
+</html>

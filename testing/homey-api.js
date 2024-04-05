@@ -1,3 +1,4 @@
+/* eslint-disable comma-dangle */
 /* eslint-disable max-classes-per-file */
 /* eslint-disable no-console */
 
@@ -18,16 +19,17 @@ let devices;
  */
 class FakeDeviceClass {
 
-  constructor(homey, definition, zoneId) {
+  constructor(homey, definition, zoneId, handles) {
     this.capabilitiesObj = {};
     this.homey = homey;
     this.zone = zoneId;
     this.zoneName = homey.zones.getZones()[zoneId].name;
     this.reliability = 1;
+    this.handles = handles;
     if (typeof (definition) === 'string') {
       // File name
       const numDevices = Object.keys(this.homey.devices.fakeDevices).length;
-      const data = fs.readFileSync(`./doc/devices/${definition}`, 'utf8');
+      const data = fs.readFileSync(`../doc/devices/${definition}`, 'utf8');
       const lines = data.split('\n');
       let startFound = false;
       let driverUri;
@@ -65,6 +67,9 @@ class FakeDeviceClass {
   async setCapabilityValue(data) {
     if (Math.random() < this.reliability) {
       this.capabilitiesObj[data.capabilityId].value = data.value;
+      if (data.capabilityId in this.handles) {
+        return this.handles[data.capabilityId];
+      }
       return Promise.resolve();
     }
     return new Promise((resolve, reject) => {
@@ -112,11 +117,16 @@ class FakeDevicesClass {
   }
 
   getDevice(deviceId) {
+    if (!(deviceId.id in this.fakeDevices)) {
+      const errText = `homey-api::getDevice: Request for non-existing deviceId '${deviceId.id}'. Please add it with test-helpers::addDevice() first`;
+      console.log(errText);
+      throw new Error(errText);
+    }
     return this.fakeDevices[deviceId.id];
   }
 
-  addFakeDevice(device, zoneId, deviceId = undefined) {
-    const fakeDevice = new FakeDeviceClass(this.homey, device, zoneId);
+  addFakeDevice(device, zoneId, deviceId = undefined, handles = {}) {
+    const fakeDevice = new FakeDeviceClass(this.homey, device, zoneId, handles);
     if (deviceId) fakeDevice.id = deviceId;
     this.fakeDevices[fakeDevice.id] = fakeDevice;
     return fakeDevice;
@@ -126,6 +136,26 @@ class FakeDevicesClass {
     for (let i = 0; i < devices.length; i++) {
       this.addFakeDevice(devices[i], zoneId);
     }
+  }
+
+  clearFakeDevices() {
+    this.fakeDevices = {};
+  }
+
+  addRealDevice(device, zoneId, deviceId = undefined) {
+    device.capabilitiesObj = {};
+    device.homey = this.homey;
+    device.zone = zoneId;
+    device.zoneName = this.homey.zones.getZones()[zoneId].name;
+    device.reliability = 1;
+    device.manifest = null; // TODO
+    // this.driverUri = 'homey:app:unknown';
+    if (!('driverId' in device)) device.driverId = 'homey:app:unknown:unknown';
+    device.id = deviceId;
+    device.capabilitiesObj = {}; // TODO
+    device.capabilities = Object.keys(device.capabilitiesObj);
+
+    this.fakeDevices[device.id] = device;
   }
 
 }
@@ -181,6 +211,7 @@ class HomeyAPIApp {
     if (zones === undefined) zones = new FakeZonesClass(this);
     this.devices = devices;
     this.zones = zones;
+    this.homey = homey;
   }
 
 }
@@ -189,7 +220,7 @@ const HomeyAPI = {
   async createAppAPI({ homey }) {
     return new HomeyAPIApp(homey);
   }
-}
+};
 
 module.exports = {
   HomeyAPI

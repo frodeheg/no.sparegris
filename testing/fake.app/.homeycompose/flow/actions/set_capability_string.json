@@ -1,0 +1,43 @@
+{
+    "highlight": true,
+    "platforms": [
+      "local"
+    ],
+    "title": {
+      "en": "Change capability"
+    },
+    "titleFormatted": {
+      "en": "Change [[capName]] to [[newValue]]"
+    },
+    "hint": {
+      "en": "With this action you can change any capability value"
+    },
+    "args": [
+      {
+        "name": "device",
+        "type": "device",
+        "filter": "driver_id=basedriver"
+      },
+      {
+        "type": "autocomplete",
+        "name": "capName",
+        "title": {
+          "en": "capability"
+        },
+        "placeholder": {
+          "en": "Capability name"
+        }
+      },
+      {
+        "type": "text",
+        "name": "newValue",
+        "title": {
+          "en": "Any value"
+        },
+        "placeholder": {
+          "en": "Any value"
+        }
+      }
+    ]
+  }
+  

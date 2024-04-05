@@ -1,0 +1,154 @@
+{
+  "name": {
+    "en": "Piggy Charge Controller",
+    "no": "Sparegris Ladestyring",
+    "nl": "Piggy-laadcontroller",
+    "fr": "Contrôleur de charge cochon"
+  },
+  "class": "other",
+  "energy": {
+    "batteries": [
+      "OTHER",
+      "OTHER"
+    ]
+  },
+  "capabilities": [
+    "onoff",
+    "measure_power",
+    "measure_battery",
+    "measure_battery.charge_cycle",
+    "target_power",
+    "charge_status",
+    "alarm_generic.notValidated",
+    "piggy_money",
+    "piggy_moneypile",
+    "button.reset"
+  ],
+  "capabilitiesOptions": {
+    "measure_battery": {
+      "title": {
+        "en": "Battery capacity",
+        "no": "Batterikapasitet",
+        "nl": "Batterij capaciteit",
+        "fr": "Capacité de la batterie"
+      }
+    },
+    "measure_battery.charge_cycle": {
+      "title": {
+        "en": "Charge cycle",
+        "no": "Ladesyklus",
+        "nl": "Laadcyclus",
+        "fr": "Cycle de charge"
+      }
+    },
+    "target_power": {
+      "preventTag": true
+    },
+    "alarm_generic.notValidated": {
+      "title": {
+        "en": "Alarm",
+        "no": "Alarm",
+        "nl": "Alarm",
+        "fr": "Alarme"
+      },
+      "insightsTitleTrue": {
+        "en": "Some flows are not set up correctly. New device validation is required.",
+        "no": "Noen flytkort er ikke satt opp riktig. Ny enhetsvalidering kreves.",
+        "nl": "Sommige stromen zijn niet correct ingesteld. Validatie van een nieuw apparaat is vereist.",
+        "fr": "Certains flux ne sont pas configurés correctement. La validation du nouveau périphérique est requise."
+      },
+      "insightsTitleFalse": {
+        "en": "The device has been validated.",
+        "no": "Enheten er validert.",
+        "nl": "Het apparaat is gevalideerd.",
+        "fr": "L'appareil a été validé."
+      },
+      "titleTrue": {
+        "en": "Validation required",
+        "no": "Validering kreves",
+        "nl": "Validatie vereist",
+        "fr": "Validation requise"
+      },
+      "titleFalse": {
+        "en": "Validated",
+        "no": "Validert",
+        "nl": "Gevalideerd",
+        "fr": "Validé"
+      }
+    },
+    "piggy_money": {
+      "title": {
+        "en": "Charge cycle cost",
+        "no": "Ladesykluskostnad",
+        "nl": "Laadcycluskosten",
+        "fr": "Coût du cycle de charge"
+      }
+    },
+    "piggy_moneypile": {
+      "title": {
+        "en": "Total cost",
+        "no": "Totalkostnad",
+        "nl": "Totale prijs",
+        "fr": "Coût total"
+      }
+    },
+    "button.reset": {
+      "maintenanceAction": true,
+      "title": {
+        "en": "Reset controller",
+        "no": "Tilbakestill kontrolleren",
+        "nl": "Regelaar resetten",
+        "fr": "Réinitialiser le contrôleur"
+      },
+      "desc": {
+        "en": "Reset validation status and initiates a new validation procedure for the device.",
+        "no": "Tilbakestill valideringsstatus og starter en ny valideringsprosedyre for enheten.",
+        "nl": "Reset de validatiestatus en start een nieuwe validatieprocedure voor het apparaat.",
+        "fr": "Réinitialise l'état de validation et lance une nouvelle procédure de validation pour l'appareil."
+      }
+    }
+  },
+  "platforms": [
+    "local"
+  ],
+  "connectivity": [],
+  "images": {
+    "small": "{{driverAssetsPath}}/images/small.png",
+    "large": "{{driverAssetsPath}}/images/large.png",
+    "xlarge": "{{driverAssetsPath}}/images/xlarge.png"
+  },
+  "pair": [
+    {
+      "id": "info",
+      "navigation": {
+        "next": "list_devices"
+      }
+    },
+    {
+      "id": "list_devices",
+      "template": "list_devices",
+      "options": {
+        "singular": true
+      },
+      "navigation": {
+        "next": "select_image"
+      }
+    },
+    {
+      "id": "select_image",
+      "navigation": {
+        "next": "configure_device"
+      }
+    },
+    {
+      "id": "configure_device",
+      "navigation": {
+        "next": "add_devices"
+      }
+    },
+    {
+      "id": "add_devices",
+      "template": "add_devices"
+    }
+  ]
+}

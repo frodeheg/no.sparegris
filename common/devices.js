@@ -32,11 +32,15 @@
 //   setModeOffValue    - undefined if unavailable value for setModeCap, value to enter off mode else
 //   +all HEATER parameters
 // CHARGER : Additional parameters
+//   getBatteryCap     - Capability to read battery level (if present)
 //   setCurrentCap     - Capability for changing the offered current (in Amps)
 //   minCurrent        - The offered current should never be lower than this
 //   measurePowerCap   - Capability for reading used power
 //   measureVoltageCap - Capability for reading voltage
 //   statusCap         - Capability for reading charger state
+// CHARGE_CONTROLLER
+//   setOnOffCap       - This is not present here, onoff for this device means controlled by piggy vs. not controlled by piggy
+//   setPowerCap       - To set target power
 //
 // ===== INPUT DEVICES =====
 // All input devices has the following parameters:
@@ -58,7 +62,8 @@ const DEVICE_TYPE = {
   AC: 3,
   CHARGER: 4,
   IGNORE: 5,
-  METERREADER: 6
+  METERREADER: 6,
+  CHARGE_CONTROLLER: 7
 };
 
 // Default onoff device:
@@ -395,36 +400,36 @@ const DEVICE_CMD = {
     tempMax: 25,
     default: false
   },
-  /* 'com.tesla.charger:Tesla': {
+  'com.tesla.charger:Tesla': {
     type: DEVICE_TYPE.CHARGER,
     setOnOffCap: 'charge_mode',
     setOnValue: 'charge_now',
     setOffValue: 'off',
+    getBatteryCap: 'measure_battery',
     measurePowerCap: 'measure_power',
     statusCap: 'charging_state',
-    statusUnavailable: ['Complete', 'Standby????', 'Error????'],
+    statusUnavailable: ['Complete', 'Disconnected', 'Error????'], // Other observed: Charging, Stopped
     statusProblem: ['Error????'],
-
+    note: 'In order to control this device, please install and enable the Charge controller device',
     onChargeStart: {
-      target_circuit_current: Infinity
+      charge_mode: 'charge_now'
     },
     onChargeEnd: {
-      target_circuit_current: 0
+      charge_mode: 'off'
     },
     onAdd: {
-      target_charger_current: 0,
-      target_circuit_current: 0
+      charge_mode: 'off'
     },
     onRemove: {
-      target_charger_current: Infinity,
-      target_circuit_current: Infinity
+      charge_mode: 'automatic',
     },
-    setCurrentCap: 'target_charger_current',
-    getOfferedCap: 'measure_current.offered',
+    setCurrentCap: null,
+    getOfferedCap: null, // 'charging_rate' available but ignore when not setable
     startCurrent: 11,
     minCurrent: 7,
     pauseCurrent: 4,
-  } */
+    default: false
+  },
   'com.tibber:home': DEFAULT_IGNORED,
   'com.tibber:pulse': DEFAULT_METER,
   'com.toshiba:ac': { // Note! Has power-step modes (target_power_mode)
@@ -441,19 +446,35 @@ const DEVICE_CMD = {
   'com.tuya.cloud:tuyalight': DEFAULT_SWITCH,
   'com.xiaomi-mi:plug.maeu01': DEFAULT_SWITCH,
   'com.xiaomi-mi:sensor_motion.aq2': DEFAULT_IGNORED,
-  /* 'com.zaptec:go': {
+  'com.zaptec:go': {
     type: DEVICE_TYPE.CHARGER,
     setOnOffCap: 'charging_button',
     setOnValue: true,
     setOffValue: false,
     measurePowerCap: 'measure_power',
     statusCap: 'charge_mode',
-    statusUnavailable: ['Charging finished', 'Disconnected', 'Unknown'],
+    statusUnavailable: ['Charging finished', 'Disconnected', 'Unknown'], // Valid for charging: 'Connecting to car', 'Charging'
     statusProblem: ['Unknown'],
-    // setCurrentCap: 'target_charger_current',  // Not available
-    // getOfferedCap: 'measure_current.offered', // Available, but ignore when not setable
+    note: 'In order to control this device, please install and enable the Charge controller device',
+    onChargeStart: {
+      charging_button: true
+    },
+    onChargeEnd: {
+      charging_button: false
+    },
+    onAdd: {
+      charging_button: false
+    },
+    onRemove: {
+      charging_button: true,
+    },
+    setCurrentCap: null, // Not available
+    getOfferedCap: null, // 'measure_current.phaseX' available, but ignore when not setable
+    startCurrent: 11,
+    minCurrent: 7,
+    pauseCurrent: 4,
     default: false
-  }, */
+  },
   'fi.taelek.ecocontrol:oled': {
     type: DEVICE_TYPE.HEATER,
     note: 'This device has no onOff capability and will emulate Off by turning the temperature to absolute minimum',
@@ -582,6 +603,7 @@ const DEVICE_CMD = {
     statusCap: 'charger_status',
     statusUnavailable: ['Completed', 'Standby', 'Error'],
     statusProblem: ['Error'],
+    note: 'In order to control this device, please install and enable the Charge controller device',
     default: false
   },
   'no.easee:equalizer': {
@@ -624,6 +646,11 @@ const DEVICE_CMD = {
     tempStep: 0.5
   }, */
   'no.sparegris:piggy-bank-insights': DEFAULT_IGNORED,
+  'no.sparegris:piggy-charger': {
+    type: DEVICE_TYPE.CHARGE_CONTROLLER,
+    setOnOffCap: null,
+    setPowerCap: 'target_power'
+  },
   'no.thermofloor:TF_Thermostat': {
     type: DEVICE_TYPE.HEATER,
     setOnOffCap: 'thermofloor_mode',
@@ -753,3 +780,8 @@ module.exports = {
   DEVICE_CMD,
   generateDriverId
 };
+
+// When including this file in a web-page, inform the main page that loading is complete
+if (typeof onScriptLoaded === 'function') {
+  onScriptLoaded('devices.js');
+} // else the script is not used in a web-page

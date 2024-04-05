@@ -1,0 +1,52 @@
+{
+  "type": "enum",
+  "title": {
+    "en": "Charge-status",
+    "no": "Ladestatus",
+    "nl": "Laadstatus",
+    "fr": "Statut de charge"
+  },
+  "getable": true,
+  "setable": false,
+  "values": [
+    {
+      "id": "0",
+      "title": {
+        "en": "Unlimited",
+        "no": "Ubegrenset",
+        "nl": "Onbeperkt",
+        "fr": "Illimité"
+      }
+    },
+    {
+      "id": "1",
+      "title": {
+        "en": "Limited",
+        "no": "Begrenset",
+        "nl": "Beperkt",
+        "fr": "Limitée"
+      }
+    },
+    {
+      "id": "2",
+      "title": {
+        "en": "Blocked",
+        "no": "Blokkert",
+        "nl": "Geblokkeerd",
+        "fr": "Bloquée"
+      }
+    },
+    {
+      "id": "3",
+      "title": {
+        "en": "Failed",
+        "no": "Feilet",
+        "nl": "Mislukt",
+        "fr": "Échoué"
+      }
+    }
+  ],
+  "icon": "/drivers/piggy-charger/assets/icon1.svg",
+  "uiComponent": "sensor",
+  "uiQuickAction": false
+}

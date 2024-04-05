@@ -4,8 +4,11 @@
 
 'use strict';
 
+const { PNG } = require('pngjs/browser');
 const manifest = require('../app.json');
 const env = require('../env.json');
+
+const drivers = {};
 
 /**
  * Fake settings class
@@ -113,7 +116,7 @@ class FakeApiClass {
   }
 
   realtime(event, parameter) {
-    if (this.homey.__debug) console.log('TBD: Implement realtime(...)');
+    if (this.homey.__debug) console.log('testing/homey.js:: TBD: Implement realtime(...)');
   }
 
 }
@@ -126,15 +129,38 @@ class FakeTriggerCardClass {
   constructor(homey, name) {
     this.homey = homey;
     this.name = name;
-    if (this.homey.__debug) console.log('TBD: Implement FakeTriggerCard');
+    if (this.homey.__debug) console.log('testing/homey.js:: TBD: Implement FakeTriggerCard');
   }
 
   registerRunListener(callback) {
-    if (this.homey.__debug) console.log('TBD: Implement registerRunListener');
+    if (this.homey.__debug) console.log('testing/homey.js:: TBD: Implement registerRunListener');
   }
 
   trigger(tokens) {
-    if (this.homey.__debug) console.log('TBD: Implement tokens');
+    if (this.homey.__debug) console.log('testing/homey.js:: TBD: Implement tokens');
+  }
+
+}
+
+/**
+ * Fake Device Trigger card class
+ */
+class FakeDeviceTriggerCardClass {
+
+  constructor(homey, name) {
+    this.homey = homey;
+    this.name = name;
+    if (this.homey.__debug) console.log('testing/homey.js:: TBD: Implement FakeTriggerCard');
+  }
+
+  registerRunListener(callback) {
+    if (this.homey.__debug) console.log('testing/homey.js:: TBD: Implement registerRunListener');
+  }
+
+  trigger(device, tokens) {
+    if (device.triggers && (this.name in device.triggers)) {
+      device.triggers[this.name](device, tokens);
+    }
   }
 
 }
@@ -147,15 +173,24 @@ class FakeActionCardClass {
   constructor(homey, name) {
     this.homey = homey;
     this.name = name;
-    if (this.homey.__debug) console.log('TBD: Implement FakeActionCard');
+    this.callback = null;
   }
 
   registerRunListener(callback) {
-    if (this.homey.__debug) console.log('TBD: Implement registerRunListener');
+    this.callback = callback;
   }
 
   registerArgumentAutocompleteListener(callback) {
-    if (this.homey.__debug) console.log('TBD: Implement registerArgumentAutocompleteListener (action)');
+    if (this.homey.__debug) console.log('testing/homey.js:: TBD: Implement registerArgumentAutocompleteListener (action)');
+  }
+
+  // Internal function for triggering in test environment
+  triggerAction(args) {
+    if (this.callback) {
+      this.callback(args);
+    } else {
+      console.log('testing/homey.js:: WARNING: Trying to trigger an action that has not been connected yet');
+    }
   }
 
 }
@@ -168,15 +203,33 @@ class FakeConditionCardClass {
   constructor(homey, name) {
     this.homey = homey;
     this.name = name;
-    if (this.homey.__debug) console.log('TBD: Implement FakeConditionCard');
+    if (this.homey.__debug) console.log('testing/homey.js:: TBD: Implement FakeConditionCard');
   }
 
   registerRunListener(callback) {
-    if (this.homey.__debug) console.log('TBD: Implement registerRunListener');
+    if (this.homey.__debug) console.log('testing/homey.js:: TBD: Implement registerRunListener');
   }
 
   registerArgumentAutocompleteListener(callback) {
-    if (this.homey.__debug) console.log('TBD: Implement registerArgumentAutocompleteListener (condition)');
+    if (this.homey.__debug) console.log('testing/homey.js:: TBD: Implement registerArgumentAutocompleteListener (condition)');
+  }
+
+}
+
+/**
+ * Fake token class
+ */
+class FakeTokenClass {
+
+  constructor(homey, name) {
+    this.homey = homey;
+    this.name = name;
+    this.value = undefined;
+    if (this.homey.__debug) console.log('testing/homey.js:: TBD: Implement FakeTokenClass');
+  }
+
+  setValue(value) {
+    this.value = value;
   }
 
 }
@@ -188,18 +241,48 @@ class FakeFlowClass {
 
   constructor(homey) {
     this.homey = homey;
+    this.triggerCards = {};
+    this.actionCards = {};
+    this.conditionCards = {};
+    this.deviceConditionCards = {};
+    this.tokens = {};
   }
 
   getTriggerCard(name) {
-    return new FakeTriggerCardClass(this.homey, name);
+    if (!(name in this.triggerCards)) {
+      this.triggerCards[name] = new FakeTriggerCardClass(this.homey, name);
+    }
+    return this.triggerCards[name];
   }
 
   getActionCard(name) {
-    return new FakeActionCardClass(this.homey, name);
+    if (!(name in this.actionCards)) {
+      this.actionCards[name] = new FakeActionCardClass(this.homey, name);
+    }
+    return this.actionCards[name];
   }
 
   getConditionCard(name) {
-    return new FakeConditionCardClass(this.homey, name);
+    if (!(name in this.conditionCards)) {
+      this.conditionCards[name] = new FakeConditionCardClass(this.homey, name);
+    }
+    return this.conditionCards[name];
+  }
+
+  getDeviceTriggerCard(name) {
+    if (!(name in this.deviceConditionCards)) {
+      this.deviceConditionCards[name] = new FakeDeviceTriggerCardClass(this.homey, name);
+    }
+    return this.deviceConditionCards[name];
+  }
+
+  createToken(name) {
+    this.tokens[name] = new FakeTokenClass(this.homey, name);
+    return this.tokens[name];
+  }
+
+  getToken(name) {
+    return this.tokens[name];
   }
 
 }
@@ -264,6 +347,66 @@ class FakeLanguageClass {
 }
 
 /**
+ * Fake Image class
+ */
+class FakeImageClass extends PNG {
+
+  constructor() {
+    super();
+    this.updateFunction = undefined;
+    this.path = undefined;
+  }
+
+  setStream(stream) {
+    this.updateFunction = stream;
+  }
+
+  setPath(path) {
+    this.path = path;
+    if (this.__debug) console.log('testing/homey.js:: TBD load image at path : image.setPath');
+  }
+
+  async update() {
+    if (this.updateFunction) await this.updateFunction(this);
+    return Promise.resolve();
+  }
+
+}
+
+/**
+ * Fake Images class
+ */
+class FakeImagesClass {
+
+  constructor(homey) {
+    this.homey = homey;
+  }
+
+  async createImage() {
+    return Promise.resolve(new FakeImageClass());
+  }
+
+}
+
+/**
+ * Fake Drivers class
+ */
+class FakeDriversClass {
+
+  constructor(homey) {
+    this.homey = homey;
+  }
+
+  getDriver(driverId) {
+    if (driverId in drivers) {
+      return drivers[driverId];
+    }
+    throw new Error(`Driver Not Initialized: ${driverId}`);
+  }
+
+}
+
+/**
  * Fake Homey class
  */
 class FakeHomeyClass {
@@ -271,13 +414,16 @@ class FakeHomeyClass {
   constructor(app) {
     this.app = app;
     this.settings = new FakeSettingsClass(this);
+    this.drivers = new FakeDriversClass(this);
     this.api = new FakeApiClass(this);
     this.flow = new FakeFlowClass(this);
     this.clock = new FakeClockClass(this);
     this.notifications = new FakeNotificationsClass(this);
     this.i18n = new FakeLanguageClass(this);
+    this.images = new FakeImagesClass(this);
     this.env = env;
     this.__debug = false;
+    this.uniqueId = 1;
   }
 
   __(languagestring) {
@@ -285,11 +431,19 @@ class FakeHomeyClass {
   }
 
   on(event, callback) {
-    if (this.__debug) console.log('TBD implement on(event,callback)');
+    if (this.__debug) console.log('testing/homey.js:: TBD implement on(event,callback)');
   }
 
   enableDebug() {
     this.__debug = true;
+  }
+
+  getUniqueId() {
+    return `Unset${this.uniqueId++} use addDevice(...) to set`;
+  }
+
+  log(text) {
+    this.app.log(text);
   }
 
 }
@@ -319,8 +473,166 @@ class App {
 
 }
 
+/**
+ * Replacement for the Homey device class
+ */
+class Device {
+
+  constructor(driver) {
+    this.homey = driver.homey;
+    this.driver = driver;
+    this.name = 'Noname';
+    this.store = {};
+    this.capOptions = {};
+    this.caps = {};
+    this.camera = {};
+    this.data = {};
+    this.settings = {};
+    this.triggers = {};
+    this.capListeners = {};
+    this.driverId = `homey:app:${manifest.id}:${driver.driverId}`;
+    this.deviceId = driver.homey.getUniqueId();
+
+    // Create default settings
+    for (let i = 0; i < manifest.drivers.length; i++) {
+      if (manifest.drivers[i].id !== driver.driverId) continue;
+      this.setDefaultSettings(manifest.drivers[i].settings);
+    }
+
+    driver.__addDevice(this);
+  }
+
+  // Internal functions
+  setData(newData) {
+    this.data = { ...newData };
+  }
+
+  setDefaultSettings(settings) {
+    for (let i = 0; i < settings.length; i++) {
+      if (settings[i].type === 'group') {
+        this.setDefaultSettings(settings[i].children);
+      } else {
+        this.settings[settings[i].id] = settings[i].value;
+      }
+    }
+  }
+
+  setSettings(newSettings) {
+    this.settings = { ...this.settings, ...newSettings };
+  }
+
+  registerTrigger(name, func) {
+    this.triggers[name] = func;
+  }
+
+  setCapabilityValueUser(cap, value) {
+    if (this.capListeners[cap]) {
+      this.capListeners[cap](value)
+        .then(() => {
+          if (this.homey.__debug) console.log(`testing/homey.js:: Cap '${cap}' was set to ${value}`);
+        })
+        .catch((err) => {
+          console.log(`testing/homey.js:: Cap listener '${cap}' for deviceId '${this.deviceId}' returned error:`);
+          console.log(err);
+        });
+    }
+    this.setCapabilityValue(cap, value);
+  }
+
+  // Public functions
+  getId() {
+    return this.deviceId;
+  }
+
+  getData() {
+    return this.data;
+  }
+
+  getName() {
+    return this.name;
+  }
+
+  getSetting(setting) {
+    return this.settings[setting];
+  }
+
+  getSettings() {
+    return this.settings;
+  }
+
+  getStoreValue(index) {
+    return this.store[index];
+  }
+
+  setStoreValue(index, value) {
+    this.store[index] = value;
+  }
+
+  setCapabilityOptions(cap, options) {
+    this.capOptions[cap] = options;
+  }
+
+  setCapabilityValue(cap, value) {
+    this.caps[cap] = value;
+  }
+
+  getCapabilityValue(cap) {
+    return this.caps[cap];
+  }
+
+  registerCapabilityListener(cap, callback) {
+    this.capListeners[cap] = callback;
+  }
+
+  setCameraImage(id, name, image) {
+    this.camera[id] = { name, image };
+  }
+
+  log(text) {
+    this.homey.log(`Device ${this.deviceId} log: ${text}`);
+  }
+
+  async ready() {
+    return Promise.resolve();
+  }
+
+}
+
+/**
+ * Replacement for the Homey driver class
+ */
+class Driver {
+
+  constructor(driverId, app) {
+    this.devices = [];
+    this.homey = app.homey;
+    this.driverId = driverId;
+    for (let i = 0; i < manifest.drivers.length; i++) {
+      if (manifest.drivers[i].id === driverId) {
+        this.manifest = manifest.drivers[i];
+      }
+    }
+    drivers[driverId] = this;
+  }
+
+  __addDevice(device) {
+    this.devices.push(device);
+  }
+
+  getDevices() {
+    return this.devices;
+  }
+
+  async ready() {
+    return Promise.resolve();
+  }
+
+}
+
 module.exports = {
   App,
   manifest,
   env,
+  Driver,
+  Device,
 };

@@ -1,0 +1,24 @@
+{
+  "type": "number",
+  "min": 0,
+  "max": 20000,
+  "title": {
+    "en": "Offered power",
+    "no": "Tilbydd effekt",
+    "nl": "Aangeboden vermogen",
+    "fr": "Puissance offerte"
+  },
+  "units": {
+    "en": "W",
+    "no": "W",
+    "nl": "W",
+    "fr": "W"
+  },
+  "chartType": "stepLine",
+  "decimals": 0,
+  "insights": true,
+  "getable": true,
+  "setable": true,
+  "icon": "/assets/effect.svg",
+  "uiComponent": "sensor"
+}

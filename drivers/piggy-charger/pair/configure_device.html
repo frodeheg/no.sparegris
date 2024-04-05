@@ -1,0 +1,46 @@
+<html>
+  <head>
+
+  </head>
+
+  <body>
+    <legend class="homey-form-legend" data-i18n="charger.new.configureHeader">Configure device</legend>
+    <form class="homey-form">
+      <div class="homey-form-group">
+        <label class="homey-form-label" for="voltage" data-i18n="charger.new.voltage">Voltage</label>
+        <select class="homey-form-select" name="voltage" id="voltage" onchange="setParam('voltage', this.value)">
+          <option value="120">120 V</option>
+          <option value="230" selected>230 V</option>
+          <option value="400">400 V</option>
+        </select>
+      </div>
+
+      <div class="homey-form-group">
+        <label class="homey-form-label" for="phases" data-i18n="charger.new.phases">Number of phases</label>
+        <select class="homey-form-select" name="phases" id="phases" onchange="setParam('phases', this.value)">
+          <option value="1" data-i18n="charger.new.phase1" selected>1 Phase</option>
+          <option value="3" data-i18n="charger.new.phase3">3 Phases</option>
+        </select>
+      </div>
+    </form>
+
+    <script type="application/javascript">
+      Homey.showLoadingOverlay();
+    
+      function setParam(param, newValue) {
+        Homey.getViewStoreValue("add_devices", "devices")
+          .then((devices) => {
+            devices[0].settings[param] = `${newValue}`;
+            return Promise.resolve(devices);
+          })
+          .then((devices) => Homey.setViewStoreValue("add_devices", "devices", devices));
+      }
+
+      setParam('voltage', 230);
+      setParam('phases', 1);
+
+      Homey.hideLoadingOverlay();
+    </script>
+    
+  </body>
+</html>

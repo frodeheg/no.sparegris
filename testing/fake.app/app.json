@@ -1,0 +1,109 @@
+{
+  "_comment": "This file is generated. Please edit .homeycompose/app.json instead.",
+  "id": "fake.app",
+  "version": "1.0.0",
+  "compatibility": ">=5.0.0",
+  "sdk": 3,
+  "brandColor": "#FF0000",
+  "platforms": [
+    "local"
+  ],
+  "name": {
+    "en": "Fake App"
+  },
+  "description": {
+    "en": "Impersonate other devices so they can be used in place for verification with piggy of similar units."
+  },
+  "category": [
+    "tools"
+  ],
+  "permissions": [],
+  "images": {
+    "small": "/assets/images/small.png",
+    "large": "/assets/images/large.png",
+    "xlarge": "/assets/images/xlarge.png"
+  },
+  "author": {
+    "name": "Frode Heggelund",
+    "email": "frode.heggelund@gmail.com"
+  },
+  "flow": {
+    "actions": [
+      {
+        "highlight": true,
+        "platforms": [
+          "local"
+        ],
+        "title": {
+          "en": "Change capability"
+        },
+        "titleFormatted": {
+          "en": "Change [[capName]] to [[newValue]]"
+        },
+        "hint": {
+          "en": "With this action you can change any capability value"
+        },
+        "args": [
+          {
+            "name": "device",
+            "type": "device",
+            "filter": "driver_id=basedriver"
+          },
+          {
+            "type": "autocomplete",
+            "name": "capName",
+            "title": {
+              "en": "capability"
+            },
+            "placeholder": {
+              "en": "Capability name"
+            }
+          },
+          {
+            "type": "text",
+            "name": "newValue",
+            "title": {
+              "en": "Any value"
+            },
+            "placeholder": {
+              "en": "Any value"
+            }
+          }
+        ],
+        "id": "set_capability_string"
+      }
+    ]
+  },
+  "drivers": [
+    {
+      "name": {
+        "en": "baseDriver"
+      },
+      "class": "other",
+      "capabilities": [],
+      "platforms": [
+        "local"
+      ],
+      "connectivity": [],
+      "pair": [
+        {
+          "id": "list_my_devices",
+          "template": "list_devices",
+          "navigation": {
+            "next": "add_my_devices"
+          }
+        },
+        {
+          "id": "add_my_devices",
+          "template": "add_devices"
+        }
+      ],
+      "images": {
+        "small": "/drivers/basedriver/assets/images/small.png",
+        "large": "/drivers/basedriver/assets/images/large.png",
+        "xlarge": "/drivers/basedriver/assets/images/xlarge.png"
+      },
+      "id": "basedriver"
+    }
+  ]
+}

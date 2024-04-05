@@ -1,0 +1,29 @@
+{
+  "id": "fake.app",
+  "version": "1.0.0",
+  "compatibility": ">=5.0.0",
+  "sdk": 3,
+  "brandColor": "#FF0000",
+  "platforms": [
+    "local"
+  ],
+  "name": {
+    "en": "Fake App"
+  },
+  "description": {
+    "en": "Impersonate other devices so they can be used in place for verification with piggy of similar units."
+  },
+  "category": [
+    "tools"
+  ],
+  "permissions": [],
+  "images": {
+    "small": "/assets/images/small.png",
+    "large": "/assets/images/large.png",
+    "xlarge": "/assets/images/xlarge.png"
+  },
+  "author": {
+    "name": "Frode Heggelund",
+    "email": "frode.heggelund@gmail.com"
+  }
+}
