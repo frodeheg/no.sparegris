@@ -8,11 +8,12 @@
 const homeypath = ('testing' in global && testing) ? '../../testing/' : '';
 const { Device } = require(`${homeypath}homey`);
 const { Mutex } = require('async-mutex');
+const fs = require('fs');
 const { TIMESPAN, timeSinceLastLimiter, toLocalTime, timeDiff } = require('../../common/homeytime');
 const { findFile } = require('../../common/homeyfile');
 const c = require('../../common/constants');
 const d = require('../../common/devices');
-const Textify = require('../../lib/textify');
+const Framebuffer = require('../../lib/framebuffer');
 
 // Driver Manifest references
 const VALIDATION_SETTINGS = 3; // Entry number for validation settings in driver.settings.compose.json
@@ -149,10 +150,11 @@ class ChargeDevice extends Device {
       return this.setTargetPower(newPow);
     });
 
+    this.fb = await new Framebuffer({ width: 500, height: 500, colorType: 2, bgColor: { red: 80, green: 80, blue: 80 }});
     await this.homey.images.createImage()
       .then((image) => {
-        image.setStream((stream) => this.refreshImageStream(stream));
         return image.update()
+          .then(() => image.setStream((stream) => this.refreshImageStream(stream)))
           .then(() => this.setCameraImage('front', 'Help image', image));
       })
       .catch((err) => {
@@ -419,15 +421,50 @@ class ChargeDevice extends Device {
    * Creates a image that can be sent to the device image stream
    */
   async refreshImageStream(stream, now = new Date()) {
-    const dst = new Textify({ width: 500, height: 500, colorType: 2, bgColor: { red: 80, green: 80, blue: 80 }});
+    // When running in the browser, the first image is the one in the cache...
+    /* if (!this.sentFirstImage) {
+      console.log('First time.....');
+      const current = this;
+      return findFile('drivers/piggy-charger/assets/images/refresh_single.png')
+        .then((filename) => fs.createReadStream(filename))
+        .then((writer) => {
+          current.sentFirstImage = true;
+          console.log('First done....');
+          return writer.pipe(stream);
+        });
+    } */
+    if (this.ongoing) {
+      const current = this;
+      return findFile('drivers/piggy-charger/assets/images/wait.png')
+        .then((filename) => fs.createReadStream(filename))
+        .then((writer) => {
+          current.ongoing = false;
+          console.log('First done....');
+          return writer.pipe(stream);
+        });
+//      const feedbackString = 'Can\'t refresh, working on previous frame....';
+//      this.homey.app.updateLog(feedbackString, c.LOG_ALL);
+//      return stream;
+    }
+    this.ongoing = true;
+    stream.on('end', () => { this.ongoing = false; });
+    stream.on('error', () => { this.ongoing = false; });
+
+    this.homey.app.updateLog('Image refresh started....', c.LOG_INFO);
     this.settings = this.getSettings();
     return Promise.resolve(this.getCapabilityValue('alarm_generic.notValidated'))
       .then((notValidated) => {
-        if (notValidated) return this.validationProcedure(dst);
-        if (this.chargePlan.cycleStart < now) return this.displayPlan(dst, now);
-        return this.displayNoPlan(dst);
+        if (notValidated) return this.validationProcedure(this.fb);
+        if (this.chargePlan.cycleStart < now) return this.displayPlan(this.fb, now);
+        return this.displayNoPlan(this.fb);
       })
-      .then(() => dst.pack().pipe(stream));
+      .then(() => {
+        this.homey.app.updateLog('Image was refreshed', c.LOG_INFO);
+        return this.fb.pipe(stream);
+      })
+      .catch((err) => {
+        this.homey.app.updateLog(`Image update failed: ${err}`, c.LOG_ERROR);
+      });
   }
 
   /**

@@ -4,7 +4,7 @@
 
 const fs = require('fs');
 // const { PNG } = require('pngjs/browser');
-const Textify = require('../lib/textify');
+const Framebuffer = require('../lib/framebuffer');
 
 // Driver Manifest references
 const VALIDATION_SETTINGS = 0;
@@ -37,11 +37,11 @@ class Test {
     this.settingsManifest = this.driver.manifest.settings[VALIDATION_SETTINGS].children;
     this.homey = {
       __: (param) => { return param.en; }
-    }
+    };
   }
 
   async run() {
-    const dst = new Textify({
+    const dst = new Framebuffer({
       width: 500,
       height: 500,
       colorType: 2,
@@ -120,7 +120,7 @@ class Test {
       .then(() => dst.setCursorWindow(25, 60, 475, 170))
       .then(() => dst.addText('No charge plan blah blah blah blah blah blah blah blah ', 25, 80))*/
       // --- END DRAW TEST ---
-      .then(() => dst.pack().pipe(fs.createWriteStream('out.png')));
+      .then(() => dst.pipe(fs.createWriteStream('out.png')));
   }
 
   /**

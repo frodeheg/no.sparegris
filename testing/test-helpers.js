@@ -7,7 +7,7 @@ const fs = require('fs');
 const d = require('../common/devices');
 const c = require('../common/constants');
 const { HomeyAPI } = require('./homey-api');
-const Textify = require('../lib/textify');
+const Textify = require('../lib/framebuffer');
 
 const { MAIN_OP, TARGET_OP } = c;
 
