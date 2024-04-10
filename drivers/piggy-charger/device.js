@@ -433,22 +433,28 @@ class ChargeDevice extends Device {
           return writer.pipe(stream);
         });
     } */
+    const delayedFinalize = (device) => {
+      if (!device.timer) {
+        device.timer = setTimeout((device) => {
+          device.ongoing = false;
+          clearTimeout(device.timer);
+          delete device.timer;
+        }, 2000, device);
+      } // Else timer already ongoing
+    }
     if (this.ongoing) {
-      const current = this;
+      if (this.waitActive) return Promise.resolve();
+      this.waitActive = true;
       return findFile('drivers/piggy-charger/assets/images/wait.png')
         .then((filename) => fs.createReadStream(filename))
         .then((writer) => {
-          current.ongoing = false;
-          console.log('First done....');
-          return writer.pipe(stream);
+          delayedFinalize(this);
+          writer.pipe(stream);
+          return Promise.resolve();
         });
-//      const feedbackString = 'Can\'t refresh, working on previous frame....';
-//      this.homey.app.updateLog(feedbackString, c.LOG_ALL);
-//      return stream;
     }
     this.ongoing = true;
-    stream.on('end', () => { this.ongoing = false; });
-    stream.on('error', () => { this.ongoing = false; });
+    this.waitActive = false;
 
     this.homey.app.updateLog('Image refresh started....', c.LOG_INFO);
     this.settings = this.getSettings();
@@ -460,6 +466,7 @@ class ChargeDevice extends Device {
       })
       .then(() => {
         this.homey.app.updateLog('Image was refreshed', c.LOG_INFO);
+        delayedFinalize(this);
         return this.fb.pipe(stream);
       })
       .catch((err) => {
