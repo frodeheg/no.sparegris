@@ -408,7 +408,7 @@
       "flowInfo": "<b>Remarque !</b> Vous devrez configurer manuellement certains flux pour communiquer avec le chargeur.",
       "teslaInfo": "<b>Remarque !</b> En raison des limitations de l'application Tesla, vous devrez configurer manuellement certains flux pour communiquer avec le chargeur Tesla. (le développeur de l'application Tesla peut résoudre ce problème en ajoutant un contrôle de courant comme capacité)",
       "zatptecInfo": "<b>Remarque !</b> En raison des limitations de l'application Zaptec, vous devrez configurer manuellement certains flux pour communiquer avec le chargeur Zaptec. (le développeur de l'application Zaptec peut résoudre ce problème en ajoutant un contrôle de courant comme capacité)",
-      "cameraInfo": "Pour des instructions futures, veuillez vous référer à la capacité de la caméra du contrôleur de charge."
+      "cameraInfo": "Pour les instructions restantes, veuillez vous référer à la capacité de la caméra du dispositif contrôleur de charge."
     },
     "validation": {
       "heading": "L'appareil ne peut être utilisé avant que la check-list ci-dessous n'ait été complétée",
