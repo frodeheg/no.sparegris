@@ -426,7 +426,7 @@ class ChargeDevice extends Device {
       console.log('First time.....');
       const current = this;
       return findFile('drivers/piggy-charger/assets/images/refresh_single.png')
-        .then((filename) => fs.createReadStream(filename))
+        .then((filename) => fs.createReadStream(filename), { bufferSize: 1024 })
         .then((writer) => {
           current.sentFirstImage = true;
           console.log('First done....');
@@ -446,7 +446,7 @@ class ChargeDevice extends Device {
       if (this.waitActive) return Promise.resolve();
       this.waitActive = true;
       return findFile('drivers/piggy-charger/assets/images/wait.png')
-        .then((filename) => fs.createReadStream(filename))
+        .then((filename) => fs.createReadStream(filename, { bufferSize: 1024 }))
         .then((writer) => {
           delayedFinalize(this);
           writer.pipe(stream);
