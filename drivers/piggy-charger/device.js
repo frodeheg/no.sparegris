@@ -372,6 +372,8 @@ class ChargeDevice extends Device {
     const values = this.chargePlan.actualPrices;
     for (let i = 0; i < 24; i++) {
       xAxisText[i] = `${String((i + startHour) % 24).padStart(2, ' ')}:00`;
+      if (!(i in values)) values[i] = null;
+      if (!(i in group)) group[i] = 0;
     }
     return findFile('drivers/piggy-charger/assets/images/valid.png')
       .catch((err) => this.setUnavailable(err.message))
@@ -441,7 +443,7 @@ class ChargeDevice extends Device {
           delete device.timer;
         }, 2000, device);
       } // Else timer already ongoing
-    }
+    };
     if (this.ongoing) {
       if (this.waitActive) return Promise.resolve();
       this.waitActive = true;
