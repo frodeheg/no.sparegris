@@ -138,6 +138,27 @@ class ChargeDevice extends Device {
       __deviceList[deviceId].use = newVal;
       this.homey.app.__deviceList = __deviceList;
       this.homey.settings.set('deviceList', __deviceList);
+      const frostList = this.homey.settings.get('frostList') || {};
+      const modeList = this.homey.settings.get('modeList');
+      if (newVal) {
+        frostList[deviceId] = { minTemp: 5 };
+        for (let m = 0; m < modeList.length; m++) {
+          const idx = modeList[m].findIndex(({ id }) => id === deviceId);
+          if (idx < 0) {
+            modeList[m].push({ id: deviceId, operation: c.MAIN_OP.CONTROLLED, targetTemp: 5 });
+          }
+        }
+      } else {
+        delete frostList[deviceId];
+        for (let m = 0; m < modeList.length; m++) {
+          const idx = modeList[m].findIndex(({ id }) => id === deviceId);
+          if (idx >= 0) {
+            modeList[m].splice(idx, 1);
+          }
+        }
+      }
+      this.homey.settings.set('frostList', frostList);
+      this.homey.settings.set('modeList', modeList);
       // If a device is attached, make sure the add and remove commands are run
       if (newVal) {
         return this.onTurnedOn();
