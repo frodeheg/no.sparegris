@@ -332,8 +332,18 @@ class ChargeDevice extends Device {
    * Sets the target power (called internally when the target power capability changes)
    */
   async setTargetPower(power) {
+    const deviceId = this.getId();
+    const modeLists = this.homey.settings.get('modeList');
+    const currentMode = +this.homey.settings.get('operatingMode');
+    const override = this.homey.settings.get('override') || {};
+    const forceOff = (override[deviceId] === c.OVERRIDE.OFF);
+    const currentModeList = modeLists[currentMode - 1];
+    const currentModeIdx = currentModeList.findIndex(({ id }) => id === deviceId);
+    const currentModeState = currentModeIdx < 0 ? c.MAIN_OP.CONTROLLED : parseInt(currentModeList[currentModeIdx].operation, 10); // Mode state
     // Filter the new target power with the charge plan
-    const allowPower = this.chargePlan.currentPlan[this.chargePlan.currentIndex] > 0;
+    const allowPowerPlan = this.chargePlan.currentPlan[this.chargePlan.currentIndex] > 0;
+    const allowPowerMode = currentModeState !== c.MAIN_OP.ALWAYS_OFF;
+    const allowPower = (!forceOff) && (allowPowerPlan || allowPowerMode);
     const filteredPower = allowPower ? +power : 0;
     // Report power to device trigger
     if (!this.targetDriver) {
