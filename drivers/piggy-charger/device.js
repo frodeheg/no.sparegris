@@ -120,7 +120,7 @@ class ChargeDevice extends Device {
     // Link on-off button with the "controllable-device" setting in piggy
     this.registerCapabilityListener('onoff', async (newVal) => {
       const deviceId = this.getId();
-      this.log(`Changing onOff state to ${newVal} for Charger: ${deviceId}`);
+      this.log(`Changing controllable state to ${newVal} for Charger: ${deviceId}`);
       if (newVal) {
         // Check if the device can be turned on
         const settings = this.getSettings();
@@ -131,6 +131,7 @@ class ChargeDevice extends Device {
           return Promise.reject(new Error(this.homey.__('charger.error.notReady')));
         }
       }
+      // Make the device controllable if it was not...
       let __deviceList = this.homey.settings.get('deviceList') || {};
       if (__deviceList === null || !(deviceId in __deviceList)) {
         __deviceList = await this.homey.app.createDeviceList();
@@ -143,12 +144,25 @@ class ChargeDevice extends Device {
       if (newVal) {
         frostList[deviceId] = { minTemp: 5 };
         for (let m = 0; m < modeList.length; m++) {
+          const oldModes = this.getStoreValue('oldModes') || [];
           const idx = modeList[m].findIndex(({ id }) => id === deviceId);
           if (idx < 0) {
-            modeList[m].push({ id: deviceId, operation: c.MAIN_OP.CONTROLLED, targetTemp: 5 });
+            const operation = Array.isArray(oldModes)
+              && oldModes[m]
+              && (oldModes[m] in c.MAIN_OP)
+              ? oldModes[m] : c.MAIN_OP.CONTROLLED;
+            modeList[m].push({ id: deviceId, operation, targetTemp: 5 });
           }
         }
       } else {
+        // If attempting to turn off store the controllable status for next time it is enabled
+        const oldModes = [];
+        for (let m = 0; m < modeList.length; m++) {
+          const idx = modeList[m].findIndex(({ id }) => id === deviceId);
+          oldModes[m] = modeList[m][idx].operation;
+        }
+        await this.setStoreValue('oldModes', oldModes).catch(this.error);
+
         delete frostList[deviceId];
         for (let m = 0; m < modeList.length; m++) {
           const idx = modeList[m].findIndex(({ id }) => id === deviceId);
