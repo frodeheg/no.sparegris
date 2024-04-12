@@ -561,6 +561,9 @@
           if (!(device.thermostat_cap && displayTemp) && newstate == DELTA_TEMP) {
             newstate = EMERGENCY_OFF;
           }
+          if (DEVICE_CMD[device.driverId].type == DEVICE_TYPE.CHARGE_CONTROLLER) {
+            newstate = IGNORE;
+          }
           priceActionList[pricePoint][device_id].operation = newstate;
           deltaTempInput =  document.getElementById('deltaTemp' + String(device_id));
         }
