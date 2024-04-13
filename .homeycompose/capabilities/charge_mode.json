@@ -1,0 +1,42 @@
+{
+  "type": "enum",
+  "title": {
+    "en": "Charge-mode",
+    "no": "Lademodus",
+    "nl": "Oplaadmodus",
+    "fr": "Mode de charge"
+  },
+  "getable": true,
+  "setable": true,
+  "values": [
+    {
+      "id": "0",
+      "title": {
+        "en": "Always off",
+        "no": "Alltid av",
+        "nl": "Altijd uit",
+        "fr": "Toujours désactivé"
+      }
+    },
+    {
+      "id": "1",
+      "title": {
+        "en": "Always on",
+        "no": "Alltid på",
+        "nl": "Altijd aan",
+        "fr": "Toujours allumé"
+      }
+    },
+    {
+      "id": "2",
+      "title": {
+        "en": "Controlled",
+        "no": "Styrt",
+        "nl": "Gecontroleerd",
+        "fr": "Contrôlé"
+      }
+    }
+  ],
+  "uiComponent": null,
+  "uiQuickAction": false
+}

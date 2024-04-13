@@ -56,6 +56,11 @@ class ChargeDevice extends Device {
     this.settingsManifest = await this.driver.ready().then(() => this.driver.manifest.settings[VALIDATION_SETTINGS].children);
     this.killed = false;
 
+    // TODO: Remove this code before going public, it's only for the debug
+    if (this.hasCapability('charge_mode') === false) {
+      this.addCapability('charge_mode');
+    }
+
     // Make short access to device data
     const data = this.getData();
     this.targetDriver = data.targetDriver;
@@ -178,6 +183,12 @@ class ChargeDevice extends Device {
         return this.onTurnedOn();
       }
       return this.onTurnedOff();
+    });
+
+    // Register the mode change capability
+    this.registerCapabilityListener('charge_mode', async (newMode) => {
+      console.log(`Changed charge mode to : ${newMode}`);
+      return Promise.resolve();
     });
 
     // Link target-power with the piggy control (note, this cap is hidden for everyone else)
@@ -332,18 +343,12 @@ class ChargeDevice extends Device {
    * Sets the target power (called internally when the target power capability changes)
    */
   async setTargetPower(power) {
-    const deviceId = this.getId();
-    const modeLists = this.homey.settings.get('modeList');
-    const currentMode = +this.homey.settings.get('operatingMode');
-    const override = this.homey.settings.get('override') || {};
-    const forceOff = (override[deviceId] === c.OVERRIDE.OFF);
-    const currentModeList = modeLists[currentMode - 1];
-    const currentModeIdx = currentModeList.findIndex(({ id }) => id === deviceId);
-    const currentModeState = currentModeIdx < 0 ? c.MAIN_OP.CONTROLLED : parseInt(currentModeList[currentModeIdx].operation, 10); // Mode state
     // Filter the new target power with the charge plan
+    const currentMode = +this.getCapabilityValue('charge_mode');
     const allowPowerPlan = this.chargePlan.currentPlan[this.chargePlan.currentIndex] > 0;
-    const allowPowerMode = currentModeState !== c.MAIN_OP.ALWAYS_OFF;
-    const allowPower = (!forceOff) && (allowPowerPlan || allowPowerMode);
+    const allowPowerMode = currentMode !== c.MAIN_OP.ALWAYS_OFF;
+    const forceOn = currentMode === c.MAIN_OP.ALWAYS_ON;
+    const allowPower = (allowPowerMode) && (allowPowerPlan || forceOn);
     const filteredPower = allowPower ? +power : 0;
     // Report power to device trigger
     if (!this.targetDriver) {

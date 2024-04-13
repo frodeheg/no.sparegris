@@ -1602,23 +1602,32 @@ class PiggyBank extends Homey.App {
    * immediately after it was decreased
    */
   async changeControllerPower(deviceId, powerChange, now = new Date()) {
-    this.updateLog(`Controller power change: ${powerChange}`, c.LOG_DEBUG);
-    let device;
+    if (this.logUnit === deviceId) this.updateLog(`attempt changeControllerPower(${powerChange}) for ${deviceId}`, c.LOG_ALL);
+    let chargerDriver;
     try {
-      device = await this.getDevice(deviceId);
-      this.updateReliability(deviceId, 1);
+      chargerDriver = this.homey.drivers.getDriver('piggy-charger');
     } catch (err) {
-      // Most likely timeout
-      this.updateLog(`Controller device cannot be fetched. ${String(err)}`, c.LOG_ERROR);
-      this.__current_state[deviceId].nComError += 10; // Big error so wait more until retry than smaller errors
+      // Driver not initialized yet
+      // This code will be re-called in 10 seconds so ok to resolve
       this.updateReliability(deviceId, 0);
-      if (this.logUnit === deviceId) this.updateLog(`abort changeControllerPower() for '${deviceId} due to Homey API issues (Homey is busy)`, c.LOG_ALL);
-      return Promise.resolve([false, false]); // The unhandled device is solved by the later nComError handling
+      return Promise.resolve();
     }
-
-    if (this.logUnit === deviceId) this.updateLog(`attempt changeControllerPower(${powerChange}) for ${device.name}`, c.LOG_ALL);
-
-    return device.changePowerInternal(powerChange, now);
+    if (!chargerDriver) return Promise.resolve();
+    return chargerDriver.ready()
+      .then(() => {
+        const promises = [];
+        const devices = chargerDriver.getDevices();
+        for (const index in devices) {
+          promises.push(devices[index].ready().then(() => {
+            if (devices[index].getId() === deviceId) {
+              this.updateReliability(deviceId, 1);
+              return devices[index].changePowerInternal(powerChange, now);
+            }
+            return Promise.resolve();
+          }));
+        }
+        return Promise.all(promises);
+      });
   }
 
   /**
@@ -1873,6 +1882,9 @@ class PiggyBank extends Homey.App {
     let newState;
     if ((targetState === undefined) || (targetState === TARGET_OP.DELTA_TEMP)) {
       switch (currentActionOp) {
+        case undefined: // In case of charge controllers before settings are saved
+          newState = replacementOp;
+          break;
         case TARGET_OP.DELTA_TEMP:
           // Override as changedevicestate only handles onoff
           newState = TARGET_OP.TURN_ON;
@@ -1906,6 +1918,20 @@ class PiggyBank extends Homey.App {
       return Promise.resolve([false, false]); // The unhandled device is solved by the later nComError handling
     }
     const frostGuardActive = this.isFrostGuardActive(device, deviceId);
+
+    // In case of charge controllers, early out
+    if ((this.__deviceList[deviceId].driverId in d.DEVICE_CMD)
+      && (d.DEVICE_CMD[this.__deviceList[deviceId].driverId].type === d.DEVICE_TYPE.CHARGE_CONTROLLER)) {
+      const oldChargeMode = ('capabilitiesObj' in device && 'charge_mode' in device.capabilitiesObj)
+        ? device.capabilitiesObj['charge_mode'].value : undefined;
+      const newChargeMode = (override[deviceId] === c.OVERRIDE.OFF) ? c.MAIN_OP.ALWAYS_OFF : currentModeState;
+      if (+newChargeMode === +oldChargeMode) {
+        return Promise.resolve([true, true]);
+      }
+      if (this.logUnit === deviceId) this.updateLog(`Setting new chargerState: ${newChargeMode} (was ${oldChargeMode})`);
+      return device.setCapabilityValue({ capabilityId: 'charge_mode', value: `${newChargeMode}` })
+        .then(() => Promise.resolve([true, false]));
+    }
 
     if (this.getOnOffCap(device, deviceId) === undefined) {
       if (this.logUnit === deviceId) this.updateLog(`aborted changeDeviceState() for ${device.name} - Homey API failure (Homey busy?)`, c.LOG_ALL);
@@ -2915,7 +2941,17 @@ class PiggyBank extends Homey.App {
             let success; let noChange;
             const { driverId } = this.__deviceList[deviceId];
             if ((driverId in d.DEVICE_CMD) && (d.DEVICE_CMD[driverId].type === d.DEVICE_TYPE.CHARGE_CONTROLLER)) {
-              [success, noChange] = await this.changeControllerPower(deviceId, morePower, now);
+              [success, noChange] = await this.changeDeviceState(deviceId, undefined)
+                .then(() => this.changeControllerPower(deviceId, morePower, now))
+                .then(([success, noChange]) => {
+                  this.updateReliability(deviceId, 1);
+                  return Promise.resolve([success, noChange]);
+                })
+                .catch(err => {
+                  this.updateLog(`Error controlling the charge controller ${err}`, c.LOG_ERROR);
+                  this.updateReliability(deviceId, 0);
+                  return Promise.resolve([false, false]);
+                });
             } else if ((driverId in d.DEVICE_CMD) && (d.DEVICE_CMD[driverId].type === d.DEVICE_TYPE.CHARGER)) {
               [success, noChange] = await this.changeDevicePower(deviceId, morePower, now);
             } else {
@@ -3000,7 +3036,17 @@ class PiggyBank extends Homey.App {
           let success; let noChange;
           const { driverId } = this.__deviceList[deviceId];
           if ((driverId in d.DEVICE_CMD) && (d.DEVICE_CMD[driverId].type === d.DEVICE_TYPE.CHARGE_CONTROLLER)) {
-            [success, noChange] = await this.changeControllerPower(deviceId, -lessPower, now);
+            [success, noChange] = await this.changeDeviceState(deviceId, undefined)
+              .then(() => this.changeControllerPower(deviceId, -lessPower, now))
+              .then(([success, noChange]) => {
+                this.updateReliability(deviceId, 1);
+                return Promise.resolve([success, noChange]);
+              })
+              .catch(err => {
+                this.updateLog(`Error controlling the charge controller ${err}`, c.LOG_ERROR);
+                this.updateReliability(deviceId, 0);
+                return Promise.resolve([false, false]);
+              });
           } else if ((driverId in d.DEVICE_CMD) && (d.DEVICE_CMD[driverId].type === d.DEVICE_TYPE.CHARGER)) {
             [success, noChange] = await this.changeDevicePower(deviceId, -lessPower, now);
           } else {
@@ -3136,6 +3182,7 @@ class PiggyBank extends Homey.App {
       chargerDriver = this.homey.drivers.getDriver('piggy-charger');
     } catch (err) {
       // Driver not initialized yet
+      // This code is run from within the driver itself at init, so it's ok to exit here
       return Promise.resolve();
     }
     if (!chargerDriver) return Promise.resolve();

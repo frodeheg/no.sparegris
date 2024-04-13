@@ -562,7 +562,7 @@
             newstate = EMERGENCY_OFF;
           }
           if (DEVICE_CMD[device.driverId].type == DEVICE_TYPE.CHARGE_CONTROLLER) {
-            newstate = IGNORE;
+            newstate = TURN_ON;
           }
           priceActionList[pricePoint][device_id].operation = newstate;
           deltaTempInput =  document.getElementById('deltaTemp' + String(device_id));

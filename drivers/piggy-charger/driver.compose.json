@@ -19,6 +19,7 @@
     "measure_battery.charge_cycle",
     "target_power",
     "charge_status",
+    "charge_mode",
     "alarm_generic.notValidated",
     "piggy_money",
     "piggy_moneypile",
