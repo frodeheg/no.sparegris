@@ -2,7 +2,7 @@
 sed -i 's/"no.sparegris2"/"no.sparegris"/g' .homeycompose/app.json
 sed -i 's/"Sparegris 2"/"Sparegris"/g' .homeycompose/app.json
 sed -i 's/"no.sparegris2"/"no.sparegris"/g' ./app.json
-sed -i 's/"no.sparegris2"/"no.sparegris"/g' ./settings/devices.js
+sed -i 's/no.sparegris2:/no.sparegris:/g' ./common/devices.js
 sed -i 's/"Sparegris 2"/"Sparegris"/g' ./app.json
 
 sed -i 's/DEBUG_ACTIVE_BEGIN \*\//DEBUG_BEGIN/g' ./app.js ./settings/index.html
