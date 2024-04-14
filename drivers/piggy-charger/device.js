@@ -655,7 +655,7 @@ class ChargeDevice extends Device {
     }
     if (!this.triggerThreadStart) {
       this.homey.app.updateLog('Started new trigger test', c.LOG_INFO);
-      await this.onTurnedOn();
+      this.onTurnedOn(); // Started async, don't wait
       this.triggerThreadStart = now;
       this.triggerThread = setTimeout(() => this.checkForTriggerReply(300, false), 1000);
     }
