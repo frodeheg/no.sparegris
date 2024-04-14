@@ -937,5 +937,8 @@
   },
   "0.22.2": {
     "en": "Reduced CPU usage for piggy_charger. Reduced memory consumption for piggy_charger. Fixed the \"stop charging ahead of time\" flow. Fixed the image stream on charging devices when power prices was lost.  Fixed an error in the bottom two lines of the charge controller images. Fixed graph status outside of charge plans. Fixed an issue with charging not being started for the piggy_charger. Fixed an issue where changning power to the piggy_charger didn't work. Added mode to set the charger mode to always on."
+  },
+  "0.22.3": {
+    "en": "Fixed incorrect feedback during device validation + Fixed crash issue when resetting the charge controller during validation + Fixed camera freeze during trigger test."
   }
 }
