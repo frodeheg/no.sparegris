@@ -242,8 +242,6 @@ async function testChargeControl() {
     const hourKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
     const correctTotal = [undefined, undefined, undefined, 3983, 9955, 3994, 3988, 3992, 9991, 9935];
     const correctCharged = [undefined, undefined, undefined, 0, 5982, 0, 0, 0, 6018, 6001];
-    // console.log(JSON.stringify(archive.powUsage.hourly[hourKey]));
-    // console.log(JSON.stringify(archive.charged.hourly[hourKey]));
     for (let i = 0; i < correctPlan.length; i++) {
       if (archive.powUsage.hourly[hourKey][i] !== correctTotal[i]) {
         throw new Error(`Measured total power failed, Hour +${i} observed ${archive.powUsage.hourly[hourKey][i]}, wanted: ${correctTotal[i]}`);
@@ -314,10 +312,10 @@ async function testCharset() {
   // Find languages
   const files = fs.readdirSync('../locales/');
   const validLetters = {
-    'en.json': '1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ .,-+/*"\'',
-    'no.json': '1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ .,-+/*"\'øæåØÆÅ',
-    'nl.json': '1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ .,-+/*"\'',
-    'fr.json': '1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ .,-+/*"\'éàèùçâêîôûëïüÉÀÈÙÇÂÊÎÔÛËÏÜ',
+    'en.json': '1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ .,-+/*()<>!"\'',
+    'no.json': '1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ .,-+/*()<>!"\'øæåØÆÅ',
+    'nl.json': '1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ .,-+/*()<>!"\'',
+    'fr.json': '1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ .,-+/*()<>!"\'éàèùçâêîôûëïüÉÀÈÙÇÂÊÎÔÛËÏÜ',
   };
   for (const idx in files) {
     const fileName = `../locales/${files[idx]}`;

@@ -7,6 +7,7 @@
 const { PNG } = require('pngjs/browser');
 const manifest = require('../app.json');
 const env = require('../env.json');
+const fs = require('fs');
 
 const drivers = {};
 
@@ -484,7 +485,7 @@ class Device {
     this.name = 'Noname';
     this.store = {};
     this.capOptions = {};
-    this.caps = {};
+    this.capabilitiesObj = {};
     this.camera = {};
     this.data = {};
     this.settings = {};
@@ -492,6 +493,13 @@ class Device {
     this.capListeners = {};
     this.driverId = `homey:app:${manifest.id}:${driver.driverId}`;
     this.deviceId = driver.homey.getUniqueId();
+
+    // Add default capabilities
+    const data = JSON.parse(fs.readFileSync(`../drivers/${this.driver.driverId}/driver.compose.json`, 'utf8'));
+    this.capabilities = data.capabilities;
+    for (let i = 0; i < this.capabilities.length; i++) {
+      this.capabilitiesObj[this.capabilities[i]] = { value: null };
+    }
 
     // Create default settings
     for (let i = 0; i < manifest.drivers.length; i++) {
@@ -568,16 +576,47 @@ class Device {
     this.store[index] = value;
   }
 
+  hasCapability(cap) {
+    return (cap in this.capabilities);
+  }
+
+  addCapability(cap) {
+    // Should look at driver.settings.compose.json, but just silently ignore that
+    this.capabilitiesObj[cap] = { value: null };
+  }
+
   setCapabilityOptions(cap, options) {
     this.capOptions[cap] = options;
   }
 
-  setCapabilityValue(cap, value) {
-    this.caps[cap] = value;
+  /**
+   * Note that this function need special handling
+   * From ManagerDriver this is defined as setCapabilityValue({ capabilityId, value })
+   * From The Homey Web API this is defined as setCapabilityValue(capabilityId, value )
+   * In the real world this is a ManagerDriver device, so that should apply,
+   * but for simplification in the test environment it can also be called from
+   * the Homey Web API.
+   */
+  async setCapabilityValue(object, param1) {
+    try {
+      let cap;
+      let value;
+      if (typeof object === 'string') {
+        cap = object;
+        value = param1;
+      } else {
+        cap = object.capabilityId;
+        value = object.value;
+      }
+      this.capabilitiesObj[cap].value = value;
+      return Promise.resolve();
+    } catch (err) {
+      return Promise.reject(err);
+    }
   }
 
   getCapabilityValue(cap) {
-    return this.caps[cap];
+    return this.capabilitiesObj[cap].value;
   }
 
   registerCapabilityListener(cap, callback) {

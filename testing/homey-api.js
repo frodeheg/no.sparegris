@@ -143,7 +143,6 @@ class FakeDevicesClass {
   }
 
   addRealDevice(device, zoneId, deviceId = undefined) {
-    device.capabilitiesObj = {};
     device.homey = this.homey;
     device.zone = zoneId;
     device.zoneName = this.homey.zones.getZones()[zoneId].name;
@@ -152,8 +151,6 @@ class FakeDevicesClass {
     // this.driverUri = 'homey:app:unknown';
     if (!('driverId' in device)) device.driverId = 'homey:app:unknown:unknown';
     device.id = deviceId;
-    device.capabilitiesObj = {}; // TODO
-    device.capabilities = Object.keys(device.capabilitiesObj);
 
     this.fakeDevices[device.id] = device;
   }
