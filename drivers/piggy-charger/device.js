@@ -90,6 +90,11 @@ class ChargeDevice extends Device {
       this.setSettings(settings);
       this.setCapabilityValue('onoff', false);
       this.setCapabilityValue('alarm_generic.notValidated', true);
+      if (this.triggerThreadStart) {
+        clearTimeout(this.triggerThread);
+        delete this.triggerThreadStart;
+        delete this.triggerThread;
+      }
       return Promise.resolve();
     });
 
@@ -228,8 +233,15 @@ class ChargeDevice extends Device {
       const changed = settings[setting] !== newVal;
       const newSetting = {};
       newSetting[setting] = newVal;
-      if (changed) this.setSettings(newSetting);
+      if (changed) {
+        return this.setSettings(newSetting)
+          .then(() => {
+            this.settings = this.getSettings();
+            return Promise.resolve();
+          });
+      }
     }
+    return Promise.resolve();
   }
 
   /**
@@ -321,9 +333,10 @@ class ChargeDevice extends Device {
           default:
           case STATE_ERROR: settingToUpdate = 'GotSignalStatusError'; break;
         }
-        if (settingToUpdate !== undefined) this.updateSettingsIfValidationCycle(settingToUpdate, 'True');
-        return Promise.resolve(+state);
-      });
+        if (settingToUpdate !== undefined) return this.updateSettingsIfValidationCycle(settingToUpdate, 'True');
+        return Promise.resolve();
+      })
+      .then(() => Promise.resolve(+state));
   }
 
   /**
@@ -331,12 +344,9 @@ class ChargeDevice extends Device {
    */
   async setChargerPower(power, fromFlow = true) {
     return this.rejectSetterIfRedundant(fromFlow, 'measurePowerCap')
-      .then(() => {
-        if (+power < 0) power = 0;
-        this.setCapabilityValue('measure_power', +power);
-        this.updateSettingsIfValidationCycle('GotSignalWatt', 'True');
-        return Promise.resolve(+power);
-      });
+      .then(() => this.setCapabilityValue('measure_power', (+power < 0) ? 0 : +power))
+      .then(() => this.updateSettingsIfValidationCycle('GotSignalWatt', 'True'))
+      .then(() => Promise.resolve((+power < 0) ? 0 : +power));
   }
 
   /**
@@ -365,11 +375,9 @@ class ChargeDevice extends Device {
    */
   async setBatteryLevel(batteryLevel, fromFlow = true) {
     return this.rejectSetterIfRedundant(fromFlow, 'getBatteryCap')
-      .then(() => {
-        this.setCapabilityValue('measure_battery', +batteryLevel);
-        this.updateSettingsIfValidationCycle('GotSignalBattery', 'True');
-        return Promise.resolve(+batteryLevel);
-      });
+      .then(() => this.setCapabilityValue('measure_battery', +batteryLevel))
+      .then(() => this.updateSettingsIfValidationCycle('GotSignalBattery', 'True'))
+      .then(() => Promise.resolve(+batteryLevel));
   }
 
   /**
@@ -527,17 +535,33 @@ class ChargeDevice extends Device {
   }
 
   /**
-   * The test procedure is as follows:
-   * 1) Check that a car is connected (requires the user to have updated the flow)
+   * Waits for a test to complete and writes the results
+   * -If the test takes too long, timeout and write waiting text
+   * -If the test completes, write ok-text
+   * -If the test fails, write error-text
    */
-  async runTest(dst, settingId, value) {
+  async waitForTest(dst, promise, settingId, settingName) {
     const text = this.settingsManifest[settingId];
-    if (value !== 'True') {
-      dst.addText(`${errText} ${this.homey.__(text.label)}\n`);
-      return Promise.reject(new Error(`${this.homey.__(text.hint)}\n`));
-    }
-    dst.addText(`${okText} ${this.homey.__(text.label)}\n`);
-    return Promise.resolve();
+    return Promise.race([
+      promise,
+      new Promise((resolve, reject) => {
+        setTimeout(() => {
+          resolve({ status: progressText, timeout: true });
+        }, 1000);
+      })])
+      .then((params) => {
+        if (typeof params === 'object' && params.timeout) return Promise.resolve(params);
+        if (this.settings[settingName] !== 'True') {
+          return Promise.resolve({ status: errText, err: new Error(`${this.homey.__(text.hint)}\n`) });
+        }
+        return Promise.resolve({ status: okText });
+      })
+      .then(({ status, err, timeout }) => { // only in case of timeout
+        dst.addText(`${status} ${this.homey.__(text.label)}\n`);
+        if (timeout) return Promise.reject();
+        if (err) return Promise.reject(err); // Pass on real error
+        return Promise.resolve();
+      });
   }
 
   /**
@@ -571,13 +595,13 @@ class ChargeDevice extends Device {
       dst.addText(`${okText} ${this.homey.__('charger.validation.batterySkipped')}\n`);
       return Promise.resolve();
     }
-    return this.getBattery()
-      .then(() => this.runTest(dst, STATUS_GOTBATTERY, this.settings.GotSignalBattery));
+    // If battery is not present, tries to fetch from a connected device, which might timeout
+    return this.waitForTest(dst, this.getBattery(), STATUS_GOTBATTERY, 'GotSignalBattery');
   }
 
   async runWattTest(dst) {
-    return this.getPower() // If watt is not present, tries to fetch from a connected device
-      .then(() => this.runTest(dst, STATUS_GOTWATT, this.settings.GotSignalWatt));
+    // If watt is not present, tries to fetch from a connected device, which might timeout
+    return this.waitForTest(dst, this.getPower(), STATUS_GOTWATT, 'GotSignalWatt');
   }
 
   /**
@@ -639,7 +663,9 @@ class ChargeDevice extends Device {
     const secLasted = Math.round((now - this.triggerThreadStart) / 1000);
     if (secLasted > 60 * 5) {
       dst.addText(`${errText} ${this.homey.__('charger.validation.turnaroundLabel')} (${this.homey.__('charger.validation.turnaroundTimeout')} > 300 s)\n`);
-      this.triggerThreadStart = undefined;
+      clearTimeout(this.triggerThread);
+      delete this.triggerThreadStart;
+      delete this.triggerThread;
       this.homey.app.updateLog('Test timed out', c.LOG_INFO);
       return Promise.reject();
     }
@@ -1202,7 +1228,8 @@ class ChargeDevice extends Device {
   async getPower() {
     if (this.targetDriver && this.targetDef.measurePowerCap !== null) {
       return this.getCapValue(this.targetDef.measurePowerCap)
-        .then((targetPower) => this.setChargerPower(targetPower, false));
+        .then((targetPower) => this.setChargerPower(targetPower, false))
+        .then(() => Promise.resolve(this.getCapabilityValue('measure_power')));
     }
     return Promise.resolve(this.getCapabilityValue('measure_power'));
   }
