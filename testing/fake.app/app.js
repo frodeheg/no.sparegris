@@ -26,13 +26,15 @@ class MyApp extends Homey.App {
           setValue = args.newValue;
           break;
       }
-      return args.device.setCapabilityValue(args.capName.id, setValue)
+      // Asynchronously update cap value
+      args.device.setCapabilityValue(args.capName.id, setValue)
         .then(() => {
           const cardTriggerDevicePointChanged = this.homey.flow.getDeviceTriggerCard('capability_changed');
           const tokens = { value: +setValue, strVal: `${setValue}` };
           const state = { capName: args.capName.id };
           return cardTriggerDevicePointChanged.trigger(args.device, tokens, state);
         });
+      return Promise.resolve();
     });
     cardActionSetDevicePointNumeric.registerArgumentAutocompleteListener(
       'capName',
