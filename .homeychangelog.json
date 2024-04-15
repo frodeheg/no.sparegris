@@ -940,5 +940,8 @@
   },
   "0.22.3": {
     "en": "Fixed incorrect feedback during device validation + Fixed crash issue when resetting the charge controller during validation + Fixed camera freeze during trigger test."
+  },
+  "0.22.4": {
+    "en": "Fixed flow based controllers which showed the text (timeout is not a property of null) + Fixed crash with 'flowtoken_already_exists' + Fixed invalid text in response test timeout '(null > 300)'"
   }
 }
