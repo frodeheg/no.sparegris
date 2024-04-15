@@ -946,5 +946,8 @@
   },
   "0.22.5": {
     "en": "Fixed crash when uninstalling the charge controller device (device_not_found)"
+  },
+  "0.22.6": {
+    "en": "Added informative text that a car needs to be connected during the trigger test"
   }
 }
