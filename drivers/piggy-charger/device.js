@@ -276,7 +276,7 @@ class ChargeDevice extends Device {
     }
     if (this.getCapabilityValue('onoff')) {
       this.onTurnedOff();
-      this.setCapabilityValue('onoff', false);
+      this.setCapabilityValue('onoff', false).catch(this.ignoredError);
     }
     if (this.__powerProcessID !== undefined) {
       clearTimeout(this.__powerProcessID);
