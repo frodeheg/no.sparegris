@@ -943,5 +943,8 @@
   },
   "0.22.4": {
     "en": "Fixed flow based controllers which showed the text (timeout is not a property of null) + Fixed crash with 'flowtoken_already_exists' + Fixed invalid text in response test timeout '(null > 300)'"
+  },
+  "0.22.5": {
+    "en": "Fixed crash when uninstalling the charge controller device (device_not_found)"
   }
 }
