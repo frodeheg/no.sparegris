@@ -671,13 +671,11 @@ class ChargeDevice extends Device {
       delete this.triggerThread;
       this.homey.app.updateLog('Test timed out', c.LOG_INFO);
       return dst.addText(`${errText} ${this.homey.__('charger.validation.turnaroundLabel')} (${this.homey.__('charger.validation.turnaroundTimeout')} > 300 s)\n`)
-        .then(() => dst.addText(`${YELLOW}${this.homey.__('charger.validation.connectCar')}\n`))
-        .then(() => Promise.reject());
+        .then(() => Promise.reject(new Error(this.homey.__('charger.validation.connectCar'))));
     }
     this.homey.app.updateLog('waiting....', c.LOG_INFO);
     return dst.addText(`${progressText} ${this.homey.__('charger.validation.turnaroundLabel')} (${this.homey.__('charger.validation.turnaroundOngoing')} > ${secLasted} s)\n`)
-      .then(() => dst.addText(`${YELLOW}${this.homey.__('charger.validation.connectCar')}\n`))
-      .then(() => Promise.reject());
+      .then(() => Promise.reject(new Error(this.homey.__('charger.validation.connectCar'))));
   }
 
   /**
