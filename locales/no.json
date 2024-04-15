@@ -411,9 +411,9 @@
       "cameraInfo": "For ytterligere instruksjoner, se kamerafunksjonen til ladekontrollenheten."
     },
     "validation": {
-      "heading": "Enheten kan ikke brukes før sjekklisten nedenfor er fullført",
+      "heading": "Enheten kan ikke brukes før sjekklisten nedenfor er fullført.",
       "reset": "Vedlikeholdshandlingen \"reset\" starter på nytt",
-      "stateLabel": "Ladetilstand mottatt",
+      "stateLabel": "Ladetilstand mottatt.",
       "stateHint": "Vennligst opprett en flyt for å informere kontrolleren om ladetilstanden.",
       "batterySkipped": "Batteritest hoppet over.",
       "turnedOnLabel": "Kontrolleren må være aktivert.",
@@ -421,6 +421,7 @@
       "turnaroundLabel": "Respons-test",
       "turnaroundOngoing": "pågående",
       "turnaroundTimeout": "timeout",
+      "connectCar": "Denne testen krever at en bil som kan ta i mot lading er tilkoblet. Om det ikke er tilfelle, vennligst start testen på nytt for å måle riktig responstid.",
       "wait": "Trykk på oppdater-knappen for å fortsette valideringen"
     },
     "error": {

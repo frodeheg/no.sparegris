@@ -411,9 +411,9 @@
       "cameraInfo": "Pour les instructions restantes, veuillez vous référer à la capacité de la caméra du dispositif contrôleur de charge."
     },
     "validation": {
-      "heading": "L'appareil ne peut être utilisé avant que la check-list ci-dessous n'ait été complétée",
+      "heading": "L'appareil ne peut être utilisé avant que la check-list ci-dessous n'ait été complétée.",
       "reset": "L'action de maintenance \"reset\" va recommencer",
-      "stateLabel": "État de charge reçu",
+      "stateLabel": "État de charge reçu.",
       "stateHint": "Veuillez créer un flux pour informer le contrôleur de l'état de charge.",
       "batterySkipped": "Test de batterie ignoré.",
       "turnedOnLabel": "Le contrôleur doit être activé.",
@@ -421,6 +421,7 @@
       "turnaroundLabel": "Test de réponse",
       "turnaroundOngoing": "en cours",
       "turnaroundTimeout": "temps mort",
+      "connectCar": "Ce test nécessite qu'une voiture pouvant accepter la recharge soit connectée. Si ce n’est pas le cas, veuillez relancer le test pour mesurer le bon temps de réponse.",
       "wait": "Appuyez sur Actualiser pour continuer la validation"
     },
     "error": {

@@ -393,11 +393,11 @@ class ChargeDevice extends Device {
     return findFile('drivers/piggy-charger/assets/images/notValid.png')
       .catch((err) => this.setUnavailable(err.message))
       .then((file) => dst.loadFile(file))
-      .then(() => dst.setCursorWindow(190, 80, 460, 170))
+      .then(() => dst.setCursorWindow(190, 80, 470, 170))
       .then(() => dst.setTextColor([255, 128, 128, 255]))
-      .then(() => dst.addText(this.homey.__('charger.validation.heading')))
+      .then(() => dst.addText(`${this.homey.__('charger.validation.heading')}\n`))
       .then(() => dst.addText('-----------------------------'))
-      .then(() => dst.setCursorWindow(40, 185, 460, 460))
+      .then(() => dst.setCursorWindow(33, 180, 470, 475))
       .then(() => dst.setTextColor([255, 255, 255, 255]))
       .then(() => this.runStateTest(dst))
       .then(() => this.runBatteryTest(dst))
@@ -413,7 +413,7 @@ class ChargeDevice extends Device {
         errText += `${WHITE}${this.homey.__('charger.validation.wait')}\n`;
         return dst.addText(errText);
       })
-      .finally(() => dst.addText(`\u001b[0m(${this.homey.__('charger.validation.reset')})\u001b[1m\n`));
+      .finally(() => dst.addText(`\u001b[0m(${this.homey.__('charger.validation.reset')})\n\u001b[1m`));
   }
 
   /**
@@ -654,9 +654,8 @@ class ChargeDevice extends Device {
     const gotResult = this.settings.toggleMeasureW !== '-';
 
     if (gotResult) {
-      dst.addText(`${okText} ${this.homey.__('charger.validation.turnaroundLabel')} (${this.settings.toggleMeasureW})\n`);
       this.homey.app.updateLog('has result....', c.LOG_INFO);
-      return Promise.resolve();
+      return dst.addText(`${okText} ${this.homey.__('charger.validation.turnaroundLabel')} (${this.settings.toggleMeasureW})\n`);
     }
     if (!this.triggerThreadStart) {
       this.homey.app.updateLog('Started new trigger test', c.LOG_INFO);
@@ -667,16 +666,18 @@ class ChargeDevice extends Device {
 
     const secLasted = Math.round((now - this.triggerThreadStart) / 1000);
     if (secLasted > 60 * 5) {
-      dst.addText(`${errText} ${this.homey.__('charger.validation.turnaroundLabel')} (${this.homey.__('charger.validation.turnaroundTimeout')} > 300 s)\n`);
       clearTimeout(this.triggerThread);
       delete this.triggerThreadStart;
       delete this.triggerThread;
       this.homey.app.updateLog('Test timed out', c.LOG_INFO);
-      return Promise.reject();
+      return dst.addText(`${errText} ${this.homey.__('charger.validation.turnaroundLabel')} (${this.homey.__('charger.validation.turnaroundTimeout')} > 300 s)\n`)
+        .then(() => dst.addText(`${YELLOW}${this.homey.__('charger.validation.connectCar')}\n`))
+        .then(() => Promise.reject());
     }
-    dst.addText(`${progressText} ${this.homey.__('charger.validation.turnaroundLabel')} (${this.homey.__('charger.validation.turnaroundOngoing')} > ${secLasted} s)\n`);
     this.homey.app.updateLog('waiting....', c.LOG_INFO);
-    return Promise.reject();
+    return dst.addText(`${progressText} ${this.homey.__('charger.validation.turnaroundLabel')} (${this.homey.__('charger.validation.turnaroundOngoing')} > ${secLasted} s)\n`)
+      .then(() => dst.addText(`${YELLOW}${this.homey.__('charger.validation.connectCar')}\n`))
+      .then(() => Promise.reject());
   }
 
   /**

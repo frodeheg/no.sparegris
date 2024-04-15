@@ -411,9 +411,9 @@
       "cameraInfo": "For the remaining instructions, please refer to the camera capability of the charge controller device."
     },
     "validation": {
-      "heading": "The device can not be used before the check-list below has been completed",
+      "heading": "The device can not be used before the check-list below has been completed.",
       "reset": "Maintenance action \"reset\" will start over",
-      "stateLabel": "Charging state recieved",
+      "stateLabel": "Charging state recieved.",
       "stateHint": "Please create a flow to inform the controller about the charging state.",
       "batterySkipped": "Battery test skipped.",
       "turnedOnLabel": "The controller must be enabled.",
@@ -421,6 +421,7 @@
       "turnaroundLabel": "Response test",
       "turnaroundOngoing": "ongoing",
       "turnaroundTimeout": "timeout",
+      "connectCar": "This test requires that a car that can accept charging is connected. If it is not the case, please restart the test to measure the correct response time.",
       "wait": "Press refresh to continue validation"
     },
     "error": {

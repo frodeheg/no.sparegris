@@ -411,9 +411,9 @@
       "cameraInfo": "Voor de overige instructies verwijzen wij u naar de cameramogelijkheden van het laadregelaarapparaat."
     },
     "validation": {
-      "heading": "Het apparaat kan pas worden gebruikt als onderstaande checklist is ingevuld",
+      "heading": "Het apparaat kan pas worden gebruikt als onderstaande checklist is ingevuld.",
       "reset": "onderhoudsactie \"reset\" begint opnieuw",
-      "stateLabel": "Oplaadstatus ontvangen",
+      "stateLabel": "Oplaadstatus ontvangen.",
       "stateHint": "Maak een stroom om de controller te informeren over de laadstatus.",
       "batterySkipped": "Batterijtest overgeslagen.",
       "turnedOnLabel": "De controller moet ingeschakeld zijn.",
@@ -421,6 +421,7 @@
       "turnaroundLabel": "Responstest",
       "turnaroundOngoing": "lopend",
       "turnaroundTimeout": "time-out",
+      "connectCar": "Voor deze test is vereist dat er een auto is aangesloten die opladen kan accepteren. Mocht dit niet het geval zijn, start dan de test opnieuw om de juiste responstijd te meten.",
       "wait": "Druk op vernieuwen om door te gaan met valideren"
     },
     "error": {
