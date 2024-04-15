@@ -420,6 +420,7 @@
       "turnedOnHint": "Vennligst slå på ladekontrolleren.",
       "turnaroundLabel": "Respons-test",
       "turnaroundOngoing": "pågående",
+      "turnaroundTimeout": "timeout",
       "wait": "Trykk på oppdater-knappen for å fortsette valideringen"
     },
     "error": {

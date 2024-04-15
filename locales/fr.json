@@ -420,6 +420,7 @@
       "turnedOnHint": "Veuillez allumer le contrôleur de charge.",
       "turnaroundLabel": "Test de réponse",
       "turnaroundOngoing": "en cours",
+      "turnaroundTimeout": "temps mort",
       "wait": "Appuyez sur Actualiser pour continuer la validation"
     },
     "error": {

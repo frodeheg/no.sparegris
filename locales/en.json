@@ -420,6 +420,7 @@
       "turnedOnHint": "Please turn on the charge controller.",
       "turnaroundLabel": "Response test",
       "turnaroundOngoing": "ongoing",
+      "turnaroundTimeout": "timeout",
       "wait": "Press refresh to continue validation"
     },
     "error": {

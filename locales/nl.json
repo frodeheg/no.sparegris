@@ -420,6 +420,7 @@
       "turnedOnHint": "Schakel de laadcontroller in.",
       "turnaroundLabel": "Responstest",
       "turnaroundOngoing": "lopend",
+      "turnaroundTimeout": "time-out",
       "wait": "Druk op vernieuwen om door te gaan met valideren"
     },
     "error": {
