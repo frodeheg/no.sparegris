@@ -119,11 +119,13 @@ class ChargeDevice extends Device {
     this.limited = false;
     this.moneySpentTotal = this.getStoreValue('moneySpentTotal') || 0;
 
-    // Create charging token
+    // Create charging token if it doesn't exist and return it in case it already exists
     this.chargeToken = await this.homey.flow.createToken(`chargeToken-${data.id}`, {
       type: 'string',
       title: `Charge Plan ${this.getName()}`
-    });
+    }).catch((err) => this.homey.flow.getToken(`chargeToken-${data.id}`))
+      .catch((err) => undefined);
+    await this.homey.flow.getToken(`chargeToken-${data.id}`);
     await this.updateChargePlan([]);
     await this.rescheduleCharging(false);
 
@@ -261,6 +263,7 @@ class ChargeDevice extends Device {
     if (this.chargePlan.currentIndex === 0) {
       this.chargePlan.originalPlan = [...newPlan];
     }
+    if (!this.chargeToken) return Promise.resolve(); // Return ok to avoid crashing
     return this.chargeToken.setValue(JSON.stringify(this.chargePlan));
   }
 
@@ -269,7 +272,7 @@ class ChargeDevice extends Device {
     this.killed = true;
     if (this.triggerThread) {
       clearTimeout(this.triggerThread);
-      this.triggerThread = undefined;
+      delete this.triggerThread;
     }
     if (this.getCapabilityValue('onoff')) {
       this.onTurnedOff();
@@ -277,8 +280,10 @@ class ChargeDevice extends Device {
     }
     if (this.__powerProcessID !== undefined) {
       clearTimeout(this.__powerProcessID);
-      this.__powerProcessID = undefined;
+      delete this.__powerProcessID;
     }
+    await this.homey.flow.unregisterToken(this.chargeToken);
+    delete this.chargeToken;
   }
 
   /**
@@ -546,15 +551,15 @@ class ChargeDevice extends Device {
       promise,
       new Promise((resolve, reject) => {
         setTimeout(() => {
-          resolve({ status: progressText, timeout: true });
+          resolve({ status: progressText, err: null, timeout: true });
         }, 1000);
       })])
       .then((params) => {
-        if (typeof params === 'object' && params.timeout) return Promise.resolve(params);
+        if (typeof params === 'object' && params && ('timeout' in params)) return Promise.resolve(params);
         if (this.settings[settingName] !== 'True') {
-          return Promise.resolve({ status: errText, err: new Error(`${this.homey.__(text.hint)}\n`) });
+          return Promise.resolve({ status: errText, err: new Error(`${this.homey.__(text.hint)}\n`), timeout: null });
         }
-        return Promise.resolve({ status: okText });
+        return Promise.resolve({ status: okText, err: null, timeout: null });
       })
       .then(({ status, err, timeout }) => { // only in case of timeout
         dst.addText(`${status} ${this.homey.__(text.label)}\n`);
