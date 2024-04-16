@@ -2376,7 +2376,7 @@ class PiggyBank extends Homey.App {
     if (this.__oldMeterValueValid) {
       if (this.__oldMeterTime < this.__accum_energyTime) {
         this.__oldMeterValueValid = false;
-        throw new Error(`Invalid case ${this.__oldMeterTime} : ${this.__accum_energyTime}`);
+        this.updateLog(`Repairing corrupted state. old meter time ${this.__oldMeterTime} should not be less than ${this.__accum_energyTime}`, c.LOG_ERROR);
       } else if (newMeter < this.__oldMeterValue) {
         // Power meter was reset - treat it as value was first time reported
         this.__oldMeterValueValid = false;
