@@ -407,7 +407,7 @@ class ChargeDevice extends Device {
       .then(() => this.setAllPassed())
       .catch((err) => {
         this.setCapabilityValue('alarm_generic.notValidated', true);
-        this.homey.app.updateLog(err, c.LOG_INFO);
+        this.homey.app.updateLog(err.message, c.LOG_INFO);
         let errText = '';
         if (err) errText += `${YELLOW}${err.message}\n`;
         errText += `${WHITE}${this.homey.__('charger.validation.wait')}\n`;
@@ -636,12 +636,14 @@ class ChargeDevice extends Device {
       this.setSettings(settings);
       this.homey.app.updateLog(`Ended Trigger test at time ${secleft}, got Power ${newPower}`, c.LOG_INFO);
       this.triggerThread = undefined;
-      return this.onTurnedOff();
+      return this.endTriggerTest();
     }
     if (secleft > 0) {
       this.triggerThread = setTimeout(() => this.checkForTriggerReply(secleft - 1, testStarted), 1000);
     } else {
+      // Timed out
       this.triggerThread = undefined;
+      return this.endTriggerTest();
     }
     return Promise.resolve();
   }
@@ -659,16 +661,26 @@ class ChargeDevice extends Device {
     }
     if (!this.triggerThreadStart) {
       this.homey.app.updateLog('Started new trigger test', c.LOG_INFO);
-      this.onTurnedOn(); // Started async, don't wait
       this.triggerThreadStart = now;
-      this.triggerThread = setTimeout(() => this.checkForTriggerReply(300, false), 1000);
+      this.onTurnedOn()
+        .then(() => {
+          if (this.targetDriver) {
+            return this.homey.app.runDeviceCommands(this.targetId, 'onChargeStart')
+          }
+        })
+        .then(() => {
+          this.triggerThread = setTimeout(() => this.checkForTriggerReply(300, false), 1000);
+        })
+        .catch((err) => {
+          this.homey.app.updateLog(`Failed to start charging: ${err.message}`, c.LOG_ERROR);
+          return Promise.resolve(); // Ignore... the test will eventually time out
+        });
+
     }
 
     const secLasted = Math.round((now - this.triggerThreadStart) / 1000);
     if (secLasted > 60 * 5) {
-      clearTimeout(this.triggerThread);
-      delete this.triggerThreadStart;
-      delete this.triggerThread;
+      this.endTriggerTest();
       this.homey.app.updateLog('Test timed out', c.LOG_INFO);
       return dst.addText(`${errText} ${this.homey.__('charger.validation.turnaroundLabel')} (${this.homey.__('charger.validation.turnaroundTimeout')} > 300 s)\n`)
         .then(() => Promise.reject(new Error(this.homey.__('charger.validation.connectCar'))));
@@ -677,6 +689,29 @@ class ChargeDevice extends Device {
     return dst.addText(`${progressText} ${this.homey.__('charger.validation.turnaroundLabel')} (${this.homey.__('charger.validation.turnaroundOngoing')} > ${secLasted} s)\n`)
       .then(() => Promise.reject(new Error(this.homey.__('charger.validation.connectCar'))));
   }
+
+  /**
+   * Ends the trigger test
+   */
+  async endTriggerTest() {
+    if (this.triggerThread) {
+      clearTimeout(this.triggerThread);
+      delete this.triggerThreadStart;
+      delete this.triggerThread;
+    }
+    return Promise.resolve()
+      .then(() => {
+        if (this.targetDriver) {
+          return this.homey.app.runDeviceCommands(this.targetId, 'onChargeEnd');
+        }
+        return Promise.resolve();
+      })
+      .then(() => this.onTurnedOff())
+      .catch((err) => {
+        this.homey.app.updateLog(`Failed to end charging: ${err.message}`, c.LOG_ERROR);
+        return Promise.resolve();
+      });
+}
 
   /**
    * Check that the device is turned on
@@ -703,7 +738,7 @@ class ChargeDevice extends Device {
    * onAdded is called when the user adds the device, called just after pairing.
    */
   async onAdded() {
-    this.homey.app.updateLog('Piggy charger has been added', 1);
+    this.homey.app.updateLog('Piggy charger has been added', c.LOG_INFO);
   }
 
   /**
@@ -715,7 +750,7 @@ class ChargeDevice extends Device {
    * @returns {Promise<string|void>} return a custom message that will be displayed
    */
   async onSettings({ oldSettings, newSettings, changedKeys }) {
-    this.homey.app.updateLog(`Piggy charger settings where changed: ${JSON.stringify(changedKeys)}`, 1);
+    this.homey.app.updateLog(`Piggy charger settings was changed: ${JSON.stringify(changedKeys)}`, c.LOG_INFO);
   }
 
   /**
