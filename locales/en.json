@@ -417,7 +417,7 @@
       "stateHint": "Please create a flow to inform the controller about the charging state.",
       "batterySkipped": "Battery test skipped.",
       "turnedOnLabel": "The controller must be enabled.",
-      "turnedOnHint": "Please turn on the charge controller.",
+      "turnedOnHint": "Congratulations, all tests passed. You can now turn on the charge controller.",
       "turnaroundLabel": "Response test",
       "turnaroundOngoing": "ongoing",
       "turnaroundTimeout": "timeout",

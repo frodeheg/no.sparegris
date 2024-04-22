@@ -131,12 +131,18 @@ class PiggyBank extends Homey.App {
     this.updateLog(`Got ${listRef} for ${driverId}`, c.LOG_DEBUG);
     const list = d.DEVICE_CMD[driverId][listRef];
     const device = await this.getDevice(deviceId);
-    if (this.logUnit === deviceId) this.updateLog(`attempt runDeviceCommands(${listRef}) for ${device.name}`, c.LOG_ALL);
+    const isCharger = d.DEVICE_CMD[driverId].type === d.DEVICE_TYPE.CHARGER;
+    const logCharger = (this.logUnit in this.__deviceList)
+      && ('driverId' in this.__deviceList[this.logUnit])
+      && (this.__deviceList[this.logUnit].driverId in d.DEVICE_CMD)
+      && (d.DEVICE_CMD[this.__deviceList[this.logUnit].driverId].type === d.DEVICE_TYPE.CHARGER);
+    const canLog = (this.logUnit === deviceId) || (isCharger && logCharger);
+    if (canLog) this.updateLog(`attempt runDeviceCommands(${listRef}) for ${device.name}`, c.LOG_ALL);
     let stateChanged = false;
     for (const capName in list) {
       if (device.capabilitiesObj && !(capName in device.capabilitiesObj)) {
         this.customError = `Could not find the capability ${capName} for ${device.name}. Please install the most recent driver.`;
-        this.updateLog(new Error(this.customError), c.LOG_ALL);
+        this.updateLog(this.customError, c.LOG_ERROR);
         return Promise.reject(new Error(this.customError));
       }
       const maxVal = (device.capabilitiesObj === null) ? 32 : await device.capabilitiesObj[capName].max;
@@ -150,16 +156,16 @@ class PiggyBank extends Homey.App {
         if (prevVal !== setVal) {
           stateChanged = true;
           this.updateLog(`Setting capname: ${capName} = ${setVal}`, c.LOG_INFO);
-          if (this.logUnit === deviceId) this.updateLog(`Setting Device ${device.name}.${capName} = ${setVal} | Origin from list ${driverId}.${listRef}`, c.LOG_ALL);
+          if (canLog) this.updateLog(`Setting Device ${device.name}.${capName} = ${setVal} | Origin from list ${driverId}.${listRef}`, c.LOG_ALL);
           await device.setCapabilityValue({ capabilityId: capName, value: setVal }); // Just pass errors on
-        } else if (this.logUnit === deviceId) {
+        } else if (canLog) {
           this.updateLog(`Ignored setting Device ${device.name}.${capName} = ${setVal} as the value is already ${prevVal}`, c.LOG_ALL);
         }
       } catch (err) {
         this.updateLog(`Error: ${err}`, c.LOG_ERROR);
       }
     }
-    if (this.logUnit === deviceId) this.updateLog(`finished runDeviceCommands(${listRef}) for ${device.name}`, c.LOG_ALL);
+    if (canLog) this.updateLog(`finished runDeviceCommands(${listRef}) for ${device.name}`, c.LOG_ALL);
     this.customError = undefined;
     return Promise.resolve(stateChanged);
   }

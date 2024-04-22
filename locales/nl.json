@@ -417,7 +417,7 @@
       "stateHint": "Maak een stroom om de controller te informeren over de laadstatus.",
       "batterySkipped": "Batterijtest overgeslagen.",
       "turnedOnLabel": "De controller moet ingeschakeld zijn.",
-      "turnedOnHint": "Schakel de laadcontroller in.",
+      "turnedOnHint": "Gefeliciteerd, alle tests zijn geslaagd. U kunt nu de laadcontroller inschakelen.",
       "turnaroundLabel": "Responstest",
       "turnaroundOngoing": "lopend",
       "turnaroundTimeout": "time-out",

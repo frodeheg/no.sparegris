@@ -417,7 +417,7 @@
       "stateHint": "Vennligst opprett en flyt for å informere kontrolleren om ladetilstanden.",
       "batterySkipped": "Batteritest hoppet over.",
       "turnedOnLabel": "Kontrolleren må være aktivert.",
-      "turnedOnHint": "Vennligst slå på ladekontrolleren.",
+      "turnedOnHint": "Gratulerer, alle testene passerte. Du kan nå slå på ladekontrolleren.",
       "turnaroundLabel": "Respons-test",
       "turnaroundOngoing": "pågående",
       "turnaroundTimeout": "timeout",

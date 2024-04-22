@@ -417,7 +417,7 @@
       "stateHint": "Veuillez créer un flux pour informer le contrôleur de l'état de charge.",
       "batterySkipped": "Test de batterie ignoré.",
       "turnedOnLabel": "Le contrôleur doit être activé.",
-      "turnedOnHint": "Veuillez allumer le contrôleur de charge.",
+      "turnedOnHint": "Félicitations, tous les tests ont réussi. Vous pouvez maintenant allumer le contrôleur de charge.",
       "turnaroundLabel": "Test de réponse",
       "turnaroundOngoing": "en cours",
       "turnaroundTimeout": "temps mort",
