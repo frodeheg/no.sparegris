@@ -614,18 +614,15 @@ class ChargeDevice extends Device {
    * Creates a image that can be sent to the device image stream
    */
   async refreshImageStream(stream, now = new Date()) {
-    // When running in the browser, the first image is the one in the cache...
-    /* if (!this.sentFirstImage) {
-      console.log('First time.....');
-      const current = this;
+    // When running in the firefox browser and iPhone, the first image is the one in the cache...
+    if (!this.sentFirstImage) {
       return findFile('drivers/piggy-charger/assets/images/refresh_single.png')
         .then((filename) => fs.createReadStream(filename), { bufferSize: 1024 })
         .then((writer) => {
-          current.sentFirstImage = true;
-          console.log('First done....');
+          this.sentFirstImage = true;
           return writer.pipe(stream);
         });
-    } */
+    }
     const delayedFinalize = (device) => {
       if (!device.timer) {
         device.timer = setTimeout((device) => {
