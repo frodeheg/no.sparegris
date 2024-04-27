@@ -421,6 +421,7 @@
       "turnaroundLabel": "Test de réponse",
       "turnaroundOngoing": "en cours",
       "turnaroundTimeout": "temps mort",
+      "spookey": "Le chargeur a été contrôlé depuis l'extérieur de cette application - Veuillez désactiver le contrôle externe et redémarrer la validation",
       "connectCar": "Ce test nécessite qu'une voiture pouvant accepter la recharge soit connectée. Si ce n’est pas le cas, veuillez relancer le test pour mesurer le bon temps de réponse.",
       "wait": "Appuyez sur Actualiser pour continuer la validation"
     },

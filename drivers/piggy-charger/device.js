@@ -82,6 +82,7 @@ class ChargeDevice extends Device {
     // Register maintainance action used for validation of the device
     this.registerCapabilityListener('button.reset', async () => {
       this.log('Reset charger state in order to re-validate it');
+      this.__spookey_changes = 0;
       const settings = {};
       settings.GotSignalWatt = 'False';
       settings.GotSignalBattery = 'False';
@@ -196,7 +197,7 @@ class ChargeDevice extends Device {
 
     // Register the mode change capability
     this.registerCapabilityListener('charge_mode', async (newMode) => {
-      console.log(`Changed charge mode to : ${newMode}`);
+      this.homey.app.updateLog(`Changed charge mode to : ${newMode}`, c.LOG_INFO);
       return Promise.resolve();
     });
 
@@ -227,6 +228,11 @@ class ChargeDevice extends Device {
       .catch((err) => {
         this.homey.app.updateLog(`Camera image2 failed ${err}`, c.LOG_ERROR);
       }) */
+
+    // Start the onProcessPower timer if it is not active
+    if (this.__powerProcessID === undefined && !this.killed) {
+      this.__powerProcessID = setTimeout(() => this.onProcessPowerWrapper(), 1000 * 10);
+    }
 
     this.homey.app.updateLog('charger init done....', c.LOG_INFO);
   }
@@ -362,14 +368,15 @@ class ChargeDevice extends Device {
   /**
    * Makes sure that a charge cycle does not move out of the active phase
    * and count spookey changes
+   * Returns true if a change was needed
    */
   async chargeCycleValidation(planActive, throttleActive) {
-    if (this.targetDriver) return Promise.resolve();
+    if (!this.targetDriver) return Promise.resolve(false);
     const listRef = planActive ? 'onChargeStart' : 'onChargeEnd';
     const changeNeeded = await this.homey.app.runDeviceCommands(this.targetId, listRef); // Pass errors on
     this.__spookey_changes += (this.__spookey_check_activated === planActive && !throttleActive) ? changeNeeded : 0;
     this.__spookey_check_activated = planActive;
-    return Promise.resolve();
+    return Promise.resolve(changeNeeded);
   }
 
   /**
@@ -377,31 +384,26 @@ class ChargeDevice extends Device {
    */
   async setTargetPower(power, powerChange = 0) {
     // Filter the new target power with the charge plan
-    const currentMode = +this.getCapabilityValue('charge_mode');
-    const allowPowerPlan = this.chargePlan.currentPlan[this.chargePlan.currentIndex] > 0;
-    const allowPowerMode = currentMode !== c.MAIN_OP.ALWAYS_OFF;
-    const forceOn = currentMode === c.MAIN_OP.ALWAYS_ON;
-    const allowPower = (allowPowerMode) && (allowPowerPlan || forceOn);
-    const filteredPower = allowPower ? +power : 0;
+    const { withinChargingCycle, withinChargingPlan } = this.getIsPlanned();
+    const filteredPower = withinChargingPlan ? +power : 0;
 
-    const withinChargingCycle = (allowPowerMode && (+this.chargePlan.cycleRemaining > 0)) || forceOn;
-    const withinChargingPlan = (allowPowerPlan && withinChargingCycle) || forceOn;
+    // Check that we do not toggle the charger too often
+    const now = new Date();
+    const timeLapsed = ((now - this.prevChargerTime) / 1000) || Infinity; // Lapsed time in seconds
+    const throttleActive = timeLapsed < +this.settings.toggleTime;
 
     return this.chargeCycleValidation(withinChargingCycle, throttleActive)
       .then(() => {
         // Report power to device trigger
         if (this.targetDriver && this.targetDef.setCurrentCap) {
-          const pausedCharging = !withinChargingPlan || isEmergency || (shouldntCharge && shouldntChargeThrottle);
-          const newOfferCurrent = stoppedCharging ? +this.settings.stopCurrent
-            : pausedCharging ? this.settings.pauseCurrent
-              : (+powerUsed === 0) ? this.settings.startCurrent
-                : Math.floor(Math.min(Math.max(ampsOffered * (newOfferPower / +powerUsed), minCurrent), +maxCurrent));
           return this.homey.app.getDevice(this.targetId)
             .then((device) => {
               const { lastCurrent, lastPower } = this;
               const ampsActualOffer = +device.capabilitiesObj[this.targetDef.getOfferedCap].value;
               const ampsOffered = +device.capabilitiesObj[this.targetDef.setCurrentCap].value;
               const powerUsed = +device.capabilitiesObj[this.targetDef.measurePowerCap].value;
+              this.setChargerPower(powerUsed, false).catch(this.err);
+
               if ((lastCurrent === ampsActualOffer) && (lastPower !== powerUsed)) {
                 // note that confirmed is not set when lastCurrent is higher than ampsActualOffer because ampsActualOffer is clamped.
                 // Since we don't know the clamp it's difficult to detect confirmed for this case... But: This is ok for our case,
@@ -412,10 +414,6 @@ class ChargeDevice extends Device {
                 this.ongoing = false;
               }
               const ignoreChargerThrottle = this.confirmed || !this.ongoing;
-              // Check that we do not toggle the charger too often
-              const now = new Date();
-              const timeLapsed = ((now - this.prevChargerTime) / 1000) || Infinity; // Lapsed time in seconds
-              const throttleActive = timeLapsed < +this.settings.toggleTime;
               const isEmergency = (+powerChange < 0) && (
                 ((powerUsed + +powerChange) < 0)
                 || ((ampsOffered === this.settings.minCurrent)
@@ -436,6 +434,40 @@ class ChargeDevice extends Device {
                   this.homey.app.updateLog(`aborted changeDevicePower() for ${device.name} - Must wait for toggle time to expire`, c.LOG_ALL);
                 }
                 return Promise.reject(new Error('Throttle active', { cause: ID_THROTTLE })); // Translates into [false, false]
+              }
+              this.prevChargerTime = now;
+              if (isEmergency) this.homey.app.updateLog('Emergency turn off for charger device (minToggleTime ignored)', c.LOG_WARNING);
+
+              const chargerStatus = device.capabilitiesObj[this.targetDef.statusCap].value;
+              const toMaxCurrent = +device.capabilitiesObj[this.targetDef.setCurrentCap].max;
+              const maxCurrent = Math.min(+this.settings.maxCurrent, toMaxCurrent);
+              const maxPowers = this.homey.app.readMaxPower();
+              const maxPower = (maxPowers[TIMESPAN.QUARTER] !== Infinity) ? maxPowers[TIMESPAN.QUARTER] : maxPowers[TIMESPAN.HOUR];
+              const cannotCharge = this.targetDef.statusUnavailable.includes(chargerStatus);
+              const shouldntCharge = this.targetDef.statusProblem.includes(chargerStatus);
+              const shouldntChargeThrottle = (this.prevChargeIgnoreErrorTime !== undefined) && ((now - this.prevChargeIgnoreErrorTime) < (5 * 60 * 1000)); // Every 5 min ok.
+              if (shouldntCharge && !shouldntChargeThrottle) {
+                this.prevChargeIgnoreErrorTime = new Date(now.getTime());
+              }
+              if (this.homey.app.logUnit === this.getId()) {
+                if (cannotCharge || (shouldntCharge && shouldntChargeThrottle)) {
+                  this.homey.app.updateLog(`Cannot charge ${device.name} due to device state ${chargerStatus}`, c.LOG_ALL);
+                }
+              }
+              if (shouldntCharge) {
+                this.homey.app.updateLog(`The Charger may be malfunctioning as it reports state ${chargerStatus}`, c.LOG_ERROR);
+              }
+              const newOfferPower = Math.min(powerUsed + +powerChange, maxPower);
+              const stoppedCharging = !withinChargingCycle || cannotCharge;
+              const pausedCharging = !withinChargingPlan || isEmergency || (shouldntCharge && shouldntChargeThrottle);
+              const newOfferCurrent = stoppedCharging ? +this.settings.stopCurrent
+                : pausedCharging ? +this.settings.pauseCurrent
+                  : (+powerUsed === 0) ? +this.settings.startCurrent
+                    : Math.floor(Math.min(Math.max(ampsOffered * (newOfferPower / +powerUsed), +this.settings.minCurrent), +maxCurrent));
+              this.homey.app.updateLog(`Setting ${newOfferCurrent} amp, was ${ampsActualOffer}`, c.LOG_DEBUG);
+              if ((newOfferCurrent === ampsActualOffer) && (newOfferCurrent === ampsOffered)) {
+                if (this.homey.app.logUnit === this.getId()) this.homey.app.updateLog(`finished changeDevicePower() for ${device.name} - The new current is the same as the previous`, c.LOG_ALL);
+                return Promise.resolve(); // Should resolve to [true, true]
               }
               this.lastCurrent = newOfferCurrent;
               this.lastPower = powerUsed;
@@ -707,25 +739,54 @@ class ChargeDevice extends Device {
 
   /**
    * Wait for trigger replay
+   * testProgress:
+   *   0: Not started yet, waiting for power to reach 0
+   *   1: 0W Validated - waiting for power to go up
+   *   2: >0W Validated
    */
-  async checkForTriggerReply(secleft, testStarted) {
+  async checkForTriggerReply(secleft, testProgress) {
     if (this.killed) return Promise.resolve();
     this.homey.app.updateLog(`Sec left ${secleft}`, c.LOG_INFO);
     const newPower = this.getCapabilityValue('measure_power');
-    if ((!testStarted) && (+newPower === 0)) {
-      this.homey.app.updateLog(`Starting Trigger test at time ${secleft}`, c.LOG_INFO);
+    const zeroPowerThreshold = 200; // Easee has been reported to set watts to 62W when 0 ams are offered.
+    let changeNeeded = false;
+    if (testProgress === 0) {
+      // Validate 0 W
+      changeNeeded = await this.onTurnedOn();
+      if ((!changeNeeded) && (+newPower <= zeroPowerThreshold)) {
+        this.homey.app.updateLog(`Starting Trigger test at time ${secleft}`, c.LOG_INFO);
+        testProgress = 1;
+        this.triggerTestStart = new Date();
+        this.__spookey_check_activated = false;
+      }
+    }
+    if (testProgress === 1) {
+      // 0 W validated - Turn up W
       if (this.targetDriver && this.targetDef.setCurrentCap) {
         const device = await this.homey.app.getDevice(this.targetId);
-        device.setCapabilityValue(this.targetDef.setCurrentCap, 10);
+        changeNeeded = await this.homey.app.runDeviceCommands(this.targetId, 'onChargeStart')
+          || !device
+          || !('capabilitiesObj' in device)
+          || !(this.targetDef.setCurrentCap in device.capabilitiesObj)
+          || !('value' in device.capabilitiesObj[this.targetDef.setCurrentCap])
+          || (device.capabilitiesObj[this.targetDef.setCurrentCap].value !== 10);
+        if (device) device.setCapabilityValue(this.targetDef.setCurrentCap, 10);
       } else {
         // Call flow when power cannot be changed by automation
         const changeChargingPowerTrigger = this.homey.flow.getDeviceTriggerCard('charger-change-target-power');
         const tokens = { offeredPower: 2000 };
         changeChargingPowerTrigger.trigger(this, tokens);
       }
-      this.triggerTestStart = new Date();
-      testStarted = true;
-    } else if (testStarted && (+newPower > 0)) {
+      if (!changeNeeded && (+newPower > zeroPowerThreshold)) {
+        testProgress = 2;
+        this.__spookey_check_activated = false;
+      }
+    }
+    if (testProgress === 2) {
+      // > 0W confirmed
+      if (this.targetDriver && this.targetDef.setCurrentCap) {
+        await this.homey.app.runDeviceCommands(this.targetId, 'onChargeEnd');
+      }
       const now = new Date();
       const lastedTime = Math.round((now - this.triggerTestStart) / 1000);
       const settings = { toggleMeasureW: `${lastedTime} s` };
@@ -734,8 +795,16 @@ class ChargeDevice extends Device {
       this.triggerThread = undefined;
       return this.endTriggerTest();
     }
+    // Nothing confirmed, test is ongoing
+    if (changeNeeded) {
+      if (this.__spookey_check_activated) {
+        this.__spookey_changes++;
+      }
+      this.__spookey_check_activated = true;
+    }
+
     if (secleft > 0) {
-      this.triggerThread = setTimeout(() => this.checkForTriggerReply(secleft - 1, testStarted), 1000);
+      this.triggerThread = setTimeout(() => this.checkForTriggerReply(secleft - 1, testProgress), 1000);
     } else {
       // Timed out
       this.triggerThread = undefined;
@@ -758,23 +827,21 @@ class ChargeDevice extends Device {
     if (!this.triggerThreadStart) {
       this.homey.app.updateLog('Started new trigger test', c.LOG_INFO);
       this.triggerThreadStart = now;
-      this.onTurnedOn()
-        .then(() => {
-          if (this.targetDriver) {
-            return this.homey.app.runDeviceCommands(this.targetId, 'onChargeStart');
-          }
-          return Promise.resolve();
-        })
-        .then(() => {
-          this.triggerThread = setTimeout(() => this.checkForTriggerReply(300, false), 1000);
-        })
-        .catch((err) => {
-          this.homey.app.updateLog(`Failed to start charging: ${err.message}`, c.LOG_ERROR);
-          return Promise.resolve(); // Ignore... the test will eventually time out
-        });
+      try {
+        this.triggerThread = setTimeout(() => this.checkForTriggerReply(300, 0), 1000);
+      } catch (err) {
+        this.homey.app.updateLog(`Failed to start charging: ${err.message}`, c.LOG_ERROR);
+        return Promise.resolve(); // Ignore... the test will eventually time out
+      }
     }
 
     const secLasted = Math.round((now - this.triggerThreadStart) / 1000);
+    if (this.__spookey_changes > 0) {
+      this.endTriggerTest();
+      this.homey.app.updateLog(`Test had ${this.__spookey_changes} spookey changes`, c.LOG_INFO);
+      return dst.addText(`${errText} ${this.homey.__('charger.validation.turnaroundLabel')}\n`)
+        .then(() => Promise.reject(new Error(this.homey.__('charger.validation.spookey'))));
+    }
     if (secLasted > 60 * 5) {
       this.endTriggerTest();
       this.homey.app.updateLog('Test timed out', c.LOG_INFO);
@@ -807,7 +874,7 @@ class ChargeDevice extends Device {
         this.homey.app.updateLog(`Failed to end charging: ${err.message}`, c.LOG_ERROR);
         return Promise.resolve();
       });
-}
+  }
 
   /**
    * Check that the device is turned on
@@ -847,6 +914,7 @@ class ChargeDevice extends Device {
    */
   async onSettings({ oldSettings, newSettings, changedKeys }) {
     this.homey.app.updateLog(`Piggy charger settings was changed: ${JSON.stringify(changedKeys)}`, c.LOG_INFO);
+    this.settings = newSettings;
   }
 
   /**
@@ -913,11 +981,6 @@ class ChargeDevice extends Device {
     this.setStoreValue('chargePlan', this.chargePlan);
 
     await this.rescheduleCharging(false, now);
-
-    // Start the onProcessPower timer if it is not active
-    if (this.__powerProcessID === undefined && !this.killed) {
-      this.__powerProcessID = setTimeout(() => this.onProcessPowerWrapper(), 1000 * 10);
-    }
 
     // Reset the charge process
     this.setCapabilityValue('measure_battery.charge_cycle', 0);
@@ -1085,8 +1148,7 @@ class ChargeDevice extends Device {
     }
     return this.mutexForPower.runExclusive(async () => this.onProcessPower())
       .finally(() => {
-        // Schedule new event if and only if charging is active
-        if (this.chargePlan.cycleRemaining > 0) {
+        if (!this.killed) {
           const timeToNextTrigger = 1000 * 10;
           this.__powerProcessID = setTimeout(() => this.onProcessPowerWrapper(), timeToNextTrigger);
         } else {
@@ -1103,11 +1165,6 @@ class ChargeDevice extends Device {
     // 1) Update charger state for non-flow devices
     if (this.targetDriver) {
       await this.getState();
-      // Check for power capability
-      if (this.targetDef.measurePowerCap) {
-        await this.getCapValue(this.targetDef.measurePowerCap)
-          .then((targetPower) => this.setChargerPower(targetPower, false));
-      }
       // Check for battery capability
       if (this.targetDef.getBatteryCap) {
         await this.getCapValue(this.targetDef.getBatteryCap)
@@ -1379,6 +1436,17 @@ class ChargeDevice extends Device {
     return this.getCapabilityValue('target_power');
   }
 
+  getIsPlanned() {
+    const currentMode = +this.getCapabilityValue('charge_mode');
+    const allowPowerPlan = this.chargePlan.currentPlan[this.chargePlan.currentIndex] > 0;
+    const allowPowerMode = currentMode !== c.MAIN_OP.ALWAYS_OFF;
+    const forceOn = currentMode === c.MAIN_OP.ALWAYS_ON;
+
+    const withinChargingCycle = (allowPowerMode && (+this.chargePlan.cycleRemaining > 0)) || forceOn;
+    const withinChargingPlan = (allowPowerPlan && withinChargingCycle) || forceOn;
+    return { withinChargingCycle, withinChargingPlan };
+  }
+
   /**
    * Called by the app internally to changes the target power
    */
@@ -1399,9 +1467,9 @@ class ChargeDevice extends Device {
         return Promise.resolve([(!this.confirmed && this.ongoing) || false, false]); // Try changing another device
       });
 
-    //console.log(this.targetDriver);
-    //console.log(this.targetDef);
-    const noChange = (powerChange === 0) || ((oldTarget >= maxPower) && (newTarget >= maxPower));
+    const noChange = (powerChange === 0)
+      || ((oldTarget >= maxPower) && (newTarget >= maxPower))
+      || !this.getIsPlanned().withinChargingPlan;
     const success = true;
     return Promise.resolve([success, noChange]);
   }

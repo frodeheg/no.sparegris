@@ -421,6 +421,7 @@
       "turnaroundLabel": "Respons-test",
       "turnaroundOngoing": "pågående",
       "turnaroundTimeout": "timeout",
+      "spookey": "Laderen ble styrt utenfra denne appen - Vennligst deaktiver ekstern styring og restart valideringen.",
       "connectCar": "Denne testen krever at en bil som kan ta i mot lading er tilkoblet. Om det ikke er tilfelle, vennligst start testen på nytt for å måle riktig responstid.",
       "wait": "Trykk på oppdater-knappen for å fortsette valideringen"
     },

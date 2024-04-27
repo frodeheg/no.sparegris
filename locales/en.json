@@ -421,6 +421,7 @@
       "turnaroundLabel": "Response test",
       "turnaroundOngoing": "ongoing",
       "turnaroundTimeout": "timeout",
+      "spookey": "The charger was controlled from outside this app - Please disable external control and restart validation.",
       "connectCar": "This test requires that a car that can accept charging is connected. If it is not the case, please restart the test to measure the correct response time.",
       "wait": "Press refresh to continue validation"
     },

@@ -421,6 +421,7 @@
       "turnaroundLabel": "Responstest",
       "turnaroundOngoing": "lopend",
       "turnaroundTimeout": "time-out",
+      "spookey": "De oplader werd bediend van buiten deze app - Schakel de externe bediening uit en start de validatie opnieuw.",
       "connectCar": "Voor deze test is vereist dat er een auto is aangesloten die opladen kan accepteren. Mocht dit niet het geval zijn, start dan de test opnieuw om de juiste responstijd te meten.",
       "wait": "Druk op vernieuwen om door te gaan met valideren"
     },
