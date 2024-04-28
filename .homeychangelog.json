@@ -949,5 +949,8 @@
   },
   "0.22.6": {
     "en": "Added informative text that a car needs to be connected during the trigger test"
+  },
+  "0.22.7": {
+    "en": "Fixed charging for Easee chargers with the new Charge controller + Updated video stream images to give clearer instructions. + Fixed the video stream for always on mode."
   }
 }
