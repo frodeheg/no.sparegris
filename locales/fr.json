@@ -490,7 +490,9 @@
     "noPrice": "Pas de données de prix encore",
     "withSubsidy": "Subventionné",
     "withoutSubsidy": "Réel",
-    "noPlan": "Aucun plan de recharge créé. Vous pouvez créer un plan de recharge en démarrant le flux \"Charger le moins cher x heures avant hh:00 heures\".",
+    "noPlan": "Aucun plan de recharge créé.\nVous pouvez créer un plan de recharge en démarrant le flux \"Charger le moins cher x heures avant hh:00 heures\".",
+    "disabled": "Aucune recharge n'est programmée. Pour activer la recharge, vous devez soit régler le mode sur \"Contrôlé\" ou \"Toujours activé\". Pour une recharge à prix contrôlé, utilisez le mode \"Contrôlé\" et activez chargement en utilisant des cartes flottantes.",
+    "alwaysOn": "Toujours activé - gestion de l'alimentation uniquement.",
     "cycleEnded": "Le cycle de charge est terminé."
   },
   "month": {

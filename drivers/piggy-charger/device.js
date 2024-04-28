@@ -44,7 +44,8 @@ const CHARGEGROUP = {
 const okText = '[\u001b[32;1m OK \u001b[37m]';
 const errText = '[\u001b[31;1mFAIL\u001b[37m]';
 const progressText = '[\u001b[37;0m....\u001b[37;1m]';
-const YELLOW = '\u001b[1;33;m';
+const RED = '[\u001b[31;1m';
+const YELLOW = '\u001b[33;1m';
 const WHITE = '\u001b[37;1m';
 
 class ChargeDevice extends Device {
@@ -129,6 +130,7 @@ class ChargeDevice extends Device {
     }).catch((err) => this.homey.flow.getToken(`chargeToken-${data.id}`))
       .catch((err) => undefined);
     await this.homey.flow.getToken(`chargeToken-${data.id}`);
+    await this.homey.app.doPriceCalculations();
     await this.updateChargePlan([]);
     await this.rescheduleCharging(false);
 
@@ -551,16 +553,24 @@ class ChargeDevice extends Device {
     const title = this.homey.__('chargePlanGraph.title');
     const yAxisText = this.homey.__('chargePlanGraph.price');
     const groupText = this.homey.__('chargePlanGraph.enabled');
-    const endedText = this.homey.__('chargePlanGraph.cycleEnded');
-    const startHour = this.chargePlan.cycleStart ? this.chargePlan.cycleStart.getHours() : 0;
+    const alwaysOn = (+this.getCapabilityValue('charge_mode') === c.MAIN_OP.ALWAYS_ON);
+    const startHour = alwaysOn ? 0 : this.chargePlan.cycleStart ? this.chargePlan.cycleStart.getHours() : 0;
     const cycleEnded = this.chargePlan.cycleEnd < now;
+    const statusTextSrc = alwaysOn ? 'chargePlanGraph.alwaysOn'
+      : cycleEnded ? 'chargePlanGraph.cycleEnded'
+        : 'chargePlanGraph.charging';
+    const statusText = this.homey.__(statusTextSrc);
     const xAxisText = [];
     // TBD: Values && group (CHARGEGROUP)
-    const group = [
-      ...this.chargePlan.actualCharge.slice(0, this.chargePlan.currentIndex).map((charge) => (charge ? CHARGEGROUP.PAST_ON : CHARGEGROUP.PAST_OFF)),
-      ...this.chargePlan.currentPlan.slice(this.chargePlan.currentIndex, 24).map((charge) => (charge ? CHARGEGROUP.PLANNED_ON : CHARGEGROUP.PLANNED_OFF))
+    const currentIndex = alwaysOn ? toLocalTime(now, this.homey).getHours() : this.chargePlan.currentIndex;
+    const remaining = (24 - currentIndex < 0) ? 0 : (24 - currentIndex); // Safeguard for summer/winter time
+    const group = alwaysOn ? [...Array(currentIndex).fill(CHARGEGROUP.PAST_ON), ...Array(remaining).fill(CHARGEGROUP.PLANNED_ON)] : [
+      ...this.chargePlan.actualCharge.slice(0, currentIndex).map((charge) => (charge ? CHARGEGROUP.PAST_ON : CHARGEGROUP.PAST_OFF)),
+      ...this.chargePlan.currentPlan.slice(currentIndex, 24).map((charge) => (charge ? CHARGEGROUP.PLANNED_ON : CHARGEGROUP.PLANNED_OFF))
     ].slice(0, 24);
-    const values = this.chargePlan.actualPrices;
+    const endTimeUTC = new Date(now.getTime());
+    endTimeUTC.setUTCMinutes(endTimeUTC.getUTCMinutes() + 1440, 0, 0);
+    const values = alwaysOn ? [...await this.homey.app.getPricePrediction(now, endTimeUTC)] : this.chargePlan.actualPrices;
     for (let i = 0; i < 24; i++) {
       xAxisText[i] = `${String((i + startHour) % 24).padStart(2, ' ')}:00`;
       if (!(i in values)) values[i] = null;
@@ -573,7 +583,7 @@ class ChargeDevice extends Device {
       .then(() => dst.addText(title, 250 - (dst.getWidth(title) / 2), 25))
       .then(() => dst.setTextSize(1))
       .then(() => dst.setCursorWindow(25, 60, 475, 170))
-      .then(() => dst.addText(cycleEnded ? endedText : '', 25, 80))
+      .then(() => dst.addText(statusText, 25, 80))
       .then(() => dst.drawLineChart(25, 150, 450, 325, {
         xAxisText,
         yAxisText,
@@ -591,7 +601,8 @@ class ChargeDevice extends Device {
         yCol: [180, 180, 180, 255],
         xCol: [180, 180, 180, 255],
         lineCol: [255, 255, 128, 255]
-      }));
+      }))
+      .catch((err) => dst.addText(`${RED}ERROR: Please report this to the developer: ${err.message}${WHITE}`));
   }
 
   /**
@@ -599,14 +610,16 @@ class ChargeDevice extends Device {
    */
   async displayNoPlan(dst) {
     const title = this.homey.__('chargePlanGraph.title');
-    const noPlanText = this.homey.__('chargePlanGraph.noPlan');
+    const mode = +this.getCapabilityValue('charge_mode');
+    const textSource = (mode === c.MAIN_OP.CONTROLLED) ? 'chargePlanGraph.noPlan' : 'chargePlanGraph.disabled';
+    const noPlanText = this.homey.__(textSource);
     return findFile('drivers/piggy-charger/assets/images/large.png')
       .catch((err) => this.setUnavailable(err.message))
       .then((file) => dst.loadFile(file))
       .then(() => dst.setTextSize(2))
       .then(() => dst.addText(`\x1B[4;30m${title}\x1B[24m`, 250 - (dst.getWidth(title) / 2), 25))
       .then(() => dst.setTextSize(1))
-      .then(() => dst.setCursorWindow(25, 60, 475, 170))
+      .then(() => dst.setCursorWindow(25, 60, 475, 270))
       .then(() => dst.addText(noPlanText, 25, 80));
   }
 
@@ -651,7 +664,11 @@ class ChargeDevice extends Device {
     return Promise.resolve(this.getCapabilityValue('alarm_generic.notValidated'))
       .then((notValidated) => {
         if (notValidated) return this.validationProcedure(this.fb);
-        if (this.chargePlan.cycleStart < now) return this.displayPlan(this.fb, now);
+        const mode = +this.getCapabilityValue('charge_mode');
+        if (((this.chargePlan.cycleStart < now) && (mode === c.MAIN_OP.CONTROLLED))
+          || (mode === c.MAIN_OP.ALWAYS_ON)) {
+          return this.displayPlan(this.fb, now);
+        }
         return this.displayNoPlan(this.fb);
       })
       .then(() => {
@@ -972,7 +989,7 @@ class ChargeDevice extends Device {
     this.chargePlan.currentPlan = new Array(cycleLength);
     this.chargePlan.originalPlan = new Array(cycleLength);
     this.chargePlan.actualCharge = new Array(cycleLength);
-    this.chargePlan.actualPrices = [...this.homey.app.getPricePrediction(now, endTimeUTC)];
+    this.chargePlan.actualPrices = [...await this.homey.app.getPricePrediction(now, endTimeUTC)];
     this.chargePlan.currentIndex = 0;
 
     this.setStoreValue('chargePlan', this.chargePlan);
@@ -1036,7 +1053,7 @@ class ChargeDevice extends Device {
    */
   async rescheduleCharging(isNewHour, now = new Date()) {
     const end = new Date(this.chargePlan.cycleEnd);
-    const priceArray = this.homey.app.getPricePrediction(now, end);
+    const priceArray = await this.homey.app.getPricePrediction(now, end);
 
     if (isNewHour) {
       // Calculate cost of previous hour

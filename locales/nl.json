@@ -490,7 +490,9 @@
     "noPrice": "Nog geen prijsgegevens",
     "withSubsidy": "Gesubsidieerd",
     "withoutSubsidy": "Werkelijk",
-    "noPlan": "Er is geen laadplan aangemaakt. U kunt een laadplan aanmaken door de flow \"Kostegoedkoopste x uur vóór uu:00 uur\" te starten.",
+    "noPlan": "Er is geen laadplan aangemaakt.\nU kunt een laadplan aanmaken door de flow \"Kostegoedkoopste x uur vóór uu:00 uur\" te starten.",
+    "disabled": "Er is geen opladen gepland. Om het opladen in te schakelen, moet u de modus instellen op \"Gecontroleerd\" of \"Altijd aan\". Voor prijsgestuurd opladen gebruikt u de modus \"Gecontroleerd\" en schakelt u deze in opladen met behulp van floatkaarten.",
+    "alwaysOn": "Altijd aan - alleen energiebeheer.",
     "cycleEnded": "De oplaadcyclus is voltooid."
   },
   "month": {

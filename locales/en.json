@@ -491,6 +491,8 @@
     "withSubsidy": "Subsidized",
     "withoutSubsidy": "Actual",
     "noPlan": "No charge plan created. You can create a charge plan by starting the flow \"Charge cheapest x hours before hh:00 o'clock\".",
+    "disabled": "No charging is scheduled.\nTo enable charging, you must either set the mode to \"Controlled\" or \"Always on\". For price-controlled charging, use the mode \"Controlled\" and enable charging by using float cards.",
+    "alwaysOn": "Always on - power management only.",
     "cycleEnded": "The chargeing cycle has completed."
   },
   "month": {

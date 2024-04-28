@@ -491,6 +491,8 @@
     "withSubsidy": "Subsidiert",
     "withoutSubsidy": "Faktisk",
     "noPlan": "Ingen ladeplan opprettet. Du kan opprette en ladeplan ved å starte flyten \"Lad billigste x timer før klokken tt:00\".",
+    "disabled": "Ingen lading er planlagt.\nFor å aktivere lading må du enten sette modusen til \"Styrt\" eller \"Alltid på\". For pris-styrt lading, bruk modusen \"Styrt\" og aktiver ladingen ved hjelp av flytkort.",
+    "alwaysOn": "Alltid på - kun effektstyring.",
     "cycleEnded": "Ladesyklusen er fullført."
   },
   "month": {
