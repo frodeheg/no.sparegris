@@ -155,14 +155,13 @@ class ChargeDevice extends Device {
         __deviceList = await this.homey.app.createDeviceList();
       }
       __deviceList[deviceId].use = newVal;
-      this.homey.app.__deviceList = __deviceList;
-      this.homey.settings.set('deviceList', __deviceList);
       const frostList = this.homey.settings.get('frostList') || {};
       const modeList = this.homey.settings.get('modeList');
+      const priceList = this.homey.settings.get('priceActionList') || {};
       if (newVal) {
         frostList[deviceId] = { minTemp: 5 };
+        const oldModes = this.getStoreValue('oldModes') || [];
         for (let m = 0; m < modeList.length; m++) {
-          const oldModes = this.getStoreValue('oldModes') || [];
           const idx = modeList[m].findIndex(({ id }) => id === deviceId);
           if (idx < 0) {
             const operation = Array.isArray(oldModes)
@@ -172,6 +171,11 @@ class ChargeDevice extends Device {
             modeList[m].push({ id: deviceId, operation, targetTemp: 5 });
           }
         }
+        const oldPriceTarget = this.getStoreValue('oldPriceTarget') || [];
+        for (let p = 0; p < priceList.length; p++) {
+          const operation = Array.isArray(oldPriceTarget) && oldPriceTarget[p] ? oldPriceTarget[p] : c.TARGET_OP.TURN_ON;
+          priceList[p][deviceId] = { delta: null, operation };
+        }
       } else {
         // If attempting to turn off store the controllable status for next time it is enabled
         const oldModes = [];
@@ -180,6 +184,11 @@ class ChargeDevice extends Device {
           oldModes[m] = (idx >= 0) ? modeList[m][idx].operation : c.MAIN_OP.CONTROLLED;
         }
         await this.setStoreValue('oldModes', oldModes).catch(this.error);
+        const oldPriceTarget = [];
+        for (let p = 0; p < priceList.length; p++) {
+          oldPriceTarget[p] = (Array.isArray(priceList[p]) && deviceId in priceList[p]) ? priceList[p][deviceId].operation : c.TARGET_OP.TURN_ON;
+        }
+        await this.setStoreValue('oldPriceTarget', oldPriceTarget).catch(this.error);
 
         delete frostList[deviceId];
         for (let m = 0; m < modeList.length; m++) {
@@ -188,9 +197,16 @@ class ChargeDevice extends Device {
             modeList[m].splice(idx, 1);
           }
         }
+        for (let p = 0; p < priceList.length; p++) {
+          delete priceList[p][deviceId];
+        }
       }
-      this.homey.settings.set('frostList', frostList);
-      this.homey.settings.set('modeList', modeList);
+      // Update all settings
+      await this.homey.settings.set('frostList', frostList);
+      await this.homey.settings.set('modeList', modeList);
+      this.homey.app.__deviceList = __deviceList;
+      await this.homey.settings.set('deviceList', __deviceList);
+      await this.homey.settings.set('priceActionList', priceList);
       // If a device is attached, make sure the add and remove commands are run
       if (newVal) {
         return this.onTurnedOn();
