@@ -681,6 +681,19 @@ class ChargeDevice extends Device {
    * Creates a image that can be sent to the device image stream
    */
   async refreshImageStream(stream, now = new Date()) {
+    // iOS requests two images for each refresh, this is a short hack to abort the first request
+    // in case a new one comes within 100 ms.
+    if (this.iOSHackActive) {
+      this.iOSHackAck = true;
+    } else {
+      delete this.iOSHackAck;
+      this.iOSHackActive = true;
+      const delay = (ms) => new Promise((res) => setTimeout(res, ms));
+      await delay(100);
+      delete this.iOSHackActive;
+      if (this.iOSHackAck) return Promise.reject(new Error('Aborted due to iOS workaround hack'));
+    }
+
     // When running in the firefox browser and iPhone, the first image is the one in the cache...
     if (!this.sentFirstImage) {
       return findFile('drivers/piggy-charger/assets/images/refresh_single.png')
@@ -700,8 +713,6 @@ class ChargeDevice extends Device {
       } // Else timer already ongoing
     };
     if (this.ongoing) {
-      if (this.waitActive) return Promise.resolve();
-      this.waitActive = true;
       return findFile('drivers/piggy-charger/assets/images/wait.png')
         .then((filename) => fs.createReadStream(filename, { bufferSize: 1024 }))
         .then((writer) => {
@@ -711,7 +722,6 @@ class ChargeDevice extends Device {
         });
     }
     this.ongoing = true;
-    this.waitActive = false;
 
     this.homey.app.updateLog('Image refresh started....', c.LOG_INFO);
     this.settings = this.getSettings();
