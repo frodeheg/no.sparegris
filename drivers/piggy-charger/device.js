@@ -177,7 +177,7 @@ class ChargeDevice extends Device {
         const oldModes = [];
         for (let m = 0; m < modeList.length; m++) {
           const idx = modeList[m].findIndex(({ id }) => id === deviceId);
-          oldModes[m] = modeList[m][idx].operation;
+          oldModes[m] = (idx >= 0) ? modeList[m][idx].operation : c.MAIN_OP.CONTROLLED;
         }
         await this.setStoreValue('oldModes', oldModes).catch(this.error);
 
