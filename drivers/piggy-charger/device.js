@@ -136,83 +136,7 @@ class ChargeDevice extends Device {
     await this.rescheduleCharging(false);
 
     // Link on-off button with the "controllable-device" setting in piggy
-    this.registerCapabilityListener('onoff', async (newVal) => {
-      const deviceId = this.getId();
-      this.log(`Changing controllable state to ${newVal} for Charger: ${deviceId}`);
-      if (newVal) {
-        // Check if the device can be turned on
-        const settings = this.getSettings();
-        if (settings.GotSignalWatt === 'False'
-          || (settings.GotSignalBattery === 'False' && settings.batteryFlowRequired)
-          || settings.GotSignalStatusCanCharge === 'False'
-          || settings.toggleMeasureW === '-') {
-          return Promise.reject(new Error(this.homey.__('charger.error.notReady')));
-        }
-      }
-      // Make the device controllable if it was not...
-      let __deviceList = this.homey.settings.get('deviceList') || {};
-      if (__deviceList === null || !(deviceId in __deviceList)) {
-        __deviceList = await this.homey.app.createDeviceList();
-      }
-      __deviceList[deviceId].use = newVal;
-      const frostList = this.homey.settings.get('frostList') || {};
-      const modeList = this.homey.settings.get('modeList');
-      const priceList = this.homey.settings.get('priceActionList') || {};
-      if (newVal) {
-        frostList[deviceId] = { minTemp: 5 };
-        const oldModes = this.getStoreValue('oldModes') || [];
-        for (let m = 0; m < modeList.length; m++) {
-          const idx = modeList[m].findIndex(({ id }) => id === deviceId);
-          if (idx < 0) {
-            const operation = Array.isArray(oldModes)
-              && oldModes[m]
-              && (oldModes[m] in c.MAIN_OP)
-              ? oldModes[m] : c.MAIN_OP.CONTROLLED;
-            modeList[m].push({ id: deviceId, operation, targetTemp: 5 });
-          }
-        }
-        const oldPriceTarget = this.getStoreValue('oldPriceTarget') || [];
-        for (let p = 0; p < priceList.length; p++) {
-          const operation = Array.isArray(oldPriceTarget) && oldPriceTarget[p] ? oldPriceTarget[p] : c.TARGET_OP.TURN_ON;
-          priceList[p][deviceId] = { delta: null, operation };
-        }
-      } else {
-        // If attempting to turn off store the controllable status for next time it is enabled
-        const oldModes = [];
-        for (let m = 0; m < modeList.length; m++) {
-          const idx = modeList[m].findIndex(({ id }) => id === deviceId);
-          oldModes[m] = (idx >= 0) ? modeList[m][idx].operation : c.MAIN_OP.CONTROLLED;
-        }
-        await this.setStoreValue('oldModes', oldModes).catch(this.error);
-        const oldPriceTarget = [];
-        for (let p = 0; p < priceList.length; p++) {
-          oldPriceTarget[p] = (Array.isArray(priceList[p]) && deviceId in priceList[p]) ? priceList[p][deviceId].operation : c.TARGET_OP.TURN_ON;
-        }
-        await this.setStoreValue('oldPriceTarget', oldPriceTarget).catch(this.error);
-
-        delete frostList[deviceId];
-        for (let m = 0; m < modeList.length; m++) {
-          const idx = modeList[m].findIndex(({ id }) => id === deviceId);
-          if (idx >= 0) {
-            modeList[m].splice(idx, 1);
-          }
-        }
-        for (let p = 0; p < priceList.length; p++) {
-          delete priceList[p][deviceId];
-        }
-      }
-      // Update all settings
-      await this.homey.settings.set('frostList', frostList);
-      await this.homey.settings.set('modeList', modeList);
-      this.homey.app.__deviceList = __deviceList;
-      await this.homey.settings.set('deviceList', __deviceList);
-      await this.homey.settings.set('priceActionList', priceList);
-      // If a device is attached, make sure the add and remove commands are run
-      if (newVal) {
-        return this.onTurnedOn();
-      }
-      return this.onTurnedOff();
-    });
+    this.registerCapabilityListener('onoff', async (newVal) => this.makeControllable(newVal));
 
     // Register the mode change capability
     this.registerCapabilityListener('charge_mode', async (newMode) => {
@@ -248,12 +172,122 @@ class ChargeDevice extends Device {
         this.homey.app.updateLog(`Camera image2 failed ${err}`, c.LOG_ERROR);
       }) */
 
+    // Make sure the device is turned on/off when added/removed from app settings
+    this.homey.settings.on('set', (setting) => {
+      if (setting === 'settingsSaved') {
+        if (this.settingsCalled) {
+          delete this.settingsCalled;
+          return Promise.resolve();
+        }
+        this.settingsCalled = true;
+        const deviceId = this.getId();
+        const frostList = this.homey.settings.get('frostList') || {};
+        const wantOn = deviceId in frostList;
+        const isOn = this.getCapabilityValue('onoff');
+        if ((!isOn && wantOn) || (isOn && !wantOn)) {
+          this.log(`Switching controller ${deviceId} controllable state from ${isOn} -> ${wantOn}`);
+          return this.makeControllable(wantOn)
+            .then(() => this.setCapabilityValue('onoff', wantOn))
+            .catch((err) => {
+              this.log(err);
+            });
+        }
+      }
+      return Promise.resolve();
+    });
+
     // Start the onProcessPower timer if it is not active
     if (this.__powerProcessID === undefined && !this.killed) {
       this.__powerProcessID = setTimeout(() => this.onProcessPowerWrapper(), 1000 * 10);
     }
 
     this.homey.app.updateLog('charger init done....', c.LOG_INFO);
+  }
+
+  /**
+   * Switches state of the controller to be controllable or not
+   * newVal: true when the device should be controllable, false otherwise.
+   */
+  async makeControllable(newVal) {
+    const deviceId = this.getId();
+    this.log(`Changing controllable state to ${newVal} for Charger: ${deviceId}`);
+    if (newVal) {
+      // Check if the device can be turned on
+      const settings = this.getSettings();
+      if (settings.GotSignalWatt === 'False'
+        || (settings.GotSignalBattery === 'False' && settings.batteryFlowRequired)
+        || settings.GotSignalStatusCanCharge === 'False'
+        || settings.toggleMeasureW === '-') {
+        return Promise.reject(new Error(this.homey.__('charger.error.notReady')));
+      }
+    }
+    // Make the device controllable if it was not...
+    let __deviceList = this.homey.settings.get('deviceList') || {};
+    if (__deviceList === null || !(deviceId in __deviceList)) {
+      __deviceList = await this.homey.app.createDeviceList();
+    }
+    __deviceList[deviceId].use = newVal;
+    const frostList = this.homey.settings.get('frostList') || {};
+    const modeList = this.homey.settings.get('modeList');
+    const priceList = this.homey.settings.get('priceActionList') || {};
+    if (newVal) {
+      frostList[deviceId] = { minTemp: 5 };
+      const oldModes = this.getStoreValue('oldModes') || [];
+      for (let m = 0; m < modeList.length; m++) {
+        const idx = modeList[m].findIndex(({ id }) => id === deviceId);
+        if (idx < 0) {
+          const operation = Array.isArray(oldModes)
+            && oldModes[m]
+            && (oldModes[m] in c.MAIN_OP)
+            ? oldModes[m] : c.MAIN_OP.CONTROLLED;
+          modeList[m].push({ id: deviceId, operation, targetTemp: 5 });
+        }
+      }
+      const oldPriceTarget = this.getStoreValue('oldPriceTarget') || [];
+      for (let p = 0; p < priceList.length; p++) {
+        const operation = Array.isArray(oldPriceTarget) && oldPriceTarget[p] ? oldPriceTarget[p] : c.TARGET_OP.TURN_ON;
+        priceList[p][deviceId] = { delta: null, operation };
+      }
+    } else {
+      // If attempting to turn off store the controllable status for next time it is enabled
+      const oldModes = [];
+      for (let m = 0; m < modeList.length; m++) {
+        const idx = modeList[m].findIndex(({ id }) => id === deviceId);
+        oldModes[m] = (idx >= 0) ? modeList[m][idx].operation
+          : (m in oldModes) ? oldModes[m]
+            : c.MAIN_OP.CONTROLLED;
+      }
+      await this.setStoreValue('oldModes', oldModes).catch(this.error);
+      const oldPriceTarget = [];
+      for (let p = 0; p < priceList.length; p++) {
+        oldPriceTarget[p] = (Array.isArray(priceList[p]) && deviceId in priceList[p]) ? priceList[p][deviceId].operation
+          : (p in oldPriceTarget) ? oldPriceTarget[p]
+            : c.TARGET_OP.TURN_ON;
+      }
+      await this.setStoreValue('oldPriceTarget', oldPriceTarget).catch(this.error);
+
+      delete frostList[deviceId];
+      for (let m = 0; m < modeList.length; m++) {
+        const idx = modeList[m].findIndex(({ id }) => id === deviceId);
+        if (idx >= 0) {
+          modeList[m].splice(idx, 1);
+        }
+      }
+      for (let p = 0; p < priceList.length; p++) {
+        delete priceList[p][deviceId];
+      }
+    }
+    // Update all settings
+    await this.homey.settings.set('frostList', frostList);
+    await this.homey.settings.set('modeList', modeList);
+    this.homey.app.__deviceList = __deviceList;
+    await this.homey.settings.set('deviceList', __deviceList);
+    await this.homey.settings.set('priceActionList', priceList);
+    // If a device is attached, make sure the add and remove commands are run
+    if (newVal) {
+      return this.onTurnedOn();
+    }
+    return this.onTurnedOff();
   }
 
   /**
