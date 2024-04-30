@@ -43,7 +43,7 @@ const CHARGEGROUP = {
 // Default text
 const okText = '[\u001b[32;1m OK \u001b[37m]';
 const errText = '[\u001b[31;1mFAIL\u001b[37m]';
-const infoText = '[\u001b[34;1mINFO\u001b[37m]';
+const infoText = '[\u001b[32;22mINFO\u001b[37;1m]';
 const progressText = '[\u001b[37;0m....\u001b[37;1m]';
 const RED = '[\u001b[31;1m';
 const YELLOW = '\u001b[33;1m';
