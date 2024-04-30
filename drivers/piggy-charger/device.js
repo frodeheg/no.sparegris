@@ -288,8 +288,8 @@ class ChargeDevice extends Device {
       delete this.triggerThread;
     }
     if (this.getCapabilityValue('onoff')) {
-      this.onTurnedOff();
-      this.setCapabilityValue('onoff', false).catch(this.ignoredError);
+      await this.onTurnedOff();
+      await this.setCapabilityValue('onoff', false).catch(this.ignoredError);
     }
     if (this.__powerProcessID !== undefined) {
       clearTimeout(this.__powerProcessID);
@@ -400,6 +400,9 @@ class ChargeDevice extends Device {
         if (this.targetDriver && this.targetDef.setCurrentCap) {
           return this.homey.app.getDevice(this.targetId)
             .then((device) => {
+              if (!device.capabilitiesObj) {
+                return Promise.reject(new Error(`Timed out when waiting for charger device ${this.targetId}`));
+              }
               const { lastCurrent, lastPower } = this;
               const ampsActualOffer = +device.capabilitiesObj[this.targetDef.getOfferedCap].value;
               const ampsOffered = +device.capabilitiesObj[this.targetDef.setCurrentCap].value;
