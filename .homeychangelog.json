@@ -955,5 +955,8 @@
   },
   "0.22.8": {
     "en": "Improved visualization during charge controller validation. + Fixed crash bug + Fixed validation procedure for Flow based chargers + Fixed issues turning on/off the charge controllers."
+  },
+  "0.22.9": {
+    "en": "Added hack to work around image refresh issues on iOS"
   }
 }
