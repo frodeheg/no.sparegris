@@ -1419,7 +1419,8 @@ class ChargeDevice extends Device {
           return this.setChargerState(translatedState, false);
         });
     }
-    return Promise.resolve(+this.getCapabilityValue('charge_status'));
+    const state = this.getCapabilityValue('charge_status');
+    return Promise.resolve(state === null ? STATE_ERROR : +state);
   }
 
   /**
