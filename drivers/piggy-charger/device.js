@@ -43,6 +43,7 @@ const CHARGEGROUP = {
 // Default text
 const okText = '[\u001b[32;1m OK \u001b[37m]';
 const errText = '[\u001b[31;1mFAIL\u001b[37m]';
+const infoText = '[\u001b[34;1mINFO\u001b[37m]';
 const progressText = '[\u001b[37;0m....\u001b[37;1m]';
 const RED = '[\u001b[31;1m';
 const YELLOW = '\u001b[33;1m';
@@ -900,7 +901,7 @@ class ChargeDevice extends Device {
     const text = this.homey.__('charger.validation.turnedOnLabel');
     const onOffValue = this.getCapabilityValue('onoff');
     if (!onOffValue) {
-      dst.addText(`${errText} ${text}\n`);
+      dst.addText(`${infoText} ${text}\n`);
       return Promise.reject(new Error(`${this.homey.__('charger.validation.turnedOnHint')}`));
     }
     dst.addText(`${okText} ${text}\n`);
