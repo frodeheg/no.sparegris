@@ -190,6 +190,8 @@ class ChargeDevice extends Device {
             .then(() => this.setCapabilityValue('onoff', wantOn))
             .catch((err) => {
               this.log(err);
+              this.homey.settings.set('customError', err.message);
+              this.makeControllable(!wantOn).catch(this.error);
             });
         }
       }
