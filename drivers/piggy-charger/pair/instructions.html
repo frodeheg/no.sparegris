@@ -32,9 +32,6 @@
         })
         .then((devices) => Homey.setViewStoreValue("add_devices", "devices", devices));
 
-      setParam('voltage', 230);
-      setParam('phases', 1);
-
       Homey.hideLoadingOverlay();
     </script>
   </body>
