@@ -1445,9 +1445,11 @@ class PiggyBank extends Homey.App {
         || (d.DEVICE_CMD[driverId].type === d.DEVICE_TYPE.HEATER)
         || (d.DEVICE_CMD[driverId].type === d.DEVICE_TYPE.WATERHEATER)
         || (d.DEVICE_CMD[driverId].type === d.DEVICE_TYPE.AC))) ? 1 : 0)
-        + ((device.capabilities.includes('target_temperature') || onoffCap !== undefined)
-        && device.capabilities.includes('measure_temperature') ? 1 : 0)
-        + ((device.class === 'thermostat' || device.class === 'heater') ? 1 : 0);
+        + ((!(driverId in d.DEVICE_CMD)
+        && (((device.capabilities.includes('target_temperature') || onoffCap !== undefined)
+          && device.capabilities.includes('measure_temperature'))
+        || (device.class === 'thermostat')
+        || (device.class === 'heater'))) ? 1 : 0);
 
       // Filter out irrelevant devices (check old device list if possible)
       let useDevice = false;
