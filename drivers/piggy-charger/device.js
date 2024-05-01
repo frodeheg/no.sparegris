@@ -231,6 +231,18 @@ class ChargeDevice extends Device {
     const modeList = this.homey.settings.get('modeList');
     const priceList = this.homey.settings.get('priceActionList') || {};
     if (newVal) {
+      // Disable the old controller (TODO: Remove when the old controller is deprecated)
+      if (this.targetDriver && this.targetId in __deviceList && __deviceList[this.targetId].use) {
+        __deviceList[this.targetId].use = false;
+        delete frostList[this.targetId];
+        for (let m = 0; m < modeList.length; m++) {
+          const idx = modeList[m].findIndex(({ id }) => id === this.targetId);
+          if (idx >= 0) modeList[m].splice(idx, 1);
+        }
+        for (let p = 0; p < priceList.length; p++) delete priceList[p][this.targetId];
+      }
+
+      // Set up all state required when enabling a device:
       frostList[deviceId] = { minTemp: 5 };
       const oldModes = this.getStoreValue('oldModes') || [];
       for (let m = 0; m < modeList.length; m++) {
@@ -788,13 +800,13 @@ class ChargeDevice extends Device {
             break;
           case STATE_CANT_CHARGE:
             dst.addText(`${errText} ${this.homey.__('charger.validation.stateLabel')}\n`);
-            return Promise.reject(new Error(`${this.homey.__('charger.validation.stateHint')}`));
+            return Promise.reject(new Error(this.homey.__('charger.validation.stateHint')));
           case STATE_ERROR:
             dst.addText(`${errText} ${this.homey.__('charger.validation.stateLabel')}\n`);
-            return Promise.reject(new Error(`${this.homey.__('charger.validation.stateHint')}`));
+            return Promise.reject(new Error(this.homey.__('charger.validation.stateHint')));
           default: // null and undefined
             dst.addText(`${errText} ${this.homey.__('charger.validation.stateLabel')}\n`);
-            return Promise.reject(new Error(`${this.homey.__('charger.validation.stateHint')}`));
+            return Promise.reject(new Error(this.homey.__('charger.validation.stateHint')));
         }
         dst.addText(`${okText} ${this.homey.__('charger.validation.stateLabel')}\n`);
         return Promise.resolve();
