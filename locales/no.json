@@ -404,10 +404,13 @@
       "phases": "Antall faser",
       "phase1": "1 fase",
       "phase3": "3 faser",
+      "battery": "Batteristatus",
+      "batteryYes": "Tilgjengelig",
+      "batteryNo": "Utilgjengelig",
       "instructions": "Instruksjoner",
       "flowInfo": "<b>Merk!</b> Du må manuelt sette opp noen flyter for å kommunisere med laderen.",
       "teslaInfo": "<b>Merk!</b> På grunn av begrensninger i Tesla-appen må du manuelt sette opp noen flyter for å kommunisere med Tesla-laderen. (Tesla-apputvikleren kan fikse dette ved å legge til strømkontroll som capability)",
-      "zatptecInfo": "<b>Merk!</b> På grunn av begrensninger i Zaptec-appen må du manuelt sette opp noen flyter for å kommunisere med Zaptec-laderen. (Zapptec-apputvikleren kan fikse dette ved å legge til strømkontroll som capability)",
+      "zaptecInfo": "<b>Merk!</b> På grunn av begrensninger i Zaptec-appen må du manuelt sette opp noen flyter for å kommunisere med Zaptec-laderen. (Zaptec-apputvikleren kan fikse dette ved å legge til strømkontroll som capability)",
       "cameraInfo": "For ytterligere instruksjoner, se kamerafunksjonen til ladekontrollenheten."
     },
     "validation": {

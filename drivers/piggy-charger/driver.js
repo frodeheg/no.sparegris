@@ -8,9 +8,9 @@ const homeypath = ('testing' in global && testing) ? '../../testing/' : '';
 const { Driver } = require(`${homeypath}homey`);
 
 const supportedDevices = {
-  'no.easee:charger': { icon: 'easee.svg' },
-  'com.zaptec:go': { icon: 'zaptec.svg' },
-  'com.tesla.charger:Tesla': { icon: 'tesla.svg' },
+  'no.easee:charger': { icon: 'easee.svg', battery: false },
+  'com.zaptec:go': { icon: 'zaptec.svg', battery: false },
+  'com.tesla.charger:Tesla': { icon: 'tesla.svg', battery: true },
 };
 
 class ChargeDriver extends Driver {
@@ -35,7 +35,8 @@ class ChargeDriver extends Driver {
     // Default setting-values, changed during pairing
     const defaultSettings = {
       voltage: '230',
-      phases: '1'
+      phases: '1',
+      batteryFlowRequired: false
     };
 
     // First entry is a new flow based charge controller
@@ -47,7 +48,7 @@ class ChargeDriver extends Driver {
         id: randomId,
         targetDriver: null
       },
-      settings: defaultSettings
+      settings: { ...defaultSettings }
       //   store: {
       //     address: '127.0.0.1',
       //   },
@@ -68,8 +69,9 @@ class ChargeDriver extends Driver {
             id: deviceId,
             targetDriver: driverId
           },
-          settings: defaultSettings
+          settings: { ...defaultSettings }
         };
+        deviceCharger.settings.batteryFlowRequired = supportedDevices[driverId].battery;
         devicelist.push(deviceCharger);
       }
     }
