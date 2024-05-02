@@ -411,6 +411,7 @@
       "flowInfo": "<b>Note!</b> You will have to manually set up some flows to communicate with the charger device.",
       "teslaInfo": "<b>Note!</b> Due to limitations in the Tesla app you will have to manually set up some flows to communicate with the Tesla charger. (the Tesla app developer may fix this by adding current-control as a capability)",
       "zaptecInfo": "<b>Note!</b> Due to limitations in the Zaptec app you will have to manually set up some flows to communicate with the Zaptec charger. (the Zaptec app developer may fix this by adding current-control as a capability)",
+      "flowBattInfo": "<b>Note!</b> You have to create a flow similar to this to use this feature",
       "cameraInfo": "For the remaining instructions, please refer to the camera capability of the charge controller device."
     },
     "validation": {

@@ -408,9 +408,10 @@
       "batteryYes": "Disponible",
       "batteryNo": "Indisponible",
       "instructions": "Instructions",
-      "flowInfo": "<b>Remarque !</b> Vous devrez configurer manuellement certains flux pour communiquer avec le chargeur.",
-      "teslaInfo": "<b>Remarque !</b> En raison des limitations de l'application Tesla, vous devrez configurer manuellement certains flux pour communiquer avec le chargeur Tesla. (le développeur de l'application Tesla peut résoudre ce problème en ajoutant un contrôle de courant comme capacité)",
-      "zaptecInfo": "<b>Remarque !</b> En raison des limitations de l'application Zaptec, vous devrez configurer manuellement certains flux pour communiquer avec le chargeur Zaptec. (le développeur de l'application Zaptec peut résoudre ce problème en ajoutant un contrôle de courant comme capacité)",
+      "flowInfo": "<b>Remarque!</b> Vous devrez configurer manuellement certains flux pour communiquer avec le chargeur.",
+      "teslaInfo": "<b>Remarque!</b> En raison des limitations de l'application Tesla, vous devrez configurer manuellement certains flux pour communiquer avec le chargeur Tesla. (le développeur de l'application Tesla peut résoudre ce problème en ajoutant un contrôle de courant comme capacité)",
+      "zaptecInfo": "<b>Remarque!</b> En raison des limitations de l'application Zaptec, vous devrez configurer manuellement certains flux pour communiquer avec le chargeur Zaptec. (le développeur de l'application Zaptec peut résoudre ce problème en ajoutant un contrôle de courant comme capacité)",
+      "flowBattInfo": "<b>Remarque!</b> Vous devez créer un flux similaire à celui-ci pour utiliser cette fonctionnalité.",
       "cameraInfo": "Pour les instructions restantes, veuillez vous référer à la capacité de la caméra du dispositif contrôleur de charge."
     },
     "validation": {

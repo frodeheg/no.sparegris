@@ -411,6 +411,7 @@
       "flowInfo": "<b>Opmerking!</b> U zult enkele stromen handmatig moeten instellen om met het opladerapparaat te communiceren.",
       "teslaInfo": "<b>Opmerking!</b> Vanwege beperkingen in de Tesla-app zult u sommige stromen handmatig moeten instellen om te communiceren met de Tesla-oplader. (de ontwikkelaar van de Tesla-app kan dit oplossen door stroomcontrole toe te voegen als een mogelijkheid)",
       "zaptecInfo": "<b>Opmerking!</b> Vanwege beperkingen in de Zaptec-app zult u sommige stromen handmatig moeten instellen om te communiceren met de Zaptec-oplader. (de Zaptec-app-ontwikkelaar kan dit oplossen door stroomcontrole toe te voegen als een mogelijkheid)",
+      "flowBattInfo": "<b>Opmerking!</b> U moet een soortgelijke stroom maken om deze functie te gebruiken.",
       "cameraInfo": "Voor de overige instructies verwijzen wij u naar de cameramogelijkheden van het laadregelaarapparaat."
     },
     "validation": {
