@@ -961,5 +961,8 @@
   },
   "0.22.10": {
     "en": "Fixed Voltage and phase selection + Made sure the old way of controlling a charger is disabled when enabling the new. + Added more feedback + Battery selector is now during pairing. + added example flow images"
+  },
+  "0.22.11": {
+    "en": "Added image toknens for the camera interfaces"
   }
 }
