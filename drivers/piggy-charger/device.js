@@ -155,9 +155,17 @@ class ChargeDevice extends Device {
     this.fb = await new Framebuffer({ width: 500, height: 500, colorType: 2, bgColor: { red: 80, green: 80, blue: 80 }});
     await this.homey.images.createImage()
       .then((image) => {
-        return image.update()
-          .then(() => image.setStream((stream) => this.refreshImageStream(stream)))
-          .then(() => this.setCameraImage('front', 'Help image', image));
+        this.image = image;
+        image.setStream((stream) => this.refreshImageStream(stream));
+        this.setCameraImage('front', 'Help image', image);
+        return this.homey.flow.createToken(`ChargeCam_${this.getId()}`, {
+          type: 'image',
+          title: `${this.getName()} camera`
+        });
+      })
+      .then((imageToken) => {
+        this.imageToken = imageToken;
+        return imageToken.setValue(this.image);
       })
       .catch((err) => {
         this.homey.app.updateLog(`Camera image1 failed ${err}`, c.LOG_ERROR);
@@ -708,7 +716,10 @@ class ChargeDevice extends Device {
       if (this.iOSHackAck) return Promise.reject(new Error('Aborted due to iOS workaround hack'));
     }
 
-    // When running in the firefox browser and iPhone, the first image is the one in the cache...
+    // The default shown image per consumer is the first image received by the consumer.
+    // Thus, send a specialized first image to ease the understanding of the camera device.
+    // Note though.... the first image received by the consumer is not the same for every consumer
+    // Thus, the code below should be updated to send the first image to every consumer and not only the first one... (TODO)
     if (!this.sentFirstImage) {
       return findFile('drivers/piggy-charger/assets/images/refresh_single.png')
         .then((filename) => fs.createReadStream(filename), { bufferSize: 1024 })

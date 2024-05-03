@@ -601,7 +601,7 @@ const DEVICE_CMD = {
     pauseCurrent: 4,
     measurePowerCap: 'measure_power',
     statusCap: 'charger_status',
-    statusUnavailable: ['Completed', 'Standby', 'Error'],
+    statusUnavailable: ['Completed', 'Standby', 'Error'], // 'Offline', 'Awaiting Authentication', 'Deauthenticating'  |  Available: 'Paused', 'Charging', 'Car connected'
     statusProblem: ['Error'],
     note: 'In order to control this device, please install and enable the Charge controller device',
     default: false
