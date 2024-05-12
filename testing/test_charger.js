@@ -29,13 +29,14 @@ const { useUrlOverride, setUrlData } = require('./urllib');
 // Test Device initialization
 async function testDeviceInit() {
   console.log('[......] Charge controller Initialization');
+  const now = new Date('July 2, 2023, 03:00:00:000 GMT+2:00');
   const app = new PiggyBank();
   const chargeDriver = new ChargeDriver('piggy-charger', app);
   const chargeDevice = new ChargeDevice(chargeDriver);
   try {
     await app.disableLog();
-    await app.onInit();
-    await chargeDevice.onInit();
+    await app.onInit(now);
+    await chargeDevice.onInit(now);
   } finally {
     chargeDevice.onUninit();
     app.onUninit();
@@ -46,13 +47,15 @@ async function testDeviceInit() {
 // Test Charge plan
 async function testChargePlan() {
   console.log('[......] Charge plan');
+  const now = new Date('July 2, 2023, 03:00:00:000 GMT+2:00');
   const app = new PiggyBank();
   const chargeDriver = new ChargeDriver('piggy-charger', app);
   const chargeDevice = new ChargeDevice(chargeDriver);
   try {
     await app.disableLog();
-    await app.onInit();
+    await app.onInit(now);
     await applyBasicConfig(app);
+    await chargeDevice.onInit(now);
 
     app.__current_prices = [
       0.2, 0.3, 0.5, 0.3, 0.2, 0.5, 0.9, 0.8, 0.1, 0.2,
@@ -61,15 +64,16 @@ async function testChargePlan() {
     app.__current_price_index = 3;
     const resultTable = [undefined, 3750, undefined, undefined, undefined, 3750, 3750];
 
-    await chargeDevice.onInit();
-
     // app.onChargingCycleStart(10, '08:00');
     const callTime = new Date();
     callTime.setHours(3, 0, 0, 0);
-    chargeDevice.onChargingCycleStart(undefined, '10:00', 3, callTime);
+    await chargeDevice.onChargingCycleStart(undefined, '10:00', 3, callTime);
     for (let i = 0; i < resultTable.length; i++) {
+      if (!Array.isArray(chargeDevice.chargePlan.currentPlan)) {
+        throw new Error('Unable to create a charge plan...');
+      }
       if (chargeDevice.chargePlan.currentPlan[i] !== resultTable[i]) {
-        throw new Error(`Charging schedule failed, Hour +${i} observed ${chargeDevice.__charge_plan[i]}, wanted: ${resultTable[i]}`);
+        throw new Error(`Charging schedule failed, Hour +${i} observed ${chargeDevice.chargePlan.currentPlan[i]}, wanted: ${resultTable[i]}`);
       }
     }
   } finally {
@@ -81,6 +85,7 @@ async function testChargePlan() {
 
 async function testChargeValidation() {
   console.log('[......] Charge Validation');
+  const now = new Date('July 2, 2023, 03:00:00:000 GMT+2:00');
   const app = new PiggyBank();
   const homeyApi = await HomeyAPI.createAppAPI({ homey: app.homey });
   const chargeDriver = new ChargeDriver('piggy-charger', app);
@@ -91,7 +96,7 @@ async function testChargeValidation() {
 
   try {
     await app.disableLog();
-    await app.onInit();
+    await app.onInit(now);
     await applyBasicConfig(app);
 
     const zoneHomeId = app.homeyApi.zones.addZone('Home');
@@ -123,7 +128,7 @@ async function testChargeValidation() {
       await chargeDevice.setData({ targetDriver, id });
       await chargeDevice.setSettings({ startCurrent: 11, stopCurrent: 0, pauseCurrent: 4, minCurrent: 7, maxCurrent: 12 });
       await chargeDevice.setSettings({ phases: 1, voltage: 220 });
-      await chargeDevice.onInit();
+      await chargeDevice.onInit(now);
       await validateCharger(app, chargeDevice);
       chargeDevice.onUninit();
       console.log('\x1b[1A[\x1b[32mPASSED\x1b[0m]');
@@ -164,7 +169,7 @@ async function testChargeControl() {
     // await chargeDevice.setData({ targetDriver: 'no.easee:charger', id: 'EASEE-DEVICEID' });
     // await chargeDevice.setSettings({ startCurrent: 11, stopCurrent: 0, pauseCurrent: 4, minCurrent: 7, maxCurrent: 12 });
     await chargeDevice.setSettings({ phases: 1, voltage: 220 });
-    await chargeDevice.onInit();
+    await chargeDevice.onInit(now);
     clearTimeout(chargeDevice.__powerProcessID);
     chargeDevice.__powerProcessID = undefined;
 
@@ -266,12 +271,14 @@ async function testChargeToken() {
   const chargeDevice = new ChargeDevice(chargeDriver);
 
   now.setHours(3, 0, 0, 0);
+  const correctToken = '{"cycleStart":"2023-07-02T01:00:00.000Z","cycleEnd":"2023-07-02T08:00:00.000Z","cycleType":2,"cycleRemaining":3,"cycleTotal":3,"currentPlan":[null,3750,null,null,null,3750,3750],"originalPlan":[null,3750,null,null,null,3750,3750],"actualCharge":[null,null,null,null,null,null,null],"actualPrices":[0.3,0.2,0.5,0.9,0.8,0.1,0.2],"currentIndex":0}';
+  let chargeToken;
   try {
     await app.disableLog();
     await app.onInit(now);
     await chargeDevice.setData({ targetDriver: null, id: 'TestDeviceID' });
     await chargeDevice.setSettings({ phases: 1, voltage: 220 });
-    await chargeDevice.onInit();
+    await chargeDevice.onInit(now);
     clearTimeout(chargeDevice.__powerProcessID);
     chargeDevice.__powerProcessID = undefined;
     await applyBasicConfig(app);
@@ -280,12 +287,10 @@ async function testChargeToken() {
     const callTime = new Date(now);
     await chargeDevice.onChargingCycleStart(undefined, '10:00', 3, callTime);
   } finally {
+    chargeToken = chargeDevice.homey.flow.getToken('chargeToken-TestDeviceID').value;
     chargeDevice.onUninit();
     app.onUninit();
   }
-
-  const correctToken = '{"cycleStart":"2023-07-02T01:00:00.000Z","cycleEnd":"2023-07-02T08:00:00.000Z","cycleType":2,"cycleRemaining":3,"cycleTotal":3,"currentPlan":[null,3750,null,null,null,3750,3750],"originalPlan":[null,3750,null,null,null,3750,3750],"actualCharge":[null,null,null,null,null,null,null],"actualPrices":[0.3,0.2,0.5,0.9,0.8,0.1,0.2],"currentIndex":0}';
-  const chargeToken = chargeDevice.homey.flow.getToken('chargeToken-TestDeviceID').value;
 
   if (chargeToken !== correctToken) {
     throw new Error(`Incorrect charge Token '${chargeToken}'`);
@@ -300,7 +305,7 @@ async function testCharset() {
   const reducer = (combined, currentValue) => {
     if (typeof (currentValue) === 'string') {
       for (const charIdx in currentValue) {
-        combined[currentValue[charIdx]] = true;
+        combined[currentValue[charIdx]] = `${currentValue[charIdx]} (${charIdx}): ${currentValue}`;
       }
     } else if (typeof (currentValue) === 'object') {
       combined = Object.values(currentValue).reduce(reducer, combined);
@@ -317,13 +322,16 @@ async function testCharset() {
     'nl.json': '1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ .,-+/*()<>!"\'',
     'fr.json': '1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ .,-+/*()<>!"\'éàèùçâêîôûëïüÉÀÈÙÇÂÊÎÔÛËÏÜ',
   };
+  // These characters has been tested and doesn't work:
+  // ’ : replace with ' instead
   for (const idx in files) {
     const fileName = `../locales/${files[idx]}`;
     const json = JSON.parse(fs.readFileSync(fileName, { encoding: 'utf8', flag: 'r' }));
     const letters = Object.values(json.charger).reduce(reducer, {});
     for (const letter in letters) {
+      const ref = letters[letter];
       if (letter.charCodeAt(0) >= 256) {
-        throw new Error(`Unicode character '${letter}' from ${fileName} is not supported yet`);
+        throw new Error(`Unicode character '${letter}' from ${fileName} is not supported yet (ref: ${ref})`);
       }
       if (!(validLetters[files[idx]].includes(letter))) {
         throw new Error(`Letter '${letter}' from ${fileName} is not valid`);
@@ -339,14 +347,15 @@ async function testCharset() {
  */
 async function testConnectHelp() {
   console.log('[......] Image generation (test not complete)');
+  const now = new Date('July 2, 2023, 03:00:00:000 GMT+2:00');
   const app = new PiggyBank();
   const chargeDriver = new ChargeDriver('piggy-charger', app);
   const chargeDevice = new ChargeDevice(chargeDriver);
   try {
     await app.disableLog();
-    await app.onInit();
+    await app.onInit(now);
     await applyBasicConfig(app);
-    await chargeDevice.onInit();
+    await chargeDevice.onInit(now);
 
     if (chargeDevice.camera.front.image.data !== null) throw new Error('Image should not exist at this time');
     // TODO: Simulate a refresh image click

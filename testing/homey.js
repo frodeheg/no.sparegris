@@ -4,7 +4,6 @@
 
 'use strict';
 
-const { PNG } = require('pngjs/browser');
 const manifest = require('../app.json');
 const env = require('../env.json');
 const fs = require('fs');
@@ -279,7 +278,12 @@ class FakeFlowClass {
 
   createToken(name) {
     this.tokens[name] = new FakeTokenClass(this.homey, name);
-    return this.tokens[name];
+    return Promise.resolve(this.tokens[name]);
+  }
+
+  unregisterToken(tokenInstance) {
+    delete this.tokens[tokenInstance.name];
+    return Promise.resolve();
   }
 
   getToken(name) {
@@ -350,10 +354,10 @@ class FakeLanguageClass {
 /**
  * Fake Image class
  */
-class FakeImageClass extends PNG {
+class FakeImageClass {
 
   constructor() {
-    super();
+    // super();
     this.updateFunction = undefined;
     this.path = undefined;
   }
@@ -525,8 +529,9 @@ class Device {
     }
   }
 
-  setSettings(newSettings) {
+  async setSettings(newSettings) {
     this.settings = { ...this.settings, ...newSettings };
+    return Promise.resolve();
   }
 
   registerTrigger(name, func) {

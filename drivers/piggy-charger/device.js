@@ -54,7 +54,7 @@ class ChargeDevice extends Device {
   /**
    * onInit is called when the device is initialized.
    */
-  async onInit() {
+  async onInit(now = new Date()) {
     this.homey.app.updateLog('Charger init', c.LOG_INFO);
     this.homey.app.updateLog('Piggy Charger has been initialized', 1);
     this.settingsManifest = await this.driver.ready().then(() => this.driver.manifest.settings[VALIDATION_SETTINGS].children);
@@ -131,7 +131,7 @@ class ChargeDevice extends Device {
     }).catch((err) => this.homey.flow.getToken(`chargeToken-${data.id}`))
       .catch((err) => undefined);
     await this.homey.flow.getToken(`chargeToken-${data.id}`);
-    await this.homey.app.doPriceCalculations();
+    await this.homey.app.doPriceCalculations(now);
     await this.updateChargePlan([]);
     await this.rescheduleCharging(false);
 
