@@ -1098,10 +1098,11 @@ class ChargeDevice extends Device {
   /**
    * Only called when stopping the charging cycle ahead of time
    */
-  async onChargingCycleStop() {
+  async onChargingCycleStop(now = new Date()) {
     this.homey.app.updateLog('Charging cycle abruptly ended', c.LOG_INFO);
-    if (this.chargePlan.cycleEnd > new Date()) {
+    if (this.chargePlan.cycleEnd > now) {
       this.chargePlan.cycleRemaining = 0;
+      this.chargePlan.cycleEnd = now;
       this.setStoreValue('chargePlan', this.chargePlan);
       this.rescheduleCharging(false);
     } else {
