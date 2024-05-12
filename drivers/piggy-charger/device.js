@@ -117,7 +117,7 @@ class ChargeDevice extends Device {
     this.chargePlan.currentIndex = +this.chargePlan.currentIndex || 0;
 
     this.mutexForPower = new Mutex();
-    this.__previousTime = new Date();
+    this.__previousTime = new Date(now);
     this.__spookey_check_activated = undefined;
     this.__spookey_changes = 0;
     this.__offeredEnergy = 0;
@@ -1170,7 +1170,13 @@ class ChargeDevice extends Device {
         this.chargePlan.actualPrices[loop] = priceArray[loop - startIndex];
       }
       if (this.chargePlan.cycleRemaining < 0) this.chargePlan.cycleRemaining = 0;
-      this.chargePlan.currentIndex++;
+      if (this.chargePlan.currentIndex < this.chargePlan.currentPlan.length) {
+        this.chargePlan.currentIndex++;
+      }
+      if (this.chargePlan.currentIndex === this.chargePlan.currentPlan.length) {
+        // Any remaining charge must be invalidated when the charge plan is completed
+        this.chargePlan.cycleRemaining = 0;
+      }
       if (oldRemaining !== 0) {
         this.setStoreValue('chargePlan', this.chargePlan);
       }
@@ -1451,7 +1457,7 @@ class ChargeDevice extends Device {
 
     // Update energy used
     const lapsedTime = this.__previousTime ? (now - this.__previousTime) : 0;
-    const timeDelta = lapsedTime / (1000 * 60 * 60);
+    const timeDelta = (lapsedTime < 0) ? 0 : (lapsedTime / (1000 * 60 * 60));
     const currentPower = await this.getPower();
     const deltaEnergy = currentPower * timeDelta;
     this.__previousTime = now;
@@ -1540,6 +1546,9 @@ class ChargeDevice extends Device {
     return this.getCapabilityValue('target_power');
   }
 
+  /**
+   * Returns if we are within a charging cycle
+   */
   getIsPlanned() {
     const currentMode = +this.getCapabilityValue('charge_mode');
     const allowPowerPlan = this.chargePlan.currentPlan[this.chargePlan.currentIndex] > 0;
@@ -1570,7 +1579,6 @@ class ChargeDevice extends Device {
         // If not confirmed, it's considered a success due to being blocked by toggle rate
         return Promise.resolve([(!this.confirmed && this.ongoing) || false, false]); // Try changing another device
       });
-
     const noChange = (powerChange === 0)
       || ((oldTarget >= maxPower) && (newTarget >= maxPower))
       || !this.getIsPlanned().withinChargingPlan;

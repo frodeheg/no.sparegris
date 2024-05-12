@@ -247,7 +247,115 @@ async function testChargeControl() {
     const hourKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
     const correctTotal = [undefined, undefined, undefined, 3983, 9955, 3994, 3988, 3992, 9991, 9935];
     const correctCharged = [undefined, undefined, undefined, 0, 5982, 0, 0, 0, 6018, 6001];
+    for (let i = 0; i < correctPlan.length + 3; i++) {
+      if (archive.powUsage.hourly[hourKey][i] !== correctTotal[i]) {
+        throw new Error(`Measured total power failed, Hour +${i} observed ${archive.powUsage.hourly[hourKey][i]}, wanted: ${correctTotal[i]}`);
+      }
+      if (archive.charged.hourly[hourKey][i] !== correctCharged[i]) {
+        throw new Error(`Measured charged energy failed, Hour +${i} observed ${archive.charged.hourly[hourKey][i]}, wanted: ${correctCharged[i]}`);
+      }
+    }
+  } finally {
+    chargeDevice.onUninit();
+    app.onUninit();
+  }
+  console.log('\x1b[1A[\x1b[32mPASSED\x1b[0m]');
+}
+
+async function testNoOvershoot() {
+  console.log('[......] No charging outside of plan');
+  const now = new Date('July 2, 2023, 03:00:00:000 GMT+2:00');
+  const app = new PiggyBank();
+  const homeyApi = await HomeyAPI.createAppAPI({ homey: app.homey });
+  const chargeDriver = new ChargeDriver('piggy-charger', app);
+  const chargeDevice = new ChargeDevice(chargeDriver);
+
+  const chargeZoneId = '1';
+  homeyApi.zones.addZone('ChargeZone', chargeZoneId, null);
+  now.setHours(3, 0, 0, 0);
+  try {
+    await app.disableLog();
+    await app.onInit(now);
+
+    await chargeDevice.setData({ targetDriver: null, id: 'FLOW' });
+    await chargeDevice.setSettings({ phases: 1, voltage: 220 });
+    await chargeDevice.onInit(now);
+    clearTimeout(chargeDevice.__powerProcessID);
+    chargeDevice.__powerProcessID = undefined;
+
+    await applyEmptyConfig(app);
+    app.homey.settings.set('maxPower', [Infinity, 10000, Infinity, Infinity]);
+    const zoneHomeId = app.homeyApi.zones.addZone('Home');
+    await addDevice(app, chargeDevice, 'device_a', zoneHomeId);
+    app.homey.settings.set('frostList', { device_a: { minTemp: 3 } });
+    app.homey.settings.set('modeList', [
+      [{ id: 'device_a', operation: c.MAIN_OP.CONTROLLED, targetTemp: 24 }], // Normal
+      [{ id: 'device_a', operation: c.MAIN_OP.CONTROLLED, targetTemp: 24 }], // Night
+      [{ id: 'device_a', operation: c.MAIN_OP.CONTROLLED, targetTemp: 24 }], // Away
+    ]);
+    app.homey.settings.set('priceActionList', [
+      { device_a: { operation: c.TARGET_OP.TURN_ON } },
+      { device_a: { operation: c.TARGET_OP.TURN_ON } },
+      { device_a: { operation: c.TARGET_OP.TURN_ON } },
+      { device_a: { operation: c.TARGET_OP.TURN_ON } },
+      { device_a: { operation: c.TARGET_OP.TURN_ON } }]);
+
+    await app.createDeviceList();
+
+    app.app_is_configured = app.validateSettings();
+
+    await applyPriceScheme2(app);
+    const correctPlan = [7500, 7500, 7500, 7500, 7500, 7500, 7500];
+
+    // 1) Set charger power when the plan is off, check that power is not given
+    let chargerPower = 1000;
+    await chargeDevice.registerTrigger('charger-change-target-power', (chargeDevice, tokens) => {
+      // This is where:
+      // 1) A flow would route the trigger to a charger
+      // 2) The charger would change the power as instructed
+      // 3) The change of charger power will be noticed and sent back to piggy
+      const powerFeedback = app.homey.flow.getActionCard('charger-change-power');
+      powerFeedback.triggerAction({ device: chargeDevice, power: tokens.offeredPower });
+    });
+    chargeDevice.setTargetPower(chargerPower);
+
+    // 2) Start the plan, check that power is given at the right time
+    const callTime = new Date(now);
+    await chargeDevice.onChargingCycleStart(undefined, '10:00', 10, callTime);
     for (let i = 0; i < correctPlan.length; i++) {
+      if (chargeDevice.chargePlan.currentPlan[i] !== correctPlan[i]) {
+        throw new Error(`Charging schedule failed, Hour +${i} observed ${chargeDevice.chargePlan.currentPlan[i]}, wanted: ${correctPlan[i]}`);
+      }
+    }
+
+    // 3) Pass on time and check that the charger is signalled correctly
+    const numTicks = 1000; // Number of ticks for the next 7 hours
+    const intervalLength = (correctPlan.length + 2) * 60 * 60 * 1000; // Go on for 2 more hours to make sure no charging continues
+    const tickLength = intervalLength / numTicks; // usec per tick
+    const lastTime = new Date();
+    const meterTime = new Date(callTime.getTime());
+    const baseMeterPower = 4000;
+    let meterValue = ((baseMeterPower + chargerPower) / 1000) * ((meterTime - callTime) / 3600000);
+
+    await app.onMeterUpdate(meterValue, meterTime);
+    await app.onProcessPower(meterTime);
+    for (let tick = 1; tick <= numTicks; tick++) {
+      lastTime.setTime(meterTime.getTime());
+      meterTime.setTime(callTime.getTime() + tickLength * tick);
+      chargerPower = chargeDevice.getCapabilityValue('measure_power');
+      meterValue += ((baseMeterPower + chargerPower) / 1000) * ((meterTime - lastTime) / 3600000);
+      await app.onMeterUpdate(meterValue, meterTime);
+      await app.onProcessPower(new Date(meterTime.getTime()));
+      await chargeDevice.onProcessPower(new Date(meterTime.getTime()));
+    }
+
+    // Check the archive how much charging happened
+    // Check keys: ["powUsage","charged"]
+    const archive = app.homey.settings.get('archive');
+    const hourKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+    const correctTotal = [undefined, undefined, undefined, 9991, 9981, 9972, 9963, 9954, 9945, 9935, 4403, 3964];
+    const correctCharged = [undefined, undefined, undefined, 6037, 6002, 5999, 6000, 6000, 6000, 6000, 388, 0];
+    for (let i = 0; i < correctPlan.length + 5; i++) {
       if (archive.powUsage.hourly[hourKey][i] !== correctTotal[i]) {
         throw new Error(`Measured total power failed, Hour +${i} observed ${archive.powUsage.hourly[hourKey][i]}, wanted: ${correctTotal[i]}`);
       }
@@ -378,6 +486,7 @@ async function startAllTests() {
     await testChargePlan();
     await testChargeValidation();
     await testChargeControl();
+    await testNoOvershoot();
     await testChargeToken();
     // await testConnectHelp();
   } catch (err) {
