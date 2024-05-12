@@ -630,7 +630,7 @@ class ChargeDevice extends Device {
     const yAxisText = this.homey.__('chargePlanGraph.price');
     const groupText = this.homey.__('chargePlanGraph.enabled');
     const alwaysOn = (+this.getCapabilityValue('charge_mode') === c.MAIN_OP.ALWAYS_ON);
-    const startHour = alwaysOn ? 0 : this.chargePlan.cycleStart ? this.chargePlan.cycleStart.getHours() : 0;
+    const startHour = alwaysOn ? 0 : this.chargePlan.cycleStart ? toLocalTime(this.chargePlan.cycleStart, this.homey).getHours() : 0;
     const cycleEnded = this.chargePlan.cycleEnd < now;
     const statusTextSrc = alwaysOn ? 'chargePlanGraph.alwaysOn'
       : cycleEnded ? 'chargePlanGraph.cycleEnded'
