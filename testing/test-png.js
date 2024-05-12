@@ -24,7 +24,7 @@ async function testEncode() {
     }
   }
 
-  const encoder = new MinimalPng({ width, height, channels, imageData: data });
+  const encoder = new MinimalPng({ width, height, channels, data });
   encoder.pipe(myFile);
   console.log('\x1b[1A[\x1b[32mPASSED\x1b[0m]');
 }
@@ -35,8 +35,8 @@ async function testDecode() {
   const fb = await decoder.load('../assets/images/large.png');//'testImg.png');//
 
   const myFile = fs.createWriteStream('testDecode.png');
-  const data = new Uint8Array(decoder.imageData);
-  const encoder = new MinimalPng({ width: decoder.width, height: decoder.height, channels: decoder.channels, imageData: data, fast: false });
+  const data = new Uint8Array(decoder.data);
+  const encoder = new MinimalPng({ width: decoder.width, height: decoder.height, channels: decoder.channels, data, fast: false });
   encoder.pipe(myFile);
   console.log('\x1b[1A[\x1b[32mPASSED\x1b[0m]');
 }
