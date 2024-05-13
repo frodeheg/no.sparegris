@@ -63,7 +63,7 @@ class ChargeDevice extends Device {
     // Version 0.22.11: Only applicable for test-users before this became public (all version 0.22.* before 0.22.12)
     if (+deviceVersion < 1) {
       const moneySpent = +this.getStoreValue('moneySpentTotal') || 0;
-      await this.setStoreValue(moneySpent / 1000);
+      await this.setStoreValue('moneySpentTotal', moneySpent / 1000);
       await this.setStoreValue('deviceVersion', 1);
     }
     // ===== BREAKING CHANGES END =====
@@ -133,6 +133,7 @@ class ChargeDevice extends Device {
     this.__spookey_changes = 0;
     this.__offeredEnergy = 0;
     this.limited = false;
+    this.settings = this.getSettings();
     this.moneySpentTotal = this.getStoreValue('moneySpentTotal') || 0;
     this.setCapabilityValue('piggy_moneypile', this.moneySpentTotal);
 
@@ -554,7 +555,7 @@ class ChargeDevice extends Device {
                 : pausedCharging ? +this.settings.pauseCurrent
                   : (+powerUsed === 0) ? +this.settings.startCurrent
                     : Math.floor(Math.min(Math.max(ampsOffered * (newOfferPower / +powerUsed), +this.settings.minCurrent), +maxCurrent));
-              this.homey.app.updateLog(`Setting ${newOfferCurrent} amp, was ${ampsActualOffer}`, c.LOG_DEBUG);
+              this.homey.app.updateLog(`Setting ${newOfferCurrent} amp, was ${ampsActualOffer}. No throttle: ${ignoreChargerThrottle} ${isEmergency} ${this.prevChargerTime}`, c.LOG_DEBUG);
               if ((newOfferCurrent === ampsActualOffer) && (newOfferCurrent === ampsOffered)) {
                 if (this.homey.app.logUnit === this.getId()) this.homey.app.updateLog(`finished changeDevicePower() for ${device.name} - The new current is the same as the previous`, c.LOG_ALL);
                 return Promise.resolve(); // Should resolve to [true, true]
@@ -586,11 +587,15 @@ class ChargeDevice extends Device {
         }
         // Else flow device: Send trigger
         if (throttleActive) {
+          if (this.homey.app.logUnit === this.getId()) {
+            this.homey.app.updateLog(`Flow device trigger was throttled for '${this.getName()}'`, c.LOG_ALL);
+          }
           return Promise.reject(new Error('Flow device trigger was throttled', { cause: ID_THROTTLE })); // Translate into [true, false] : Report onChanged=false because of the unconfirmed change
         }
         const changeChargingPowerTrigger = this.homey.flow.getDeviceTriggerCard('charger-change-target-power');
         const tokens = { offeredPower: filteredPower };
         changeChargingPowerTrigger.trigger(this, tokens);
+        this.prevChargerTime = now;
         return Promise.resolve();
       })
       .then(() => Promise.resolve(filteredPower));
