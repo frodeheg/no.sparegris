@@ -55,8 +55,19 @@ class ChargeDevice extends Device {
    * onInit is called when the device is initialized.
    */
   async onInit(now = new Date()) {
-    this.homey.app.updateLog('Charger init', c.LOG_INFO);
-    this.homey.app.updateLog('Piggy Charger has been initialized', 1);
+    this.homey.app.updateLog('Piggy Charger init', c.LOG_INFO);
+
+    // ===== BREAKING CHANGES =====
+    const deviceVersion = await this.getStoreValue('deviceVersion');
+
+    // Version 0.22.11: Only applicable for test-users before this became public (all version 0.22.* before 0.22.12)
+    if (+deviceVersion < 1) {
+      const moneySpent = +this.getStoreValue('moneySpentTotal') || 0;
+      await this.setStoreValue(moneySpent / 1000);
+      await this.setStoreValue('deviceVersion', 1);
+    }
+    // ===== BREAKING CHANGES END =====
+
     this.settingsManifest = await this.driver.ready().then(() => this.driver.manifest.settings[VALIDATION_SETTINGS].children);
     this.killed = false;
 
@@ -123,6 +134,7 @@ class ChargeDevice extends Device {
     this.__offeredEnergy = 0;
     this.limited = false;
     this.moneySpentTotal = this.getStoreValue('moneySpentTotal') || 0;
+    this.setCapabilityValue('piggy_moneypile', this.moneySpentTotal);
 
     // Create charging token if it doesn't exist and return it in case it already exists
     this.chargeToken = await this.homey.flow.createToken(`chargeToken-${data.id}`, {
