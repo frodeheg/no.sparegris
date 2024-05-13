@@ -1075,9 +1075,9 @@ class ChargeDevice extends Device {
     this.chargePlan.cycleType = offerEnergy ? c.OFFER_ENERGY : c.OFFER_HOURS;
     this.chargePlan.cycleRemaining = offerEnergy ? (offerEnergy * 1000) : +offerHours;
     this.chargePlan.cycleTotal = this.chargePlan.cycleRemaining;
-    this.chargePlan.currentPlan = new Array(cycleLength);
-    this.chargePlan.originalPlan = new Array(cycleLength);
-    this.chargePlan.actualCharge = new Array(cycleLength);
+    this.chargePlan.currentPlan = new Array(cycleLength).fill(0);
+    this.chargePlan.originalPlan = new Array(cycleLength).fill(0);
+    this.chargePlan.actualCharge = new Array(cycleLength).fill(0);
     this.chargePlan.actualPrices = [...await this.homey.app.getPricePrediction(now, endTimeUTC)];
     this.chargePlan.currentIndex = 0;
 
