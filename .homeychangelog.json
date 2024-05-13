@@ -967,5 +967,8 @@
   },
   "0.22.12": {
     "en": "Fixed Time zone of charge plan in camera device + Fixed issue where charging didn't stop when plan was completed + Fixed scaling of the price graphs + Fixed status indicator of charge plan when aborting charging + Fixed issue where the last part of the charge plan could dissappear + Fixed the cost of the charging + Fixed toggling of flow devices."
+  },
+  "0.22.13": {
+    "en": "Fixed crash bug when setting target_power to a negative value + Fixed crash bug when setting measure_battery to negative value"
   }
 }
