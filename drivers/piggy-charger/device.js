@@ -1220,7 +1220,7 @@ class ChargeDevice extends Device {
       tempChargePlan[idx] = estimatedPower;
       scheduleRemaining -= this.chargePlan.cycleType === c.OFFER_ENERGY ? estimatedPower : 1;
     }
-    this.setCapabilityValue('measure_battery.charge_cycle', 100 * (1 - ((this.chargePlan.cycleTotal - this.chargePlan.cycleRemaining) / this.chargePlan.cycleRemaining)));
+    this.setCapabilityValue('measure_battery.charge_cycle', 100 * ((this.chargePlan.cycleTotal - this.chargePlan.cycleRemaining) / this.chargePlan.cycleTotal));
     this.updateChargePlan(tempChargePlan);
 
     if (isNewHour) {
@@ -1593,6 +1593,10 @@ class ChargeDevice extends Device {
     const maxPower = maxCurrent * voltage * (phases === 3 ? 1.732 : 1);
     if (newTarget > maxPower) {
       newTarget = maxPower;
+    }
+    if (newTarget < 0) {
+      powerChange -= newTarget;
+      newTarget = 0;
     }
     this.setCapabilityValue('target_power', newTarget);
     await this.setTargetPower(newTarget, powerChange)
