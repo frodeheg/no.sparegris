@@ -1151,7 +1151,7 @@ class ChargeDevice extends Device {
       const currentPrices = this.homey.app.__current_prices;
       const currentCost = (currentHour in currentPrices) ? currentPrices[currentHour] : 0;
       const pastEnergy = this.chargePlan.actualCharge[this.chargePlan.currentIndex] || 0;
-      this.moneySpentTotal += pastEnergy * currentCost;
+      this.moneySpentTotal += pastEnergy * 0.001 * currentCost;
       this.setStoreValue('moneySpentTotal', this.moneySpentTotal);
       this.setCapabilityValue('piggy_moneypile', this.moneySpentTotal);
 
@@ -1468,7 +1468,7 @@ class ChargeDevice extends Device {
     const currentHour = this.homey.app.__current_price_index;
     const currentPrices = this.homey.app.__current_prices;
     const currentCost = (currentHour in currentPrices) ? currentPrices[currentHour] : 0;
-    this.moneySpentThisCycle += deltaEnergy * currentCost;
+    this.moneySpentThisCycle += deltaEnergy * 0.001 * currentCost;
     this.setCapabilityValue('piggy_money', this.moneySpentThisCycle);
     this.setCapabilityValue('piggy_moneypile', this.moneySpentTotal + this.moneySpentThisCycle);
 
