@@ -585,6 +585,9 @@ class ChargeDevice extends Device {
             });
         }
         // Else flow device: Send trigger
+        if (throttleActive) {
+          return Promise.reject(new Error('Flow device trigger was throttled', { cause: ID_THROTTLE })); // Translate into [true, false] : Report onChanged=false because of the unconfirmed change
+        }
         const changeChargingPowerTrigger = this.homey.flow.getDeviceTriggerCard('charger-change-target-power');
         const tokens = { offeredPower: filteredPower };
         changeChargingPowerTrigger.trigger(this, tokens);
