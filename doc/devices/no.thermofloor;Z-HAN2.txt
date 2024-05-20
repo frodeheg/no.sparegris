@@ -1,0 +1,18 @@
+App version 0.21.14
+
++17:15:59.729: ----- ANALYZING DEVICE -----
++17:15:59.730: Report type: Device is not listed
++17:15:59.742: Device name: Z-HAN2
++17:15:59.743: Driver Id: homey:app:no.thermofloor:Z-HAN2
++17:15:59.744: Error: TypeError: Cannot read properties of undefined (reading 'onoff_cap')
++17:15:59.747: Capabilities: meter_power,measure_power,measure_voltage,measure_current,measure_temperature,button.reset_meter
++17:15:59.748: Options for 'meter_power': {"id":"meter_power","type":"number","iconObj":null,"title":"Energi","getable":true,"setable":false,"insights":true,"insightsTitleTrue":null,"insightsTitleFalse":null,"units":"kWh","decimals":2,"value":0,"lastUpdated":"2024-04-18T10:01:32.843Z"}
++17:15:59.749: Options for 'measure_power': {"id":"measure_power","type":"number","iconObj":null,"title":"Effekt","getable":true,"setable":false,"insights":true,"insightsTitleTrue":null,"insightsTitleFalse":null,"units":"W","decimals":2,"value":0,"lastUpdated":"2024-04-18T15:59:10.717Z"}
++17:15:59.751: Options for 'measure_voltage': {"id":"measure_voltage","type":"number","iconObj":null,"title":"Spenning","getable":true,"setable":false,"insights":true,"insightsTitleTrue":null,"insightsTitleFalse":null,"units":"V","decimals":2,"value":0,"lastUpdated":"2024-04-18T10:01:34.250Z"}
++17:15:59.755: Options for 'measure_current': {"id":"measure_current","type":"number","iconObj":null,"title":"Strøm","getable":true,"setable":false,"insights":true,"insightsTitleTrue":null,"insightsTitleFalse":null,"units":"A","decimals":2,"value":0,"lastUpdated":"2024-04-18T10:01:35.353Z"}
++17:15:59.756: Options for 'measure_temperature': {"id":"measure_temperature","type":"number","iconObj":null,"title":"Temperatur","getable":true,"setable":false,"insights":true,"insightsTitleTrue":null,"insightsTitleFalse":null,"units":"°C","decimals":2,"value":8,"lastUpdated":"2024-04-18T16:53:54.970Z"}
++17:15:59.757: Options for 'button.reset_meter': {"id":"button.reset_meter","type":"boolean","iconObj":null,"title":"Reset power meter","getable":false,"setable":true,"insightsTitleTrue":null,"insightsTitleFalse":null,"maintenanceAction":true,"desc":"Reset the accumulated power usage (kWh), note that this can not be reversed.","value":null,"lastUpdated":null}
++17:15:59.759: --- ANALYZING DEVICE DONE ---
++17:16:4.007: Email: optional.email@for.feedback
+Comment:Optional
++17:16:4.060: Sending log

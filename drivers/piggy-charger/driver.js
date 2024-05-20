@@ -10,6 +10,7 @@ const { Driver } = require(`${homeypath}homey`);
 const supportedDevices = {
   'no.easee:charger': { icon: 'easee.svg', battery: false },
   'com.zaptec:go': { icon: 'zaptec.svg', battery: false },
+  'com.tesla.car:battery': { icon: 'tesla.svg', battery: true },
   'com.tesla.charger:Tesla': { icon: 'tesla.svg', battery: true },
 };
 

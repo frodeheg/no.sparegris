@@ -99,7 +99,8 @@ const DEFAULT_WATERHEATER = {
   setTempCap: 'target_temperature',
   tempMin: 20,
   tempMax: 85,
-  tempStep: 1
+  tempStep: 1,
+  default: true
 };
 
 // Default AC
@@ -356,6 +357,11 @@ const DEVICE_CMD = {
     default: false
   },
   'com.samsung.smart:Samsung': DEFAULT_IGNORED, // TV
+  'com.scinan.api:SASWELL_THERMOSTAT': {
+    ...DEFAULT_HEATER,
+    tempMax: 35,
+    default: false
+  },
   'com.sensibo:Sensibo': {
     ...DEFAULT_AC,
     note: 'In case your AC device makes a beeping sound whenever signaled by a remote control, please consult your AC device '
@@ -400,7 +406,38 @@ const DEVICE_CMD = {
     tempMax: 25,
     default: false
   },
-  'com.tesla.charger:Tesla': {
+  'com.tesla.car:car': DEFAULT_IGNORED,
+  'com.tesla.car:battery': {
+    type: DEVICE_TYPE.CHARGER,
+    setOnOffCap: 'charging_on',
+    setOnValue: true,
+    setOffValue: false,
+    getBatteryCap: 'measure_soc_usable',
+    measurePowerCap: 'measure_power',
+    statusCap: 'charging_state',
+    statusUnavailable: ['Complete', 'Disconnected', 'Calibrating', 'Unknown'], // Other observed: Charging, Stopped, Starting, NoPower
+    statusProblem: ['Unknown'],
+    note: 'In order to control this device, please install and enable the Charge controller device',
+    onChargeStart: {
+      charging_on: true
+    },
+    onChargeEnd: {
+      charging_on: false
+    },
+    onAdd: {
+      charging_port: true
+    },
+    onRemove: {
+      charging_port: false
+    },
+    setCurrentCap: null,
+    getOfferedCap: null, // 'measure_charge_current' available but ignore when not setable
+    startCurrent: 11,
+    minCurrent: 7,
+    pauseCurrent: 4,
+    default: false
+  },
+  'com.tesla.charger:Tesla': { // Deprecated driver
     type: DEVICE_TYPE.CHARGER,
     setOnOffCap: 'charge_mode',
     setOnValue: 'charge_now',
@@ -410,7 +447,7 @@ const DEVICE_CMD = {
     statusCap: 'charging_state',
     statusUnavailable: ['Complete', 'Disconnected', 'Error'], // Other observed: Charging, Stopped
     statusProblem: ['Error'], // State Error not reported, not sure if it exists
-    note: 'In order to control this device, please install and enable the Charge controller device',
+    note: 'You are using a deprecated tesla app, please install the new tesla app instead',
     onChargeStart: {
       charge_mode: 'charge_now'
     },
@@ -522,6 +559,7 @@ const DEVICE_CMD = {
   },
   'net.filllip-namron:4512746': DEFAULT_SWITCH,
   'net.filllip-namron:4512749': DEFAULT_SWITCH,
+  'net.filllip-namron:451275_X': DEFAULT_HEATER,
   'net.filllip-namron:4512757': {
     ...DEFAULT_HEATER,
     tempMin: 0,
@@ -633,18 +671,12 @@ const DEVICE_CMD = {
     default: false
   },
   'no.hoiax:hiax-connected-200': DEFAULT_WATERHEATER,
-  /* 'no.osoincharge:water-heater': {  // ADD ONCE onoff and target_temperature is added
-    type: DEVICE_TYPE.WATERHEATER,
-
-    setOnOffCap: 'onoff',
-    setOnValue: true,
-    setOffValue: false,
-    readTempCap: 'measure_temperature',
-    setTempCap: 'target_temperature',
-    tempMin: 20,
-    tempMax: 85,
-    tempStep: 0.5
-  }, */
+  'no.osoincharge:water-heater': {
+    ...DEFAULT_WATERHEATER,
+    tempMin: 10,
+    tempMax: 75,
+    default: false
+  },
   'no.sparegris:piggy-bank-insights': DEFAULT_IGNORED,
   'no.sparegris:piggy-charger': {
     type: DEVICE_TYPE.CHARGE_CONTROLLER,
@@ -662,6 +694,7 @@ const DEVICE_CMD = {
     tempMax: 40,
     tempStep: 0.5
   },
+  'no.thermofloor:Z-HAN2': DEFAULT_METER,
   'no.thermofloor:ZM-Single-Relay-16A': DEFAULT_SWITCH,
   'no.thermofloor:ZM-Thermostat-16A': {
     ...DEFAULT_HEATER,

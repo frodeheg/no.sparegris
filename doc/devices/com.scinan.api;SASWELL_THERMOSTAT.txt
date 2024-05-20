@@ -1,0 +1,17 @@
+App version 0.21.14
+
++23:10:37.727: ----- ANALYZING DEVICE -----
++23:10:37.728: Report type: Experimental device is working
++23:10:37.739: Device name: Varmekabel kjeller
++23:10:37.740: Driver Id: homey:app:com.scinan.api:SASWELL_THERMOSTAT
++23:10:37.741: Found onoff cap: onoff
++23:10:37.742: Found temp cap: true
++23:10:37.743: Device reliability: 1
++23:10:37.744: Capabilities: onoff,mode,target_temperature,measure_temperature,away,measure_power
++23:10:37.748: Options for 'onoff': {"id":"onoff","type":"boolean","iconObj":null,"title":"Slått på","getable":true,"setable":true,"insights":true,"insightsTitleTrue":"Slått på","insightsTitleFalse":"Slått av","value":true,"lastUpdated":"2024-02-27T15:01:24.807Z"}
++23:10:37.749: Options for 'mode': {"id":"mode","type":"enum","iconObj":null,"title":"Funksjoner","getable":true,"setable":true,"insightsTitleTrue":null,"insightsTitleFalse":null,"values":[{"id":"auto","title":"Auto"},{"id":"comfort","title":"Komfort"},{"id":"day_or_night","title":"Dag eller natt"}],"value":"day_or_night","lastUpdated":"2024-02-07T06:57:35.022Z"}
++23:10:37.750: Options for 'target_temperature': {"id":"target_temperature","type":"number","iconObj":null,"title":"Ønsket temperatur","getable":true,"setable":true,"insights":true,"insightsTitleTrue":null,"insightsTitleFalse":null,"min":5,"max":35,"units":"°C","decimals":2,"value":18,"lastUpdated":"2024-02-27T22:00:01.110Z"}
++23:10:37.753: Options for 'measure_temperature': {"id":"measure_temperature","type":"number","iconObj":null,"title":"Temperatur","getable":true,"setable":false,"insights":true,"insightsTitleTrue":null,"insightsTitleFalse":null,"units":"°C","decimals":2,"value":19,"lastUpdated":"2024-02-27T23:01:14.016Z"}
++23:10:37.754: Options for 'away': {"id":"away","type":"boolean","iconObj":{"id":"663f6732469cacd1d4d9a5d0e1501adb","url":"/api/icon/0b89c2b9-1890-4bdc-aad8-966913d2bf77"},"title":"Borte","getable":true,"setable":true,"insightsTitleTrue":null,"insightsTitleFalse":null,"value":false,"lastUpdated":"2024-01-24T23:21:03.446Z"}
++23:10:37.755: Options for 'measure_power': {"id":"measure_power","type":"number","iconObj":null,"title":"Effekt","getable":true,"setable":false,"insights":true,"insightsTitleTrue":null,"insightsTitleFalse":null,"units":"W","decimals":2,"value":240,"lastUpdated":"2024-01-24T23:21:03.444Z"}
++23:10:37.757: --- ANALYZING DEVICE DONE ---

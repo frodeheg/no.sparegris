@@ -1,0 +1,19 @@
+App version 0.21.14
++21:10:48.971: ----- ANALYZING DEVICE -----
++21:10:48.971: Report type: Experimental device is working
++21:10:48.982: Device name: Varme bad nede
++21:10:48.983: Driver Id: homey:app:net.filllip-namron:451275_X
++21:10:48.983: Found onoff cap: onoff
++21:10:48.984: Found temp cap: true
++21:10:48.985: Device reliability: 1
++21:10:48.985: Capabilities: onoff,measure_power,meter_power,t7e_zg_window_state,child_lock,target_temperature,measure_temperature,eco_mode,frost
++21:10:48.986: Options for 'onoff': {"id":"onoff","type":"boolean","iconObj":null,"title":"Slått på","getable":true,"setable":true,"insights":true,"insightsTitleTrue":"Slått på","insightsTitleFalse":"Slått av","value":true,"lastUpdated":"2024-05-10T21:05:21.353Z"}
++21:10:48.986: Options for 'measure_power': {"id":"measure_power","type":"number","iconObj":null,"title":"Effekt","getable":true,"setable":false,"insights":true,"insightsTitleTrue":null,"insightsTitleFalse":null,"units":"W","decimals":2,"value":0,"lastUpdated":"2024-05-10T10:36:48.695Z"}
++21:10:48.987: Options for 'meter_power': {"id":"meter_power","type":"number","iconObj":null,"title":"Energi","getable":true,"setable":false,"insights":true,"insightsTitleTrue":null,"insightsTitleFalse":null,"units":"kWh","decimals":2,"value":268.59,"lastUpdated":"2024-05-10T21:01:11.894Z"}
++21:10:48.988: Options for 't7e_zg_window_state': {"id":"t7e_zg_window_state","type":"enum","iconObj":{"id":"acbd3ab49f99285be046fd83c7453fca","url":"/api/icon/c65819ef-6c40-4722-8e29-b59f1c12976b"},"title":"Window open flag","getable":true,"setable":false,"insights":true,"insightsTitleTrue":"Window is open","insightsTitleFalse":"Window is closed","values":[{"id":"closed","title":"Closed"},{"id":"opened","title":"Opened"}],"value":"closed","lastUpdated":"2024-04-13T13:03:50.971Z"}
++21:10:48.988: Options for 'child_lock': {"id":"child_lock","type":"boolean","iconObj":null,"title":"Child lock","getable":true,"setable":true,"insightsTitleTrue":null,"insightsTitleFalse":null,"value":false,"lastUpdated":"2024-04-13T13:03:47.859Z"}
++21:10:48.989: Options for 'target_temperature': {"id":"target_temperature","type":"number","iconObj":null,"title":"Ønsket temperatur","getable":true,"setable":true,"insights":true,"insightsTitleTrue":null,"insightsTitleFalse":null,"min":5,"max":40,"step":0.5,"units":"°C","decimals":1,"value":18,"lastUpdated":"2024-05-10T20:00:27.903Z"}
++21:10:48.990: Options for 'measure_temperature': {"id":"measure_temperature","type":"number","iconObj":null,"title":"Temperatur","getable":true,"setable":false,"insights":true,"insightsTitleTrue":null,"insightsTitleFalse":null,"units":"°C","decimals":2,"value":22,"lastUpdated":"2024-05-10T13:04:22.972Z"}
++21:10:48.990: Options for 'eco_mode': {"id":"eco_mode","type":"boolean","iconObj":null,"title":"ECO Mode","getable":true,"setable":true,"insightsTitleTrue":null,"insightsTitleFalse":null,"value":false,"lastUpdated":"2024-04-13T13:03:50.972Z"}
++21:10:48.991: Options for 'frost': {"id":"frost","type":"boolean","iconObj":null,"title":"FROST-protection","getable":true,"setable":true,"insightsTitleTrue":null,"insightsTitleFalse":null,"value":false,"lastUpdated":"2024-04-13T13:03:49.960Z"}
++21:10:48.992: --- ANALYZING DEVICE DONE ---
