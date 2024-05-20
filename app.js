@@ -1659,13 +1659,18 @@ class PiggyBank extends Homey.App {
       .then(() => {
         const promises = [];
         const devices = chargerDriver.getDevices();
+        const numChargers = devices.length;
+        const powerChangePerDevice = powerChange / numChargers;
         for (const index in devices) {
           promises.push(devices[index].ready().then(() => {
-            if (devices[index].getId() === deviceId) {
-              this.updateReliability(deviceId, 1);
-              return devices[index].changePowerInternal(powerChange, now);
-            }
-            return Promise.resolve();
+            // === This code respect device priorities
+            // if (devices[index].getId() === deviceId) {
+            //   this.updateReliability(deviceId, 1);
+            //   return devices[index].changePowerInternal(powerChange, now);
+            // }
+            // return Promise.resolve();
+            // === This code give all controllers equal priorities
+            return devices[index].changePowerInternal(powerChangePerDevice, now);
           }));
         }
         return Promise.all(promises);

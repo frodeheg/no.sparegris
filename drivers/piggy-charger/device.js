@@ -1602,7 +1602,7 @@ class ChargeDevice extends Device {
    */
   async changePowerInternal(powerChange, now = new Date()) {
     const oldTarget = this.getTargetPower() || 0;
-    let newTarget = oldTarget + powerChange;
+    let newTarget = (powerChange > 0) ? (oldTarget + powerChange) : ((await this.getPower()) + powerChange);
     const phases = +(await this.getSetting('phases'));
     const voltage = +(await this.getSetting('voltage'));
     const maxCurrent = await this.getSetting('maxCurrent');
