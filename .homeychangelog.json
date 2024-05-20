@@ -970,5 +970,8 @@
   },
   "0.22.13": {
     "en": "Fixed crash bug when setting target_power to a negative value + Fixed crash bug when setting measure_battery to negative value"
+  },
+  "0.22.14": {
+    "en": "Added support for new devices: com.scinan.api:SASWELL_THERMOSTAT + com.tesla.car:battery + net.filllip-namron:451275_X +no.osoincharge:water-heater + no.thermofloor:Z-HAN2"
   }
 }
