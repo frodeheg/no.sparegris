@@ -704,10 +704,11 @@ class ChargeDevice extends Device {
   /**
    * Returns an image suggesting to create a charge plan
    */
-  async displayNoPlan(dst) {
+  async displayNoPlan(dst, ison) {
     const title = this.homey.__('chargePlanGraph.title');
     const mode = +this.getCapabilityValue('charge_mode');
-    const textSource = (mode === c.MAIN_OP.CONTROLLED) ? 'chargePlanGraph.noPlan' : 'chargePlanGraph.disabled';
+    const textSource = !ison ? 'charger.validation.turnedOnHint'
+      : (mode === c.MAIN_OP.CONTROLLED) ? 'chargePlanGraph.noPlan' : 'chargePlanGraph.disabled';
     const noPlanText = this.homey.__(textSource);
     return findFile('drivers/piggy-charger/assets/images/large.png')
       .catch((err) => this.setUnavailable(err.message))
@@ -773,12 +774,14 @@ class ChargeDevice extends Device {
     return Promise.resolve(this.getCapabilityValue('alarm_generic.notValidated'))
       .then((notValidated) => {
         if (notValidated) return this.validationProcedure(this.fb);
+        const ison = this.getCapabilityValue('onoff');
+        if (!ison) return this.displayNoPlan(this.fb, false);
         const mode = +this.getCapabilityValue('charge_mode');
         if (((this.chargePlan.cycleStart < now) && (mode === c.MAIN_OP.CONTROLLED))
           || (mode === c.MAIN_OP.ALWAYS_ON)) {
           return this.displayPlan(this.fb, now);
         }
-        return this.displayNoPlan(this.fb);
+        return this.displayNoPlan(this.fb, true);
       })
       .then(() => {
         this.homey.app.updateLog('Image was refreshed', c.LOG_INFO);

@@ -26,6 +26,9 @@
     "button.reset"
   ],
   "capabilitiesOptions": {
+    "onoff": {
+      "uiQuickAction": false
+    },
     "measure_battery": {
       "title": {
         "en": "Battery capacity",
