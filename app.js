@@ -1245,14 +1245,14 @@ class PiggyBank extends Homey.App {
    * Updates the max power tag
    */
   updateLimiterToken() {
-    const limits = this.readMaxPower();
+    const limits = this.readMaxPower() || [];
     const maxAlarmRate = this.homey.settings.get('maxAlarmRate');
     const limitsJSON = {
-      '15min': limits[c.ALARMS.POW_LIMIT_QUARTER],
-      hour: limits[c.ALARMS.POW_LIMIT_HOUR],
-      day: limits[c.ALARMS.POW_LIMIT_DAY],
-      month: limits[c.ALARMS.POW_LIMIT_MONTH],
-      noPower: maxAlarmRate
+      '15min': { value: limits[c.ALARMS.POW_LIMIT_QUARTER], unit: 'Wh', enabled: limits[c.ALARMS.POW_LIMIT_QUARTER] < Infinity },
+      hour: { value: limits[c.ALARMS.POW_LIMIT_HOUR], unit: 'Wh', enabled: limits[c.ALARMS.POW_LIMIT_HOUR] < Infinity },
+      day: { value: limits[c.ALARMS.POW_LIMIT_DAY], unit: 'Wh', enabled: limits[c.ALARMS.POW_LIMIT_DAY] < Infinity },
+      month: { value: limits[c.ALARMS.POW_LIMIT_MONTH], unit: 'Wh', enabled: limits[c.ALARMS.POW_LIMIT_MONTH] < Infinity },
+      noPower: { value: maxAlarmRate, enabled: maxAlarmRate > 0 }
     };
 
     if (!this.limiterToken) return; // Return ok to avoid crashing
