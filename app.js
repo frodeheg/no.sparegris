@@ -1145,6 +1145,8 @@ class PiggyBank extends Homey.App {
     this.__oldDeviceList = this.homey.settings.get('deviceList') || {};
 
     this.homey.settings.on('set', setting => {
+      if (setting === 'maxPower') this.updateLimiterToken();
+      if (setting === 'maxAlarmRate') this.updateLimiterToken();
       if (setting === 'futurePriceOptions') {
         // For some reason this
         const futurePriceOptions = this.homey.settings.get('futurePriceOptions');
@@ -1192,6 +1194,14 @@ class PiggyBank extends Homey.App {
       }
     });
 
+    // Create necessary tokens
+    this.limiterToken = await this.homey.flow.createToken('limiters', {
+      type: 'string',
+      title: 'Active limiters'
+    }).catch(() => this.homey.flow.getToken('limiters'))
+      .catch(() => undefined);
+    this.updateLimiterToken();
+
     // ============= RUN ONADD EVENTS FOR ALL SELECTED DEVICES ==============
     try {
       const frostList = this.homey.settings.get('frostList');
@@ -1229,6 +1239,24 @@ class PiggyBank extends Homey.App {
 
     this.updateLog('PiggyBank has been initialized', c.LOG_INFO);
     return Promise.resolve();
+  }
+
+  /**
+   * Updates the max power tag
+   */
+  updateLimiterToken() {
+    const limits = this.readMaxPower();
+    const maxAlarmRate = this.homey.settings.get('maxAlarmRate');
+    const limitsJSON = {
+      '15min': limits[c.ALARMS.POW_LIMIT_QUARTER],
+      hour: limits[c.ALARMS.POW_LIMIT_HOUR],
+      day: limits[c.ALARMS.POW_LIMIT_DAY],
+      month: limits[c.ALARMS.POW_LIMIT_MONTH],
+      noPower: maxAlarmRate
+    };
+
+    if (!this.limiterToken) return; // Return ok to avoid crashing
+    this.limiterToken.setValue(JSON.stringify(limitsJSON));
   }
 
   /**
@@ -1392,6 +1420,12 @@ class PiggyBank extends Homey.App {
       this.__pulseCheckerID = undefined;
     }
     this.statsUnInit();
+
+    // Clear tokens
+    if (this.limiterToken) {
+      await this.homey.flow.unregisterToken(this.limiterToken);
+      delete this.limiterToken;
+    }
 
     // Clear all pending Mutexes - probably not required if correctly written:
     // this.mutexForPower.cancel();
