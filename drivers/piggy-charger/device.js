@@ -702,6 +702,18 @@ class ChargeDevice extends Device {
   }
 
   /**
+   * Adds a timestamp to the images
+   */
+  async addTimestamp(dst) {
+    return dst.setCursorWindow(200, 489, 499, 499)
+      .then(() => dst.setTextColor([168, 168, 168, 255]))
+      .then(() => dst.setTextSize(4.0 / 9.0))
+      .then(() => dst.setTextBgColor([0, 0, 0, 180]))
+      .then(() => dst.addText(new Date().toGMTString()))
+      .then(() => dst.setTextBgColor([0, 0, 0, 0]));
+  }
+
+  /**
    * Returns an image suggesting to create a charge plan
    */
   async displayNoPlan(dst, ison) {
@@ -783,6 +795,7 @@ class ChargeDevice extends Device {
         }
         return this.displayNoPlan(this.fb, true);
       })
+      .then(() => this.addTimestamp(this.fb))
       .then(() => {
         this.homey.app.updateLog('Image was refreshed', c.LOG_INFO);
         delayedFinalize(this);
