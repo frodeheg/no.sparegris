@@ -168,7 +168,7 @@ async function testChargeControl() {
     // await chargeDevice.setData({ targetDriver: 'com.zaptec:go', id: 'ZAPTEC-DEVICEID' });
     // await chargeDevice.setData({ targetDriver: 'no.easee:charger', id: 'EASEE-DEVICEID' });
     // await chargeDevice.setSettings({ startCurrent: 11, stopCurrent: 0, pauseCurrent: 4, minCurrent: 7, maxCurrent: 12 });
-    await chargeDevice.setSettings({ phases: 1, voltage: 220 });
+    await chargeDevice.setSettings({ phases: 1, voltage: 220, share: false });
     await chargeDevice.onInit(now);
     clearTimeout(chargeDevice.__powerProcessID);
     chargeDevice.__powerProcessID = undefined;
@@ -207,7 +207,7 @@ async function testChargeControl() {
       const powerFeedback = app.homey.flow.getActionCard('charger-change-power');
       powerFeedback.triggerAction({ device: chargeDevice, power: tokens.offeredPower });
     });
-    chargeDevice.setTargetPower(chargerPower);
+    chargeDevice.setTargetPower(chargerPower, 0, now);
 
     // 2) Start the plan, check that power is given at the right time
     const callTime = new Date(now);
@@ -245,8 +245,8 @@ async function testChargeControl() {
     // Check keys: ["powUsage","charged"]
     const archive = app.homey.settings.get('archive');
     const hourKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
-    const correctTotal = [undefined, undefined, undefined, 3983, 9955, 3994, 3988, 3992, 9991, 9935];
-    const correctCharged = [undefined, undefined, undefined, 0, 5982, 0, 0, 0, 6018, 6001];
+    const correctTotal = [undefined, undefined, undefined, 3983, 9955, 3994, 3988, 3992, 9991, 9936];
+    const correctCharged = [undefined, undefined, undefined, 0, 6036, 0, 0, 0, 6035, 6001];
     for (let i = 0; i < correctPlan.length + 3; i++) {
       if (archive.powUsage.hourly[hourKey][i] !== correctTotal[i]) {
         throw new Error(`Measured total power failed, Hour +${i} observed ${archive.powUsage.hourly[hourKey][i]}, wanted: ${correctTotal[i]}`);
@@ -317,7 +317,7 @@ async function testNoOvershoot() {
       const powerFeedback = app.homey.flow.getActionCard('charger-change-power');
       powerFeedback.triggerAction({ device: chargeDevice, power: tokens.offeredPower });
     });
-    chargeDevice.setTargetPower(chargerPower);
+    chargeDevice.setTargetPower(chargerPower, 0, now);
 
     // 2) Start the plan, check that power is given at the right time
     const callTime = new Date(now);
@@ -353,8 +353,8 @@ async function testNoOvershoot() {
     // Check keys: ["powUsage","charged"]
     const archive = app.homey.settings.get('archive');
     const hourKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
-    const correctTotal = [undefined, undefined, undefined, 9991, 9981, 9972, 9963, 9954, 9945, 9935, 4403, 3964];
-    const correctCharged = [undefined, undefined, undefined, 6037, 6002, 5999, 6000, 6000, 6000, 6000, 388, 0];
+    const correctTotal = [undefined, undefined, undefined, 9991, 9982, 9973, 9963, 9954, 9945, 9936, 4350, 3964];
+    const correctCharged = [undefined, undefined, undefined, 6036, 6002, 6000, 6000, 6000, 6000, 6000, 336, 0];
     for (let i = 0; i < correctPlan.length + 5; i++) {
       if (archive.powUsage.hourly[hourKey][i] !== correctTotal[i]) {
         throw new Error(`Measured total power failed, Hour +${i} observed ${archive.powUsage.hourly[hourKey][i]}, wanted: ${correctTotal[i]}`);
@@ -379,7 +379,7 @@ async function testChargeToken() {
   const chargeDevice = new ChargeDevice(chargeDriver);
 
   now.setHours(3, 0, 0, 0);
-  const correctToken = '{"cycleStart":"2023-07-02T01:00:00.000Z","cycleEnd":"2023-07-02T08:00:00.000Z","cycleType":2,"cycleRemaining":3,"cycleTotal":3,"currentPlan":[null,3750,null,null,null,3750,3750],"originalPlan":[null,3750,null,null,null,3750,3750],"actualCharge":[null,null,null,null,null,null,null],"actualPrices":[0.3,0.2,0.5,0.9,0.8,0.1,0.2],"currentIndex":0}';
+  const correctToken = '{"cycleStart":"2023-07-02T01:00:00.000Z","cycleEnd":"2023-07-02T08:00:00.000Z","cycleType":2,"cycleRemaining":3,"cycleTotal":3,"currentPlan":[null,3750,null,null,null,3750,3750],"originalPlan":[null,3750,null,null,null,3750,3750],"actualCharge":[0,0,0,0,0,0,0],"actualPrices":[0.3,0.2,0.5,0.9,0.8,0.1,0.2],"currentIndex":0}';
   let chargeToken;
   try {
     await app.disableLog();

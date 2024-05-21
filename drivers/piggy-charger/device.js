@@ -470,13 +470,12 @@ class ChargeDevice extends Device {
   /**
    * Sets the target power (called internally when the target power capability changes)
    */
-  async setTargetPower(power, powerChange = 0) {
+  async setTargetPower(power, powerChange = 0, now = new Date()) {
     // Filter the new target power with the charge plan
     const { withinChargingCycle, withinChargingPlan } = this.getIsPlanned();
     const filteredPower = withinChargingPlan ? +power : 0;
 
     // Check that we do not toggle the charger too often
-    const now = new Date();
     const timeLapsed = ((now - this.prevChargerTime) / 1000) || Infinity; // Lapsed time in seconds
     const throttleActive = timeLapsed < +this.settings.toggleTime;
 
@@ -1242,7 +1241,7 @@ class ChargeDevice extends Device {
     if (isNewHour) {
       // Re-apply the charge on/off since the plan is recalculated
       const oldTargetPower = this.getCapabilityValue('target_power');
-      await this.setTargetPower(oldTargetPower)
+      await this.setTargetPower(oldTargetPower, 0, now)
         .catch((err) => {
           this.homey.app.updateLog(`Charger power failed: ${err.message}`, c.LOG_INFO);
         });
@@ -1615,7 +1614,7 @@ class ChargeDevice extends Device {
       newTarget = 0;
     }
     this.setCapabilityValue('target_power', newTarget);
-    await this.setTargetPower(newTarget, powerChange)
+    await this.setTargetPower(newTarget, powerChange, now)
       .catch((err) => {
         // If not confirmed, it's considered a success due to being blocked by toggle rate
         return Promise.resolve([(!this.confirmed && this.ongoing) || false, false]); // Try changing another device
