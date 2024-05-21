@@ -2788,6 +2788,23 @@
                 "fr": "Nombre de phases que la charge doit utiliser."
               },
               "value": "-"
+            },
+            {
+              "id": "share",
+              "type": "checkbox",
+              "label": {
+                "en": "Share power with other chargers",
+                "no": "Del strøm med andre ladere",
+                "nl": "Deel stroom met andere opladers",
+                "fr": "Partagez l'énergie avec d'autres chargeurs"
+              },
+              "hint": {
+                "en": "If you tick this checkbox, this charge controller will distribute all the power evenly with all other charge controllers.",
+                "no": "Hvis du krysser av i denne boksen, vil denne ladekontrolleren fordele all kraft jevnt med alle andre ladekontrollere.",
+                "nl": "Als u dit selectievakje aanvinkt, verdeelt deze laadregelaar al het vermogen gelijkmatig met alle andere laadregelaars.",
+                "fr": "Si vous cochez cette case, ce contrôleur de charge répartira toute la puissance de manière égale avec tous les autres contrôleurs de charge."
+              },
+              "value": true
             }
           ]
         },

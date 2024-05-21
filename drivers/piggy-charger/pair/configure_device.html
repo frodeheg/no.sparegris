@@ -32,6 +32,14 @@
         <label class="homey-form-label" for="batt_img" data-i18n="charger.new.flowBattInfo">Note! You have to create a flow similar to this to use this feature:</label>
         <img name="batt_img" id="batt_img" width="100%" src="../assets/images/flow_battery_in.png">
       </div>
+
+      <div class="homey-form-group">
+        <label class="homey-form-label" for="share" data-i18n="charger.new.share">Share power with other devices</label>
+        <select class="homey-form-select" name="share" id="share" onchange="setParam('share', this.value === '1' ? true : false)">
+          <option value="1" data-i18n="charger.new.yes" selected>Yes</option>
+          <option value="0" data-i18n="charger.new.no">No</option>
+        </select>
+      </div>
     </form>
 
     <script type="application/javascript">
