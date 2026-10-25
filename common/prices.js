@@ -190,6 +190,70 @@ async function getCurrencyModifier(fromCurrency, toCurrency, date, homey) {
 }
 
 // =============================================================================
+// = PRICE RESOLUTION
+// =============================================================================
+
+function asArray(value) {
+  if (value === undefined || value === null) return [];
+  return Array.isArray(value) ? value : [value];
+}
+
+/**
+ * Converts an ISO 8601 duration as used by Entsoe (PT15M, PT30M, PT60M, PT1H, P1D) into minutes
+ */
+function resolutionToMinutes(resolution) {
+  const match = /^P(?:(\d+)D)?(?:T(?:(\d+)H)?(?:(\d+)M)?)?$/.exec(String(resolution));
+  if (!match) return undefined;
+  const minutes = (+(match[1] || 0) * 24 * 60) + (+(match[2] || 0) * 60) + +(match[3] || 0);
+  return minutes > 0 ? minutes : undefined;
+}
+
+/**
+ * The rest of the app works with hourly prices, while the price sources (Entsoe and Strømregning)
+ * moved to 15 minute prices on October 1st 2025. This converts prices of any resolution into
+ * hourly prices by averaging all price slots within each hour, weighted by the slot duration.
+ * @param priceData - array of { time (seconds), price, durationMinutes (optional), subsidy (optional) }
+ *                    When durationMinutes is missing it is guessed from the distance to the next slot.
+ * @returns array of { time, price, subsidy (if present in the input) } with one entry per hour, sorted by time
+ */
+function toHourlyPrices(priceData) {
+  if (!Array.isArray(priceData)) return priceData;
+  const sorted = priceData
+    .filter((item) => item && Number.isFinite(+item.time))
+    .sort((a, b) => a.time - b.time);
+  const hours = new Map();
+  for (let i = 0; i < sorted.length; i++) {
+    let duration = +sorted[i].durationMinutes;
+    if (!(duration > 0)) {
+      const next = sorted[i + 1] || sorted[i - 1];
+      const gap = next ? Math.abs(next.time - sorted[i].time) / 60 : 60;
+      duration = (gap > 0) ? Math.min(gap, 60) : 60;
+    }
+    const hourStart = Math.floor(sorted[i].time / 3600) * 3600;
+    if (!hours.has(hourStart)) {
+      hours.set(hourStart, {
+        price: 0, subsidy: 0, weight: 0, valid: true, hasSubsidy: false
+      });
+    }
+    const hour = hours.get(hourStart);
+    if (!Number.isFinite(sorted[i].price)) hour.valid = false;
+    hour.price += sorted[i].price * duration;
+    if (Number.isFinite(sorted[i].subsidy)) {
+      hour.subsidy += sorted[i].subsidy * duration;
+      hour.hasSubsidy = true;
+    }
+    hour.weight += duration;
+  }
+  const hourlyPrices = [];
+  hours.forEach((hour, time) => {
+    const item = { time, price: hour.valid ? hour.price / hour.weight : undefined };
+    if (hour.hasSubsidy) item.subsidy = hour.subsidy / hour.weight;
+    hourlyPrices.push(item);
+  });
+  return hourlyPrices;
+}
+
+// =============================================================================
 // = ENTSOE
 // =============================================================================
 
@@ -224,28 +288,51 @@ async function entsoeGetData(startTime, currency = 'NOK', biddingZone, homey) {
     .replace('{endDate}', endDate)
     .replace(/{biddingZone}/g, biddingZone)
     .replace('{apiKey}', entsoeApiKey);
-  const priceData = [];
+  const hourlyPrices = {}; // Indexed by hour start, { price, resolution }
   try {
     const { data, res } = await request(webAddress, { dataType: 'xml' });
     if (res.status === 200) {
       const parser = new XMLParser();
       const jsonData = parser.parse(data);
-      const timeSeries = jsonData.Publication_MarketDocument.TimeSeries;
+      // A single TimeSeries/Period/Point is parsed as an object instead of an array
+      const timeSeries = asArray(jsonData.Publication_MarketDocument.TimeSeries);
       for (let serie = 0; serie < timeSeries.length; serie++) {
         const fromCurrency = timeSeries[serie]['currency_Unit.name'];
         const unitName = timeSeries[serie]['price_Measure_Unit.name'];
-        const seriesStartTime = timeSeries[serie].Period.timeInterval.start;
+        const { curveType } = timeSeries[serie];
         if (unitName !== 'MWH') throw new Error(`Invalid unit in price data: ${unitName}`);
-        const currencyModifier = await getCurrencyModifier(fromCurrency, currency, seriesStartTime, homey);
+        const periods = asArray(timeSeries[serie].Period);
+        for (let period = 0; period < periods.length; period++) {
+          const seriesStartTime = periods[period].timeInterval.start;
+          const currencyModifier = await getCurrencyModifier(fromCurrency, currency, seriesStartTime, homey);
+          const resolution = resolutionToMinutes(periods[period].resolution);
+          if (resolution === undefined) throw new Error(`Invalid resolution in price data: ${periods[period].resolution}`);
+          const serieStartMs = new Date(seriesStartTime).getTime();
+          const serieEndMs = new Date(periods[period].timeInterval.end).getTime();
+          const nSlots = Math.round((serieEndMs - serieStartMs) / (resolution * 60 * 1000));
+          const points = asArray(periods[period].Point).sort((a, b) => a.position - b.position);
 
-        const serieTimeUTC = new Date(timeSeries[serie].Period.timeInterval.start);
-        const serieData = timeSeries[serie].Period.Point;
-        for (let item = 0; item < serieData.length; item++) {
-          const timeUTC = new Date(serieTimeUTC.getTime());
-          timeUTC.setHours(timeUTC.getHours() + serieData[item].position - 1);
-          const price = (currencyModifier === undefined) ? undefined : (serieData[item]['price.amount'] * currencyModifier) / 1000; // serieData is EUR/MW
-          if (timeUTC >= startTime) {
-            priceData.push({ time: timeUTC.getTime() / 1000, price });
+          // Curve type A03 (variable sized blocks) omits points where the price is unchanged,
+          // so each point is valid until the next position.
+          const slots = [];
+          for (let item = 0; item < points.length; item++) {
+            let { position: lastPosition } = points[item];
+            if (curveType === 'A03') {
+              lastPosition = (item + 1 < points.length) ? points[item + 1].position - 1 : nSlots;
+            }
+            for (let position = points[item].position; position <= lastPosition; position++) {
+              const price = (currencyModifier === undefined) ? undefined : (points[item]['price.amount'] * currencyModifier) / 1000; // serieData is EUR/MW
+              slots.push({ time: (serieStartMs / 1000) + ((position - 1) * resolution * 60), price, durationMinutes: resolution });
+            }
+          }
+
+          // Merge into hourly prices. If the same hour is delivered with several resolutions, use the finest one.
+          const hourly = toHourlyPrices(slots);
+          for (let item = 0; item < hourly.length; item++) {
+            const prev = hourlyPrices[hourly[item].time];
+            if (prev === undefined || resolution < prev.resolution) {
+              hourlyPrices[hourly[item].time] = { price: hourly[item].price, resolution };
+            }
           }
         }
       }
@@ -255,7 +342,12 @@ async function entsoeGetData(startTime, currency = 'NOK', biddingZone, homey) {
     console.log(`Error (entsoe.eu): ${err}`);
   }
 
-  return priceData;
+  const startTimeSec = startTime.getTime() / 1000;
+  return Object.keys(hourlyPrices)
+    .map((time) => +time)
+    .filter((time) => time >= startTimeSec)
+    .sort((a, b) => a - b)
+    .map((time) => ({ time, price: hourlyPrices[time].price }));
 }
 
 /**
@@ -405,6 +497,8 @@ module.exports = {
   fetchCurrencyTable,
   entsoeApiInit,
   entsoeGetData,
+  toHourlyPrices,
+  resolutionToMinutes,
   applyTaxesOnSpotprice,
   calculateSubsidy,
 };
