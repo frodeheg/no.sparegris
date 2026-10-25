@@ -181,6 +181,7 @@ async function fetchCurrencyTable(currencies = '', date, homey) {
 }
 
 async function getCurrencyModifier(fromCurrency, toCurrency, date, homey) {
+  if (fromCurrency === toCurrency) return 1;
   try {
     const currencyTable2 = await fetchCurrencyTable([toCurrency, fromCurrency], date, homey);
     return currencyTable2[fromCurrency].rate / currencyTable2[toCurrency].rate;
