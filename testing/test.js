@@ -123,6 +123,102 @@ async function testEntsoeNegativePrice() {
   console.log('\x1b[1A[\x1b[32mPASSED\x1b[0m]');
 }
 
+// Test Entsoe 15 minute prices (used since October 1st 2025)
+async function testEntsoe15MinPrices() {
+  console.log('[......] Entsoe - Test 15 minute prices');
+  const app = new PiggyBank();
+  try {
+    await app.disableLog();
+    await app.onInit();
+    await prices.entsoeApiInit('test-token');
+    const todayStart = new Date('2025-10-24T22:00:00.000Z');
+    const biddingZone = '10YNO-3--------J';
+    const address = `https://web-api.tp.entsoe.eu/api?securityToken=test-token&documentType=A44&processType=A01&In_Domain=${biddingZone}&Out_Domain=${biddingZone}&periodStart=202510240000&periodEnd=202510262300`;
+    // One TimeSeries (parsed as an object, not an array) with 96 quarters, curve type A03
+    // where repeated prices are left out: quarter n of hour h costs (h * 4 + n) EUR/MWh,
+    // except for hour 5 which has the same price (100) for all quarters.
+    let points = '';
+    for (let quarter = 0; quarter < 96; quarter++) {
+      const hour = Math.floor(quarter / 4);
+      if (hour === 5) {
+        if (quarter % 4 === 0) points += `<Point><position>${quarter + 1}</position><price.amount>100</price.amount></Point>`;
+      } else {
+        points += `<Point><position>${quarter + 1}</position><price.amount>${quarter}</price.amount></Point>`;
+      }
+    }
+    setUrlData(address, '<Publication_MarketDocument><TimeSeries><mRID>1</mRID><businessType>A62</businessType>'
+      + '<currency_Unit.name>EUR</currency_Unit.name><price_Measure_Unit.name>MWH</price_Measure_Unit.name><curveType>A03</curveType>'
+      + '<Period><timeInterval><start>2025-10-24T22:00Z</start><end>2025-10-25T22:00Z</end></timeInterval><resolution>PT15M</resolution>'
+      + `${points}</Period></TimeSeries></Publication_MarketDocument>`);
+    const priceData = await prices.entsoeGetData(todayStart, 'EUR', biddingZone, app.homey);
+    if (priceData.length !== 24) throw new Error(`Expected 24 hourly prices, got ${priceData.length}`);
+    for (let hour = 0; hour < 24; hour++) {
+      const expectedTime = todayStart.getTime() / 1000 + hour * 3600;
+      const expectedPrice = (hour === 5) ? 0.1 : ((hour * 4) + 1.5) / 1000;
+      if (priceData[hour].time !== expectedTime) throw new Error(`Wrong time for hour ${hour}: ${priceData[hour].time}`);
+      if (Math.abs(priceData[hour].price - expectedPrice) > 1e-9) throw new Error(`Wrong price for hour ${hour}: ${priceData[hour].price} != ${expectedPrice}`);
+    }
+  } finally {
+    await app.onUninit();
+  }
+  console.log('\x1b[1A[\x1b[32mPASSED\x1b[0m]');
+}
+
+// Test that 15 minute prices from Strømregning (no.almli.utilitycost >= 1.12.0) are converted to hourly prices
+async function testExternal15MinPrices() {
+  console.log('[......] Strømregning - Test 15 minute prices');
+  const app = new PiggyBank();
+  try {
+    await app.disableLog();
+    await app.onInit();
+    const todayStart = roundToStartOfDay(new Date(), app.homey);
+    const todayStartSec = todayStart.getTime() / 1000;
+    const quarters = [];
+    for (let quarter = -96; quarter < 192; quarter++) { // Yesterday, today and tomorrow
+      const time = todayStartSec + quarter * 15 * 60;
+      quarters.push({
+        time, startsAt: new Date(time * 1000).toISOString(), endsAt: new Date((time + 900) * 1000).toISOString(), durationMinutes: 15, price: quarter, spotPriceExcl: quarter
+      });
+    }
+    app.elPriceApi = { get: async () => quarters };
+    app.__all_prices = [];
+    app.__current_price_index = undefined;
+    const now = new Date(todayStart.getTime() + (10 * 3600 + 20 * 60) * 1000); // 10:20
+    const priceInfo = await app.currentPrices(c.PRICE_MODE_INTERNAL, c.PRICE_KIND_EXTERNAL, now);
+    if (priceInfo.prices.length !== 48) throw new Error(`Expected 48 hourly prices, got ${priceInfo.prices.length}`);
+    for (let hour = 0; hour < 48; hour++) {
+      if (priceInfo.prices[hour] !== hour * 4 + 1.5) throw new Error(`Wrong price for hour ${hour}: ${priceInfo.prices[hour]}`);
+    }
+    if (priceInfo.now !== 10) throw new Error(`Wrong current hour index: ${priceInfo.now}`);
+
+    // Prices stored by an older version with 15 minute resolution should also be converted
+    app.__all_prices = quarters.filter((item) => item.time >= todayStartSec).map((item) => ({ time: item.time, price: item.price }));
+    const priceInfo2 = await app.currentPrices(c.PRICE_MODE_INTERNAL, c.PRICE_KIND_EXTERNAL, now);
+    if (JSON.stringify(priceInfo2.prices) !== JSON.stringify(priceInfo.prices)) throw new Error('Stored 15 minute prices were not converted');
+  } finally {
+    await app.onUninit();
+  }
+  console.log('\x1b[1A[\x1b[32mPASSED\x1b[0m]');
+}
+
+// Test conversion between resolutions
+async function testPriceResolution() {
+  console.log('[......] Price resolution conversion');
+  if (prices.resolutionToMinutes('PT15M') !== 15) throw new Error('PT15M');
+  if (prices.resolutionToMinutes('PT60M') !== 60) throw new Error('PT60M');
+  if (prices.resolutionToMinutes('PT1H') !== 60) throw new Error('PT1H');
+  if (prices.resolutionToMinutes('garbage') !== undefined) throw new Error('garbage');
+  const hourly = [{ time: 3600, price: 1 }, { time: 7200, price: 2, subsidy: 0.5 }];
+  if (JSON.stringify(prices.toHourlyPrices(hourly)) !== JSON.stringify([{ time: 3600, price: 1 }, { time: 7200, price: 2, subsidy: 0.5 }])) {
+    throw new Error('Hourly prices should not change');
+  }
+  const mixed = [{ time: 0, price: 4, durationMinutes: 60 }, { time: 3600, price: 1 }, { time: 4500, price: 3 }, { time: 5400, price: 5 }, { time: 6300, price: 7 }];
+  if (JSON.stringify(prices.toHourlyPrices(mixed)) !== JSON.stringify([{ time: 0, price: 4 }, { time: 3600, price: 4 }])) {
+    throw new Error(`Mixed resolution failed: ${JSON.stringify(prices.toHourlyPrices(mixed))}`);
+  }
+  console.log('\x1b[1A[\x1b[32mPASSED\x1b[0m]');
+}
+
 async function testPPNegativePrice() {
   console.log('[......] PP - Test negative prices');
   const app = new PiggyBank();
@@ -1665,6 +1761,9 @@ async function startAllTests() {
     await testApp();
     await testEntsoe();
     await testEntsoeNegativePrice();
+    await testPriceResolution();
+    await testEntsoe15MinPrices();
+    await testExternal15MinPrices();
     await testPPNegativePrice();
     await testNewHour(20000);
     await testCharging();

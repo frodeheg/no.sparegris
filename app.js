@@ -4468,7 +4468,7 @@ class PiggyBank extends Homey.App {
       const version = await this.elPriceApi.getVersion();
       if (isInstalled && !!version) {
         const split = version.split('.');
-        const apiOk = (Number(split[0]) >= 1 && Number(split[1]) >= 5);
+        const apiOk = (Number(split[0]) > 1) || (Number(split[0]) === 1 && Number(split[1]) >= 5);
         const testData = await this.elPriceApi.get('/prices');
         const deviceOk = apiOk ? (testData !== undefined) : false;
         const dataOk = deviceOk ? (Array.isArray(testData) && testData.length > 0) : false;
@@ -4500,6 +4500,8 @@ class PiggyBank extends Homey.App {
       if (!Array.isArray(this.__all_prices)) {
         this.__all_prices = [];
       }
+      // Previously stored prices might have a resolution of 15 minutes
+      this.__all_prices = prices.toHourlyPrices(this.__all_prices);
       for (let i = this.__all_prices.length - 1; i >= 0; i--) {
         if (this.__all_prices[i].time < todayStartSec || !Number.isFinite(this.__all_prices[i].price)) {
           this.__all_prices.splice(i, 1);
@@ -4522,7 +4524,8 @@ class PiggyBank extends Homey.App {
         if (priceMode !== c.PRICE_MODE_DISABLED) {
           const futurePriceOptions = await this.homey.settings.get('futurePriceOptions');
           if (priceKind === c.PRICE_KIND_EXTERNAL) {
-            futurePrices = await this.elPriceApi.get('/prices');
+            // Strømregning delivers 15 minute prices since version 1.12.0
+            futurePrices = prices.toHourlyPrices(await this.elPriceApi.get('/prices'));
           } else {
             const biddingZone = (futurePriceOptions.priceCountry in c.ENTSOE_BIDDING_ZONES)
               && (futurePriceOptions.priceRegion in c.ENTSOE_BIDDING_ZONES[futurePriceOptions.priceCountry])
